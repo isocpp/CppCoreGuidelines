@@ -10,8 +10,7 @@ they can be freely copied and modified to meet your organization's needs.
 We encourage contributions to the C++ Core Guidelines in a number of ways:
 - **Individual feedback** Are you a developer who is passionate about your code? Join the discussion in 
 [Issues](https://github.com/isocpp/CppCoreGuidelines/issues). We want to know which rules resonate with you and which don't. Were any rules
-inordinately difficult to apply? Does your compiler vendor's Guideline Support Library (e.g., 
-[Microsoft's implementation of the GSL](https://github.com/microsoft/gsl)) suit your needs in adopting these guidelines?
+inordinately difficult to apply? Does your compiler vendor's Guideline Support Library suit your needs in adopting these guidelines?
 - **Organizational adoption** While the guidelines are designed to be broadly adoptable they are also intended to be modified to fit your
 organization's particular needs. We encourage your organization to fork this repo and create your own copy of these guidelines with changes 
 that reflect your needs. We suggest that you make it clear in the title of your guidelines that these are your organization's fork of the
