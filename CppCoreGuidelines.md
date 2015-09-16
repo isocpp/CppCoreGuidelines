@@ -40,7 +40,8 @@ You can [Read an explanation of the scope and structure of this Guide](#S-abstra
 * [CP: Concurrency](#S-concurrency)
 * [STL: The Standard library](#S-stdlib)
 * [SF: Source files](#S-source)
-* [CPL: C-style programming](#S-Cpl)
+* [CPL: C-style programming](#S-cpl)
+* [PRO: Profiles](#S-profile)
 * [GSL: Guideline support library](#S-support)
 
 Supporting sections:
@@ -147,7 +148,7 @@ Introduction summary:
 <a name ="SS-readers"></a>
 ## In.target: Target readership
 
-All C++ programmers. This includes [programmers who might consider C](#S-Cpl).
+All C++ programmers. This includes [programmers who might consider C](#S-cpl).
 
 
 <a name ="SS-aims"></a>
@@ -259,8 +260,9 @@ Where appropriate, we label a rule (in the **Enforcement** sections) with the na
 A rule can be part of several profiles, or none.
 For a start, we have a few profiles corresponding to common needs (desires, ideals):
 
-* **bound**: No bounds violations (asccessing beyond the range of an array, dereferencing `nullptr`, using a dangling reference)
-* **lifetime**: No leaks and no access to invalid objects.
+* **types**: No type violations (reinterpreting a `T` as a `U` through casts/unions/varargs)
+* **bounds**: No bounds violations (accessing beyond the range of an array)
+* **lifetime**: No leaks (failing to `delete` or multiple `delete`) and no access to invalid objects (dereferencing `nullptr`, using a dangling reference).
 
 The profiles are intended to be used by tools, but also serve as an aid to the human reader.
 We do not limit our comment in the **Enforcement** sections to things we know how to enforce; some comments are mere wishes that might inspire some tool builder.
@@ -313,7 +315,8 @@ Recommended information sources can be found in [the references](#S-references).
 * [CP: Concurrency](#S-concurrency)
 * [STL: The Standard library](#S-stdlib)
 * [SF: Source files](#S-source)
-* [CPL: C-style programming](#S-Cpl)
+* [CPL: C-style programming](#S-cpl)
+* [PRO: Profiles](#S-profile)
 * [GSL: Guideline support library](#S-support)
 
 Supporting sections:
@@ -10814,6 +10817,35 @@ Thanks to the many people who contributed rules, suggestions, supporting informa
 * Gabriel Dos Reis
 * Zhuang, Jiangang (Jeff)
 * Sergey Zubkov
+
+
+<a name="S-profile"></a>
+# Profiles
+
+A "profile" is a set of deterministic and portably enforceable subset rules (i.e., restrictions) that are designed to achieve a specific guarantee.
+
+"Deterministic" means they require only local analysis and could be implemented in a compiler (though they don't need to be). "Portably enforceable" means they are like language rules, so programmers can count on enforcement tools giving the same answer for the same code. "A specific guarantee" means some guarantee, usually for the whole program, that code that compiles under this profile is not the root cause of certain classes of errors. 
+
+Profiles summary:
+
+* [Pro.type: Type safety](#SS-type)
+* [Pro.bounds: Bounds safety](#SS-bounds)
+* [Pro.lifetime: Lifetime safety](#SS-lifetime)
+
+<a name="SS-type"></a>
+## Type safety profile
+
+
+<a name="SS-bounds"></a>
+## Bounds safety profile
+
+
+<a name="SS-lifetime"></a>
+## Lifetime safety profile
+
+
+
+
 
 
 <a name="S-support"></a>
