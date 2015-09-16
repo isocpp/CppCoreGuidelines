@@ -10835,6 +10835,216 @@ Profiles summary:
 <a name="SS-type"></a>
 ## Type safety profile
 
+This profile makse it easier to construct code that uses types correctly and avoids inadvertent type punning. It does so by focusing on removing the primary sources of type violations, including unsafe uses of casts and unions.
+
+For the purposes of this section, type-safety is defined to be the property that a program does not use a variable as a type it is not. Memory accessed as a type `T` should not be valid memory that actually contains an object of an unrelated type `U`. (Note that the safety is intended to be complete when combined also with [Bounds safety](#SS-bounds) and [Lifetime safety](#SS-lifetime).)
+
+The following are under consideration but not yet in the rules below, and may be better in other profiles:
+
+   - narrowing arithmetic promotions/conversions (likely part of a separate safe-arithmetic profile)
+   - arithmetic cast from negative floating point to unsigned integral type (ditto)
+   - selected undefined behavior: ??? this is a big bucket, start with Gaby's UB list
+   - selected unspecified behavior: ??? would this really be about safety, or more a portability concern?
+   - constness violations? if we rely on it for safety
+
+An implementation of this profile shall recognize the following patterns in source code as non-conforming and issue a diagnostic.
+
+
+<a name="Pro-type-reinterpretcast"></a>
+### Type.1: Don't use `reinterpret_cast`.
+
+**Reason**:
+Use of these casts can violate type safety and cause the program to access a variable that is actually of type `X` to be accessed as if it were of an unrelated type `Z`.
+
+**Example; bad**:
+
+    std::string s = "hello world";
+    double* p = reinterpret_cast<double*>(&s); // BAD
+
+**Enforcement**: Issue a diagnostic for any use of `reinterpret_cast`. To fix: Consider using a `variant` instead.
+
+
+<a name="Pro-type-downcast"></a>
+### Type.2: Don't use `static_cast` downcasts. Use `dynamic_cast` instead.
+
+**Reason**:
+Use of these casts can violate type safety and cause the program to access a variable that is actually of type `X` to be accessed as if it were of an unrelated type `Z`.
+
+**Example; bad**:
+
+    class base { public: virtual ~base() =0; };
+
+    class derived1 : public base { };
+
+    class derived2 : public base { 
+        std::string s; 
+    public:
+        std::string get_s() { return s; }
+    };
+
+    derived1 d1;
+    base* p = &d1; // ok, implicit conversion to pointer to base is fine
+
+    derived2* p2 = static_cast<derived2*>(p); // BAD, tries to treat d1 as a derived2, which it is not
+    cout << p2.get_s(); // tries to access d1's nonexistent string member, instead sees arbitrary bytes near d1
+
+**Enforcement**: Issue a diagnostic for any use of `static_cast` to downcast, meaning to cast from a pointer or reference to `X` to a pointer or reference to a type that is not `X` or an accessible base of `X`. To fix: If this is a downcast or cross-cast then use a `dynamic_cast` instead, otherwise consider using a `variant` instead.
+
+
+<a name="Pro-type-constcast"></a>
+### Type.3: Don't use `const_cast` to cast away `const` (i.e., at all).
+
+**Reason**:
+Casting away `const` is a lie. If the variable is actually declared `const`, it's a lie punishable by undefined behavior.
+
+**Example; bad**:
+
+    void f(const int& i) {
+        const_cast<int&>(i) = 42;   // BAD
+    }
+
+    static int i = 0;
+    static const int j = 0;
+
+    f(i); // silent side effect
+    f(j); // undefined behavior
+    
+
+**Exception**: You may need to cast away `const` when calling `const`-incorrect functions. Prefer to wrap such functions in inline `const`-correct wrappers to encapsulate the cast in one place.  
+
+**Enforcement**: Issue a diagnostic for any use of `const_cast`. To fix: Either don't use the variable in a non-`const` way, or don't make it `const`.
+
+
+<a name="Pro-type-cstylecast"></a>
+### Type.4: Don't use C-style `(T)expression` casts that would perform a `static_cast` downcast, `const_cast`, or `reinterpret_cast`.
+
+**Reason**:
+Use of these casts can violate type safety and cause the program to access a variable that is actually of type `X` to be accessed as if it were of an unrelated type `Z`.
+Note that a C-style `(T)expression` cast means to perform the first of the following that is possible: a `const_cast`, a `static_cast`, a `static_cast` followed by a `const_cast`, a `reinterpret_cast`, or a `reinterpret_cast` followed by a `const_cast`. This rule bans `(T)expression` only when used to perform an unsafe cast.
+
+**Example; bad**:
+
+    std::string s = "hello world";
+    double* p = (double*)(&s); // BAD
+
+    class base { public: virtual ~base() = 0; };
+
+    class derived1 : public base { };
+
+    class derived2 : public base { 
+        std::string s; 
+    public:
+        std::string get_s() { return s; }
+    };
+
+    derived1 d1;
+    base* p = &d1; // ok, implicit conversion to pointer to base is fine
+
+    derived2* p2 = (derived2*)(p); // BAD, tries to treat d1 as a derived2, which it is not
+    cout << p2.get_s(); // tries to access d1's nonexistent string member, instead sees arbitrary bytes near d1
+
+    void f(const int& i) {
+        (int&)(i) = 42;   // BAD
+    }
+
+    static int i = 0;
+    static const int j = 0;
+
+    f(i); // silent side effect
+    f(j); // undefined behavior
+
+**Enforcement**: Issue a diagnostic for any use of a C-style `(T)expression` cast that would invoke a `static_cast` downcast, `const_cast`, or `reinterpret_cast`. To fix: Use a `dynamic_cast`, `const`-correct declaration, or `variant`, respectively.
+
+
+
+<a name="Pro-type-init"></a>
+### Type.5: Don't use a variable before it has been initialized.
+
+[ES.20: Always initialize an object](#Res-always) is required.
+
+
+
+<a name="Pro-type-memberinit"></a>
+### Type.6: Always initialize a member variable.
+
+**Reason**:
+Before a variable has been initialized, it does not contain a deterministic valid value of its type. It could contain any arbitrary bit pattern, which could be different on each call.
+
+**Example**:
+
+    struct X { int i; };
+
+    X x;
+    use(x); // BAD, x hs not been initialized
+
+    X x2{}; // GOOD
+    use(x2);
+
+**Enforcement**:
+   - Issue a diagnostic for any constructor of a non-trivially-constructible type that does not initialize all member variables. To fix: Write a data member initializer, or mention it in the member initializer list.
+   - Issue a diagnostic when constructing an object of a trivially constructible type without `()` or `{}` to initialize its members. To fix: Add `()` or `{}`. 
+
+
+<a name="Pro-type-unions"></a>
+### Type.7: Avoid accessing members of raw unions. Prefer `variant` instead.
+
+**Reason**:
+Reading from a union member assumes that member was the last one written, and writing to a union member assumes another member with a nontrivial destructor had its destructor called. This is fragile because it cannot generally be enforced to be safe in the language and so relies on programmer discipline to get it right.
+
+**Example**:
+
+    union U { int i; double d; };
+    
+    U u;
+    u.i = 42;
+    use(u.d); // BAD, undefined
+    
+    variant<int,double> u;
+    u = 42; // u  now contains int
+    use(u.get<int>()); // ok
+    use(u.get<double>()); // throws ??? update this when standardization finalizes the variant design
+    
+Note that just copying a union is not type-unsafe, so safe code can pass a union from one piece of unsafe code to another.
+
+**Enforcement**:
+   - Issue a diagnostic for accessing a member of a union. To fix: Use a `variant` instead.
+   
+ 
+
+<a name="Pro-type-varargs"></a>
+### Type.8: Avoid reading from varargs or passing vararg arguments. Prefer variadic template parameters instead.
+
+**Reason**:
+Reading from a vararg assumes that the correct type was actually passed. Passing to varargs assumes the correct type will be read. This is fragile because it cannot generally be enforced to be safe in the language and so relies on programmer discipline to get it right.
+
+**Example**:
+
+    int sum(...) {
+        // ...
+        while( /*...*/ )
+            result += va_arg(list, int); // BAD, assumes it will be passed ints
+        // ...
+    }
+        
+    sum( 3, 2 ); // ok
+    sum( 3.14159, 2.71828 ); // BAD, undefined
+    
+    template<class ...Args>
+    auto sum(Args... args) { // GOOD, and much more flexible
+        return (... + args); // note: C++17 "fold expression"
+    }
+        
+    sum( 3, 2 ); // ok: 5
+    sum( 3.14159, 2.71828 ); // ok: ~5.85987
+
+Note: Declaring a `...` parameter is sometimes useful for techniques that don't involve actual argument passing, notably to declare “take-anything” functions so as to disable "everything else" in an overload set or express a catchall case in a template metaprogram.
+    
+**Enforcement**:
+   - Issue a diagnostic for using `va_list`, `va_start`, or `va_arg`. To fix: Use a variadic template parameter list instead.
+   - Issue a diagnostic for passing an argument to a vararg parameter. To fix: Use a different function, or `[[suppress(types)]]`.
+
+
+
 
 <a name="SS-bounds"></a>
 ## Bounds safety profile
@@ -10858,6 +11068,8 @@ The Core Guidelines support library is define in namespace `Guide` and the names
 
 The support library facilities are designed to be extremely lightweight (zero-overhead) so that they impose no overhead compared to using conventional alternatives.
 Where desirable, they can be "instrumented" with additional functionality (e.g., checks) for tasks such as debugging.
+
+These Guidelines assume a `variant` type, but this is not currently in GSL because the design is being actively refined in the standards committee.
 
 
 <a name="SS-views"></a>
