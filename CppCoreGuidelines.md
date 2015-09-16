@@ -10822,9 +10822,9 @@ Thanks to the many people who contributed rules, suggestions, supporting informa
 <a name="S-profile"></a>
 # Profiles
 
-A "profile" is a set of deterministic and portably enforceable subset rules (i.e., restrictions) that are designed to achieve a specific guarantee.
+A "profile" is a set of deterministic and portably enforceable subset rules (i.e., restrictions) that are designed to achieve a specific guarantee. "Deterministic" means they require only local analysis and could be implemented in a compiler (though they don't need to be). "Portably enforceable" means they are like language rules, so programmers can count on enforcement tools giving the same answer for the same code.
 
-"Deterministic" means they require only local analysis and could be implemented in a compiler (though they don't need to be). "Portably enforceable" means they are like language rules, so programmers can count on enforcement tools giving the same answer for the same code. "A specific guarantee" means some guarantee, usually for the whole program, that code that compiles under this profile is not the root cause of certain classes of errors. 
+Code written to be warning-free using such a language profile is considered to conform to the profile. Conforming code is considered to be safe by construction with regard to the safety properties targeted by that profile. Conforming code will not be the root cause of errors for that property, although such errors may be introduced into a program by other code, libraries or the external environment. A profile may also introduce additional library types to ease conformance and encourage correct code.
 
 Profiles summary:
 
@@ -10832,10 +10832,12 @@ Profiles summary:
 * [Pro.bounds: Bounds safety](#SS-bounds)
 * [Pro.lifetime: Lifetime safety](#SS-lifetime)
 
+
+
 <a name="SS-type"></a>
 ## Type safety profile
 
-This profile makse it easier to construct code that uses types correctly and avoids inadvertent type punning. It does so by focusing on removing the primary sources of type violations, including unsafe uses of casts and unions.
+This profile makes it easier to construct code that uses types correctly and avoids inadvertent type punning. It does so by focusing on removing the primary sources of type violations, including unsafe uses of casts and unions.
 
 For the purposes of this section, type-safety is defined to be the property that a program does not use a variable as a type it is not. Memory accessed as a type `T` should not be valid memory that actually contains an object of an unrelated type `U`. (Note that the safety is intended to be complete when combined also with [Bounds safety](#SS-bounds) and [Lifetime safety](#SS-lifetime).)
 
@@ -11045,9 +11047,241 @@ Note: Declaring a `...` parameter is sometimes useful for techniques that don't 
 
 
 
-
 <a name="SS-bounds"></a>
 ## Bounds safety profile
+
+This profile makes it easier to construct code that operates within the bounds of allocated blocks of memory. It does so by focusing on removing the primary sources of bounds violations: pointer arithmetic and array indexing. One of the core features of this profile is to restrict pointers to only refer to single objects, not arrays.
+
+For the purposes of this document, bounds-safety is defined to be the property that a program does not use a variable to access memory outside of the range that was allocated and assigned to that variable. (Note that the safety is intended to be complete when combined also with [Type safety](#SS-type) and [Lifetime safety](#SS-lifetime), which cover other unsafe operations that allow bounds violations, such as type-unsafe casts that 'widen' pointers.)
+
+The following are under consideration but not yet in the rules below, and may be better in other profiles:
+
+   - 
+
+An implementation of this profile shall recognize the following patterns in source code as non-conforming and issue a diagnostic.
+
+
+<a name="Pro-bounds-arithmetic"></a>
+### Bounds.1: Don't use pointer arithmetic. Use `array_view` instead.
+
+**Reason**:
+Pointers should only refer to single objects, and pointer arithmetic is fragile and easy to get wrong. `array_view` is a bounds-checked, safe type for accessing arrays of data.
+
+**Example; bad**:
+
+    void f(int* p, int count)
+    {
+        if (count < 2) return;
+
+        int* q = p + 1; // BAD
+
+        ptrdiff_t d;
+        int n;
+        d = (p - &n); // OK
+        d = (q - p); // OK
+
+        int n = *p++; // BAD
+
+        if (count < 6) return;
+
+        p[4] = 1; // BAD
+
+        p[count - 1] = 2; // BAD
+
+        use(&p[0], 3); // BAD
+    }
+
+**Example; good**:
+
+    void f(array_view<int> a) // BETTER: use array_view in the function declaration
+    {
+        if (a.length() < 2) return;
+
+        int n = *a++; // OK
+
+        array_view<int> q = a + 1; // OK
+
+        if (a.length() < 6) return;
+
+        a[4] = 1; // OK
+
+        a[count – 1] = 2; // OK
+
+        use(a.data(), 3); // OK
+    }
+
+**Enforcement**:
+Issue a diagnostic for any arithmetic operation on an expression of pointer type that results in a value of pointer type.
+
+
+<a name="Pro-bounds-arrayindex"></a>
+### Bounds.2: Only index into arrays using constant expressions.
+
+**Reason**:
+Dynamic accesses into arrays are difficult for both tools and humans to validate as safe. `array_view` is a bounds-checked, safe type for accessing arrays of data. `at()` is another alternative that ensures single accesses are bounds-checked. If iterators are needed to access an array, use the iterators from an `array_view` constructed over the array.
+
+**Example; bad**:
+
+    void f(array<int,10> a, int pos)
+    {
+        a[pos/2] = 1; // BAD
+        a[pos-1] = 2; // BAD
+        a[-1] = 3;    // BAD - no replacement, just don't do this
+        a[10] = 4;    // BAD - no replacement, just don't do this
+    }
+
+**Example; good**:
+
+    // ALTERNATIVE A: Use an array_view 
+
+	// A1: Change parameter type to use array_view
+    void f(array_view<int,10> a, int pos)
+    {
+        a[pos/2] = 1; // OK
+        a[pos-1] = 2; // OK
+    }
+
+    // A2: Add local array_view and use that
+    void f(array<int,10> arr, int pos)
+    {
+        array_view<int> a = arr, int pos)
+        a[pos/2] = 1; // OK
+        a[pos-1] = 2; // OK
+    }
+
+    // ALTERNATIVE B: Use at() for access
+    void f()(array<int,10> a, int pos)
+    {
+        at(a, pos/2) = 1; // OK
+        at(a, pos-1) = 2; // OK
+    }
+
+**Example; bad**:
+
+    void f()
+    {
+        int arr[COUNT];
+        for (int i = 0; i < COUNT; ++i)
+            arr[i] = i; // BAD, cannot use non-constant indexer
+    }
+
+**Example; good**:
+
+    // ALTERNATIVE A: Use an array_view 
+    void f()
+    {
+        int arr[COUNT];
+		array_view<int> av = arr;
+        for (int i = 0; i < COUNT; ++i)
+            av[i] = i;
+    }
+
+    // ALTERNATIVE B: Use at() for access
+    void f()
+    {
+        int arr[COUNT];
+        for (int i = 0; i < COUNT; ++i)
+            at(arr,i) = i;
+    }
+
+
+**Enforcement**:
+Issue a diagnostic for any indexing expression on an expression or variable of array type (either static array or `std::array`) where the indexer is not a compile-time constant expression.
+
+Issue a diagnostic for any indexing expression on an expression or variable of array type (either static array or `std::array`) where the indexer is not a value between `0` or and the upper bound of the array.
+
+**Rewrite support**: Tooling can offer rewrites of array accesses that involve dynamic index expressions to use `at()` instead:
+
+    static int a[10];
+
+    void f(int i, int j)
+    {
+    	a[i + j] = 12; 		// BAD, could be rewritten as...
+        at(a, i + j) = 12; 	// OK - bounds-checked
+    }
+
+
+<a name="Pro-bounds-decay"></a>
+### Bounds.3: No array-to-pointer decay.
+
+**Reason**:
+Pointers should not be used as arrays. `array_view` is a bounds-checked, safe alternative to using pointers to access arrays.
+
+**Example; bad**:
+
+    void g(int* p, size_t length);
+
+    void f()
+    {
+        int a[5];
+        g(a, 5);        // BAD
+        g(&a[0], 1);    // OK
+    }
+
+**Example; good**:
+
+    void g(int* p, size_t length);
+    void g1(array_view<int> av); // BETTER: get g() changed.
+
+    void f()
+    {
+        int a[5];
+        array_view av = a;
+
+        g(a.data(), a.length());	// OK, if you have no choice
+        g1(a);                      // OK - no decay here, instead use implicit array_view ctor
+    }
+
+**Enforcement**:
+Issue a diagnostic for any expression that would rely on implicit conversion of an array type to a pointer type.
+
+
+<a name="Pro-bounds-stdlib"></a>
+### Bounds.4: Don't use standard library functions and types that are not bounds-checked.
+
+**Reason**:
+These functions all have bounds-safe overloads that take `array_view`. Standard types such as `vector` can be modified to perform bounds-checks under the bounds profile (in a compatible way, such as by adding contracts), or used with `at()`.
+
+**Example; bad**:
+
+    void f()
+    {
+        array<int,10> a, b;
+        memset(a.data(), 0, 10); 		// BAD, and contains a length error
+        memcmp(a.data(), b.data(), 10); // BAD, and contains a length error
+    }
+
+**Example; good**:
+
+    void f()
+    {
+        array<int,10> a, b;
+        memset(a, 0); 	// OK
+        memcmp({a,b}); 	// OK
+    }
+
+**Example**: If code is using an unmodified standard library, then there are still workarounds that enable use of `std::array` and `std::vector` in a bounds-safe manner. Code can call the `.at()` member function on each class, which will result in an `std::out_of_range` exception being thrown. Alternatively, code can call the `at()` free function, which will result in fail-fast (or a customized action) on a bounds violation.
+
+    void f(std::vector<int>& v, std::array<int, 12> a, int i)
+    {
+        v[0] = a[0];        // BAD
+        v.at(0) = a[0];     // OK (alternative 1)
+        at(v, 0) = a[0];    // OK (alternative 2)
+
+        v.at(0) = a[i];     // BAD
+        v.at(0) = a.at(i)   // OK (alternative 1)
+        v.at(0) = at(a, i); // OK (alternative 2)
+    }
+
+**Enforcement**:
+   - Issue a diagnostic for any call to a standard library function that is not bounds-checked. ??? insert link to a list of banned functions
+
+**TODO Notes**:
+   - Impact on the standard library will require close coordination with WG21, if only to ensure compatibility even if never standardized.
+   - We are considering specifying bounds-safe overloads for stdlib (especially C stdlib) functions like `memcmp` and shipping them in the GSL.
+   - For existing stdlib functions and types like `vector` that are not fully bounds-checked, the goal is for these features to be bounds-checked when called from code with the bounds profile on, and unchecked when called from legacy code, possibly using constracts (concurrently being proposed by several WG21 members).
+
+
 
 
 <a name="SS-lifetime"></a>
