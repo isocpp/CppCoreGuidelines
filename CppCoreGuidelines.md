@@ -542,7 +542,7 @@ For example:
 		static_assert(sizeof(Int)>=4);	// do: compile-time check
 
 		int bits = 0;					// don't: avoidable code
-		for (Int i = 1; i; i>>=1)
+		for (Int i = 1; i; i<<=1)
 			++bits;
 		if (bits<32)
 			cerr << "Int too small\n";
