@@ -1668,7 +1668,7 @@ These can now be combined where needed:
 	void read_and_print()
 	{
 		auto x = read(cin);
-		print(cout& os, x);
+		print(cout, x);
 	}
 
 If there was a need, we could further templatize `read()` and `print()` on the data type, the I/O mechanism, etc. Example:
