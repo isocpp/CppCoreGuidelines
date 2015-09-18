@@ -851,7 +851,7 @@ There are several more performance bugs and gratuitous complication.
 **Note**: An individual example of waste is rarely significant, and where it is significant, it is typically easily eliminated by and expert.
 However, waste spread liberally across a code base can easily be significant and experts are not always as available as we would like.
 The aim of this rule (and the more specific rules that supports it) is to eliminate most waste related to the use of C++ before it happens.
-After that, we can look at waste related to algorithems and requirements, but that is beyond the scope of these guidelines.
+After that, we can look at waste related to algorithms and requirements, but that is beyond the scope of these guidelines.
 	
 **Enforcement**: Many more specific rules aim at the overall goals of simplicity and elimination of gratuitous waste.
 
@@ -995,7 +995,7 @@ That's part of the problem.
 	}
 
 This one of the most effective solution to problem related to initialization order.
-In a multi-threaded environment the initialization of the static object does not introduce a race conition
+In a multi-threaded environment the initialization of the static object does not introduce a race condition
 (unless you carelessly access a shared objects from within its consructor).
 
 If you, as many do, define a singleton as a class for which only one object is created, functions like `myX` are not singletons,
@@ -1004,7 +1004,7 @@ and this useful technique is not an exception to the no-singleton rule.
 **Enforcement**: Very hard in general
 
 * Look for classes with name that includes `singleton`
-* Look for clases for which only a single object is created (by counting objects or by examining constructors)
+* Look for classes for which only a single object is created (by counting objects or by examining constructors)
 
 
 <a name="Ri-typed"></a>
@@ -1033,8 +1033,8 @@ An `int` can carry arbitrary forms of information, so we must guess about the me
 Most likely, the first two are an `x`,`y` coordinate pair, but what are the last two?
 Comments and parameter names can help, but we could be explicit:
 
-	void draw_rectange(Point top_left, Point bottom_right);
-	void draw_rectange(Point top_left, Size height_width);
+	void draw_rectangle(Point top_left, Point bottom_right);
+	void draw_rectangle(Point top_left, Size height_width);
 	
 	draw_rectangle(p,Point{10,20});	// two corners
 	draw_rectangle(p,Size{10,20});	// one corner and a (height,width) pair
@@ -1104,7 +1104,7 @@ We don't need to mentioning it for each member function.
 
 **Note**: `Expects()` can also be used to check a condition in the middle of an algorithm.
 
-**Enforcement**: (Not enforceable) Finding the variety of ways preconditions can be asserted is not feasible. Warning about those that can be easily identfied (assert()) has questionable value in the absence of a language facility.
+**Enforcement**: (Not enforceable) Finding the variety of ways preconditions can be asserted is not feasible. Warning about those that can be easily identified (assert()) has questionable value in the absence of a language facility.
 
 
 <a name="Ri-post"></a>
@@ -1207,7 +1207,7 @@ Postconditions related only to internal state belongs in the definition/implemen
 
 Ideally, that `Ensured` should be part of the interface that's not easily done. For now, we place it in the definition (function body).
 
-**Enforcement**: (Not enforceable) Finding the variety of ways postconditions can be asserted is not feasible. Warning about those that can be easily identfied (assert()) has questionable value in the absence of a language facility.
+**Enforcement**: (Not enforceable) Finding the variety of ways postconditions can be asserted is not feasible. Warning about those that can be easily identified (assert()) has questionable value in the absence of a language facility.
 
 
 <a name="Ri-concepts"></a>
@@ -1250,7 +1250,7 @@ An error means that the function cannot achieve its advertised purpose (includin
 Calling code that ignores the error could lead to wrong results or undefined systems state.
 For example, not being able to connect to a remote server is not by itself an error:
 the server can refuse a connection for all kinds of reasons, so the natural thing is to return a result that the caller always has to check.
-However, if failing to make a connection is considerd an error, then a failure should throw an exception.
+However, if failing to make a connection is considered an error, then a failure should throw an exception.
 
 **Exception**: Many traditional interface functions (e.g., UNIX signal handlers) use error codes (e.g., `errno`) to report what are really status codes, rather than errors. You don't have good alternative to using such, so calling these does not violate the rule.
 
