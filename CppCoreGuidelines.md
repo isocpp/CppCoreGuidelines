@@ -7701,7 +7701,7 @@ There can be code in the `...` part that causes the `delete` never to happen.
 		if (0<&a1[5]-&a2[7])	// bad: undefined
 	}
 	
-**Note**: This example also violates the [no naked `new` rule](#Res-new) and has many more problems.
+**Note**: This example has many more problems.
 
 **Enforcement**:
 
