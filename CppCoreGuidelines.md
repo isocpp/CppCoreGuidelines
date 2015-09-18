@@ -185,7 +185,7 @@ the rules also emphasize simplicity and the hiding of necessary complexity behin
 Many of the rules are prescriptive.
 We are uncomfortable with rules that simply states "don't do that!" without offering an alternative.
 One consequence of that is that some rules can be supported only by heuristcs, rather than precise and mechanically verifiable checks.
-Some articular general principles, for which more detailed and spacific rules provide partial checking.
+Some articulate general principles, for which more detailed and specific rules provide partial checking.
 
 These guidelines address a core of C++ and its use.
 We expect that most large organizations, specific application areas, and even large projects will need further rules, possibly further restrictions, and further library support.
@@ -195,8 +195,8 @@ Build your ideal small foundation library and use that, rather than lowering you
 
 The rules are designed to allow [gradual adoption](#S-modernizing).
 
-Some rules aim to increase various forms of safety while others aim at reducing the likelihood of accidents, many do both.
-The guidelines aimed at preventing accident often ban perfectly legal C++.
+Some rules aim to increase various forms of safety while others aim to reduce the likelihood of accidents, many do both.
+The guidelines aimed at preventing accidents often ban perfectly legal C++.
 However, when there are two ways of expressing an idea and one has shown itself a common source of errors and the other has not, we try to guide programmers towards the latter.
 
 <a name="SS-non"></a>
@@ -207,7 +207,7 @@ In particular, general rules can be simple, but unenforcable.
 Also, it is often hard to understand the implications of a general rule.
 More specialized rules are often easier to understand and to enforce, but without general rules, they would just be a long list of special cases.
 We provide rules aimed as helping novices as well as rules supporting expert use.
-Some rules can be completely enforces, but others are based on heuristics.
+Some rules can be completely enforced, but others are based on heuristics.
 
 These rules are not meant to be read serially, like a book.
 You can browse through them using the links.
@@ -220,13 +220,13 @@ If you need a tutorial for some given level of experience, see [the references](
 
 This is not a guide on how to convert old C++ code to more modern code.
 It is meant to articulate ideas for new code in a concrete fashion.
-However, see [the modernization section](#S-modernizing) for some possible approaches to modernizing/rejuvenation/upgrading.
+However, see [the modernization section](#S-modernizing) for some possible approaches to modernizing/rejuvenating/upgrading.
 Importantly, the rules support gradual adoption: It is typically infeasible to convert all of a large code base at once.
 
 These guidelines are not meant to be complete or exact in every language-technical detail.
 For the final word on language definition issues, including every exception to general rules and every feature, see the ISO C++ standard.
 
-The rules are not intended to force you to write in an empoverished subset of C++.
+The rules are not intended to force you to write in an impoverished subset of C++.
 They are *emphatically* not meant to define a, say, Java-like subset of C++.
 They are not meant to define a single "one true C++" language.
 We value expressiveness and uncompromised performance.
