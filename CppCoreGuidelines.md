@@ -2704,7 +2704,7 @@ but
 
 	class Date {
 		// ... some representation ...
-	pulic:
+	public:
 		Date();
 		Date(int yy, Month mm, char dd);		// validate that {yy,mm,dd} is a valid date and initialize
 
