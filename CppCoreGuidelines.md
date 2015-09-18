@@ -22,7 +22,7 @@ The list of contributors is [here](#SS-ack).
 Problems:
 
 * The sets of rules have not been thoroughly checked for completeness, consistency, or enforceability.
-* Treble question marks (???), marks known missing information
+* Triple question marks (???) mark known missing information
 * Update reference sections; many pre-C++11 sources are too old.
 * For a more-or-less up-to-date to-do list see: [To-do: Unclassified proto-rules](#S-unclassified)
 
@@ -184,8 +184,8 @@ the rules also emphasize simplicity and the hiding of necessary complexity behin
 
 Many of the rules are prescriptive.
 We are uncomfortable with rules that simply states "don't do that!" without offering an alternative.
-One consequence of that is that some rules can be supported only by heuristcs, rather than precise and mechanically verifiable checks.
-Some articulate general principles, for which more detailed and specific rules provide partial checking.
+One consequence of that is that some rules can be supported only by heuristics, rather than precise and mechanically verifiable checks.
+Other rules articulate general principles. For these more general rules, more detailed and specific rules provide partial checking.
 
 These guidelines address a core of C++ and its use.
 We expect that most large organizations, specific application areas, and even large projects will need further rules, possibly further restrictions, and further library support.
@@ -243,7 +243,7 @@ Rules with no enforcement are unmanageable for large code bases.
 Enforcement of all rules is possible only for a small weak set of rules or for a specific user community.
 But we want lots of rules, and we want rules that everybody can use.
 But different people have different needs.
-But peope don't like to read lots of rules.
+But people don't like to read lots of rules.
 But people can't remember many rules.
 So, we need subsetting to meet a variety of needs.
 But arbitrary subsetting leads to chaos: We want guidelines that help a lot of people, make code more uniform, and strongly encourages people to modernize their code.
@@ -254,7 +254,7 @@ This adds up to quite a few dilemmas.
 We try to resolve those using tools.
 Each rule has an **Enforcement** section listing ideas for enforcement.
 Enforcement might be by code review, by static analysis, by compiler, or by run-time checks.
-Whereever possible, we prefer "mechanical" checking (humans are slow and bore easily) and static checking.
+Wherever possible, we prefer "mechanical" checking (humans are slow and bore easily) and static checking.
 Run-time checks are suggested only rarely where no alternative exists; we do not want to introduce "distributed fat" - if that's what you want, you know where to find it.
 Where appropriate, we label a rule (in the **Enforcement** sections) with the name of groups of related rules (called "profiles").
 A rule can be part of several profiles, or none.
@@ -286,7 +286,7 @@ We leave gaps in the numbering to minimize "disruption" when we add or remove ru
 * **Note**s (comments) - something that needs saying that doesn't fit the other classifications
 * **Discussion** - references to more extensive rationale and/or examples placed outside the main lists of rules
 
-Some rules are hard to check mechanically, but they all meet the minimal criterium that an expert programmer can spot many violations without too much trouble.
+Some rules are hard to check mechanically, but they all meet the minimal criteria that an expert programmer can spot many violations without too much trouble.
 We hope that "mechanical" tools will improve with time to approximate what such an expert programmer notices.
 Also, we assume that the rules will be refined over time to make them more precise and checkable.
 
@@ -392,7 +392,7 @@ The second version leaves the reader guessing and opens more possibilities for u
 		// ...
 	}
 	
-That loop is a restricted form of `stl::find`.
+That loop is a restricted form of `std::find`.
 A much cleared expression of intent would be:
 
 	void do_something(vector<string>& v)
@@ -424,7 +424,7 @@ A better approach is to be explicit about the meaning of the double (new speed o
 	change_speed(23m/10s);	// meters per second
 
 We could have accepted a plain (unit-less) `double` as a delta, but that would have been error-prone.
-If we wanted both absopute speed and deltas, we would have defined a `Delta` type.
+If we wanted both absolute speed and deltas, we would have defined a `Delta` type.
 	
 **Enforcement**: very hard in general.
 
