@@ -10217,7 +10217,7 @@ Of course, range-for is better still where it does what you want.
 
 
 
-<a name="S-Cpl"></a>
+<a name="S-cpl"></a>
 # CPL: C-style programming
 
 C and C++ are closely related languages.
