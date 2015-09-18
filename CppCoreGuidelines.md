@@ -1027,7 +1027,7 @@ Consider using a variant or a pointer to base instead. (Future note: Consider a 
 
 	void draw_rect(int,int,int,int);	// great opportunities for mistakes
 	
-	draw_rect(p.x,p.y,10,20);			// what does 20,20 mean?
+	draw_rect(p.x,p.y,10,20);			// what does 10,20 mean?
 
 An `int` can carry arbitrary forms of information, so we must guess about the meaning of the four `int`s.
 Most likely, the first two are an `x`,`y` coordinate pair, but what are the last two?
