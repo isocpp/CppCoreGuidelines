@@ -1004,7 +1004,7 @@ and this useful technique is not an exception to the no-singleton rule.
 **Enforcement**: Very hard in general
 
 * Look for classes with name that includes `singleton`
-* Look for clases for wich only a single object is created (by counting objects or by examining constructors)
+* Look for clases for which only a single object is created (by counting objects or by examining constructors)
 
 
 <a name="Ri-typed"></a>
@@ -2720,7 +2720,7 @@ For example, we can use a set of declarations of freestandanding functions in a 
 an abstract base class,
 or a template fuction with concepts to represent an interface.
 The most important issue is to explicitly distinguish between an interface and its implementation "details."
-Ideally, and typically, an interface is far more stable than its implementatio(s).
+Ideally, and typically, an interface is far more stable than its implementation(s).
 
 **Enforcement**: ???
 		
@@ -11797,7 +11797,7 @@ In most circumstances, it is also impossible.
 * We could start by focusing on the interfaces, e.g., make sure that no resources are lost and no pointer is misused.
 This would be a set of changes across the whole code base, but would most likely have huge benefits.
 
-Wichever way you choose, please note that the most advantages come with the highest conformance to the guidelines.
+Whichever way you choose, please note that the most advantages come with the highest conformance to the guidelines.
 The guidelines are not a random set of unrelated rules where you can srandomly pick and choose with an expectation of success.
 
 We would dearly love to hear about experience and about tools used.
