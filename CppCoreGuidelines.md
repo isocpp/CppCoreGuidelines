@@ -1104,7 +1104,7 @@ We don't need to mention it for each member function.
 
 **Note**: `Expects()` can also be used to check a condition in the middle of an algorithm.
 
-**Enforcement**: (Not enforceable) Finding the variety of ways preconditions can be asserted is not feasible. Warning about those that can be easily identfied (assert()) has questionable value in the absence of a language facility.
+**Enforcement**: (Not enforceable) Finding the variety of ways preconditions can be asserted is not feasible. Warning about those that can be easily identified (assert()) has questionable value in the absence of a language facility.
 
 
 <a name="Ri-post"></a>
