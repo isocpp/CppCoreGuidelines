@@ -160,7 +160,7 @@ We do not suffer the delusion that every one of these rules can be effectively a
 Upgrading old systems is hard.
 However, we do believe that a program that uses a rule is less error-prone and more maintainable than one that does not.
 Often, rules also lead to faster/easier initial development.
-As far as we can tell, these rules lead to code that performs as well or better that older, more conventional techniques;
+As far as we can tell, these rules lead to code that performs as well or better than older, more conventional techniques;
 they are meant to follow the zero-overhead principle
 ("what you don't use, you don't pay for" or "When you use an abstraction mechanism appropriately,
 you get at least as good performance as if you had handcoded using lower-level language constructs").
