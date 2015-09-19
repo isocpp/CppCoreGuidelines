@@ -498,7 +498,7 @@ A programmer should be familiar with
 * `f(T*,int)` interfaces vs. `f(array_view<T>)` interfaces
 * loop variable in a too large scope
 * naked `new` and `delete`
-* functions with many arguments of build-in types
+* functions with many arguments of built-in types
 
 There is a huge scope for cleverness and semi-automated program transformation.
 
