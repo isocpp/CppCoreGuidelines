@@ -6223,21 +6223,21 @@ You need to be sure that smart pointer cannot be inadvertently be reset or reass
 
 **Example**: Consider this code:
 
-    // global (static or heap), or aliased local...
+    // global (static or heap), or aliased local...
     shared_ptr<widget> g_p = ...;
-		
-    void f( widget& w ) {
-	    g();
-		use(w); // A
+
+    void f( widget& w ) {
+		g();
+		use(w);  // A
     }
 
-    void g() {
-	    g_p = ... ; // oops, if this was the last shared_ptr to that widget, destroys the widget
-	}
+    void g() {
+		g_p = ... ; // oops, if this was the last shared_ptr to that widget, destroys the widget
+	}
 
 The following should not pass code review:
-	
-    void my_code() {
+
+    void my_code() {
 	    f( *g_p );	// BAD: passing pointer or reference obtained from a nonlocal smart pointer
 	                //      that could be inadvertently reset somewhere inside f or it callees
 		g_p->func(); // BAD: same reason, just passing it as a "this" pointer
@@ -6246,8 +6246,8 @@ The following should not pass code review:
 The fix is simple -- take a local copy of the pointer to "keep a ref count" for your call tree:
 
     void my_code() {
-	    auto pin = g_p; // cheap: 1 increment covers this entire function and all the call trees below us
-	    f( *pin );	    // GOOD: passing pointer or reference obtained from a local unaliased smart pointer
+		auto pin = g_p; // cheap: 1 increment covers this entire function and all the call trees below us
+		f( *pin );      // GOOD: passing pointer or reference obtained from a local unaliased smart pointer
 		pin->func();    // GOOD: same reason
 	}
 
