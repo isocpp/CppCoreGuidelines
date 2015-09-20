@@ -292,7 +292,7 @@ Also, we assume that the rules will be refined over time to make them more preci
 
 A rule is aimed at being simple, rather than carefully phrased to mention every alternative and special case.
 Such information is found in the **Alternative** paragraphs and the [Discussion](#S-discussion) sections.
-If you don't understand a rule or disagree with it, please visit it's **Discussion**.
+If you don't understand a rule or disagree with it, please visit its **Discussion**.
 If you feel that a discussion is missing or incomplete, send us an email.
 
 This is not a language manual.
@@ -1318,7 +1318,7 @@ In that case, mark owning pointers using `owner` :
 	}
 
 This tells analysis tools that `res` is an owner.
-That is, it's value must be `delete`d or transferred to another owner, as is done here by the `return`.
+That is, its value must be `delete`d or transferred to another owner, as is done here by the `return`.
 
 `owner` is used similarly in the implementation of resource handles.
 
@@ -2836,7 +2836,7 @@ You need a reason (use cases) for using a hierarchy.
 		// ...
 	}
 
-If a class can be part of a hierarchy, we (in real code if not necessarily in small examples) must manipulate it's objects through pointers or references.
+If a class can be part of a hierarchy, we (in real code if not necessarily in small examples) must manipulate its objects through pointers or references.
 That implies more memory overhead, more allocations and deallocations, and more run-time overhead to perform the resulting indiretions.
 
 **Note**: Concrete types can be stack allocated and be members of other classes.
@@ -3059,7 +3059,7 @@ These operations disagree about copy semantics. This will lead to confusion and 
 
 Does this class need a destructor is a surprisingly powerful design question.
 For most classes the answer is "no" either because the class holds no resources or because destruction is handled by [the rule of zero](#Rc-zero);
-that is, it's members can take care of themselves as concerns destruction.
+that is, its members can take care of themselves as concerns destruction.
 If the answer is "yes", much of the design of the class follows (see [the rule of five](#Rc-five).
 
 
@@ -4606,7 +4606,7 @@ Of course there are way of making `==` work in a hierarchy, but the naive approa
 ## C.con: Containers and other resource handles
 
 A container is an object holding a sequence of objects of some type; `std::vector` is the archetypical container.
-A resource handle is a class that owns a resource; `std::vector` is the typical resource handle; it's resource is its sequence of elements.
+A resource handle is a class that owns a resource; `std::vector` is the typical resource handle; its resource is its sequence of elements.
 
 Summary of container rules:
 
