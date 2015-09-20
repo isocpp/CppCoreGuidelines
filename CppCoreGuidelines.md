@@ -42,7 +42,7 @@ You can [Read an explanation of the scope and structure of this Guide](#S-abstra
 * [SF: Source files](#S-source)
 * [CPL: C-style programming](#S-cpl)
 * [PRO: Profiles](#S-profile)
-* [GSL: Guideline support library](#S-support)
+* [GSL: Guideline support library](#S-gsl)
 
 Supporting sections:
 
@@ -174,7 +174,7 @@ Take the time to understand the implications of a guideline rule on your program
 
 These guidelines are designed according to the "subset of a superset" principle ([Stroustrup,2005](#BS2005)).
 They do not simply define a subset of C++ to be used (for reliability, safety, performance, or whatever).
-Instead, they strongly recommend the use of a few simple "extensions" ([library components](#S-support))
+Instead, they strongly recommend the use of a few simple "extensions" ([library components](#S-gsl))
 that make the use of the most error-prone features of C++ redundant, so that they can be banned (in our set of rules).
 
 The rules emphasize static type safety and resource safety.
@@ -317,7 +317,7 @@ Recommended information sources can be found in [the references](#S-references).
 * [SF: Source files](#S-source)
 * [CPL: C-style programming](#S-cpl)
 * [PRO: Profiles](#S-profile)
-* [GSL: Guideline support library](#S-support)
+* [GSL: Guideline support library](#S-gsl)
 
 Supporting sections:
 
@@ -408,7 +408,7 @@ A well-designed library expresses intent (what is to be done, rather than just h
 
 A C++ programmer should know the basics of the STL, and use it where appropriate.
 Any programmer should know the basics of the foundation libraries of the project being worked on, and use it appropriate.
-Any programmer using these guidelines should know the [Guidelines Support Library](#S-support), and use it appropriate.
+Any programmer using these guidelines should know the [Guidelines Support Library](#S-gsl), and use it appropriate.
 
 **Example**:
 
@@ -479,7 +479,7 @@ The last variant makes it clear that we are not interested in the order in which
 
 A programmer should be familiar with
 
-* [The guideline support library](#S-support)
+* [The guideline support library](#S-gsl)
 * [The ISO C++ standard library](#S-stdlib)
 * Whatever foundation libraries are used for the current project(s)
 
@@ -796,7 +796,7 @@ Prefer [RAII](Rr-raii):
 
 * Look at pointers: classify them into non-owners (the default) and owners.
 Where feasible, replace owners with standard-library resource handles (as in the example above).
-Alternatively, mark an owner as such using `owner` from [the GSL](#S-support).
+Alternatively, mark an owner as such using `owner` from [the GSL](#S-gsl).
 * Look for naked `new` and `delete`
 * look for known resource allocating functions returning raw pointers (such as `fopen`, `malloc`, and `strdup`)
 
@@ -1070,7 +1070,7 @@ Some preconditions can be expressed as assertions. For example:
 
 Ideally, that `Expects(x>=0)` should be part of the interface of `sqrt()` but that's not easily done. For now, we place it in the definition (function body).
 
-**Reference**: `Expects()` is described in [GSL](#S-support).
+**Reference**: `Expects()` is described in [GSL](#S-gsl).
 
 **Note**: Prefer a formal specification of requirements, such as `Expects(p!=nullptr);` If that is infeasible, use English text in comments, such as
 `// the sequence [p:q) is ordered using <`
@@ -1322,7 +1322,7 @@ That is, its value must be `delete`d or transferred to another owner, as is done
 
 `owner` is used similarly in the implementation of resource handles.
 
-`owner` is defined in the [Guideline Support Library](#S-support).
+`owner` is defined in the [Guideline Support Library](#S-gsl).
 
 **Note**: Every object passed as a raw pointer (or iterator) is assumed to be owned by the caller, so that its lifetime is handled by the caller.
 
@@ -2023,7 +2023,7 @@ When I call `length(r)` should I test for `r==nullptr` first? Should the impleme
 
 **Also**: Assume that a `T*` obtained from a smart pointer to `T` (e.g., unique_ptr<`T`>) pointes to a single element.
 
-**See also**: [Support library](#S-support).
+**See also**: [Support library](#S-gsl).
 
 **Enforcement**:
 
@@ -2074,7 +2074,7 @@ When I call `length(r)` should I test for `r==nullptr` first? Should the impleme
 
 **Note**: Passing an `array_view` object as an argument is exactly as efficient as passing a pair of pointer arguments or passing a pointer and an integer count.
 
-**See also**: [Support library](#S-support).
+**See also**: [Support library](#S-gsl).
 
 **Enforcement**: (Complex) Warn where accesses to pointer parameters are bounded by other parameters that are integral types and suggest they could use `array_view` instead.
 
@@ -2098,7 +2098,7 @@ When I call `length(s)` should I test for `s==nullptr` first? Should the impleme
 
 **Note**: `zstring` do not represent ownership.
 
-**See also**: [Support library](#S-support).
+**See also**: [Support library](#S-gsl).
 
 
 <a name="Rf-const-T-ref"></a>
@@ -5574,7 +5574,7 @@ What is `Port`? A handy wrapper that encapsulates the resource:
         Port& operator=(const Port&) =delete;
     };
 
-**Note**: Where a resource is "ill-behaved" in that it isn't represented as a class with a destructor, wrap it in a class or use [`finally`](#S-support)
+**Note**: Where a resource is "ill-behaved" in that it isn't represented as a class with a destructor, wrap it in a class or use [`finally`](#S-gsl)
 
 **See also**: [RAII](Rr-raii).
 
@@ -11292,7 +11292,7 @@ These functions all have bounds-safe overloads that take `array_view`. Standard 
 
 
 
-<a name="S-support"></a>
+<a name="S-gsl"></a>
 # GSL: Guideline support library
 
 The GSL is a small library of facilities designed to support this set of guidelines.
