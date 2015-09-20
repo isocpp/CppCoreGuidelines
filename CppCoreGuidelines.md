@@ -1793,10 +1793,10 @@ it just guarantees that the function can be evaluated at compile time for consta
 		int m1 = min(-1,2);				// probably compile-time evaluation
 		constexpr int m2 = min(-1,2);	// compile-time evaluation
 		int m3 = min(-1,v);				// run-time evaluation
-		constexpr int m4 = min(-1,2);	// error: connot evaluate at compile-time
+		constexpr int m4 = min(-1,v);	// error: connot evaluate at compile-time
 	}
 	
-**Note**: `constexpr` functions are pure: they can have no sideefects.
+**Note**: `constexpr` functions are pure: they can have no side effects.
 
 	int dcount = 0;
 	constexpr int double(int v)
