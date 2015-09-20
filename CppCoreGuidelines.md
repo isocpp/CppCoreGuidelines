@@ -780,7 +780,7 @@ The physical law for a jet (`e*e < x*x + y*y + z*z`) is not an invariant because
 		fclose(input);
 	}
 
-Prefer [RAII](Rr-raii):
+Prefer [RAII](#Rr-raii):
 
 	void f(char* name)
 	{
@@ -1171,7 +1171,7 @@ Here, we "forgot" to state that the `mutex` should be released, so we don't know
 
 The bug is now obvious.
 
-Better still, use [RAII](#Rc-raii) to ensure that the postcondition ("the lock must be released") is enforced in code:
+Better still, use [RAII](#Rr-raii) to ensure that the postcondition ("the lock must be released") is enforced in code:
 
 	void manipulate(Record& r)	// best
 	{
@@ -1203,7 +1203,7 @@ Postconditions related only to internal state belongs in the definition/implemen
 
 **Note**: preconditions can be stated in many ways, including comments, `if`-statements, and `assert()`. This can make them hard to distinguish from ordinary code, hard to update, hard to manipulate by tools, and may have the wrong semantics.
 
-**Alternative**: Postconditions of the form "this resource must be released" and best expressed by [RAII](#Rc-raii).
+**Alternative**: Postconditions of the form "this resource must be released" and best expressed by [RAII](#Rr-raii).
 
 Ideally, that `Ensured` should be part of the interface that's not easily done. For now, we place it in the definition (function body).
 
@@ -3496,7 +3496,7 @@ Compilers do not read comments.
 **Exception**: If a valid object cannot conveniently be constructed by a constructor [use a factory function](#C factory).
 
 **Note**: If a constructor acquires a resource (to create a valid object), that resource should be [released by the destructor](#Rc-release).
-The idiom of having constructors acquire resources and destructors release them is called [RAII](Rr-raii) ("Resource Acquisitions Is Initialization").
+The idiom of having constructors acquire resources and destructors release them is called [RAII](#Rr-raii) ("Resource Acquisitions Is Initialization").
 
 
 <a name="Rc-throw"></a>
@@ -3564,7 +3564,7 @@ The idiom of having constructors acquire resources and destructors release them 
 
 **Note**: For a variable definition (e.g., on the stack or as a member of another object) there is no explicit function call from which an error code could be returned. Leaving behind an invalid object an relying on users to consistently check an `is_valid()` function before use is tedious, error-prone, and inefficient.
 
-**Exception**: There are domains, such as some hard-real-time systems (think airplane controls) where (without additional tool support) exception handling is not sufficiently predictable from a timing perspective. There the `is_valed()` technique must be used. In such cases, check `is_valid()` consistently and immediately to simulate [RAII](#Rc-raii).
+**Exception**: There are domains, such as some hard-real-time systems (think airplane controls) where (without additional tool support) exception handling is not sufficiently predictable from a timing perspective. There the `is_valed()` technique must be used. In such cases, check `is_valid()` consistently and immediately to simulate [RAII](#Rr-raii).
 
 **Alternative**: If you feel tempted to use some "post-constructor initialization" or "two-stage initialization" idiom, try not to do that. If you really have to, look at [factory functions](#Rc-factory).
 
@@ -5576,7 +5576,7 @@ What is `Port`? A handy wrapper that encapsulates the resource:
 
 **Note**: Where a resource is "ill-behaved" in that it isn't represented as a class with a destructor, wrap it in a class or use [`finally`](#S-GSL)
 
-**See also**: [RAII](Rr-raii).
+**See also**: [RAII](#Rr-raii).
 
 
 <a name ="Rr-use-ptr"></a>
@@ -8203,7 +8203,7 @@ Unless the loop was meant to be infinite, termination is normal and expected.
 
 **Exception**: Some systems, such as hard-real time systems require a guarantee that an action is taken in a (typically short) constant maximum time known before execution starts. Such systems can use exceptions only if there is tool support for accurately predicting the maximum time to recover from a `throw`.
 
-**See also**: [RAII](#Rc-raii)
+**See also**: [RAII](#Re-raii)
 
 **See also**: [discussion](#Sd-noexcept)
 
