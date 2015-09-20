@@ -1076,8 +1076,8 @@ Ideally, that `Expects(x>=0)` should be part of the interface of `sqrt()` but th
 `// the sequence [p:q) is ordered using <`
 
 **Note**: Most member functions have as a precondition that some class invariant holds.
-That invariant is established by a constructor and must be reestablished upon exit by evenry member function called from outside the class.
-We don't need to mentioning it for each member function.
+That invariant is established by a constructor and must be reestablished upon exit by every member function called from outside the class.
+We don't need to mention it for each member function.
 
 **Enforcement**: (Not enforceable)
 
