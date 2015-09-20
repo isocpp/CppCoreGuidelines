@@ -408,7 +408,7 @@ A well-designed library expresses intent (what is to be done, rather than just h
 
 A C++ programmer should know the basics of the STL, and use it where appropriate.
 Any programmer should know the basics of the foundation libraries of the project being worked on, and use it appropriate.
-Any programmer using these guidelines should know the [Guidelines Support Library](#S-GSL), and use it appropriate.
+Any programmer using these guidelines should know the [Guidelines Support Library](#S-support), and use it appropriate.
 
 **Example**:
 
@@ -1070,7 +1070,7 @@ Some preconditions can be expressed as assertions. For example:
 
 Ideally, that `Expects(x>=0)` should be part of the interface of `sqrt()` but that's not easily done. For now, we place it in the definition (function body).
 
-**Reference**: `Expects()` is described in [GSL](S-Support).
+**Reference**: `Expects()` is described in [GSL](#S-support).
 
 **Note**: Prefer a formal specification of requirements, such as `Expects(p!=nullptr);` If that is infeasible, use English text in comments, such as
 `// the sequence [p:q) is ordered using <`
@@ -1322,7 +1322,7 @@ That is, its value must be `delete`d or transferred to another owner, as is done
 
 `owner` is used similarly in the implementation of resource handles.
 
-`owner` is defined in the [Guideline Support Library](#S-GSL).
+`owner` is defined in the [Guideline Support Library](#S-support).
 
 **Note**: Every object passed as a raw pointer (or iterator) is assumed to be owned by the caller, so that its lifetime is handled by the caller.
 
@@ -5574,7 +5574,7 @@ What is `Port`? A handy wrapper that encapsulates the resource:
         Port& operator=(const Port&) =delete;
     };
 
-**Note**: Where a resource is "ill-behaved" in that it isn't represented as a class with a destructor, wrap it in a class or use [`finally`](#S-GSL)
+**Note**: Where a resource is "ill-behaved" in that it isn't represented as a class with a destructor, wrap it in a class or use [`finally`](#S-support)
 
 **See also**: [RAII](Rr-raii).
 
@@ -11792,7 +11792,7 @@ Here are some (very general) ideas:
 
 * The ideal is "just upgrade everything." That gives the most benefits for the shortest total time.
 In most circumstances, it is also impossible.
-* We could convert a code base module for module, but any rules that affects interfaces (especially ABIs), such as [use `array_view`](#S-GSL), cannot be done on a per-module basis.
+* We could convert a code base module for module, but any rules that affects interfaces (especially ABIs), such as [use `array_view`](#SS-views), cannot be done on a per-module basis.
 * We could convert code "botton up" starting with the rules we estimate will give the greatest benefits and/or the least trouble in a given code base.
 * We could start by focusing on the interfaces, e.g., make sure that no resources are lost and no pointer is misused.
 This would be a set of changes across the whole code base, but would most likely have huge benefits.
