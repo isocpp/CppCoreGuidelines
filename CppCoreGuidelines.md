@@ -203,7 +203,7 @@ However, when there are two ways of expressing an idea and one has shown itself 
 ## In.not: Non-aims
 
 The rules are not intended to be minimal or orthogonal.
-In particular, general rules can be simple, but unenforcable.
+In particular, general rules can be simple, but unenforceable.
 Also, it is often hard to understand the implications of a general rule.
 More specialized rules are often easier to understand and to enforce, but without general rules, they would just be a long list of special cases.
 We provide rules aimed as helping novices as well as rules supporting expert use.
@@ -393,7 +393,7 @@ The second version leaves the reader guessing and opens more possibilities for u
 	}
 	
 That loop is a restricted form of `std::find`.
-A much cleared expression of intent would be:
+A much clearer expression of intent would be:
 
 	void do_something(vector<string>& v)
 	{
