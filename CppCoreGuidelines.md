@@ -5013,8 +5013,8 @@ and such interfaces are often not easily or naturally organized into a single-ro
 
 **Example**:
 
-	struct B { int a; virtual f(); };
-	struct D { int b; override f(); };
+	struct B { int a; virtual int f(); };
+	struct D : B { int b; int f() override; };
 
 	void use(B b)
 	{
@@ -5026,7 +5026,7 @@ and such interfaces are often not easily or naturally organized into a single-ro
 	void use2()
 	{
 		D d;
-		use(b);	// slice
+		use(d);	// slice
 	}
 
 Both `d`s are sliced.
