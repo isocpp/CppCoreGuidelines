@@ -683,7 +683,7 @@ We could check earlier and improve the code:
 
 	void increment2(array_view<int> p)
 	{
-		for (int x : p) ++x;
+		for (int& x : p) ++x;
 	}
 
 	void use2(int m)
