@@ -629,14 +629,14 @@ This design carries the number of elements along as an integral part of an objec
 		return v;
 	}
 
-	unique_ptr<int[]> f6(int n)	// bad: looses n
+	unique_ptr<int[]> f6(int n)	// bad: loses n
 	{
 		auto p = make_unique<int[]>(n);
 		// ... initialize *p ...
 		return p;
 	}
 
-	owner<int*> f7(int n)	// bad: looses n and we might forget to delete
+	owner<int*> f7(int n)	// bad: loses n and we might forget to delete
 	{
 		owner<int*> p = new int[n];
 		// ... initialize *p ...
@@ -5904,7 +5904,7 @@ Write your own factory wrapper if there is not one already.
 <a name ="Rr-ap"></a>
 ### R.14: ??? array vs. pointer parameter
 
-**Reason**: An array decays to a pointer, thereby loosing its size, opening the opportunity for range errors.
+**Reason**: An array decays to a pointer, thereby losing its size, opening the opportunity for range errors.
 
 **Example**:
 
