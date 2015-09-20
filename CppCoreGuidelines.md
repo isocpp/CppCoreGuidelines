@@ -5827,7 +5827,7 @@ If the pointer returned from `new` is assigned to a plain/naked pointer, the obj
 **Note**: In a large program, a naked `delete` (that is a `delete` in application code, rather than part of code devoted to resource management)
 is a likely bug: if you have N `delete`s, how can you be certain that you don't need N+1 or N-1?
 The bug may be latent: it may emerge only during maintenace.
-If you have a naled `new`, you probably need a naked `delete` somewhere, so yu probably have a bug.
+If you have a naked `new`, you probably need a naked `delete` somewhere, so you probably have a bug.
 
 **Enforcement**: (Simple) Warn on any explicit use of `new` and `delete`. Suggest using `make_unique` instead.
 
@@ -5918,7 +5918,7 @@ Write your own factory wrapper if there is not one already.
 <a name="Rr-pair"></a>
 ### R.15: Always overload matched allocation/deallocation pairs
 
-**Reason**. Otherwise you get mismarched opertions and chaos.
+**Reason**. Otherwise you get mismatched operations and chaos.
 
 **Example**:
 
@@ -7242,7 +7242,7 @@ The termination conditions is at the end (where it can be overlooked) and the co
 
 **Reason**: Readability, avoidance of errors. There are better control structures for humans; `goto` is for machine generated code.
 
-**Exception**: Breaking our of a nested loop. In that case, always jump forwards.
+**Exception**: Breaking out of a nested loop. In that case, always jump forwards.
 
 **Example**:
 
