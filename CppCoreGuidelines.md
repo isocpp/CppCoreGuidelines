@@ -1747,7 +1747,7 @@ We can refactor:
   		if (flag1 > 0)
  			return func1_muon(val, flag2);
 		if (flag1 == -1)
-    		return func1_tau(-val, flag2);	// handled by func1_tau: flag1 = -flag1;
+    		return func1_tau(-val, flag1, flag2);	// handled by func1_tau: flag1 = -flag1;
   		return 0.;
 	}
 
