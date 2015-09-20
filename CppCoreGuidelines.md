@@ -11793,7 +11793,7 @@ Here are some (very general) ideas:
 * The ideal is "just upgrade everything." That gives the most benefits for the shortest total time.
 In most circumstances, it is also impossible.
 * We could convert a code base module for module, but any rules that affects interfaces (especially ABIs), such as [use `array_view`](#SS-views), cannot be done on a per-module basis.
-* We could convert code "botton up" starting with the rules we estimate will give the greatest benefits and/or the least trouble in a given code base.
+* We could convert code "bottom up" starting with the rules we estimate will give the greatest benefits and/or the least trouble in a given code base.
 * We could start by focusing on the interfaces, e.g., make sure that no resources are lost and no pointer is misused.
 This would be a set of changes across the whole code base, but would most likely have huge benefits.
 
