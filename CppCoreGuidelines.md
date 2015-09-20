@@ -2363,7 +2363,7 @@ Returning a `T*` to transfer ownership is a misuse.
 
 		Node* find(Node* t, const string& s)	// find s in a binary tree of Nodes
 		{
-			if (t->name==s) return t;
+			if (t == nullptr || t->name == s) return t;
 			if (auto p = find(t->left,s)) return p;
 			if (auto p = find(t->right,s)) return p;
 			return nullptr;
