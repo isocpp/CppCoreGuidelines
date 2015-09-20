@@ -6391,7 +6391,7 @@ The more traditional and lower-level near-equivalent is longer, messier, harder 
 		while (is && elemcount<maxelem) {
 			auto s = new char[maxstring];
 			is.read(s,maxstring);
-			res[elemcount++= = s;
+			res[elemcount++] = s;
 		}
 		nread = elemcount;
 		return res;
