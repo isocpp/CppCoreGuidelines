@@ -11765,7 +11765,7 @@ This section lists recommended libraries, and explicitly recommends a few.
 Ideally, we follow all rules in all code.
 Realistically, we have to deal with a lot of old code:
 
-* application code written before the guidelines were formuated or known
+* application code written before the guidelines were formulated or known
 * libraries written to older/different standards
 * code that we just haven't gotten around to modernizing
 
