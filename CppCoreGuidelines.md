@@ -1259,7 +1259,7 @@ consider using a style that returns a pair of values:
 
 	int val;
 	int error_code;
-	tie(val,error_code) do_something();
+	tie(val,error_code) = do_something();
 	if (error_code==0) {
 		// ... handle the error or exit ...
 	}
