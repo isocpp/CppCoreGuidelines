@@ -10061,7 +10061,7 @@ Often a `constexpr` function implies less compile-time overhead than alternative
 		return res;
 	}
 	
-	constexpr auto f7 = fac(pi,7);
+	constexpr auto f7 = pow(pi,7);
 
 **Enforcement**:
 
