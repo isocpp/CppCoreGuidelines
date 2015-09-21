@@ -407,8 +407,8 @@ A much clearer expression of intent would be:
 A well-designed library expresses intent (what is to be done, rather than just how something is being done) far better than direct use of language features.
 
 A C++ programmer should know the basics of the STL, and use it where appropriate.
-Any programmer should know the basics of the foundation libraries of the project being worked on, and use it appropriate.
-Any programmer using these guidelines should know the [Guidelines Support Library](#S-gsl), and use it appropriate.
+Any programmer should know the basics of the foundation libraries of the project being worked on, and use it appropriately.
+Any programmer using these guidelines should know the [Guidelines Support Library](#S-gsl), and use it appropriately.
 
 **Example**:
 
