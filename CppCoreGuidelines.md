@@ -1201,9 +1201,9 @@ Postconditions related only to internal state belongs in the definition/implemen
 		Ensures(buffer[0]==0);
 	}
 
-**Note**: preconditions can be stated in many ways, including comments, `if`-statements, and `assert()`. This can make them hard to distinguish from ordinary code, hard to update, hard to manipulate by tools, and may have the wrong semantics.
+**Note**: postconditions can be stated in many ways, including comments, `if`-statements, and `assert()`. This can make them hard to distinguish from ordinary code, hard to update, hard to manipulate by tools, and may have the wrong semantics.
 
-**Alternative**: Postconditions of the form "this resource must be released" and best expressed by [RAII](#Rr-raii).
+**Alternative**: Postconditions of the form "this resource must be released" are best expressed by [RAII](#Rr-raii).
 
 Ideally, that `Ensured` should be part of the interface that's not easily done. For now, we place it in the definition (function body).
 
@@ -1424,7 +1424,7 @@ This `draw2()` passes the same amount of information to `draw()`, but makes the 
 						InputIterator2 first2, InputIterator2 last2,
 						OutputIterator result, Compare comp);
 
-Here, we have three template arguments and five function arguments.
+Here, we have four template arguments and six function arguments.
 To simplify the most frequent and simplest uses, the comparison argument can be defaulted to `<`:
 
 	template<class InputIterator1, class InputIterator2, class OutputIterator>
@@ -1435,7 +1435,7 @@ To simplify the most frequent and simplest uses, the comparison argument can be 
 This doesn't reduce the total complexity, but it reduces the surface complexity presented to many users.
 To really reduce the number of arguments, we need to bundle the arguments into higher-level abstractions:
 
-	template<class InputRange2, class InputRange2, class OutputIterator>
+	template<class InputRange1, class InputRange2, class OutputIterator>
 	OutputIterator merge(InputRange1 r1, InputRange2 r2, OutputIterator result);
 
 Grouping arguments into "bundles" is a general technique to reduce the number of arguments and to increase the opportunities for checking.
