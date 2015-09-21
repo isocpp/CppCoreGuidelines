@@ -794,7 +794,14 @@ Prefer [RAII](#Rr-raii):
 
 **Enforcement**:
 
-* Look at pointers: classify them into non-owners (the default) and owners.
+* Look at pointers: classify them into non-owners (the defaul crashes.
+Avoid errors leading to (possibly unrecognized) wrong results.
+
+**Example**:
+
+	void increment1(int* p, int n)	// bad: error prone
+	{
+		for (int i=0; it) and owners.
 Where feasible, replace owners with standard-library resource handles (as in the example above).
 Alternatively, mark an owner as such using `owner` from [the GSL](#S-gsl).
 * Look for naked `new` and `delete`
@@ -1175,7 +1182,7 @@ Better still, use [RAII](#Rr-raii) to ensure that the postcondition ("the lock m
 
 	void manipulate(Record& r)	// best
 	{
-		lock_guard _ {m};
+		lock_guard<mutex> _ {m};
 		// ...
 	}
 	
@@ -2329,7 +2336,7 @@ In fact, C++98's standard library already used this convenient feature, because 
 For example, given a `set<string> myset`, consider:
 
     // C++98
-	result = myset.insert( “Hello” );
+	result = myset.insert( “Hello” );
 	if (result.second) do_something_with( result.first );    // workaround
 	
 With C++11 we can write this, putting the results directly in existing local variables:
@@ -2338,7 +2345,7 @@ With C++11 we can write this, putting the results directly in existing local var
 	Someothertype success;                                  // used these variables for some other purpose
 
 	tie( iter, success ) = myset.insert( “Hello” );         // normal return value
-	if (success) do_something_with( iter );
+	if (success) do_something_with( iter );
 
 **Exception**: For types like `string` and `vector` that carry additional capacity, it can sometimes be useful to treat it as in/out instead by using the "caller-allocated out" pattern, which is to pass an output-only object by reference to non-`const` so that when the callee writes to it the object can reuse any capacity or other resources that it already contains. This technique can dramatically reduce the number of allocations in a loop that repeatedly calls other functions to get string values, by using a single string object for the entire loop.
 
@@ -2557,7 +2564,7 @@ For passthrough functions that pass in parameters (by ordinary reference or by p
 
 **Enforcement**:
 
-    * Warn on use of a named non-generic lambda (e.g., `auto x = [](int i){ /*...*/; };`) that captures nothing and appears at global scope. Write an ordinary function instead.
+* Warn on use of a named non-generic lambda (e.g., `auto x = [](int i){ /*...*/; };`) that captures nothing and appears at global scope. Write an ordinary function instead.
 
 
 
@@ -2599,7 +2606,7 @@ For passthrough functions that pass in parameters (by ordinary reference or by p
 	    stage encryptor  ([] (buffer& b){ encrypt(b); });
 	    stage compressor ([&](buffer& b){ compress(b); encryptor.process(b); });
 	    stage decorator  ([&](buffer& b){ decorate(b); compressor.process(b); });
-	    for (auto& b : bufs) { decorator.process(b); }
+	    for (auto& b : bufs) { decorator.process(b); }
 	} // automatically blocks waiting for pipeline to finish
 
 **Enforcement**: ???
@@ -2801,7 +2808,7 @@ Concrete types are also often referred to as value types to distinguish them fro
 Concrete type rule summary:
 
 * [C.10: Prefer a concrete type over more complicated classes](#Rc-concrete)
-* [C.11: Make a concrete types regular](#Rc-regular)
+* [C.11: Make concrete types regular](#Rc-regular)
 
 
 <a name="Rc-concrete"></a>
@@ -2850,7 +2857,7 @@ This is done where dynamic allocation is prohibited (e.g. hard real-time) and to
 
 
 <a name="Rc-regular"></a>
-### C.11: Make a concrete types regular
+### C.11: Make concrete types regular
 
 **Reason**: Regular types are easier to understand and reason about than types that are not regular (irregularities requires extra effort to understand and use).
 
@@ -6993,17 +7000,17 @@ The definition of `a2` is C but not C++ and is considered a security risk
 
 	widget x;	// should be const, but:
 	for(auto i=2; i <= N; ++i) {             // this could be some
-	    x += some_obj.do_something_with(i);  // arbitrarily long code
-	}                                        // needed to initialize x
+	    x += some_obj.do_something_with(i);  // arbitrarily long code
+	}                                        // needed to initialize x
 	// from here, x should be const, but we can’t say so in code in this style
 
 **Example; good**:
 
 	const widget x = [&]{
 	    widget val; 		// asume that widget has a default constructor
-		for(auto i=2; i <= N; ++i) {             // this could be some
+		for(auto i=2; i <= N; ++i) {             // this could be some
 		    val += some_obj.do_something_with(i);// arbitrarily long code
-		}                                        // needed to initialize x
+		}                                        // needed to initialize x
 		return val;
 	}();
 
@@ -7476,7 +7483,7 @@ The call will most likely be `f(0,1)` or `f(1,0)`, but you don't know which. Tec
 
 
 <a name="Res-magic"></a>
-### ES.45: Avoid "`magic constants"; use symbolic constants
+### ES.45: Avoid "magic constants"; use symbolic constants
 
 **Reason**: Unnamed constants embedded in expressions are easily overlooked and often hard to understand:
 
@@ -8051,7 +8058,7 @@ Speaking of concurrency, should there be a note about the dangers of std::atomic
 A lot of people, myself included, like to experiment with std::memory_order, but it is perhaps best to keep a close watch on those things in production code.
 Even vendors mess this up: Microsoft had to fix their `shared_ptr`
 (weak refcount decrement wasn't synchronized-with the destructor, if I recall correctly, although it was only a problem on ARM, not Intel)
-and everyone (gcc, clang, Microsoft, and intel) had to fix their c`ompare_exchange_*` this year,
+and everyone (gcc, clang, Microsoft, and intel) had to fix their `compare_exchange_*` this year,
 after an implementation bug caused losses to some finance company and they were kind enough to let the community know.
 
 It should definitely mention that `volatile` does not provide atomicity, does not synchronize between threads, and does not prevent instruction reordering (neither compiler nor hardware), and simply has nothing to do with concurrency.
@@ -8105,13 +8112,13 @@ Lock-free programming rule summary:
 <a name="S-errors"></a>
 # E: Error handling
 
-Error handling involves:
+Error handling involves
 
 * Detecting an error
 * Transmitting information about an error to some handler code
 * Preserve the state of a program in a valid state
 * Avoid resource leaks
-
+*
 It is not possible to recover from all errors. If recovery from an error is not possible, it is important to quickly "get out" in a well-defined way. A strategy for error handling must be simple, or it becomes a source of even worse errors.
 
 The rules are designed to help avoid several kinds of errors:
@@ -8602,7 +8609,7 @@ Let cleanup actions on the unwinding path be handles by [RAII](#Re-raii).
 	void f(int n)
 	{
 		void* p = malloc(1,n);
-		auto __ = finally([] { free(p); });
+		auto _ = finally([] { free(p); });
 		// ...
 	}
 
@@ -10375,7 +10382,7 @@ Examples are `.hh` and `.cxx`. Use such names equivalently.
 * `inline` function definitions
 * `constexpr` definitions
 * `const` definitions
-* `using` alias definitions
+* `using` alias definitiTons
 * ???
 
 **Enforcement**: Check the positive list above.
@@ -10780,7 +10787,7 @@ Primarily a teaching tool.
 * [WG21](http://www.open-std.org/jtc1/sc22/wg21/)
 * [Boost](http://www.boost.org)
 * [Adobe open source](http://www.adobe.com/open-source.html)
-* [Pogo libraries](http://pocoproject.org/)
+* [POCO libraries](http://pocoproject.org/)
 
 
 
@@ -11589,7 +11596,7 @@ Some conventions capitalize the first letter, some don't.
 **Note**: Try to be consistent in your use of acronyms, lengths of identifiers:
 
 	int mtbf {12};
-	int mean_time_between_failor {12};		// make up your mind
+	int mean_time_between_failure {12};		// make up your mind
 
 **Enforcement**: Would be possible except for the use of libraries with varying conventions.
 	
