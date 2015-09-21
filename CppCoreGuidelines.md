@@ -4535,7 +4535,7 @@ If a `swap` tries to exit with an exception, it's a bad design error and the pro
 		// ...
 	};
 	
-`B`'s comparison accpts conversions for its second operand, but not its first.
+`B`'s comparison accepts conversions for its second operand, but not its first.
 
 **Note**: If a class has a failure state, like `double`'s `NaN`, there is a temptation to make a comparison against the failure state throw.
 The alternative is to make two failure states compare equal and any valid state compare false against the failure state.
