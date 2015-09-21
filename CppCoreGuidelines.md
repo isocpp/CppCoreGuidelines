@@ -7678,7 +7678,7 @@ There can be code in the `...` part that causes the `delete` never to happen.
 		delete p;			// error: just delete the object p, rather than delete the array p[]
 	}
 	
-**Note**: This example also violates the [no naked `new` rule](#Res-new) and has many more problems.
+**Note**: This example not only violates the [no naked `new` rule](#Res-new) as in the previous example, it has many more problems.
 
 **Enforcement**:
 
