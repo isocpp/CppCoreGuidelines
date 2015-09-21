@@ -1201,9 +1201,9 @@ Postconditions related only to internal state belongs in the definition/implemen
 		Ensures(buffer[0]==0);
 	}
 
-**Note**: preconditions can be stated in many ways, including comments, `if`-statements, and `assert()`. This can make them hard to distinguish from ordinary code, hard to update, hard to manipulate by tools, and may have the wrong semantics.
+**Note**: postconditions can be stated in many ways, including comments, `if`-statements, and `assert()`. This can make them hard to distinguish from ordinary code, hard to update, hard to manipulate by tools, and may have the wrong semantics.
 
-**Alternative**: Postconditions of the form "this resource must be released" and best expressed by [RAII](#Rr-raii).
+**Alternative**: Postconditions of the form "this resource must be released" are best expressed by [RAII](#Rr-raii).
 
 Ideally, that `Ensured` should be part of the interface that's not easily done. For now, we place it in the definition (function body).
 
