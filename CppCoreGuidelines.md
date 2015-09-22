@@ -7200,11 +7200,20 @@ This will copy each elements of `vs` into `s`. Better
 <a name="Res-while-for"></a>
 ### ES.73: Prefer a `while`-statement to a `for`-statement when there is no obvious loop variable
 
-**Reason**: ???
+**Reason**: In the following "while" example, the iterator is declared outside the loop, so it will continue to 		    exist after the loop is done. This may cause issues if this same iterator is used again at some 		    later point.
+	    In the "for" example, the iterator is declared inside the loop, so its scope is limited to the loop. If 	    you try to use it after the loop, you will get a compiler error.
 
 **Example**:
 
-	???
+	for (int i = 0; i < vec.size(); i++) {
+	 // do work
+	}
+
+	int i = 0;
+	while (i < vec.size()) {
+	 // do work
+	 i++;
+	}
 
 **Enforcement**: ???
 
