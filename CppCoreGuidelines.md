@@ -3904,7 +3904,7 @@ The common action gets tedious to write and may accidentally not be common.
 			{ if (!valid(i,m,y)) throw Bad_date{}; }
 
 		Date2(int ii, Month mm)
-			:Date2{ii,mm,current_year{}} {}
+			:Date2{ii,mm,current_year()} {}
 		// ...
 	};
 
