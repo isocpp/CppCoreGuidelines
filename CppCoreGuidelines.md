@@ -6324,8 +6324,8 @@ Statement rules:
 * [ES.74: Prefer to declare a loop variable in the initializer part of as `for`-statement](#Res-for-init)
 * [ES.75: Avoid `do`-statements](#Res-do)
 * [ES.76: Avoid `goto`](#Res-goto)
-* [ES.77: ??? `break`](#Res-break)
-* [ES.78: ??? `continue`](#Res-continue)
+* [ES.77: ??? `continue`](#Res-continue)
+* [ES.78: ??? `break`](#Res-break)
 * [ES.79: ??? `default`](#Res-default)
 * [ES.85: Make empty statements visible](#Res-empty)
 
