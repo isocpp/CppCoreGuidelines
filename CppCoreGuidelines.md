@@ -2905,7 +2905,7 @@ Destructor rules:
 * [C.30: Define a destructor if a class needs an explicit action at object destruction](#Rc-dtor)
 * [C.31: All resources acquired by a class must be released by the class's destructor](#Rc-dtor-release)
 * [C.32: If a class has a raw  pointer (`T*`) or reference (`T&`), consider whether it might be owning](#Rc-dtor-ptr)
-* [C.33: If a class has an owning pointer member, define or `=delete` a destructor](#Rc-dtor-ptr)
+* [C.33: If a class has an owning pointer member, define or `=delete` a destructor](#Rc-dtor-ptr2)
 * [C.34: If a class has an owning reference member, define or `=delete` a destructor](#Rc-dtor-ref)
 * [C.35: A base class with a virtual function needs a virtual destructor](#Rc-dtor-virtual)
 * [C.36: A destructor may not fail](#Rc-dtor-fail)
@@ -3185,7 +3185,7 @@ This will aide documentation and analysis.
 **Enforcement**: Look at the initialization of raw member pointers and member references and see if an allocation is used.
 
 
-<a name="Rc-dtor-ptr"></a>
+<a name="Rc-dtor-ptr2"></a>
 ### C.33: If a class has an owning pointer member, define a destructor
 
 **Reason**: An owned object must be `deleted` upon destruction of the object that owns it.
