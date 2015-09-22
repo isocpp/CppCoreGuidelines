@@ -1868,7 +1868,7 @@ so don't just springle `noexcept` all over the place.
 
 **Enforcement**:
 
-* Flag functions that are not `noexcept`, yet cannot thow
+* Flag functions that are not `noexcept`, yet cannot throw
 * Flag throwing `swap`, `move`, destructors, and default constructors.
 
 
