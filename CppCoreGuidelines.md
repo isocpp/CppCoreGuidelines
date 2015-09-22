@@ -2180,7 +2180,7 @@ If the writer of `g()` makes an assumption about the size of `buffer` a bad logi
 <a name="Rf-T-return-out"></a>
 ### F.23: Use `T&` for an out-parameter that is expensive to move (only)
 
-**Reason**: A return value is harder to miss and harder to miuse than a `T&` (an in-out parameter); [see also](#Rf-return); [see also](#Rf-T-multi).
+**Reason**: A return value is harder to miss and harder to misuse than a `T&` (an in-out parameter); [see also](#Rf-return); [see also](#Rf-T-multi).
 
 **Example**:
 
