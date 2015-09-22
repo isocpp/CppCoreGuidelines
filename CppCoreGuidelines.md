@@ -8411,7 +8411,7 @@ The `noexcept` here states that I am not willing or able to handle the situation
 	void leak(int x)	// don't: may leak
 	{
 		auto p = new int{7};
-		int (x<0) throw Get_me_out_of_here{};	// may leak *p
+		if (x<0) throw Get_me_out_of_here{};	// may leak *p
 		// ...
 		delete p;	// we may never get here
 	}
@@ -8421,7 +8421,7 @@ One way of avoiding such problems is to use resource handles consistently:
 	void no_leak(int x)
 	{
 		auto p = make_unique<int>(7);
-		int (x<0) throw Get_me_out_of_here{};	// will delete *p if necessary
+		if (x<0) throw Get_me_out_of_here{};	// will delete *p if necessary
 		// ...
 		// no need for delete p
 	}
