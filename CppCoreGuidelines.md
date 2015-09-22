@@ -9762,7 +9762,7 @@ The two language mechanisms can be use effectively in combination, but a few des
 	};
 	
 	template<typename T>
-	class Vector : public Container {
+	class Vector : public Container<T> {
 	public:
 		// ...
 	};
@@ -9773,12 +9773,12 @@ The two language mechanisms can be use effectively in combination, but a few des
 It is probably a dumb idea to define a `sort` as a member function of a container,
 but it is not unheard of and it makes a good example of what not to do.
  
-Given this, the compiler cannot know if `vector<int>::sort()` is called, so it must generate code for it.
-Similar for `vector<string>::sort()`.
+Given this, the compiler cannot know if `Vector<int>::sort()` is called, so it must generate code for it.
+Similar for `Vector<string>::sort()`.
 Unless those two functions are called that's code bloat.
 Imagine what this would do to a class hierarchy with dozens of member functions and dozens of derived classes with many instantiations.
 
-**Note**: In many cases you can provide a stable interface by not parameterize a base; see [???](#Rt-abi).
+**Note**: In many cases you can provide a stable interface by not parameterizing a base; see [???](#Rt-abi).
 
 **Enforcement**:
 
