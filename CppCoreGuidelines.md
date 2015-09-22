@@ -4764,14 +4764,16 @@ not using this (over)general interface in favor of a particular interface found 
 		public:
 			  virtual double& operator[](int)=0// pure virtual function
 			  virtual int size() const = 0// const member function
-			  virtual ~Container(){} } // destructor
+			  virtual ~Container(){}// destructor
+			  } ;
 
 	class Vector_Container : public Container{
 			   Vector v ;
 		   public:
 			  Vector_Container(int s) : v(s){}
 			  ~Vector_Container(){}
-			   double& operator[](int i){return v[i]}}
+			   double& operator[](int i){return v[i]}
+			   };
 	
 **Exceptions**:
 * A base class constructor that does work, such as registering an object somewhere, may need a constructor.
