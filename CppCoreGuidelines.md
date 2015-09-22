@@ -11335,7 +11335,7 @@ Reasons for that include
 * the pointer is used with an ABI
 * the pointer is part of the implementation of a resource handle.
 
-An `owner<T>` differs from a resource handle for a `T` by still requiring and explicit `delete`.
+An `owner<T>` differs from a resource handle for a `T` by still requiring an explicit `delete`.
 
 An `owner<T>` is assumed to refer to an object on the free store (heap).
 
@@ -11349,7 +11349,7 @@ If something is not supposed to be `nullptr`, say so:
 * `string_view`		// `array_view<char>`
 * `cstring_view`	// `array_view<const char>`
 
-A `*_view<T>` refer to zero or more mutable `T`s unless `T` is a `const` type.
+A `*_view<T>` refers to zero or more mutable `T`s unless `T` is a `const` type.
 
 "Pointer arithmetic" is best done within `array_view`s.
 A `char*` that points to something that is not a C-style string (e.g., a pointer into an input buffer) should be represented by an `array_view`.
