@@ -794,14 +794,7 @@ Prefer [RAII](#Rr-raii):
 
 **Enforcement**:
 
-* Look at pointers: classify them into non-owners (the defaul crashes.
-Avoid errors leading to (possibly unrecognized) wrong results.
-
-**Example**:
-
-	void increment1(int* p, int n)	// bad: error prone
-	{
-		for (int i=0; it) and owners.
+* Look at pointers: classify them into non-owners (the default) and owners.
 Where feasible, replace owners with standard-library resource handles (as in the example above).
 Alternatively, mark an owner as such using `owner` from [the GSL](#S-gsl).
 * Look for naked `new` and `delete`
@@ -6172,7 +6165,7 @@ A function that does not manipulate lifetime should take raw pointers or referen
 **Enforcement**:
 
 * (Simple) Warn if a function takes a `Shared_ptr<T>` parameter by lvalue reference and does not either assign to it or call `reset()` on it on at least one code path. Suggest taking a `T*` or `T&` instead.
-* (Simple) ((Foundation)) Warn if a function takes  a `Shared_ptr<T>` by value or by reference to `const` and does not copy or move it to another `Shared_ptr` on at least one code path. Suggest taking a `T*` or `T&` instead.
+* (Simple) ((Foundation)) Warn if a function takes  a `Shared_ptr<T>` by value or by reference to `const` and does not copy orWidget move it to another `Shared_ptr` on at least one code path. Suggest taking a `T*` or `T&` instead.
 * (Simple) ((Foundation)) Warn if a function takes a `Shared_ptr<T>` by rvalue reference. Suggesting taking it by value instead.
 
 
@@ -8112,13 +8105,13 @@ Lock-free programming rule summary:
 <a name="S-errors"></a>
 # E: Error handling
 
-Error handling involves
+Error handling involves:
 
 * Detecting an error
 * Transmitting information about an error to some handler code
 * Preserve the state of a program in a valid state
 * Avoid resource leaks
-*
+
 It is not possible to recover from all errors. If recovery from an error is not possible, it is important to quickly "get out" in a well-defined way. A strategy for error handling must be simple, or it becomes a source of even worse errors.
 
 The rules are designed to help avoid several kinds of errors:
@@ -10382,7 +10375,7 @@ Examples are `.hh` and `.cxx`. Use such names equivalently.
 * `inline` function definitions
 * `constexpr` definitions
 * `const` definitions
-* `using` alias definitiTons
+* `using` alias definitions
 * ???
 
 **Enforcement**: Check the positive list above.
