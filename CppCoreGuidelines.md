@@ -400,7 +400,7 @@ A much clearer expression of intent would be:
 		string val;
 		cin>>val;
 		// ...
-		auto p = find(v,val);				// better
+		auto p = find(begin(v), end(v), val);    // better
 		// ...
 	}
 
