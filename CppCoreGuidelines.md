@@ -893,7 +893,7 @@ See also
 * [E: Error handling](#S-errors)
 * [T: Templates and generic programming](#S-templates)
 
-<a name="Ri-expicit"></a>
+<a name="Ri-explicit"></a>
 ### I.1: Make interfaces explicit
 
 **Reason**: Correctness. Assumptions not stated in an interface are easily overlooked and hard to test.
@@ -5832,7 +5832,7 @@ If you have a naked `new`, you probably need a naked `delete` somewhere, so you 
 **Enforcement**: (Simple) Warn on any explicit use of `new` and `delete`. Suggest using `make_unique` instead.
 
 
-<a name ="Rr-immediate alloc"></a>
+<a name ="Rr-immediate-alloc"></a>
 ### R.12: Immediately give the result of an explicit resource allocation to a manager object
 
 **Reason**: If you don't, an exception or a return may lead to a leak.
@@ -5865,7 +5865,7 @@ The use of the file handle (in `ifstream`) is simple, efficient, and safe.
 * Flag explicit allocations used to initialize pointers  (problem: how many direct resource allocations can we recognize?)
 
 
-<a name ="Rr-single alloc"></a>
+<a name ="Rr-single-alloc"></a>
 ### R.13: Perform at most one explicit resource allocation in a single expression statement
 
 **Reason**: If you perform two explicit resource allocations in one statement,
@@ -5999,7 +5999,7 @@ The `make_shared()` version mentions `X` only once, so it is usually shorter (as
 **Enforcement**: (Simple) Warn if a `shared_ptr` is constructed from the result of `new` rather than `make_shared`.
 
 
-<a name ="Rr-make_shared"></a>
+<a name ="Rr-make_unique"></a>
 ### Rule R.23: Use `make_unique()` to make `unique_ptr`s
 
 **Reason**: for convenience and consistency with `shared_ptr`.
@@ -7086,7 +7086,7 @@ Even if we hadn't left a well-know bug in `SQUARE` there are much better behaved
 **Enforcement**: Scream when you see a lower case macro.
 
 
-<a name="#Res-ellipses"></a>
+<a name="Res-ellipses"></a>
 ### ES.40: Don't define a (C-style) variadic function
 
 **Reason**: Not type safe. Requires messy cast-and-macro-laden code to get working right.
@@ -9423,7 +9423,7 @@ This saves the user of `Value_type` from having to know the technique used to im
 * ???
 
 
-<a name="Rt-alias"></a>
+<a name="Rt-using"></a>
 ### T.43: Prefer `using` over `typedef` for defining aliases
 
 **Reason**: Improved readability: With `using`, the new name comes first rather than being embedded somewhere in a declaration.
@@ -9691,7 +9691,7 @@ Specialization offers a powerful mechanism for providing alternative implementat
 **Enforcement**: ???
 
 
-<a name="Rt-specialization"></a>
+<a name="Rt-enable_if"></a>
 ### T.66: Use selection using `enable_if` to optionally define a function
 
 **Reason**: ???
@@ -11471,7 +11471,7 @@ Comments are not updates as consistently as code.
 **Enforcement**: Build an AI program that interprets colloquial English text and see if what is said could be better expressed in C++.
 
 
-<a name="Rl-comments intent"></a>
+<a name="Rl-comments-intent"></a>
 ###  NL.2: State intent in comments
 
 **Reason**: Code says what is done, not what is supposed to be done. Often intent can be stated more clearly and concisely than the implementation.
@@ -11487,7 +11487,7 @@ Comments are not updates as consistently as code.
 **Note**: If the comment and the code disagrees, both are likely to be wrong.
 
 
-<a name="Rl-comments crisp"></a>
+<a name="Rl-comments-crisp"></a>
 ### NL.3: Keep comments crisp
 
 **Reason**: Verbosity slows down understanding and makes the code harder to read by spreading it around in the source file.
@@ -11510,7 +11510,7 @@ Comments are not updates as consistently as code.
 Enforcement: Use a tool.
 
 
-<a name="Rl-name type"></a>
+<a name="Rl-name-type"></a>
 ### NL.5 Don't encode type information in names
 
 **Rationale**: If names reflects type rather than functionality, it becomes hard to change the types used to provide that functionality.
@@ -11542,7 +11542,7 @@ This is not evil.
 This is not evil.
 
 
-<a name="Rl-name length"></a>
+<a name="Rl-name-length"></a>
 ### NL.7: Make the length of a name roughly proportional to the length of its scope
 
 **Rationale**: ???
