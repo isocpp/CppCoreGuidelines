@@ -5409,9 +5409,7 @@ Enumeration rule summary:
 
 **Example**:
 	#define SIZE 1024              // Not recommended
-	
 	const size_t SIZE = 1024;      // Compilation error
-	
 
 **Enforcement**: ???
 
