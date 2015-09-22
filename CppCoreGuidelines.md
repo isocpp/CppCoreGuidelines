@@ -191,7 +191,7 @@ These guidelines address a core of C++ and its use.
 We expect that most large organizations, specific application areas, and even large projects will need further rules, possibly further restrictions, and further library support.
 For example, hard-real time programmers typically can't use free store (dynamic memory) freely and will be restricted in their choice of libraries.
 We encourage the development of such more specific rules as addenda to these core guidelines.
-Build your ideal small foundation library and use that, rather than lowering you level of programming to glorified assembly code.
+Build your ideal small foundation library and use that, rather than lowering your level of programming to glorified assembly code.
 
 The rules are designed to allow [gradual adoption](#S-modernizing).
 
