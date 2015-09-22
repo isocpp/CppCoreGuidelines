@@ -10536,11 +10536,15 @@ Complicates conversion to use language-supported modules (when they become avail
 <a name="Rs-namespace"></a>
 ### SF.20: Use `namespace`s to express logical structure
 
-**Reason**: ???
+**Reason**: A namespace is a mechanism for expressing logical grouping, that is if some declarations logically 			    belong together according to some criteria , they can be put in a common namespace to express that 		    fact.
 
 **Example**:
 
-	???
+	namespace Parser{
+	double prim(bool);
+	double term(bool);
+	double expr(bool);
+	}
 
 **Enforcement**: ???
 
