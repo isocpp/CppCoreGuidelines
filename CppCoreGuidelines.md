@@ -5408,8 +5408,8 @@ Enumeration rule summary:
 	    Another advantage of using enums instead of macros is that most debuggers only see the code as it 			    looks like after preprocessing , enums therefore make it easier to debug a program.
 
 **Example**:
-	#define SIZE 1024              // Not recommended
-	const size_t SIZE = 1024;      // Compilation error
+			#define SIZE 1024              // Not recommended
+			const size_t SIZE = 1024;      // Compilation error
 
 **Enforcement**: ???
 
