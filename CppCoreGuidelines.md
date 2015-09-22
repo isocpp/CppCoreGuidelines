@@ -8361,7 +8361,7 @@ Prefer to use exceptions.
 
 **Reason**: To avoid interface errors.
 
-**See also**: [precondition rule](#Ri-???).
+**See also**: [precondition rule](#Ri-pre).
 
 
 <a name="Re-postcondition"></a>
@@ -8369,7 +8369,7 @@ Prefer to use exceptions.
 
 **Reason**: To avoid interface errors.
 
-**See also**: [postcondition rule](#Ri-???).
+**See also**: [postcondition rule](#Ri-post).
 
 
 <a name="Re-noexcept"></a>
