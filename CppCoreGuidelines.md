@@ -9,7 +9,7 @@ Editors:
 * [Herb Sutter](http://herbsutter.com/)
 
 This document is a very early draft. It is inkorrekt, incompleat, and pÂµÃ¸oorly formatted.
-Had it been an open source (code) project, this would have been release 0.6.
+Had it been an open source (code) project, this would have been relfease 0.6.
 Copying, use, modification, and creation of derivative works from this project is licensed under an MIT-style license.
 Contributing to this project requires agreeing to a Contributor License. See the accompanying LICENSE file for details.
 We make this project available to "friendly users" to use, copy, modify, and derive from, hoping for constructive input.
@@ -7813,7 +7813,9 @@ Incrementing a value beyond a maximum value can lead to memory corruption and un
 
 **Example**:
 
-	???
+	int a , b ;
+	cin >> a >> b ;
+	cout << a / b ;
 
 **Alternative**: For critical applications that can afford some overhead, use a range-checked integer and/or floating-point type.
 
