@@ -3453,7 +3453,7 @@ It is often a good idea to express the invariant as an `Ensure` on the construct
 	};
 
 	Rec r1 {"Foo",7};
-	Rec r2 {"Bar};
+	Rec r2 {"Bar"};
 
 The `Rec2` constructor is redundant.
 Also, the default for `int` would be better done as a [member initializer](#Rc-in-class initializer).
@@ -3904,7 +3904,7 @@ The common action gets tedious to write and may accidentally not be common.
 			{ if (!valid(i,m,y)) throw Bad_date{}; }
 
 		Date2(int ii, Month mm)
-			:Date2{ii,mm,current_year{}} {}
+			:Date2{ii,mm,current_year()} {}
 		// ...
 	};
 
