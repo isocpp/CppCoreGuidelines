@@ -7192,7 +7192,15 @@ This will copy each elements of `vs` into `s`. Better
 
 **Example**:
 
-	???
+	for (int i = 0; i < vec.size(); i++) {
+	 // do work
+	}
+
+	int i = 0;
+	while (i < vec.size()) {
+	 // do work
+	 i++;
+	}
 
 **Enforcement**: ???
 
