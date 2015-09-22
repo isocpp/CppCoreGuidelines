@@ -2329,7 +2329,7 @@ In fact, C++98's standard library already used this convenient feature, because 
 For example, given a `set<string> myset`, consider:
 
     // C++98
-	result = myset.insert( “Hello” );
+	result = myset.insert( “Hello” );
 	if (result.second) do_something_with( result.first );    // workaround
 	
 With C++11 we can write this, putting the results directly in existing local variables:
@@ -2338,7 +2338,7 @@ With C++11 we can write this, putting the results directly in existing local var
 	Someothertype success;                                  // used these variables for some other purpose
 
 	tie( iter, success ) = myset.insert( “Hello” );         // normal return value
-	if (success) do_something_with( iter );
+	if (success) do_something_with( iter );
 
 **Exception**: For types like `string` and `vector` that carry additional capacity, it can sometimes be useful to treat it as in/out instead by using the "caller-allocated out" pattern, which is to pass an output-only object by reference to non-`const` so that when the callee writes to it the object can reuse any capacity or other resources that it already contains. This technique can dramatically reduce the number of allocations in a loop that repeatedly calls other functions to get string values, by using a single string object for the entire loop.
 
@@ -2599,7 +2599,7 @@ For passthrough functions that pass in parameters (by ordinary reference or by p
 	    stage encryptor  ([] (buffer& b){ encrypt(b); });
 	    stage compressor ([&](buffer& b){ compress(b); encryptor.process(b); });
 	    stage decorator  ([&](buffer& b){ decorate(b); compressor.process(b); });
-	    for (auto& b : bufs) { decorator.process(b); }
+	    for (auto& b : bufs) { decorator.process(b); }
 	} // automatically blocks waiting for pipeline to finish
 
 **Enforcement**: ???
@@ -6993,17 +6993,17 @@ The definition of `a2` is C but not C++ and is considered a security risk
 
 	widget x;	// should be const, but:
 	for(auto i=2; i <= N; ++i) {             // this could be some
-	    x += some_obj.do_something_with(i);  // arbitrarily long code
-	}                                        // needed to initialize x
+	    x += some_obj.do_something_with(i);  // arbitrarily long code
+	}                                        // needed to initialize x
 	// from here, x should be const, but we can’t say so in code in this style
 
 **Example; good**:
 
 	const widget x = [&]{
 	    widget val; 		// asume that widget has a default constructor
-		for(auto i=2; i <= N; ++i) {             // this could be some
+		for(auto i=2; i <= N; ++i) {             // this could be some
 		    val += some_obj.do_something_with(i);// arbitrarily long code
-		}                                        // needed to initialize x
+		}                                        // needed to initialize x
 		return val;
 	}();
 
