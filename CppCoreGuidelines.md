@@ -439,7 +439,7 @@ If we wanted both absolute speed and deltas, we would have defined a `Delta` typ
 **Reason**: This is a set of guidelines for writing ISO Standard C++.
 
 **Note**: There are environments where extensions are necessary, e.g., to access system resources.
-In such cases, localize to use of necessary extensions and control their use with non-core Coding Guidelines.
+In such cases, localize the use of necessary extensions and control their use with non-core Coding Guidelines.
 
 **Note**: There are environments where restrictions on use of standard C++ language or library features are necessary,
 e.g., to avoid dynamic memory allocation as required by aircraft control software standards.
