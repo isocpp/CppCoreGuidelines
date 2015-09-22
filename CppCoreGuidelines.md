@@ -5651,7 +5651,7 @@ We can fix that problem by making ownership explicit:
 	class X2 {
 		// ...
 	public:
-		owner<T> p;	// OK: p is nowning
+		owner<T> p;	// OK: p is owning
 		T* q;		// OK: q is not owning
 	};
 
