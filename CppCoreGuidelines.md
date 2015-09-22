@@ -2635,7 +2635,7 @@ Class rule summary:
 * [C.2: Use `class` if the class has an invariant; use `struct` if the data members can vary independently](#Rc-struct)
 * [C.3: Represent the distinction between an interface and an implementation using a class](#Rc-interface)
 * [C.4: Make a function a member only if it needs direct access to the representation of a class](#Rc-member)
-* [C.5: Place helper functions in the same namespace as the class they support](#Rc-member)
+* [C.5: Place helper functions in the same namespace as the class they support](#Rc-helper)
 * [C.6: Declare a member function that does not modify the state of its object `const`](#Rc-const)
 
 Subsections:
@@ -2748,7 +2748,7 @@ The "helper functions" have no need for direct access to the representation of a
 The snag is that many member functions that do not need to touch data members directly do.
 
 
-<a name="Rc-member"></a>
+<a name="Rc-helper"></a>
 ### C.5: Place helper functions in the same namespace as the class they support
 
 **Reason**: A helper function is a function (usually supplied by the writer of a class) that does not need direct access to the representation of the class,
