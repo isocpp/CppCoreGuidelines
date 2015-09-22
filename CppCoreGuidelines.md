@@ -66,14 +66,14 @@ or look at a specific language feature
 * [`for`](#S-???)
 * [`inline`](#S-class)
 * [initialization](#S-???)
-* [lambda expression](#SS-lambda)
+* [lambda expression](#SS-lambdas)
 * [operator](#S-???)
 * [`public`, `private`, and `protected`](#S-???)
 * [`static_assert`](#S-???)
 * [`struct`](#S-class)
 * [`template`](#S-???)
 * [`unsigned`](#S-???)
-* [`virtual`](#S-hier)
+* [`virtual`](#SS-hier)
 
 Definitions of terms used to express and discuss the rules, that are not language-technical, but refer to design and programming techniques
 
@@ -790,7 +790,7 @@ Prefer [RAII](#Rr-raii):
 		// ...
 	}
 
-**See also**: [The resource management section](#S-resources)
+**See also**: [The resource management section](#S-resource)
 
 **Enforcement**:
 
@@ -868,7 +868,7 @@ Interface rule summary:
 * [I.1: Make interfaces explicit](#Ri-explicit)
 * [I.2: Avoid global variables](#Ri-global)
 * [I.3: Avoid singletons](#Ri-singleton)
-* [I.4: Make interfaces precisely and strongly typed](#Ri-type)
+* [I.4: Make interfaces precisely and strongly typed](#Ri-typed)
 * [I.5: State preconditions (if any)](#Ri-pre)
 * [I.6: Prefer `Expects()` for expressing preconditions](#Ri-expects)
 * [I.7: State postconditions](#Ri-post)
@@ -1551,7 +1551,7 @@ Argument passing rules:
 * [F.19: Use a `zstring` or a `not_null<zstring>` to designate a C-style string](#Rf-string)
 * [F.20: Use a `const T&` parameter for a large object](#Rf-const-T-ref)
 * [F.21: Use a `T` parameter for a small object](#Rf-T)
-* [F.22: Use `T&` for an in-out-parameter](#Rf-T-re)
+* [F.22: Use `T&` for an in-out-parameter](#Rf-T-ref)
 * [F.23: Use `T&` for an out-parameter that is expensive to move (only)](#Rf-T-return-out)
 * [F.24: Use a `TP&&` parameter when forwarding (only)](#Rf-pass-ref-ref)
 * [F.25: Use a `T&&` parameter together with `move` for rare optimization opportunities](#Rf-pass-ref-move)
@@ -1570,7 +1570,7 @@ Value return rules:
 Other function rules:
 
 * [F.50: Use a lambda when a function won't do (to capture local variables, or to write a local function)](#Rf-capture-vs-overload)
-* [F.51: Prefer overloading over default arguments for virtual functions](#Rf-default-arg)
+* [F.51: Prefer overloading over default arguments for virtual functions](#Rf-default-args)
 * [F.52: Prefer capturing by reference in lambdas that will be used locally, including passed to algorithms](#Rf-reference-capture)
 * [F.53: Avoid capturing by reference in lambdas that will be used nonlocally, including returned, stored on the heap, or passed to another thread](#Rf-value-capture)
 
@@ -2180,7 +2180,7 @@ If the writer of `g()` makes an assumption about the size of `buffer` a bad logi
 <a name="Rf-T-return-out"></a>
 ### F.23: Use `T&` for an out-parameter that is expensive to move (only)
 
-**Reason**: A return value is harder to miss and harder to miuse than a `T&` (an in-out parameter); [see also](#Rf-return); [see also](#Rf-T-multi).
+**Reason**: A return value is harder to miss and harder to miuse than a `T&` (an in-out parameter); [see also](#Rf-T-return); [see also](#Rf-T-multi).
 
 **Example**:
 
@@ -2503,7 +2503,7 @@ It can be detected/prevented with similar techniques.
 <a name="Rf-return-ref-ref"></a>
 ### F.45: Don't return a `T&&`
 
-**Reason**: It's asking to return a reference to a destroyed temporary object. A `&&` is a magnet for temporary objects. This is fine when the reference to the temporary is being passed "downward" to a callee, because the temporary is guaranteed to outlive the function call. (See [F.24](#RF-pass-ref-ref) and [F.25](#Rf-pass-ref-move).) However, it's not fine when passing such a reference "upward" to a larger caller scope. See also [F54](#Rf-local-ref-ref).
+**Reason**: It's asking to return a reference to a destroyed temporary object. A `&&` is a magnet for temporary objects. This is fine when the reference to the temporary is being passed "downward" to a callee, because the temporary is guaranteed to outlive the function call. (See [F.24](#Rf-pass-ref-ref) and [F.25](#Rf-pass-ref-move).) However, it's not fine when passing such a reference "upward" to a larger caller scope. See also [F54](#Rf-local-ref-ref).
 
 For passthrough functions that pass in parameters (by ordinary reference or by perfect forwarding) and want to return values, use simple `auto` return type deduction (not `auto&&`).
 
@@ -3258,7 +3258,7 @@ The default copy operation will just copy the `p1.p` into `p2.p` leading to a do
 
 **Reason**: A reference member may represent a resource.
 It should not do so, but in older code, that's common.
-See [pointer members and destructors](#Rc-dtor ptr).
+See [pointer members and destructors](#Rc-dtor-ptr).
 Also, copying may lead to slicing.
 
 **Example, bad**:
@@ -3272,7 +3272,7 @@ Also, copying may lead to slicing.
 		// ...
 	};
 
-The problem of whether `Handle` is responsible for the destruction of its `Shape` is the same as for <a ref="#Rc-dtor ptr">the pointer case</a>:
+The problem of whether `Handle` is responsible for the destruction of its `Shape` is the same as for <a ref="#Rc-dtor-ptr">the pointer case</a>:
 If the `Handle` owns the object referred to by `s` it must have a destructor.
 
 **Example**:
@@ -3399,7 +3399,7 @@ The destructor could send a message (somehow) to the responsible part of the sys
 <a name="Rc-dtor-noexcept"></a>
 ### C.37: Make destructors `noexcept`
 
-**Reason**: [A destructor may not fail](#Rc-dtor fail). If a destructor tries to exit with an exception, it's a bad design error and the program had better terminate.
+**Reason**: [A destructor may not fail](#Rc-dtor-fail). If a destructor tries to exit with an exception, it's a bad design error and the program had better terminate.
 
 **Enforcement**: (Simple) A destructor should be declared `noexcept`.
 
@@ -3456,7 +3456,7 @@ It is often a good idea to express the invariant as an `Ensure` on the construct
 	Rec r2 {"Bar"};
 
 The `Rec2` constructor is redundant.
-Also, the default for `int` would be better done as a [member initializer](#Rc-in-class initializer).
+Also, the default for `int` would be better done as a [member initializer](#Rc-in-class-initializer).
 
 **See also**: [construct valid object](#Rc-complete) and [constructor throws](#Rc-throw).
 
@@ -3493,9 +3493,9 @@ Also, the default for `int` would be better done as a [member initializer](#Rc-i
 
 Compilers do not read comments.
 
-**Exception**: If a valid object cannot conveniently be constructed by a constructor [use a factory function](#C factory).
+**Exception**: If a valid object cannot conveniently be constructed by a constructor [use a factory function](#Rc-factory).
 
-**Note**: If a constructor acquires a resource (to create a valid object), that resource should be [released by the destructor](#Rc-release).
+**Note**: If a constructor acquires a resource (to create a valid object), that resource should be [released by the destructor](#Rc-dtor-release).
 The idiom of having constructors acquire resources and destructors release them is called [RAII](#Rr-raii) ("Resource Acquisitions Is Initialization").
 
 
@@ -3908,7 +3908,7 @@ The common action gets tedious to write and may accidentally not be common.
 		// ...
 	};
 
-**See also**: If the "repeated action" is a simple initialization, consider [an in-class member initializer](#Rc-in-class initializer).
+**See also**: If the "repeated action" is a simple initialization, consider [an in-class member initializer](#Rc-in-class-initializer).
 
 **Enforcement**: (Moderate) Look for similar constructor bodies.
 
@@ -4223,7 +4223,7 @@ Often, we can easily and cheaply do better: The standard library assumes that it
 		return *this;
 	}
 
-The one-in-a-million argument against `if (this==&a) return *this;` tests from the discussion of [self-assignment](#Rc-copy self) is even more relevant for self-move.
+The one-in-a-million argument against `if (this==&a) return *this;` tests from the discussion of [self-assignment](#Rc-copy-self) is even more relevant for self-move.
 
 **Note**: There is no know general way of avoiding a `if (this==&a) return *this;` test for a move assignment and still get a correct answer (i.e., after `x=x` the value of `x` is unchanged).
 
@@ -4619,7 +4619,7 @@ Summary of container rules:
 * ???
 * [C.109: If a resource handle has pointer semantics, provide `*` and `->`](#rcon-ptr)
 
-**See also**: [Resources](#SS-resources)
+**See also**: [Resources](#S-resource)
 
 
 <a name="SS-lambdas"></a>
@@ -8128,7 +8128,7 @@ Error-handling rule summary:
 * [E.1: Develop an error-handling strategy early in a design](#Re-design)
 * [E.2: Throw an exception to signal that a function can't perform its assigned task](#Re-throw)
 * [E.3: Use exceptions for error handling only](#Re-errors)
-* [E.4: Design your error-handling strategy around invariants](#Re-design-invariant)
+* [E.4: Design your error-handling strategy around invariants](#Re-design-invariants)
 * [E.5: Let a constructor establish an invariant, and throw if it cannot](#Re-invariant)
 * [E.6: Use RAII to prevent leaks](#Re-raii)
 * [E.7: State your preconditions](#Re-precondition)
