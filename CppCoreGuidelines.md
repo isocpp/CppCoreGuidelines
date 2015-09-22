@@ -5407,8 +5407,7 @@ Enumeration rule summary:
 **Reason**: Macros do not obey scope and type rules (If you declare a macro in a local scope, don't expect it to 		    stay there.) , and this is a common source of errors.
 	    Another advantage of using enums instead of macros is that most debuggers only see the code as it 			    looks like after preprocessing , enums therefore make it easier to debug a program.
 
-**Example**:
-			#define SIZE 1024              // Not recommended
+**Example**:		#define SIZE 1024              // Not recommended
 			const size_t SIZE = 1024;      // Compilation error
 
 **Enforcement**: ???
