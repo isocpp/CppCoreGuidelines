@@ -3408,7 +3408,7 @@ The destructor could send a message (somehow) to the responsible part of the sys
 <a name="SS-ctor"></a>
 ## C.ctor: Constructors
 
-A constuctor defined how an object is initialized (constructted).
+A constuctor defined how an object is initialized (constructed).
 
 
 <a name="Rc-ctor"></a>
