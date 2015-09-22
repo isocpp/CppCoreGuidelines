@@ -1467,7 +1467,7 @@ Use `const` for the "from" argument:
 
 		void copy_n(const T* p, T* q, int n); // copy from [p:p+n) to [q:q+n)
 
-**Alternative**: Don't pass arrays as pointers, pass an object representing a rage (e.g., an `array_view`):
+**Alternative**: Don't pass arrays as pointers, pass an object representing a range (e.g., an `array_view`):
 
 		void copy_n(array_view<const T> p, array_view<T> q); // copy from b to q
 
@@ -8023,7 +8023,7 @@ Libraries using threads my be used from some other part of the program.
 **Exception**: There are examples where code will never be run in a multi-threaded environment.
 However, here are also many examples where code that was "known" to never run in a multi-threaded program
 was run as part of a multi-threaded program. Often years later.
-Typically, such programs leads to a painful efford to remove data races.
+Typically, such programs leads to a painful effort to remove data races.
 
 <a name="Rconc-races"></a>
 ### CP.2: Avoid data races
@@ -10271,7 +10271,7 @@ It provides better support for high-level programming and often generates faster
 **Reason**: C++ is more expressive than C and offer better support for many types of programming.
 
 **Example**: For example, to use a 3rd party C library or C systems interface, define the low-level interface in the common subset of C and C++ for better type checking.
-Whenever possible encapsulate the low-level interface in an interface that follows the C++ guidelines (for better abstraction, memory safety, and resource safety) and use that C++ inerface in C++ code.
+Whenever possible encapsulate the low-level interface in an interface that follows the C++ guidelines (for better abstraction, memory safety, and resource safety) and use that C++ interface in C++ code.
 
 **Example**: You can call C from C++:
 
