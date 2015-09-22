@@ -848,7 +848,7 @@ The spurious definition of copy operations disables move semantics so that the r
 The use of `new` and `delete` for `buf` is redundant; if we really needed a local string, we should use a local `string`.
 There are several more performance bugs and gratuitous complication.
 
-**Note**: An individual example of waste is rarely significant, and where it is significant, it is typically easily eliminated by and expert.
+**Note**: An individual example of waste is rarely significant, and where it is significant, it is typically easily eliminated by an expert.
 However, waste spread liberally across a code base can easily be significant and experts are not always as available as we would like.
 The aim of this rule (and the more specific rules that supports it) is to eliminate most waste related to the use of C++ before it happens.
 After that, we can look at waste related to algorithms and requirements, but that is beyond the scope of these guidelines.
