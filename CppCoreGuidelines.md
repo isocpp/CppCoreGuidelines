@@ -2108,7 +2108,7 @@ When I call `length(s)` should I test for `s==nullptr` first? Should the impleme
 
 **Example**:
 
-	void fct(const string& s);	// OK: pass by const reference; always checp
+	void fct(const string& s);	// OK: pass by const reference; always cheap
 
 	void fct2(string s);		// bad: potentially expensive
 
