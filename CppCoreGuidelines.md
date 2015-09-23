@@ -1094,7 +1094,7 @@ We don't need to mention it for each member function.
 	int area(int height, int width)
 	{
 		Expects(height>0 && width>0);			// good
-		if (height>0 && width>0) my_error();	// obscure
+		if (height<=0 || width<=0) my_error();	// obscure
 		// ...
 	}
 
