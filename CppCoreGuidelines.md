@@ -1368,7 +1368,7 @@ Note: `length()` is, of course, `std::strlen()` in disguise.
 <a name="Ri-array"></a>
 ### I.13: Do not pass an array as a single pointer
 
-**Reason**: (pointer,size)-style interfaces are error-prone. Also, plain pointer (to array) must relies on some convention to allow the callee to determine the size.
+**Reason**: (pointer,size)-style interfaces are error-prone. Also, a plain pointer (to array) must rely on some convention to allow the callee to determine the size.
 
 **Example**: Consider
 
