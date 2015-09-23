@@ -277,13 +277,13 @@ Each rule (guideline, suggestion) can have several parts:
 * A rule reference number - e.g., **C.7** (the 7th rule related to classes).
 Since the major sections are not inherently ordered, we use a letter as the first part of a rule reference "number".
 We leave gaps in the numbering to minimize "disruption" when we add or remove rules.
-* **Reason**s (rationales) - because programmers find it hard to follow rules they don't understand
-* **Example**s - because rules are hard to understand in the abstract; can be positive or negative
-* **Alternative**s - for "don't do this" rules
-* **Exception**s - we prefer simple general rules. However, many rules apply widely, but not universally, so exceptions must be listed
+* **Reasons** (rationales) - because programmers find it hard to follow rules they don't understand
+* **Examples** - because rules are hard to understand in the abstract; can be positive or negative
+* **Alternatives** - for "don't do this" rules
+* **Exceptions** - we prefer simple general rules. However, many rules apply widely, but not universally, so exceptions must be listed
 * **Enforcement** - ideas about how the rule might be checked "mechanically"
-* **See also**s - references to related rules and/or further discussion (in this document or elsewhere)
-* **Note**s (comments) - something that needs saying that doesn't fit the other classifications
+* **See alsos** - references to related rules and/or further discussion (in this document or elsewhere)
+* **Notes** (comments) - something that needs saying that doesn't fit the other classifications
 * **Discussion** - references to more extensive rationale and/or examples placed outside the main lists of rules
 
 Some rules are hard to check mechanically, but they all meet the minimal criteria that an expert programmer can spot many violations without too much trouble.
