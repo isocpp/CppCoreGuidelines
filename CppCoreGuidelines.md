@@ -2644,7 +2644,7 @@ Subsections:
 * [C.ctor: Constructors, assignments, and destructors](#SS-ctor)
 * [C.con: Containers and other resource handles](#SS-containers)
 * [C.lambdas: Function objects and lambdas](#SS-lambdas)
-* [C.hier: Class hierarchies (OOP)](SS-hier)
+* [C.hier: Class hierarchies (OOP)](#SS-hier)
 * [C.over: Overloading and overloaded operators](#SS-overload)
 * [C.union: Unions](#SS-union)
 
@@ -4455,7 +4455,7 @@ Note that calling a specific explicitly qualified function is not a virtual call
 <a name="Rc-swap"></a>
 ### C.83: For value-like types, consider providing a `noexcept` swap function
 
-**Reason**: A `swap` can be handy for implementing a number of idioms, from smoothly moving objects around to implementing assignment easily to providing a guaranteed commit function that enables strongly error-safe calling code. Consider using swap to implement copy assignment in terms of copy construction. See also [destructors, deallocation, and swap must never fail]("#Re-never-fail).
+**Reason**: A `swap` can be handy for implementing a number of idioms, from smoothly moving objects around to implementing assignment easily to providing a guaranteed commit function that enables strongly error-safe calling code. Consider using swap to implement copy assignment in terms of copy construction. See also [destructors, deallocation, and swap must never fail](#Re-never-fail).
 
 **Example; good**:
 
@@ -6331,7 +6331,7 @@ Statement rules:
 
 Arithmetic rules:
 
-* [ES.100: Don't mix signed and unsigned arithmetic](Res-mix)
+* [ES.100: Don't mix signed and unsigned arithmetic](#Res-mix)
 * [ES.101: use unsigned types for bit manipulation](#Res-unsigned)
 * [ES.102: Used signed types for arithmetic](#Res-signed)
 * [ES.103: Don't overflow](#Res-overflow)
@@ -8974,7 +8974,7 @@ Concept use rule summary:
 * [T.10: Specify concepts for all template arguments](#Rt-concepts)
 * [T.11: Whenever possible use standard concepts](#Rt-std)
 * [T.14: Prefer concept names over `auto`](#Rt-auto)
-* [T.15: Prefer the shorthand notation for simple, single-type argument concepts](Rt-shorthand)
+* [T.15: Prefer the shorthand notation for simple, single-type argument concepts](#Rt-shorthand)
 * ???
 
 Concept definition rule summary:
@@ -9992,7 +9992,7 @@ For example, if you really need AST manipulation at compile time (e.g., for opti
 
 	enable_if
 
-Instead, use concepts. But see [How to emulate concepts if you don't have language support]("#Rt-emulate").
+Instead, use concepts. But see [How to emulate concepts if you don't have language support](#Rt-emulate).
 
 **Example**:
 
@@ -10226,7 +10226,7 @@ Many attempts have been made to keep them compatible, but neither is a subset of
 
 C rule summary:
 
-* [CPL.1: Prefer C++ to C](Rcpl-C)
+* [CPL.1: Prefer C++ to C](#Rcpl-C)
 * [CPL.2: If you must use C, use the common subset of C and C++, and compile the C code as C++](#Rcpl-subset)
 * [CPL.3: If you must use C for interfaces, use C++ in the code using such interfaces](#Rcpl-interface)
 
@@ -11444,7 +11444,7 @@ Naming and layout rules:
 * [NL.5: Don't encode type information in names](#Rl-name-type)
 * [NL.6: Make the length of a name roughly proportional to the length of its scope](#Rl-name-length)
 * [NL.7: Use a consistent naming style](#Rl-name)
-* [NL 9: Use ALL_CAPS for macro names only](Rl-space)
+* [NL 9: Use ALL_CAPS for macro names only](#Rl-space)
 * [NL.10: Avoid CamelCase](#Rl-camel)
 * [NL.15: Use spaces sparingly](#Rl-space)
 * [NL.16: Use a conventional class member declaration order](#Rl-order)
