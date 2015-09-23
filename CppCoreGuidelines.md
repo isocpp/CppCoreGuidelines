@@ -10780,7 +10780,7 @@ Primarily a teaching tool.
 * [WG21](http://www.open-std.org/jtc1/sc22/wg21/)
 * [Boost](http://www.boost.org)
 * [Adobe open source](http://www.adobe.com/open-source.html)
-* [Pogo libraries](http://pocoproject.org/)
+* [Poco libraries](http://pocoproject.org/)
 
 
 
