@@ -8560,7 +8560,7 @@ Instead, use
 
 **Reason**: Catching an exception in a function that cannot take a meaningful recovery action leads to complexity and waste.
 Let an exception propagate until it reaches a function that can handle it.
-Let cleanup actions on the unwinding path be handles by [RAII](#Re-raii).
+Let cleanup actions on the unwinding path be handled by [RAII](#Re-raii).
 
 **Example; don't**:
 
