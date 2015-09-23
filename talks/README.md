@@ -1,10 +1,10 @@
 The guidelines were introduced during a number of talks at [CppCon](http://cppcon.org) 2015.
 Here are video recordings of those talks:
 
-- Bjarne Stroustrup keynote: [https://www.youtube.com/watch?t=9&v=1OEu9C51K2A]
-- Herb Sutter plenary:
-- Neil MacIntosh on the GSL:
-- Neil MacIntosh on enforcement tooling: 
+- Keynote: Writing Good C++ 14 (Bjarne Stroustrup): [https://www.youtube.com/watch?t=9&v=1OEu9C51K2A]
+- Writing good C++ 14 By Default (Herb Sutter):
+- More than lint: modern static analysis for C++ (Neil MacIntosh):
+- A few good types: `Evolving array_view` and `string_view` for safe C++ code (Neil MacIntosh): 
 
 The YouTube channel for [CppCon](http://cppcon.org) is here: https://www.youtube.com/channel/UCMlGfpWw-RUdWX_JbLCukXg
 
