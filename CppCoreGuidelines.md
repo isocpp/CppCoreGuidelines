@@ -364,45 +364,48 @@ Without a philosophical basis the more concrete/specific/checkable rules lack ra
 What is expressed in code has a defined semantics and can (in principle) be checked by compilers and other tools.
 
 **Example**:
-
-	class Date {
-		// ...
-	public:
-		Month month() const;	// do
-		int month(); 			// don't
-		// ...
-	};
+```c++
+class Date {
+	// ...
+public:
+	Month month() const;	// do
+	int month(); 			// don't
+	// ...
+};
+```
 
 The first declaration of `month` is explicit about returning a `Month` and about not modifying the state of the `Date` object.
 The second version leaves the reader guessing and opens more possibilities for uncaught bugs.
 
 **Example**:
-
-	void do_something(vector<string>& v)
-	{
-		string val;
-		cin>>val;
-		// ...
-		int index = 0;						// bad
-		for(int i=0; i<v.size(); ++i)
-			if (v[i]==val) {
-				index = i;
-				break;
-			}
-		// ...
-	}
+```c++
+void do_something(vector<string>& v)
+{
+	string val;
+	cin>>val;
+	// ...
+	int index = 0;						// bad
+	for(int i=0; i<v.size(); ++i)
+		if (v[i]==val) {
+			index = i;
+			break;
+		}
+	// ...
+}
+```
 	
 That loop is a restricted form of `std::find`.
 A much clearer expression of intent would be:
-
-	void do_something(vector<string>& v)
-	{
-		string val;
-		cin>>val;
-		// ...
-		auto p = find(v,val);				// better
-		// ...
-	}
+```c++
+void do_something(vector<string>& v)
+{
+	string val;
+	cin>>val;
+	// ...
+	auto p = find(v,val);				// better
+	// ...
+}
+```
 
 A well-designed library expresses intent (what is to be done, rather than just how something is being done) far better than direct use of language features.
 
@@ -411,17 +414,19 @@ Any programmer should know the basics of the foundation libraries of the project
 Any programmer using these guidelines should know the [Guidelines Support Library](#S-gsl), and use it appropriately.
 
 **Example**:
-
-	change_speed(double s);	// bad: what does s signify?
-	// ...
-	change_speed(2.3);
+```c++
+change_speed(double s);	// bad: what does s signify?
+// ...
+change_speed(2.3);
+```
 	
 A better approach is to be explicit about the meaning of the double (new speed or delta on old speed?) and the unit used:
-
-	change_speed(Speed s);	// better: the meaning of s is specified
-	// ...
-	change_speed(2.3);		// error: no unit
-	change_speed(23m/10s);	// meters per second
+```c++
+change_speed(Speed s);	// better: the meaning of s is specified
+// ...
+change_speed(2.3);		// error: no unit
+change_speed(23m/10s);	// meters per second
+```
 
 We could have accepted a plain (unit-less) `double` as a delta, but that would have been error-prone.
 If we wanted both absolute speed and deltas, we would have defined a `Delta` type.
@@ -454,26 +459,30 @@ In such cases, control their (dis)use with non-core Coding Guidelines.
 **Reason**: Unless the intent of some code is stated (e.g., in names or comments), it is impossible to tell whether the code does what it is supposed to do.
 
 **Example**:
-
-	int i = 0;
-	while (i<v.size()) {
-		// ... do something with v[i] ...
-	}
+```c++
+int i = 0;
+while (i<v.size()) {
+	// ... do something with v[i] ...
+}
+```
 
 The intent of "just" looping over the elements of `v` is not expressed here. The implementation detail of an index is exposed (so that it might be misused), and `i` outlives the scope of the loop, which may or may not be intended. The reader cannot know from just this section of code.
 
 Better:
-
-	for (auto x : v) { /* do something with x */ }
+```c++
+for (auto x : v) { /* do something with x */ }
+```
 
 Now, there is no explicit mention of the iteration mechanism, and the loop operates on a copy of elements so that accidental modification cannot happen. If modification is desired, say so:
-
-	for (auto& x : v) { /* do something with x */ }
+```c++
+for (auto& x : v) { /* do something with x */ }
+```
 
 Sometimes better still, use a named algorithm:
-
-	for_each(v,[](int x) { /* do something with x */ });
-	for_each(parallel.v,[](int x) { /* do something with x */ });
+```c++
+for_each(v,[](int x) { /* do something with x */ });
+for_each(parallel.v,[](int x) { /* do something with x */ });
+```
 
 The last variant makes it clear that we are not interested in the order in which the elements of `v` are handled.
 
@@ -488,9 +497,10 @@ A programmer should be familiar with
 **Note**: Some language constructs express intent better than others.
 
 **Example**: if two `int`s are meant to be the coordinates of a 2D point, say so:
-
-		drawline(int,int,int,int);	// obscure
-		drawline(Point,Point);		// clearer
+```c++
+drawline(int,int,int,int);	// obscure
+drawline(Point,Point);		// clearer
+```
 
 **Enforcement**: Look for common patterns for which there are better alternatives
 
@@ -559,7 +569,7 @@ void read(int* p, int n);		// read max n integers into *p
 
 **Example**:
 ```c++
-	void read(array_view<int> r);	// read into the range of integers r
+void read(array_view<int> r);	// read into the range of integers r
 ```
 
 **Alternative formulation**: Don't postpone to run time what can be done well at compile time.
@@ -935,8 +945,9 @@ It will not be obvious to a caller that the meaning of two calls of `rnd(7.2)` m
 The use of a non-local control is potentially confusing, but controls only implementation details of an otherwise fixed semantics.
 
 **Example, bad**: Reporting through non-local variables (e.g., `errno`) is easily ignored. For example:
-
-	fprintf(connection,"logging: %d %d %d\n",x,y,s); // don't: no test of printf's return value
+```c++
+fprintf(connection,"logging: %d %d %d\n",x,y,s); // don't: no test of printf's return value
+```
 	
 What if the connection goes down so than no logging output is produced? See Rule I.??.
 
@@ -1239,7 +1250,7 @@ void f()
 	memset(buffer,0,MAX);
 	Ensures(buffer[0]==0);
 }
-	```
+```
 
 **Note**: postconditions can be stated in many ways, including comments, `if`-statements, and `assert()`. This can make them hard to distinguish from ordinary code, hard to update, hard to manipulate by tools, and may have the wrong semantics.
 
@@ -1400,9 +1411,10 @@ int length(const char* p);				// we must assume that p can be nullptr
 By stating the intent in source, implementers and tools can provide better diagnostics, such as finding some classes of errors through static analysis, and perform optimizations, such as removing branches and null tests.
 
 **Note**: The assumption that the pointer to `char` pointed to a C-style string (a zero-terminated string of characters) was still implicit, and a potential source of confusion and errors. Use `zstring` in preference to `const char*`.
-
-	int length(not_null<zstring> p);		// we can assume that p cannot be nullptr
-									// we can assume that p points to a zero-terminated array of characters
+```c++
+int length(not_null<zstring> p);		// we can assume that p cannot be nullptr
+								// we can assume that p points to a zero-terminated array of characters
+```
 
 Note: `length()` is, of course, `std::strlen()` in disguise.
 
@@ -1427,8 +1439,9 @@ What if there are fewer than `n` elements in the array pointed to by `p`? Then, 
 Either is undefined behavior and a potentially very nasty bug.
 
 **Alternative**: Consider using explicit ranges,
-
-	void copy(array_view<const T> r, array_view<T> r2); // copy r to r2
+```c++
+void copy(array_view<const T> r, array_view<T> r2); // copy r to r2
+```
 
 **Example, bad**: Consider
 ```c++
@@ -2472,12 +2485,12 @@ Importantly, that does not imply a transfer of ownership of the pointed-to objec
 
 **Example, bad**:
 ```c++
-	int* f()
-	{
-		int x = 7;
-		// ...
-		return &x;		// Bad: returns pointer to object that is about to be destroyed
-	}
+int* f()
+{
+	int x = 7;
+	// ...
+	return &x;		// Bad: returns pointer to object that is about to be destroyed
+}
 ```
 	
 This applies to references as well:
@@ -3687,7 +3700,7 @@ public:
 
 void f()
 {
-	X3 file {Heraclides"};
+	X3 file {"Heraclides"};
 	file.read();	// crash or bad read!
 	// ...
 	if (is_valid()()) {
@@ -10631,11 +10644,12 @@ C rule summary:
 It provides better support for high-level programming and often generates faster code.
 
 **Example**:
-
-	char ch = 7;
-	void* pv = &ch;
-	int* pi = pv;	// not C++
-	*pi = 999;		// overwrite sizeof(int) bytes near &ch
+```c++
+char ch = 7;
+void* pv = &ch;
+int* pi = pv;	// not C++
+*pi = 999;		// overwrite sizeof(int) bytes near &ch
+```
 
 **Enforcement**: Use a C++ compiler.
 
@@ -12005,7 +12019,7 @@ ISO Standard, but with upper case used for your own types and concepts:
 int
 vector
 My_map
-```c++
+```
 
 **Example**: CamelCase: capitalize each word in a multi-word identifier
 ```c++
