@@ -2134,7 +2134,7 @@ For small objects (up to two or three words) is is also faster than alternatives
 
 	void fct(int x);		// OK: Unbeatable
 
-	void fct(const int& x);	// bad: overhead on access in fct2()
+	void fct2(const int& x);	// bad: overhead on access in fct2()
 
 	void fct(int& x);		// OK, but means something else; use only for an "out parameter"
 
