@@ -1175,7 +1175,7 @@ Better still, use [RAII](#Rr-raii) to ensure that the postcondition ("the lock m
 
 	void manipulate(Record& r)	// best
 	{
-		lock_guard _ {m};
+		lock_guard<mutex> _ {m};
 		// ...
 	}
 	
@@ -2557,7 +2557,7 @@ For passthrough functions that pass in parameters (by ordinary reference or by p
 
 **Enforcement**:
 
-    * Warn on use of a named non-generic lambda (e.g., `auto x = [](int i){ /*...*/; };`) that captures nothing and appears at global scope. Write an ordinary function instead.
+* Warn on use of a named non-generic lambda (e.g., `auto x = [](int i){ /*...*/; };`) that captures nothing and appears at global scope. Write an ordinary function instead.
 
 
 
@@ -2801,7 +2801,7 @@ Concrete types are also often referred to as value types to distinguish them fro
 Concrete type rule summary:
 
 * [C.10: Prefer a concrete type over more complicated classes](#Rc-concrete)
-* [C.11: Make a concrete types regular](#Rc-regular)
+* [C.11: Make concrete types regular](#Rc-regular)
 
 
 <a name="Rc-concrete"></a>
@@ -2850,7 +2850,7 @@ This is done where dynamic allocation is prohibited (e.g. hard real-time) and to
 
 
 <a name="Rc-regular"></a>
-### C.11: Make a concrete types regular
+### C.11: Make concrete types regular
 
 **Reason**: Regular types are easier to understand and reason about than types that are not regular (irregularities requires extra effort to understand and use).
 
@@ -7476,7 +7476,7 @@ The call will most likely be `f(0,1)` or `f(1,0)`, but you don't know which. Tec
 
 
 <a name="Res-magic"></a>
-### ES.45: Avoid "`magic constants"; use symbolic constants
+### ES.45: Avoid "magic constants"; use symbolic constants
 
 **Reason**: Unnamed constants embedded in expressions are easily overlooked and often hard to understand:
 
@@ -8602,7 +8602,7 @@ Let cleanup actions on the unwinding path be handles by [RAII](#Re-raii).
 	void f(int n)
 	{
 		void* p = malloc(1,n);
-		auto __ = finally([] { free(p); });
+		auto _ = finally([] { free(p); });
 		// ...
 	}
 
@@ -10780,7 +10780,7 @@ Primarily a teaching tool.
 * [WG21](http://www.open-std.org/jtc1/sc22/wg21/)
 * [Boost](http://www.boost.org)
 * [Adobe open source](http://www.adobe.com/open-source.html)
-* [Pogo libraries](http://pocoproject.org/)
+* [POCO libraries](http://pocoproject.org/)
 
 
 
@@ -11589,7 +11589,7 @@ Some conventions capitalize the first letter, some don't.
 **Note**: Try to be consistent in your use of acronyms, lengths of identifiers:
 
 	int mtbf {12};
-	int mean_time_between_failor {12};		// make up your mind
+	int mean_time_between_failure {12};		// make up your mind
 
 **Enforcement**: Would be possible except for the use of libraries with varying conventions.
 	
