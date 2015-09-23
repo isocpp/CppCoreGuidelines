@@ -4781,13 +4781,13 @@ not using this (over)general interface in favor of a particular interface found 
 		// ... no destructor ...
 	};
 
-	stuct D : B {		// bad: class with a resource derived from a class without a virtual destructor
+	struct D : B {		// bad: class with a resource derived from a class without a virtual destructor
 		string s {"default"};
 	};
 
 	void use()
 	{
-		B* p = new B;
+		B* p = new D;
 		delete p;	// leak the string
 	}
 
