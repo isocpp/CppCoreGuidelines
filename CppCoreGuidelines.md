@@ -1060,9 +1060,9 @@ Obviously, we cannot catch all errors through the static type system
 
 	double sqrt(double x);
 
-Here `x` must be positive. The type system cannot (easily and naturally) express that, so we must use other means. For example:
+Here `x` must be nonnegative. The type system cannot (easily and naturally) express that, so we must use other means. For example:
 
-	double sqrt(double x); // x must be positive
+	double sqrt(double x); // x must be nonnegative
 
 Some preconditions can be expressed as assertions. For example:
 
