@@ -3741,7 +3741,7 @@ Setting a `Vector1` to empty after detecting an error is trivial.
 		int j;
 	public:
 		X() :i{666}, s{"qqq"} { }	// j is uninitialized
-		X(int i) :i{ii} {}			// s is "" and j is uninitialized
+		X(int ii) :i{ii} {}			// s is "" and j is uninitialized
 		// ...
 	};
 
@@ -3755,7 +3755,7 @@ How would a maintainer know whether `j` was deliberately uninitialized (probably
 		int j {0};
 	public:
 		X2() = default;			// all members are initialized to their defaults
-		X2(int i) :i{ii} {}		// s and j initialized to their defaults
+		X2(int ii) :i{ii} {}		// s and j initialized to their defaults
 		// ...
 	};
 
