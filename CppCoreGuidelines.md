@@ -1591,7 +1591,7 @@ If something is a well-specified action, separate it out from its  surrounding c
 
 **Example, don't**:
 
-	void read_and_print(istream& is)	// read and print and int
+	void read_and_print(istream& is)	// read and print an int
 	{
 		int x;
 		if (is>>x)
