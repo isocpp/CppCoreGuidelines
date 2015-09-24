@@ -2128,7 +2128,7 @@ Suggest using a `const` reference instead.
 ### F.21: Use a `T` parameter for a small object
 
 **Reason**: Nothing beats the simplicity and safety of copying.
-For small objects (up to two or three words) is is also faster than alternatives.
+For small objects (up to two or three words) it is also faster than alternatives.
 
 **Example**:
 
