@@ -1816,7 +1816,7 @@ The compiler gives an error if a non-`constexpr` function is called where a cons
 <a name="Rf-inline"></a>
 ### F.5: If a function is very small and time critical, declare it `inline`
 
-**Reason**: Some optimizers are good an inlining without hints from the programmer, but don't rely on it.
+**Reason**: Some optimizers are good at inlining without hints from the programmer, but don't rely on it.
 Measure! Over the last 40 years or so, we have been promised compilers that can inline better than humans without hints from humans.
 We are still waiting.
 Specifying `inline` encourages the compiler to do a better job.
