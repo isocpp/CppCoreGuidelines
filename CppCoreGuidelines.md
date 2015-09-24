@@ -920,7 +920,7 @@ What if the connection goes down so than no logging output is produced? See Rule
 **Alternative**: Throw an exception. An exception cannot be ignored.
   
 **Alternative formulation**: Avoid passing information across an interface through non-local state.
-Note that non-`const` member functions pass information to other member functions thorough their object's state.
+Note that non-`const` member functions pass information to other member functions through their object's state.
 
 **Alternative formulation**: An interface should be a function or a set of functions.
 Functions can be template functions and sets of functions can be classes or class  templates.
@@ -2886,7 +2886,7 @@ These are *default operations*:
 * a copy constructor: `X(const X&)`
 * a copy assignment: `operator=(const X&)`
 * a move constructor: `X(X&&)`
-* a a move assignment: `operator=(X&&)`
+* a move assignment: `operator=(X&&)`
 * a destructor: `~X()`
 
 By default, the compiler defines each of these operations if it is used, but the default can be suppressed.
@@ -8198,7 +8198,7 @@ Note that there is no return value that could contain an error code.
 The `File_handle` constructor might defined like this
 
 		File_handle::File_handle(const string& name, const string& mode)
-			:f{fopen(name.c_str(),mode.c_str()}
+			:f{fopen(name.c_str(),mode.c_str())}
 		{
 			if (!f)
 				throw runtime_error{"File_handle: could not open "S-+ name + " as " + mode"}
