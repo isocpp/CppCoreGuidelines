@@ -66,14 +66,14 @@ or look at a specific language feature
 * [`for`](#S-???)
 * [`inline`](#S-class)
 * [initialization](#S-???)
-* [lambda expression](#SS-lambda)
+* [lambda expression](#SS-lambdas)
 * [operator](#S-???)
 * [`public`, `private`, and `protected`](#S-???)
 * [`static_assert`](#S-???)
 * [`struct`](#S-class)
 * [`template`](#S-???)
 * [`unsigned`](#S-???)
-* [`virtual`](#S-hier)
+* [`virtual`](#SS-hier)
 
 Definitions of terms used to express and discuss the rules, that are not language-technical, but refer to design and programming techniques
 
@@ -790,7 +790,7 @@ Prefer [RAII](#Rr-raii):
 		// ...
 	}
 
-**See also**: [The resource management section](#S-resources)
+**See also**: [The resource management section](#S-resource)
 
 **Enforcement**:
 
@@ -868,7 +868,7 @@ Interface rule summary:
 * [I.1: Make interfaces explicit](#Ri-explicit)
 * [I.2: Avoid global variables](#Ri-global)
 * [I.3: Avoid singletons](#Ri-singleton)
-* [I.4: Make interfaces precisely and strongly typed](#Ri-type)
+* [I.4: Make interfaces precisely and strongly typed](#Ri-typed)
 * [I.5: State preconditions (if any)](#Ri-pre)
 * [I.6: Prefer `Expects()` for expressing preconditions](#Ri-expects)
 * [I.7: State postconditions](#Ri-post)
@@ -893,7 +893,7 @@ See also
 * [E: Error handling](#S-errors)
 * [T: Templates and generic programming](#S-templates)
 
-<a name="Ri-expicit"></a>
+<a name="Ri-explicit"></a>
 ### I.1: Make interfaces explicit
 
 **Reason**: Correctness. Assumptions not stated in an interface are easily overlooked and hard to test.
@@ -1551,7 +1551,7 @@ Argument passing rules:
 * [F.19: Use a `zstring` or a `not_null<zstring>` to designate a C-style string](#Rf-string)
 * [F.20: Use a `const T&` parameter for a large object](#Rf-const-T-ref)
 * [F.21: Use a `T` parameter for a small object](#Rf-T)
-* [F.22: Use `T&` for an in-out-parameter](#Rf-T-re)
+* [F.22: Use `T&` for an in-out-parameter](#Rf-T-ref)
 * [F.23: Use `T&` for an out-parameter that is expensive to move (only)](#Rf-T-return-out)
 * [F.24: Use a `TP&&` parameter when forwarding (only)](#Rf-pass-ref-ref)
 * [F.25: Use a `T&&` parameter together with `move` for rare optimization opportunities](#Rf-pass-ref-move)
@@ -1570,7 +1570,7 @@ Value return rules:
 Other function rules:
 
 * [F.50: Use a lambda when a function won't do (to capture local variables, or to write a local function)](#Rf-capture-vs-overload)
-* [F.51: Prefer overloading over default arguments for virtual functions](#Rf-default-arg)
+* [F.51: Prefer overloading over default arguments for virtual functions](#Rf-default-args)
 * [F.52: Prefer capturing by reference in lambdas that will be used locally, including passed to algorithms](#Rf-reference-capture)
 * [F.53: Avoid capturing by reference in lambdas that will be used nonlocally, including returned, stored on the heap, or passed to another thread](#Rf-value-capture)
 
@@ -2180,7 +2180,7 @@ If the writer of `g()` makes an assumption about the size of `buffer` a bad logi
 <a name="Rf-T-return-out"></a>
 ### F.23: Use `T&` for an out-parameter that is expensive to move (only)
 
-**Reason**: A return value is harder to miss and harder to misuse than a `T&` (an in-out parameter); [see also](#Rf-return); [see also](#Rf-T-multi).
+**Reason**: A return value is harder to miss and harder to misuse than a `T&` (an in-out parameter); [see also](#Rf-T-return); [see also](#Rf-T-multi).
 
 **Example**:
 
@@ -2503,7 +2503,7 @@ It can be detected/prevented with similar techniques.
 <a name="Rf-return-ref-ref"></a>
 ### F.45: Don't return a `T&&`
 
-**Reason**: It's asking to return a reference to a destroyed temporary object. A `&&` is a magnet for temporary objects. This is fine when the reference to the temporary is being passed "downward" to a callee, because the temporary is guaranteed to outlive the function call. (See [F.24](#RF-pass-ref-ref) and [F.25](#Rf-pass-ref-move).) However, it's not fine when passing such a reference "upward" to a larger caller scope. See also [F54](#Rf-local-ref-ref).
+**Reason**: It's asking to return a reference to a destroyed temporary object. A `&&` is a magnet for temporary objects. This is fine when the reference to the temporary is being passed "downward" to a callee, because the temporary is guaranteed to outlive the function call. (See [F.24](#Rf-pass-ref-ref) and [F.25](#Rf-pass-ref-move).) However, it's not fine when passing such a reference "upward" to a larger caller scope. See also [F54](#Rf-local-ref-ref).
 
 For passthrough functions that pass in parameters (by ordinary reference or by perfect forwarding) and want to return values, use simple `auto` return type deduction (not `auto&&`).
 
@@ -2635,7 +2635,7 @@ Class rule summary:
 * [C.2: Use `class` if the class has an invariant; use `struct` if the data members can vary independently](#Rc-struct)
 * [C.3: Represent the distinction between an interface and an implementation using a class](#Rc-interface)
 * [C.4: Make a function a member only if it needs direct access to the representation of a class](#Rc-member)
-* [C.5: Place helper functions in the same namespace as the class they support](#Rc-member)
+* [C.5: Place helper functions in the same namespace as the class they support](#Rc-helper)
 * [C.6: Declare a member function that does not modify the state of its object `const`](#Rc-const)
 
 Subsections:
@@ -2748,7 +2748,7 @@ The "helper functions" have no need for direct access to the representation of a
 The snag is that many member functions that do not need to touch data members directly do.
 
 
-<a name="Rc-member"></a>
+<a name="Rc-helper"></a>
 ### C.5: Place helper functions in the same namespace as the class they support
 
 **Reason**: A helper function is a function (usually supplied by the writer of a class) that does not need direct access to the representation of the class,
@@ -2905,7 +2905,7 @@ Destructor rules:
 * [C.30: Define a destructor if a class needs an explicit action at object destruction](#Rc-dtor)
 * [C.31: All resources acquired by a class must be released by the class's destructor](#Rc-dtor-release)
 * [C.32: If a class has a raw  pointer (`T*`) or reference (`T&`), consider whether it might be owning](#Rc-dtor-ptr)
-* [C.33: If a class has an owning pointer member, define or `=delete` a destructor](#Rc-dtor-ptr)
+* [C.33: If a class has an owning pointer member, define or `=delete` a destructor](#Rc-dtor-ptr2)
 * [C.34: If a class has an owning reference member, define or `=delete` a destructor](#Rc-dtor-ref)
 * [C.35: A base class with a virtual function needs a virtual destructor](#Rc-dtor-virtual)
 * [C.36: A destructor may not fail](#Rc-dtor-fail)
@@ -3185,7 +3185,7 @@ This will aide documentation and analysis.
 **Enforcement**: Look at the initialization of raw member pointers and member references and see if an allocation is used.
 
 
-<a name="Rc-dtor-ptr"></a>
+<a name="Rc-dtor-ptr2"></a>
 ### C.33: If a class has an owning pointer member, define a destructor
 
 **Reason**: An owned object must be `deleted` upon destruction of the object that owns it.
@@ -3258,7 +3258,7 @@ The default copy operation will just copy the `p1.p` into `p2.p` leading to a do
 
 **Reason**: A reference member may represent a resource.
 It should not do so, but in older code, that's common.
-See [pointer members and destructors](#Rc-dtor ptr).
+See [pointer members and destructors](#Rc-dtor-ptr).
 Also, copying may lead to slicing.
 
 **Example, bad**:
@@ -3272,7 +3272,7 @@ Also, copying may lead to slicing.
 		// ...
 	};
 
-The problem of whether `Handle` is responsible for the destruction of its `Shape` is the same as for <a ref="#Rc-dtor ptr">the pointer case</a>:
+The problem of whether `Handle` is responsible for the destruction of its `Shape` is the same as for <a ref="#Rc-dtor-ptr">the pointer case</a>:
 If the `Handle` owns the object referred to by `s` it must have a destructor.
 
 **Example**:
@@ -3399,7 +3399,7 @@ The destructor could send a message (somehow) to the responsible part of the sys
 <a name="Rc-dtor-noexcept"></a>
 ### C.37: Make destructors `noexcept`
 
-**Reason**: [A destructor may not fail](#Rc-dtor fail). If a destructor tries to exit with an exception, it's a bad design error and the program had better terminate.
+**Reason**: [A destructor may not fail](#Rc-dtor-fail). If a destructor tries to exit with an exception, it's a bad design error and the program had better terminate.
 
 **Enforcement**: (Simple) A destructor should be declared `noexcept`.
 
@@ -3456,7 +3456,7 @@ It is often a good idea to express the invariant as an `Ensure` on the construct
 	Rec r2 {"Bar"};
 
 The `Rec2` constructor is redundant.
-Also, the default for `int` would be better done as a [member initializer](#Rc-in-class initializer).
+Also, the default for `int` would be better done as a [member initializer](#Rc-in-class-initializer).
 
 **See also**: [construct valid object](#Rc-complete) and [constructor throws](#Rc-throw).
 
@@ -3493,9 +3493,9 @@ Also, the default for `int` would be better done as a [member initializer](#Rc-i
 
 Compilers do not read comments.
 
-**Exception**: If a valid object cannot conveniently be constructed by a constructor [use a factory function](#C factory).
+**Exception**: If a valid object cannot conveniently be constructed by a constructor [use a factory function](#Rc-factory).
 
-**Note**: If a constructor acquires a resource (to create a valid object), that resource should be [released by the destructor](#Rc-release).
+**Note**: If a constructor acquires a resource (to create a valid object), that resource should be [released by the destructor](#Rc-dtor-release).
 The idiom of having constructors acquire resources and destructors release them is called [RAII](#Rr-raii) ("Resource Acquisitions Is Initialization").
 
 
@@ -3908,7 +3908,7 @@ The common action gets tedious to write and may accidentally not be common.
 		// ...
 	};
 
-**See also**: If the "repeated action" is a simple initialization, consider [an in-class member initializer](#Rc-in-class initializer).
+**See also**: If the "repeated action" is a simple initialization, consider [an in-class member initializer](#Rc-in-class-initializer).
 
 **Enforcement**: (Moderate) Look for similar constructor bodies.
 
@@ -4223,7 +4223,7 @@ Often, we can easily and cheaply do better: The standard library assumes that it
 		return *this;
 	}
 
-The one-in-a-million argument against `if (this==&a) return *this;` tests from the discussion of [self-assignment](#Rc-copy self) is even more relevant for self-move.
+The one-in-a-million argument against `if (this==&a) return *this;` tests from the discussion of [self-assignment](#Rc-copy-self) is even more relevant for self-move.
 
 **Note**: There is no know general way of avoiding a `if (this==&a) return *this;` test for a move assignment and still get a correct answer (i.e., after `x=x` the value of `x` is unchanged).
 
@@ -4619,7 +4619,7 @@ Summary of container rules:
 * ???
 * [C.109: If a resource handle has pointer semantics, provide `*` and `->`](#rcon-ptr)
 
-**See also**: [Resources](#SS-resources)
+**See also**: [Resources](#S-resource)
 
 
 <a name="SS-lambdas"></a>
@@ -5832,7 +5832,7 @@ If you have a naked `new`, you probably need a naked `delete` somewhere, so you 
 **Enforcement**: (Simple) Warn on any explicit use of `new` and `delete`. Suggest using `make_unique` instead.
 
 
-<a name ="Rr-immediate alloc"></a>
+<a name ="Rr-immediate-alloc"></a>
 ### R.12: Immediately give the result of an explicit resource allocation to a manager object
 
 **Reason**: If you don't, an exception or a return may lead to a leak.
@@ -5865,7 +5865,7 @@ The use of the file handle (in `ifstream`) is simple, efficient, and safe.
 * Flag explicit allocations used to initialize pointers  (problem: how many direct resource allocations can we recognize?)
 
 
-<a name ="Rr-single alloc"></a>
+<a name ="Rr-single-alloc"></a>
 ### R.13: Perform at most one explicit resource allocation in a single expression statement
 
 **Reason**: If you perform two explicit resource allocations in one statement,
@@ -5999,7 +5999,7 @@ The `make_shared()` version mentions `X` only once, so it is usually shorter (as
 **Enforcement**: (Simple) Warn if a `shared_ptr` is constructed from the result of `new` rather than `make_shared`.
 
 
-<a name ="Rr-make_shared"></a>
+<a name ="Rr-make_unique"></a>
 ### Rule R.23: Use `make_unique()` to make `unique_ptr`s
 
 **Reason**: for convenience and consistency with `shared_ptr`.
@@ -7086,7 +7086,7 @@ Even if we hadn't left a well-know bug in `SQUARE` there are much better behaved
 **Enforcement**: Scream when you see a lower case macro.
 
 
-<a name="#Res-ellipses"></a>
+<a name="Res-ellipses"></a>
 ### ES.40: Don't define a (C-style) variadic function
 
 **Reason**: Not type safe. Requires messy cast-and-macro-laden code to get working right.
@@ -8128,7 +8128,7 @@ Error-handling rule summary:
 * [E.1: Develop an error-handling strategy early in a design](#Re-design)
 * [E.2: Throw an exception to signal that a function can't perform its assigned task](#Re-throw)
 * [E.3: Use exceptions for error handling only](#Re-errors)
-* [E.4: Design your error-handling strategy around invariants](#Re-design-invariant)
+* [E.4: Design your error-handling strategy around invariants](#Re-design-invariants)
 * [E.5: Let a constructor establish an invariant, and throw if it cannot](#Re-invariant)
 * [E.6: Use RAII to prevent leaks](#Re-raii)
 * [E.7: State your preconditions](#Re-precondition)
@@ -8361,7 +8361,7 @@ Prefer to use exceptions.
 
 **Reason**: To avoid interface errors.
 
-**See also**: [precondition rule](#Ri-???).
+**See also**: [precondition rule](#Ri-pre).
 
 
 <a name="Re-postcondition"></a>
@@ -8369,7 +8369,7 @@ Prefer to use exceptions.
 
 **Reason**: To avoid interface errors.
 
-**See also**: [postcondition rule](#Ri-???).
+**See also**: [postcondition rule](#Ri-post).
 
 
 <a name="Re-noexcept"></a>
@@ -9423,7 +9423,7 @@ This saves the user of `Value_type` from having to know the technique used to im
 * ???
 
 
-<a name="Rt-alias"></a>
+<a name="Rt-using"></a>
 ### T.43: Prefer `using` over `typedef` for defining aliases
 
 **Reason**: Improved readability: With `using`, the new name comes first rather than being embedded somewhere in a declaration.
@@ -9691,7 +9691,7 @@ Specialization offers a powerful mechanism for providing alternative implementat
 **Enforcement**: ???
 
 
-<a name="Rt-specialization"></a>
+<a name="Rt-enable_if"></a>
 ### T.66: Use selection using `enable_if` to optionally define a function
 
 **Reason**: ???
@@ -11472,7 +11472,7 @@ Comments are not updates as consistently as code.
 **Enforcement**: Build an AI program that interprets colloquial English text and see if what is said could be better expressed in C++.
 
 
-<a name="Rl-comments intent"></a>
+<a name="Rl-comments-intent"></a>
 ###  NL.2: State intent in comments
 
 **Reason**: Code says what is done, not what is supposed to be done. Often intent can be stated more clearly and concisely than the implementation.
@@ -11488,7 +11488,7 @@ Comments are not updates as consistently as code.
 **Note**: If the comment and the code disagrees, both are likely to be wrong.
 
 
-<a name="Rl-comments crisp"></a>
+<a name="Rl-comments-crisp"></a>
 ### NL.3: Keep comments crisp
 
 **Reason**: Verbosity slows down understanding and makes the code harder to read by spreading it around in the source file.
@@ -11511,7 +11511,7 @@ Comments are not updates as consistently as code.
 Enforcement: Use a tool.
 
 
-<a name="Rl-name type"></a>
+<a name="Rl-name-type"></a>
 ### NL.5 Don't encode type information in names
 
 **Rationale**: If names reflects type rather than functionality, it becomes hard to change the types used to provide that functionality.
@@ -11543,7 +11543,7 @@ This is not evil.
 This is not evil.
 
 
-<a name="Rl-name length"></a>
+<a name="Rl-name-length"></a>
 ### NL.7: Make the length of a name roughly proportional to the length of its scope
 
 **Rationale**: ???
