@@ -7243,6 +7243,10 @@ Avoid using the loop variable for other purposes after the loop.
 
 **Enforcement**: Warn when a variable modified inside the `for`-statement is declared outside the loop and not being used outside the loop.
 
+**Discussion**: Scoping the loop induction variable to the loop body also helps code optimizers greatly. Recognizing that the induction variable
+is only accessible in the loop body unblocks optimizations such as hoisting, strength reduction, loop-invariant code motion, etc.
+
+
 <a name="Res-do"></a>
 ### ES.75: Avoid `do`-statements
 
