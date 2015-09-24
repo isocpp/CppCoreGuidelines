@@ -1205,7 +1205,7 @@ Postconditions related only to internal state belongs in the definition/implemen
 
 **Alternative**: Postconditions of the form "this resource must be released" are best expressed by [RAII](#Rr-raii).
 
-Ideally, that `Ensured` should be part of the interface that's not easily done. For now, we place it in the definition (function body).
+Ideally, that `Ensures` should be part of the interface that's not easily done. For now, we place it in the definition (function body).
 
 **Enforcement**: (Not enforceable) Finding the variety of ways postconditions can be asserted is not feasible. Warning about those that can be easily identified (assert()) has questionable value in the absence of a language facility.
 
