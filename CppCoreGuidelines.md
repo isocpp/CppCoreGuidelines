@@ -10411,7 +10411,7 @@ The user of `bar` cannot know if the interface used is complete and correct. At 
 **Example**:
 
 	#include<vector>
-	#include<algorithms>
+	#include<algorithm>
 	#include<string>
 
 	// ... my code here ...
@@ -10419,10 +10419,11 @@ The user of `bar` cannot know if the interface used is complete and correct. At 
 **Example, bad**:
 
 	#include<vector>
-	#include<algorithms>
-	#include<string>
 
 	// ... my code here ...
+
+	#include<algorithm>
+	#include<string>
 
 **Note**: This applies to both `.h` and `.cpp` files.
 
