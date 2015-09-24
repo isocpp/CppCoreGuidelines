@@ -2329,7 +2329,7 @@ In fact, C++98's standard library already used this convenient feature, because 
 For example, given a `set<string> myset`, consider:
 
     // C++98
-	result = myset.insert( “Hello” );
+	result = myset.insert( "Hello" );
 	if (result.second) do_something_with( result.first );    // workaround
 	
 With C++11 we can write this, putting the results directly in existing local variables:
@@ -2337,7 +2337,7 @@ With C++11 we can write this, putting the results directly in existing local var
 	Sometype iter;                                          // default initialize if we haven't already
 	Someothertype success;                                  // used these variables for some other purpose
 
-	tie( iter, success ) = myset.insert( “Hello” );         // normal return value
+	tie( iter, success ) = myset.insert( "Hello" );         // normal return value
 	if (success) do_something_with( iter );
 
 **Exception**: For types like `string` and `vector` that carry additional capacity, it can sometimes be useful to treat it as in/out instead by using the "caller-allocated out" pattern, which is to pass an output-only object by reference to non-`const` so that when the callee writes to it the object can reuse any capacity or other resources that it already contains. This technique can dramatically reduce the number of allocations in a loop that repeatedly calls other functions to get string values, by using a single string object for the entire loop.
@@ -6156,11 +6156,11 @@ A function that does not manipulate lifetime should take raw pointers or referen
 
 **Example; good**:
 
-    void share( shared_ptr<widget> );            // share – “will” retain refcount
+    void share( shared_ptr<widget> );            // share – "will" retain refcount
 
-    void reseat( shared_ptr<widget>& );          // “might” reseat ptr
+    void reseat( shared_ptr<widget>& );          // "might" reseat ptr
 
-    void may_share( const shared_ptr<widget>& ); // “might” retain refcount
+    void may_share( const shared_ptr<widget>& ); // "might" retain refcount
 
 **Enforcement**:
 
@@ -6178,11 +6178,11 @@ A function that does not manipulate lifetime should take raw pointers or referen
 
 **Example; good**:
 
-    void share( shared_ptr<widget> );            // share – “will” retain refcount
+    void share( shared_ptr<widget> );            // share – "will" retain refcount
 
-    void reseat( shared_ptr<widget>& );          // “might” reseat ptr
+    void reseat( shared_ptr<widget>& );          // "might" reseat ptr
 
-    void may_share( const shared_ptr<widget>& ); // “might” retain refcount
+    void may_share( const shared_ptr<widget>& ); // "might" retain refcount
 
 **Enforcement**:
 
@@ -6198,11 +6198,11 @@ A function that does not manipulate lifetime should take raw pointers or referen
 
 **Example; good**:
 
-    void share( shared_ptr<widget> );            // share – “will” retain refcount
+    void share( shared_ptr<widget> );            // share – "will" retain refcount
 
-    void reseat( shared_ptr<widget>& );          // “might” reseat ptr
+    void reseat( shared_ptr<widget>& );          // "might" reseat ptr
 
-    void may_share( const shared_ptr<widget>& ); // “might” retain refcount
+    void may_share( const shared_ptr<widget>& ); // "might" retain refcount
 
 **Enforcement**:
 
