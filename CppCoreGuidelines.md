@@ -7222,21 +7222,26 @@ This will copy each elements of `vs` into `s`. Better
 <a name="Res-for-init"></a>
 ### ES.74: Prefer to declare a loop variable in the initializer part of as `for`-statement
 
-**Reason**: 1) By creating variables inside loops, you ensure their scope is restricted to inside the loop. It
-		       cannot be referenced nor called outside of the loop.
-	    2) some dedicated optimization can be performed more efficiently by the compiler (most importantly
-		register allocation), since it knows that the variable cannot be used outside of the loop. For
-		example, no need to store the result for later re-use.
+**Reason**: Limit the loop variable visibility to the scope of the loop.
+Avoid using the loop variable for other purposes after the loop.
 
 **Example**:
 
-	for (int counter = 0; counter <= 10; counter++)
-	{
-	 	cout << counter << endl ;
-    }
+	for (int i=0; i<100; ++i) {	// GOOD: i var is visible only inside the loop
+		// ...
+	}
 
-**Enforcement**: ???
+**Example; don't**:
 
+	int j;						// BAD: j is visible outside the loop
+	for (j=0; j<100; ++j) {
+		// ...
+	}
+	// j is still visible here and isn't needed
+
+**See also**: [Don't use a variable for two unrelated purposes](#Res-recycle)
+
+**Enforcement**: Warn when a variable modified inside the `for`-statement is declared outside the loop and not being used outside the loop.
 
 <a name="Res-do"></a>
 ### ES.75: Avoid `do`-statements
