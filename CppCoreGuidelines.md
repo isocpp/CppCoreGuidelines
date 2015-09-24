@@ -7212,11 +7212,15 @@ This will copy each elements of `vs` into `s`. Better
 <a name="Res-for-init"></a>
 ### ES.74: Prefer to declare a loop variable in the initializer part of as `for`-statement
 
-**Reason**: ???
+**Reason**: 1) By creating variables inside loops, you ensure their scope is restricted to inside the loop. It 			       cannot be referenced nor called outside of the loop.
+	    2) some dedicated optimization can be performed more efficiently by the compiler (most importantly 			       register allocation), since it knows that the variable cannot be used outside of the loop. For 		       example, no need to store the result for later re-use.
 
 **Example**:
 
-	???
+	for(int counter = 0; counter <= 10; counter++)
+	 {
+	 	cout << counter << endl ;
+        	}
 
 **Enforcement**: ???
 
