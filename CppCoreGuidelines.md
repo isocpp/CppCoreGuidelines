@@ -10508,6 +10508,19 @@ but systematic use of `.h` files increases the likelyhood that it is caught earl
 	// ... declarations ...
 	#endif // FOOBAR_H
 
+The above approach is verbose and brittle: a typo in the symbol name can cause unintended effects.
+Developers frequently copy an existing header file in order to create a new one. If the developer
+forgets to correctly update the the include guard, inclusion of the new header can prevent the inclusion
+of the copied header, leading to surprising compilation failures.
+
+A better way to deal with this is a `#pragma once` guard (which is supported by many compilers):
+
+**Example**:
+
+    // file foobar.h
+    #pragma once
+    // ... declarations...
+
 **Enforcement**: Flag `.h` files without `#include` guards
 
 
