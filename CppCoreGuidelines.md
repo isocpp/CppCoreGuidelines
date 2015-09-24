@@ -7196,6 +7196,8 @@ This will copy each elements of `vs` into `s`. Better
 	 // do work
 	}
 
+**Example, bad**:
+
 	int i = 0;
 	while (i < vec.size()) {
 	 // do work
