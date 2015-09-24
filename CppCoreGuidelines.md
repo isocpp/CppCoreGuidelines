@@ -11525,7 +11525,7 @@ Hungarian notation is evil (at least in a strongly statically-typed language).
 
 	struct S {
 		int m_;
-		S(int m) :m_{abs(m)) { }
+		S(int m) :m_(abs(m)) { }
 	};
 
 This is not evil.
