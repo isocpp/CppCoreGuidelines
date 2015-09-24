@@ -10733,14 +10733,14 @@ Reference sections:
 <a name="SS-rules"></a>
 ## RF.rules: Coding rules
 
-* [Boost Library Requirements and Guidelines](http://www.boost.org/development/requirements.html").
+* [Boost Library Requirements and Guidelines](http://www.boost.org/development/requirements.html).
 ???.
-* [Bloomberg: BDE C++ Coding](https://raw.githubusercontent.com/wiki/bloomberg/bde/bdestds.pdf").
+* [Bloomberg: BDE C++ Coding](https://github.com/bloomberg/bde/wiki/CodingStandards.pdf).
 Has a stong emphasis on code organization and layout.
 * Facebook: ???
 * [GCC Coding Conventions](https://gcc.gnu.org/codingconventions.html).
 C++03 and (reasonably) a bit backwards looking.
-* [Google C++ Style Guide](http://google-styleguide.googlecode.com/svn/trunk/cppguide.html").
+* [Google C++ Style Guide](http://google-styleguide.googlecode.com/svn/trunk/cppguide.html).
 Too timid and reflects its 1990s origins.
 [A critique from 2014](https://www.linkedin.com/pulse/20140503193653-3046051-why-google-style-guide-for-c-is-a-deal-breaker).
 Google are busy updating their code base and we don't know how accurately the posted guideline reflects their actual code.
