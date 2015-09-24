@@ -6936,7 +6936,7 @@ If `leak==true` the object pointer to by `p2` is leaked and the object pointed t
 	{
 		int i;
 		for (i=0; i<20; ++i) { /* ... */ }
-		for (i=0; i<200; ++) { /* ... */ }	// bad: i recycled
+		for (i=0; i<200; ++i) { /* ... */ }	// bad: i recycled
 	}
 
 **Enforcement**: Flag recycled variables.
