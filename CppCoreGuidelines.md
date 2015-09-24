@@ -3513,7 +3513,7 @@ The idiom of having constructors acquire resources and destructors release them 
 		X2(const string& name)
 			:f{fopen(name.c_str(),"r"}
 		{
-			if (f==nullptr) throw runrime_error{"could not open" + name};
+			if (f==nullptr) throw runtime_error{"could not open" + name};
 			// ...
 		}
 			
