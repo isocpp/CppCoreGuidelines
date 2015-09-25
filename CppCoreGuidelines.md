@@ -2297,7 +2297,7 @@ If you have performance justification to optimize for rvalues, overload on `&&` 
 **Example**:
 
 	void incr(int&);
-	int incr();
+	int incr(int);
 	
 	int i = 0;
 	incr(i);
