@@ -1860,7 +1860,7 @@ Unless the program is crafted to survive memory exhaustion, that may be just the
 
 **Note**: In most programs, most functions can throw
 (e.g., because they use `new`, call functions that do, or use library functions that reports failure by throwing),
-so don't just springle `noexcept` all over the place.
+so don't just sprinkle `noexcept` all over the place.
 `noexcept` is most useful for frequently used, low-level functions.
 
 **Note**: Destructors, `swap` functions, move operations, and default constructors should never throw.
@@ -2021,7 +2021,7 @@ When I call `length(r)` should I test for `r==nullptr` first? Should the impleme
 
 **Note**: `owner<T*>` represents ownership.
 
-**Also**: Assume that a `T*` obtained from a smart pointer to `T` (e.g., unique_ptr<`T`>) pointes to a single element.
+**Also**: Assume that a `T*` obtained from a smart pointer to `T` (e.g., unique_ptr<`T`>) points to a single element.
 
 **See also**: [Support library](#S-gsl).
 
@@ -2718,7 +2718,7 @@ For example, we can now change the representation of a `Date` without affecting 
 **Note**: Using a class in this way to represent the distinction between interface and implementation is of course not the only way.
 For example, we can use a set of declarations of freestanding functions in a namespace,
 an abstract base class,
-or a template fuction with concepts to represent an interface.
+or a template function with concepts to represent an interface.
 The most important issue is to explicitly distinguish between an interface and its implementation "details."
 Ideally, and typically, an interface is far more stable than its implementation(s).
 
@@ -3473,7 +3473,7 @@ Also, the default for `int` would be better done as a [member initializer](#Rc-i
 **Example; bad**:
 
 	class X1 {
-		FILE* f;	// call init() before any other fuction
+		FILE* f;	// call init() before any other function
 		// ...
 	public:
 		X1() {}
@@ -3507,7 +3507,7 @@ The idiom of having constructors acquire resources and destructors release them 
 **Example**:
 
 	class X2 {
-		FILE* f;	// call init() before any other fuction
+		FILE* f;	// call init() before any other function
 		// ...
 	public:
 		X2(const string& name)
@@ -3531,7 +3531,7 @@ The idiom of having constructors acquire resources and destructors release them 
 **Example, bad**:
 
 	class X3 {			// bad: the constructor leaves a non-valid object behind
-		FILE* f;	// call init() before any other fuction
+		FILE* f;	// call init() before any other function
 		bool valid;;
 		// ...
 	public:
@@ -3773,7 +3773,7 @@ How would a maintainer know whether `j` was deliberately uninitialized (probably
 
 **Enforcement**:
 * (Simple) Every constructor should initialize every member variable (either explicitly, via a delegating ctor call or via default construction).
-* (Simple) Default arguments to constructors suggest an in-class initalizer may be more appropriate.
+* (Simple) Default arguments to constructors suggest an in-class initializer may be more appropriate.
 
 
 <a name="Rc-initialize"></a>
@@ -4027,7 +4027,7 @@ After a copy `x` and `y` can be independent objects (value semantics, the way no
 
 **Example**:
 
-	class X {	// OK: value sementics
+	class X {	// OK: value semantics
 	public:
 		X();
 		X(const X&);	// copy X
@@ -4164,7 +4164,7 @@ Consider:
 
 **Example**:
 	
-	class X {	// OK: value sementics
+	class X {	// OK: value semantics
 	public:
 		X();
 		X(X&& a);		// move X
@@ -5031,7 +5031,7 @@ and such interfaces are often not easily or naturally organized into a single-ro
 
 Both `d`s are sliced.
 
-**Exeption**: You can safely access a named polymorphic object in the scope of its definition, just don't slice it.
+**Exception**: You can safely access a named polymorphic object in the scope of its definition, just don't slice it.
 
 	void use3()
 	{
@@ -5129,7 +5129,7 @@ and that your use of `dynamic_cast` is really performance critical.
 
 
 <a name="Rh-make_unique"></a>
-### C.150: Use `make_unique()` to construct objects owne by `unique_ptr`s or other smart pointers
+### C.150: Use `make_unique()` to construct objects owned by `unique_ptr`s or other smart pointers
 
 **Reason**: `make_unique` gives a more concise statement of the construction.
 
@@ -6662,7 +6662,7 @@ In each case, we save writing a longish, hard-to-remember type that the compiler
 	template<class T>
 		auto Container<T>::first() -> Iterator;	// Container<T>::Iterator
 
-**Exception**: Avoid `auto` for initializer lists and in cases where you know exactly which type you want and where an inititializer might require conversion.
+**Exception**: Avoid `auto` for initializer lists and in cases where you know exactly which type you want and where an initializer might require conversion.
 
 **Example**:
 
@@ -7000,7 +7000,7 @@ The definition of `a2` is C but not C++ and is considered a security risk
 **Example; good**:
 
 	const widget x = [&]{
-	    widget val; 		// asume that widget has a default constructor
+	    widget val; 		// assume that widget has a default constructor
 		for(auto i=2; i <= N; ++i) {             // this could be some
 		    val += some_obj.do_something_with(i);// arbitrarily long code
 		}                                        // needed to initialize x
@@ -7369,7 +7369,7 @@ Expressions manipulate values.
 
 **Example**:
 
-	while ((c=getc())!=-1)	// bad: assignment hidded in subexpression
+	while ((c=getc())!=-1)	// bad: assignment hidden in subexpression
 
 	while ((cin>>c1, cin>>c2),c1==c2) // bad: two non-local variables assigned in a sub-expressions
 
@@ -7607,7 +7607,7 @@ However, casts are seriously overused as well as a major source of errors.
 
 * Force the elimination of C-style casts
 * Warn against named casts
-* Warn if there are many functional stye casts (there is an obvious problem in quantifying 'many').
+* Warn if there are many functional style casts (there is an obvious problem in quantifying 'many').
 
 
 <a name="Res-casts-named"></a>
