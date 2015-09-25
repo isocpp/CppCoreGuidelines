@@ -8026,6 +8026,7 @@ Concurrency and parallism rule summary:
 
 * [CP.1: Assume that your code will run as part of a multi-threaded program](#Rconc-multi)
 * [CP.2: Avoid data races](#Rconc-races)
+* [CP.3: Consider void futures for one-shot event communication](#Rconc-voidf)
 
 See also:
 
@@ -8060,6 +8061,22 @@ Typically, such programs leads to a painful effort to remove data races.
 
 **Enforcement**: Some is possible, do at least something.
 
+<a name="Rconc-voidf"></a>
+### CP.3: Consider void futures for one-shot event communication
+
+**Reason**: Sometimes it’s useful for a task to tell a second, asynchronously running task that a particular event has occurred, because the second task can’t proceed until the event has taken place. Perhaps a data structure has been initialized, a stage of computation has been completed, or a significant sensor value has been detected. When that’s the case, what’s the best way for this kind of inter-thread communication to take place? An obvious approach is to use a condition variable (condvar). If we call the task that detects the condition the detecting task and the task reacting to the condition the reacting task, the strategy is simple: the reacting task waits on a condition variable, and the detecting thread notifies that condvar when the event occurs. Given
+
+	std::condition_variable cv;  // condvar for event
+	std::mutex m;  //mutex for use with cv
+	
+the code in the detecting task is as simple as simple can be:
+
+**Example**: 
+
+	.....   //detect event
+	cv.notify_one(); // tell reacting task
+
+**Enforcement**: ???
 
 <a name="SScp-con"></a>
 ## CP.con: Concurrency
