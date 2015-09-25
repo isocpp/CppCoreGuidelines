@@ -38,7 +38,7 @@ You can [Read an explanation of the scope and structure of this Guide](#S-abstra
 * [R: Resource management](#S-resource)
 * [T: Templates and generic programming](#S-templates)
 * [CP: Concurrency](#S-concurrency)
-* [STL: The Standard library](#S-stdlib)
+* [SL: The Standard library](#S-stdlib)
 * [SF: Source files](#S-source)
 * [CPL: C-style programming](#S-cpl)
 * [PRO: Profiles](#S-profile)
@@ -313,7 +313,7 @@ Recommended information sources can be found in [the references](#S-references).
 * [R: Resource management](#S-resource)
 * [T: Templates and generic programming](#S-templates)
 * [CP: Concurrency](#S-concurrency)
-* [STL: The Standard library](#S-stdlib)
+* [SL: The Standard library](#S-stdlib)
 * [SF: Source files](#S-source)
 * [CPL: C-style programming](#S-cpl)
 * [PRO: Profiles](#S-profile)
@@ -406,7 +406,7 @@ A much clearer expression of intent would be:
 
 A well-designed library expresses intent (what is to be done, rather than just how something is being done) far better than direct use of language features.
 
-A C++ programmer should know the basics of the STL, and use it where appropriate.
+A C++ programmer should know the basics of the standard library, and use it where appropriate.
 Any programmer should know the basics of the foundation libraries of the project being worked on, and use it appropriately.
 Any programmer using these guidelines should know the [Guidelines Support Library](#S-gsl), and use it appropriately.
 
@@ -10602,20 +10602,20 @@ Consider putting every definition in an implementation source file should be in 
 
 
 <a name="S-stdlib"></a>
-# STL: The Standard Library
+# SL: The Standard Library
 
 Using only the bare language, every task is tedious (in any language).
 Using a suitable library any task can be reasonably simple.
 
 Standard-library rule summary:
 
-* [STL.1: Use libraries wherever possible](#Rstl-lib)
-* [STL2.: Prefer the standard library to other libraries](#Rstl-stl)
+* [SL.1: Use libraries wherever possible](#Rsl-lib)
+* [SL.2: Prefer the standard library to other libraries](#Rsl-sl)
 * ???
 
 
-<a name="Rstl-lib"></a>
-### STL.1:  Use libraries wherever possible
+<a name="Rsl-lib"></a>
+### SL.1:  Use libraries wherever possible
 
 **Reason**: Save time. Don't re-invent the wheel.
 Don't replicate the work of others.
@@ -10624,37 +10624,37 @@ Help other people when you make improvements.
 
 **References**: ???
 
-<a name="Rstl-stl"></a>
-### STL2.: Prefer the standard library to other libraries
+<a name="Rsl-sl"></a>
+### SL.2: Prefer the standard library to other libraries
 
 **Reason**. More people know the standard library.
 It is more likely to be stable, well-maintained, and widely available than your own code or most other libraries.
 
-## STL.con: Containers
+## SL.con: Containers
 
 ???
 
-## STL.str: String
+## SL.str: String
 
 ???
 
-## STL.io: Iostream
+## SL.io: Iostream
 
 ???
 
-### STL.???: Use character-level input only when you have to; _expr.low_.
+### SL.???: Use character-level input only when you have to; _expr.low_.
 
-### STL.???: When reading, always consider ill-formed input; _expr.low_.
+### SL.???: When reading, always consider ill-formed input; _expr.low_.
 
-## STL.regex: Regex
+## SL.regex: Regex
 
 ???
 
-## STL:c: The C standard library
+## SL:c: The C standard library
 
-### STL.???: C-style strings
+### SL.???: C-style strings
 
-### STL.???: printf/scanf
+### SL.???: printf/scanf
 
 <a name"S-A"></a>
 # A: Architectural Ideas
