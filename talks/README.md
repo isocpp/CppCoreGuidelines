@@ -2,7 +2,7 @@ The guidelines were introduced during a number of talks at [CppCon](http://cppco
 Here are video recordings of those talks:
 
 - Keynote: Writing Good C++ 14 (Bjarne Stroustrup): [https://www.youtube.com/watch?t=9&v=1OEu9C51K2A]
-- Writing good C++ 14 By Default (Herb Sutter):
+- Writing good C++ 14 By Default (Herb Sutter): [https://www.youtube.com/watch?v=hEx5DNLWGgA]
 - Large Scale C++ With Modules: What You Should Know (Gabriel Dos Reis)
 - Contracts for Dependable C++ (Gabriel Dos Reis)
 - More than lint: modern static analysis for C++ (Neil MacIntosh):
