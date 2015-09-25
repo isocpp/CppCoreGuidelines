@@ -2092,9 +2092,9 @@ Functions are inconsistent in their use of `nullptr` and we must be more explici
 
 When I call `length(s)` should I test for `s==nullptr` first? Should the implementation of `length()` test for `p==nullptr`?
 
-	int length(zstring p);	// it is the caller's job to make sure p!=nullptr
+	int length(zstring p);	// the implementor of length() must assume that p==nullptr is possible
 
-	int length(not_null<Zstring> p);	// the implementor of length() must assume that p==nullptr is possible
+	int length(not_null<zstring> p);	// it is the caller's job to make sure p!=nullptr
 
 **Note**: `zstring` do not represent ownership.
 
