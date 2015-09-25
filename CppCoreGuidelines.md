@@ -2301,7 +2301,7 @@ If you have performance justification to optimize for rvalues, overload on `&&` 
 	
 	int i = 0;
 	incr(i);
-	i = incr(i);
+	i = incr();
 
 **Enforcement**: Flag non-const reference parameters that are not read before being written to and are a type that could be cheaply returned.
 
