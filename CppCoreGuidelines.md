@@ -1775,7 +1775,7 @@ You could use cyclomatic complexity. Try "more that 10 logical path through." Co
 	constexpr int fac(int n)
 	{
 		constexpr int max_exp = 17;     // constexpr enables  this to be used in Expects
-		Expects(0<=x && x<max_exp);		// prevent silliness and overflow
+		Expects(0<=n && n<max_exp);		// prevent silliness and overflow
 		int x = 1;
 		for (int i=2; i<=n; ++i) x*= n;
 		return x;
