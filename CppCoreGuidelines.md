@@ -5490,40 +5490,38 @@ the optimal strategy (for performance and ease of programming) is sometimes simp
 If you have enough memory to handle your largest input, leak away, but be sure to give a good error message if you are wrong.
 Here, we ignore such cases.
 
-Resource management rule summary:
+* Resource management rule summary:
 
-* [R.1: Manage resources automatically using resource handles and RAII (resource acquisition is initialization)](#Rr-raii)
-* [R.2: In interfaces, use raw pointers to denote individual objects (only)](#Rr-use-ptr)
-* [R.3: A raw pointer (a `T*`) is non-owning](#Rr-ptr)
-* [R.4: A raw reference (a `T&`) is non-owning](#Rr-ref)
-* [R.5: Prefer scoped objects](#Rr-scoped)
-* [R.6: Avoid non-`const` global variables](#Rr-global)
-	
-Alocation and deallocation rule summary:
-	
-* [R.10: Avoid `malloc()` and `free()`](#Rr-mallocfree)
-* [R.11: Avoid calling `new` and `delete` explicitly](#Rr-newdelete)
-* [R.12: Immediately give the result of an explicit resource allocation to a manager object](#Rr-immediate-alloc)
-* [R.13: Perform at most one explicit resource allocation in a single expression statement](#Rr-single-alloc)
-* [R.14: ??? array vs. pointer parameter](#Rr-ap)
-* [R.15: Always overload matched allocation/deallocation pairs](#Rr-pair)
-	
-<a name ="Rr-summary-smartptrs"></a>Smart pointer rule summary:
+  * [R.1: Manage resources automatically using resource handles and RAII (resource acquisition is initialization)](#Rr-raii)
+  * [R.2: In interfaces, use raw pointers to denote individual objects (only)](#Rr-use-ptr)
+  * [R.3: A raw pointer (a `T*`) is non-owning](#Rr-ptr)
+  * [R.4: A raw reference (a `T&`) is non-owning](#Rr-ref)
+  * [R.5: Prefer scoped objects](#Rr-scoped)
+  * [R.6: Avoid non-`const` global variables](#Rr-global)
 
-* [R.20: Use `unique_ptr` or `shared_ptr` to represent ownership](#Rr-owner)
-* [R.21: Prefer `unique_ptr` over `shared_ptr` unless you need to share ownership](#Rr-unique)
-* [R.22: Use `make_shared()` to make `shared_ptr`s](#Rr-make_shared)
-* [R.23: Use `make_unique()` to make `unique_ptr`s](#Rr-make_unique)
-* [R.24: Use `std::weak_ptr` to break cycles of `shared_ptr`s](#Rr-weak_ptr)
-* [R.30: Take smart pointers as parameters only to explicitly express lifetime semantics](#Rr-smartptrparam)
-* [R.31: If you have non-`std` smart pointers, follow the basic pattern from `std`](#Rr-smart)
-* [R.32: Take a `unique_ptr<widget>` parameter to express that a function assumes ownership of a `widget`](#Rr-uniqueptrparam)
-* [R.33: Take a `unique_ptr<widget>&` parameter to express that a function reseats the`widget`](#Rr-reseat)
-* [R.34: Take a `shared_ptr<widget>` parameter to express that a function is part owner](#Rr-sharedptrparam-owner)
-* [R.35: Take a `shared_ptr<widget>&` parameter to express that a function might reseat the shared pointer](#Rr-sharedptrparam)
-* [R.36: Take a `const shared_ptr<widget>&` parameter to express that it might retain a reference count to the object ???](#Rr-sharedptrparam-const&)
-* [R.37: Do not pass a pointer or reference obtained from an aliased smart pointer](#Rr-smartptrget)
+* Alocation and deallocation rule summary:
 
+  * [R.10: Avoid `malloc()` and `free()`](#Rr-mallocfree)
+  * [R.11: Avoid calling `new` and `delete` explicitly](#Rr-newdelete)
+  * [R.12: Immediately give the result of an explicit resource allocation to a manager object](#Rr-immediate-alloc)
+  * [R.13: Perform at most one explicit resource allocation in a single expression statement](#Rr-single-alloc)
+  * [R.14: ??? array vs. pointer parameter](#Rr-ap)
+  * [R.15: Always overload matched allocation/deallocation pairs](#Rr-pair)
+
+* <a name ="Rr-summary-smartptrs"></a>Smart pointer rule summary:
+  * [R.20: Use `unique_ptr` or `shared_ptr` to represent ownership](#Rr-owner)
+  * [R.21: Prefer `unique_ptr` over `shared_ptr` unless you need to share ownership](#Rr-unique)
+  * [R.22: Use `make_shared()` to make `shared_ptr`s](#Rr-make_shared)
+  * [R.23: Use `make_unique()` to make `unique_ptr`s](#Rr-make_unique)
+  * [R.24: Use `std::weak_ptr` to break cycles of `shared_ptr`s](#Rr-weak_ptr)
+  * [R.30: Take smart pointers as parameters only to explicitly express lifetime semantics](#Rr-smartptrparam)
+  * [R.31: If you have non-`std` smart pointers, follow the basic pattern from `std`](#Rr-smart)
+  * [R.32: Take a `unique_ptr<widget>` parameter to express that a function assumes ownership of a `widget`](#Rr-uniqueptrparam)
+  * [R.33: Take a `unique_ptr<widget>&` parameter to express that a function reseats the`widget`](#Rr-reseat)
+  * [R.34: Take a `shared_ptr<widget>` parameter to express that a function is part owner](#Rr-sharedptrparam-owner)
+  * [R.35: Take a `shared_ptr<widget>&` parameter to express that a function might reseat the shared pointer](#Rr-sharedptrparam)
+  * [R.36: Take a `const shared_ptr<widget>&` parameter to express that it might retain a reference count to the object ???](#Rr-sharedptrparam-const&)
+  * [R.37: Do not pass a pointer or reference obtained from an aliased smart pointer](#Rr-smartptrget)
 
 <a name ="Rr-raii"></a>
 ### Rule R.1: Manage resources automatically using resource handles and RAII (resource acquisition is initialization)
