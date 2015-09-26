@@ -10379,7 +10379,7 @@ Examples are `.hh` and `.cxx`. Use such names equivalently.
 **Enforcement**:
 
 * Flag non-conventional file names.
-* Check that `.h` and `.cpp`` (and equivalents) follow the rules below.
+* Check that `.h` and `.cpp` (and equivalents) follow the rules below.
 
 
 <a name="Rs-inline"></a>
@@ -10412,7 +10412,7 @@ Examples are `.hh` and `.cxx`. Use such names equivalently.
 
 **Reason**: Maintainability. Readability.
 
-**example, bad**:
+**Example, bad**:
 
 	// bar.cpp:
 	void bar() { cout << "bar\n"; }
@@ -10475,7 +10475,7 @@ The user of `bar` cannot know if the interface used is complete and correct. At 
 	int bar(double) { /* ... */ }
 	double foobar(int);
 
-Thw errors will not be caught until link time for a program calling `bar` or `foobar`.
+The errors will not be caught until link time for a program calling `bar` or `foobar`.
 
 **Example**:
 
