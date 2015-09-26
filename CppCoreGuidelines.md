@@ -12008,7 +12008,7 @@ Never allow an error to be reported from a destructor, a resource deallocation f
 class nefarious {
 public:
     nefarious()  { /* code that could throw */ }   // ok
-    ~nefarious() { /* code that could throw */ }   // BAD, should be noexcept
+    ~nefarious() { /* code that could throw */ }   // BAD, should not throw
     // ...
 };
 ```
