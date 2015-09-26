@@ -10412,7 +10412,7 @@ Examples are `.hh` and `.cxx`. Use such names equivalently.
 
 **Reason**: Maintainability. Readability.
 
-**example, bad**:
+**Example, bad**:
 
 	// bar.cpp:
 	void bar() { cout << "bar\n"; }
