@@ -3532,7 +3532,7 @@ The idiom of having constructors acquire resources and destructors release them 
 
 	class X3 {			// bad: the constructor leaves a non-valid object behind
 		FILE* f;	// call init() before any other function
-		bool valid;;
+		bool valid;
 		// ...
 	public:
 		X3(const string& name)
