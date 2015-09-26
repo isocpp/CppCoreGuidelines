@@ -645,7 +645,8 @@ This design carries the number of elements along as an integral part of an objec
 
 **Example**:
 
-	show how possible checks are avoided by interfaces that pass polymorphic base classes around, when they actually know what they need?
+ * ???
+ * show how possible checks are avoided by interfaces that pass polymorphic base classes around, when they actually know what they need?
 	Or strings as "free-style" options
 	
 **Enforcement**:
