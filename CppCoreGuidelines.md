@@ -3532,7 +3532,7 @@ The idiom of having constructors acquire resources and destructors release them 
 
 	class X3 {			// bad: the constructor leaves a non-valid object behind
 		FILE* f;	// call init() before any other function
-		bool valid;;
+		bool valid;
 		// ...
 	public:
 		X3(const string& name)
@@ -3833,7 +3833,7 @@ How would a maintainer know whether `j` was deliberately uninitialized (probably
 **Example*:
 
 	class B {
-	private:
+	protected:
 	    B() { /* ... */ }					// create an imperfectly initialized object
 
 	    virtual void PostInitialize()       // to be called right after construction
@@ -3859,7 +3859,7 @@ How would a maintainer know whether `j` was deliberately uninitialized (probably
 
 	shared_ptr<D> p = D::Create<D>();		// creating a D object
 
-By making the constructor `private` we avoid an incompletely constructed object escaping into the wild.
+By making the constructor `protected` we avoid an incompletely constructed object escaping into the wild.
 By providing the factory function `Create()`, we make construction (on the free store) convenient.
 
 **Note**: Conventional factory functions allocate on the free store, rather than on the stack or in an enclosing object.
