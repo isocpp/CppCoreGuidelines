@@ -2347,7 +2347,7 @@ rather than using the generic `tuple`.
 
 **Enforcement**:
 
-    * Output parameters should be replaced by return values.
+* Output parameters should be replaced by return values.
   An output parameter is one that the function writes to, invokes a non-`const` member function, or passes on as a non-`const`.
 
 <a name="Rf-return-ptr"></a>
@@ -2556,7 +2556,7 @@ For passthrough functions that pass in parameters (by ordinary reference or by p
 
 **Enforcement**:
 
-    * Warn on use of a named non-generic lambda (e.g., `auto x = [](int i){ /*...*/; };`) that captures nothing and appears at global scope. Write an ordinary function instead.
+* Warn on use of a named non-generic lambda (e.g., `auto x = [](int i){ /*...*/; };`) that captures nothing and appears at global scope. Write an ordinary function instead.
 
 
 
