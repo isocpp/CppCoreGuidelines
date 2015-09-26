@@ -10379,7 +10379,7 @@ Examples are `.hh` and `.cxx`. Use such names equivalently.
 **Enforcement**:
 
 * Flag non-conventional file names.
-* Check that `.h` and `.cpp`` (and equivalents) follow the rules below.
+* Check that `.h` and `.cpp` (and equivalents) follow the rules below.
 
 
 <a name="Rs-inline"></a>
