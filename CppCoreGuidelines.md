@@ -4557,7 +4557,7 @@ The alternative is to make two failure states compare equal and any valid state 
 		// ...
 	};
 	
-// `B`'s comparison accpts conversions for its second operand, but not its first.
+// `B`'s comparison accepts conversions for its second operand, but not its first.
 
 	class D :B {
 		char character;
