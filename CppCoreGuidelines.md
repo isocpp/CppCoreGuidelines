@@ -9797,7 +9797,7 @@ Similar for `Vector<string>::sort()`.
 Unless those two functions are called that's code bloat.
 Imagine what this would do to a class hierarchy with dozens of member functions and dozens of derived classes with many instantiations.
 
-**Note**: In many cases you can provide a stable interface by not parameterizing a base; see [???](#Rt-abi).
+**Note**: In many cases you can provide a stable interface by not parameterizing a base; see [Rule](#Rt-abi).
 
 **Enforcement**:
 
