@@ -11293,7 +11293,7 @@ These functions all have bounds-safe overloads that take `array_view`. Standard 
 
 * Impact on the standard library will require close coordination with WG21, if only to ensure compatibility even if never standardized.
 * We are considering specifying bounds-safe overloads for stdlib (especially C stdlib) functions like `memcmp` and shipping them in the GSL.
-* For existing stdlib functions and types like `vector` that are not fully bounds-checked, the goal is for these features to be bounds-checked when called from code with the bounds profile on, and unchecked when called from legacy code, possibly using constracts (concurrently being proposed by several WG21 members).
+* For existing stdlib functions and types like `vector` that are not fully bounds-checked, the goal is for these features to be bounds-checked when called from code with the bounds profile on, and unchecked when called from legacy code, possibly using contracts (concurrently being proposed by several WG21 members).
 
 <a name="SS-lifetime"></a>
 ## Lifetime safety profile
@@ -11905,7 +11905,6 @@ In summary, no post-construction technique is perfect. The worst techniques dodg
  
 
  
-
 ### <a name="Sd-dtor"></a>Discussion: Make base class destructors public and virtual, or protected and nonvirtual
 
 Should destruction behave virtually? That is, should destruction through a pointer to a `base` class should be allowed? If yes, then `base`'s destructor must be public in order to be callable, and virtual otherwise calling it results in undefined behavior. Otherwise, it should be protected so that only derived classes can invoke it in their own destructors, and nonvirtual since it doesn't need to behave virtually virtual.
@@ -11977,13 +11976,13 @@ In general, however, avoid concrete base classes (see Item 35). For example, `un
 **References**: [[C++CS]](#C++CS) Item 50, [[Cargill92]](#Cargill92) pp. 77-79, 207¸ [[Cline99]](#Cline99) §21.06, 21.12-13¸ [[Henricson97]](#Henricson97) pp. 110-114¸ [[Koenig97]](#Koenig97) Chapters 4, 11¸ [[Meyers97]](#Meyers97) §14¸ [[Stroustrup00]](#Stroustrup00) §12.4.2¸ [[Sutter02]](#Sutter02) §27¸ [[Sutter04]](#Sutter04) §18
 
 
-### <a name="Sd-noexcept"></a> Dicussion: Usage of noexecpt
+### <a name="Sd-noexcept"></a> Discussion: Usage of noexecpt
 
 ???
 
 
 <a name="Sd-never-fail"></a>
-### Dicussion: Destructors, deallocation, and swap must never fail
+### Discussion: Destructors, deallocation, and swap must never fail
 
 Never allow an error to be reported from a destructor, a resource deallocation function (e.g., `operator delete`), or a `swap` function using `throw`. It is nearly impossible to write useful code if these operations can fail, and even if something does go wrong it nearly never makes any sense to retry. Specifically, types whose destructors may throw an exception are flatly forbidden from use with the C++ standard library. Most destructors are now implicitly `noexcept` by default.
 
@@ -12259,7 +12258,7 @@ The use of `array_view` and `string_view` should help a lot (they are not resour
 		string* p = bad();
 		vector<int> xx = {7, 8, 9};
 		string x = *p;		// undefined behavior: x may not be 1
-		*p = "Evil!";		// undefined behavior: we don't know what (if anytihng) is allocated a location p
+		*p = "Evil!";		// undefined behavior: we don't know what (if anything) is allocated a location p
 	}
 
 The `string`s of `v` are destroyed upon exit from `bad()` and so is `v` itself. This the returned pointer points to unallocated memory on the free store. This memory (pointed into by `p`) may have been reallocated by the time `*p` is executed. There may be no `string` to read and a write through `p` could easily corrupt objects of unrelated types.
