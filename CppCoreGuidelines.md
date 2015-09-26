@@ -713,7 +713,7 @@ If all we had was a typo so that we meant to use `n` as the bound, the code coul
 	
 	Date extract_date(const string& s);	// extract date from string
 	
-	user1(const string& date)	// manipulate date
+	void user1(const string& date)	// manipulate date
 	{
 		auto d = extract_date(date);
 		// ...
