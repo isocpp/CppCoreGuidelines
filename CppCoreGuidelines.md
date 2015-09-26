@@ -8377,7 +8377,7 @@ doesn't allow for implicit propagation of "exceptions" (`valid()` checks),
 and `valid()` checks can be forgotten.
 Prefer to use exceptions.
 
-**See also**: [discussion](##Sd-noexcept).
+**See also**: [discussion](#Sd-noexcept).
 
 **Enforcement**: ???
 
@@ -11994,7 +11994,9 @@ In general, however, avoid concrete base classes (see Item 35). For example, `un
 **References**: [[C++CS]](#C++CS) Item 50, [[Cargill92]](#Cargill92) pp. 77-79, 207¸ [[Cline99]](#Cline99) §21.06, 21.12-13¸ [[Henricson97]](#Henricson97) pp. 110-114¸ [[Koenig97]](#Koenig97) Chapters 4, 11¸ [[Meyers97]](#Meyers97) §14¸ [[Stroustrup00]](#Stroustrup00) §12.4.2¸ [[Sutter02]](#Sutter02) §27¸ [[Sutter04]](#Sutter04) §18
 
 
+### <a name="Sd-noexcept"></a> Dicussion: Usage of noexecpt
 
+???
 
 
 <a name="Sd-never-fail"></a>
