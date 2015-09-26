@@ -1232,7 +1232,7 @@ Ideally, that `Ensures` should be part of the interface that's not easily done. 
 
 
 <a name="Ri-except"></a>
-### I.10: Use exceptions to signal a failure to perform an required task
+### I.10: Use exceptions to signal a failure to perform a required task
 
 **Reason**: It should not be possible to ignore an error because that could leave the system or a computation in an undefined (or unexpected) state.
 This is a major source of errors.
@@ -1268,7 +1268,7 @@ consider using a style that returns a pair of values:
 **Note**: We don't consider "performance" a valid reason not to use exceptions.
 
 * Often, explicit error checking and handling consume as much time and space as exception handling.
-* Often, cleaner code yield better performance with exceptions (simplifying the tracing of paths through the program and their optimization).
+* Often, cleaner code yields better performance with exceptions (simplifying the tracing of paths through the program and their optimization).
 * A good rule for performance critical code is to move checking outside the critical part of the code ([checking](#Rper-checking)).
 * In the longer term, more regular code gets better optimized.
 
@@ -1283,7 +1283,7 @@ consider using a style that returns a pair of values:
 <a name="Ri-raw"></a>
 ### I.11: Never transfer ownership by a raw pointer (`T*`)
 
-**Reason**: if there is any doubt whether the caller or the callee owns an object, leaks or premature destruction will occur.
+**Reason**: If there is any doubt whether the caller or the callee owns an object, leaks or premature destruction will occur.
 
 **Example**: Consider
 
