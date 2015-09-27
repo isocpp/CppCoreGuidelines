@@ -1899,9 +1899,10 @@ Passing a shared smart pointer (e.g., `std::shared_ptr`) implies a run-time cost
 
 **Example**:
 
-    template<class T>
+
+	template<class T>
 	auto square(T t) { return t*t; }
-	
+
 **Note**: `constexpr` functions are pure.
 	
 **Enforcement**: not possible.
@@ -2204,7 +2205,7 @@ If the writer of `g()` makes an assumption about the size of `buffer` a bad logi
 
 **Example**:
 
-	template <class F, class... Args>
+    template <class F, class... Args>
     inline auto invoke(F&& f, Args&&... args) {
         return forward<F>(f)(forward<Args>(args)...);
     }
@@ -2314,14 +2315,14 @@ And yes, C++ does have multiple return values, by convention of using a `tuple`,
 **Example**:
 
     int f( const string& input, /*output only*/ string& output_data ) { // BAD: output-only parameter documented in a comment
-	    // ...
-		output_data = something();
-		return status;
-	}
+    	// ...
+    	output_data = something();
+    	return status;
+    }
 
     tuple<int, string> f( const string& input ) { // GOOD: self-documenting
-	    // ...
-		return make_tuple(something(), status);
+    	// ...
+    	return make_tuple(something(), status);
     }
 
 In fact, C++98's standard library already used this convenient feature, because a `pair` is like a two-element `tuple`.
@@ -4456,10 +4457,10 @@ Note that calling a specific explicitly qualified function is not a virtual call
 **Example; good**:
 
     class Foo {
-		// ...
+    	// ...
     public:
         void swap(Foo& rhs) noexcept
-		{
+    	{
             m1.swap(rhs.m1);
             std::swap(m2, rhs.m2);
         }
@@ -4471,9 +4472,9 @@ Note that calling a specific explicitly qualified function is not a virtual call
 Providing a nonmember `swap` function in the same namespace as your type for callers' convenience.
 
     void swap(Foo& a, Foo& b)
-	{
-		a.swap(b);
-	}
+    {
+    	a.swap(b);
+    }
 
 **Enforcement**:
 * (Simple) A class without virtual functions should have a `swap` member function declared.
@@ -5528,7 +5529,7 @@ Here, we ignore such cases.
 
 **Example, bad**: Consider
 
-	void send( X* x, cstring_view destination ) {
+    void send( X* x, cstring_view destination ) {
         auto port = OpenPort(destination);
         my_mutex.lock();
         // ...
@@ -5537,20 +5538,20 @@ Here, we ignore such cases.
         my_mutex.unlock();
         ClosePort(port);
         delete x;
-	}
+    }
 
 In this code, you have to remember to `unlock`, `ClosePort`, and `delete` on all paths, and do each exactly once.
 Further, if any of the code marked `...` throws an exception, then `x` is leaked and `my_mutex` remains locked.
 
 **Example**: Consider
 
-	void send( unique_ptr<X> x, cstring_view destination ) { // x owns the X
+    void send( unique_ptr<X> x, cstring_view destination ) { // x owns the X
         Port port{destination};            // port owns the PortHandle
         lock_guard<mutex> guard{my_mutex}; // guard owns the lock
         // ...
         Send(port, x);
         // ...
-	} // automatically unlocks my_mutex and deletes the pointer in x
+    } // automatically unlocks my_mutex and deletes the pointer in x
 
 Now all resource cleanup is automatic, performed once on all paths whether or not there is an exception. As a bonus, the function now advertises that it takes over ownership of the pointer.
 
@@ -6085,7 +6086,7 @@ Any type (including primary template or specialization) that overloads unary `*`
     }
 
     // use Microsoft's CComPtr
-	#include <atlbase.h>
+    #include <atlbase.h>
     void f(CComPtr<widget> p) {                // error under rule 'sharedptrparam'
         p->foo();
     }
@@ -6220,29 +6221,29 @@ You need to be sure that smart pointer cannot be inadvertently be reset or reass
     shared_ptr<widget> g_p = ...;
 
     void f( widget& w ) {
-		g();
-		use(w);  // A
+    	g();
+    	use(w);  // A
     }
 
     void g() {
-		g_p = ... ; // oops, if this was the last shared_ptr to that widget, destroys the widget
-	}
+    	g_p = ... ; // oops, if this was the last shared_ptr to that widget, destroys the widget
+    }
 
 The following should not pass code review:
 
     void my_code() {
-	    f( *g_p );	// BAD: passing pointer or reference obtained from a nonlocal smart pointer
-	                //      that could be inadvertently reset somewhere inside f or it callees
-		g_p->func(); // BAD: same reason, just passing it as a "this" pointer
-	}
+        f( *g_p );	// BAD: passing pointer or reference obtained from a nonlocal smart pointer
+                    //      that could be inadvertently reset somewhere inside f or it callees
+        g_p->func(); // BAD: same reason, just passing it as a "this" pointer
+    }
 
 The fix is simple -- take a local copy of the pointer to "keep a ref count" for your call tree:
 
     void my_code() {
-		auto pin = g_p; // cheap: 1 increment covers this entire function and all the call trees below us
-		f( *pin );      // GOOD: passing pointer or reference obtained from a local unaliased smart pointer
-		pin->func();    // GOOD: same reason
-	}
+    	auto pin = g_p; // cheap: 1 increment covers this entire function and all the call trees below us
+    	f( *pin );      // GOOD: passing pointer or reference obtained from a local unaliased smart pointer
+    	pin->func();    // GOOD: same reason
+    }
 
 **Enforcement**:
 
@@ -6543,11 +6544,11 @@ Here, there is a chance that the reader knows what `trim_tail` means and that th
 
 **Example, bad**: Argument names of large functions are de facto non-local and should be meaningful:
 
-	void complicated_algorithm(vector<Record>&vr, const vector<int>& vi, map<string, int>& out)
-		// read from events in vr (marking used Records) for the indices in vi placing (name, index) pairs into out
-	{
-		// ... 500 lines of code using vr, vi, and out ...
-	}
+    void complicated_algorithm(vector<Record>&vr, const vector<int>& vi, map<string, int>& out)
+    // read from events in vr (marking used Records) for the indices in vi placing (name, index) pairs into out
+    {
+    	// ... 500 lines of code using vr, vi, and out ...
+    }
 
 We recommend keeping functions short, but that rule isn't universally adhered to and naming should reflect that.
 
@@ -6653,7 +6654,7 @@ In each case, we save writing a longish, hard-to-remember type that the compiler
 **Example**:
 
 	template<class T>
-		auto Container<T>::first() -> Iterator;	// Container<T>::Iterator
+	auto Container<T>::first() -> Iterator;	// Container<T>::Iterator
 
 **Exception**: Avoid `auto` for initializer lists and in cases where you know exactly which type you want and where an initializer might require conversion.
 
@@ -11147,7 +11148,7 @@ Dynamic accesses into arrays are difficult for both tools and humans to validate
 
     // ALTERNATIVE A: Use an array_view
 
-	// A1: Change parameter type to use array_view
+    // A1: Change parameter type to use array_view
     void f(array_view<int, 10> a, int pos)
     {
         a[pos/2] = 1; // OK
@@ -11184,7 +11185,7 @@ Dynamic accesses into arrays are difficult for both tools and humans to validate
     void f()
     {
         int arr[COUNT];
-		array_view<int> av = arr;
+        array_view<int> av = arr;
         for (int i = 0; i < COUNT; ++i)
             av[i] = i;
     }
@@ -11381,19 +11382,19 @@ Use `not_null<zstring>` for C-style strings that cannot be `nullptr`. ??? Do we 
 <a name="SS-ownership"></a>
 ## GSL.owner: Ownership pointers
 
-* `unique_ptr<T>`	// unique ownership: `std::unique_ptr<T>`
-* `shared_ptr<T>`	// shared ownership: `std::shared_ptr<T>` (a counted pointer)
-* `stack_array<T>`	// A stack-allocated array. The number of elements are determined at construction and fixed thereafter. The elements are mutable unless `T` is a `const` type.
-* `dyn_array<T>`	// ??? needed ??? A heap-allocated array. The number of elements are determined at construction and fixed thereafter.
+* `unique_ptr<T>`     // unique ownership: `std::unique_ptr<T>`
+* `shared_ptr<T>`     // shared ownership: `std::shared_ptr<T>` (a counted pointer)
+* `stack_array<T>`    // A stack-allocated array. The number of elements are determined at construction and fixed thereafter. The elements are mutable unless `T` is a `const` type.
+* `dyn_array<T>`      // ??? needed ??? A heap-allocated array. The number of elements are determined at construction and fixed thereafter.
   The elements are mutable unless `T` is a `const` type. Basically an `array_view` that allocates and owns its elements.
 
 <a name="SS-assertions"></a>
 ## GSL.assert: Assertions
 
-* `Expects`		// precondition assertion. Currently placed in function bodies. Later, should be moved to declarations.
-				// `Expects(p)` terminates the program unless `p==true`
-				// ??? `Expect` in under control of some options (enforcement, error message, alternatives to terminate)
-* `Ensures`		// postcondition assertion.	Currently placed in function bodies. Later, should be moved to declarations.
+* `Expects`     // precondition assertion. Currently placed in function bodies. Later, should be moved to declarations.
+                // `Expects(p)` terminates the program unless `p==true`
+                // ??? `Expect` in under control of some options (enforcement, error message, alternatives to terminate)
+* `Ensures`     // postcondition assertion.	Currently placed in function bodies. Later, should be moved to declarations.
 
 
 <a name="SS-utilities"></a>
@@ -12110,26 +12111,26 @@ When using exceptions as your error handling mechanism, always document this beh
 
 If you define a destructor, you should not use the compiler-generated copy or move operation; you probably need to define or suppress copy and/or move.
 
+    class X {
+        HANDLE hnd;
+        // ...
+    public:
 
-	class X {
-	    HANDLE hnd;
-	    // ...
-	public:
  	   ~X() { /* custom stuff, such as closing hnd */ }
 
-		// suspicious: no mention of copying or moving -- what happens to hnd?
-	};
+    	// suspicious: no mention of copying or moving -- what happens to hnd?
+    };
 
-	X x1;
-	X x2 = x1; // pitfall: either fails to compile, or does something suspicious
-	x2 = x1;   // pitfall: either fails to compile, or does something suspicious
+    X x1;
+    X x2 = x1; // pitfall: either fails to compile, or does something suspicious
+    x2 = x1;   // pitfall: either fails to compile, or does something suspicious
 
 If you define copying, and any base or member has a type that defines a move operation, you should also define a move operation.
 
-	class x {
-	    string s; // defines more efficient move operations
-	    // ... other data members ...
-	public:
+    class x {
+        string s; // defines more efficient move operations
+        // ... other data members ...
+    public:
     	x(const x&) { /* stuff */ }
     	x& operator=(const x&) { /* stuff */ }
 
@@ -12137,12 +12138,12 @@ If you define copying, and any base or member has a type that defines a move ope
    	 //      (why wasn't the custom "stuff" repeated here?)
 	};
 
-	x test()
-	{
-	    x local;
+    x test()
+    {
+        x local;
     	// ...
     	return local;  // pitfall: will be inefficient and/or do the wrong thing
-	}
+    }
 
 If you define any of the copy constructor, copy assignment operator, or destructor, you probably should define the others.
 
