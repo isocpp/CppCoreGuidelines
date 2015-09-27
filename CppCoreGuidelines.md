@@ -12315,7 +12315,7 @@ The `string`s of `v` are destroyed upon exit from `bad()` and so is `v` itself. 
 
 **Example**:
 
-	messing with pointers
+    ??? Messing with pointers
 
 **Note**: If all members are resource handles, rely on the default special operations where possible.
 
