@@ -2082,9 +2082,10 @@ When I call `length(r)` should I test for `r==nullptr` first? Should the impleme
 <a name="Rf-string"></a>
 ### F.19: Use a `zstring` or a `not_null<zstring>` to designate a C-style string
 
-**Reason**: C-style strings are ubiquitous.
-They are defined by convention: zero-terminated arrays of characters.
-Functions are inconsistent in their use of `nullptr` and we must be more explicit.
+**Reason**: 
+C-style strings are ubiquitous. They are defined by convention: zero-terminated arrays of characters. 
+We must distinguish C-style strings from a pointer to a single character or an old-fashioned pointer to an array of characters.
+
 
 **Example**: Consider
 
