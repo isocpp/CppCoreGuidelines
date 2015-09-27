@@ -645,7 +645,8 @@ This design carries the number of elements along as an integral part of an objec
 
 **Example**:
 
-	show how possible checks are avoided by interfaces that pass polymorphic base classes around, when they actually know what they need?
+ * ???
+ * show how possible checks are avoided by interfaces that pass polymorphic base classes around, when they actually know what they need?
 	Or strings as "free-style" options
 	
 **Enforcement**:
@@ -2347,7 +2348,7 @@ rather than using the generic `tuple`.
 
 **Enforcement**:
 
-    * Output parameters should be replaced by return values.
+* Output parameters should be replaced by return values.
   An output parameter is one that the function writes to, invokes a non-`const` member function, or passes on as a non-`const`.
 
 <a name="Rf-return-ptr"></a>
@@ -2556,7 +2557,7 @@ For passthrough functions that pass in parameters (by ordinary reference or by p
 
 **Enforcement**:
 
-    * Warn on use of a named non-generic lambda (e.g., `auto x = [](int i){ /*...*/; };`) that captures nothing and appears at global scope. Write an ordinary function instead.
+* Warn on use of a named non-generic lambda (e.g., `auto x = [](int i){ /*...*/; };`) that captures nothing and appears at global scope. Write an ordinary function instead.
 
 
 
@@ -4142,7 +4143,7 @@ Consider:
 
 	
 <a name="Rc-move-assignment"></a>
-### C.63: Make move assignment non-`virtual`, take the parameter by `&&`, and return by non-`const `&`
+### C.63: Make move assignment non-`virtual`, take the parameter by `&&`, and return by non-`const &`
 
 **Reason**: It is simple and efficient.
 
@@ -4584,7 +4585,7 @@ Of course there are way of making `==` work in a hierarchy, but the naive approa
 **Example**:
 
 	???
-	
+
 **Enforcement**: ???
 
 
@@ -9796,7 +9797,7 @@ Similar for `Vector<string>::sort()`.
 Unless those two functions are called that's code bloat.
 Imagine what this would do to a class hierarchy with dozens of member functions and dozens of derived classes with many instantiations.
 
-**Note**: In many cases you can provide a stable interface by not parameterizing a base; see [???](#Rt-abi).
+**Note**: In many cases you can provide a stable interface by not parameterizing a base; see [Rule](#Rt-abi).
 
 **Enforcement**:
 
@@ -10848,8 +10849,6 @@ Profiles summary:
 * [Pro.bounds: Bounds safety](#SS-bounds)
 * [Pro.lifetime: Lifetime safety](#SS-lifetime)
 
-
-
 <a name="SS-type"></a>
 ## Type safety profile
 
@@ -10859,11 +10858,11 @@ For the purposes of this section, type-safety is defined to be the property that
 
 The following are under consideration but not yet in the rules below, and may be better in other profiles:
 
-   - narrowing arithmetic promotions/conversions (likely part of a separate safe-arithmetic profile)
-   - arithmetic cast from negative floating point to unsigned integral type (ditto)
-   - selected undefined behavior: ??? this is a big bucket, start with Gaby's UB list
-   - selected unspecified behavior: ??? would this really be about safety, or more a portability concern?
-   - constness violations? if we rely on it for safety
+* narrowing arithmetic promotions/conversions (likely part of a separate safe-arithmetic profile)
+* arithmetic cast from negative floating point to unsigned integral type (ditto)
+* selected undefined behavior: ??? this is a big bucket, start with Gaby's UB list
+* selected unspecified behavior: ??? would this really be about safety, or more a portability concern?
+* constness violations? if we rely on it for safety
 
 An implementation of this profile shall recognize the following patterns in source code as non-conforming and issue a diagnostic.
 
@@ -11295,7 +11294,7 @@ These functions all have bounds-safe overloads that take `array_view`. Standard 
 
 * Impact on the standard library will require close coordination with WG21, if only to ensure compatibility even if never standardized.
 * We are considering specifying bounds-safe overloads for stdlib (especially C stdlib) functions like `memcmp` and shipping them in the GSL.
-* For existing stdlib functions and types like `vector` that are not fully bounds-checked, the goal is for these features to be bounds-checked when called from code with the bounds profile on, and unchecked when called from legacy code, possibly using constracts (concurrently being proposed by several WG21 members).
+* For existing stdlib functions and types like `vector` that are not fully bounds-checked, the goal is for these features to be bounds-checked when called from code with the bounds profile on, and unchecked when called from legacy code, possibly using contracts (concurrently being proposed by several WG21 members).
 
 <a name="SS-lifetime"></a>
 ## Lifetime safety profile
@@ -11856,10 +11855,10 @@ If the class definition and the constructor body are in separate files, the long
 
 If your design wants virtual dispatch into a derived class from a base class constructor or destructor for functions like `f` and `g`, you need other techniques, such as a post-constructor -- a separate member function the caller must invoke to complete initialization, which can safely call `f` and `g` because in member functions virtual calls behave normally. Some techniques for this are shown in the References. Here's a non-exhaustive list of options:
 
-   * *Pass the buck:* Just document that user code must call the post-initialization function right after constructing an object.
-   * *Post-initialize lazily:* Do it during the first call of a member function. A Boolean flag in the base class tells whether or not post-construction has taken place yet.
-   * *Use virtual base class semantics:* Language rules dictate that the constructor most-derived class decides which base constructor will be invoked; you can use that to your advantage. (See [[Taligent94]](#Taligent94).)
-   * *Use a factory function:* This way, you can easily force a mandatory invocation of a post-constructor function.
+* *Pass the buck:* Just document that user code must call the post-initialization function right after constructing an object.
+* *Post-initialize lazily:* Do it during the first call of a member function. A Boolean flag in the base class tells whether or not post-construction has taken place yet.
+* *Use virtual base class semantics:* Language rules dictate that the constructor most-derived class decides which base constructor will be invoked; you can use that to your advantage. (See [[Taligent94]](#Taligent94).)
+* *Use a factory function:* This way, you can easily force a mandatory invocation of a post-constructor function.
 
 Here is an example of the last option:
 
@@ -11907,13 +11906,12 @@ In summary, no post-construction technique is perfect. The worst techniques dodg
  
 
  
-
 ### <a name="Sd-dtor"></a>Discussion: Make base class destructors public and virtual, or protected and nonvirtual
 
 Should destruction behave virtually? That is, should destruction through a pointer to a `base` class should be allowed? If yes, then `base`'s destructor must be public in order to be callable, and virtual otherwise calling it results in undefined behavior. Otherwise, it should be protected so that only derived classes can invoke it in their own destructors, and nonvirtual since it doesn't need to behave virtually virtual.
 
 **Example**: The common case for a base class is that it's intended to have publicly derived classes, and so calling code is just about sure to use something like a `shared_ptr<base>`:
-    
+
 ```
 class base {
 public:
@@ -11979,13 +11977,13 @@ In general, however, avoid concrete base classes (see Item 35). For example, `un
 **References**: [[C++CS]](#C++CS) Item 50, [[Cargill92]](#Cargill92) pp. 77-79, 207¸ [[Cline99]](#Cline99) §21.06, 21.12-13¸ [[Henricson97]](#Henricson97) pp. 110-114¸ [[Koenig97]](#Koenig97) Chapters 4, 11¸ [[Meyers97]](#Meyers97) §14¸ [[Stroustrup00]](#Stroustrup00) §12.4.2¸ [[Sutter02]](#Sutter02) §27¸ [[Sutter04]](#Sutter04) §18
 
 
-### <a name="Sd-noexcept"></a> Dicussion: Usage of noexecpt
+### <a name="Sd-noexcept"></a> Discussion: Usage of noexecpt
 
 ???
 
 
 <a name="Sd-never-fail"></a>
-### Dicussion: Destructors, deallocation, and swap must never fail
+### Discussion: Destructors, deallocation, and swap must never fail
 
 Never allow an error to be reported from a destructor, a resource deallocation function (e.g., `operator delete`), or a `swap` function using `throw`. It is nearly impossible to write useful code if these operations can fail, and even if something does go wrong it nearly never makes any sense to retry. Specifically, types whose destructors may throw an exception are flatly forbidden from use with the C++ standard library. Most destructors are now implicitly `noexcept` by default.
 
@@ -12000,7 +11998,7 @@ public:
 };
 ```
 
-* 1. `nefarious` objects are hard to use safely even as local variables:
+1. `nefarious` objects are hard to use safely even as local variables:
 
 ```
 void test(string& s) {
@@ -12010,7 +12008,7 @@ void test(string& s) {
 ```
 Here, copying `s` could throw, and if that throws and if `n`'s destructor then also throws, the program will exit via `std::terminate` because two exceptions can't be propagated simultaneously.
 
-* 2. Classes with `nefarious` members or bases are also hard to use safely, because their destructors must invoke `nefarious`' destructor, and are similarly poisoned by its poor behavior:
+2. Classes with `nefarious` members or bases are also hard to use safely, because their destructors must invoke `nefarious`' destructor, and are similarly poisoned by its poor behavior:
 
 ```
 class innocent_bystander {
@@ -12026,13 +12024,13 @@ void test(string& s) {
 
 Here, if constructing `copy2` throws, we have the same problem because `i`'s destructor now also can throw, and if so we'll invoke `std::terminate`.
 
-* 3. You can't reliably create global or static `nefarious` objects either:
+3. You can't reliably create global or static `nefarious` objects either:
 
 ```
 static nefarious n;       // oops, any destructor exception can't be caught
 ```
 
-* 4. You can't reliably create arrays of `nefarious`:
+4. You can't reliably create arrays of `nefarious`:
 
 ```
 void test() {
@@ -12041,7 +12039,7 @@ void test() {
 
 The behavior of arrays is undefined in the presence of destructors that throw because there is no reasonable rollback behavior that could ever be devised. Just think: What code can the compiler generate for constructing an `arr` where, if the fourth object's constructor throws, the code has to give up and in its cleanup mode tries to call the destructors of the already-constructed objects... and one or more of those destructors throws? There is no satisfactory answer.
 
-* 5. You can't use `Nefarious` objects in standard containers:
+5. You can't use `Nefarious` objects in standard containers:
 
 ```
 std::vector<nefarious> vec(10);   // this is line can std::terminate()
@@ -12261,7 +12259,7 @@ The use of `array_view` and `string_view` should help a lot (they are not resour
 		string* p = bad();
 		vector<int> xx = {7, 8, 9};
 		string x = *p;		// undefined behavior: x may not be 1
-		*p = "Evil!";		// undefined behavior: we don't know what (if anytihng) is allocated a location p
+		*p = "Evil!";		// undefined behavior: we don't know what (if anything) is allocated a location p
 	}
 
 The `string`s of `v` are destroyed upon exit from `bad()` and so is `v` itself. This the returned pointer points to unallocated memory on the free store. This memory (pointed into by `p`) may have been reallocated by the time `*p` is executed. There may be no `string` to read and a write through `p` could easily corrupt objects of unrelated types.
