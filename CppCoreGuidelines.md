@@ -6013,7 +6013,7 @@ The `make_shared()` version mentions `X` only once, so it is usually shorter (as
 <a name ="Rr-weak_ptr"></a>
 ### R.30: Use `std::weak_ptr` to break cycles of `shared_ptr`s
 
-**Reason**: `shared_ptr's rely on use counting and the use count for a cyclic structure never goes to zero, so we need a mechanism to
+**Reason**: `shared_ptr`'s rely on use counting and the use count for a cyclic structure never goes to zero, so we need a mechanism to
 be able to destroy a cyclic structure.
 
 **Example**:
@@ -7503,7 +7503,7 @@ The call will most likely be `f(0,1)` or `f(1,0)`, but you don't know which. Tec
 
 
 <a name="Res-magic"></a>
-### ES.45: Avoid "`magic constants"; use symbolic constants
+### ES.45: Avoid "magic constants"; use symbolic constants
 
 **Reason**: Unnamed constants embedded in expressions are easily overlooked and often hard to understand:
 
@@ -8072,12 +8072,11 @@ Concurrency rule summary:
 * ???
 * ???
 
-???? should there be a "use X rather than std::async" where X is something that would use a better specified thread pool?
-Â 
-Speaking of concurrency, should there be a note about the dangers of std::atomic (weapons)?
-A lot of people, myself included, like to experiment with std::memory_order, but it is perhaps best to keep a close watch on those things in production code.
-Even vendors mess this up: Microsoft had to fix their `shared_ptr`
-(weak refcount decrement wasn't synchronized-with the destructor, if I recall correctly, although it was only a problem on ARM, not Intel)
+???? should there be a "use X rather than `std::async`" where X is something that would use a better specified thread pool?
+
+Speaking of concurrency, should there be a note about the dangers of `std::atomic` (weapons)?
+A lot of people, myself included, like to experiment with `std::memory_order`, but it is perhaps best to keep a close watch on those things in production code.
+Even vendors mess this up: Microsoft had to fix their `shared_ptr` (weak refcount decrement wasn't synchronized-with the destructor, if I recall correctly, although it was only a problem on ARM, not Intel)
 and everyone (gcc, clang, Microsoft, and intel) had to fix their `compare_exchange_*` this year,
 after an implementation bug caused losses to some finance company and they were kind enough to let the community know.
 
@@ -8411,7 +8410,7 @@ Prefer to use exceptions.
 		return log(sqrt(d<=0? 1 : d));
 	}
 
-Here, I know that `compute` will not throw because it is composed out of operations that don't throw. By declaring `compute` to be `noexcept` I give the compiler and human readers information that can make it easier for them to understand and manipulate 'compute`.
+Here, I know that `compute` will not throw because it is composed out of operations that don't throw. By declaring `compute` to be `noexcept` I give the compiler and human readers information that can make it easier for them to understand and manipulate `compute`.
 
 **Note**: Many standard library functions are `noexcept` including all the standard library functions "inherited" from the C standard library.
 
@@ -12369,11 +12368,11 @@ Aternatively, we will decide that no change is needed and delete the entry.
 * Don't overabstract
 * Never pass a pointer down the call stack
 * falling through a function bottom
-* Should there be guidelines to choose between polymorphisms? YES. classic (virtual functions, reference semantics) vs. Sean Parent style (value semantics, type-erased, kind of like std::function)  vs. CRTP/static? YES Perhaps even vs. tag dispatch?
+* Should there be guidelines to choose between polymorphisms? YES. classic (virtual functions, reference semantics) vs. Sean Parent style (value semantics, type-erased, kind of like `std::function`)  vs. CRTP/static? YES Perhaps even vs. tag dispatch?
 * Speaking of virtual functions, should non-virtual interface be promoted? NO. (public non-virtual foo() calling private/protected do_foo())? Not a new thing, seeing as locales/streams use it, but it seems to be under-emphasized.
 * should virtual calls be banned from ctors/dtors in your guidelines? YES. A lot of people ban them, even though I think it's a big strength of C++ that they are ??? -preserving (D disappointed me so much when it went the Java way). WHAT WOULD BE A GOOD EXAMPLE?
 * Speaking of lambdas, what would weigh in on the decision between lambdas and (local?) classes in algorithm calls and other callback scenarios?
-* And speaking of std::bind, Stephen T. Lavavej criticizes it so much I'm starting to wonder if it is indeed going to fade away in future. Should lambdas be recommended instead?
+* And speaking of `std::bind`, Stephen T. Lavavej criticizes it so much I'm starting to wonder if it is indeed going to fade away in future. Should lambdas be recommended instead?
 * What to do with leaks out of temporaries? : `p = (s1+s2).c_str();`
 * pointer/iterator invalidation leading to dangling pointers
 
