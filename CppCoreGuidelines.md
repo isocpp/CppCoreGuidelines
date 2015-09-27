@@ -12361,7 +12361,7 @@ Aternatively, we will decide that no change is needed and delete the entry.
 * Avoid implicit conversions
 * Const member functions should be thread safe "¦ aka, but I don't really change the variable, just assign it a value the first time its called "¦ argh
 * Always initialize variables, use initialization lists for member variables.
-* Anyone writing a public interface which takes or returns void* should have their toes set on fire. Â Â That one has been a personal favourite of mine for a number of years. :)
+* Anyone writing a public interface which takes or returns void* should have their toes set on fire. That one has been a personal favourite of mine for a number of years. :)
 * Use `const`'ness wherever possible: member functions, variables and (yippee) const_iterators
 * Use `auto`
 * `(size)` vs. `{initializers}` vs. `{Extent{size}}`
