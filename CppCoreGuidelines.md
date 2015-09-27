@@ -4142,7 +4142,7 @@ Consider:
 
 	
 <a name="Rc-move-assignment"></a>
-### C.63: Make move assignment non-`virtual`, take the parameter by `&&`, and return by non-`const `&`
+### C.63: Make move assignment non-`virtual`, take the parameter by `&&`, and return by non-`const &`
 
 **Reason**: It is simple and efficient.
 
@@ -4584,7 +4584,7 @@ Of course there are way of making `==` work in a hierarchy, but the naive approa
 **Example**:
 
 	???
-	
+
 **Enforcement**: ???
 
 
@@ -10848,8 +10848,6 @@ Profiles summary:
 * [Pro.bounds: Bounds safety](#SS-bounds)
 * [Pro.lifetime: Lifetime safety](#SS-lifetime)
 
-
-
 <a name="SS-type"></a>
 ## Type safety profile
 
@@ -10859,11 +10857,11 @@ For the purposes of this section, type-safety is defined to be the property that
 
 The following are under consideration but not yet in the rules below, and may be better in other profiles:
 
-   - narrowing arithmetic promotions/conversions (likely part of a separate safe-arithmetic profile)
-   - arithmetic cast from negative floating point to unsigned integral type (ditto)
-   - selected undefined behavior: ??? this is a big bucket, start with Gaby's UB list
-   - selected unspecified behavior: ??? would this really be about safety, or more a portability concern?
-   - constness violations? if we rely on it for safety
+* narrowing arithmetic promotions/conversions (likely part of a separate safe-arithmetic profile)
+* arithmetic cast from negative floating point to unsigned integral type (ditto)
+* selected undefined behavior: ??? this is a big bucket, start with Gaby's UB list
+* selected unspecified behavior: ??? would this really be about safety, or more a portability concern?
+* constness violations? if we rely on it for safety
 
 An implementation of this profile shall recognize the following patterns in source code as non-conforming and issue a diagnostic.
 
@@ -11856,10 +11854,10 @@ If the class definition and the constructor body are in separate files, the long
 
 If your design wants virtual dispatch into a derived class from a base class constructor or destructor for functions like `f` and `g`, you need other techniques, such as a post-constructor -- a separate member function the caller must invoke to complete initialization, which can safely call `f` and `g` because in member functions virtual calls behave normally. Some techniques for this are shown in the References. Here's a non-exhaustive list of options:
 
-   * *Pass the buck:* Just document that user code must call the post-initialization function right after constructing an object.
-   * *Post-initialize lazily:* Do it during the first call of a member function. A Boolean flag in the base class tells whether or not post-construction has taken place yet.
-   * *Use virtual base class semantics:* Language rules dictate that the constructor most-derived class decides which base constructor will be invoked; you can use that to your advantage. (See [[Taligent94]](#Taligent94).)
-   * *Use a factory function:* This way, you can easily force a mandatory invocation of a post-constructor function.
+* *Pass the buck:* Just document that user code must call the post-initialization function right after constructing an object.
+* *Post-initialize lazily:* Do it during the first call of a member function. A Boolean flag in the base class tells whether or not post-construction has taken place yet.
+* *Use virtual base class semantics:* Language rules dictate that the constructor most-derived class decides which base constructor will be invoked; you can use that to your advantage. (See [[Taligent94]](#Taligent94).)
+* *Use a factory function:* This way, you can easily force a mandatory invocation of a post-constructor function.
 
 Here is an example of the last option:
 
@@ -11913,7 +11911,7 @@ In summary, no post-construction technique is perfect. The worst techniques dodg
 Should destruction behave virtually? That is, should destruction through a pointer to a `base` class should be allowed? If yes, then `base`'s destructor must be public in order to be callable, and virtual otherwise calling it results in undefined behavior. Otherwise, it should be protected so that only derived classes can invoke it in their own destructors, and nonvirtual since it doesn't need to behave virtually virtual.
 
 **Example**: The common case for a base class is that it's intended to have publicly derived classes, and so calling code is just about sure to use something like a `shared_ptr<base>`:
-    
+
 ```
 class base {
 public:
@@ -12000,7 +11998,7 @@ public:
 };
 ```
 
-* 1. `nefarious` objects are hard to use safely even as local variables:
+1. `nefarious` objects are hard to use safely even as local variables:
 
 ```
 void test(string& s) {
@@ -12010,7 +12008,7 @@ void test(string& s) {
 ```
 Here, copying `s` could throw, and if that throws and if `n`'s destructor then also throws, the program will exit via `std::terminate` because two exceptions can't be propagated simultaneously.
 
-* 2. Classes with `nefarious` members or bases are also hard to use safely, because their destructors must invoke `nefarious`' destructor, and are similarly poisoned by its poor behavior:
+2. Classes with `nefarious` members or bases are also hard to use safely, because their destructors must invoke `nefarious`' destructor, and are similarly poisoned by its poor behavior:
 
 ```
 class innocent_bystander {
@@ -12026,13 +12024,13 @@ void test(string& s) {
 
 Here, if constructing `copy2` throws, we have the same problem because `i`'s destructor now also can throw, and if so we'll invoke `std::terminate`.
 
-* 3. You can't reliably create global or static `nefarious` objects either:
+3. You can't reliably create global or static `nefarious` objects either:
 
 ```
 static nefarious n;       // oops, any destructor exception can't be caught
 ```
 
-* 4. You can't reliably create arrays of `nefarious`:
+4. You can't reliably create arrays of `nefarious`:
 
 ```
 void test() {
@@ -12041,7 +12039,7 @@ void test() {
 
 The behavior of arrays is undefined in the presence of destructors that throw because there is no reasonable rollback behavior that could ever be devised. Just think: What code can the compiler generate for constructing an `arr` where, if the fourth object's constructor throws, the code has to give up and in its cleanup mode tries to call the destructors of the already-constructed objects... and one or more of those destructors throws? There is no satisfactory answer.
 
-* 5. You can't use `Nefarious` objects in standard containers:
+5. You can't use `Nefarious` objects in standard containers:
 
 ```
 std::vector<nefarious> vec(10);   // this is line can std::terminate()
