@@ -1789,10 +1789,10 @@ it just guarantees that the function can be evaluated at compile time for consta
 	
 	void test(int v)
 	{
-		int m1 = min(-1, 2);				// probably compile-time evaluation
-		constexpr int m2 = min(-1, 2);	// compile-time evaluation
-		int m3 = min(-1, v);				// run-time evaluation
-		constexpr int m4 = min(-1, v);	// error: connot evaluate at compile-time
+		int m1 = min(-1, 2);            // probably compile-time evaluation
+		constexpr int m2 = min(-1, 2);  // compile-time evaluation
+		int m3 = min(-1, v);            // run-time evaluation
+		constexpr int m4 = min(-1, v);  // error: cannot evaluate at compile-time
 	}
 	
 **Note**: `constexpr` functions are pure: they can have no side effects.
@@ -1988,7 +1988,7 @@ Avoid "esoteric techniques" such as:
 
 **Enforcement**: This is a philosophical guideline that is infeasible to check directly and completely.
 However, many of the the detailed rules (F.16-F.45) can be checked,
-such as passing a `const int&`, returning an `array<BigPOD>` by value, and returning a pointer to fre store alloced by the function.
+such as passing a `const int&`, returning an `array<BigPOD>` by value, and returning a pointer to free store alloced by the function.
 
 
 <a name="Rf-ptr"></a>
@@ -3375,7 +3375,7 @@ The standard library requires that all classes it deals with have destructors th
 None have succeeded to come up with a general scheme.
 This can be be a real practical problem: For example, what about a sockets that won't close?
 The writer of a destructor does not know why the destructor is called and cannot "refuse to act" by throwing an exception.
-See <a =href="#Sd-dtor">discussion</a>.
+See [discussion](#Sd-dtor).
 To make the problem worse, many "close/release" operations are not retryable.
 If at all possible, consider failure to close/cleanup a fundamental design error and terminate.
 
@@ -3406,7 +3406,7 @@ The destructor could send a message (somehow) to the responsible part of the sys
 <a name="SS-ctor"></a>
 ## C.ctor: Constructors
 
-A constuctor defined how an object is initialized (constructed).
+A constructor defined how an object is initialized (constructed).
 
 
 <a name="Rc-ctor"></a>
@@ -3562,7 +3562,7 @@ The idiom of having constructors acquire resources and destructors release them 
 
 **Note**: For a variable definition (e.g., on the stack or as a member of another object) there is no explicit function call from which an error code could be returned. Leaving behind an invalid object an relying on users to consistently check an `is_valid()` function before use is tedious, error-prone, and inefficient.
 
-**Exception**: There are domains, such as some hard-real-time systems (think airplane controls) where (without additional tool support) exception handling is not sufficiently predictable from a timing perspective. There the `is_valed()` technique must be used. In such cases, check `is_valid()` consistently and immediately to simulate [RAII](#Rr-raii).
+**Exception**: There are domains, such as some hard-real-time systems (think airplane controls) where (without additional tool support) exception handling is not sufficiently predictable from a timing perspective. There the `is_valid()` technique must be used. In such cases, check `is_valid()` consistently and immediately to simulate [RAII](#Rr-raii).
 
 **Alternative**: If you feel tempted to use some "post-constructor initialization" or "two-stage initialization" idiom, try not to do that. If you really have to, look at [factory functions](#Rc-factory).
 
@@ -5156,7 +5156,7 @@ It also gives an opportunity to eliminate a separate allocation for the referenc
 
 **Enforcement**:
 
-* Flag the repetive usage of template specialization list`<Foo>`
+* Flag the repetitive usage of template specialization list`<Foo>`
 * Flag variables declared to be `shared_ptr<Foo>`
 
 
@@ -5495,7 +5495,7 @@ Here, we ignore such cases.
   * [R.5: Prefer scoped objects](#Rr-scoped)
   * [R.6: Avoid non-`const` global variables](#Rr-global)
 
-* Alocation and deallocation rule summary:
+* Allocation and deallocation rule summary:
 
   * [R.10: Avoid `malloc()` and `free()`](#Rr-mallocfree)
   * [R.11: Avoid calling `new` and `delete` explicitly](#Rr-newdelete)
@@ -5767,7 +5767,7 @@ They are a notable source of errors.
 
 
 <a name="SS-alloc"></a>
-## R.alloc: Alocation and deallocation
+## R.alloc: Allocation and deallocation
 
 
 <a name ="Rr-mallocfree"></a>
@@ -5798,10 +5798,10 @@ They are a notable source of errors.
 			// ...
 			
 			delete p1;	// error: cannot delete object allocated by malloc()
-			free(p2);	// error: cannot free() object allocatedby new
+			free(p2);	// error: cannot free() object allocated by new
 		}
 
-In some implementaions that `delete` and that `free()` might work, or maybe they will cause run-time errors.
+In some implementations that `delete` and that `free()` might work, or maybe they will cause run-time errors.
 		
 **Exception**: There are applications and sections of code where exceptions are not acceptable.
 Some of the best such example are in life-critical hard real-time code.
@@ -5820,7 +5820,7 @@ If the pointer returned from `new` is assigned to a plain/naked pointer, the obj
 
 **Note**: In a large program, a naked `delete` (that is a `delete` in application code, rather than part of code devoted to resource management)
 is a likely bug: if you have N `delete`s, how can you be certain that you don't need N+1 or N-1?
-The bug may be latent: it may emerge only during maintenace.
+The bug may be latent: it may emerge only during maintenance.
 If you have a naked `new`, you probably need a naked `delete` somewhere, so you probably have a bug.
 
 **Enforcement**: (Simple) Warn on any explicit use of `new` and `delete`. Suggest using `make_unique` instead.
@@ -5926,7 +5926,7 @@ Write your own factory wrapper if there is not one already.
 **Note**: If you want memory that cannot be deallocated, `=delete` the deallocation operation.
 Don't leave it undeclared.
 
-**Enforcement**: Flag incomplate pairs.
+**Enforcement**: Flag incomplete pairs.
 
 
 <a name="SS-smart"></a>
@@ -5971,7 +5971,7 @@ This will leak the object used to initialize `p1` (only).
     void f()
     {
         unique_ptr<Base> base = make_unique<Derived>();
-        // use base locall
+        // use base locally
     } // destroy base
 
 
@@ -6757,7 +6757,7 @@ or maybe
 
 * Flag every uninitialized variable.
   Don't flag variables of user-defined types with default constructors.
-* Check that the unitialized buffer is read into *immediately* after declaration.
+* Check that the uninitialized buffer is read into *immediately* after declaration.
 
 
 <a name="Res-introduce"></a>
@@ -6939,7 +6939,7 @@ If `leak==true` the object pointer to by `p2` is leaked and the object pointed t
 <a name="Res-stack"></a>
 ### ES.27: Use `std::array` or `stack_array` for arrays on the stack
 
-**Reason**: They are readable and don't impicitly convert to pointers.
+**Reason**: They are readable and don't implicitly convert to pointers.
 They are not confused with non-standard extensions of built-in arrays.
 
 **Example, bad**:
@@ -7022,7 +7022,7 @@ If at all possible, reduce the conditions to a simple set of alternatives (e.g.,
 		case file: 			owned=true;  return *new ifstream{argv[2]};
 	}();
 
-**Enforcement**: Hard. At best a heuristic. Look for an unitialized variable followed by a loop assigning to it.
+**Enforcement**: Hard. At best a heuristic. Look for an uninitialized variable followed by a loop assigning to it.
 
 
 <a name="Res-macros"></a>
@@ -7352,7 +7352,7 @@ This is an ad-hoc simulation of destructors. Declare your resources with handles
 **Enforcement**: Flag empty statements that are not blocks and doesn't "contain" comments.
 
 
-## ES.expr: Expresssions
+## ES.expr: Expressions
 
 Expressions manipulate values.
 
@@ -7393,7 +7393,7 @@ Some of these expressions are unconditionally bad (e.g., they rely on undefined 
 	if(0<=x && x<max) // OK
 
 	auto t1 = 0<=x;		// bad: unnecessarily verbose
-	aoto t2 = x<max;
+	auto t2 = x<max;
 	if(t1 && t2) // ...
 
 	
@@ -7486,7 +7486,7 @@ A good rule of thumb is that you should not read a value twice in an expression 
 
 The call will most likely be `f(0, 1)` or `f(1, 0)`, but you don't know which. Technically, the behavior is undefined.
 
-**Example**: ??? oveloaded operators can lead to order of evaluation problems (shouldn't :-()
+**Example**: ??? overloaded operators can lead to order of evaluation problems (shouldn't :-()
 
 	f1()->m(f2());	// m(f1(), f2())
 	cout << f1() << f2();	// operator<<(operator<<(cout, f1()), f2())
@@ -7894,7 +7894,7 @@ Performance rule summary:
 
 **Reason**: Optimizing a non-performance-critical part of a program has no effect on system performance.
 
-**Note**: If your program spends most of its time waiting for the web or for a human, optimization of in-memory computation is problably useless.
+**Note**: If your program spends most of its time waiting for the web or for a human, optimization of in-memory computation is probably useless.
 
 ???
 
@@ -8016,7 +8016,7 @@ make the job of the optimizer much harder. Simple code often optimizes better th
 
 ???
 
-Concurrency and parallism rule summary:
+Concurrency and parallelism rule summary:
 
 * [CP.1: Assume that your code will run as part of a multi-threaded program](#Rconc-multi)
 * [CP.2: Avoid data races](#Rconc-races)
@@ -8339,7 +8339,7 @@ First challenge that assumption; there are many anti-exceptions myths around.
 We know of only a few good reasons:
 
 * We are on a system so small that the exception support would eat up most of our 2K or memory.
-* We are in a hard-real-time system and we don't have tools that allows us that an exception is handled withon the required time.
+* We are in a hard-real-time system and we don't have tools that allows us that an exception is handled within the required time.
 * We are in a system with tons of legacy code using lots of pointers in difficult-to-understand ways
   (in particular without a recognizable ownership strategy) so that exceptions could cause leaks.
 * We get fired if we challenge our manager's ancient wisdom.
@@ -8641,7 +8641,7 @@ Let cleanup actions on the unwinding path be handled by [RAII](#Re-raii).
 # Con: Constants and Immutability
 
 You can't have a race condition on a constant.
-it is easier to reason about a program when many of the objects cannot change threir values.
+it is easier to reason about a program when many of the objects cannot change their values.
 Interfaces that promises "no change" of objects passed as arguments greatly increase readability.
 
 Constant rule summary:
@@ -9244,7 +9244,7 @@ Once language support is available, the `//` in front of the axiom can be remove
 
 **Note**: The GSL concepts have well defined semantics; see the Palo Alto TR and the Ranges TS.
 
-**Exception**: Early versions of a new "concept" still under development will often just define simple sets of contraints without a well-specified semantics.
+**Exception**: Early versions of a new "concept" still under development will often just define simple sets of constraints without a well-specified semantics.
 Finding good semantics can take effort and time.
 An incomplete set of constraints can still be very useful:
 
@@ -9298,8 +9298,8 @@ they do not need any special declarations to "hook into the concept".
 The programmer (in a library) must define `is_contiguous` (a trait) appropriately.
 
 **Note**: Traits can be trains classes or type traits.
-These can be user-defined or standard-libray ones.
-Prefer the standard-libray ones.
+These can be user-defined or standard-library ones.
+Prefer the standard-library ones.
 
 **Enforcement**:
 
@@ -9568,7 +9568,7 @@ Note the use of the `s` suffix to ensure that the string is a `std::string`, rat
 	???
 	
 **Note**: Having a template operate only on its arguments would be one way of reducing the number of dependencies to a minimum,
-but that would generally be unmaneageable. For example, an algorithm usually uses other algorithms.
+but that would generally be unmanageable. For example, an algorithm usually uses other algorithms.
 
 **Enforcement**: ??? Tricky
 
@@ -9775,7 +9775,7 @@ The two language mechanisms can be use effectively in combination, but a few des
 	struct Container {			// an interface
 		virtual T* get(int i);
 		virtual T* first();
-		virtial T* next();
+		virtual T* next();
 		virtual void sort();
 	};
 	
@@ -11373,7 +11373,7 @@ There is no really good way to say "pointer to a single `char` (`string_view{p, 
 
 Logically, those last two aliases are not needed, but we are not always logical,
 and they make the distinction between a pointer to one `char` and a pointer to a C-style string explicit.
-A sequence of characters that is not assumed to be zero-terminated sould be a `char*`, rather than a `zstring`.
+A sequence of characters that is not assumed to be zero-terminated should be a `char*`, rather than a `zstring`.
 French accent optional.
 
 Use `not_null<zstring>` for C-style strings that cannot be `nullptr`. ??? Do we need a name for `not_null<zstring>`? or is its ugliness a feature?
@@ -11630,7 +11630,7 @@ Some conventions capitalize the first letter, some don't.
 <a name="Rl-camel"></a>
 ### NL.10: Avoid CamelCase
 
-**Reason**: The use of underscores to separate parts of a name is the originale C and C++ style and used in the C++ standard library.
+**Reason**: The use of underscores to separate parts of a name is the original C and C++ style and used in the C++ standard library.
 If you prefer CamelCase, you have to choose among different flavors of camelCase.
 
 **Example**:
@@ -12338,7 +12338,7 @@ Now `Named` has a default constructor, a destructor, and efficient copy and move
 
 This is our to-do list.
 Eventually, the entries will become rules or parts of rules.
-Aternatively, we will decide that no change is needed and delete the entry.
+Alternatively, we will decide that no change is needed and delete the entry.
 
 * No long-distance friendship
 * Should physical design (what's in a file) and large-scale design (libraries, groups of libraries) be addressed?
@@ -12363,18 +12363,20 @@ Aternatively, we will decide that no change is needed and delete the entry.
 * What to do with leaks out of temporaries? : `p = (s1+s2).c_str();`
 * pointer/iterator invalidation leading to dangling pointers
 
-		void bad()
-		{
-			int* p = new int[700];
-			int* q = &p[7];
-			delete p;
+  Example:
 
-			vector<int> v(700);
-			int* q2 = &v[7];
-			v.resize(900);
+    void bad()
+    {
+    int* p = new int[700];
+        int* q = &p[7];
+        delete p;
 
-			// ... use q and q2 ...
-		}
+        vector<int> v(700);
+        int* q2 = &v[7];
+        v.resize(900);
+
+        // ... use q and q2 ...
+    }
 
 * LSP
 * private inheritance vs/and membership
