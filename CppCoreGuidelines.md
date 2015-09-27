@@ -3271,7 +3271,7 @@ Also, copying may lead to slicing.
 		// ...
 	};
 
-The problem of whether `Handle` is responsible for the destruction of its `Shape` is the same as for <a ref="#Rc-dtor-ptr">the pointer case</a>:
+The problem of whether `Handle` is responsible for the destruction of its `Shape` is the same as for [the pointer case](#Rc-dtor-ptr):
 If the `Handle` owns the object referred to by `s` it must have a destructor.
 
 **Example**:
@@ -12192,7 +12192,7 @@ Resource management rule summary:
 		int sz;
 	};
 
-This class is a resource handle. It manages the lifetime of the `T`s. To do so, `Vector` must define or delete <a ref="???">the set of special operations</a> (constructors, a destructor, etc.).
+This class is a resource handle. It manages the lifetime of the `T`s. To do so, `Vector` must define or delete [the set of special operations](???) (constructors, a destructor, etc.).
 
 **Example**:
 
