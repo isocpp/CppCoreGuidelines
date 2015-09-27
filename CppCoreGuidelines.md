@@ -275,8 +275,8 @@ Each rule (guideline, suggestion) can have several parts:
 
 * The rule itself - e.g., **no naked `new`**
 * A rule reference number - e.g., **C.7** (the 7th rule related to classes).
-Since the major sections are not inherently ordered, we use a letter as the first part of a rule reference "number".
-We leave gaps in the numbering to minimize "disruption" when we add or remove rules.
+  Since the major sections are not inherently ordered, we use a letter as the first part of a rule reference "number".
+  We leave gaps in the numbering to minimize "disruption" when we add or remove rules.
 * **Reason**s (rationales) - because programmers find it hard to follow rules they don't understand
 * **Example**s - because rules are hard to understand in the abstract; can be positive or negative
 * **Alternative**s - for "don't do this" rules
@@ -795,8 +795,8 @@ Prefer [RAII](#Rr-raii):
 **Enforcement**:
 
 * Look at pointers: classify them into non-owners (the default) and owners.
-Where feasible, replace owners with standard-library resource handles (as in the example above).
-Alternatively, mark an owner as such using `owner` from [the GSL](#S-gsl).
+  Where feasible, replace owners with standard-library resource handles (as in the example above).
+  Alternatively, mark an owner as such using `owner` from [the GSL](#S-gsl).
 * Look for naked `new` and `delete`
 * look for known resource allocating functions returning raw pointers (such as `fopen`, `malloc`, and `strdup`)
 
@@ -1760,10 +1760,9 @@ Small simple functions are easily inlined where the cost of a function call is s
 **Enforcement**:
 
 * Flag functions that do not "fit on a screen."
-How big is a screen? Try 60 lines by 140 characters; that's roughly the maximum that's comfortable for a book page.
+  How big is a screen? Try 60 lines by 140 characters; that's roughly the maximum that's comfortable for a book page.
 * Flag functions that are too complex. How complex is too complex?
-You could use cyclomatic complexity. Try "more that 10 logical path through." Count a simple switch as one path.
-
+  You could use cyclomatic complexity. Try "more that 10 logical path through." Count a simple switch as one path.
 
 <a name="Rf-constexpr"></a>
 ### F.4: If a function may have to be evaluated at compile time, declare it `constexpr`
@@ -2122,8 +2121,7 @@ If you need the notion of an optional value, use a pointer, `std::optional`, or 
 **Enforcement**:
 
 * (Simple) ((Foundation)) Warn when a parameter being passed by value has a size greater than `4*sizeof(int)`.
-Suggest using a `const` reference instead.
-
+  Suggest using a `const` reference instead.
 
 <a name="Rf-T"></a>
 ### F.21: Use a `T` parameter for a small object
@@ -2349,8 +2347,7 @@ rather than using the generic `tuple`.
 **Enforcement**:
 
     * Output parameters should be replaced by return values.
-	An output parameter is one that the function writes to, invokes a non-`const` member function, or passes on as a non-`const`.
-
+  An output parameter is one that the function writes to, invokes a non-`const` member function, or passes on as a non-`const`.
 
 <a name="Rf-return-ptr"></a>
 ### F.42: Return a `T*` to indicate a position (only)
@@ -3166,10 +3163,9 @@ Here `p` refers to `pp` but does not own it.
 **Enforcement**:
 
 * (Simple) If a class has pointer or reference member variables that are owners
-(e.g., deemed owners by using `GSL::owner`), then they should be referenced in its destructor.
+  (e.g., deemed owners by using `GSL::owner`), then they should be referenced in its destructor.
 * (Hard) Determine if pointer or reference member variables are owners when there is no explicit statement of ownership
-(e.g., look into the constructors).
-
+  (e.g., look into the constructors).
 
 <a name="Rc-dtor-ptr"></a>
 ### C.32: If a class has a raw  pointer (`T*`) or reference (`T&`), consider whether it might be owning
@@ -4017,8 +4013,7 @@ See [copy constructor vs. `clone()`](#Rc-copy-virtual).
 * (Simple) An assignment operator should not be virtual. Here be dragons!
 * (Simple) An assignment operator should return `T&` to enable chaining, not alternatives like `const T&` which interfere with composability and putting objects in containers.
 * (Moderate) An assignment operator should (implicitly or explicitly) invoke all base and member assignment operators.
-Look at the destructor to determine if the type has pointer semantics or value semantics.
-
+  Look at the destructor to determine if the type has pointer semantics or value semantics.
 
 <a name="Rc-copy-semantic"></a>
 ### C.61: A copy operation should copy
@@ -4766,7 +4761,7 @@ not using this (over)general interface in favor of a particular interface found 
 **Exceptions**:
 * A base class constructor that does work, such as registering an object somewhere, may need a constructor.
 * In extremely rare cases, you might find a reasonable for an abstract class to have a bit of data shared by all derived classes
-(e.g., use statistics data, debug information, etc.); such classes tend to have constructors. But be warned: Such classes also tend to be prone to requiring virtual inheritance.
+  (e.g., use statistics data, debug information, etc.); such classes tend to have constructors. But be warned: Such classes also tend to be prone to requiring virtual inheritance.
 
 **Enforcement**: Flag abstract classes with constructors.
 
@@ -5612,7 +5607,7 @@ However, where `nullptr` is a possible value, a reference may not be an reasonab
 **Enforcement**:
 
 * Flag pointer arithmetic (including `++`) on a pointer that is not part of a container, view, or iterator.
-This rule would generate a huge number of false positives if applied to an older code base.
+  This rule would generate a huge number of false positives if applied to an older code base.
 * Flag array names passed as simple pointers
 
 
@@ -5702,8 +5697,7 @@ return a "smart pointer."
 * (Moderate) Warn on failure to either `reset` or explicitly `delete` an `owner<T>` pointer on every code path.
 * (Simple) Warn if the return value of `new` or a function call with return value of pointer type is assigned to a raw pointer.
 * (Simple) Warn if a function returns an object that was allocated within the function but has a move constructor.
-Suggest considering returning it by value instead.
-
+  Suggest considering returning it by value instead.
 
 <a name="Rr-ref"></a>
 ### R.4: A raw reference (a `T&`) is non-owning
@@ -6099,8 +6093,7 @@ A function that does not manipulate lifetime should take raw pointers or referen
 **Enforcement**:
 
 * (Simple) Warn if a function takes a parameter of a type that is a `Unique_ptr` or `Shared_ptr` and the function only calls any of: `operator*`, `operator->` or `get()`).
-	Suggest using a `T*` or `T&` instead.
-
+  Suggest using a `T*` or `T&` instead.
 
 <a name="Rr-uniqueptrparam"></a>
 ### R.33: Take a `unique_ptr<widget>` parameter to express that a function assumes ownership of a `widget`
@@ -6761,7 +6754,7 @@ or maybe
 **Enforcement**:
 
 * Flag every uninitialized variable.
-Don't flag variables of user-defined types with default constructors.
+  Don't flag variables of user-defined types with default constructors.
 * Check that the unitialized buffer is read into *immediately* after declaration.
 
 
@@ -8346,7 +8339,7 @@ We know of only a few good reasons:
 * We are on a system so small that the exception support would eat up most of our 2K or memory.
 * We are in a hard-real-time system and we don't have tools that allows us that an exception is handled withon the required time.
 * We are in a system with tons of legacy code using lots of pointers in difficult-to-understand ways
-(in particular without a recognizable ownership strategy) so that exceptions could cause leaks.
+  (in particular without a recognizable ownership strategy) so that exceptions could cause leaks.
 * We get fired if we challenge our manager's ancient wisdom.
 
 Only the first of these reasons is fundamental,
@@ -11004,9 +10997,9 @@ Before a variable has been initialized, it does not contain a deterministic vali
     use(x2);
 
 **Enforcement**:
-   - Issue a diagnostic for any constructor of a non-trivially-constructible type that does not initialize all member variables. To fix: Write a data member initializer, or mention it in the member initializer list.
-   - Issue a diagnostic when constructing an object of a trivially constructible type without `()` or `{}` to initialize its members. To fix: Add `()` or `{}`.
 
+* Issue a diagnostic for any constructor of a non-trivially-constructible type that does not initialize all member variables. To fix: Write a data member initializer, or mention it in the member initializer list.
+* Issue a diagnostic when constructing an object of a trivially constructible type without `()` or `{}` to initialize its members. To fix: Add `()` or `{}`.
 
 <a name="Pro-type-unions"></a>
 ### Type.7: Avoid accessing members of raw unions. Prefer `variant` instead.
@@ -11030,9 +11023,8 @@ Reading from a union member assumes that member was the last one written, and wr
 Note that just copying a union is not type-unsafe, so safe code can pass a union from one piece of unsafe code to another.
 
 **Enforcement**:
-   - Issue a diagnostic for accessing a member of a union. To fix: Use a `variant` instead.
-   
- 
+
+* Issue a diagnostic for accessing a member of a union. To fix: Use a `variant` instead.
 
 <a name="Pro-type-varargs"></a>
 ### Type.8: Avoid reading from varargs or passing vararg arguments. Prefer variadic template parameters instead.
@@ -11063,10 +11055,9 @@ Reading from a vararg assumes that the correct type was actually passed. Passing
 Note: Declaring a `...` parameter is sometimes useful for techniques that don't involve actual argument passing, notably to declare “take-anything” functions so as to disable "everything else" in an overload set or express a catchall case in a template metaprogram.
     
 **Enforcement**:
-   - Issue a diagnostic for using `va_list`, `va_start`, or `va_arg`. To fix: Use a variadic template parameter list instead.
-   - Issue a diagnostic for passing an argument to a vararg parameter. To fix: Use a different function, or `[[suppress(types)]]`.
 
-
+* Issue a diagnostic for using `va_list`, `va_start`, or `va_arg`. To fix: Use a variadic template parameter list instead.
+* Issue a diagnostic for passing an argument to a vararg parameter. To fix: Use a different function, or `[[suppress(types)]]`.
 
 <a name="SS-bounds"></a>
 ## Bounds safety profile
@@ -11295,15 +11286,14 @@ These functions all have bounds-safe overloads that take `array_view`. Standard 
     }
 
 **Enforcement**:
-   - Issue a diagnostic for any call to a standard library function that is not bounds-checked. ??? insert link to a list of banned functions
+
+* Issue a diagnostic for any call to a standard library function that is not bounds-checked. ??? insert link to a list of banned functions
 
 **TODO Notes**:
-   - Impact on the standard library will require close coordination with WG21, if only to ensure compatibility even if never standardized.
-   - We are considering specifying bounds-safe overloads for stdlib (especially C stdlib) functions like `memcmp` and shipping them in the GSL.
-   - For existing stdlib functions and types like `vector` that are not fully bounds-checked, the goal is for these features to be bounds-checked when called from code with the bounds profile on, and unchecked when called from legacy code, possibly using constracts (concurrently being proposed by several WG21 members).
 
-
-
+* Impact on the standard library will require close coordination with WG21, if only to ensure compatibility even if never standardized.
+* We are considering specifying bounds-safe overloads for stdlib (especially C stdlib) functions like `memcmp` and shipping them in the GSL.
+* For existing stdlib functions and types like `vector` that are not fully bounds-checked, the goal is for these features to be bounds-checked when called from code with the bounds profile on, and unchecked when called from legacy code, possibly using constracts (concurrently being proposed by several WG21 members).
 
 <a name="SS-lifetime"></a>
 ## Lifetime safety profile
@@ -11363,7 +11353,7 @@ An `owner<T>` is assumed to refer to an object on the free store (heap).
 If something is not supposed to be `nullptr`, say so:
 
 * `not_null<T>`		// `T` is usually a pointer type (e.g., `not_null<int*>` and `not_null<owner<Foo*>>`) that may not be `nullptr`.
-`T` can be any type for which `==nullptr` is meaningful.
+  `T` can be any type for which `==nullptr` is meaningful.
 
 * `array_view<T>`	// [`p`:`p+n`), constructor from `{p, q}` and `{p, n}`; `T` is the pointer type
 * `array_view_p<T>`	// `{p, predicate}` [`p`:`q`) where `q` is the first element for which `predicate(*p)` is true
@@ -11394,8 +11384,7 @@ Use `not_null<zstring>` for C-style strings that cannot be `nullptr`. ??? Do we 
 * `shared_ptr<T>`	// shared ownership: `std::shared_ptr<T>` (a counted pointer)
 * `stack_array<T>`	// A stack-allocated array. The number of elements are determined at construction and fixed thereafter. The elements are mutable unless `T` is a `const` type.
 * `dyn_array<T>`	// ??? needed ??? A heap-allocated array. The number of elements are determined at construction and fixed thereafter.
-The elements are mutable unless `T` is a `const` type. Basically an `array_view` that allocates and owns its elements.
-
+  The elements are mutable unless `T` is a `const` type. Basically an `array_view` that allocates and owns its elements.
 
 <a name="SS-assertions"></a>
 ## GSL.assert: Assertions
@@ -11413,7 +11402,7 @@ The elements are mutable unless `T` is a `const` type. Basically an `array_view`
 * `narrow_cast`	// `narrow_cast<T>(x)` is `static_cast<T>(x)`
 * `narrow`		// `narrow<T>(x)` is `static_cast<T>(x)` if `static_cast<T>(x)==x` or it throws `narrowing_error`
 * `implicit`	// "Marker" to put on single-argument constructors to explicitly make them non-explicit
-(I don't know how to do that except with a macro: `#define implicit`).
+  (I don't know how to do that except with a macro: `#define implicit`).
 * `move_owner`	// `p=move_owner(q)` means `p=q` but ???
 
 
@@ -11812,11 +11801,11 @@ How best to do it depends on the code, the pressure for updates, the backgrounds
 Here are some (very general) ideas:
 
 * The ideal is "just upgrade everything." That gives the most benefits for the shortest total time.
-In most circumstances, it is also impossible.
+  In most circumstances, it is also impossible.
 * We could convert a code base module for module, but any rules that affects interfaces (especially ABIs), such as [use `array_view`](#SS-views), cannot be done on a per-module basis.
 * We could convert code "bottom up" starting with the rules we estimate will give the greatest benefits and/or the least trouble in a given code base.
 * We could start by focusing on the interfaces, e.g., make sure that no resources are lost and no pointer is misused.
-This would be a set of changes across the whole code base, but would most likely have huge benefits.
+  This would be a set of changes across the whole code base, but would most likely have huge benefits.
 
 Whichever way you choose, please note that the most advantages come with the highest conformance to the guidelines.
 The guidelines are not a random set of unrelated rules where you can randomly pick and choose with an expectation of success.
