@@ -11490,7 +11490,7 @@ More specific and detailed rules are easier to enforce.
 
 **Reason**: Compilers do not read comments.
 Comments are less precise than code.
-Comments are not updates as consistently as code.
+Comments are not updated as consistently as code.
 
 **Example, bad**:
 
