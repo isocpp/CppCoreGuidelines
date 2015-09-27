@@ -6411,7 +6411,7 @@ A declaration is a statement. a declaration introduces a name into a scope and m
 <a name="Res-scope"></a>
 ### ES.5: Keep scopes small
 
-**Reason**: Readability. Minimize resource retension. Avoid accidental misuse of value.
+**Reason**: Readability. Minimize resource retention. Avoid accidental misuse of value.
 
 **Alternative formulation**: Don't declare a name in an unnecessarily large scope.
 
@@ -6473,7 +6473,7 @@ I am assuming that `Record` is large and doesn't have a good move operation so t
 <a name="Res-cond"></a>
 ### ES.6: Declare names in for-statement initializers and conditions to limit scope
 
-**Reason**: Readability. Minimize resource retension.
+**Reason**: Readability. Minimize resource retention.
 
 **Example**:
 
