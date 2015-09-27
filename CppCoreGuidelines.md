@@ -7020,7 +7020,7 @@ If at all possible, reduce the conditions to a simple set of alternatives (e.g.,
 		case file: 			owned=true;  return *new ifstream{argv[2]};
 	}();
 
-**Enforcement:** Hard. At best a heuristic. Look for an unitialized variable followed by a loop assigning to it.
+**Enforcement**: Hard. At best a heuristic. Look for an unitialized variable followed by a loop assigning to it.
 
 
 <a name="Res-macros"></a>
@@ -11517,7 +11517,7 @@ Comments are not updated as consistently as code.
 	if (i==j)
 		return i;
 
-Enforcement: Use a tool.
+**Enforcement**: Use a tool.
 
 
 <a name="Rl-name-type"></a>
