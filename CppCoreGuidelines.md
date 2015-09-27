@@ -6010,7 +6010,7 @@ The `make_shared()` version mentions `X` only once, so it is usually shorter (as
 
 
 <a name ="Rr-weak_ptr"></a>
-### R.30: Use `std::weak_ptr` to break cycles of `shared_ptr`s
+### R.24: Use `std::weak_ptr` to break cycles of `shared_ptr`s
 
 **Reason**: `shared_ptr's rely on use counting and the use count for a cyclic structure never goes to zero, so we need a mechanism to
 be able to destroy a cyclic structure.
@@ -6026,40 +6026,10 @@ You could "temporarily share ownership simply by using another `stared_ptr`.]]
 **Enforcement**: ???probably impossible. If we could statically detect cycles, we wouldn't need `weak_ptr`
 
 
-<a name="Rr-smart"></a>
-### R.31: If you have non-`std` smart pointers, follow the basic pattern from `std`
-
-**Reason**: The rules in the following section also work for other kinds of third-party and custom smart pointers and are very useful for diagnosing common smart pointer errors that cause performance and correctness problems.
-You want the rules to work on all the smart pointers you use.
-
-Any type (including primary template or specialization) that overloads unary `*` and `->` is considered a smart pointer:
-
-* If it is copyable, it is recognized as a reference-counted `Shared_ptr`.
-* If it not copyable, it is recognized as a unique `Unique_ptr`.
-
-**Example**:
-
-    // use Boost's intrusive_ptr
-    #include <boost/intrusive_ptr.hpp>
-    void f(boost::intrusive_ptr<widget> p) { 	// error under rule 'sharedptrparam'
-        p->foo();
-    }
-
-    // use Microsoft's CComPtr
-	#include <atlbase.h>
-    void f(CComPtr<widget> p) {                // error under rule 'sharedptrparam'
-        p->foo();
-    }
-
-Both cases are an error under the [`sharedptrparam` guideline](#Rr-smartptrparam):
-`p` is a `Shared_ptr`, but nothing about its sharedness is used here and passing it by value is a silent pessimization;
-these functions should accept a smart pointer only if they need to participate in the widget's lifetime management. Otherwise they should accept a `widget*`, if it can be `nullptr`. Otherwise, and ideally, the function should accept a `widget&`.
-These smart pointers match the `Shared_ptr` concept,
-so these guideline enforcement rules work on them out of the box and expose this common pessimization.
 
 
 <a name="Rr-smartptrparam"></a>
-### R.32: Take smart pointers as parameters only to explicitly express lifetime semantics
+### R.30: Take smart pointers as parameters only to explicitly express lifetime semantics
 
 **Reason**: Accepting a smart pointer to a `widget` is wrong if the function just needs the `widget` itself.
 It should be able to accept any `widget` object, not just ones whose lifetimes are managed by a particular kind of smart pointer.
@@ -6103,8 +6073,39 @@ A function that does not manipulate lifetime should take raw pointers or referen
 	Suggest using a `T*` or `T&` instead.
 
 
+<a name="Rr-smart"></a>
+### R.31: If you have non-`std` smart pointers, follow the basic pattern from `std`
+
+**Reason**: The rules in the following section also work for other kinds of third-party and custom smart pointers and are very useful for diagnosing common smart pointer errors that cause performance and correctness problems.
+You want the rules to work on all the smart pointers you use.
+
+Any type (including primary template or specialization) that overloads unary `*` and `->` is considered a smart pointer:
+
+* If it is copyable, it is recognized as a reference-counted `Shared_ptr`.
+* If it not copyable, it is recognized as a unique `Unique_ptr`.
+
+**Example**:
+
+    // use Boost's intrusive_ptr
+    #include <boost/intrusive_ptr.hpp>
+    void f(boost::intrusive_ptr<widget> p) { 	// error under rule 'sharedptrparam'
+        p->foo();
+    }
+
+    // use Microsoft's CComPtr
+	#include <atlbase.h>
+    void f(CComPtr<widget> p) {                // error under rule 'sharedptrparam'
+        p->foo();
+    }
+
+Both cases are an error under the [`sharedptrparam` guideline](#Rr-smartptrparam):
+`p` is a `Shared_ptr`, but nothing about its sharedness is used here and passing it by value is a silent pessimization;
+these functions should accept a smart pointer only if they need to participate in the widget's lifetime management. Otherwise they should accept a `widget*`, if it can be `nullptr`. Otherwise, and ideally, the function should accept a `widget&`.
+These smart pointers match the `Shared_ptr` concept,
+so these guideline enforcement rules work on them out of the box and expose this common pessimization.
+
 <a name="Rr-uniqueptrparam"></a>
-### R.33: Take a `unique_ptr<widget>` parameter to express that a function assumes ownership of a `widget`
+### R.32: Take a `unique_ptr<widget>` parameter to express that a function assumes ownership of a `widget`
 
 **Reason**: Using `unique_ptr` in this way both documents and enforces the function call's ownership transfer.
 
@@ -6127,7 +6128,7 @@ A function that does not manipulate lifetime should take raw pointers or referen
 
 
 <a name="Rr-reseat"></a>
-### R.34: Take a `unique_ptr<widget>&` parameter to express that a function reseats the`widget`
+### R.33: Take a `unique_ptr<widget>&` parameter to express that a function reseats the`widget`
 
 **Reason**: Using `unique_ptr` in this way both documents and enforces the function call's reseating semantics.
 
@@ -6150,7 +6151,7 @@ A function that does not manipulate lifetime should take raw pointers or referen
 
 
 <a name="Rr-sharedptrparam-owner"></a>
-### R.35: Take a `shared_ptr<widget>` parameter to express that a function is part owner
+### R.34: Take a `shared_ptr<widget>` parameter to express that a function is part owner
 
 **Reason**: This makes the function's ownership sharing explicit.
 
@@ -6170,7 +6171,7 @@ A function that does not manipulate lifetime should take raw pointers or referen
 
 
 <a name="Rr-sharedptrparam"></a>
-### R.36: Take a `shared_ptr<widget>&` parameter to express that a function might reseat the shared pointer
+### R.35: Take a `shared_ptr<widget>&` parameter to express that a function might reseat the shared pointer
 
 **Reason**: This makes the function's reseating explicit.
 
@@ -6192,7 +6193,7 @@ A function that does not manipulate lifetime should take raw pointers or referen
 
 
 <a name="Rr-sharedptrparam-const&"></a>
-### R.37: Take a `const shared_ptr<widget>&` parameter to express that it might retain a reference count to the object ???
+### R.36: Take a `const shared_ptr<widget>&` parameter to express that it might retain a reference count to the object ???
 
 **Reason**: This makes the function's ??? explicit.
 
@@ -6212,7 +6213,7 @@ A function that does not manipulate lifetime should take raw pointers or referen
 	
 
 <a name="Rr-smartptrget"></a>
-### R.38: Do not pass a pointer or reference obtained from an aliased smart pointer
+### R.37: Do not pass a pointer or reference obtained from an aliased smart pointer
 	
 **Reason**: Violating this rule is the number one cause of losing reference counts and finding yourself with a dangling pointer.
 Functions should prefer to pass raw pointers and references down call chains.
