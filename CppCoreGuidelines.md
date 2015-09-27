@@ -4603,7 +4603,7 @@ Of course there are way of making `==` work in a hierarchy, but the naive approa
 	
 **Enforcement**: ???
 
-<a name="SS-containers"</a>
+<a name="SS-containers"></a>
 ## C.con: Containers and other resource handles
 
 A container is an object holding a sequence of objects of some type; `std::vector` is the archetypical container.
@@ -4827,7 +4827,7 @@ not using this (over)general interface in favor of a particular interface found 
 * Flag overrides without `override`.
 
 
-<a name="Rh-kind"><a>
+<a name="Rh-kind"></a>
 ### C.129: When designing a class hierarchy, distinguish between implementation inheritance and interface inheritance
 
 **Reason**: ??? Herb: I've become a non-fan of implementation inheritance -- seems most often an antipattern. Are there reasonable examples of it?
@@ -8123,7 +8123,7 @@ Lock-free programming rule summary:
 * ???
 * ???
 
-### <a name="Rconc">Don't use lock-free programming unless you absolutely have to</a>
+### <a name="Rconc"></a>Don't use lock-free programming unless you absolutely have to
 
 **Reason**: It's error-prone and requires expert level knowledge of language features, machine architecture, and data structures.
 
@@ -11838,7 +11838,7 @@ Modernization can be much faster, simpler, and safer when supported with analysi
 This section contains follow-up material on rules and sets of rules.
 In particular, here we present further rationale, longer examples, and discussions of alternatives.
 
-### <a name="Sd order">Discussion: Define and initialize member variables in the order of member declaration</a>
+### <a name="Sd order"></a>Discussion: Define and initialize member variables in the order of member declaration
 
 Member variables are always initialized in the order they are declared in the class definition, so write them in that order in the constructor initialization list. Writing them in a different order just makes the code confusing because it won't run in the order you see, and that can make it hard to see order-dependent bugs.
 
@@ -11868,7 +11868,7 @@ If the class definition and the constructor body are in separate files, the long
 
 ???
 
-### <a name="Sd factory">Discussion: Use a factory function if you need "virtual behavior" during initialization</a>
+### <a name="Sd factory"></a>Discussion: Use a factory function if you need "virtual behavior" during initialization
 
 If your design wants virtual dispatch into a derived class from a base class constructor or destructor for functions like `f` and `g`, you need other techniques, such as a post-constructor -- a separate member function the caller must invoke to complete initialization, which can safely call `f` and `g` because in member functions virtual calls behave normally. Some techniques for this are shown in the References. Here's a non-exhaustive list of options:
 
@@ -11924,7 +11924,7 @@ In summary, no post-construction technique is perfect. The worst techniques dodg
 
  
 
-###<a name="Sd dtor">Discussion: Make base class destructors public and virtual, or protected and nonvirtual</a>
+###<a name="Sd dtor"></a>Discussion: Make base class destructors public and virtual, or protected and nonvirtual
 
 Should destruction behave virtually? That is, should destruction through a pointer to a `base` class should be allowed? If yes, then `base`'s destructor must be public in order to be callable, and virtual otherwise calling it results in undefined behavior. Otherwise, it should be protected so that only derived classes can invoke it in their own destructors, and nonvirtual since it doesn't need to behave virtually virtual.
 
@@ -12094,7 +12094,7 @@ When using exceptions as your error handling mechanism, always document this beh
 
 
 
-## <a name ="Sd consistent">Define Copy, move, and destroy consistently</a>
+## <a name ="Sd consistent"></a>Define Copy, move, and destroy consistently
 
 **Reason**: ???
 
@@ -12192,7 +12192,7 @@ Resource management rule summary:
 
 
 
-### <a name="Cr safety">Provide strong resource safety; that is, never leak anything that you think of as a resource</a>
+### <a name="Cr safety"></a>Provide strong resource safety; that is, never leak anything that you think of as a resource
 
 **Reason**: Prevent leaks. Leaks can lead to performance degradation, mysterious error, system crashes, and security violations.
 
@@ -12217,7 +12217,7 @@ This class is a resource handle. It manages the lifetime of the `T`s. To do so, 
 **Enforcement**: The basic technique for preventing leaks is to have every resource owned by a resource handle with a suitable destructor. A checker can find "naked `new`s". Given a list of C-style allocation functions (e.g., `fopen()`), a checker can also find uses that are not managed by a resource handle. In general, "naked pointers" can be viewed with suspicion, flagged, and/or analyzed. A a complete list of resources cannot be generated without human input (the definition of "a resource" is necessarily too general), but a tool can be "parameterized" with a resource list.
 
 
-### <a name="Cr never">Never throw while holding a resource not owned by a handle</a>
+### <a name="Cr never"></a>Never throw while holding a resource not owned by a handle
 
 **Reason**: That would be a leak.
 
@@ -12251,14 +12251,14 @@ For starters, we know about the standard-library containers, `string`, and smart
 The use of `array_view` and `string_view` should help a lot (they are not resource handles).
 
 
-### <a name="Cr raw">A "raw" pointer or reference is never a resource handle</a>
+### <a name="Cr raw"></a>A "raw" pointer or reference is never a resource handle
 
 **Reason** To be able to distinguish owners from views.
 
 **Note**: This is independent of how you "spell" pointer: `T*`, `T&`, `Ptr<T>` and `Range<T>` are not owners.
 
 
-### <a name="Cr outlive">Never let a pointer outlive the object it points to</a>
+### <a name="Cr outlive"></a>Never let a pointer outlive the object it points to
 
 **Reason**: To avoid extremely hard-to-find errors. Dereferencing such a pointer is undefined behavior and could lead to violations of the type system.
 
@@ -12283,7 +12283,7 @@ The `string`s of `v` are destroyed upon exit from `bad()` and so is `v` itself. 
 **Enforcement**: Most compilers already warn about simple cases and has the information to do more. Consider any pointer returned from a function suspect. Use containers, resource handles, and views (e.g., `array_view` known not to be resource handles) to lower the number of cases to be examined. For starters, consider every class with a destructor a resource handle.
 
 
-### <a name="Cr templates">Use templates to express containers (and other resource handles)</a>
+### <a name="Cr templates"></a>Use templates to express containers (and other resource handles)
 
 **Reason**: To provide statically type-safe manipulation of elements.
 
@@ -12295,7 +12295,7 @@ The `string`s of `v` are destroyed upon exit from `bad()` and so is `v` itself. 
 		int sz;
 	};
 
-### <a name="Cr value return">Return containers by value (relying on move for efficiency)</a>
+### <a name="Cr value return"></a>Return containers by value (relying on move for efficiency)
 
 **Reason**: To simplify code and eliminate a need for explicit memory management. To bring an object into a surrounding scope, thereby extending its lifetime.
 
@@ -12310,7 +12310,7 @@ The `string`s of `v` are destroyed upon exit from `bad()` and so is `v` itself. 
 **Enforcement**: Check for pointers and references returned from functions and see if they are assigned to resource handles (e.g., to a `unique_ptr`).
 
 
-### <a name="Cr handle">If a class is a resource handle, it needs a constructor, a destructor, and copy and/or move operations</a>
+### <a name="Cr handle"></a>If a class is a resource handle, it needs a constructor, a destructor, and copy and/or move operations
 
 **Reason**: To provide complete control of the lifetime of the resource. To provide a coherent set of operations on the resource.
 
@@ -12330,7 +12330,7 @@ Now `Named` has a default constructor, a destructor, and efficient copy and move
 **Enforcement**: In general, a tool cannot know if a class is a resource handle. However, if a class has some of [the default operations](???), it should have all, and if a class has a member that is a resource handle, it should be considered a resource handle.
 
 
-### <a name="Cr list">If a class is a container, give it an initializer-list constructor</a>
+### <a name="Cr list"></a>If a class is a container, give it an initializer-list constructor
 
 **Reason**: It is common to need an initial set of elements.
 
