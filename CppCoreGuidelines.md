@@ -5957,7 +5957,7 @@ Don't leave it undeclared.
 
 This will leak the object used to initialize `p1` (only).
 
-**Enforcement:** (Simple) Warn if the return value of `new` or a function call with return value of pointer type is assigned to a raw pointer.
+**Enforcement**: (Simple) Warn if the return value of `new` or a function call with return value of pointer type is assigned to a raw pointer.
 
 
 <a name="Rr-unique"></a>
@@ -8983,9 +8983,8 @@ See [Stable base](#Rt-abi).
 **Note**: In a class template, nonvirtual functions are only instantiated if they're used -- but virtual functions are instantiated every time. This can bloat code size, and may overconstrain a generic type by instantiating functionality that is never needed. Avoid this, even though the standard facets made this mistake.
 
 **Enforcement**:
+
 * Flag a class template that declares new (non-inherited) virtual functions.
-
-
 
 <a name="SS-concepts"></a>
 ## TPG.concepts: Concept rules
@@ -9761,8 +9760,8 @@ There are three major ways to let calling code customize a template.
 	}
 
 **Enforcement**:
-* In a template, flag an unqualified call to a nonmember function that passes a variable of dependent type when there is a nonmember function of the same name in the template's namespace.
 
+* In a template, flag an unqualified call to a nonmember function that passes a variable of dependent type when there is a nonmember function of the same name in the template's namespace.
 
 <a name="SS-temp-hier"></a>
 ## T.temp-hier: Template and hierarchy rules:
@@ -10237,11 +10236,8 @@ Of course, range-for is better still where it does what you want.
 **Exceptions**: If you do have a valid reason to specialize a function template, just write a single function template that delegates to a class template, then specialize the class template (including the ability to write partial specializations).
 	
 **Enforcement**:
+
 * Flag all specializations of a function template. Overload instead.
-
-
-
-
 
 <a name="S-cpl"></a>
 # CPL: C-style programming
@@ -10287,8 +10283,8 @@ It provides better support for high-level programming and often generates faster
 
 **Enforcement**:
 
-    * Flag if using a build mode that compiles code as C.
-	* The C++ compiler will enforce that the code is valid C++ unless you use C extension options.
+* Flag if using a build mode that compiles code as C.
+  * The C++ compiler will enforce that the code is valid C++ unless you use C extension options.
 
 
 <a name="Rcpl-interface"></a>
@@ -10557,8 +10553,8 @@ Complicates conversion to use language-supported modules (when they become avail
 	// file3.h:
 	#include "file1.h"
 
-**Enforcement: Flag all cycles.
 
+**Enforcement**: Flag all cycles.
 
 <a name="Rs-namespace"></a>
 ### SF.20: Use `namespace`s to express logical structure
