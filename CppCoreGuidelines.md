@@ -6667,7 +6667,7 @@ In each case, we save writing a longish, hard-to-remember type that the compiler
 **Example**:
 
 	auto lst = { 1, 2, 3 };	// lst is an initializer list (obviously)
-	auto x = {1};	// x is an int (after correction of the C++14 standard; initializer_list in C++11)
+	auto x{1};	// x is an int (after correction of the C++14 standard; initializer_list in C++11)
 
 **Note**: When concepts become available, we can (and should) be more specific about the type we are deducing:
 
