@@ -11625,7 +11625,13 @@ Some conventions capitalize the first letter, some don't.
 
 **Example**:
 
-	???
+	#define TABLE_SIZE 20      // good, will be identified as a macro
+
+	gsl::owner<const int*> TABLE = get_init_codes<TABLE_SIZE>::value;     // bad, might be mistaken as a macro
+
+	// Some thousands of lines after
+	#undef TABLE_SIZE       // TABLE_SIZE is gone
+	#undef TABLE            // TABLE still exist
 	
 **Note**: This rule applies to non-macro symbolic constants
 
