@@ -12235,7 +12235,7 @@ This class is a resource handle. It manages the lifetime of the `T`s. To do so, 
 
 If `i==0` the file handle for `a file` is leaked. On the other hand, the `ifstream` for `another file` will correctly close its file (upon destruction). If you must use an explicit pointer, rather than a resource handle with specific semantics, use a `unique_ptr` or a `shared_ptr`:
 
-void f(int i)
+	void f(int i)
 	{
 		unique_ptr<FILE> f = fopen("a file","r");
 		// ...
@@ -12377,19 +12377,19 @@ Aternatively, we will decide that no change is needed and delete the entry.
 * What to do with leaks out of temporaries? : `p = (s1+s2).c_str();`
 * pointer/iterator invalidation leading to dangling pointers
 
-	void bad()
-	{
-		int* p = new int[700];
-		    int* q = &p[7];
-    	delete p;
+		void bad()
+		{
+			int* p = new int[700];
+			int* q = &p[7];
+			delete p;
 
-    	vector<int> v(700);
-    	int* q2 = &v[7];
-    	v.resize(900);
+			vector<int> v(700);
+			int* q2 = &v[7];
+			v.resize(900);
 
-  	  // ... use q and q2 ...
-	}
-	
+			// ... use q and q2 ...
+		}
+
 * LSP
 * private inheritance vs/and membership
 * avoid static class members variables (race conditions, almost-global variables)
