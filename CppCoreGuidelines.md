@@ -10714,7 +10714,7 @@ Pointers should only refer to single objects, and pointer arithmetic is fragile 
 
         a[4] = 1; // OK
 
-        a[count – 1] = 2; // OK
+        a[count - 1] = 2; // OK
 
         use(a.data(), 3); // OK
     }
