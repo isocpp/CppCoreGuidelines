@@ -7156,16 +7156,16 @@ Some of these expressions are unconditionally bad (e.g., they rely on undefined 
 
 **Example**:
 
-	x=k*y+z;	// OK
+	x=k*y+z;              // OK
 
-	auto t1 = k*y;	// bad: unnecessarily verbose
+	auto t1 = k*y;        // bad: unnecessarily verbose
 	x = t1+z;
 
-	if(0<=x && x<max) // OK
+	if(0<=x && x<max) {}  // OK
 
-	auto t1 = 0<=x;		// bad: unnecessarily verbose
+	auto t1 = 0<=x;		    // bad: unnecessarily verbose
 	auto t2 = x<max;
-	if(t1 && t2) // ...
+	if(t1 && t2) {}       // ...
 
 
 **Enforcement**: Tricky. How complicated must an expression be to be considered complicated? Writing computations as statements with one operation each is also confusing. Things to consider:
