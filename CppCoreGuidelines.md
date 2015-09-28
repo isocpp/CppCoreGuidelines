@@ -8066,7 +8066,7 @@ One strategy is to add a `valid()` operation to every resource handle:
 
 	void f()
 	{
-		Vector<string> vs(100);	// not std::vector: valid() added
+		vector<string> vs(100);	// not std::vector: valid() added
 		if (!vs.valid()) {
 			// handle error or exit
 		}
@@ -8606,7 +8606,7 @@ It also avoids brittle or inefficient workarounds. Convention: That's the way th
 		int sz;
 	};
 
-	Vector<double> v(10);
+	vector<double> v(10);
 	v[7] = 9.9;
 
 **Example, bad**:
@@ -9441,14 +9441,14 @@ The two language mechanisms can be use effectively in combination, but a few des
 		// ...
 	};
 
-	Vector<int> vi;
-	Vector<string> vs;
+	vector<int> vi;
+	vector<string> vs;
 
 It is probably a dumb idea to define a `sort` as a member function of a container,
 but it is not unheard of and it makes a good example of what not to do.
 
-Given this, the compiler cannot know if `Vector<int>::sort()` is called, so it must generate code for it.
-Similar for `Vector<string>::sort()`.
+Given this, the compiler cannot know if `vector<int>::sort()` is called, so it must generate code for it.
+Similar for `vector<string>::sort()`.
 Unless those two functions are called that's code bloat.
 Imagine what this would do to a class hierarchy with dozens of member functions and dozens of derived classes with many instantiations.
 
@@ -10660,7 +10660,7 @@ For the purposes of this document, bounds-safety is defined to be the property t
 
 The following are under consideration but not yet in the rules below, and may be better in other profiles:
 
-   -
+* ???
 
 An implementation of this profile shall recognize the following patterns in source code as non-conforming and issue a diagnostic.
 
@@ -11944,7 +11944,7 @@ The `string`s of `v` are destroyed upon exit from `bad()` and so is `v` itself. 
 
 **Example**:
 
-    ??? Messing with pointers
+* ??? Messing with pointers
 
 **Note**: If all members are resource handles, rely on the default special operations where possible.
 
@@ -11966,7 +11966,7 @@ Now `Named` has a default constructor, a destructor, and efficient copy and move
 
 	template<typename T> class Vector {
 	public:
-		Vector<std::initializer_list<T>);
+		vector<std::initializer_list<T>>;
 		// ...
 	};
 
