@@ -128,7 +128,7 @@ Comments and suggestions for improvements are most welcome.
 We plan to modify and extend this document as our understanding improves and the language and the set of available libraries improve.
 
 
-# <a name ="S-introduction"></a> In: Introduction
+# <a name="S-introduction"></a> In: Introduction
 
 This is a set of core guidelines for modern C++, C++14, and taking likely future enhancements and taking ISO Technical Specifications (TSs) into account.
 The aim is to help C++ programmers to write simpler, more efficient, more maintainable code.
@@ -143,12 +143,12 @@ Introduction summary:
 * [In.sec: Major sections](#SS-sec)
 
 
-## <a name ="SS-readers"></a> In.target: Target readership
+## <a name="SS-readers"></a> In.target: Target readership
 
 All C++ programmers. This includes [programmers who might consider C](#S-cpl).
 
 
-## <a name ="SS-aims"></a> In.aims: Aims
+## <a name="SS-aims"></a> In.aims: Aims
 
 The purpose of this document is to help developers to adopt modern C++ (C++11, C++14, and soon C++17) and to achieve a more uniform style across code bases.
 
@@ -261,7 +261,7 @@ The profiles are intended to be used by tools, but also serve as an aid to the h
 We do not limit our comment in the **Enforcement** sections to things we know how to enforce; some comments are mere wishes that might inspire some tool builder.
 
 
-## <a name ="SS-struct"></a> In.struct: The structure of this document
+## <a name="SS-struct"></a> In.struct: The structure of this document
 
 Each rule (guideline, suggestion) can have several parts:
 
@@ -292,7 +292,7 @@ It is meant to be helpful, rather than complete, fully accurate on technical det
 Recommended information sources can be found in [the references](#S-references).
 
 
-## <a name ="SS-sec"></a> In.sec: Major sections
+## <a name="SS-sec"></a> In.sec: Major sections
 
 * [P: Philosophy](#S-philosophy)
 * [I: Interfaces](#S-interfaces)
@@ -2158,7 +2158,7 @@ If the writer of `g()` makes an assumption about the size of `buffer` a bad logi
 **Enforcement**: Flag a function that takes a `TP&&` parameter (where `TP` is a template type parameter name) and uses it without `std::forward`.
 
 
-### <a name ="Rf-pass-ref-move"></a> F.25: Use a `T&&` parameter together with `move` for rare optimization opportunities
+### <a name="Rf-pass-ref-move"></a> F.25: Use a `T&&` parameter together with `move` for rare optimization opportunities
 
 **Reason**: Moving from an object leaves an object in its moved-from state behind.
 In general, moved-from objects are dangerous. The only guaranteed operation is destruction (more generally, member functions without preconditions).
@@ -5333,7 +5333,7 @@ Here, we ignore such cases.
   * [R.14: ??? array vs. pointer parameter](#Rr-ap)
   * [R.15: Always overload matched allocation/deallocation pairs](#Rr-pair)
 
-* <a name ="Rr-summary-smartptrs"></a> Smart pointer rule summary:
+* <a name="Rr-summary-smartptrs"></a> Smart pointer rule summary:
   * [R.20: Use `unique_ptr` or `shared_ptr` to represent ownership](#Rr-owner)
   * [R.21: Prefer `unique_ptr` over `shared_ptr` unless you need to share ownership](#Rr-unique)
   * [R.22: Use `make_shared()` to make `shared_ptr`s](#Rr-make_shared)
@@ -5348,7 +5348,7 @@ Here, we ignore such cases.
   * [R.36: Take a `const shared_ptr<widget>&` parameter to express that it might retain a reference count to the object ???](#Rr-sharedptrparam-const&)
   * [R.37: Do not pass a pointer or reference obtained from an aliased smart pointer](#Rr-smartptrget)
 
-### <a name ="Rr-raii"></a> Rule R.1: Manage resources automatically using resource handles and RAII (resource acquisition is initialization)
+### <a name="Rr-raii"></a> Rule R.1: Manage resources automatically using resource handles and RAII (resource acquisition is initialization)
 
 **Reason**: To avoid leaks and the complexity of manual resource management.
  C++'s language-enforced constructor/destructor symmetry mirrors the symmetry inherent in resource acquire/release function pairs such as `fopen`/`fclose`, `lock`/`unlock`, and `new`/`delete`.
@@ -5402,7 +5402,7 @@ What is `Port`? A handy wrapper that encapsulates the resource:
 **See also**: [RAII](#Rr-raii).
 
 
-### <a name ="Rr-use-ptr"></a> R.2: In interfaces, use raw pointers to denote individual objects (only)
+### <a name="Rr-use-ptr"></a> R.2: In interfaces, use raw pointers to denote individual objects (only)
 
 **Reason**: Arrays are best represented by a container type (e.g., `vector` (owning)) or an `array_view` (non-owning).
 Such containers and views hold sufficient information to do range checking.
@@ -5592,7 +5592,7 @@ They are a notable source of errors.
 ## <a name="SS-alloc"></a> R.alloc: Allocation and deallocation
 
 
-### <a name ="Rr-mallocfree"></a> R.10: Avoid `malloc()` and `free()`
+### <a name="Rr-mallocfree"></a> R.10: Avoid `malloc()` and `free()`
 
 **Reason**: `malloc()` and `free()` do not support construction and destruction, and do not mix well with `new` and `delete`.
 
@@ -5633,7 +5633,7 @@ In such cases, consider the `nothrow` versions of `new`.
 **Enforcement**: Flag explicit use of `malloc` and `free`.
 
 
-### <a name ="Rr-newdelete"></a> R.11: Avoid calling `new` and `delete` explicitly
+### <a name="Rr-newdelete"></a> R.11: Avoid calling `new` and `delete` explicitly
 
 **Reason**: The pointer returned by `new` should belong to a resource handle (that can call `delete`).
 If the pointer returned from `new` is assigned to a plain/naked pointer, the object can be leaked.
@@ -5646,7 +5646,7 @@ If you have a naked `new`, you probably need a naked `delete` somewhere, so you 
 **Enforcement**: (Simple) Warn on any explicit use of `new` and `delete`. Suggest using `make_unique` instead.
 
 
-### <a name ="Rr-immediate-alloc"></a> R.12: Immediately give the result of an explicit resource allocation to a manager object
+### <a name="Rr-immediate-alloc"></a> R.12: Immediately give the result of an explicit resource allocation to a manager object
 
 **Reason**: If you don't, an exception or a return may lead to a leak.
 
@@ -5678,7 +5678,7 @@ The use of the file handle (in `ifstream`) is simple, efficient, and safe.
 * Flag explicit allocations used to initialize pointers  (problem: how many direct resource allocations can we recognize?)
 
 
-### <a name ="Rr-single-alloc"></a> R.13: Perform at most one explicit resource allocation in a single expression statement
+### <a name="Rr-single-alloc"></a> R.13: Perform at most one explicit resource allocation in a single expression statement
 
 **Reason**: If you perform two explicit resource allocations in one statement,
 you could leak resources because the order of evaluation of many subexpressions, including function arguments, is unspecified.
@@ -5713,7 +5713,7 @@ Write your own factory wrapper if there is not one already.
 * Flag expressions with multiple explicit resource allocations (problem: how many direct resource allocations can we recognize?)
 
 
-### <a name ="Rr-ap"></a> R.14: ??? array vs. pointer parameter
+### <a name="Rr-ap"></a> R.14: ??? array vs. pointer parameter
 
 **Reason**: An array decays to a pointer, thereby losing its size, opening the opportunity for range errors.
 
@@ -5791,7 +5791,7 @@ This will leak the object used to initialize `p1` (only).
 **Enforcement**: (Simple) Warn if a function uses a `Shared_ptr` with an object allocated within the function, but never returns the `Shared_ptr` or passes it to a function requiring a `Shared_ptr&`. Suggest using `unique_ptr` instead.
 
 
-### <a name ="Rr-make_shared"></a> R.22: Use `make_shared()` to make `shared_ptr`s
+### <a name="Rr-make_shared"></a> R.22: Use `make_shared()` to make `shared_ptr`s
 
 **Reason**: If you first make an object and then gives it to a `shared_ptr` constructor, you (most likely) do one more allocation (and later deallocation) than if you use `make_shared()` because the reference counts must be allocated separately from the object.
 
@@ -5805,7 +5805,7 @@ The `make_shared()` version mentions `X` only once, so it is usually shorter (as
 **Enforcement**: (Simple) Warn if a `shared_ptr` is constructed from the result of `new` rather than `make_shared`.
 
 
-### <a name ="Rr-make_unique"></a> Rule R.23: Use `make_unique()` to make `unique_ptr`s
+### <a name="Rr-make_unique"></a> Rule R.23: Use `make_unique()` to make `unique_ptr`s
 
 **Reason**: for convenience and consistency with `shared_ptr`.
 
@@ -5814,7 +5814,7 @@ The `make_shared()` version mentions `X` only once, so it is usually shorter (as
 **Enforcement**: (Simple) Warn if a `Shared_ptr` is constructed from the result of `new` rather than `make_unique`.
 
 
-### <a name ="Rr-weak_ptr"></a> R.24: Use `std::weak_ptr` to break cycles of `shared_ptr`s
+### <a name="Rr-weak_ptr"></a> R.24: Use `std::weak_ptr` to break cycles of `shared_ptr`s
 
 **Reason**: `shared_ptr`'s rely on use counting and the use count for a cyclic structure never goes to zero, so we need a mechanism to
 be able to destroy a cyclic structure.
@@ -11722,7 +11722,7 @@ When using exceptions as your error handling mechanism, always document this beh
 
 
 
-## <a name ="Sd-consistent"></a> Define Copy, move, and destroy consistently
+## <a name="Sd-consistent"></a> Define Copy, move, and destroy consistently
 
 **Reason**: ???
 
