@@ -11764,9 +11764,8 @@ If you define a destructor, you should not use the compiler-generated copy or mo
         // ...
     public:
 
- 	   ~X() { /* custom stuff, such as closing hnd */ }
-
-    	// suspicious: no mention of copying or moving -- what happens to hnd?
+        ~X() { /* custom stuff, such as closing hnd */ }
+        // suspicious: no mention of copying or moving -- what happens to hnd?
     };
 
     X x1;
@@ -11789,8 +11788,8 @@ If you define copying, and any base or member has a type that defines a move ope
     x test()
     {
         x local;
-    	// ...
-    	return local;  // pitfall: will be inefficient and/or do the wrong thing
+        // ...
+        return local;  // pitfall: will be inefficient and/or do the wrong thing
     }
 
 If you define any of the copy constructor, copy assignment operator, or destructor, you probably should define the others.
