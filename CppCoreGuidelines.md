@@ -9390,25 +9390,25 @@ There are three major ways to let calling code customize a template.
 
 * Call a member function. Callers can provide any type with such a named member function.
 
-	template<class T>
-	void test(T t) {
-		t.f();			// require T to provide f()
-	}
+        template<class T>
+        void test(T t) {
+            t.f();    // require T to provide f()
+        }
 
 * Call a nonmember function without qualification. Callers can provide any type for which there is such a function available in the caller's context or in the namespace of the type.
 
-	template<class T>
-	void test(T t) {
-		f(t);			// require f(/*T*/) be available in caller's cope or in T's namespace
-	}
+        template<class T>
+        void test(T t) {
+            f(t);     // require f(/*T*/) be available in caller's cope or in T's namespace
+        }
 
 * Invoke a "trait" -- usually a type alias to compute a type, or a `constexpr` function to compute a value, or in rarer cases a traditional traits template to be specialized on the user's type.
 
-	template<class T>
-	void test(T t) {
-		test_traits<T>::f(t);	// require customizing test_traits<> to get non-default functions/types
-		test_traits<T>::value_type x;
-	}
+        template<class T>
+        void test(T t) {
+            test_traits<T>::f(t);    // require customizing test_traits<> to get non-default functions/types
+            test_traits<T>::value_type x;
+        }
 
 **Enforcement**:
 
