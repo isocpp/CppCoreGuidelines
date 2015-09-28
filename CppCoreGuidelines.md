@@ -1416,6 +1416,7 @@ There are functions that are best expressed with four individual arguments, but 
 **Alternative**: Use default arguments or overloads to allow the most common forms of calls to be done with fewer arguments.
 
 **Enforcement**:
+
 * Warn when a functions declares two iterators (including pointers) of the same type instead of a range or a view.
 * (Not enforceable) This is a philosophical guideline that is infeasible to check directly.
 
@@ -8956,6 +8957,7 @@ This also decreases the burden on implementers of these types since
 they do not need any special declarations to "hook into the concept".
 
 **Enforcement**:
+
 * Flag a concept that has exactly the same requirements as another already-seen concept (neither is more refined). To disambiguate them, see [T.24](#Rt-tag).
 
 
@@ -10187,6 +10189,7 @@ Complicates conversion to use language-supported modules (when they become avail
 	???
 
 **Enforcement**:
+
 * Flag any use of an anonymous namespace in a header file.
 
 
@@ -10202,6 +10205,7 @@ Consider putting every definition in an implementation source file should be in 
 	???
 
 **Enforcement**:
+
 * ???
 
 
