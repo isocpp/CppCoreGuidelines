@@ -1574,7 +1574,8 @@ Other function rules:
 * [F.51: Prefer overloading over default arguments for virtual functions](#Rf-default-args)
 * [F.52: Prefer capturing by reference in lambdas that will be used locally, including passed to algorithms](#Rf-reference-capture)
 * [F.53: Avoid capturing by reference in lambdas that will be used nonlocally, including returned, stored on the heap, or passed to another thread](#Rf-value-capture)
-
+* [F.54: Use decltype on auto&& parameters to std::forward them](#Rf-decltype-forward)
+ 
 Functions have strong similarities to lambdas and function objects so see also Section ???.
 
 
@@ -2621,8 +2622,33 @@ For passthrough functions that pass in parameters (by ordinary reference or by p
 
 **Enforcement**: ???
 
+<a name="Rf-decltype-forward"></a>
+### F.54: Use decltype on auto&& parameters to std::forward them.
+ 
+ 
+**Reason**: One of the most exciting features of C++14 is generic lambdas—lambdas that use auto in their parameter specifications. The implementation of this feature is straight‐forward: operator() in the lambda’s closure class is a template. Given this lambda,for example :
 
+		auto f = [](auto x){ return func(normalize(x)); };
+		
+the closure class’s function call operator looks like this:
 
+		class SomeCompilerGeneratedClassName {
+			public:
+			  template<typename T>
+				 auto operator()(T x) const // auto return type
+			             { return func(normalize(x)); }
+			   ... // other closure class
+		           }; // functionality
+		            	   
+In this example, the only thing the lambda does with its parameter x is forward it to normalize. If normalize treats lvalues differently from rvalues, this lambda isn’t written properly, because it always passes an lvalue (the parameter x) to normalize, even if the argument that was passed to the lambda was an rvalue. The correct way to write the lambda is to have it perfect-forward x to normalize. Doing that requires two changes to the code. First, x has to become a universal reference and second it has to be passed to normalize via std::forward
+
+**Example**:
+
+		auto f = [](auto&& x)
+			{ return func(normalize(std::forward<???>(x))); };
+			
+**Enforcement**: ???
+	
 <a name="S-class"></a>
 # C: Classes and Class Hierarchies
 
@@ -4631,6 +4657,7 @@ Summary:
 * [F.50: Use a lambda when a function won't do (to capture local variables, or to write a local function)](#Rf-capture-vs-overload)
 * [F.52: Prefer capturing by reference in lambdas that will be used locally, including passed to algorithms](#Rf-reference-capture)
 * [F.53: Avoid capturing by reference in lambdas that will be used nonlocally, including returned, stored on the heap, or passed to another thread](#Rf-value-capture)
+* [F.54: Use decltype on auto&& parameters to std::forward them](#Rf-decltype-forward)
 * [ES.28: Use lambdas for complex initialization, especially of `const` variables](#Res-lambda-init)
 
 
