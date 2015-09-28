@@ -11613,7 +11613,12 @@ Some conventions capitalize the first letter, some don't.
 
 **Example**:
 
-	???
+```
+void f() {
+  const int SIZE{1000}; //Bad, use 'size' instead
+  int v[SIZE];
+}
+```
 	
 **Note**: This rule applies to non-macro symbolic constants
 
