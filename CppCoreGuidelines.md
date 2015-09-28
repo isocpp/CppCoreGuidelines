@@ -324,7 +324,7 @@ Supporting sections:
 
 These sections are not orthogonal.
 
-Each section (e.g., "P" for "Philosophy") and each subsection (e.g., "C.hier" for "Class Hierachies (OOP)") have an abbreviation for ease of searching and reference.
+Each section (e.g., "P" for "Philosophy") and each subsection (e.g., "C.hier" for "Class Hierarchies (OOP)") have an abbreviation for ease of searching and reference.
 The main section abbreviations are also used in rule numbers (e.g., "C.11" for "Make concrete types regular").
 
 
