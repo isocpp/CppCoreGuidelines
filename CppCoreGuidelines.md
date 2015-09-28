@@ -8339,7 +8339,7 @@ Unless you really need pointer semantics, use a local resource object:
 		// ...
 	}
 
-**Note**: If there is no obvious resource handle, cleanup actions can be represented by a [`finally` object](#Re-finally)
+**Note**: If there is no obvious resource handle, cleanup actions can be represented by a [`final_action` object](#Re-finally)
 
 **Note**: But what do we do if we are writing a program where exceptions cannot be used?
 First challenge that assumption; there are many anti-exceptions myths around.
