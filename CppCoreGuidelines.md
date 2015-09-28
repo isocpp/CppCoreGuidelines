@@ -1685,7 +1685,7 @@ Functions with complex control structures are more likely to be long and more li
 
 This is too complex (and also pretty long).
 How would you know if all possible alternatives have been correctly handled?
-Yes, it break other rules also.
+Yes, it breaks other rules also.
 
 We can refactor:
 
