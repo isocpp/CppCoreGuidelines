@@ -1982,7 +1982,7 @@ When I call `length(r)` should I test for `r==nullptr` first? Should the impleme
 
 ### <a name="Rf-nullptr"></a> F.17: Use a `not_null<T>` to indicate that "null" is not a valid value
 
-**Reason**: Clarity. Making it clear that a test for null isn't needed.
+**Reason**: Clarity. A function with a `not_null<T>` parameter makes it clear that the caller of the function is responsible for any `nullptr` checks that may be necessary. Similarly, a function with a return value of `not_null<T>` makes it clear that the caller of the function does not need to check for `nullptr`.
 
 **Example**:
 
