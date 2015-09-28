@@ -1912,11 +1912,11 @@ For advanced uses (only), where you really need to optimize for rvalues passed t
 
 **Example**:
 
-		int multiply(int, int); // just input ints, pass by value
+    int multiply(int, int); // just input ints, pass by value
 
-		string& concatenate(string&, const string& suffix); // suffix is input-only but not as cheap as an int, pass by const&
+    string& concatenate(string&, const string& suffix); // suffix is input-only but not as cheap as an int, pass by const&
 
-		void sink(unique_ptr<widget>);	// input only, and consumes the widget
+    void sink(unique_ptr<widget>);	// input only, and consumes the widget
 
 Avoid "esoteric techniques" such as:
 
@@ -2299,13 +2299,13 @@ Returning a `T*` to transfer ownership is a misuse.
 
 **Example**:
 
-		Node* find(Node* t, const string& s)	// find s in a binary tree of Nodes
-		{
-			if (t == nullptr || t->name == s) return t;
-			if (auto p = find(t->left, s)) return p;
-			if (auto p = find(t->right, s)) return p;
-			return nullptr;
-		}
+    Node* find(Node* t, const string& s)	// find s in a binary tree of Nodes
+    {
+        if (t == nullptr || t->name == s) return t;
+        if (auto p = find(t->left, s)) return p;
+        if (auto p = find(t->right, s)) return p;
+        return nullptr;
+    }
 
 If it isn't the `nullptr`, the pointer returned by `find` indicates a `Node` holding `s`.
 Importantly, that does not imply a transfer of ownership of the pointed-to object to the caller.
@@ -5598,29 +5598,29 @@ They are a notable source of errors.
 
 **Example**:
 
-		class Record {
-			int id;
-			string name;
-			// ...
-		};
+    class Record {
+        int id;
+        string name;
+        // ...
+    };
 
-		void use()
-		{
-			Record* p1 = static_cast<Record*>(malloc(sizeof(Record)));
-			// p1 may be nullptr
-			// *p1 is not initialized; in particular, that string isn't a string, but a string-sizes bag of bits
+    void use()
+    {
+        Record* p1 = static_cast<Record*>(malloc(sizeof(Record)));
+        // p1 may be nullptr
+        // *p1 is not initialized; in particular, that string isn't a string, but a string-sizes bag of bits
 
-			auto p2 = new Record;
+        auto p2 = new Record;
 
-			// unless an exception is thrown, *p2 is default initialized
-			auto p3 = new(nothrow) Record;
-			// p3 may be nullptr; if not, *p2 is default initialized
+        // unless an exception is thrown, *p2 is default initialized
+        auto p3 = new(nothrow) Record;
+        // p3 may be nullptr; if not, *p2 is default initialized
 
-			// ...
+        // ...
 
-			delete p1;	// error: cannot delete object allocated by malloc()
-			free(p2);	// error: cannot free() object allocated by new
-		}
+        delete p1;    // error: cannot delete object allocated by malloc()
+        free(p2);    // error: cannot free() object allocated by new
+    }
 
 In some implementations that `delete` and that `free()` might work, or maybe they will cause run-time errors.
 
@@ -5699,12 +5699,12 @@ If one of the constructor calls throws an exception, then the other object's mem
 This subtle problem has a simple solution: Never perform more than one explicit resource allocation in a single expression statement.
 For example:
 
-	    shared_ptr<Widget> sp1(new Widget(a, b)); // Better, but messy
-	    fun( sp1, new Widget(c, d) );
+    shared_ptr<Widget> sp1(new Widget(a, b)); // Better, but messy
+    fun( sp1, new Widget(c, d) );
 
 The best solution is to avoid explicit allocation entirely use factory functions that return owning objects:
 
-	    fun( make_shared<Widget>(a, b), make_shared<Widget>(c, d) ); // Best
+    fun( make_shared<Widget>(a, b), make_shared<Widget>(c, d) ); // Best
 
 Write your own factory wrapper if there is not one already.
 
@@ -5719,7 +5719,7 @@ Write your own factory wrapper if there is not one already.
 
 **Example**:
 
-	??? what do we recommend: f(int*[]) or f(int**) ???
+    ??? what do we recommend: f(int*[]) or f(int**) ???
 
 **Alternative**: Use `array_view` to preserve size information.
 
@@ -5732,12 +5732,12 @@ Write your own factory wrapper if there is not one already.
 
 **Example**:
 
-		class X {
-			// ...
-			void* operator new(size_t s);
-			void operator delete(void*);
-			// ...
-		};
+    class X {
+        // ...
+        void* operator new(size_t s);
+        void operator delete(void*);
+        // ...
+    };
 
 **Note**: If you want memory that cannot be deallocated, `=delete` the deallocation operation.
 Don't leave it undeclared.
@@ -5911,7 +5911,7 @@ so these guideline enforcement rules work on them out of the box and expose this
 
 **Example**:
 
-	void sink(unique_ptr<widget>); // consumes the widget
+    void sink(unique_ptr<widget>); // consumes the widget
 
     void sink(widget*); 			// just uses the widget
 
@@ -7917,12 +7917,12 @@ Note that there is no return value that could contain an error code.
 
 The `File_handle` constructor might defined like this
 
-		File_handle::File_handle(const string& name, const string& mode)
-			:f{fopen(name.c_str(), mode.c_str())}
-		{
-			if (!f)
-				throw runtime_error{"File_handle: could not open "S-+ name + " as " + mode"}
-		}
+    File_handle::File_handle(const string& name, const string& mode)
+        :f{fopen(name.c_str(), mode.c_str())}
+    {
+        if (!f)
+            throw runtime_error{"File_handle: could not open "S-+ name + " as " + mode"}
+    }
 
 **Note**: It is often said that exceptions are meant to signal exceptional events and failures.
 However, that's a bit circular because "what is exceptional?"
@@ -8967,12 +8967,12 @@ they do not need any special declarations to "hook into the concept".
 
 **Example**:
 
-	template<typename I>		// iterator providing random access
-	concept bool RA_iter = ...;
+    template<typename I>    // iterator providing random access
+    concept bool RA_iter = ...;
 
-	template<typename I>		// iterator providing random access to contiguous data
-	concept bool Contiguous_iter =
-  		RA_iter<I> && is_contiguous<I>::value;  // ??? why not is_contiguous<I>() or is_contiguous_v<I>?
+    template<typename I>    // iterator providing random access to contiguous data
+    concept bool Contiguous_iter =
+        RA_iter<I> && is_contiguous<I>::value;  // ??? why not is_contiguous<I>() or is_contiguous_v<I>?
 
 The programmer (in a library) must define `is_contiguous` (a trait) appropriately.
 
@@ -8993,22 +8993,22 @@ Functions with complementary requirements expressed using negation are brittle.
 
 **Example**: Initially, people will try to define functions with complementary requirements:
 
-	template<typename T>
-  		requires !C<T> 		// bad
-	void f();
+    template<typename T>
+        requires !C<T>    // bad
+    void f();
 
-	template<typename T>
-  		requires C<T>
-	void f();
+    template<typename T>
+        requires C<T>
+    void f();
 
 This is better:
 
-	template<typename T>	// general template
-	void f();
+    template<typename T>	// general template
+        void f();
 
-	template<typename T>	// specialization by concept
-  		requires C<T>
-	void f();
+    template<typename T>	// specialization by concept
+        requires C<T>
+    void f();
 
 The compiler will choose the unconstrained template only when `C<T>` is
 unsatisfied. If you do not want to (or cannot) define an unconstrained
