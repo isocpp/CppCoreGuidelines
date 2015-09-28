@@ -2585,8 +2585,8 @@ Subsections:
 
 **Example**:
 
-	void draw(int x, int y, int x2, int y2);	// BAD: unnecessary implicit relationships
-	void draw(Point from, Point to)				// better
+	void draw(int x, int y, int x2, int y2);  // BAD: unnecessary implicit relationships
+	void draw(Point from, Point to);          // better
 
 **Note**: A simple class without virtual functions implies no space or time overhead.
 
@@ -3451,7 +3451,7 @@ The idiom of having constructors acquire resources and destructors release them 
 
 	void f()
 	{
-		X3 file {Heraclides"};
+		X3 file {"Heraclides"};
 		file.read();	// crash or bad read!
 		// ...
 		if (is_valid()()) {
