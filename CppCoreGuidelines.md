@@ -11778,12 +11778,12 @@ If you define copying, and any base or member has a type that defines a move ope
         string s; // defines more efficient move operations
         // ... other data members ...
     public:
-    	x(const x&) { /* stuff */ }
-    	x& operator=(const x&) { /* stuff */ }
+        x(const x&) { /* stuff */ }
+        x& operator=(const x&) { /* stuff */ }
 
-    	// BAD: failed to also define a move construction and move assignment
-   	 //      (why wasn't the custom "stuff" repeated here?)
-	};
+        //    BAD: failed to also define a move construction and move assignment
+        //   (why wasn't the custom "stuff" repeated here?)
+    };
 
     x test()
     {
