@@ -3725,32 +3725,32 @@ How would a maintainer know whether `j` was deliberately uninitialized (probably
 
 **Example*:
 
-	class B {
-	protected:
-	    B() { /* ... */ }					// create an imperfectly initialized object
+    class B {
+    protected:
+        B() { /* ... */ }                   // create an imperfectly initialized object
 
-	    virtual void PostInitialize()       // to be called right after construction
-	    {
-			// ...
-			f();	// GOOD: virtual dispatch is safe
-			// ...
-		}
+        virtual void PostInitialize()       // to be called right after construction
+        {
+            // ...
+            f();    // GOOD: virtual dispatch is safe
+            // ...
+        }
 
-	public:
-	    virtual void f() = 0;
+    public:
+        virtual void f() = 0;
 
-	    template<class T>
-	    static shared_ptr<T> Create()	// interface for creating objects
-		{
-	        auto p = make_shared<T>();
-	        p->PostInitialize();
-	        return p;
-	    }
-	};
+        template<class T>
+        static shared_ptr<T> Create()    // interface for creating objects
+        {
+            auto p = make_shared<T>();
+            p->PostInitialize();
+            return p;
+        }
+    };
 
-	class D : public B { /* "¦ */ };			// some derived class
+    class D : public B { /* "¦ */ };            // some derived class
 
-	shared_ptr<D> p = D::Create<D>();		// creating a D object
+    shared_ptr<D> p = D::Create<D>();        // creating a D object
 
 By making the constructor `protected` we avoid an incompletely constructed object escaping into the wild.
 By providing the factory function `Create()`, we make construction (on the free store) convenient.
@@ -6493,10 +6493,10 @@ However, beware that this may leave uninitialized data beyond the input - and th
 
 The cost of initializing that array could be significant in some situations.
 However, such examples do tend to leave uninitialized variables accessible, so they should be treated with suspicion.
-	
-	constexpr int max = 8*1024;
-	int buf[max] = {0};				// better in some situations
-	f.read(buf, max);
+
+    constexpr int max = 8*1024;
+    int buf[max] = {0};				// better in some situations
+    f.read(buf, max);
 
 When feasible use a library function that is know not to overflow. For example:
 
@@ -6796,13 +6796,13 @@ The definition of `a2` is C but not C++ and is considered a security risk
 If at all possible, reduce the conditions to a simple set of alternatives (e.g., an `enum`) and don't mix up selection and initialization.
 
 **Example**:
-	
-	owner<istream&> in = [&]{
-		switch (source) {
-		case default: 		owned=false; return cin;
-		case command_line:  owned=true;  return *new istringstream{argv[2]};
-		case file: 			owned=true;  return *new ifstream{argv[2]};
-	}();
+
+    owner<istream&> in = [&]{
+        switch (source) {
+        case default:       owned=false; return cin;
+        case command_line:  owned=true;  return *new istringstream{argv[2]};
+        case file:          owned=true;  return *new ifstream{argv[2]};
+    }();
 
 **Enforcement**: Hard. At best a heuristic. Look for an uninitialized variable followed by a loop assigning to it.
 
@@ -11503,34 +11503,34 @@ If your design wants virtual dispatch into a derived class from a base class con
 
 Here is an example of the last option:
 
-	class B {
-	public:
-	    B() { /* ... */ f(); /*...*/ }		// BAD: see Item 49.1
+    class B {
+    public:
+        B() { /* ... */ f(); /*...*/ }        // BAD: see Item 49.1
 
- 	   virtual void f() = 0;
+        virtual void f() = 0;
 
- 	   // ...
-	};
+        // ...
+    };
 
-	class B {
-	protected:
-  	  B() { /* ... */ }
-  	  virtual void PostInitialize()       // called right after construction
-  	      { /* ... */ f(); /*...*/ }		// GOOD: virtual dispatch is safe
-	public:
-   		virtual void f() = 0;
+    class B {
+    protected:
+        B() { /* ... */ }
+        virtual void PostInitialize()       // called right after construction
+            { /* ... */ f(); /*...*/ }        // GOOD: virtual dispatch is safe
+    public:
+        virtual void f() = 0;
 
-    	template<class T>
-    	static shared_ptr<T> Create() {		// interface for creating objects
-        	auto p = make_shared<T>();
-        	p->PostInitialize();
-        	return p;
-    	}
-	};
+        template<class T>
+        static shared_ptr<T> Create() {        // interface for creating objects
+            auto p = make_shared<T>();
+            p->PostInitialize();
+            return p;
+        }
+    };
 
-	class D : public B { /* "¦ */ };			// some derived class
+    class D : public B { /* "¦ */ };            // some derived class
 
-	shared_ptr<D> p = D::Create<D>();		// creating a D object
+    shared_ptr<D> p = D::Create<D>();    	// creating a D object
 
 This design requires the following discipline:
 
@@ -12000,20 +12000,18 @@ Alternatively, we will decide that no change is needed and delete the entry.
 * What to do with leaks out of temporaries? : `p = (s1+s2).c_str();`
 * pointer/iterator invalidation leading to dangling pointers
 
-  Example:
+        void bad()
+        {
+            int* p = new int[700];
+            int* q = &p[7];
+            delete p;
 
-    void bad()
-    {
-    int* p = new int[700];
-        int* q = &p[7];
-        delete p;
+            vector<int> v(700);
+            int* q2 = &v[7];
+            v.resize(900);
 
-        vector<int> v(700);
-        int* q2 = &v[7];
-        v.resize(900);
-
-        // ... use q and q2 ...
-    }
+            // ... use q and q2 ...
+        }
 
 * LSP
 * private inheritance vs/and membership
