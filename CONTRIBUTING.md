@@ -40,8 +40,12 @@ to display, reproduce, perform, distribute and create derivative works of that m
 
 
 ## Pull requests
-We welcome pull requests for scoped changes to the guidelines--bug fixes in examples, clarifying ambiguous text, etc. Proposed changes should
+We welcome pull requests for scoped changes to the guidelines--bug fixes in examples, clarifying ambiguous text, etc. Significant changes should
 first be discussed in the [Issues](https://github.com/isocpp/CppCoreGuidelines/issues) and the Issue number must be included in the pull
-request. Changes should be made in a child commit of a recent commit in the master branch. Lastly, to avoid line ending issues, please 
-set `autocrlf = input` and `whitespace = cr-at-eol` in your git configuration.
+request. Also please specify the rule number in your Issue and PR.
+
+Changes should be made in a child commit of a recent commit in the master branch. Also, if you are making many small changes please create
+separate PRs to minimize merge issues. 
+
+Lastly, to avoid line ending issues, please set `autocrlf = input` and `whitespace = cr-at-eol` in your git configuration.
 

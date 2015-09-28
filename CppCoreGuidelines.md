@@ -1,5 +1,4 @@
-<a name="main"></a>
-# C++ Core Guidelines
+# <a name="main"></a> C++ Core Guidelines
 
 September 9, 2015
 
@@ -38,7 +37,7 @@ You can [Read an explanation of the scope and structure of this Guide](#S-abstra
 * [R: Resource management](#S-resource)
 * [T: Templates and generic programming](#S-templates)
 * [CP: Concurrency](#S-concurrency)
-* [STL: The Standard library](#S-stdlib)
+* [SL: The Standard library](#S-stdlib)
 * [SF: Source files](#S-source)
 * [CPL: C-style programming](#S-cpl)
 * [PRO: Profiles](#S-profile)
@@ -88,8 +87,7 @@ Definitions of terms used to express and discuss the rules, that are not languag
 * exception guarantee
 
 
-<a name="S-abstract"></a>
-# Abstract
+# <a name="S-abstract"></a> Abstract
 
 This document is a set of guidelines for using C++ well.
 The aim of this document is to help people to use modern C++ effectively.
@@ -129,8 +127,7 @@ Comments and suggestions for improvements are most welcome.
 We plan to modify and extend this document as our understanding improves and the language and the set of available libraries improve.
 
 
-<a name ="S-introduction"></a>
-# In: Introduction
+# <a name ="S-introduction"></a> In: Introduction
 
 This is a set of core guidelines for modern C++, C++14, and taking likely future enhancements and taking ISO Technical Specifications (TSs) into account.
 The aim is to help C++ programmers to write simpler, more efficient, more maintainable code.
@@ -145,14 +142,12 @@ Introduction summary:
 * [In.sec: Major sections](#SS-sec)
 
 
-<a name ="SS-readers"></a>
-## In.target: Target readership
+## <a name ="SS-readers"></a> In.target: Target readership
 
 All C++ programmers. This includes [programmers who might consider C](#S-cpl).
 
 
-<a name ="SS-aims"></a>
-## In.aims: Aims
+## <a name ="SS-aims"></a> In.aims: Aims
 
 The purpose of this document is to help developers to adopt modern C++ (C++11, C++14, and soon C++17) and to achieve a more uniform style across code bases.
 
@@ -167,12 +162,11 @@ you get at least as good performance as if you had handcoded using lower-level l
 Consider these rules ideals for new code, opportunities to exploit when working on older code, and try to approximate these ideas as closely as feasible.
 Remember:
 
-<a name="R0"></a>
-### In.0: Don't panic!
+### <a name="R0"></a> In.0: Don't panic!
 
 Take the time to understand the implications of a guideline rule on your program.
 
-These guidelines are designed according to the "subset of a superset" principle ([Stroustrup,2005](#BS2005)).
+These guidelines are designed according to the "subset of a superset" principle ([Stroustrup05](#Stroustrup05)).
 They do not simply define a subset of C++ to be used (for reliability, safety, performance, or whatever).
 Instead, they strongly recommend the use of a few simple "extensions" ([library components](#S-gsl))
 that make the use of the most error-prone features of C++ redundant, so that they can be banned (in our set of rules).
@@ -199,8 +193,7 @@ Some rules aim to increase various forms of safety while others aim to reduce th
 The guidelines aimed at preventing accidents often ban perfectly legal C++.
 However, when there are two ways of expressing an idea and one has shown itself a common source of errors and the other has not, we try to guide programmers towards the latter.
 
-<a name="SS-non"></a>
-## In.not: Non-aims
+## <a name="SS-non"></a> In.not: Non-aims
 
 The rules are not intended to be minimal or orthogonal.
 In particular, general rules can be simple, but unenforceable.
@@ -236,8 +229,7 @@ They are meant to make code simpler and more correct/safer than most existing C+
 They are meant to inhibit perfectly valid C++ code that correlates with errors, spurious complexity, and poor performance.
 
 
-<a name="SS-force"></a>
-## In.force: Enforcement
+## <a name="SS-force"></a> In.force: Enforcement
 
 Rules with no enforcement are unmanageable for large code bases.
 Enforcement of all rules is possible only for a small weak set of rules or for a specific user community.
@@ -268,15 +260,14 @@ The profiles are intended to be used by tools, but also serve as an aid to the h
 We do not limit our comment in the **Enforcement** sections to things we know how to enforce; some comments are mere wishes that might inspire some tool builder.
 
 
-<a name ="SS-struct"></a>
-## In.struct: The structure of this document
+## <a name ="SS-struct"></a> In.struct: The structure of this document
 
 Each rule (guideline, suggestion) can have several parts:
 
 * The rule itself - e.g., **no naked `new`**
 * A rule reference number - e.g., **C.7** (the 7th rule related to classes).
-Since the major sections are not inherently ordered, we use a letter as the first part of a rule reference "number".
-We leave gaps in the numbering to minimize "disruption" when we add or remove rules.
+  Since the major sections are not inherently ordered, we use a letter as the first part of a rule reference "number".
+  We leave gaps in the numbering to minimize "disruption" when we add or remove rules.
 * **Reason**s (rationales) - because programmers find it hard to follow rules they don't understand
 * **Example**s - because rules are hard to understand in the abstract; can be positive or negative
 * **Alternative**s - for "don't do this" rules
@@ -300,8 +291,7 @@ It is meant to be helpful, rather than complete, fully accurate on technical det
 Recommended information sources can be found in [the references](#S-references).
 
 
-<a name ="SS-sec"></a>
-## In.sec: Major sections
+## <a name ="SS-sec"></a> In.sec: Major sections
 
 * [P: Philosophy](#S-philosophy)
 * [I: Interfaces](#S-interfaces)
@@ -313,7 +303,7 @@ Recommended information sources can be found in [the references](#S-references).
 * [R: Resource management](#S-resource)
 * [T: Templates and generic programming](#S-templates)
 * [CP: Concurrency](#S-concurrency)
-* [STL: The Standard library](#S-stdlib)
+* [SL: The Standard library](#S-stdlib)
 * [SF: Source files](#S-source)
 * [CPL: C-style programming](#S-cpl)
 * [PRO: Profiles](#S-profile)
@@ -336,8 +326,7 @@ Each section (e.g., "P" for "Philosophy") and each subsection (e.g., "C.hier" fo
 The main section abbreviations are also used in rule numbers (e.g., "C.11" for "Make concrete types regular").
 
 
-<a name="S-philosophy"></a>
-# P: Philosophy
+# <a name="S-philosophy"></a> P: Philosophy
 
 The rules in this section are very general.
 
@@ -357,8 +346,7 @@ Philosophical rules are generally not mechanically checkable.
 However, individual rules reflecting these philosophical themes are.
 Without a philosophical basis the more concrete/specific/checkable rules lack rationale.
 
-<a name="Rp-direct"></a>
-### P.1: Express ideas directly in code
+### <a name="Rp-direct"></a> P.1: Express ideas directly in code
 
 **Reason**: Compilers don't read comments (or design documents) and neither do many programmers (consistently).
 What is expressed in code has a defined semantics and can (in principle) be checked by compilers and other tools.
@@ -400,13 +388,13 @@ A much clearer expression of intent would be:
 		string val;
 		cin>>val;
 		// ...
-		auto p = find(v,val);				// better
+		auto p = find(v, val);				// better
 		// ...
 	}
 
 A well-designed library expresses intent (what is to be done, rather than just how something is being done) far better than direct use of language features.
 
-A C++ programmer should know the basics of the STL, and use it where appropriate.
+A C++ programmer should know the basics of the standard library, and use it where appropriate.
 Any programmer should know the basics of the foundation libraries of the project being worked on, and use it appropriately.
 Any programmer using these guidelines should know the [Guidelines Support Library](#S-gsl), and use it appropriately.
 
@@ -433,8 +421,7 @@ If we wanted both absolute speed and deltas, we would have defined a `Delta` typ
 * detect code that mimics the standard library (hard)
 
 
-<a name="Rp-C++"></a>
-### P.2: Write in ISO Standard C++
+### <a name="Rp-C++"></a> P.2: Write in ISO Standard C++
 
 **Reason**: This is a set of guidelines for writing ISO Standard C++.
 
@@ -448,8 +435,7 @@ In such cases, control their (dis)use with non-core Coding Guidelines.
 **Enforcement**: Use an up-to-date C++ compiler (currently C++11 or C++14) with a set of options that do not accept extensions.
 	
 
-<a name="Rp-what"></a>
-### P.3: Express intent
+### <a name="Rp-what"></a> P.3: Express intent
 
 **Reason**: Unless the intent of some code is stated (e.g., in names or comments), it is impossible to tell whether the code does what it is supposed to do.
 
@@ -472,8 +458,8 @@ Now, there is no explicit mention of the iteration mechanism, and the loop opera
 
 Sometimes better still, use a named algorithm:
 
-	for_each(v,[](int x) { /* do something with x */ });
-	for_each(parallel.v,[](int x) { /* do something with x */ });
+	for_each(v, [](int x) { /* do something with x */ });
+	for_each(parallel.v, [](int x) { /* do something with x */ });
 
 The last variant makes it clear that we are not interested in the order in which the elements of `v` are handled.
 
@@ -489,13 +475,13 @@ A programmer should be familiar with
 
 **Example**: if two `int`s are meant to be the coordinates of a 2D point, say so:
 
-		drawline(int,int,int,int);	// obscure
-		drawline(Point,Point);		// clearer
+		drawline(int, int, int, int);	// obscure
+		drawline(Point, Point);		// clearer
 
 **Enforcement**: Look for common patterns for which there are better alternatives
 
 * simple `for` loops vs. range-`for` loops
-* `f(T*,int)` interfaces vs. `f(array_view<T>)` interfaces
+* `f(T*, int)` interfaces vs. `f(array_view<T>)` interfaces
 * loop variable in a too large scope
 * naked `new` and `delete`
 * functions with many arguments of built-in types
@@ -503,8 +489,7 @@ A programmer should be familiar with
 There is a huge scope for cleverness and semi-automated program transformation.
 
 
-<a name="Rp-typesafe"></a>
-### P.4: Ideally, a program should be statically type safe
+### <a name="Rp-typesafe"></a> P.4: Ideally, a program should be statically type safe
 
 **Reason**: Ideally, a program would be completely statically (compile-time) type safe.
 Unfortunately, that is not possible. Problem areas:
@@ -529,8 +514,7 @@ For example:
 * narrowing conversions - minimize their use and use `narrow` or `narrow_cast` where they are necessary
 
 
-<a name="Rp-compile-time"></a>
-### P.5: Prefer compile-time checking to run-time checking
+### <a name="Rp-compile-time"></a> P.5: Prefer compile-time checking to run-time checking
 
 **Reason**: Code clarity and performance. You don't need to write error handlers for errors caught at compile time.
 
@@ -566,8 +550,7 @@ For example:
 * look for run-time checks for range violations.
 
 
-<a name="Rp-run-time"></a>
-### P.6: What cannot be checked at compile time should be checkable at run time
+### <a name="Rp-run-time"></a> P.6: What cannot be checked at compile time should be checkable at run time
 
 **Reason**: Leaving hard-to-detect errors in a program is asking for crashes and bad results.
 
@@ -590,7 +573,7 @@ Here, a crucial bit of information (the number of elements) has been so thorough
 	
 	void g2(int n)
 	{
-		f2(new int[n],m);	// bad: the wrong number of elements can be passed to f()
+		f2(new int[n], m);	// bad: the wrong number of elements can be passed to f()
 	}
 
 Passing the number of elements as an argument is better (and far more common) that just passing the pointer and relying on some (unstated) convention for knowing or discovering the number of elements. However (as shown), a simple typo can introduce a serious error. The connection between the two arguments of `f2()` is conventional, rather than explicit.
@@ -603,7 +586,7 @@ Also, it is implicit that `f2()` is supposed to `delete` its argument (or did th
 
 	void g3(int n)
 	{
-		f3(make_unique<int[]>(n),m);	// bad: pass ownership and size separately
+		f3(make_unique<int[]>(n), m);	// bad: pass ownership and size separately
 	}
 
 **Example**: We need to pass the pointer and the number of elements as an integral object:
@@ -645,16 +628,16 @@ This design carries the number of elements along as an integral part of an objec
 
 **Example**:
 
-	show how possible checks are avoided by interfaces that pass polymorphic base classes around, when they actually know what they need?
+ * ???
+ * show how possible checks are avoided by interfaces that pass polymorphic base classes around, when they actually know what they need?
 	Or strings as "free-style" options
 	
 **Enforcement**:
 
-* Flag (pointer,count) interfaces (this will flag a lot of examples that can't be fixed for compatibility reasons)
+* Flag (pointer, count) interfaces (this will flag a lot of examples that can't be fixed for compatibility reasons)
 * ???
 
-<a name="Rp-early"></a>
-### P.7: Catch run-time errors early
+### <a name="Rp-early"></a> P.7: Catch run-time errors early
 
 **Reason**: Avoid "mysterious" crashes.
 Avoid errors leading to (possibly unrecognized) wrong results.
@@ -671,13 +654,13 @@ Avoid errors leading to (possibly unrecognized) wrong results.
 		const int n = 10;
 		int a[n] = {};
 		// ...
-		increment1(a,m);	// maybe typo, maybe m<=n is supposed
+		increment1(a, m);	// maybe typo, maybe m<=n is supposed
 							// but assume that m==20
 		// ...
 	}
 
 Here we made a small error in `use1` that will lead to corrupted data or a crash.
-The (pointer,count) interface leaves `increment1()` with no realistic way of  defending itself against out-of-range errors.
+The (pointer, count) interface leaves `increment1()` with no realistic way of  defending itself against out-of-range errors.
 Assuming that we could check subscripts for out of range access, the error would not be discovered until `p[10]` was accessed.
 We could check earlier and improve the code:
 
@@ -691,7 +674,7 @@ We could check earlier and improve the code:
 		const int n = 10;
 		int a[n] = {};
 		// ...
-		increment2({a,m});	// maybe typo, maybe m<=n is supposed
+		increment2({a, m});	// maybe typo, maybe m<=n is supposed
 		// ...
 	}
 
@@ -713,7 +696,7 @@ If all we had was a typo so that we meant to use `n` as the bound, the code coul
 	
 	Date extract_date(const string& s);	// extract date from string
 	
-	user1(const string& date)	// manipulate date
+	void user1(const string& date)	// manipulate date
 	{
 		auto d = extract_date(date);
 		// ...
@@ -764,8 +747,7 @@ The physical law for a jet (`e*e < x*x + y*y + z*z`) is not an invariant because
 * ???
 
 
-<a name="Rp-leak"></a>
-### P.8: Don't leak any resource
+### <a name="Rp-leak"></a> P.8: Don't leak any resource
 
 **Reason**: Essential for long-running programs. Efficiency. Ability to recover from errors.
 
@@ -773,7 +755,7 @@ The physical law for a jet (`e*e < x*x + y*y + z*z`) is not an invariant because
 
 	void f(char* name)
 	{
-		FILE* input = fopen(name,"r");
+		FILE* input = fopen(name, "r");
 		// ...
 		if (something) return;		// bad: if something==true, a file handle is leaked
 		// ...
@@ -795,14 +777,13 @@ Prefer [RAII](#Rr-raii):
 **Enforcement**:
 
 * Look at pointers: classify them into non-owners (the default) and owners.
-Where feasible, replace owners with standard-library resource handles (as in the example above).
-Alternatively, mark an owner as such using `owner` from [the GSL](#S-gsl).
+  Where feasible, replace owners with standard-library resource handles (as in the example above).
+  Alternatively, mark an owner as such using `owner` from [the GSL](#S-gsl).
 * Look for naked `new` and `delete`
 * look for known resource allocating functions returning raw pointers (such as `fopen`, `malloc`, and `strdup`)
 
 
-<a name="Rp-waste"></a>
-### P.9: Don't waste time or space
+### <a name="Rp-waste"></a> P.9: Don't waste time or space
 
 **Reason**: This is C++.
 
@@ -857,8 +838,7 @@ After that, we can look at waste related to algorithms and requirements, but tha
 
 
 
-<a name="S-interfaces"></a>
-# I: Interfaces
+# <a name="S-interfaces"></a> I: Interfaces
 
 An interface is a contract between two parts of a program. Precisely stating what is expected of a supplier of a service and a user of that service is essential.
 Having good (easy-to-understand, encouraging efficient use, not error-prone, supporting testing, etc.) interfaces is probably the most important single aspect of code organization.
@@ -893,8 +873,7 @@ See also
 * [E: Error handling](#S-errors)
 * [T: Templates and generic programming](#S-templates)
 
-<a name="Ri-explicit"></a>
-### I.1: Make interfaces explicit
+### <a name="Ri-explicit"></a> I.1: Make interfaces explicit
 
 **Reason**: Correctness. Assumptions not stated in an interface are easily overlooked and hard to test.
 
@@ -913,7 +892,7 @@ The use of a non-local control is potentially confusing, but controls only imple
 
 **Example, bad**: Reporting through non-local variables (e.g., `errno`) is easily ignored. For example:
 
-	fprintf(connection,"logging: %d %d %d\n",x,y,s); // don't: no test of printf's return value
+	fprintf(connection, "logging: %d %d %d\n", x, y, s); // don't: no test of printf's return value
 	
 What if the connection goes down so than no logging output is produced? See Rule I.??.
 
@@ -930,8 +909,7 @@ Functions can be template functions and sets of functions can be classes or clas
 * (Simple) A function should not make control-flow decisions based on the values of variables declared at namespace scope.
 * (Simple) A function should not write to variables declared at namespace scope.
 
-<a name="Ri-global"></a>
-### I.2 Avoid global variables
+### <a name="Ri-global"></a> I.2 Avoid global variables
 
 **Reason**: Non-`const` global variables hide dependencies and make the dependencies subject to unpredictable changes.
 
@@ -970,8 +948,7 @@ Every pointer or reference to mutable data is a potential data race.
 **Enforcement**: (Simple) Report all non-`const` variables declared at namespace scope.
 
 
-<a name="Ri-singleton"></a>
-### I.3: Avoid singletons
+### <a name="Ri-singleton"></a> I.3: Avoid singletons
 
 **Reason**: Singletons are basically complicated global objects in disguise.
 
@@ -1007,8 +984,7 @@ and this useful technique is not an exception to the no-singleton rule.
 * Look for classes for which only a single object is created (by counting objects or by examining constructors)
 
 
-<a name="Ri-typed"></a>
-### I.4: Make interfaces precisely and strongly typed
+### <a name="Ri-typed"></a> I.4: Make interfaces precisely and strongly typed
 
 Reason: Types are the simplest and best documentation, have well-defined meaning, and are guaranteed to be checked at compile time.
 Also, precisely typed code often optimize better.
@@ -1025,9 +1001,9 @@ Consider using a variant or a pointer to base instead. (Future note: Consider a 
 
 **Example; bad**: Consider
 
-	void draw_rect(int,int,int,int);	// great opportunities for mistakes
+	void draw_rect(int, int, int, int);	// great opportunities for mistakes
 	
-	draw_rect(p.x,p.y,10,20);			// what does 10,20 mean?
+	draw_rect(p.x, p.y, 10, 20);			// what does 10, 20 mean?
 
 An `int` can carry arbitrary forms of information, so we must guess about the meaning of the four `int`s.
 Most likely, the first two are an `x`,`y` coordinate pair, but what are the last two?
@@ -1036,8 +1012,8 @@ Comments and parameter names can help, but we could be explicit:
 	void draw_rectangle(Point top_left, Point bottom_right);
 	void draw_rectangle(Point top_left, Size height_width);
 	
-	draw_rectangle(p,Point{10,20});	// two corners
-	draw_rectangle(p,Size{10,20});	// one corner and a (height,width) pair
+	draw_rectangle(p, Point{10, 20});	// two corners
+	draw_rectangle(p, Size{10, 20});	// one corner and a (height, width) pair
 
 Obviously, we cannot catch all errors through the static type system
 (e.g., the fact that a first argument is supposed to be a top-left point is left to convention (naming and comments)).
@@ -1051,8 +1027,7 @@ Obviously, we cannot catch all errors through the static type system
 * (Hard to do well) Look for member functions with many built-in type arguments
 
 
-<a name="Ri-pre"></a>
-### I.5: State preconditions (if any)
+### <a name="Ri-pre"></a> I.5: State preconditions (if any)
 
 **Reason**: Arguments have meaning that may constrain their proper use in the callee.
 
@@ -1084,8 +1059,7 @@ We don't need to mention it for each member function.
 **See also**: the rules for passing pointers.
 
 
-<a name="Ri-expects"></a>
-### I.6: Prefer `Expects()` for expressing preconditions
+### <a name="Ri-expects"></a> I.6: Prefer `Expects()` for expressing preconditions
 
 **Reason**: To make it clear that the condition is a precondition and to enable tool use.
 
@@ -1107,8 +1081,7 @@ We don't need to mention it for each member function.
 **Enforcement**: (Not enforceable) Finding the variety of ways preconditions can be asserted is not feasible. Warning about those that can be easily identified (assert()) has questionable value in the absence of a language facility.
 
 
-<a name="Ri-post"></a>
-### I.7: State postconditions
+### <a name="Ri-post"></a> I.7: State postconditions
 
 **Reason**: To detect misunderstandings about the result and possibly catch erroneous implementations.
 
@@ -1134,7 +1107,7 @@ Consider using:
 	{
 		char buffer[MAX];
 		// ...
-		memset(buffer,0,MAX);
+		memset(buffer, 0, MAX);
 	}
 
 There was no postcondition stating that the buffer should be cleared and the optimizer eliminated the apparently redundant `memset()` call:
@@ -1143,7 +1116,7 @@ There was no postcondition stating that the buffer should be cleared and the opt
 	{
 		char buffer[MAX];
 		// ...
-		memset(buffer,0,MAX);
+		memset(buffer, 0, MAX);
 		Ensures(buffer[0]==0);
 	}
 
@@ -1186,8 +1159,7 @@ Postconditions related only to internal state belongs in the definition/implemen
 **Enforcement**: (Not enforceable) This is a philosophical guideline that is infeasible to check directly.
 
 
-<a name="Ri-ensures"></a>
-### I.8: Prefer `Ensures()` for expressing postconditions
+### <a name="Ri-ensures"></a> I.8: Prefer `Ensures()` for expressing postconditions
 
 **Reason**: To make it clear that the condition is a postcondition and to enable tool use.
 
@@ -1197,7 +1169,7 @@ Postconditions related only to internal state belongs in the definition/implemen
 	{
 		char buffer[MAX];
 		// ...
-		memset(buffer,0,MAX);
+		memset(buffer, 0, MAX);
 		Ensures(buffer[0]==0);
 	}
 
@@ -1210,15 +1182,14 @@ Ideally, that `Ensures` should be part of the interface that's not easily done. 
 **Enforcement**: (Not enforceable) Finding the variety of ways postconditions can be asserted is not feasible. Warning about those that can be easily identified (assert()) has questionable value in the absence of a language facility.
 
 
-<a name="Ri-concepts"></a>
-### I.9: If an interface is a template, document its parameters using concepts
+### <a name="Ri-concepts"></a> I.9: If an interface is a template, document its parameters using concepts
 
 **Reason**: Make the interface precisely specified and compile-time checkable in the (not so distant) future.
 
 **Example**: Use the ISO Concepts TS style of requirements specification. For example:
 
 	template<typename Iter, typename Val>
-	//	requires InputIterator<Iter> && EqualityComparable<ValueType<Iter>>,Val>
+	//	requires InputIterator<Iter> && EqualityComparable<ValueType<Iter>>, Val>
 	Iter find(Iter first, Iter last, Val v)
 	{
 		// ...
@@ -1231,8 +1202,7 @@ Ideally, that `Ensures` should be part of the interface that's not easily done. 
 **Enforcement**: (Not enforceable yet) A language facility is under specification. When the language facility is available, warn if any non-variadic template parameter is not constrained by a concept (in its declaration or mentioned in a `requires` clause.
 
 
-<a name="Ri-except"></a>
-### I.10: Use exceptions to signal a failure to perform an required task
+### <a name="Ri-except"></a> I.10: Use exceptions to signal a failure to perform a required task
 
 **Reason**: It should not be possible to ignore an error because that could leave the system or a computation in an undefined (or unexpected) state.
 This is a major source of errors.
@@ -1259,7 +1229,7 @@ consider using a style that returns a pair of values:
 
 	int val;
 	int error_code;
-	tie(val,error_code) = do_something();
+	tie(val, error_code) = do_something();
 	if (error_code==0) {
 		// ... handle the error or exit ...
 	}
@@ -1268,7 +1238,7 @@ consider using a style that returns a pair of values:
 **Note**: We don't consider "performance" a valid reason not to use exceptions.
 
 * Often, explicit error checking and handling consume as much time and space as exception handling.
-* Often, cleaner code yield better performance with exceptions (simplifying the tracing of paths through the program and their optimization).
+* Often, cleaner code yields better performance with exceptions (simplifying the tracing of paths through the program and their optimization).
 * A good rule for performance critical code is to move checking outside the critical part of the code ([checking](#Rper-checking)).
 * In the longer term, more regular code gets better optimized.
 
@@ -1280,10 +1250,9 @@ consider using a style that returns a pair of values:
 * look for `errno`.
 
 
-<a name="Ri-raw"></a>
-### I.11: Never transfer ownership by a raw pointer (`T*`)
+### <a name="Ri-raw"></a> I.11: Never transfer ownership by a raw pointer (`T*`)
 
-**Reason**: if there is any doubt whether the caller or the callee owns an object, leaks or premature destruction will occur.
+**Reason**: If there is any doubt whether the caller or the callee owns an object, leaks or premature destruction will occur.
 
 **Example**: Consider
 
@@ -1335,8 +1304,7 @@ That is, its value must be `delete`d or transferred to another owner, as is done
 * (Simple) Warn if the return value of `new` or a function call with return value of pointer type is assigned to a raw pointer.
 
 
-<a name="Ri-nullptr"></a>
-### I.12: Declare a pointer that must not be null as `not_null`
+### <a name="Ri-nullptr"></a> I.12: Declare a pointer that must not be null as `not_null`
 
 **Reason**: To help avoid dereferencing `nullptr` errors. To improve performance by avoiding redundant checks for `nullptr`.
 
@@ -1365,10 +1333,9 @@ Note: `length()` is, of course, `std::strlen()` in disguise.
 * (Complex) If a function with pointer return value ensures it is not `nullptr` on all return paths, then warn the return type should be declared `not_null`.
 
 
-<a name="Ri-array"></a>
-### I.13: Do not pass an array as a single pointer
+### <a name="Ri-array"></a> I.13: Do not pass an array as a single pointer
 
-**Reason**: (pointer,size)-style interfaces are error-prone. Also, a plain pointer (to array) must rely on some convention to allow the callee to determine the size.
+**Reason**: (pointer, size)-style interfaces are error-prone. Also, a plain pointer (to array) must rely on some convention to allow the callee to determine the size.
 
 **Example**: Consider
 
@@ -1387,7 +1354,7 @@ Either is undefined behavior and a potentially very nasty bug.
 	void draw(Shape* p, int n);	// poor interface; poor code
 	Circle arr[10];
 	// ...
-	draw(arr,10);
+	draw(arr, 10);
 
 Passing `10` as the `n` argument may be a mistake: the most common convention is to assume [`0`:`n`) but that is nowhere stated. Worse is that the call of `draw()` compiled at all: there was an implicit conversion from array to pointer (array decay) and then another implicit conversion from `Circle` to `Shape`. There is no way that `draw()` can safely iterate through that array: it has no way of knowing the size of the elements.
 
@@ -1412,8 +1379,7 @@ This `draw2()` passes the same amount of information to `draw()`, but makes the 
 * (Simple) ((Bounds)) Warn for any arithmetic operation on an expression of pointer type that results in a value of pointer type. Allow exception for zstring/czstring pointer types.
 
 
-<a name="Ri-nargs"></a>
-### I.14: Keep the number of function arguments low
+### <a name="Ri-nargs"></a> I.14: Keep the number of function arguments low
 
 **Reason**: Having many arguments opens opportunities for confusion. Passing lots of arguments is often costly compared to alternatives.
 
@@ -1452,8 +1418,7 @@ There are functions that are best expressed with four individual arguments, but 
    - (Not enforceable) This is a philosophical guideline that is infeasible to check directly.
 
 
-<a name="Ri-unrelated"></a>
-### I.15: Avoid adjacent unrelated parameters of the same type
+### <a name="Ri-unrelated"></a> I.15: Avoid adjacent unrelated parameters of the same type
 
 **Reason**: Adjacent arguments of the same type are easily swapped by mistake.
 
@@ -1474,8 +1439,7 @@ Use `const` for the "from" argument:
 **Enforcement**: (Simple) Warn if two consecutive parameters share the same type.
 
 
-<a name="Ri-abstract"></a>
-### I.16: Prefer abstract classes as interfaces to class hierarchies
+### <a name="Ri-abstract"></a> I.16: Prefer abstract classes as interfaces to class hierarchies
 
 **Reason**: Abstract classes are more likely to be stable than base classes with state.
 
@@ -1507,8 +1471,7 @@ This will force every derived class to compute a center -- even if that's non-tr
 **Enforcement**: (Simple) Warn if a pointer to a class `C` is assigned to a pointer to a base of `C` and the base class contains data members.
 
 
-<a name="Ri-abi"></a>
-### I.16: If you want a cross-compiler ABI, use a C-style subset
+### <a name="Ri-abi"></a> I.16: If you want a cross-compiler ABI, use a C-style subset
 
 **Reason**: Different compilers implement different binary layouts for classes, exception handling, function names, and other implementation details.
 
@@ -1521,8 +1484,7 @@ This will force every derived class to compute a center -- even if that's non-tr
 **Enforcement**: (Not enforceable) It is difficult to reliably identify where an interface forms part of an ABI.
 
 
-<a name="S-functions"></a>
-# F: Functions
+# <a name="S-functions"></a> F: Functions
 
 A function specifies an action or a computation that takes the system from one consistent state to the next. It is the fundamental building block of programs.
 
@@ -1577,14 +1539,12 @@ Other function rules:
 Functions have strong similarities to lambdas and function objects so see also Section ???.
 
 
-<a name="SS-fct-def"></a>
-## F.def: Function definitions
+## <a name="SS-fct-def"></a> F.def: Function definitions
 
 A function definition is a function declaration that also specifies the function's implementation, the function body.
 
 
-<a name="Rf-package"></a>
-### F.1: "Package" meaningful operations as carefully named functions
+### <a name="Rf-package"></a> F.1: "Package" meaningful operations as carefully named functions
 
 **Reason**: Factoring out common code makes code more readable, more likely to be reused, and limit errors from complex code.
 If something is a well-specified action, separate it out from its  surrounding code and give it a name.
@@ -1618,7 +1578,7 @@ Naming that lambda breaks up the expression into its logical parts and provides 
 	auto lessT = [](T x, T y) { return x.valid() && y.valid() && x.value()<y.value(); };
 	
 	sort(a, b, lessT);
-	find_if(a,b, lessT);
+	find_if(a, b, lessT);
 
 The shortest code is not always the best for performance or maintainability.
 
@@ -1633,8 +1593,7 @@ Similarly, lambdas used as callback arguments are sometimes non-trivial, yet unl
 * Flag identical and very similar lambdas used in different places.
 
 
-<a name="Rf-logical"></a>
-### F.2: A function should perform a single logical operation
+### <a name="Rf-logical"></a> F.2: A function should perform a single logical operation
 
 **Reason**: A function that performs a single operation is simpler to understand, test, and reuse.
 
@@ -1691,8 +1650,7 @@ If there was a need, we could further templatize `read()` and `print()` on the d
 * Consider functions with 7 or more parameters suspicious.
 
 
-<a name="Rf-single"></a>
-### F.3: Keep functions short and simple
+### <a name="Rf-single"></a> F.3: Keep functions short and simple
 
 **Reason**: Large functions are hard to read, more likely to contain complex code, and more likely to have variables in larger than minimal scopes.
 Functions with complex control structures are more likely to be long and more likely to hide logical errors
@@ -1760,13 +1718,11 @@ Small simple functions are easily inlined where the cost of a function call is s
 **Enforcement**:
 
 * Flag functions that do not "fit on a screen."
-How big is a screen? Try 60 lines by 140 characters; that's roughly the maximum that's comfortable for a book page.
+  How big is a screen? Try 60 lines by 140 characters; that's roughly the maximum that's comfortable for a book page.
 * Flag functions that are too complex. How complex is too complex?
-You could use cyclomatic complexity. Try "more that 10 logical path through." Count a simple switch as one path.
+  You could use cyclomatic complexity. Try "more that 10 logical path through." Count a simple switch as one path.
 
-
-<a name="Rf-constexpr"></a>
-### F.4: If a function may have to be evaluated at compile time, declare it `constexpr`
+### <a name="Rf-constexpr"></a> F.4: If a function may have to be evaluated at compile time, declare it `constexpr`
 
 **Reason**: `constexpr` is needed to tell the compiler to allow compile-time evaluation.
 
@@ -1775,7 +1731,7 @@ You could use cyclomatic complexity. Try "more that 10 logical path through." Co
 	constexpr int fac(int n)
 	{
 		constexpr int max_exp = 17;     // constexpr enables  this to be used in Expects
-		Expects(0<=x && x<max_exp);		// prevent silliness and overflow
+		Expects(0<=n && n<max_exp);		// prevent silliness and overflow
 		int x = 1;
 		for (int i=2; i<=n; ++i) x*= n;
 		return x;
@@ -1790,10 +1746,10 @@ it just guarantees that the function can be evaluated at compile time for consta
 	
 	void test(int v)
 	{
-		int m1 = min(-1,2);				// probably compile-time evaluation
-		constexpr int m2 = min(-1,2);	// compile-time evaluation
-		int m3 = min(-1,v);				// run-time evaluation
-		constexpr int m4 = min(-1,v);	// error: connot evaluate at compile-time
+		int m1 = min(-1, 2);            // probably compile-time evaluation
+		constexpr int m2 = min(-1, 2);  // compile-time evaluation
+		int m3 = min(-1, v);            // run-time evaluation
+		constexpr int m4 = min(-1, v);  // error: cannot evaluate at compile-time
 	}
 	
 **Note**: `constexpr` functions are pure: they can have no side effects.
@@ -1813,8 +1769,7 @@ This is usually a very good thing.
 The compiler gives an error if a non-`constexpr` function is called where a constant is required.
 
 
-<a name="Rf-inline"></a>
-### F.5: If a function is very small and time critical, declare it `inline`
+### <a name="Rf-inline"></a> F.5: If a function is very small and time critical, declare it `inline`
 
 **Reason**: Some optimizers are good at inlining without hints from the programmer, but don't rely on it.
 Measure! Over the last 40 years or so, we have been promised compilers that can inline better than humans without hints from humans.
@@ -1834,8 +1789,7 @@ An inline function is part of the ABI.
 To fix: Declare the function out of line. [[NM: Certainly possible, but size-based metrics can be very annoying.]]
 
 
-<a name="Rf-noexcept"></a>
-### F.6: If your function may not throw, declare it `noexcept`
+### <a name="Rf-noexcept"></a> F.6: If your function may not throw, declare it `noexcept`
 
 **Reason**: If an exception is not supposed to be thrown, the program cannot be assumed to cope with the error and should be terminated as soon as possible. Declaring a function `noexcept` helps optimizers by reducing the number of alternative execution paths. It also speeds up the exit after failure.
 
@@ -1872,8 +1826,7 @@ so don't just sprinkle `noexcept` all over the place.
 * Flag throwing `swap`, `move`, destructors, and default constructors.
 
 
-<a name="Rf-smart"></a>
-### F.7: For general use, take `T*` arguments rather than a smart pointers
+### <a name="Rf-smart"></a> F.7: For general use, take `T*` arguments rather than a smart pointers
 
 **Reason**: Passing a smart pointer transfers or shares ownership.
 Passing by smart pointer restricts the use of a function to callers that use smart pointers.
@@ -1892,30 +1845,28 @@ Passing a shared smart pointer (e.g., `std::shared_ptr`) implies a run-time cost
 **Enforcement**: Flag smart pointer arguments.
 
 
-<a name="Rf-pure"></a>
-### F.8: Prefer pure functions
+### <a name="Rf-pure"></a> F.8: Prefer pure functions
 
 
 **Reason**: Pure functions are easier to reason about, sometimes easier to optimize (and even parallelize), and sometimes can be memoized.
 
 **Example**:
 
-    template<class T>
+
+	template<class T>
 	auto square(T t) { return t*t; }
-	
+
 **Note**: `constexpr` functions are pure.
 	
 **Enforcement**: not possible.
 
 
-<a name="SS-call"></a>
-## F.call: Argument passing
+## <a name="SS-call"></a> F.call: Argument passing
 
 There are a variety of ways to pass arguments to a function and to return values.
 
 
-<a name="Rf-conventional"></a>
-### Rule F.15: Prefer simple and conventional ways of passing information
+### <a name="Rf-conventional"></a> Rule F.15: Prefer simple and conventional ways of passing information
 
 **Reason**: Using "unusual and clever" techniques causes surprises, slows understanding by other programmers, and encourages bugs.
 If you really feel the need for an optimization beyond the common techniques, measure to ensure that it really is an improvement,
@@ -1988,11 +1939,10 @@ Avoid "esoteric techniques" such as:
 
 **Enforcement**: This is a philosophical guideline that is infeasible to check directly and completely.
 However, many of the the detailed rules (F.16-F.45) can be checked,
-such as passing a `const int&`, returning an `array<BigPOD>` by value, and returning a pointer to fre store alloced by the function.
+such as passing a `const int&`, returning an `array<BigPOD>` by value, and returning a pointer to free store alloced by the function.
 
 
-<a name="Rf-ptr"></a>
-### F.16: Use `T*` or `owner<T*>` to designate a single object
+### <a name="Rf-ptr"></a> F.16: Use `T*` or `owner<T*>` to designate a single object
 
 **Reason**: In traditional C and C++ code, "Plain `T*` is used for many weakly-related purposes, such as
 
@@ -2030,8 +1980,7 @@ When I call `length(r)` should I test for `r==nullptr` first? Should the impleme
 * (Simple) ((Bounds)) Warn for any arithmetic operation on an expression of pointer type that results in a value of pointer type.
 
 
-<a name="Rf-nullptr"></a>
-### F.17: Use a `not_null<T>` to indicate that "null" is not a valid value
+### <a name="Rf-nullptr"></a> F.17: Use a `not_null<T>` to indicate that "null" is not a valid value
 
 **Reason**: Clarity. Making it clear that a test for null isn't needed.
 
@@ -2055,8 +2004,7 @@ When I call `length(r)` should I test for `r==nullptr` first? Should the impleme
 * (Simple) Warn if a `not_null` pointer is tested against `nullptr` within a function.
 
 
-<a name="Rf-range"></a>
-### F.18: Use an `array_view<T>` or an `array_view_p<T>` to designate a half-open sequence
+### <a name="Rf-range"></a> F.18: Use an `array_view<T>` or an `array_view_p<T>` to designate a half-open sequence
 
 **Reason**: Informal/non-explicit ranges are a source of errors
 
@@ -2066,9 +2014,9 @@ When I call `length(r)` should I test for `r==nullptr` first? Should the impleme
 
 	vector<X> vec;
 	// ...
-	auto p = find({vec.begin(),vec.end()},X{});	// find X{} in vec
+	auto p = find({vec.begin(), vec.end()}, X{});	// find X{} in vec
 
-**Note**: Ranges are extremely common in C++ code. Typically, they are implicit and their correct use is very hard to ensure. In particular, given a pair of arguments `(p,n)` designating an array [`p`:`p+n`), it is in general impossible to know if there really are n elements to access following `*p`. `array_view<T>` and `array_view_p<T>` are simple helper classes designating a [p:q) range and a range starting with p and ending with the first element for which a predicate is true, respectively.
+**Note**: Ranges are extremely common in C++ code. Typically, they are implicit and their correct use is very hard to ensure. In particular, given a pair of arguments `(p, n)` designating an array [`p`:`p+n`), it is in general impossible to know if there really are n elements to access following `*p`. `array_view<T>` and `array_view_p<T>` are simple helper classes designating a [p:q) range and a range starting with p and ending with the first element for which a predicate is true, respectively.
 
 **Note**: an `array_view<T>` object does not own its elements and is so small that it can be passed by value.
 
@@ -2079,12 +2027,12 @@ When I call `length(r)` should I test for `r==nullptr` first? Should the impleme
 **Enforcement**: (Complex) Warn where accesses to pointer parameters are bounded by other parameters that are integral types and suggest they could use `array_view` instead.
 
 
-<a name="Rf-string"></a>
-### F.19: Use a `zstring` or a `not_null<zstring>` to designate a C-style string
+### <a name="Rf-string"></a> F.19: Use a `zstring` or a `not_null<zstring>` to designate a C-style string
 
-**Reason**: C-style strings are ubiquitous.
-They are defined by convention: zero-terminated arrays of characters.
-Functions are inconsistent in their use of `nullptr` and we must be more explicit.
+**Reason**: 
+C-style strings are ubiquitous. They are defined by convention: zero-terminated arrays of characters. 
+We must distinguish C-style strings from a pointer to a single character or an old-fashioned pointer to an array of characters.
+
 
 **Example**: Consider
 
@@ -2092,17 +2040,16 @@ Functions are inconsistent in their use of `nullptr` and we must be more explici
 
 When I call `length(s)` should I test for `s==nullptr` first? Should the implementation of `length()` test for `p==nullptr`?
 
-	int length(zstring p);	// it is the caller's job to make sure p!=nullptr
+	int length(zstring p);	// the implementor of length() must assume that p==nullptr is possible
 
-	int length(not_null<Zstring> p);	// the implementor of length() must assume that p==nullptr is possible
+	int length(not_null<zstring> p);	// it is the caller's job to make sure p!=nullptr
 
 **Note**: `zstring` do not represent ownership.
 
 **See also**: [Support library](#S-gsl).
 
 
-<a name="Rf-const-T-ref"></a>
-### F.20: Use a `const T&` parameter for a large object
+### <a name="Rf-const-T-ref"></a> F.20: Use a `const T&` parameter for a large object
 
 **Reason**: Copying large objects can be expensive. A `const T&` is always cheap and protects the caller from unintended modification.
 
@@ -2121,11 +2068,9 @@ If you need the notion of an optional value, use a pointer, `std::optional`, or 
 **Enforcement**:
 
 * (Simple) ((Foundation)) Warn when a parameter being passed by value has a size greater than `4*sizeof(int)`.
-Suggest using a `const` reference instead.
+  Suggest using a `const` reference instead.
 
-
-<a name="Rf-T"></a>
-### F.21: Use a `T` parameter for a small object
+### <a name="Rf-T"></a> F.21: Use a `T` parameter for a small object
 
 **Reason**: Nothing beats the simplicity and safety of copying.
 For small objects (up to two or three words) it is also faster than alternatives.
@@ -2143,8 +2088,7 @@ For small objects (up to two or three words) it is also faster than alternatives
 * (Simple) ((Foundation)) Warn when a `const` parameter being passed by reference has a size less than `3*sizeof(int)`. Suggest passing by value instead.
 
 
-<a name="Rf-T-ref"></a>
-### F.22: Use a `T&` for an in-out-parameter
+### <a name="Rf-T-ref"></a> F.22: Use a `T&` for an in-out-parameter
 
 **Reason**: A called function can write to a non-`const` reference argument, so assume that it does.
 
@@ -2177,8 +2121,7 @@ If the writer of `g()` makes an assumption about the size of `buffer` a bad logi
 * Flag functions that take a `T&` and replace the `T` referred to, rather what the contents of that `T`
 
 
-<a name="Rf-T-return-out"></a>
-### F.23: Use `T&` for an out-parameter that is expensive to move (only)
+### <a name="Rf-T-return-out"></a> F.23: Use `T&` for an out-parameter that is expensive to move (only)
 
 **Reason**: A return value is harder to miss and harder to misuse than a `T&` (an in-out parameter); [see also](#Rf-T-return); [see also](#Rf-T-multi).
 
@@ -2198,14 +2141,13 @@ If the writer of `g()` makes an assumption about the size of `buffer` a bad logi
 **Enforcement**: Hard to choose a cutover value for the size of the value returned.
 
 
-<a name="Rf-pass-ref-ref"></a>
-### F.24: Use a `TP&&` parameter when forwarding (only)
+### <a name="Rf-pass-ref-ref"></a> F.24: Use a `TP&&` parameter when forwarding (only)
 
 **Reason**: When `TP` is a template type parameter, `TP&&` is a forwarding reference -- it both *ignores* and *preserves* const-ness and rvalue-ness. Therefore any code that uses a `T&&` is implicitly declaring that it itself doesn't care about the variable's const-ness and rvalue-ness (because it is ignored), but that intends to pass the value onward to other code that does care about const-ness and rvalue-ness (because it is preserved). When used as a parameter `TP&&` is safe because any temporary objects passed from the caller will live for the duration of the function call. A parameter of type `TP&&` should essentially always be passed onward via `std::forward` in the body of the function.
 
 **Example**:
 
-	template <class F, class... Args>
+    template <class F, class... Args>
     inline auto invoke(F&& f, Args&&... args) {
         return forward<F>(f)(forward<Args>(args)...);
     }
@@ -2213,8 +2155,7 @@ If the writer of `g()` makes an assumption about the size of `buffer` a bad logi
 **Enforcement**: Flag a function that takes a `TP&&` parameter (where `TP` is a template type parameter name) and uses it without `std::forward`.
 
 
-<a name ="Rf-pass-ref-move"></a>
-### F.25: Use a `T&&` parameter together with `move` for rare optimization opportunities
+### <a name ="Rf-pass-ref-move"></a> F.25: Use a `T&&` parameter together with `move` for rare optimization opportunities
 
 **Reason**: Moving from an object leaves an object in its moved-from state behind.
 In general, moved-from objects are dangerous. The only guaranteed operation is destruction (more generally, member functions without preconditions).
@@ -2240,8 +2181,7 @@ If you have performance justification to optimize for rvalues, overload on `&&` 
 * Flag access to moved-from objects
 
 
-<a name="Rf-unique_ptr"></a>
-### F.26: Use a `unique_ptr<T>` to transfer ownership where a pointer is needed
+### <a name="Rf-unique_ptr"></a> F.26: Use a `unique_ptr<T>` to transfer ownership where a pointer is needed
 
 **Reason**: Using `unique_ptr` is the cheapest way to pass a pointer safely.
 
@@ -2263,8 +2203,7 @@ If you have performance justification to optimize for rvalues, overload on `&&` 
 **Enforcement**: (Simple) Warn if a function returns a locally-allocated raw pointer. Suggest using either `unique_ptr` or `shared_ptr` instead.
 
 
-<a name="Rf-shared_ptr"></a>
-### F.27: Use a `shared_ptr<T>` to share ownership
+### <a name="Rf-shared_ptr"></a> F.27: Use a `shared_ptr<T>` to share ownership
 
 **Reason**: Using `std::shared_ptr` is the standard way to represent shared ownership. That is, the last owner deletes the object.
 
@@ -2272,10 +2211,10 @@ If you have performance justification to optimize for rvalues, overload on `&&` 
 
 	shared_ptr<Image> im { read_image(somewhere); };
 	
-	std::thread t0 {shade,args0,top_left,im};
-	std::thread t1 {shade,args1,top_right,im};
-	std::thread t2 {shade,args2,bottom_left,im};
-	std::thread t3 {shade,args3,bottom_right,im};
+	std::thread t0 {shade, args0, top_left, im};
+	std::thread t1 {shade, args1, top_right, im};
+	std::thread t2 {shade, args2, bottom_left, im};
+	std::thread t3 {shade, args3, bottom_right, im};
 	
 	// detach treads
 	// last thread to finish deletes the image
@@ -2289,15 +2228,14 @@ If you have performance justification to optimize for rvalues, overload on `&&` 
 **Enforcement**: (Not enforceable) This is a too complex pattern to reliably detect.
 
 
-<a name="Rf-T-return"></a>
-### F.40: Prefer return values to out-parameters
+### <a name="Rf-T-return"></a> F.40: Prefer return values to out-parameters
 
 **Reason**: It's self-documenting. A `&` parameter could be either in/out or out-only.
 
 **Example**:
 
 	void incr(int&);
-	int incr();
+	int incr(int);
 	
 	int i = 0;
 	incr(i);
@@ -2306,8 +2244,7 @@ If you have performance justification to optimize for rvalues, overload on `&&` 
 **Enforcement**: Flag non-const reference parameters that are not read before being written to and are a type that could be cheaply returned.
 
 
-<a name="Rf-T-multi"></a>
-### F.41: Prefer to return tuples to multiple out-parameters
+### <a name="Rf-T-multi"></a> F.41: Prefer to return tuples to multiple out-parameters
 
 **Reason**: A return value is self-documenting as an "output-only" value.
 And yes, C++ does have multiple return values, by convention of using a `tuple`, with the extra convenience of `tie` at the call site.
@@ -2315,14 +2252,14 @@ And yes, C++ does have multiple return values, by convention of using a `tuple`,
 **Example**:
 
     int f( const string& input, /*output only*/ string& output_data ) { // BAD: output-only parameter documented in a comment
-	    // ...
-		output_data = something();
-		return status;
-	}
+    	// ...
+    	output_data = something();
+    	return status;
+    }
 
-    tuple<int,string> f( const string& input ) { // GOOD: self-documenting
-	    // ...
-		return make_tuple(something(), status);
+    tuple<int, string> f( const string& input ) { // GOOD: self-documenting
+    	// ...
+    	return make_tuple(something(), status);
     }
 
 In fact, C++98's standard library already used this convenient feature, because a `pair` is like a two-element `tuple`.
@@ -2342,17 +2279,15 @@ With C++11 we can write this, putting the results directly in existing local var
 
 **Exception**: For types like `string` and `vector` that carry additional capacity, it can sometimes be useful to treat it as in/out instead by using the "caller-allocated out" pattern, which is to pass an output-only object by reference to non-`const` so that when the callee writes to it the object can reuse any capacity or other resources that it already contains. This technique can dramatically reduce the number of allocations in a loop that repeatedly calls other functions to get string values, by using a single string object for the entire loop.
 
-**Note**: In some cases it may be useful to return a specific, user-defined `Value_or_error` type along the lines of `variant<T,error_code>`,
+**Note**: In some cases it may be useful to return a specific, user-defined `Value_or_error` type along the lines of `variant<T, error_code>`,
 rather than using the generic `tuple`.
 
 **Enforcement**:
 
-    * Output parameters should be replaced by return values.
-	An output parameter is one that the function writes to, invokes a non-`const` member function, or passes on as a non-`const`.
+* Output parameters should be replaced by return values.
+  An output parameter is one that the function writes to, invokes a non-`const` member function, or passes on as a non-`const`.
 
-
-<a name="Rf-return-ptr"></a>
-### F.42: Return a `T*` to indicate a position (only)
+### <a name="Rf-return-ptr"></a> F.42: Return a `T*` to indicate a position (only)
 
 **Reason**: That's what pointers are good for.
 Returning a `T*` to transfer ownership is a misuse.
@@ -2364,8 +2299,8 @@ Returning a `T*` to transfer ownership is a misuse.
 		Node* find(Node* t, const string& s)	// find s in a binary tree of Nodes
 		{
 			if (t == nullptr || t->name == s) return t;
-			if (auto p = find(t->left,s)) return p;
-			if (auto p = find(t->right,s)) return p;
+			if (auto p = find(t->left, s)) return p;
+			if (auto p = find(t->right, s)) return p;
 			return nullptr;
 		}
 
@@ -2400,8 +2335,7 @@ This applies to references as well:
 * Static analysis can catch most (all?) common patterns of the use of pointers indicating positions (thus eliminating dangling pointers)
 
 
-<a name="Rf-dangle"></a>
-### F.43: Never (directly or indirectly) return a pointer to a local object
+### <a name="Rf-dangle"></a> F.43: Never (directly or indirectly) return a pointer to a local object
 
 **Reason**: To avoid the crashes and data corruption that can result from the use of such a dangling pointer.
 
@@ -2485,8 +2419,7 @@ It can be detected/prevented with similar techniques.
 **Enforcement**: Preventable through static analysis.
 
 
-<a name="Rf-return-ref"></a>
-### F.44: Return a `T&` when "returning no object" isn't an option
+### <a name="Rf-return-ref"></a> F.44: Return a `T&` when "returning no object" isn't an option
 
 **Reason**: The language guarantees that a `T&` refers to an object, so that testing for `nullptr` isn't necessary.
 
@@ -2500,8 +2433,7 @@ It can be detected/prevented with similar techniques.
 **Enforcement**: ???
 
 
-<a name="Rf-return-ref-ref"></a>
-### F.45: Don't return a `T&&`
+### <a name="Rf-return-ref-ref"></a> F.45: Don't return a `T&&`
 
 **Reason**: It's asking to return a reference to a destroyed temporary object. A `&&` is a magnet for temporary objects. This is fine when the reference to the temporary is being passed "downward" to a callee, because the temporary is guaranteed to outlive the function call. (See [F.24](#Rf-pass-ref-ref) and [F.25](#Rf-pass-ref-move).) However, it's not fine when passing such a reference "upward" to a larger caller scope. See also [F54](#Rf-local-ref-ref).
 
@@ -2528,8 +2460,7 @@ For passthrough functions that pass in parameters (by ordinary reference or by p
 **Enforcement**: Flag any use of `&&` as a return type, except in `std::move` and `std::forward`.
 
 
-<a name="Rf-capture-vs-overload"></a>
-### F.50: Use a lambda when a function won't do (to capture local variables, or to write a local function)
+### <a name="Rf-capture-vs-overload"></a> F.50: Use a lambda when a function won't do (to capture local variables, or to write a local function)
 
 **Reason**: Functions can't capture local variables or be declared at local scope; if you need those things, prefer a lambda where possible, and a handwritten function object where not. On the other hand, lambdas and function objects don't overload; if you need to overload, prefer a function (the workarounds to make lambdas overload are ornate). If either will work, prefer writing a function; use the simplest tool necessary.
 
@@ -2557,12 +2488,11 @@ For passthrough functions that pass in parameters (by ordinary reference or by p
 
 **Enforcement**:
 
-    * Warn on use of a named non-generic lambda (e.g., `auto x = [](int i){ /*...*/; };`) that captures nothing and appears at global scope. Write an ordinary function instead.
+* Warn on use of a named non-generic lambda (e.g., `auto x = [](int i){ /*...*/; };`) that captures nothing and appears at global scope. Write an ordinary function instead.
 
 
 
-<a name="Rf-default-args"></a>
-### F.51: Prefer overloading over default arguments for virtual functions
+### <a name="Rf-default-args"></a> F.51: Prefer overloading over default arguments for virtual functions
 ??? possibly other situations?
 
 **Reason**: Virtual function overrides do not inherit default arguments, leading to surprises.
@@ -2588,8 +2518,7 @@ For passthrough functions that pass in parameters (by ordinary reference or by p
 **Enforcement**: Flag all uses of default arguments in virtual functions.
 
 
-<a name="Rf-reference-capture"></a>
-### F.52: Prefer capturing by reference in lambdas that will be used locally, including passed to algorithms
+### <a name="Rf-reference-capture"></a> F.52: Prefer capturing by reference in lambdas that will be used locally, including passed to algorithms
 
 **Reason**: For efficiency and correctness, you nearly always want to capture by reference when using the lambda locally. This includes when writing or calling parallel algorithms that are local because they join before returning.
 
@@ -2605,8 +2534,7 @@ For passthrough functions that pass in parameters (by ordinary reference or by p
 **Enforcement**: ???
 
 
-<a name="Rf-value-capture"></a>
-### F.53: Avoid capturing by reference in lambdas that will be used nonlocally, including returned, stored on the heap, or passed to another thread
+### <a name="Rf-value-capture"></a> F.53: Avoid capturing by reference in lambdas that will be used nonlocally, including returned, stored on the heap, or passed to another thread
 
 **Reason**: Pointers and references to locals shouldn't outlive their scope. Lambdas that capture by reference are just another place to store a reference to a local object, and shouldn't do so if they (or a copy) outlive the scope.
 
@@ -2616,15 +2544,14 @@ For passthrough functions that pass in parameters (by ordinary reference or by p
 		// ...
 		
 		// a, b, c are local variables
-		background_thread.queue_work([=]{ process(a,b,c); });	// want copies of a, b, and c
+		background_thread.queue_work([=]{ process(a, b, c); });	// want copies of a, b, and c
 	}
 
 **Enforcement**: ???
 
 
 
-<a name="S-class"></a>
-# C: Classes and Class Hierarchies
+# <a name="S-class"></a> C: Classes and Class Hierarchies
 
 A class is a user-defined type, for which a programmer can define the representation, operations, and  interfaces.
 Class hierarchies are used to organize related classes into hierarchical structures.
@@ -2649,8 +2576,7 @@ Subsections:
 * [C.union: Unions](#SS-union)
 
 
-<a name="Rc-org"></a>
-### C.1: Organize related data into structures (`struct`s or `class`es)
+### <a name="Rc-org"></a> C.1: Organize related data into structures (`struct`s or `class`es)
 
 **Reason**: Ease of comprehension. If data is related (for fundamental reasons), that fact should be reflected in code.
 
@@ -2666,8 +2592,7 @@ Subsections:
 **Enforcement**: Probably impossible. Maybe a heuristic looking for date items used together is possible.
 
 
-<a name="Rc-struct"></a>
-### C.2: Use `class` if the class has an invariant; use `struct` if the data members can vary independently
+### <a name="Rc-struct"></a> C.2: Use `class` if the class has an invariant; use `struct` if the data members can vary independently
 
 **Reason**: Ease of comprehension. The use of `class` alerts the programmer to the need for an invariant
 
@@ -2688,15 +2613,14 @@ but
 		Month m;
 		char d;		// day
 	public:
-		Date(int yy, Month mm, char dd);		// validate that {yy,mm,dd} is a valid date and initialize
+		Date(int yy, Month mm, char dd);		// validate that {yy, mm, dd} is a valid date and initialize
 		// ...
 	};
 
 **Enforcement**: Look for `struct`s with all data private and `class`es with public members.
 
 
-<a name="Rc-interface"></a>
-### C.3: Represent the distinction between an interface and an implementation using a class
+### <a name="Rc-interface"></a> C.3: Represent the distinction between an interface and an implementation using a class
 
 **Reason**: an explicit distinction between interface and implementation improves readability and simplifies maintenance.
 
@@ -2706,7 +2630,7 @@ but
 		// ... some representation ...
 	public:
 		Date();
-		Date(int yy, Month mm, char dd);		// validate that {yy,mm,dd} is a valid date and initialize
+		Date(int yy, Month mm, char dd);		// validate that {yy, mm, dd} is a valid date and initialize
 
 		int day() const;
 		Month month() const;
@@ -2725,8 +2649,7 @@ Ideally, and typically, an interface is far more stable than its implementation(
 **Enforcement**: ???
 		
 
-<a name="Rc-member"></a>
-### C.4: Make a function a member only if it needs direct access to the representation of a class
+### <a name="Rc-member"></a> C.4: Make a function a member only if it needs direct access to the representation of a class
 
 **Reason**: Less coupling than with member functions, fewer functions that can cause trouble by modifying object state, reduces the number of functions that needs to be modified after a change in representation.
 
@@ -2748,8 +2671,7 @@ The "helper functions" have no need for direct access to the representation of a
 The snag is that many member functions that do not need to touch data members directly do.
 
 
-<a name="Rc-helper"></a>
-### C.5: Place helper functions in the same namespace as the class they support
+### <a name="Rc-helper"></a> C.5: Place helper functions in the same namespace as the class they support
 
 **Reason**: A helper function is a function (usually supplied by the writer of a class) that does not need direct access to the representation of the class,
 yet is seen as part of the useful interface to the class.
@@ -2763,7 +2685,7 @@ Placing them in the same namespace as the class makes their relationship to the 
 		class Date { /* ... */ };
 		
 		// helper functions:
-		bool operator==(Date,Date);
+		bool operator==(Date, Date);
 		Date next_weekday(Date);
 		// ...
 	}
@@ -2773,8 +2695,7 @@ Placing them in the same namespace as the class makes their relationship to the 
 * Flag global functions taking argument types from a single namespace.
 
 		
-<a name="Rc-const"></a>
-### C.6: Declare a member function that does not modify the state of its object `const`
+### <a name="Rc-const"></a> C.6: Declare a member function that does not modify the state of its object `const`
 
 **Reason**: More precise statement of design intent, better readability, more errors caught by the compiler, more optimization opportunities.
 
@@ -2787,8 +2708,7 @@ Placing them in the same namespace as the class makes their relationship to the 
 **Enforcement**: Flag non-`const` member functions that do not write to their objects
 
 
-<a name="SS-concrete"></a>
-## C.concrete: Concrete types
+## <a name="SS-concrete"></a> C.concrete: Concrete types
 
 One ideal for a class is to be a regular type.
 That means roughly "behaves like an `int`." A concrete type is the simplest kind of class.
@@ -2804,8 +2724,7 @@ Concrete type rule summary:
 * [C.11: Make a concrete types regular](#Rc-regular)
 
 
-<a name="Rc-concrete"></a>
-### C.10 Prefer a concrete type over more complicated classes
+### <a name="Rc-concrete"></a> C.10 Prefer a concrete type over more complicated classes
 
 **Reason**: A concrete type is fundamentally simpler than a hierarchy:
 easier to design, easier to implement, easier to use, easier to reason about, smaller, and faster.
@@ -2827,10 +2746,10 @@ You need a reason (use cases) for using a hierarchy.
 
 	void use()
 	{
-		Point1 p11 { 1,2};	// make an object on the stack
+		Point1 p11 {1, 2};	// make an object on the stack
 		Point1 p12 {p11};	// a copy
 
-		auto p21 = make_unique<Point2>(1,2);	// make an object on the free store
+		auto p21 = make_unique<Point2>(1, 2);	// make an object on the free store
 		auto p22 = p21.clone();					// make a copy
 
 		// ...
@@ -2849,8 +2768,7 @@ This is done where dynamic allocation is prohibited (e.g. hard real-time) and to
 **Enforcement**: ???
 
 
-<a name="Rc-regular"></a>
-### C.11: Make a concrete types regular
+### <a name="Rc-regular"></a> C.11: Make a concrete types regular
 
 **Reason**: Regular types are easier to understand and reason about than types that are not regular (irregularities requires extra effort to understand and use).
 
@@ -2863,7 +2781,7 @@ This is done where dynamic allocation is prohibited (e.g. hard real-time) and to
 
 	bool operator==(const Bundle& a, const Bundle& b) { return a.name==b.name && a.vr==b.vr; }
 
-	Bundle b1 { "my bundle", {r1,r2,r3}};
+	Bundle b1 { "my bundle", {r1, r2, r3}};
 	Bundle b2 = b1;
 	if (!(b1==b2)) error("impossible!");
 	b2.name = "the other bundle";
@@ -2874,8 +2792,7 @@ In particular, if a concrete type has an assignment also give it an equals opera
 **Enforcement**: ???
 
 
-<a name="SS-ctor"></a>
-## C.ctor: Constructors, assignments, and destructors
+## <a name="SS-ctor"></a> C.ctor: Constructors, assignments, and destructors
 
 These functions control the lifecycle of objects: creation, copy, move, and destruction.
 Define constructors to guarantee and simplify initialization of classes.
@@ -2952,15 +2869,13 @@ Other default operations rules:
 * [C.89: Make a `hash` `noexcept`](#Rc-hash)
 
 
-<a name="SS-defop"></a>
-## C.defop: Default Operations
+## <a name="SS-defop"></a> C.defop: Default Operations
 
 By default, the language supply the default operations with their default semantics.
 However, a programmer can disalble or replace these defaults.
 
 
-<a name="Rc-zero"></a>
-### C.20: If you can avoid defining default operations, do
+### <a name="Rc-zero"></a> C.20: If you can avoid defining default operations, do
 
 **Reason**: It's the simplest and gives the cleanest semantics.
 
@@ -2971,7 +2886,7 @@ However, a programmer can disalble or replace these defaults.
 		// ... no default operations declared ...
 	private:
 		string name;
-		map<int,int> rep;
+		map<int, int> rep;
 	};
 
 	Named_map nm;		// default construct
@@ -2982,11 +2897,10 @@ Since `std::map` and `string` have all the special functions, not further work i
 **Note**: This is known as "the rule of zero".
 
 **Enforcement**: (Not enforceable) While not enforceable, a good static analyzer can detect patterns that indicate a possible improvement to meet this rule.
- For example, a class with a (pointer,size) pair of member and a destructor that `delete`s the pointer could probably be converted to a `vector`.
+ For example, a class with a (pointer, size) pair of member and a destructor that `delete`s the pointer could probably be converted to a `vector`.
 
 
-<a name="Rc-five"></a>
-### C.21: If you define or `=delete` any default operation, define or `=delete` them all
+### <a name="Rc-five"></a> C.21: If you define or `=delete` any default operation, define or `=delete` them all
 
 **Reason**: The semantics of the special functions are closely related, so it one needs to be non-default, the odds are that other need modification.
 
@@ -2998,7 +2912,7 @@ Since `std::map` and `string` have all the special functions, not further work i
 		// ... no copy or move operations ...
 		~M2() { delete[] rep; }
 	private:
-		pair<int,int>* rep;  // zero-terminated set of pairs
+		pair<int, int>* rep;  // zero-terminated set of pairs
 	};
 
 	void use()
@@ -3024,8 +2938,7 @@ If you don't want a default operation, suppress it with `=delete`.
 **Enforcement**: (Simple) A class should have a declaration (even a `=delete` one) for either all or none of the special functions.
 
 
-<a name="Rc-matched"></a>
-### C.22: Make default operations consistent
+### <a name="Rc-matched"></a> C.22: Make default operations consistent
 
 **Reason**: The default operations are conceptually a matched set. Their semantics is interrelated.
 Users will be surprised if copy/move construction and copy/move assignment do logically different things. Users will be surprised if constructors and destructors do not provide a consistent view of resource management. Users will be surprised if copy and move doesn't reflect the way constructors and destructors work.
@@ -3054,8 +2967,7 @@ These operations disagree about copy semantics. This will lead to confusion and 
 
 
 
-<a name="SS-dtor"></a>
-## C.dtor: Destructors
+## <a name="SS-dtor"></a> C.dtor: Destructors
 
 Does this class need a destructor is a surprisingly powerful design question.
 For most classes the answer is "no" either because the class holds no resources or because destruction is handled by [the rule of zero](#Rc-zero);
@@ -3063,8 +2975,7 @@ that is, its members can take care of themselves as concerns destruction.
 If the answer is "yes", much of the design of the class follows (see [the rule of five](#Rc-five).
 
 
-<a name="Rc-dtor"></a>
-### C.30: Define a destructor if a class needs an explicit action at object destruction
+### <a name="Rc-dtor"></a> C.30: Define a destructor if a class needs an explicit action at object destruction
 
 **Reason**: A destructor is implicitly invoked at the end of an objects lifetime.
 If the default destructor is sufficient, use it.
@@ -3119,8 +3030,7 @@ The default destructor does it better, more efficiently, and can't get it wrong.
 **Enforcement**: Look for likely "implicit resources", such as pointers and references. Look for classes with destructors even though all their data members have destructors.
 
 
-<a name="Rc-dtor-release"></a>
-### C.31: All resources acquired by a class must be released by the class's destructor
+### <a name="Rc-dtor-release"></a> C.31: All resources acquired by a class must be released by the class's destructor
 
 **Reason**: Prevention of resource leaks, especially in error cases.
 
@@ -3165,13 +3075,11 @@ Here `p` refers to `pp` but does not own it.
 **Enforcement**:
 
 * (Simple) If a class has pointer or reference member variables that are owners
-(e.g., deemed owners by using `GSL::owner`), then they should be referenced in its destructor.
+  (e.g., deemed owners by using `GSL::owner`), then they should be referenced in its destructor.
 * (Hard) Determine if pointer or reference member variables are owners when there is no explicit statement of ownership
-(e.g., look into the constructors).
+  (e.g., look into the constructors).
 
-
-<a name="Rc-dtor-ptr"></a>
-### C.32: If a class has a raw  pointer (`T*`) or reference (`T&`), consider whether it might be owning
+### <a name="Rc-dtor-ptr"></a> C.32: If a class has a raw  pointer (`T*`) or reference (`T&`), consider whether it might be owning
 
 **Reason**: There is a lot of code that is non-specific about ownership.
 
@@ -3185,8 +3093,7 @@ This will aide documentation and analysis.
 **Enforcement**: Look at the initialization of raw member pointers and member references and see if an allocation is used.
 
 
-<a name="Rc-dtor-ptr2"></a>
-### C.33: If a class has an owning pointer member, define a destructor
+### <a name="Rc-dtor-ptr2"></a> C.33: If a class has an owning pointer member, define a destructor
 
 **Reason**: An owned object must be `deleted` upon destruction of the object that owns it.
 
@@ -3253,8 +3160,7 @@ The default copy operation will just copy the `p1.p` into `p2.p` leading to a do
 * A class with an `owner<T>` should define its default operations.
 
 
-<a name="Rc-dtor-ref"></a>
-### C.34: If a class has an owning reference member, define a destructor
+### <a name="Rc-dtor-ref"></a> C.34: If a class has an owning reference member, define a destructor
 
 **Reason**: A reference member may represent a resource.
 It should not do so, but in older code, that's common.
@@ -3272,7 +3178,7 @@ Also, copying may lead to slicing.
 		// ...
 	};
 
-The problem of whether `Handle` is responsible for the destruction of its `Shape` is the same as for <a ref="#Rc-dtor-ptr">the pointer case</a>:
+The problem of whether `Handle` is responsible for the destruction of its `Shape` is the same as for [the pointer case](#Rc-dtor-ptr):
 If the `Handle` owns the object referred to by `s` it must have a destructor.
 
 **Example**:
@@ -3288,8 +3194,8 @@ If the `Handle` owns the object referred to by `s` it must have a destructor.
 
 Independently of whether `Handle` owns its `Shape`, we must consider the default copy operations suspect:
 
-	Handle x {*new Circle{p1,17}};	// the Handle had better own the Circle or we have a leak
-	Handle y {*new Triangle{p1,p2,p3}};
+	Handle x {*new Circle{p1, 17}};	// the Handle had better own the Circle or we have a leak
+	Handle y {*new Triangle{p1, p2, p3}};
 	x = y;		// the default assignment will try *x.s=*y.s
 
 That `x=y` is highly suspect.
@@ -3308,8 +3214,7 @@ Unless `Shape` has its [copy assignment `=deleted`](#Rc-copy-virtual), only the 
 * A class with an `owner<T>` reference should define its default operations.
 
 
-<a name="Rc-dtor-virtual"></a>
-### C.35: A base class with a virtual function needs a virtual destructor
+### <a name="Rc-dtor-virtual"></a> C.35: A base class with a virtual function needs a virtual destructor
 
 **Reason**: To prevent undefined behavior.
 If an application attempts to delete a derived class object through a base class pointer, the result is undefined if the base class's destructor is non-virtual.
@@ -3352,8 +3257,7 @@ Someone using such an interface is likely to also destroy using that interface.
 **Enforcement**: (Simple) A class with any virtual functions should have a virtual destructor.
 
 
-<a name="Rc-dtor-fail"></a>
-### C.36: A destructor may not fail
+### <a name="Rc-dtor-fail"></a> C.36: A destructor may not fail
 
 **Reason**: In general we do not know how to write error-free code if a destructor should fail.
 The standard library requires that all classes it deals with have destructors that do not exit by throwing.
@@ -3377,7 +3281,7 @@ The standard library requires that all classes it deals with have destructors th
 None have succeeded to come up with a general scheme.
 This can be be a real practical problem: For example, what about a sockets that won't close?
 The writer of a destructor does not know why the destructor is called and cannot "refuse to act" by throwing an exception.
-See <a =href="#Sd dtor">discussion</a>.
+See [discussion](#Sd-dtor).
 To make the problem worse, many "close/release" operations are not retryable.
 If at all possible, consider failure to close/cleanup a fundamental design error and terminate.
 
@@ -3396,8 +3300,7 @@ The destructor could send a message (somehow) to the responsible part of the sys
 **Enforcement**: (Simple) A destructor should be declared `noexcept`.
 
 
-<a name="Rc-dtor-noexcept"></a>
-### C.37: Make destructors `noexcept`
+### <a name="Rc-dtor-noexcept"></a> C.37: Make destructors `noexcept`
 
 **Reason**: [A destructor may not fail](#Rc-dtor-fail). If a destructor tries to exit with an exception, it's a bad design error and the program had better terminate.
 
@@ -3405,14 +3308,12 @@ The destructor could send a message (somehow) to the responsible part of the sys
 
 
 
-<a name="SS-ctor"></a>
-## C.ctor: Constructors
+## <a name="SS-ctor"></a> C.ctor: Constructors
 
-A constuctor defined how an object is initialized (constructed).
+A constructor defined how an object is initialized (constructed).
 
 
-<a name="Rc-ctor"></a>
-### C.40: Define a constructor if a class has an invariant
+### <a name="Rc-ctor"></a> C.40: Define a constructor if a class has an invariant
 
 **Reason**: That's what constructors are for.
 
@@ -3423,11 +3324,11 @@ A constuctor defined how an object is initialized (constructed).
 		Date(int dd, int mm, int yy)
 			:d{dd}, m{mm}, y{yy}
 			{
-				if (!is_valid(d,m,y)) throw Bad_date{};	// enforce invariant
+				if (!is_valid(d, m, y)) throw Bad_date{};	// enforce invariant
 			}
 		// ...
 	private:
-		int d,m,y;
+		int d, m, y;
 	};
 
 It is often a good idea to express the invariant as an `Ensure` on the constructor.
@@ -3452,7 +3353,7 @@ It is often a good idea to express the invariant as an `Ensure` on the construct
 		Rec2(const string& ss, int ii = 0} :s{ss}, i{ii} {}		// redundant
 	};
 
-	Rec r1 {"Foo",7};
+	Rec r1 {"Foo", 7};
 	Rec r2 {"Bar"};
 
 The `Rec2` constructor is redundant.
@@ -3465,8 +3366,7 @@ Also, the default for `int` would be better done as a [member initializer](#Rc-i
 * Flag classes with user-define copy operations but no destructor (a user-defined copy is a good indicator that the class has an invariant)
 
 
-<a name="Rc-complete"></a>
-### C.41: A constructor should create a fully initialized object
+### <a name="Rc-complete"></a> C.41: A constructor should create a fully initialized object
 
 **Reason**: A constructor establishes the invariant for a class. A user of a class should be able to assume that a constructed object is usable.
 
@@ -3499,8 +3399,7 @@ Compilers do not read comments.
 The idiom of having constructors acquire resources and destructors release them is called [RAII](#Rr-raii) ("Resource Acquisitions Is Initialization").
 
 
-<a name="Rc-throw"></a>
-### C.42: If a constructor cannot construct a valid object, throw an exception
+### <a name="Rc-throw"></a> C.42: If a constructor cannot construct a valid object, throw an exception
 
 **Reason**: Leaving behind an invalid object is asking for trouble.
 
@@ -3511,7 +3410,7 @@ The idiom of having constructors acquire resources and destructors release them 
 		// ...
 	public:
 		X2(const string& name)
-			:f{fopen(name.c_str(),"r"}
+			:f{fopen(name.c_str(), "r"}
 		{
 			if (f==nullptr) throw runtime_error{"could not open" + name};
 			// ...
@@ -3532,11 +3431,11 @@ The idiom of having constructors acquire resources and destructors release them 
 
 	class X3 {			// bad: the constructor leaves a non-valid object behind
 		FILE* f;	// call init() before any other function
-		bool valid;;
+		bool valid;
 		// ...
 	public:
 		X3(const string& name)
-			:f{fopen(name.c_str(),"r"}, valid{false}
+			:f{fopen(name.c_str(), "r"}, valid{false}
 		{
 			if (f) valid=true;
 			// ...
@@ -3564,7 +3463,7 @@ The idiom of having constructors acquire resources and destructors release them 
 
 **Note**: For a variable definition (e.g., on the stack or as a member of another object) there is no explicit function call from which an error code could be returned. Leaving behind an invalid object an relying on users to consistently check an `is_valid()` function before use is tedious, error-prone, and inefficient.
 
-**Exception**: There are domains, such as some hard-real-time systems (think airplane controls) where (without additional tool support) exception handling is not sufficiently predictable from a timing perspective. There the `is_valed()` technique must be used. In such cases, check `is_valid()` consistently and immediately to simulate [RAII](#Rr-raii).
+**Exception**: There are domains, such as some hard-real-time systems (think airplane controls) where (without additional tool support) exception handling is not sufficiently predictable from a timing perspective. There the `is_valid()` technique must be used. In such cases, check `is_valid()` consistently and immediately to simulate [RAII](#Rr-raii).
 
 **Alternative**: If you feel tempted to use some "post-constructor initialization" or "two-stage initialization" idiom, try not to do that. If you really have to, look at [factory functions](#Rc-factory).
 
@@ -3573,8 +3472,7 @@ The idiom of having constructors acquire resources and destructors release them 
 * (Unknown) If a constructor has an `Ensures` contract, try to see if it holds as a postcondition.
 
 
-<a name="Rc-default0"></a>
-### C.43: Give a class a default constructor
+### <a name="Rc-default0"></a> C.43: Give a class a default constructor
 
 **Reason**: Many language and library facilities rely on default constructors,
 e.g. `T a[10]` and `std::vector<T> v(10)` default initializes their elements.
@@ -3588,10 +3486,10 @@ e.g. `T a[10]` and `std::vector<T> v(10)` default initializes their elements.
 	};
 	
 	vector<Date> vd1(1000);	// default Date needed here
-	vector<Date> vd2(1000,Date{Month::october,7,1885});	// alternative
+	vector<Date> vd2(1000, Date{Month::october, 7, 1885});	// alternative
 
 There is no "natural" default date (the big bang is too far back in time to be useful for most people), so this example is non-trivial.
-`{0,0,0}` is not a valid date in most calendar systems, so choosing that would be introducing something like floating-point's NaN.
+`{0, 0, 0}` is not a valid date in most calendar systems, so choosing that would be introducing something like floating-point's NaN.
 However, most realistic `Date` classes has a "first date" (e.g. January 1, 1970 is popular), so making that the default is usually trivial.
 
 **Enforcement**:
@@ -3599,8 +3497,7 @@ However, most realistic `Date` classes has a "first date" (e.g. January 1, 1970 
 * Flag classes without a default constructor
 
 
-<a name="Rc-default00"></a>
-### C.44: Prefer default constructors to be simple and non-throwing
+### <a name="Rc-default00"></a> C.44: Prefer default constructors to be simple and non-throwing
 
 **Reason**: Being able to set a value to "the default" without operations that might fail simplifies error handling and reasoning about move operations.
 
@@ -3619,7 +3516,7 @@ However, most realistic `Date` classes has a "first date" (e.g. January 1, 1970 
 	};
 
 This is nice and general, but setting a `Vector0` to empty after an error involves an allocation, which may fail.
-Also, having a default `Vector` represented as `{new T[0],0,0}` seems wasteful.
+Also, having a default `Vector` represented as `{new T[0], 0, 0}` seems wasteful.
 For example, `Vector0 v(100)` costs 100 allocations.
 
 **Example**:
@@ -3627,7 +3524,7 @@ For example, `Vector0 v(100)` costs 100 allocations.
 	template<typename T>
 	class Vector1 {		// elem is nullptr or elem points to space-elem element allocated using new
 	public:
-		Vector1() noexcept {}	// sets the representation to {nullptr,nullptr,nullptr}; doesn't throw
+		Vector1() noexcept {}	// sets the representation to {nullptr, nullptr, nullptr}; doesn't throw
 		Vector1(int n) :elem{new T[n]}, space{elem+n}, last{elem} {}
 		// ...
 	private:
@@ -3636,7 +3533,7 @@ For example, `Vector0 v(100)` costs 100 allocations.
 		T* last = nullptr;
 	};
 	
-Using `{nullptr,nullptr,nullptr}` makes `Vector1{}` cheap, but a special case and implies run-time checks.
+Using `{nullptr, nullptr, nullptr}` makes `Vector1{}` cheap, but a special case and implies run-time checks.
 Setting a `Vector1` to empty after detecting an error is trivial.
 
 **Enforcement**:
@@ -3644,8 +3541,7 @@ Setting a `Vector1` to empty after detecting an error is trivial.
 * Flag throwing default constructors
 
 
-<a name="Rc-default"></a>
-### C.45: Don't define a default constructor that only initializes data members; use in-class member initializers instead
+### <a name="Rc-default"></a> C.45: Don't define a default constructor that only initializes data members; use in-class member initializers instead
 
 **Reason**: Using in-class member initializers lets the compiler generate the function for you. The compiler-generated function can be more efficient.
 
@@ -3673,8 +3569,7 @@ Setting a `Vector1` to empty after detecting an error is trivial.
 **Enforcement**: (Simple) A default constructor should do more than just initialize member variables with constants.
 
 
-<a name="Rc-explicit"></a>
-### C.46: By default, declare single-argument constructors explicit
+### <a name="Rc-explicit"></a> C.46: By default, declare single-argument constructors explicit
 
 **Reason**: To avoid unintended conversions.
 
@@ -3695,7 +3590,7 @@ Setting a `Vector1` to empty after detecting an error is trivial.
 	class Complex {
 		// ...
 	public:
-		Complex(double d);	// OK: we want a conversion from d to {d,0}
+		Complex(double d);	// OK: we want a conversion from d to {d, 0}
 		// ...
 	};
 
@@ -3706,8 +3601,7 @@ Setting a `Vector1` to empty after detecting an error is trivial.
 **Enforcement**: (Simple) Single-argument constructors should be declared `explicit`. Good single argument non-`explicit` constructors are rare in most code based. Warn for all that are not on a "positive list".
 
 
-<a name="Rc-order"></a>
-### C.47: Define and initialize member variables in the order of member declaration
+### <a name="Rc-order"></a> C.47: Define and initialize member variables in the order of member declaration
 
 **Reason**: To minimize confusion and errors. That is the order in which the initialization happens (independent of the order of member initializers).
 
@@ -3725,11 +3619,10 @@ Setting a `Vector1` to empty after detecting an error is trivial.
 
 **Enforcement**: (Simple) A member initializer list should mention the members in the same order they are declared.
 
-**See also**: [Discussion](#Sd order)
+**See also**: [Discussion](#Sd-order)
 
 
-<a name="Rc-in-class-initializer"></a>
-### C.48: Prefer in-class initializers to member initializers in constructors for constant initializers
+### <a name="Rc-in-class-initializer"></a> C.48: Prefer in-class initializers to member initializers in constructors for constant initializers
 
 **Reason**: Makes it explicit that the same value is expected to be used in all constructors. Avoids repetition. Avoids maintenance problems. It leads to the shortest and most efficient code.
 
@@ -3776,8 +3669,7 @@ How would a maintainer know whether `j` was deliberately uninitialized (probably
 * (Simple) Default arguments to constructors suggest an in-class initializer may be more appropriate.
 
 
-<a name="Rc-initialize"></a>
-### C.49: Prefer initialization to assignment in constructors
+### <a name="Rc-initialize"></a> C.49: Prefer initialization to assignment in constructors
 
 **Reason**: An initialization explicitly states that initialization, rather than assignment, is done and can be more elegant and efficient. Prevents "use before set" errors.
 
@@ -3808,8 +3700,7 @@ How would a maintainer know whether `j` was deliberately uninitialized (probably
 
 
 
-<a name="Rc-factory"></a>
-### C.50: Use a factory function if you need "virtual behavior" during initialization
+### <a name="Rc-factory"></a> C.50: Use a factory function if you need "virtual behavior" during initialization
 
 **Reason**: If the state of a base class object must depend on the state of a derived part of the object,
  we need to use a virtual function (or equivalent) while minimizing the window of opportunity to misuse an imperfectly constructed object.
@@ -3833,7 +3724,7 @@ How would a maintainer know whether `j` was deliberately uninitialized (probably
 **Example*:
 
 	class B {
-	private:
+	protected:
 	    B() { /* ... */ }					// create an imperfectly initialized object
 
 	    virtual void PostInitialize()       // to be called right after construction
@@ -3859,16 +3750,15 @@ How would a maintainer know whether `j` was deliberately uninitialized (probably
 
 	shared_ptr<D> p = D::Create<D>();		// creating a D object
 
-By making the constructor `private` we avoid an incompletely constructed object escaping into the wild.
+By making the constructor `protected` we avoid an incompletely constructed object escaping into the wild.
 By providing the factory function `Create()`, we make construction (on the free store) convenient.
 
 **Note**: Conventional factory functions allocate on the free store, rather than on the stack or in an enclosing object.
 
-**See also**: [Discussion](#Sd factory)
+**See also**: [Discussion](#Sd-factory)
 
 
-<a name="Rc-delegating"></a>
-### C.51: Use delegating constructors to represent common actions for all constructors of a class
+### <a name="Rc-delegating"></a> C.51: Use delegating constructors to represent common actions for all constructors of a class
 
 **Reason**: To avoid repetition and accidental differences
 
@@ -3881,11 +3771,11 @@ By providing the factory function `Create()`, we make construction (on the free 
 	public:
 		Date(int ii, Month mm, year yy)
 			:i{ii}, m{mm} y{yy}
-			{ if (!valid(i,m,y)) throw Bad_date{}; }
+			{ if (!valid(i, m, y)) throw Bad_date{}; }
 
 		Date(int ii, Month mm)
 			:i{ii}, m{mm} y{current_year()}
-			{ if (!valid(i,m,y)) throw Bad_date{}; }
+			{ if (!valid(i, m, y)) throw Bad_date{}; }
 		// ...
 	};
 
@@ -3901,10 +3791,10 @@ The common action gets tedious to write and may accidentally not be common.
 	public:
 		Date2(int ii, Month mm, year yy)
 			:i{ii}, m{mm} y{yy}
-			{ if (!valid(i,m,y)) throw Bad_date{}; }
+			{ if (!valid(i, m, y)) throw Bad_date{}; }
 
 		Date2(int ii, Month mm)
-			:Date2{ii,mm,current_year()} {}
+			:Date2{ii, mm, current_year()} {}
 		// ...
 	};
 
@@ -3913,8 +3803,7 @@ The common action gets tedious to write and may accidentally not be common.
 **Enforcement**: (Moderate) Look for similar constructor bodies.
 
 
-<a name="Rc-inheriting"></a>
-### C.52: Use inheriting constructors to import constructors into a derived class that does not need further explicit initialization
+### <a name="Rc-inheriting"></a> C.52: Use inheriting constructors to import constructors into a derived class that does not need further explicit initialization
 
 **Reason**: If you need those constructors for a derived class, re-implementeing them is tedious and error prone.
 
@@ -3945,16 +3834,14 @@ The common action gets tedious to write and may accidentally not be common.
 
 
 
-<a name="SS-copy"></a>
-## C.copy: Copy and move
+## <a name="SS-copy"></a> C.copy: Copy and move
 
 Value type should generally be copyable, but interfaces in a class hierarchy should not.
 Resource handles, may or may not be copyable.
 Types can be defined to move for logical as well as performance reasons.
 
 
-<a name="Rc-copy-assignment"></a>
-### C.60: Make copy assignment non-`virtual`, take the parameter by `const&`, and return by non-`const&`
+### <a name="Rc-copy-assignment"></a> C.60: Make copy assignment non-`virtual`, take the parameter by `const&`, and return by non-`const&`
 
 **Reason**: It is simple and efficient. If you want to optimize for rvalues, provide an overload that takes a `&&` (see [F.24](#Rf-pass-ref-ref)).
 
@@ -3965,7 +3852,7 @@ Types can be defined to move for logical as well as performance reasons.
 		Foo& operator=(const Foo& x)
 		{
             auto tmp = x;	// GOOD: no need to check for self-assignment (other than performance)
-			std::swap(*this,tmp);
+			std::swap(*this, tmp);
 			return *this;
 		}
 		// ...
@@ -4016,11 +3903,9 @@ See [copy constructor vs. `clone()`](#Rc-copy-virtual).
 * (Simple) An assignment operator should not be virtual. Here be dragons!
 * (Simple) An assignment operator should return `T&` to enable chaining, not alternatives like `const T&` which interfere with composability and putting objects in containers.
 * (Moderate) An assignment operator should (implicitly or explicitly) invoke all base and member assignment operators.
-Look at the destructor to determine if the type has pointer semantics or value semantics.
+  Look at the destructor to determine if the type has pointer semantics or value semantics.
 
-
-<a name="Rc-copy-semantic"></a>
-### C.61: A copy operation should copy
+### <a name="Rc-copy-semantic"></a> C.61: A copy operation should copy
 
 **Reason**: That is the generally assumed semantics. After `x=y`, we should have `x==y`.
 After a copy `x` and `y` can be independent objects (value semantics, the way non-pointer built-in types and the standard-library types work) or refer to a shared object (pointer semantics, the way pointers work).
@@ -4041,13 +3926,13 @@ After a copy `x` and `y` can be independent objects (value semantics, the way no
 
 	bool operator==(const X& a, const X& b)
 	{
-		return sz==a.sz && equal(p,p+sz,a.p,a.p+sz);
+		return sz==a.sz && equal(p, p+sz, a.p, a.p+sz);
 	}
 
 	X::X(const X& a)
 		:p{new T}, sz{a.sz}
 	{
-		copy(a.p,a.p+sz,a.p);
+		copy(a.p, a.p+sz, a.p);
 	}
 
 	X x;
@@ -4086,22 +3971,21 @@ After a copy `x` and `y` can be independent objects (value semantics, the way no
 **Enforcement**: (Not enforceable).
 	
 	
-<a name="Rc-copy-self"></a>
-### C.62: Make copy assignment safe for self-assignment
+### <a name="Rc-copy-self"></a> C.62: Make copy assignment safe for self-assignment
 
 **Reason**: If `x=x` changes the value of `x`, people will be surprised and bad errors will occur (often including leaks).
 
 **Example**: The standard-library containers handle self-assignment elegantly and efficiently:
 
-	std::vector<int> v = {3,1,4,1,5,9};
+	std::vector<int> v = {3, 1, 4, 1, 5, 9};
 	v = v;
-	// the value of v is still {3,1,4,1,5,9}
+	// the value of v is still {3, 1, 4, 1, 5, 9}
 
 **Note**: The default assignment generated from members that handle self-assignment correctly handles self-assignment.
 
 	struct Bar {
-		vector<pair<int,int>> v;
-		map<string,int> m;
+		vector<pair<int, int>> v;
+		map<string, int> m;
 		string s;
 	};
 
@@ -4144,8 +4028,7 @@ Consider:
 **Enforcement**: (Simple) Assignment operators should not contain the pattern `if (this==&a) return *this;` ???
 
 	
-<a name="Rc-move-assignment"></a>
-### C.63: Make move assignment non-`virtual`, take the parameter by `&&`, and return by non-`const `&`
+### <a name="Rc-move-assignment"></a> C.63: Make move assignment non-`virtual`, take the parameter by `&&`, and return by non-`const &`
 
 **Reason**: It is simple and efficient.
 
@@ -4157,8 +4040,7 @@ Consider:
 * (Moderate) A move assignment operator should (implicitly or explicitly) invoke all base and member move assignment operators.
 
 
-<a name="Rc-move-semantic"></a>
-### C.64: A move operation should move and leave its source in valid state
+### <a name="Rc-move-semantic"></a> C.64: A move operation should move and leave its source in valid state
 
 **Reason**: That is the generally assumed semantics. After `x=std::move(y)` the value of `x` should be the value `y` had and `y` should be in a valid state.
 
@@ -4200,10 +4082,9 @@ Often, we can easily and cheaply do better: The standard library assumes that it
 **Enforcement**: (Not enforceable) look for assignments to members in the move operation. If there is a default constructor, compare those assignments to the initializations in the default constructor.
 
 
-<a name="Rc-move-self"></a>
-### C.65: Make move assignment safe for self-assignment
+### <a name="Rc-move-self"></a> C.65: Make move assignment safe for self-assignment
 
-**Reason**: If `x=x` changes the value of `x`, people will be surprised and bad errors may occur. However, people don't usually directly write a self-assignment that turn into a move, but it can occur. However, `std::swap` is implemented using move operations so if you accidentally do `swap(a,b)` where `a` and `b` refer to the same object, failing to handle self-move could be a serious and subtle error.
+**Reason**: If `x=x` changes the value of `x`, people will be surprised and bad errors may occur. However, people don't usually directly write a self-assignment that turn into a move, but it can occur. However, `std::swap` is implemented using move operations so if you accidentally do `swap(a, b)` where `a` and `b` refer to the same object, failing to handle self-move could be a serious and subtle error.
 
 **Example**:
 
@@ -4243,8 +4124,7 @@ The one-in-a-million argument against `if (this==&a) return *this;` tests from t
 * (Not enforceable) Look at the use of standard-library container types (incl. `string`) and consider them safe for ordinary (not life-critical) uses.
 
 
-<a name="Rc-move-noexcept"></a>
-### C.66: Make move operations `noexcept`
+### <a name="Rc-move-noexcept"></a> C.66: Make move operations `noexcept`
 
 **Reason**: A throwing move violates most people's reasonably assumptions.
 A non-throwing move will be used more efficiently by standard-library and language facilities.
@@ -4282,8 +4162,7 @@ This `Vector2` is not just inefficient, but since a vector copy requires allocat
 
 
 
-<a name="Rc-copy-virtual"></a>
-### C.67: A base class should suppress copying, and provide a virtual `clone` instead if "copying" is desired
+### <a name="Rc-copy-virtual"></a> C.67: A base class should suppress copying, and provide a virtual `clone` instead if "copying" is desired
 
 **Reason**: To prevent slicing, because the normal copy operations will copy only the base portion of a derived object.
 
@@ -4330,8 +4209,7 @@ This `Vector2` is not just inefficient, but since a vector copy requires allocat
 
 ???
 
-<a name="Rc-=default"></a>
-### C.80: Use `=default` if you have to be explicit about using the default semantics
+### <a name="Rc-=default"></a> C.80: Use `=default` if you have to be explicit about using the default semantics
 
 **Reason**: The compiler is more likely to get the default semantics right and you cannot implement these function better than the compiler.
 
@@ -4370,8 +4248,7 @@ Writing out the bodies of the copy and move operations is verbose, tedious, and 
 **Enforcement**: (Moderate) The body of a special operation should not have the same accessibility and semantics as the compiler-generated version, because that would be redundant
 
 
-<a name="Rc-=delete"></a>
-### C.81: Use `=delete` when you want to disable default behavior (without wanting an alternative)
+### <a name="Rc-=delete"></a> C.81: Use `=delete` when you want to disable default behavior (without wanting an alternative)
 
 **Reason**: In a few cases, a default operation is not desirable.
 
@@ -4415,8 +4292,7 @@ Writing out the bodies of the copy and move operations is verbose, tedious, and 
 
 **Enforcement**: The elimination of a default operation is (should be) based on the desired semantics of the class. Consider such classes suspect, but maintain a "positive list" of classes where a human has asserted that the semantics is correct.
 
-<a name="Rc-ctor-virtual"></a>
-### C.82: Don't call virtual functions in constructors and destructors
+### <a name="Rc-ctor-virtual"></a> C.82: Don't call virtual functions in constructors and destructors
 
 **Reason**: The function called will be that of the object constructed so far, rather than a possibly overriding function in a derived class.
 This can be most confusing.
@@ -4452,18 +4328,17 @@ Note that calling a specific explicitly qualified function is not a virtual call
 **See also** [factory functions](#Rc-factory) for how to achieve the effect of a call to a derived class function without risking undefined behavior.
 
 
-<a name="Rc-swap"></a>
-### C.83: For value-like types, consider providing a `noexcept` swap function
+### <a name="Rc-swap"></a> C.83: For value-like types, consider providing a `noexcept` swap function
 
 **Reason**: A `swap` can be handy for implementing a number of idioms, from smoothly moving objects around to implementing assignment easily to providing a guaranteed commit function that enables strongly error-safe calling code. Consider using swap to implement copy assignment in terms of copy construction. See also [destructors, deallocation, and swap must never fail](#Re-never-fail).
 
 **Example; good**:
 
     class Foo {
-		// ...
+    	// ...
     public:
         void swap(Foo& rhs) noexcept
-		{
+    	{
             m1.swap(rhs.m1);
             std::swap(m2, rhs.m2);
         }
@@ -4475,16 +4350,15 @@ Note that calling a specific explicitly qualified function is not a virtual call
 Providing a nonmember `swap` function in the same namespace as your type for callers' convenience.
 
     void swap(Foo& a, Foo& b)
-	{
-		a.swap(b);
-	}
+    {
+    	a.swap(b);
+    }
 
 **Enforcement**:
 * (Simple) A class without virtual functions should have a `swap` member function declared.
 * (Simple) When a class has a `swap` member function, it should be declared `noexcept`.
 
-<a name="Rc-swap-fail"></a>
-### C.84: A `swap` function may not fail
+### <a name="Rc-swap-fail"></a> C.84: A `swap` function may not fail
 
 **Reason**: `swap` is widely used in ways that are assumed never to fail and programs cannot easily be written to work correctly in the presence of a failing `swap`. The The standard-library containers and algorithms will not work correctly if a swap of an element type fails.
 
@@ -4502,8 +4376,7 @@ This is not just slow, but if a memory allocation occur for the elements in `tmp
 **Enforcement**: (Simple) When a class has a `swap` member function, it should be declared `noexcept`.
 
 
-<a name="Rc-swap-noexcept"></a>
-### C.85: Make `swap` `noexcept`
+### <a name="Rc-swap-noexcept"></a> C.85: Make `swap` `noexcept`
 
 **Reason**: [A `swap` may not fail](#Rc-swap-fail).
 If a `swap` tries to exit with an exception, it's a bad design error and the program had better terminate.
@@ -4511,8 +4384,7 @@ If a `swap` tries to exit with an exception, it's a bad design error and the pro
 **Enforcement**: (Simple) When a class has a `swap` member function, it should be declared `noexcept`.
 
 
-<a name="Rc-eq"></a>
-### C.86: Make `==` symmetric with respect to operand types and `noexcept`
+### <a name="Rc-eq"></a> C.86: Make `==` symmetric with respect to operand types and `noexcept`
 
 **Reason**: Assymetric treatment of operands is surprising and a source of errors where conversions are possible.
 `==` is a fundamental operations and programmers should be able to use it without fear of failure.
@@ -4543,8 +4415,7 @@ The alternative is to make two failure states compare equal and any valid state 
 **Enforcement**: ???
 
 
-<a name="Rc-eq-base"></a>
-### C.87: Beware of `==` on base classes
+### <a name="Rc-eq-base"></a> C.87: Beware of `==` on base classes
 
 **Reason**: It is really hard to write a foolproof and useful `==` for a hierarchy.
 	
@@ -4557,7 +4428,7 @@ The alternative is to make two failure states compare equal and any valid state 
 		// ...
 	};
 	
-// `B`'s comparison accpts conversions for its second operand, but not its first.
+// `B`'s comparison accepts conversions for its second operand, but not its first.
 
 	class D :B {
 		char character;
@@ -4579,8 +4450,18 @@ Of course there are way of making `==` work in a hierarchy, but the naive approa
 **Enforcement**: ???
 
 
-<a name="Rc-lt"></a>
-### C.88: Make `<` symmetric with respect to operand types and `noexcept`
+### <a name="Rc-lt"></a> C.88: Make `<` symmetric with respect to operand types and `noexcept`
+
+**Reason**: ???
+
+**Example**:
+
+	???
+
+**Enforcement**: ???
+
+
+### <a name="Rc-hash"></a> C.89: Make a `hash` `noexcept`
 
 **Reason**: ???
 
@@ -4590,20 +4471,7 @@ Of course there are way of making `==` work in a hierarchy, but the naive approa
 	
 **Enforcement**: ???
 
-
-<a name="Rc-hash"></a>
-### C.89: Make a `hash` `noexcept`
-
-**Reason**: ???
-
-**Example**:
-
-	???
-	
-**Enforcement**: ???
-
-<a name="SS-containers"</a>
-## C.con: Containers and other resource handles
+## <a name="SS-containers"></a> C.con: Containers and other resource handles
 
 A container is an object holding a sequence of objects of some type; `std::vector` is the archetypical container.
 A resource handle is a class that owns a resource; `std::vector` is the typical resource handle; its resource is its sequence of elements.
@@ -4622,8 +4490,7 @@ Summary of container rules:
 **See also**: [Resources](#S-resource)
 
 
-<a name="SS-lambdas"></a>
-## C.lambdas: Function objects and lambdas
+## <a name="SS-lambdas"></a> C.lambdas: Function objects and lambdas
 
 A function object is an object supplying an overloaded `()` so that you can call it.
 A lambda expression (colloquially often shortened to "a lambda") is a notation for generating a function object.
@@ -4637,8 +4504,7 @@ Summary:
 
 
 
-<a name="SS-hier"></a>
-## C.hier: Class hierarchies (OOP)
+## <a name="SS-hier"></a> C.hier: Class hierarchies (OOP)
 
 A class hierarchy is constructed to represent a set of hierarchically organized concepts (only).
 Typically base classes act as interfaces.
@@ -4679,8 +4545,7 @@ Accessing objects in a hierarchy rule summary:
 * [C.152: Never assign a pointer to an array of derived class objects to a pointer to its base](#Rh-array)
 
 
-<a name="Rh-domain"></a>
-### C.120: Use class hierarchies to represent concepts with inherent hierarchical structure (only)
+### <a name="Rh-domain"></a> C.120: Use class hierarchies to represent concepts with inherent hierarchical structure (only)
 
 **Reason**: Direct representation of ideas in code eases comprehension and maintenance. Make sure the idea represented in the base class exactly matches all derived types and there is not a better way to express it than using the tight coupling of inheritance.
 
@@ -4723,8 +4588,7 @@ not using this (over)general interface in favor of a particular interface found 
 * Flag every use of a nonpublic base class where the derived class does not override a virtual function or access a protected base member.
 
 
-<a name="Rh-abstract"></a>
-### C.121: If a base class is used as an interface, make it a pure abstract class
+### <a name="Rh-abstract"></a> C.121: If a base class is used as an interface, make it a pure abstract class
 
 **Reason**: A class is more stable (less brittle) if it does not contain data. Interfaces should normally be composed entirely of public pure virtual functions.
 
@@ -4737,8 +4601,7 @@ not using this (over)general interface in favor of a particular interface found 
 * Warn on any class that contains data members and also has an overridable (non-`final`) virtual function.
 
 
-<a name="Rh-separation"></a>
-### C.122: Use abstract classes as interfaces when complete separation of interface and implementation is needed
+### <a name="Rh-separation"></a> C.122: Use abstract classes as interfaces when complete separation of interface and implementation is needed
 
 **Reason**: Such as on an ABI (link) boundary.
 
@@ -4753,8 +4616,7 @@ not using this (over)general interface in favor of a particular interface found 
 ## C.hierclass: Designing classes in a hierarchy:
 
 
-<a name="Rh-abstract-ctor"></a>
-### C.126: An abstract class typically doesn't need a constructor
+### <a name="Rh-abstract-ctor"></a> C.126: An abstract class typically doesn't need a constructor
 
 **Reason**: An abstract class typically does not have any data for a constructor to initialize.
 
@@ -4765,13 +4627,12 @@ not using this (over)general interface in favor of a particular interface found 
 **Exceptions**:
 * A base class constructor that does work, such as registering an object somewhere, may need a constructor.
 * In extremely rare cases, you might find a reasonable for an abstract class to have a bit of data shared by all derived classes
-(e.g., use statistics data, debug information, etc.); such classes tend to have constructors. But be warned: Such classes also tend to be prone to requiring virtual inheritance.
+  (e.g., use statistics data, debug information, etc.); such classes tend to have constructors. But be warned: Such classes also tend to be prone to requiring virtual inheritance.
 
 **Enforcement**: Flag abstract classes with constructors.
 
 
-<a name="Rh-dtor"></a>
-### C.127: A class with a virtual function should have a virtual destructor
+### <a name="Rh-dtor"></a> C.127: A class with a virtual function should have a virtual destructor
 
 **Reason**: A class with a virtual function is usually (and in general) used via a pointer to base, including that the last user has to call delete on a pointer to base, often via a smart pointer to base.
 
@@ -4799,8 +4660,7 @@ not using this (over)general interface in favor of a particular interface found 
 * Flag `delete` of a class with a virtual function but no virtual destructor.
 
 
-<a name="Rh-override"></a>
-### C.128: Use `override` to make overriding explicit in large class hierarchies
+### <a name="Rh-override"></a> C.128: Use `override` to make overriding explicit in large class hierarchies
 
 **Reason**: Readability. Detection of mistakes. Explicit `override` allows the compiler to catch mismatch of types and/or names between base and derived classes.
 
@@ -4826,8 +4686,7 @@ not using this (over)general interface in favor of a particular interface found 
 * Flag overrides without `override`.
 
 
-<a name="Rh-kind"><a>
-### C.129: When designing a class hierarchy, distinguish between implementation inheritance and interface inheritance
+### <a name="Rh-kind"></a> C.129: When designing a class hierarchy, distinguish between implementation inheritance and interface inheritance
 
 **Reason**: ??? Herb: I've become a non-fan of implementation inheritance -- seems most often an antipattern. Are there reasonable examples of it?
 
@@ -4838,8 +4697,7 @@ not using this (over)general interface in favor of a particular interface found 
 **Enforcement**: ???
 
 
-<a name="Rh-copy"></a>
-### C.130: Redefine or prohibit copying for a base class; prefer a virtual `clone` function instead
+### <a name="Rh-copy"></a> C.130: Redefine or prohibit copying for a base class; prefer a virtual `clone` function instead
 
 **Reason**: Copying a base is usually slicing. If you really need copy semantics, copy deeply: Provide a virtual `clone` function that will copy the actual most-derived type, and in derived classes return the derived type (use a covariant return type).
 
@@ -4863,8 +4721,7 @@ Note that because of language rules, the covariant return type cannot be a smart
 * Flag an assignment of base class objects (objects of a class from which another has been derived).
  
   
-<a name="Rh-get"></a>
-### C.131: Avoid trivial getters and setters
+### <a name="Rh-get"></a> C.131: Avoid trivial getters and setters
 
 **Reason**: A trivial getter or setter adds no semantic value; the data item could just as well be `public`.
 
@@ -4894,8 +4751,7 @@ Consider making such a class a `struct` -- that is, a behaviorless bunch of vari
 **Enforcement**: Flag multiple `get` and `set` member functions that simply access a member without additional semantics.
 
 
-<a name="Rh-virtual"></a>
-### C.132: Don't make a function `virtual` without reason
+### <a name="Rh-virtual"></a> C.132: Don't make a function `virtual` without reason
 
 **Reason**: Redundant `virtual` increases run-time and object-code size.
 A virtual function can be overridden and is thus open to mistakes in a derived class.
@@ -4921,8 +4777,7 @@ This kind of "vector" isn't meant to be used as a base class at all.
 * Flag a class where all member functions are virtual and have implementations.
 
 
-<a name="Rh-protected"></a>
-### C.133: Avoid `protected` data
+### <a name="Rh-protected"></a> C.133: Avoid `protected` data
 
 **Reason**: `protected` data is a source of complexity and errors.
 `protected` data complicated the statement of invariants.
@@ -4937,8 +4792,7 @@ This kind of "vector" isn't meant to be used as a base class at all.
 **Enforcement**: Flag classes with `protected` data.
 
 
-<a name="Rh-public"></a>
-### C.134: Ensure all data members have the same access level
+### <a name="Rh-public"></a> C.134: Ensure all data members have the same access level
 
 **Reason**: If they don't, the type is confused about what it's trying to do. Only if the type is not really an abstraction, but just a convenience bundle to group individual variables with no larger behavior (a behaviorless bunch of variables), make all data members `public` and don't provide functions with behavior. Otherwise, the type is an abstraction, so make all its data members `private`. Don't mix `public` and `private` data.
 
@@ -4949,8 +4803,7 @@ This kind of "vector" isn't meant to be used as a base class at all.
 **Enforcement**: Flag any class that has data members with different access levels.
 
 
-<a name="Rh-mi-interface"></a>
-### C.135: Use multiple inheritance to represent multiple distinct interfaces
+### <a name="Rh-mi-interface"></a> C.135: Use multiple inheritance to represent multiple distinct interfaces
 
 **Reason**: Not all classes will necessarily support all interfaces, and not all callers will necessarily want to deal with all operations. Especially to break apart monolithic interfaces into "aspects" of behavior supported by a given derived class.
 
@@ -4966,8 +4819,7 @@ and such interfaces are often not easily or naturally organized into a single-ro
 **Enforcement**: ???
 
 
-<a name="Rh-mi-implementation"></a>
-### C.136: Use multiple inheritance to represent the union of implementation attributes
+### <a name="Rh-mi-implementation"></a> C.136: Use multiple inheritance to represent the union of implementation attributes
 
 **Reason**: ??? Herb: Here's the second mention of implementation inheritance. I'm very skeptical, even of single implementation inheritance, never mind multiple implementation inheritance which just seems frightening -- I don't think that even policy-based design really needs to inherit from the policy types. Am I missing some good examples, or could we consider discouraging this as an anti-pattern?
 
@@ -4980,8 +4832,7 @@ and such interfaces are often not easily or naturally organized into a single-ro
 **Enforcement**: ??? Herb: How about opposite enforcement: Flag any type that inherits from more than one non-empty base class?
 
 
-<a name="Rh-vbase"></a>
-### C.137: Use `virtual` bases to avoid overly general base classes
+### <a name="Rh-vbase"></a> C.137: Use `virtual` bases to avoid overly general base classes
 
 **Reason**: ???
 
@@ -4993,8 +4844,7 @@ and such interfaces are often not easily or naturally organized into a single-ro
 
 **Enforcement**: ???
 
-<a name="Rh-using"></a>
-### C.138: Create an overload set for a derived class and its bases with `using`
+### <a name="Rh-using"></a> C.138: Create an overload set for a derived class and its bases with `using`
 
 **Reason**: ???
 
@@ -5006,8 +4856,7 @@ and such interfaces are often not easily or naturally organized into a single-ro
 ## C.hier-access: Accessing objects in a hierarchy
 
 
-<a name="Rh-poly"></a>
-### C.145: Access polymorphic objects through pointers and references
+### <a name="Rh-poly"></a> C.145: Access polymorphic objects through pointers and references
 
 **Reason**: If you have a class with a virtual function, you don't (in general) know which class provided the function to be used.
 
@@ -5042,8 +4891,7 @@ Both `d`s are sliced.
 **Enforcement**: Flag all slicing.
 
 
-<a name="Rh-dynamic_cast"></a>
-### C.146: Use `dynamic_cast` where class hierarchy navigation is unavoidable
+### <a name="Rh-dynamic_cast"></a> C.146: Use `dynamic_cast` where class hierarchy navigation is unavoidable
 
 **Reason**: `dynamic_cast` is checked at run time.
 
@@ -5083,8 +4931,7 @@ and that your use of `dynamic_cast` is really performance critical.
 **Enforcement**: Flag all uses of `static_cast` for downcasts, including C-style casts that perform a `static_cast`.
 
 
-<a name="Rh-ptr-cast"></a>
-### C.147: Use `dynamic_cast` to a reference type when failure to find the required class is considered an error
+### <a name="Rh-ptr-cast"></a> C.147: Use `dynamic_cast` to a reference type when failure to find the required class is considered an error
 
 **Reason**: Casting to a reference expresses that you intend to end up with a valid object, so the cast must succeed. `dynamic_cast` will then throw if it does not succeed.
 
@@ -5095,8 +4942,7 @@ and that your use of `dynamic_cast` is really performance critical.
 **Enforcement**: ???
 
 
-<a name="Rh-ref-cast"></a>
-### C.148: Use `dynamic_cast` to a pointer type when failure to find the required class is considered a valid alternative
+### <a name="Rh-ref-cast"></a> C.148: Use `dynamic_cast` to a pointer type when failure to find the required class is considered a valid alternative
 
 **Reason**: ???
 
@@ -5107,8 +4953,7 @@ and that your use of `dynamic_cast` is really performance critical.
 **Enforcement**: ???
 
 
-<a name="Rh-smart"></a>
-### C.149: Use `unique_ptr` or `shared_ptr` to avoid forgetting to `delete` objects created using `new`
+### <a name="Rh-smart"></a> C.149: Use `unique_ptr` or `shared_ptr` to avoid forgetting to `delete` objects created using `new`
 
 **Reason**: Avoid resource leaks.
 
@@ -5128,8 +4973,7 @@ and that your use of `dynamic_cast` is really performance critical.
 * Flag `delete` of local variable
 
 
-<a name="Rh-make_unique"></a>
-### C.150: Use `make_unique()` to construct objects owned by `unique_ptr`s or other smart pointers
+### <a name="Rh-make_unique"></a> C.150: Use `make_unique()` to construct objects owned by `unique_ptr`s or other smart pointers
 
 **Reason**: `make_unique` gives a more concise statement of the construction.
 
@@ -5145,8 +4989,7 @@ and that your use of `dynamic_cast` is really performance critical.
 * Flag variables declared to be `unique_ptr<Foo>`
 
 
-<a name="Rh-make_shared"></a>
-### C.151: Use `make_shared()` to construct objects owned by `shared_ptr`s
+### <a name="Rh-make_shared"></a> C.151: Use `make_shared()` to construct objects owned by `shared_ptr`s
 
 **Reason**: `make_shared` gives a more concise statement of the construction.
 It also gives an opportunity to eliminate a separate allocation for the reference counts, by placing the `shared_ptr`'s use counts next to its object.
@@ -5159,12 +5002,11 @@ It also gives an opportunity to eliminate a separate allocation for the referenc
 
 **Enforcement**:
 
-* Flag the repetive usage of template specialization list`<Foo>`
+* Flag the repetitive usage of template specialization list`<Foo>`
 * Flag variables declared to be `shared_ptr<Foo>`
 
 
-<a name="Rh-array"></a>
-### C.152: Never assign a pointer to an array of derived class objects to a pointer to its base
+### <a name="Rh-array"></a> C.152: Never assign a pointer to an array of derived class objects to a pointer to its base
 
 **Reason**: Subscripting the resulting base pointer will lead to invalid object access and probably to memory corruption.
 
@@ -5175,7 +5017,7 @@ It also gives an opportunity to eliminate a separate allocation for the referenc
 
 	void use(B*);
 
-	D a[] = { {1,2}, {3,4}, {5,6} };
+	D a[] = { {1, 2}, {3, 4}, {5, 6} };
 	B* p = a;	// bad: a decays to &a[0] which is converted to a B*
 	p[1].x = 7;	// overwrite D[0].y
 
@@ -5187,8 +5029,7 @@ It also gives an opportunity to eliminate a separate allocation for the referenc
 * Pass an array as an `array_view` rather than as a pointer, and don't let the array name suffer a derived-to-base conversion before getting into the `array_view`
 
 
-<a name="SS-overload"></a>
-# C.over: Overloading and overloaded operators
+# <a name="SS-overload"></a> C.over: Overloading and overloaded operators
 
 You can overload ordinary functions, template functions, and operators.
 You cannot overload function objects.
@@ -5202,8 +5043,7 @@ Overload rule summary:
 * [C.164: Avoid conversion operators](#Ro-conversion)
 * [C.170: If you feel like overloading a lambda, use a generic lambda](#Ro-lambda)
 
-<a name="Ro-conventional"></a>
-### C.140: Define operators primarily to mimic conventional usage
+### <a name="Ro-conventional"></a> C.140: Define operators primarily to mimic conventional usage
 
 **Reason**: Minimize surprises.
 
@@ -5216,8 +5056,7 @@ Overload rule summary:
 **Enforcement**: Possibly impossible.
 
 
-<a name="Ro-symmetric"></a>
-### C.141: Use nonmember functions for symmetric operators
+### <a name="Ro-symmetric"></a> C.141: Use nonmember functions for symmetric operators
 
 **Reason**: If you use member functions, you need two.
 Unless you use a non-member function for (say) `==`, `a==b` and `b==a` will be subtly different.
@@ -5229,8 +5068,7 @@ Unless you use a non-member function for (say) `==`, `a==b` and `b==a` will be s
 **Enforcement**: Flag member operator functions.
 
 
-<a name="Ro-equivalent"></a>
-### C.142: Overload operations that are roughly equivalent
+### <a name="Ro-equivalent"></a> C.142: Overload operations that are roughly equivalent
 
 **Reason**: Having different names for logically equivalent operations on different argument types is confusing, leads to encoding type information in function names, and inhibits generic programming.
 
@@ -5251,8 +5089,7 @@ These three functions all prints their arguments (appropriately). Adding to the 
 **Enforcement**: ???
 
 
-<a name="Ro-equivalent-2"></a>
-### C.143: Overload only for operations that are roughly equivalent
+### <a name="Ro-equivalent-2"></a> C.143: Overload only for operations that are roughly equivalent
 
 **Reason**: Having the same name for logically different functions is confusing and leads to errors when using generic programming.
 
@@ -5274,8 +5111,7 @@ The two operations are still fundamentally different (and unrelated) but the nam
 **Enforcement**: ???
 
 
-<a name="Ro-conversion"></a>
-### C.144: Avoid conversion operators
+### <a name="Ro-conversion"></a> C.144: Avoid conversion operators
 
 **Reason**: Implicit conversions can be essential (e.g., `double` to '`int`) but often cause surprises (e.g., `String` to C-style string).
 
@@ -5308,8 +5144,7 @@ The string allocated for `s` and assigned to `p` is destroyed before it can be u
 
 **Enforcement**: Flag all conversion operators.
 
-<a name="Ro-lambda"></a>
-### C.170: If you feel like overloading a lambda, use a generic lambda
+### <a name="Ro-lambda"></a> C.170: If you feel like overloading a lambda, use a generic lambda
 
 **Reason**: You can overload by defining two different lambdas with the same name
 
@@ -5327,8 +5162,7 @@ The string allocated for `s` and assigned to `p` is destroyed before it can be u
 **Enforcement**: The compiler catches attempt to overload a lambda.
 
 
-<a name="SS-union"></a>
-## C.union: Unions
+## <a name="SS-union"></a> C.union: Unions
 
 ???
 
@@ -5340,8 +5174,7 @@ Union rule summary:
 * ???
 
 
-<a name="Ru-union"></a>
-### C.180: Use `union`s to ???
+### <a name="Ru-union"></a> C.180: Use `union`s to ???
 
 ??? When should unions be used, if at all? What's a good future-proof way to re-interpret object representations of PODs?
 ??? variant
@@ -5355,8 +5188,7 @@ Union rule summary:
 **Enforcement**: ???
 
 
-<a name="Ru-naked"></a>
-### C.181: Avoid "naked" `union`s
+### <a name="Ru-naked"></a> C.181: Avoid "naked" `union`s
 
 **Reason**: Naked unions are a source of type errors.
 
@@ -5372,8 +5204,7 @@ Union rule summary:
 
 
 
-<a name="Ru-anonymous"></a>
-### C.182: Use anonymous `union`s to implement tagged unions
+### <a name="Ru-anonymous"></a> C.182: Use anonymous `union`s to implement tagged unions
 
 **Reason**: ???
 
@@ -5385,8 +5216,7 @@ Union rule summary:
 
 
 
-<a name="S-enum"></a>
-# Enum: Enumerations
+# <a name="S-enum"></a> Enum: Enumerations
 
 Enumerations are used to define sets of integer values and for defining types for such sets of values. There are two kind of enumerations, "plain" `enum`s and `class enum`s.
 
@@ -5401,8 +5231,7 @@ Enumeration rule summary:
 * ???
 
 
-<a name="Renum-macro"></a>
-### Enum.1: Prefer enums over macros
+### <a name="Renum-macro"></a> Enum.1: Prefer enums over macros
 
 **Reason**: Macros do not obey scope and type rules.
 
@@ -5413,8 +5242,7 @@ Enumeration rule summary:
 **Enforcement**: ???
 
 
-<a name="Renum-set"></a>
-### Enum.2: Use enumerations to represent sets of named constants
+### <a name="Renum-set"></a> Enum.2: Use enumerations to represent sets of named constants
 
 **Reason**: ???
 
@@ -5425,8 +5253,7 @@ Enumeration rule summary:
 **Enforcement**: ???
 
 
-<a name="Renum-class"></a>
-### Enum.3: Prefer class enums over ``plain'' enums
+### <a name="Renum-class"></a> Enum.3: Prefer class enums over ``plain'' enums
 
 **Reason**: to minimize surprises
 
@@ -5437,8 +5264,7 @@ Enumeration rule summary:
 **Enforcement**: ???
 
 
-<a name="Renum-oper"></a>
-### Enum.4: Define operations on enumerations for safe and simple use
+### <a name="Renum-oper"></a> Enum.4: Define operations on enumerations for safe and simple use
 
 **Reason**: Convenience of us and avoidance of errors.
 
@@ -5449,8 +5275,7 @@ Enumeration rule summary:
 **Enforcement**: ???
 
 
-<a name="Renum-caps"></a>
-### Enum.5: Don't use ALL_CAPS for enumerators
+### <a name="Renum-caps"></a> Enum.5: Don't use ALL_CAPS for enumerators
 
 **Reason**: Avoid clashes with macros
 
@@ -5461,8 +5286,7 @@ Enumeration rule summary:
 **Enforcement**: ???
 
 
-<a name="Renum-unnamed"></a>
-### Enum.6: Use unnamed enumerations for ???
+### <a name="Renum-unnamed"></a> Enum.6: Use unnamed enumerations for ???
 
 **Reason**: ???
 
@@ -5474,8 +5298,7 @@ Enumeration rule summary:
 
 
 
-<a name="S-resource"></a>
-# R: Resource management
+# <a name="S-resource"></a> R: Resource management
 
 This section contains rules related to resources.
 A resource is anything that must be acquired and (explicitly or implicitly) released, such as memory, file handles, sockets, and locks.
@@ -5489,43 +5312,40 @@ the optimal strategy (for performance and ease of programming) is sometimes simp
 If you have enough memory to handle your largest input, leak away, but be sure to give a good error message if you are wrong.
 Here, we ignore such cases.
 
-Resource management rule summary:
+* Resource management rule summary:
 
-* [R.1: Manage resources automatically using resource handles and RAII (resource acquisition is initialization)](#Rr-raii)
-* [R.2: In interfaces, use raw pointers to denote individual objects (only)](#Rr-use-ptr)
-* [R.3: A raw pointer (a `T*`) is non-owning](#Rr-ptr)
-* [R.4: A raw reference (a `T&`) is non-owning](#Rr-ref)
-* [R.5: Prefer scoped objects](#Rr-scoped)
-* [R.6: Avoid non-`const` global variables](#Rr-global)
-	
-Alocation and deallocation rule summary:
-	
-* [R.10: Avoid `malloc()` and `free()`](#Rr-mallocfree)
-* [R.11: Avoid calling `new` and `delete` explicitly](#Rr-newdelete)
-* [R.12: Immediately give the result of an explicit resource allocation to a manager object](#Rr-immediate-alloc)
-* [R.13: Perform at most one explicit resource allocation in a single expression statement](#Rr-single-alloc)
-* [R.14: ??? array vs. pointer parameter](#Rr-ap)
-* [R.15: Always overload matched allocation/deallocation pairs](#Rr-pair)
-	
-<a name ="Rr-summary-smartptrs"></a>Smart pointer rule summary:
+  * [R.1: Manage resources automatically using resource handles and RAII (resource acquisition is initialization)](#Rr-raii)
+  * [R.2: In interfaces, use raw pointers to denote individual objects (only)](#Rr-use-ptr)
+  * [R.3: A raw pointer (a `T*`) is non-owning](#Rr-ptr)
+  * [R.4: A raw reference (a `T&`) is non-owning](#Rr-ref)
+  * [R.5: Prefer scoped objects](#Rr-scoped)
+  * [R.6: Avoid non-`const` global variables](#Rr-global)
 
-* [R.20: Use `unique_ptr` or `shared_ptr` to represent ownership](#Rr-owner)
-* [R.21: Prefer `unique_ptr` over `shared_ptr` unless you need to share ownership](#Rr-unique)
-* [R.22: Use `make_shared()` to make `shared_ptr`s](#Rr-make_shared)
-* [R.23: Use `make_unique()` to make `unique_ptr`s](#Rr-make_unique)
-* [R.24: Use `std::weak_ptr` to break cycles of `shared_ptr`s](#Rr-weak_ptr)
-* [R.30: Take smart pointers as parameters only to explicitly express lifetime semantics](#Rr-smartptrparam)
-* [R.31: If you have non-`std` smart pointers, follow the basic pattern from `std`](#Rr-smart)
-* [R.32: Take a `unique_ptr<widget>` parameter to express that a function assumes ownership of a `widget`](#Rr-uniqueptrparam)
-* [R.33: Take a `unique_ptr<widget>&` parameter to express that a function reseats the`widget`](#Rr-reseat)
-* [R.34: Take a `shared_ptr<widget>` parameter to express that a function is part owner](#Rr-sharedptrparam-owner)
-* [R.35: Take a `shared_ptr<widget>&` parameter to express that a function might reseat the shared pointer](#Rr-sharedptrparam)
-* [R.36: Take a `const shared_ptr<widget>&` parameter to express that it might retain a reference count to the object ???](#Rr-sharedptrparam-const&)
-* [R.37: Do not pass a pointer or reference obtained from an aliased smart pointer](#Rr-smartptrget)
+* Allocation and deallocation rule summary:
 
+  * [R.10: Avoid `malloc()` and `free()`](#Rr-mallocfree)
+  * [R.11: Avoid calling `new` and `delete` explicitly](#Rr-newdelete)
+  * [R.12: Immediately give the result of an explicit resource allocation to a manager object](#Rr-immediate-alloc)
+  * [R.13: Perform at most one explicit resource allocation in a single expression statement](#Rr-single-alloc)
+  * [R.14: ??? array vs. pointer parameter](#Rr-ap)
+  * [R.15: Always overload matched allocation/deallocation pairs](#Rr-pair)
 
-<a name ="Rr-raii"></a>
-### Rule R.1: Manage resources automatically using resource handles and RAII (resource acquisition is initialization)
+* <a name ="Rr-summary-smartptrs"></a> Smart pointer rule summary:
+  * [R.20: Use `unique_ptr` or `shared_ptr` to represent ownership](#Rr-owner)
+  * [R.21: Prefer `unique_ptr` over `shared_ptr` unless you need to share ownership](#Rr-unique)
+  * [R.22: Use `make_shared()` to make `shared_ptr`s](#Rr-make_shared)
+  * [R.23: Use `make_unique()` to make `unique_ptr`s](#Rr-make_unique)
+  * [R.24: Use `std::weak_ptr` to break cycles of `shared_ptr`s](#Rr-weak_ptr)
+  * [R.30: Take smart pointers as parameters only to explicitly express lifetime semantics](#Rr-smartptrparam)
+  * [R.31: If you have non-`std` smart pointers, follow the basic pattern from `std`](#Rr-smart)
+  * [R.32: Take a `unique_ptr<widget>` parameter to express that a function assumes ownership of a `widget`](#Rr-uniqueptrparam)
+  * [R.33: Take a `unique_ptr<widget>&` parameter to express that a function reseats the`widget`](#Rr-reseat)
+  * [R.34: Take a `shared_ptr<widget>` parameter to express that a function is part owner](#Rr-sharedptrparam-owner)
+  * [R.35: Take a `shared_ptr<widget>&` parameter to express that a function might reseat the shared pointer](#Rr-sharedptrparam)
+  * [R.36: Take a `const shared_ptr<widget>&` parameter to express that it might retain a reference count to the object ???](#Rr-sharedptrparam-const&)
+  * [R.37: Do not pass a pointer or reference obtained from an aliased smart pointer](#Rr-smartptrget)
+
+### <a name ="Rr-raii"></a> Rule R.1: Manage resources automatically using resource handles and RAII (resource acquisition is initialization)
 
 **Reason**: To avoid leaks and the complexity of manual resource management.
  C++'s language-enforced constructor/destructor symmetry mirrors the symmetry inherent in resource acquire/release function pairs such as `fopen`/`fclose`, `lock`/`unlock`, and `new`/`delete`.
@@ -5534,7 +5354,7 @@ Alocation and deallocation rule summary:
 
 **Example, bad**: Consider
 
-	void send( X* x, cstring_view destination ) {
+    void send( X* x, cstring_view destination ) {
         auto port = OpenPort(destination);
         my_mutex.lock();
         // ...
@@ -5543,20 +5363,20 @@ Alocation and deallocation rule summary:
         my_mutex.unlock();
         ClosePort(port);
         delete x;
-	}
+    }
 
 In this code, you have to remember to `unlock`, `ClosePort`, and `delete` on all paths, and do each exactly once.
 Further, if any of the code marked `...` throws an exception, then `x` is leaked and `my_mutex` remains locked.
 
 **Example**: Consider
 
-	void send( unique_ptr<X> x, cstring_view destination ) { // x owns the X
+    void send( unique_ptr<X> x, cstring_view destination ) { // x owns the X
         Port port{destination};            // port owns the PortHandle
         lock_guard<mutex> guard{my_mutex}; // guard owns the lock
         // ...
         Send(port, x);
         // ...
-	} // automatically unlocks my_mutex and deletes the pointer in x
+    } // automatically unlocks my_mutex and deletes the pointer in x
 
 Now all resource cleanup is automatic, performed once on all paths whether or not there is an exception. As a bonus, the function now advertises that it takes over ownership of the pointer.
 
@@ -5579,8 +5399,7 @@ What is `Port`? A handy wrapper that encapsulates the resource:
 **See also**: [RAII](#Rr-raii).
 
 
-<a name ="Rr-use-ptr"></a>
-### R.2: In interfaces, use raw pointers to denote individual objects (only)
+### <a name ="Rr-use-ptr"></a> R.2: In interfaces, use raw pointers to denote individual objects (only)
 
 **Reason**: Arrays are best represented by a container type (e.g., `vector` (owning)) or an `array_view` (non-owning).
 Such containers and views hold sufficient information to do range checking.
@@ -5613,13 +5432,12 @@ However, where `nullptr` is a possible value, a reference may not be an reasonab
 **Enforcement**:
 
 * Flag pointer arithmetic (including `++`) on a pointer that is not part of a container, view, or iterator.
-This rule would generate a huge number of false positives if applied to an older code base.
+  This rule would generate a huge number of false positives if applied to an older code base.
 * Flag array names passed as simple pointers
 
 
 
-<a name="Rr-ptr"></a>
-### R.3: A raw pointer (a `T*`) is non-owning
+### <a name="Rr-ptr"></a> R.3: A raw pointer (a `T*`) is non-owning
 
 **Reason**: There is nothing (in the C++ standard or in most code) to say otherwise and most raw pointers are non-owning.
 We want owning pointers identified so that we can reliably and efficiently delete the objects pointed to by owning pointers.
@@ -5703,11 +5521,9 @@ return a "smart pointer."
 * (Moderate) Warn on failure to either `reset` or explicitly `delete` an `owner<T>` pointer on every code path.
 * (Simple) Warn if the return value of `new` or a function call with return value of pointer type is assigned to a raw pointer.
 * (Simple) Warn if a function returns an object that was allocated within the function but has a move constructor.
-Suggest considering returning it by value instead.
+  Suggest considering returning it by value instead.
 
-
-<a name="Rr-ref"></a>
-### R.4: A raw reference (a `T&`) is non-owning
+### <a name="Rr-ref"></a> R.4: A raw reference (a `T&`) is non-owning
 
 **Reason**: There is nothing (in the C++ standard or in most code) to say otherwise and most raw references are non-owning.
 We want owners identified so that we can reliably and efficiently delete the objects pointed to by owning pointers.
@@ -5726,8 +5542,7 @@ We want owners identified so that we can reliably and efficiently delete the obj
 **Enforcement**: See [the raw pointer rule](#Rr-ptr)
 
 
-<a name="Rr-scoped"></a>
-### R.5: Prefer scoped objects
+### <a name="Rr-scoped"></a> R.5: Prefer scoped objects
 
 **Reason**: A scoped object is a local object, a global object, or a member.
 This implies that there is no separate allocation and deallocation cost in excess that already used for the containing scope or object.
@@ -5757,8 +5572,7 @@ Instead, use a local variable:
 
 
 
-<a name="Rr-global"></a>
-### R.6: Avoid non-`const` global variables
+### <a name="Rr-global"></a> R.6: Avoid non-`const` global variables
 
 **Reason**: Global variables can be accessed from everywhere so they can introduce surprising dependencies between apparently unrelated objects.
 They are a notable source of errors.
@@ -5772,12 +5586,10 @@ They are a notable source of errors.
 **Enforcement**: [[??? NM: Obviously we can warn about non-const statics....do we want to?]]
 
 
-<a name="SS-alloc"></a>
-## R.alloc: Alocation and deallocation
+## <a name="SS-alloc"></a> R.alloc: Allocation and deallocation
 
 
-<a name ="Rr-mallocfree"></a>
-### R.10: Avoid `malloc()` and `free()`
+### <a name ="Rr-mallocfree"></a> R.10: Avoid `malloc()` and `free()`
 
 **Reason**: `malloc()` and `free()` do not support construction and destruction, and do not mix well with `new` and `delete`.
 
@@ -5804,10 +5616,10 @@ They are a notable source of errors.
 			// ...
 			
 			delete p1;	// error: cannot delete object allocated by malloc()
-			free(p2);	// error: cannot free() object allocatedby new
+			free(p2);	// error: cannot free() object allocated by new
 		}
 
-In some implementaions that `delete` and that `free()` might work, or maybe they will cause run-time errors.
+In some implementations that `delete` and that `free()` might work, or maybe they will cause run-time errors.
 		
 **Exception**: There are applications and sections of code where exceptions are not acceptable.
 Some of the best such example are in life-critical hard real-time code.
@@ -5818,22 +5630,20 @@ In such cases, consider the `nothrow` versions of `new`.
 **Enforcement**: Flag explicit use of `malloc` and `free`.
 
 
-<a name ="Rr-newdelete"></a>
-### R.11: Avoid calling `new` and `delete` explicitly
+### <a name ="Rr-newdelete"></a> R.11: Avoid calling `new` and `delete` explicitly
 
 **Reason**: The pointer returned by `new` should belong to a resource handle (that can call `delete`).
 If the pointer returned from `new` is assigned to a plain/naked pointer, the object can be leaked.
 
 **Note**: In a large program, a naked `delete` (that is a `delete` in application code, rather than part of code devoted to resource management)
 is a likely bug: if you have N `delete`s, how can you be certain that you don't need N+1 or N-1?
-The bug may be latent: it may emerge only during maintenace.
+The bug may be latent: it may emerge only during maintenance.
 If you have a naked `new`, you probably need a naked `delete` somewhere, so you probably have a bug.
 
 **Enforcement**: (Simple) Warn on any explicit use of `new` and `delete`. Suggest using `make_unique` instead.
 
 
-<a name ="Rr-immediate-alloc"></a>
-### R.12: Immediately give the result of an explicit resource allocation to a manager object
+### <a name ="Rr-immediate-alloc"></a> R.12: Immediately give the result of an explicit resource allocation to a manager object
 
 **Reason**: If you don't, an exception or a return may lead to a leak.
 
@@ -5841,7 +5651,7 @@ If you have a naked `new`, you probably need a naked `delete` somewhere, so you 
 
 	void f(const string& name)
 	{
-		FILE* f = fopen(name,"r");			// open the file
+		FILE* f = fopen(name, "r");			// open the file
 		vector<char> buf(1024);
 		auto _ = finally([] { fclose(f); }	// remember to close the file
 		// ...
@@ -5853,7 +5663,7 @@ The allocation of `buf` may fail and leak the file handle.
 
 	void f(const string& name)
 	{
-		ifstream {name,"r"};			// open the file
+		ifstream {name, "r"};			// open the file
 		vector<char> buf(1024);
 		// ...
 	}
@@ -5865,8 +5675,7 @@ The use of the file handle (in `ifstream`) is simple, efficient, and safe.
 * Flag explicit allocations used to initialize pointers  (problem: how many direct resource allocations can we recognize?)
 
 
-<a name ="Rr-single-alloc"></a>
-### R.13: Perform at most one explicit resource allocation in a single expression statement
+### <a name ="Rr-single-alloc"></a> R.13: Perform at most one explicit resource allocation in a single expression statement
 
 **Reason**: If you perform two explicit resource allocations in one statement,
 you could leak resources because the order of evaluation of many subexpressions, including function arguments, is unspecified.
@@ -5877,7 +5686,7 @@ you could leak resources because the order of evaluation of many subexpressions,
 
 This `fun` can be called like this:
 
-    fun( shared_ptr<Widget>(new Widget(a,b)), shared_ptr<Widget>(new Widget(c,d)) );	// BAD: potential leak
+    fun( shared_ptr<Widget>(new Widget(a, b)), shared_ptr<Widget>(new Widget(c, d)) );	// BAD: potential leak
 
 This is exception-unsafe because the compiler may reorder the two expressions building the function's two arguments.
 In particular, the compiler can interleave execution of the two expressions:
@@ -5887,12 +5696,12 @@ If one of the constructor calls throws an exception, then the other object's mem
 This subtle problem has a simple solution: Never perform more than one explicit resource allocation in a single expression statement.
 For example:
 
-	    shared_ptr<Widget> sp1(new Widget(a,b)); // Better, but messy
-	    fun( sp1, new Widget(c,d) );
+	    shared_ptr<Widget> sp1(new Widget(a, b)); // Better, but messy
+	    fun( sp1, new Widget(c, d) );
 
 The best solution is to avoid explicit allocation entirely use factory functions that return owning objects:
 
-	    fun( make_shared<Widget>(a,b), make_shared<Widget>(c,d) ); // Best
+	    fun( make_shared<Widget>(a, b), make_shared<Widget>(c, d) ); // Best
 
 Write your own factory wrapper if there is not one already.
   
@@ -5901,8 +5710,7 @@ Write your own factory wrapper if there is not one already.
 * Flag expressions with multiple explicit resource allocations (problem: how many direct resource allocations can we recognize?)
 
 
-<a name ="Rr-ap"></a>
-### R.14: ??? array vs. pointer parameter
+### <a name ="Rr-ap"></a> R.14: ??? array vs. pointer parameter
 
 **Reason**: An array decays to a pointer, thereby losing its size, opening the opportunity for range errors.
 
@@ -5915,8 +5723,7 @@ Write your own factory wrapper if there is not one already.
 **Enforcement**: Flag `[]` parameters.
 
 
-<a name="Rr-pair"></a>
-### R.15: Always overload matched allocation/deallocation pairs
+### <a name="Rr-pair"></a> R.15: Always overload matched allocation/deallocation pairs
 
 **Reason**. Otherwise you get mismatched operations and chaos.
 
@@ -5932,15 +5739,13 @@ Write your own factory wrapper if there is not one already.
 **Note**: If you want memory that cannot be deallocated, `=delete` the deallocation operation.
 Don't leave it undeclared.
 
-**Enforcement**: Flag incomplate pairs.
+**Enforcement**: Flag incomplete pairs.
 
 
-<a name="SS-smart"></a>
-## R.smart: Smart pointers
+## <a name="SS-smart"></a> R.smart: Smart pointers
 
 
-<a name="Rr-owner"></a>
-### Rule R.20: Use `unique_ptr` or `shared_ptr` to represent ownership
+### <a name="Rr-owner"></a> Rule R.20: Use `unique_ptr` or `shared_ptr` to represent ownership
 
 **Reason**: They can prevent resource leaks.
 
@@ -5956,11 +5761,10 @@ Don't leave it undeclared.
 
 This will leak the object used to initialize `p1` (only).
 
-**Enforcement:** (Simple) Warn if the return value of `new` or a function call with return value of pointer type is assigned to a raw pointer.
+**Enforcement**: (Simple) Warn if the return value of `new` or a function call with return value of pointer type is assigned to a raw pointer.
 
 
-<a name="Rr-unique"></a>
-### Rule R.21: Prefer `unique_ptr` over `shared_ptr` unless you need to share ownership
+### <a name="Rr-unique"></a> Rule R.21: Prefer `unique_ptr` over `shared_ptr` unless you need to share ownership
 
 **Reason**: a `unique_ptr` is conceptually simpler and more predictable (you know when destruction happens) and faster (you don't implicitly maintain a use count).
 
@@ -5977,15 +5781,14 @@ This will leak the object used to initialize `p1` (only).
     void f()
     {
         unique_ptr<Base> base = make_unique<Derived>();
-        // use base locall
+        // use base locally
     } // destroy base
 
 
 **Enforcement**: (Simple) Warn if a function uses a `Shared_ptr` with an object allocated within the function, but never returns the `Shared_ptr` or passes it to a function requiring a `Shared_ptr&`. Suggest using `unique_ptr` instead.
 
 
-<a name ="Rr-make_shared"></a>
-### R.22: Use `make_shared()` to make `shared_ptr`s
+### <a name ="Rr-make_shared"></a> R.22: Use `make_shared()` to make `shared_ptr`s
 
 **Reason**: If you first make an object and then gives it to a `shared_ptr` constructor, you (most likely) do one more allocation (and later deallocation) than if you use `make_shared()` because the reference counts must be allocated separately from the object.
 
@@ -5999,8 +5802,7 @@ The `make_shared()` version mentions `X` only once, so it is usually shorter (as
 **Enforcement**: (Simple) Warn if a `shared_ptr` is constructed from the result of `new` rather than `make_shared`.
 
 
-<a name ="Rr-make_unique"></a>
-### Rule R.23: Use `make_unique()` to make `unique_ptr`s
+### <a name ="Rr-make_unique"></a> Rule R.23: Use `make_unique()` to make `unique_ptr`s
 
 **Reason**: for convenience and consistency with `shared_ptr`.
 
@@ -6009,10 +5811,9 @@ The `make_shared()` version mentions `X` only once, so it is usually shorter (as
 **Enforcement**: (Simple) Warn if a `Shared_ptr` is constructed from the result of `new` rather than `make_unique`.
 
 
-<a name ="Rr-weak_ptr"></a>
-### R.30: Use `std::weak_ptr` to break cycles of `shared_ptr`s
+### <a name ="Rr-weak_ptr"></a> R.24: Use `std::weak_ptr` to break cycles of `shared_ptr`s
 
-**Reason**: `shared_ptr's rely on use counting and the use count for a cyclic structure never goes to zero, so we need a mechanism to
+**Reason**: `shared_ptr`'s rely on use counting and the use count for a cyclic structure never goes to zero, so we need a mechanism to
 be able to destroy a cyclic structure.
 
 **Example**:
@@ -6026,40 +5827,9 @@ You could "temporarily share ownership simply by using another `stared_ptr`.]]
 **Enforcement**: ???probably impossible. If we could statically detect cycles, we wouldn't need `weak_ptr`
 
 
-<a name="Rr-smart"></a>
-### R.31: If you have non-`std` smart pointers, follow the basic pattern from `std`
-
-**Reason**: The rules in the following section also work for other kinds of third-party and custom smart pointers and are very useful for diagnosing common smart pointer errors that cause performance and correctness problems.
-You want the rules to work on all the smart pointers you use.
-
-Any type (including primary template or specialization) that overloads unary `*` and `->` is considered a smart pointer:
-
-* If it is copyable, it is recognized as a reference-counted `Shared_ptr`.
-* If it not copyable, it is recognized as a unique `Unique_ptr`.
-
-**Example**:
-
-    // use Boost's intrusive_ptr
-    #include <boost/intrusive_ptr.hpp>
-    void f(boost::intrusive_ptr<widget> p) { 	// error under rule 'sharedptrparam'
-        p->foo();
-    }
-
-    // use Microsoft's CComPtr
-	#include <atlbase.h>
-    void f(CComPtr<widget> p) {                // error under rule 'sharedptrparam'
-        p->foo();
-    }
-
-Both cases are an error under the [`sharedptrparam` guideline](#Rr-smartptrparam):
-`p` is a `Shared_ptr`, but nothing about its sharedness is used here and passing it by value is a silent pessimization;
-these functions should accept a smart pointer only if they need to participate in the widget's lifetime management. Otherwise they should accept a `widget*`, if it can be `nullptr`. Otherwise, and ideally, the function should accept a `widget&`.
-These smart pointers match the `Shared_ptr` concept,
-so these guideline enforcement rules work on them out of the box and expose this common pessimization.
 
 
-<a name="Rr-smartptrparam"></a>
-### R.32: Take smart pointers as parameters only to explicitly express lifetime semantics
+### <a name="Rr-smartptrparam"></a> R.30: Take smart pointers as parameters only to explicitly express lifetime semantics
 
 **Reason**: Accepting a smart pointer to a `widget` is wrong if the function just needs the `widget` itself.
 It should be able to accept any `widget` object, not just ones whose lifetimes are managed by a particular kind of smart pointer.
@@ -6100,11 +5870,39 @@ A function that does not manipulate lifetime should take raw pointers or referen
 **Enforcement**:
 
 * (Simple) Warn if a function takes a parameter of a type that is a `Unique_ptr` or `Shared_ptr` and the function only calls any of: `operator*`, `operator->` or `get()`).
-	Suggest using a `T*` or `T&` instead.
+  Suggest using a `T*` or `T&` instead.
 
+### <a name="Rr-smart"></a> R.31: If you have non-`std` smart pointers, follow the basic pattern from `std`
 
-<a name="Rr-uniqueptrparam"></a>
-### R.33: Take a `unique_ptr<widget>` parameter to express that a function assumes ownership of a `widget`
+**Reason**: The rules in the following section also work for other kinds of third-party and custom smart pointers and are very useful for diagnosing common smart pointer errors that cause performance and correctness problems.
+You want the rules to work on all the smart pointers you use.
+
+Any type (including primary template or specialization) that overloads unary `*` and `->` is considered a smart pointer:
+
+* If it is copyable, it is recognized as a reference-counted `Shared_ptr`.
+* If it not copyable, it is recognized as a unique `Unique_ptr`.
+
+**Example**:
+
+    // use Boost's intrusive_ptr
+    #include <boost/intrusive_ptr.hpp>
+    void f(boost::intrusive_ptr<widget> p) { 	// error under rule 'sharedptrparam'
+        p->foo();
+    }
+
+    // use Microsoft's CComPtr
+    #include <atlbase.h>
+    void f(CComPtr<widget> p) {                // error under rule 'sharedptrparam'
+        p->foo();
+    }
+
+Both cases are an error under the [`sharedptrparam` guideline](#Rr-smartptrparam):
+`p` is a `Shared_ptr`, but nothing about its sharedness is used here and passing it by value is a silent pessimization;
+these functions should accept a smart pointer only if they need to participate in the widget's lifetime management. Otherwise they should accept a `widget*`, if it can be `nullptr`. Otherwise, and ideally, the function should accept a `widget&`.
+These smart pointers match the `Shared_ptr` concept,
+so these guideline enforcement rules work on them out of the box and expose this common pessimization.
+
+### <a name="Rr-uniqueptrparam"></a> R.32: Take a `unique_ptr<widget>` parameter to express that a function assumes ownership of a `widget`
 
 **Reason**: Using `unique_ptr` in this way both documents and enforces the function call's ownership transfer.
 
@@ -6126,8 +5924,7 @@ A function that does not manipulate lifetime should take raw pointers or referen
 * (Simple) ((Foundation)) Warn if a function takes a `Unique_ptr<T>` parameter by rvalue reference. Suggest using pass by value instead.
 
 
-<a name="Rr-reseat"></a>
-### R.34: Take a `unique_ptr<widget>&` parameter to express that a function reseats the`widget`
+### <a name="Rr-reseat"></a> R.33: Take a `unique_ptr<widget>&` parameter to express that a function reseats the`widget`
 
 **Reason**: Using `unique_ptr` in this way both documents and enforces the function call's reseating semantics.
 
@@ -6149,8 +5946,7 @@ A function that does not manipulate lifetime should take raw pointers or referen
 * (Simple) ((Foundation)) Warn if a function takes a `Unique_ptr<T>` parameter by rvalue reference. Suggest using pass by value instead.
 
 
-<a name="Rr-sharedptrparam-owner"></a>
-### R.35: Take a `shared_ptr<widget>` parameter to express that a function is part owner
+### <a name="Rr-sharedptrparam-owner"></a> R.34: Take a `shared_ptr<widget>` parameter to express that a function is part owner
 
 **Reason**: This makes the function's ownership sharing explicit.
 
@@ -6169,8 +5965,7 @@ A function that does not manipulate lifetime should take raw pointers or referen
 * (Simple) ((Foundation)) Warn if a function takes a `Shared_ptr<T>` by rvalue reference. Suggesting taking it by value instead.
 
 
-<a name="Rr-sharedptrparam"></a>
-### R.36: Take a `shared_ptr<widget>&` parameter to express that a function might reseat the shared pointer
+### <a name="Rr-sharedptrparam"></a> R.35: Take a `shared_ptr<widget>&` parameter to express that a function might reseat the shared pointer
 
 **Reason**: This makes the function's reseating explicit.
 
@@ -6191,8 +5986,7 @@ A function that does not manipulate lifetime should take raw pointers or referen
 * (Simple) ((Foundation)) Warn if a function takes a `Shared_ptr<T>` by rvalue reference. Suggesting taking it by value instead.
 
 
-<a name="Rr-sharedptrparam-const&"></a>
-### R.37: Take a `const shared_ptr<widget>&` parameter to express that it might retain a reference count to the object ???
+### <a name="Rr-sharedptrparam-const&"></a> R.36: Take a `const shared_ptr<widget>&` parameter to express that it might retain a reference count to the object ???
 
 **Reason**: This makes the function's ??? explicit.
 
@@ -6211,8 +6005,7 @@ A function that does not manipulate lifetime should take raw pointers or referen
 * (Simple) ((Foundation)) Warn if a function takes a `Shared_ptr<T>` by rvalue reference. Suggesting taking it by value instead.
 	
 
-<a name="Rr-smartptrget"></a>
-### R.38: Do not pass a pointer or reference obtained from an aliased smart pointer
+### <a name="Rr-smartptrget"></a> R.37: Do not pass a pointer or reference obtained from an aliased smart pointer
 	
 **Reason**: Violating this rule is the number one cause of losing reference counts and finding yourself with a dangling pointer.
 Functions should prefer to pass raw pointers and references down call chains.
@@ -6227,29 +6020,29 @@ You need to be sure that smart pointer cannot be inadvertently be reset or reass
     shared_ptr<widget> g_p = ...;
 
     void f( widget& w ) {
-		g();
-		use(w);  // A
+    	g();
+    	use(w);  // A
     }
 
     void g() {
-		g_p = ... ; // oops, if this was the last shared_ptr to that widget, destroys the widget
-	}
+    	g_p = ... ; // oops, if this was the last shared_ptr to that widget, destroys the widget
+    }
 
 The following should not pass code review:
 
     void my_code() {
-	    f( *g_p );	// BAD: passing pointer or reference obtained from a nonlocal smart pointer
-	                //      that could be inadvertently reset somewhere inside f or it callees
-		g_p->func(); // BAD: same reason, just passing it as a "this" pointer
-	}
+        f( *g_p );	// BAD: passing pointer or reference obtained from a nonlocal smart pointer
+                    //      that could be inadvertently reset somewhere inside f or it callees
+        g_p->func(); // BAD: same reason, just passing it as a "this" pointer
+    }
 
 The fix is simple -- take a local copy of the pointer to "keep a ref count" for your call tree:
 
     void my_code() {
-		auto pin = g_p; // cheap: 1 increment covers this entire function and all the call trees below us
-		f( *pin );      // GOOD: passing pointer or reference obtained from a local unaliased smart pointer
-		pin->func();    // GOOD: same reason
-	}
+    	auto pin = g_p; // cheap: 1 increment covers this entire function and all the call trees below us
+    	f( *pin );      // GOOD: passing pointer or reference obtained from a local unaliased smart pointer
+    	pin->func();    // GOOD: same reason
+    }
 
 **Enforcement**:
 
@@ -6258,8 +6051,7 @@ The fix is simple -- take a local copy of the pointer to "keep a ref count" for 
 
 
 
-<a name="S-expr"></a>
-# ES: Expressions and Statements
+# <a name="S-expr"></a> ES: Expressions and Statements
 
 Expressions and statements are the lowest and most direct way of expressing actions and computation. Declarations in local scopes are statements.
 
@@ -6339,8 +6131,7 @@ Arithmetic rules:
 * [ES.105: Don't divide by zero](#Res-zero)
 
 
-<a name="Res-lib"></a>
-### ES.1: Prefer the standard library to other libraries and to "handcrafted code"
+### <a name="Res-lib"></a> ES.1: Prefer the standard library to other libraries and to "handcrafted code"
 
 **Reason**: Code using a library can be much easier to write than code working directly with language features, much shorter, tend to be of a higher level of abstraction, and the library code is presumably already tested.
 The ISO C++ standard library is among the most widely know and best tested libraries.
@@ -6348,11 +6139,11 @@ It is available as part of all C++ Implementations.
 
 **Example**:
 
-	auto sum = accumulate(begin(a),end(a),0.0);	// good
+	auto sum = accumulate(begin(a), end(a), 0.0);	// good
 
 a range version of `accumulate` would be even better
 
-	auto sum = accumulate(v,0.0); // better
+	auto sum = accumulate(v, 0.0); // better
 
 but don't hand-code a well-known algorithm
 
@@ -6366,8 +6157,7 @@ but don't hand-code a well-known algorithm
 **Enforcement**: Not easy. ??? Look for messy loops, nested loops, long functions, absence of function calls, lack of use of non-built-in types. Cyclomatic complexity?
 
 
-<a name="Res-abstr"></a>
-### ES.2: Prefer suitable abstractions to direct use of language features
+### <a name="Res-abstr"></a> ES.2: Prefer suitable abstractions to direct use of language features
 
 **Reason**: A "suitable abstraction" (e.g., library or class) is closer to the application concepts than the bare language, leads to shorter and clearer code, and is likely to be better tested.
 
@@ -6390,7 +6180,7 @@ The more traditional and lower-level near-equivalent is longer, messier, harder 
 		int elemcount = 0;
 		while (is && elemcount<maxelem) {
 			auto s = new char[maxstring];
-			is.read(s,maxstring);
+			is.read(s, maxstring);
 			res[elemcount++] = s;
 		}
 		nread = elemcount;
@@ -6407,10 +6197,9 @@ Once the checking for overflow and error handling has been added that code gets 
 A declaration is a statement. a declaration introduces a name into a scope and may cause the construction of a named object.
 
 
-<a name="Res-scope"></a>
-### ES.5: Keep scopes small
+### <a name="Res-scope"></a> ES.5: Keep scopes small
 
-**Reason**: Readability. Minimize resource retension. Avoid accidental misuse of value.
+**Reason**: Readability. Minimize resource retention. Avoid accidental misuse of value.
 
 **Alternative formulation**: Don't declare a name in an unnecessarily large scope.
 
@@ -6457,7 +6246,7 @@ In this case, it might be a good ide to factor out the read:
 	void use(const string& name)
 	{
 		Record r;
-		fill_record(r,name);
+		fill_record(r, name);
 		// ... 200 lines of code ...
 	}
 	
@@ -6469,10 +6258,9 @@ I am assuming that `Record` is large and doesn't have a good move operation so t
 * Flag when expensive resources, such as file handles and locks are not used for N-lines (for some suitable N)
 
 
-<a name="Res-cond"></a>
-### ES.6: Declare names in for-statement initializers and conditions to limit scope
+### <a name="Res-cond"></a> ES.6: Declare names in for-statement initializers and conditions to limit scope
 
-**Reason**: Readability. Minimize resource retension.
+**Reason**: Readability. Minimize resource retention.
 
 **Example**:
 
@@ -6499,8 +6287,7 @@ I am assuming that `Record` is large and doesn't have a good move operation so t
 * (hard) Flag loop variables declared before the loop and used after the loop for an unrelated purpose.
 
 
-<a name="Res-name-length"></a>
-### ES.7: Keep common and local names short, and keep uncommon and nonlocal names longer
+### <a name="Res-name-length"></a> ES.7: Keep common and local names short, and keep uncommon and nonlocal names longer
 
 **Reason**: Readability. Lowering the chance of clashes between unrelated non-local names.
 
@@ -6550,19 +6337,18 @@ Here, there is a chance that the reader knows what `trim_tail` means and that th
 
 **Example, bad**: Argument names of large functions are de facto non-local and should be meaningful:
 
-	void complicated_algorithm(vector<Record>&vr, const vector<int>& vi, map<string,int>& out)
-		// read from events in vr (marking used Records) for the indices in vi placing (name,index) pairs into out
-	{
-		// ... 500 lines of code using vr, vi, and out ...
-	}
+    void complicated_algorithm(vector<Record>&vr, const vector<int>& vi, map<string, int>& out)
+    // read from events in vr (marking used Records) for the indices in vi placing (name, index) pairs into out
+    {
+    	// ... 500 lines of code using vr, vi, and out ...
+    }
 
 We recommend keeping functions short, but that rule isn't universally adhered to and naming should reflect that.
 
 **Enforcement**: Check length of local and non-local names. Also take function length into account.
 
 
-<a name="Res-name-similar"></a>
-### ES.8: Avoid similar-looking names
+### <a name="Res-name-similar"></a> ES.8: Avoid similar-looking names
 
 **Reason**: Such names slow down comprehension and increase the likelihood of error.
 
@@ -6573,8 +6359,7 @@ We recommend keeping functions short, but that rule isn't universally adhered to
 **Enforcement**: Check names against a list of known confusing letter and digit combinations.
 
 
-<a name="Res-!CAPS"></a>
-### ES.9: Avoid `ALL_CAPS` names
+### <a name="Res-!CAPS"></a> ES.9: Avoid `ALL_CAPS` names
 
 **Reason**: Such names are commonly used for macros. Thus, ALL_CAPS name are vulnerable to unintended macro substitution.
 
@@ -6600,8 +6385,7 @@ We recommend keeping functions short, but that rule isn't universally adhered to
 **Enforcement**: Flag all uses of ALL CAPS. For older code, accept ALL CAPS for macro names and flag all non-ALL-CAPS macro names.
 
 
-<a name="Res-name-one"></a>
-### ES.10: Declare one name (only) per declaration
+### <a name="Res-name-one"></a> ES.10: Declare one name (only) per declaration
 
 **Reason**: One-declaration-per line increases readability and avoid mistake related to the C/C++ grammar. It leaves room for a `//`-comment
 
@@ -6622,24 +6406,23 @@ or better using concepts
 
 **Example**:
 
-	double scalbn(double x, int n);	 	// OK: x*pow(FLT_RADIX,n); FLT_RADIX is usually 2
+	double scalbn(double x, int n);	 	// OK: x*pow(FLT_RADIX, n); FLT_RADIX is usually 2
 
 or
 
-	double scalbn(		// better: x*pow(FLT_RADIX,n); FLT_RADIX is usually 2
+	double scalbn(		// better: x*pow(FLT_RADIX, n); FLT_RADIX is usually 2
 		double x; 	// base value
 		int n;		// exponent
 	);
 
 or
 
-	double scalbn(double base, int exponent);	// better: base*pow(FLT_RADIX,exponent); FLT_RADIX is usually 2
+	double scalbn(double base, int exponent);	// better: base*pow(FLT_RADIX, exponent); FLT_RADIX is usually 2
 
 **Enforcement**: Flag non-function arguments with multiple declarators involving declarator operators (e.g., `int* p, q;`)
 
 
-<a name="Res-auto"></a>
-###  ES.11: Use `auto` to avoid redundant repetition of type names
+### <a name="Res-auto"></a> ES.11: Use `auto` to avoid redundant repetition of type names
 
 **Reason**:
 
@@ -6660,25 +6443,24 @@ In each case, we save writing a longish, hard-to-remember type that the compiler
 **Example**:
 
 	template<class T>
-		auto Container<T>::first() -> Iterator;	// Container<T>::Iterator
+	auto Container<T>::first() -> Iterator;	// Container<T>::Iterator
 
 **Exception**: Avoid `auto` for initializer lists and in cases where you know exactly which type you want and where an initializer might require conversion.
 
 **Example**:
 
 	auto lst = { 1, 2, 3 };	// lst is an initializer list (obviously)
-	auto x = {1};	// x is an int (after correction of the C++14 standard; initializer_list in C++11)
+	auto x{1};	// x is an int (after correction of the C++14 standard; initializer_list in C++11)
 
 **Note**: When concepts become available, we can (and should) be more specific about the type we are deducing:
 
 	// ...
-	ForwardIterator p = algo(x,y,z);
+	ForwardIterator p = algo(x, y, z);
 
 **Enforcement**: Flag redundant repetition of type names in a declaration.
 
 
-<a name="Res-always"></a>
-### ES.20: Always initialize an object
+### <a name="Res-always"></a> ES.20: Always initialize an object
 
 **Reason**: Avoid used-before-set errors and their associated undefined behavior.
 
@@ -6705,14 +6487,14 @@ However, beware that this may leave uninitialized data beyond the input - and th
 
 	constexpr int max = 8*1024;
 	int buf[max];					// OK, but suspicious
-	f.read(buf,max);
+	f.read(buf, max);
 
 The cost of initializing that array could be significant in some situations.
 However, such examples do tend to leave uninitialized variables accessible, so they should be treated with suspicion.
 	
 	constexpr int max = 8*1024;
 	int buf[max] = {0};				// better in some situations
-	f.read(buf,max);
+	f.read(buf, max);
 
 When feasible use a library function that is know not to overflow. For example:
 
@@ -6738,13 +6520,13 @@ That can lead to uninitialized variables (exceptly as for input operations):
 
 	error_code ec;
 	Value v;
-	tie(ec,v) = get_value();	// get_value() returns a pair<error_code,Value>
+	tie(ec, v) = get_value();	// get_value() returns a pair<error_code, Value>
 
 **Note**: Sometimes, a lambda can be used as an initializer to avoid an uninitialized variable.
 
 	error_code ec;
 	Value v = [&]() {
-		auto p = get_value();	// get_value() returns a pair<error_code,Value>
+		auto p = get_value();	// get_value() returns a pair<error_code, Value>
 		ec = p.first;
 		return p.second;
 	};
@@ -6752,7 +6534,7 @@ That can lead to uninitialized variables (exceptly as for input operations):
 or maybe
 
 	Value v = []() {
-		auto p = get_value();	// get_value() returns a pair<error_code,Value>
+		auto p = get_value();	// get_value() returns a pair<error_code, Value>
 		if (p.first) throw Bad_value{p.first};
 		return p.second;
 	};
@@ -6762,12 +6544,11 @@ or maybe
 **Enforcement**:
 
 * Flag every uninitialized variable.
-Don't flag variables of user-defined types with default constructors.
-* Check that the unitialized buffer is read into *immediately* after declaration.
+  Don't flag variables of user-defined types with default constructors.
+* Check that the uninitialized buffer is read into *immediately* after declaration.
 
 
-<a name="Res-introduce"></a>
-### ES.21: Don't introduce a variable (or constant) before you need to use it
+### <a name="Res-introduce"></a> ES.21: Don't introduce a variable (or constant) before you need to use it
 
 **Reason**: Readability. To limit the scope in which the variable can be used.
 
@@ -6780,8 +6561,7 @@ Don't flag variables of user-defined types with default constructors.
 **Enforcement**: Flag declaration that distant from their first use.
 
 
-<a name="Res-init"></a>
-### ES.22: Don't declare a variable until you have a value to initialize it with
+### <a name="Res-init"></a> ES.22: Don't declare a variable until you have a value to initialize it with
 
 **Reason**: Readability. Limit the scope in which a variable can be used. Don't risk used-before-set. Initialization is often more efficient than assignment.
 
@@ -6820,15 +6600,14 @@ For initializers of moderate complexity, including for `const` variables, consid
 * Flag any complicated computation after an uninitialized variable and before its use.
 
 
-<a name="Res-list"></a>
-### ES.23: Prefer the `{}` initializer syntax
+### <a name="Res-list"></a> ES.23: Prefer the `{}` initializer syntax
 
 **Reason**: The rules for `{}` initialization is simpler, more general, and safer than for other forms of initialization, and unambiguous.
 
 **Example**:
 
        int x {f(99)};
-       vector<int> v = {1,2,3,4,5,6};
+       vector<int> v = {1, 2, 3, 4, 5, 6};
 
 **Exception**: For containers, there is a tradition for using `{...}` for a list of elements and `(...)` for sizes:
 
@@ -6844,8 +6623,8 @@ For initializers of moderate complexity, including for `const` variables, consid
 
 **Note**: `{}` initialization can be used for all initialization; other forms of initialization can't:
 
-	auto p = new vector<int> {1,2,3,4,5};	// initialized vector
-	D::D(int a, int b) :m{a,b} {	// member initializer (e.g., m might be a pair)
+	auto p = new vector<int> {1, 2, 3, 4, 5};	// initialized vector
+	D::D(int a, int b) :m{a, b} {	// member initializer (e.g., m might be a pair)
 		// ...
 	};
 	X var {};				// initialize var to be empty
@@ -6859,12 +6638,12 @@ For initializers of moderate complexity, including for `const` variables, consid
 	auto x1 {7};	// x1 is sn int with the value 7
 	auto x2 = {7};	// x2 is and initializer_int<int> with an element 7
 
-	auto x11 {7,8};		// error: two initializers
-	auto x22 = {7,8};	// x2 is and initializer_int<int> with elements 7 and 8
+	auto x11 {7, 8};		// error: two initializers
+	auto x22 = {7, 8};	// x2 is and initializer_int<int> with elements 7 and 8
 
 **Exception**: Use `={...}` if you really want an `initializer_list<T>`
 
-	auto fib10 = {0,1,2,3,5,8,13,25,38,63};	// fib10 is a list
+	auto fib10 = {0, 1, 2, 3, 5, 8, 13, 25, 38, 63};	// fib10 is a list
 	
 **Example**:
 
@@ -6887,8 +6666,7 @@ For initializers of moderate complexity, including for `const` variables, consid
 * Look for `=` after `auto` has been seen.
 
 
-<a name="Res-unique"></a>
-### ES.24: Use a `unique_ptr<T>` to hold pointers in code that may throw
+### <a name="Res-unique"></a> ES.24: Use a `unique_ptr<T>` to hold pointers in code that may throw
 
 **Reason**: Using `std::unique_ptr` is the simplest way to avoid leaks. And it is free compared to alternatives
 
@@ -6908,8 +6686,7 @@ If `leak==true` the object pointer to by `p2` is leaked and the object pointed t
 **Enforcement**: Look for raw pointers that are targets of `new`, `malloc()`, or functions that may return such pointers.
 
 
-<a name="Res-const"></a>
-### ES.25: Declare an objects `const` or `constexpr` unless you want to modify its value later on
+### <a name="Res-const"></a> ES.25: Declare an objects `const` or `constexpr` unless you want to modify its value later on
 
 **Reason**: That way you can't change the value by mistake. That way may offer the compiler optimization opportunities.
 
@@ -6925,8 +6702,7 @@ If `leak==true` the object pointer to by `p2` is leaked and the object pointed t
 **Enforcement**: Look to see if a variable is actually mutated, and flag it if not. Unfortunately, it may be impossible to detect when a non-`const` was not intended to vary.
 
 
-<a name="Res-recycle"></a>
-### ES.26: Don't use a variable for two unrelated purposes
+### <a name="Res-recycle"></a> ES.26: Don't use a variable for two unrelated purposes
 
 **Reason**: Readability.
 
@@ -6942,10 +6718,9 @@ If `leak==true` the object pointer to by `p2` is leaked and the object pointed t
 **Enforcement**: Flag recycled variables.
 
 
-<a name="Res-stack"></a>
-### ES.27: Use `std::array` or `stack_array` for arrays on the stack
+### <a name="Res-stack"></a> ES.27: Use `std::array` or `stack_array` for arrays on the stack
 
-**Reason**: They are readable and don't impicitly convert to pointers.
+**Reason**: They are readable and don't implicitly convert to pointers.
 They are not confused with non-standard extensions of built-in arrays.
 
 **Example, bad**:
@@ -6973,7 +6748,7 @@ The definition of `a2` is C but not C++ and is considered a security risk
 	
 	void f()
 	{
-		array<int,n> a1;
+		array<int, n> a1;
 		stack_array<int> a2(m);
 		// ...
 	}
@@ -6984,8 +6759,7 @@ The definition of `a2` is C but not C++ and is considered a security risk
 * Flag arrays with non-local constant bounds
 
 
-<a name="Res-lambda-init"></a>
-### ES.28: Use lambdas for complex initialization, especially of `const` variables
+### <a name="Res-lambda-init"></a> ES.28: Use lambdas for complex initialization, especially of `const` variables
 
 **Reason**: It nicely encapsulates local initialization, including cleaning up scratch variables needed only for the initialization, without needing to create a needless nonlocal yet nonreusable function. It also works for variables that should be `const` but only after some initialization work.
 
@@ -7028,11 +6802,10 @@ If at all possible, reduce the conditions to a simple set of alternatives (e.g.,
 		case file: 			owned=true;  return *new ifstream{argv[2]};
 	}();
 
-**Enforcement:** Hard. At best a heuristic. Look for an unitialized variable followed by a loop assigning to it.
+**Enforcement**: Hard. At best a heuristic. Look for an uninitialized variable followed by a loop assigning to it.
 
 
-<a name="Res-macros"></a>
-### ES.30: Don't use macros for program text manipulation
+### <a name="Res-macros"></a> ES.30: Don't use macros for program text manipulation
 
 **Reason**: Macros are a major source of bugs.
 Macros don't obey the usual scope and type rules.
@@ -7050,8 +6823,7 @@ This innocuous-looking macro makes a single lower case `c` instead of a `C` into
 **Enforcement**: Scream when you see a macro that isn't just use for source control (e.g., `#ifdef`)
 
 
-<a name="Res-macros2"></a>
-### ES.31: Don't use macros for constants or "functions"
+### <a name="Res-macros2"></a> ES.31: Don't use macros for constants or "functions"
 
 **Reason**: Macros are a major source of bugs.
 Macros don't obey the usual scope and type rules.
@@ -7062,7 +6834,7 @@ Macros complicates tool building.
 **Example, bad**:
 
 	#define PI 3.14
-	#define SQUARE(a,b) (a*b)
+	#define SQUARE(a, b) (a*b)
 	
 Even if we hadn't left a well-know bug in `SQUARE` there are much better behaved alternatives; for example:
 
@@ -7072,8 +6844,7 @@ Even if we hadn't left a well-know bug in `SQUARE` there are much better behaved
 **Enforcement**: Scream when you see a macro that isn't just use for source control (e.g., `#ifdef`)
 
 
-<a name="Res-CAPS!"></a>
-### ES.32: Use `ALL_CAPS` for all macro names
+### <a name="Res-CAPS!"></a> ES.32: Use `ALL_CAPS` for all macro names
 
 **Reason**: Convention. Readability. Distinguishing macros.
 
@@ -7086,8 +6857,7 @@ Even if we hadn't left a well-know bug in `SQUARE` there are much better behaved
 **Enforcement**: Scream when you see a lower case macro.
 
 
-<a name="Res-ellipses"></a>
-### ES.40: Don't define a (C-style) variadic function
+### <a name="Res-ellipses"></a> ES.40: Don't define a (C-style) variadic function
 
 **Reason**: Not type safe. Requires messy cast-and-macro-laden code to get working right.
 
@@ -7108,8 +6878,7 @@ Even if we hadn't left a well-know bug in `SQUARE` there are much better behaved
 Statements control the flow of control (except for function calls and exception throws, which are expressions).
 
 
-<a name="Res-switch-if"></a>
-### ES.70: Prefer a `switch`-statement to an `if`-statement when there is a choice
+### <a name="Res-switch-if"></a> ES.70: Prefer a `switch`-statement to an `if`-statement when there is a choice
 
 **Reason**:
 
@@ -7140,8 +6909,7 @@ rather than
 **Enforcement**: Flag if-then-else chains that check against constants (only).
 
 
-<a name="Res-for-range"></a>
-### ES.71: Prefer a range-`for`-statement to a `for`-statement when there is a choice
+### <a name="Res-for-range"></a> ES.71: Prefer a range-`for`-statement to a `for`-statement when there is a choice
 
 **Reason**: Readability. Error prevention. Efficiency.
 
@@ -7185,8 +6953,7 @@ This will copy each elements of `vs` into `s`. Better
 **Enforcement**: Look at loops, if a traditional loop just looks at each element of a  sequence, and there are no side-effects on what it does with the elements, rewrite the loop to a for loop.
 
 
-<a name="Res-for-while"></a>
-### ES.72: Prefer a `for`-statement to a `while`-statement when there is an obvious loop variable
+### <a name="Res-for-while"></a> ES.72: Prefer a `for`-statement to a `while`-statement when there is an obvious loop variable
 
 **Reason**: Readability: the complete logic of the loop is visible "up front". The scope of the loop variable can be limited.
 
@@ -7207,8 +6974,7 @@ This will copy each elements of `vs` into `s`. Better
 **Enforcement**: ???
 
 
-<a name="Res-while-for"></a>
-### ES.73: Prefer a `while`-statement to a `for`-statement when there is no obvious loop variable
+### <a name="Res-while-for"></a> ES.73: Prefer a `while`-statement to a `for`-statement when there is no obvious loop variable
 
 **Reason**: ???
 
@@ -7219,8 +6985,7 @@ This will copy each elements of `vs` into `s`. Better
 **Enforcement**: ???
 
 
-<a name="Res-for-init"></a>
-### ES.74: Prefer to declare a loop variable in the initializer part of as `for`-statement
+### <a name="Res-for-init"></a> ES.74: Prefer to declare a loop variable in the initializer part of as `for`-statement
 
 **Reason**: Limit the loop variable visibility to the scope of the loop.
 Avoid using the loop variable for other purposes after the loop.
@@ -7247,8 +7012,7 @@ Avoid using the loop variable for other purposes after the loop.
 is only accessible in the loop body unblocks optimizations such as hoisting, strength reduction, loop-invariant code motion, etc.
 
 
-<a name="Res-do"></a>
-### ES.75: Avoid `do`-statements
+### <a name="Res-do"></a> ES.75: Avoid `do`-statements
 
 **Reason**: Readability, avoidance of errors.
 The termination conditions is at the end (where it can be overlooked) and the condition is not checked the first time through. ???
@@ -7263,8 +7027,7 @@ The termination conditions is at the end (where it can be overlooked) and the co
 
 **Enforcement**: ???
 
-<a name="Res-goto"></a>
-### ES.76: Avoid `goto`
+### <a name="Res-goto"></a> ES.76: Avoid `goto`
 
 **Reason**: Readability, avoidance of errors. There are better control structures for humans; `goto` is for machine generated code.
 
@@ -7295,8 +7058,7 @@ This is an ad-hoc simulation of destructors. Declare your resources with handles
 
 
 
-<a name="Res-continue"></a>
-### ES.77: ??? `continue`
+### <a name="Res-continue"></a> ES.77: ??? `continue`
 
 **Reason**: ???
 
@@ -7307,8 +7069,7 @@ This is an ad-hoc simulation of destructors. Declare your resources with handles
 **Enforcement**: ???
 
 
-<a name="Res-break"></a>
-### ES.78: Always end a `case` with a `break`
+### <a name="Res-break"></a> ES.78: Always end a `case` with a `break`
 
 **Reason**: ??? loop, switch ???
 
@@ -7329,8 +7090,7 @@ This is an ad-hoc simulation of destructors. Declare your resources with handles
 **Enforcement**: ???
 
 
-<a name="Res-default"></a>
-### ES.79: ??? `default`
+### <a name="Res-default"></a> ES.79: ??? `default`
 
 **Reason**: ???
 
@@ -7341,8 +7101,7 @@ This is an ad-hoc simulation of destructors. Declare your resources with handles
 **Enforcement**: ???
 
 
-<a name="Res-empty"></a>
-### ES.85: Make empty statements visible
+### <a name="Res-empty"></a> ES.85: Make empty statements visible
 
 **Reason**: Readability.
 
@@ -7358,12 +7117,11 @@ This is an ad-hoc simulation of destructors. Declare your resources with handles
 **Enforcement**: Flag empty statements that are not blocks and doesn't "contain" comments.
 
 
-## ES.expr: Expresssions
+## ES.expr: Expressions
 
 Expressions manipulate values.
 
-<a name="Res-complicated"></a>
-### ES.40: Avoid complicated expressions
+### <a name="Res-complicated"></a> ES.40: Avoid complicated expressions
 
 **Reason**: Complicated expressions are error-prone.
 
@@ -7371,9 +7129,9 @@ Expressions manipulate values.
 
 	while ((c=getc())!=-1)	// bad: assignment hidden in subexpression
 
-	while ((cin>>c1, cin>>c2),c1==c2) // bad: two non-local variables assigned in a sub-expressions
+	while ((cin>>c1, cin>>c2), c1==c2) // bad: two non-local variables assigned in a sub-expressions
 
-	for (char c1,c2; cin>>c1>>c2 && c1==c2; )	// better, but possibly still too complicated
+	for (char c1, c2; cin>>c1>>c2 && c1==c2; )	// better, but possibly still too complicated
 
 	int x = ++i + ++j;	// OK: iff i and j are not aliased
 
@@ -7399,7 +7157,7 @@ Some of these expressions are unconditionally bad (e.g., they rely on undefined 
 	if(0<=x && x<max) // OK
 
 	auto t1 = 0<=x;		// bad: unnecessarily verbose
-	aoto t2 = x<max;
+	auto t2 = x<max;
 	if(t1 && t2) // ...
 
 	
@@ -7414,8 +7172,7 @@ Some of these expressions are unconditionally bad (e.g., they rely on undefined 
 * ???
 
 
-<a name="Res-parens"></a>
-### ES.41: If in doubt about operator precedence, parenthesize
+### <a name="Res-parens"></a> ES.41: If in doubt about operator precedence, parenthesize
 
 **Reason**: Avoid errors. Readability. Not everyone has the operator table memorized.
 
@@ -7443,8 +7200,7 @@ but consider mixing bitwise logical operations with other operators in need of p
 * ???
 
 
-<a name="Res-ptr"></a>
-### ES.42: Keep use of pointers simple and straightforward
+### <a name="Res-ptr"></a> ES.42: Keep use of pointers simple and straightforward
 
 **Reason**: Complicated pointer manipulation is a major source of errors.
 
@@ -7459,8 +7215,7 @@ but consider mixing bitwise logical operations with other operators in need of p
 **Enforcement**: We need a heuristic limiting the complexity of pointer arithmetic statement.
 
 
-<a name="Res-order"></a>
-### ES.43: Avoid expressions with undefined order of evaluation
+### <a name="Res-order"></a> ES.43: Avoid expressions with undefined order of evaluation
 
 **Reason**: You have no idea what such code does. Portability.
 Even if it does something sensible for you, it may do something different on another compiler (e.g., the next release of your compiler) or with a different optimizer setting.
@@ -7480,8 +7235,7 @@ A good rule of thumb is that you should not read a value twice in an expression 
 **Enforcement**: Can be detected by a good analyzer.
 
 
-<a name="Res-order-fct"></a>
-### ES.44: Don't depend on order of evaluation of function arguments
+### <a name="Res-order-fct"></a> ES.44: Don't depend on order of evaluation of function arguments
 
 **Reason**: that order is unspecified
 
@@ -7490,19 +7244,18 @@ A good rule of thumb is that you should not read a value twice in an expression 
 	int i=0;
 	f(++i,++i);
 
-The call will most likely be `f(0,1)` or `f(1,0)`, but you don't know which. Technically, the behavior is undefined.
+The call will most likely be `f(0, 1)` or `f(1, 0)`, but you don't know which. Technically, the behavior is undefined.
 
-**Example**: ??? oveloaded operators can lead to order of evaluation problems (shouldn't :-()
+**Example**: ??? overloaded operators can lead to order of evaluation problems (shouldn't :-()
 
-	f1()->m(f2());	// m(f1(),f2())
-	cout << f1() << f2();	// operator<<(operator<<(cout,f1()),f2())
+	f1()->m(f2());	// m(f1(), f2())
+	cout << f1() << f2();	// operator<<(operator<<(cout, f1()), f2())
 
 
 **Enforcement**: Can be detected by a good analyzer.
 
 
-<a name="Res-magic"></a>
-### ES.45: Avoid "`magic constants"; use symbolic constants
+### <a name="Res-magic"></a> ES.45: Avoid "magic constants"; use symbolic constants
 
 **Reason**: Unnamed constants embedded in expressions are easily overlooked and often hard to understand:
 
@@ -7526,8 +7279,7 @@ Better still, don't expose constants:
 **Enforcement**: Flag literals in code. Give a pass to `0`, `1`, `nullptr`, `\n`, `""`, and others on a positive list.
 
 
-<a name="Res-narrowing"></a>
-### ES.46: Avoid lossy (narrowing, truncating) arithmetic conversions
+### <a name="Res-narrowing"></a> ES.46: Avoid lossy (narrowing, truncating) arithmetic conversions
 
 **Reason**: A narrowing conversion destroys information, often unexpectedly so.
 
@@ -7568,8 +7320,7 @@ We also include lossy arithmetic casts, such as from a negative floating point t
 * consider narrowing conversions for function arguments especially suspect
 
 
-<a name="Res-nullptr"></a>
-### ES.47: Use `nullptr` rather than `0` or `NULL`
+### <a name="Res-nullptr"></a> ES.47: Use `nullptr` rather than `0` or `NULL`
 
 **Reason**: Readability. Minimize surprises: `nullptr` cannot be confused with an `int`.
 
@@ -7583,8 +7334,7 @@ We also include lossy arithmetic casts, such as from a negative floating point t
 **Enforcement**: Flag uses of `0` and `NULL` for pointers. The transformation may be helped by simple program transformation.
 
 
-<a name="Res-casts"></a>
-### ES.48: Avoid casts
+### <a name="Res-casts"></a> ES.48: Avoid casts
 
 **Reason**: Casts are a well-known source of errors. Makes some optimizations unreliable.
 
@@ -7610,8 +7360,7 @@ However, casts are seriously overused as well as a major source of errors.
 * Warn if there are many functional style casts (there is an obvious problem in quantifying 'many').
 
 
-<a name="Res-casts-named"></a>
-### ES.49: If you must use a cast, use a named cast
+### <a name="Res-casts-named"></a> ES.49: If you must use a cast, use a named cast
 
 **Reason**: Readability. Error avoidance.
 Named casts are more specific than a C-style or functional cast, allowing the compiler to catch some errors.
@@ -7636,8 +7385,7 @@ The named casts are:
 **Enforcement**: Flag C-style and functional casts.
 
 
-<a name="Res-casts-const"></a>
-## ES.50: Don't cast away `const`
+## <a name="Res-casts-const"></a> ES.50: Don't cast away `const`
 
 **Reason**: It makes a lie out of `const`
 
@@ -7652,8 +7400,7 @@ Such examples are often handled as well or better using `mutable` or an indirect
 **Enforcement**: Flag `const_cast`s.
 
 
-<a name="Res-range-checking"></a>
-### ES.55: Avoid the need for range checking
+### <a name="Res-range-checking"></a> ES.55: Avoid the need for range checking
 
 **Reason**: Constructs that cannot overflow, don't, and usually runs faster:
 
@@ -7662,13 +7409,12 @@ Such examples are often handled as well or better using `mutable` or an indirect
 	for (auto& x : v)		// print all elements of v
 		cout << x << '\n';
 	
-	auto p = find(v,x);		// find x in v
+	auto p = find(v, x);		// find x in v
 
 **Enforcement**: Look for explicit range checks and heuristically suggest alternatives.
 
 
-<a name="Res-new"></a>
-### ES.60: Avoid `new` and `delete[]` outside resource management functions
+### <a name="Res-new"></a> ES.60: Avoid `new` and `delete[]` outside resource management functions
 
 **Reason**: Direct resource management in application code is error-prone and tedious.
 
@@ -7690,8 +7436,7 @@ There can be code in the `...` part that causes the `delete` never to happen.
 **Enforcement**: Flag naked `new`s and naked `delete`s.
 
 
-<a name="Res-del"></a>
-### ES.61: delete arrays using `delete[]` and non-arrays using `delete`
+### <a name="Res-del"></a> ES.61: delete arrays using `delete[]` and non-arrays using `delete`
 
 **Reason**: That's what the language requires and mistakes can lead to resource release errors and/or memory corruption.
 
@@ -7712,8 +7457,7 @@ There can be code in the `...` part that causes the `delete` never to happen.
 * if the `new` and the `delete` are in a constructor/destructor pair, mistakes can be flagged.
 
 
-<a name="Res-arr2"></a>
-### ES.62: Don't compare pointers into different arrays
+### <a name="Res-arr2"></a> ES.62: Don't compare pointers into different arrays
 
 **Reason**: The result of doing so is undefined.
 
@@ -7732,11 +7476,9 @@ There can be code in the `...` part that causes the `delete` never to happen.
 **Enforcement**:
 
 
-<a name="SS-numbers"></a>
-## Arithmetic
+## <a name="SS-numbers"></a> Arithmetic
 
-<a name="Res-mix"></a>
-### ES.100: Don't mix signed and unsigned arithmetic
+### <a name="Res-mix"></a> ES.100: Don't mix signed and unsigned arithmetic
 
 **Reason**: Avoid wrong results.
 
@@ -7750,8 +7492,7 @@ This precludes consistency.
 **Enforcement**: Compilers already know and sometimes warn.
 
 
-<a name="Res-unsigned"></a>
-### ES.101: use unsigned types for bit manipulation
+### <a name="Res-unsigned"></a> ES.101: use unsigned types for bit manipulation
 
 **Reason**: Unsigned types support bit manipulation without surprises from sign bits.
 
@@ -7764,8 +7505,7 @@ This precludes consistency.
 **Enforcement**: ???
 	
 
-<a name="Res-signed"></a>
-### ES.102: Used signed types for arithmetic
+### <a name="Res-signed"></a> ES.102: Used signed types for arithmetic
 
 **Reason**: Unsigned types support bit manipulation without surprises from sign bits.
 
@@ -7778,8 +7518,7 @@ This precludes consistency.
 **Enforcement**: ???
 
 
-<a name="Res-overflow"></a>
-### ES.103: Don't overflow
+### <a name="Res-overflow"></a> ES.103: Don't overflow
 
 **Reason**: Overflow usually makes your numeric algorithm meaningless.
 Incrementing a value beyond a maximum value can lead to memory corruption and undefined behavior.
@@ -7811,8 +7550,7 @@ Incrementing a value beyond a maximum value can lead to memory corruption and un
 **Enforcement**: ???
 
 
-<a name="Res-overflow"></a>
-### ES.104: Don't underflow
+### <a name="Res-overflow"></a> ES.104: Don't underflow
 
 **Reason**: Decrementing a value beyond a maximum value can lead to memory corruption and undefined behavior.
 
@@ -7830,8 +7568,7 @@ Incrementing a value beyond a maximum value can lead to memory corruption and un
 **Enforcement**: ???
 
 
-<a name="Res-zero"></a>
-### ES.105: Don't divide by zero
+### <a name="Res-zero"></a> ES.105: Don't divide by zero
 
 **Reason**: The result is undefined and probably a crash.
 
@@ -7846,8 +7583,7 @@ Incrementing a value beyond a maximum value can lead to memory corruption and un
 **Enforcement**: ???
 
 
-<a name="S-performance"></a>
-# PER: Performance
+# <a name="S-performance"></a> PER: Performance
 
 ???should this section be in the main guide???
 
@@ -7877,8 +7613,7 @@ Performance rule summary:
 * [PER.30: Avoid context switches on the critical path](#Rper-context)
 
 
-<a name="Rper-reason"></a>
-### PER.1: Don't optimize without reason
+### <a name="Rper-reason"></a> PER.1: Don't optimize without reason
 
 **Reason**: If there is no need for optimization, the main result of the effort will be more errors and higher maintenance costs.
 
@@ -7887,27 +7622,24 @@ Performance rule summary:
 ???
 
 
-<a name="Rper-Knuth"></a>
-### PER.2: Don't optimize prematurely
+### <a name="Rper-Knuth"></a> PER.2: Don't optimize prematurely
 
 **Reason**: Elaborately optimized code is usually larger and harder to change than unoptimized code.
 
 ???
 
 
-<a name="Rper-critical"></a>
-### PER.3: Don't optimize something that's not performance critical
+### <a name="Rper-critical"></a> PER.3: Don't optimize something that's not performance critical
 
 **Reason**: Optimizing a non-performance-critical part of a program has no effect on system performance.
 
-**Note**: If your program spends most of its time waiting for the web or for a human, optimization of in-memory computation is problably useless.
+**Note**: If your program spends most of its time waiting for the web or for a human, optimization of in-memory computation is probably useless.
 
 ???
 
 
 
-<a name="Rper-simple"></a>
-### PER.4: Don't assume that complicated code is necessarily faster than simple code
+### <a name="Rper-simple"></a> PER.4: Don't assume that complicated code is necessarily faster than simple code
 
 **Reason**: Simple code can be very fast. Optimizers sometimes do marvels with simple code
 
@@ -7916,8 +7648,7 @@ Performance rule summary:
 ???
 
 
-<a name="Rper-low"></a>
-### PER.5: Don't assume that low-level code is necessarily faster than high-level code
+### <a name="Rper-low"></a> PER.5: Don't assume that low-level code is necessarily faster than high-level code
 
 **Reason**: Low-level code sometimes inhibits optimizations. Optimizers sometimes do marvels with high-level code
 
@@ -7926,8 +7657,7 @@ Performance rule summary:
 ???
 
 
-<a name="Rper-measure"></a>
-### PER.6: Don't make claims about performance without measurements
+### <a name="Rper-measure"></a> PER.6: Don't make claims about performance without measurements
 
 **Reason**: The field of performance is littered with myth and bogus folklore.
 Modern hardware and optimizers defy naive assumptions; even experts are regularly surprised.
@@ -7942,8 +7672,7 @@ Often, you will be surprised.
 ???
 
 
-<a name="Rper-type"></a>
-### PER.10: Rely on the static type system
+### <a name="Rper-type"></a> PER.10: Rely on the static type system
 
 **Reason**: Type violations, weak types (e.g. `void*`s), and low level code (e.g., manipulation of sequences as individual bytes)
 make the job of the optimizer much harder. Simple code often optimizes better than hand-crafted complex code.
@@ -7951,78 +7680,67 @@ make the job of the optimizer much harder. Simple code often optimizes better th
 ???
 
 
-<a name="Rper-Comp"></a>
-### PER.11: Move computation from run time to compile time
+### <a name="Rper-Comp"></a> PER.11: Move computation from run time to compile time
 
 ???
 
 
-<a name="Rper-alias"></a>
-### PER.12: Eliminate redundant aliases
+### <a name="Rper-alias"></a> PER.12: Eliminate redundant aliases
 
 ???
 
 
-<a name="Rper-indirect"></a>
-### PER.13: Eliminate redundant indirections
+### <a name="Rper-indirect"></a> PER.13: Eliminate redundant indirections
 
 ???
 
 
-<a name="Rper-alloc"></a>
-### PER.14: Minimize the number of allocations and deallocations
+### <a name="Rper-alloc"></a> PER.14: Minimize the number of allocations and deallocations
 
 ???
 
 
-<a name="Rper-alloc0"></a>
-### PER.15: Do not allocate on a critical branch
+### <a name="Rper-alloc0"></a> PER.15: Do not allocate on a critical branch
 
 ???
 
 
-<a name="Rper-compact"></a>
-### PER.16: Use compact data structures
+### <a name="Rper-compact"></a> PER.16: Use compact data structures
 
 **Reason**: Performance is typically dominated by memory access times.
 
 ???
 
 
-<a name="Rper-struct"></a>
-### PER.17: Declare the most used member of a time critical struct first
+### <a name="Rper-struct"></a> PER.17: Declare the most used member of a time critical struct first
 
 ???
 
 
-<a name="Rper-space"></a>
-### PER.18: Space is time
+### <a name="Rper-space"></a> PER.18: Space is time
 
 **Reason**: Performance is typically dominated by memory access times.
 
 ???
 
 
-<a name="Rper-access"></a>
-### PER.19: Access memory predictably
+### <a name="Rper-access"></a> PER.19: Access memory predictably
 
 **Reason**: Performance is very sensitive to cache performance and cache algorithms favor simple (usually linear) access to adjacent data.
 
 ???
 
 
-<a name="Rper-context"></a>
-### PER.30: Avoid context switches on the critical path
+### <a name="Rper-context"></a> PER.30: Avoid context switches on the critical path
 
 ???
 
 
-<a name="S-concurrency"></a>
-# CP: Concurrency and Parallelism
+# <a name="S-concurrency"></a> CP: Concurrency and Parallelism
 
 ???
 
-Concurrency and parallism rule summary:
+Concurrency and parallelism rule summary:
 
 * [CP.1: Assume that your code will run as part of a multi-threaded program](#Rconc-multi)
 * [CP.2: Avoid data races](#Rconc-races)
@@ -8035,8 +7753,7 @@ See also:
 * [CP.free: Lock-free programming](#SScp-free)
 
 
-<a name="Rconc-multi"></a>
-### CP.1: Assume that your code will run as part of a multi-threaded program
+### <a name="Rconc-multi"></a> CP.1: Assume that your code will run as part of a multi-threaded program
 
 **Reason**: It is hard to be certain that concurrency isn't used now or sometime in the future.
 Code gets re-used.
@@ -8051,8 +7768,7 @@ However, here are also many examples where code that was "known" to never run in
 was run as part of a multi-threaded program. Often years later.
 Typically, such programs leads to a painful effort to remove data races.
 
-<a name="Rconc-races"></a>
-### CP.2: Avoid data races
+### <a name="Rconc-races"></a> CP.2: Avoid data races
 
 **Reason**: Unless you do, nothing is guaranteed to work and subtle errors will persist.
 
@@ -8061,8 +7777,7 @@ Typically, such programs leads to a painful effort to remove data races.
 **Enforcement**: Some is possible, do at least something.
 
 
-<a name="SScp-con"></a>
-## CP.con: Concurrency
+## <a name="SScp-con"></a> CP.con: Concurrency
 
 ???
 
@@ -8071,12 +7786,11 @@ Concurrency rule summary:
 * ???
 * ???
 
-???? should there be a "use X rather than std::async" where X is something that would use a better specified thread pool?
-Â 
-Speaking of concurrency, should there be a note about the dangers of std::atomic (weapons)?
-A lot of people, myself included, like to experiment with std::memory_order, but it is perhaps best to keep a close watch on those things in production code.
-Even vendors mess this up: Microsoft had to fix their `shared_ptr`
-(weak refcount decrement wasn't synchronized-with the destructor, if I recall correctly, although it was only a problem on ARM, not Intel)
+???? should there be a "use X rather than `std::async`" where X is something that would use a better specified thread pool?
+
+Speaking of concurrency, should there be a note about the dangers of `std::atomic` (weapons)?
+A lot of people, myself included, like to experiment with `std::memory_order`, but it is perhaps best to keep a close watch on those things in production code.
+Even vendors mess this up: Microsoft had to fix their `shared_ptr` (weak refcount decrement wasn't synchronized-with the destructor, if I recall correctly, although it was only a problem on ARM, not Intel)
 and everyone (gcc, clang, Microsoft, and intel) had to fix their `compare_exchange_*` this year,
 after an implementation bug caused losses to some finance company and they were kind enough to let the community know.
 
@@ -8091,8 +7805,7 @@ It should definitely mention that `volatile` does not provide atomicity, does no
 ???UNIX signal handling???. May be worth reminding how little is async-signal-safe, and how to communicate with a signal handler (best is probably "not at all")
 
 
-<a name="SScp-par"></a>
-## CP.par: Parallelism
+## <a name="SScp-par"></a> CP.par: Parallelism
 
 ???
 
@@ -8102,8 +7815,7 @@ Parallelism rule summary:
 * ???
 
 
-<a name="SScp-simd"></a>
-## CP.simd: SIMD
+## <a name="SScp-simd"></a> CP.simd: SIMD
 
 ???
 
@@ -8112,8 +7824,7 @@ SIMD rule summary:
 * ???
 * ???
 
-<a name="SScp-free"></a>
-## CP.free: Lock-free programming
+## <a name="SScp-free"></a> CP.free: Lock-free programming
 
 ???
 
@@ -8122,14 +7833,13 @@ Lock-free programming rule summary:
 * ???
 * ???
 
-### <a name="Rconc">Don't use lock-free programming unless you absolutely have to</a>
+### <a name="Rconc"></a> Don't use lock-free programming unless you absolutely have to
 
 **Reason**: It's error-prone and requires expert level knowledge of language features, machine architecture, and data structures.
 
 **Alternative**: Use lock-free data structures implemented by others as part of some library.
 
-<a name="S-errors"></a>
-# E: Error handling
+# <a name="S-errors"></a> E: Error handling
 
 Error handling involves:
 
@@ -8173,13 +7883,11 @@ Error-handling rule summary:
 * ???
 
 
-<a name="Re-design"></a>
-### E.1: Develop an error-handling strategy early in a design
+### <a name="Re-design"></a> E.1: Develop an error-handling strategy early in a design
 
 **Reason**: a consistent and complete strategy for handling errors and resource leaks is hard to retrofit into a system.
 
-<a name="Re-throw"></a>
-### E.2: Throw an exception to signal that a function can't perform its assigned task
+### <a name="Re-throw"></a> E.2: Throw an exception to signal that a function can't perform its assigned task
 
 **Reason**: To make error handling systematic, robust, and non-repetitive.
 
@@ -8193,7 +7901,7 @@ Error-handling rule summary:
 
 	void use()
 	{
-		Foo bar { {Thing{1}, Thing{2}, Thing{monkey}}, {"my_file","r"}, "Here we go!"};
+		Foo bar { {Thing{1}, Thing{2}, Thing{monkey}}, {"my_file", "r"}, "Here we go!"};
 		// ...
 	}
 
@@ -8207,7 +7915,7 @@ Note that there is no return value that could contain an error code.
 The `File_handle` constructor might defined like this
 
 		File_handle::File_handle(const string& name, const string& mode)
-			:f{fopen(name.c_str(),mode.c_str())}
+			:f{fopen(name.c_str(), mode.c_str())}
 		{
 			if (!f)
 				throw runtime_error{"File_handle: could not open "S-+ name + " as " + mode"}
@@ -8234,8 +7942,7 @@ Unless the loop was meant to be infinite, termination is normal and expected.
 **See also**: [discussion](#Sd-noexcept)
 
 
-<a name="Re-errors"></a>
-### E.3: Use exceptions for error handling only
+### <a name="Re-errors"></a> E.3: Use exceptions for error handling only
 
 **Reason**. To keep error handling separated from "ordinary code."
 C++ implementations tend to be optimized based on the assumption that exceptions are rare.
@@ -8257,8 +7964,7 @@ This is more complicated and most likely runs much slower than the obvious alter
 There is nothing exceptional about finding a value in a `vector`.
 
 
-<a name="Re-design-invariants"></a>
-### E.4: Design your error-handling strategy around invariants
+### <a name="Re-design-invariants"></a> E.4: Design your error-handling strategy around invariants
 
 **Reason**: To use an objects it must be in a valid state (defined formally or informally by an invariant)
 and to recover from an error every object not destroyed must be in a valid state.
@@ -8266,8 +7972,7 @@ and to recover from an error every object not destroyed must be in a valid state
 **Note**: An [invariant](#Rc-struct) is logical condition for the members of an object that a constructor must establish for the public member functions to assume.
 
 
-<a name="Re-invariant"></a>
-### E.5: Let a constructor establish an invariant, and throw if it cannot
+### <a name="Re-invariant"></a> E.5: Let a constructor establish an invariant, and throw if it cannot
 
 **Reason**: Leaving an object without its invariant established is asking for trouble.
 Not all member function can be called.
@@ -8281,8 +7986,7 @@ Not all member function can be called.
 **Enforcement**: ???
 
 
-<a name="Re-raii"></a>
-### E.6: Use RAII to prevent leaks
+### <a name="Re-raii"></a> E.6: Use RAII to prevent leaks
 
 **Reason**: Leaks are typically unacceptable. RAII ("Resource Acquisition Is Initialization") is the simplest, most systematic way of preventing leaks.
 
@@ -8292,7 +7996,7 @@ Not all member function can be called.
 	{
 		int* p = new int[12];
 		// ...
-		if (i<17) throw Bad {"in f()",i};
+		if (i<17) throw Bad {"in f()", i};
 		// ...
 	}
 
@@ -8304,7 +8008,7 @@ We could carefully release the resource before the throw
 		// ...
 		if (i<17) {
 			delete p;
-			throw Bad {"in f()",i};
+			throw Bad {"in f()", i};
 		}
 		// ...
 	}
@@ -8315,7 +8019,7 @@ This is verbose. In larger code with multiple possible `throw`s explicit release
 	{
 		auto p = make_unique<int[12]>();
 		// ...
-		if (i<17) throw Bad {"in f()",i};
+		if (i<17) throw Bad {"in f()", i};
 		// ...
 	}
 
@@ -8346,9 +8050,9 @@ First challenge that assumption; there are many anti-exceptions myths around.
 We know of only a few good reasons:
 
 * We are on a system so small that the exception support would eat up most of our 2K or memory.
-* We are in a hard-real-time system and we don't have tools that allows us that an exception is handled withon the required time.
+* We are in a hard-real-time system and we don't have tools that allows us that an exception is handled within the required time.
 * We are in a system with tons of legacy code using lots of pointers in difficult-to-understand ways
-(in particular without a recognizable ownership strategy) so that exceptions could cause leaks.
+  (in particular without a recognizable ownership strategy) so that exceptions could cause leaks.
 * We get fired if we challenge our manager's ancient wisdom.
 
 Only the first of these reasons is fundamental,
@@ -8377,29 +8081,26 @@ doesn't allow for implicit propagation of "exceptions" (`valid()` checks),
 and `valid()` checks can be forgotten.
 Prefer to use exceptions.
 
-**See also**: [discussion](##Sd-noexcept).
+**See also**: [discussion](#Sd-noexcept).
 
 **Enforcement**: ???
 
 
-<a name="Re-precondition"></a>
-### E.7: State your preconditions
+### <a name="Re-precondition"></a> E.7: State your preconditions
 
 **Reason**: To avoid interface errors.
 
 **See also**: [precondition rule](#Ri-pre).
 
 
-<a name="Re-postcondition"></a>
-### E.8: State your postconditions
+### <a name="Re-postcondition"></a> E.8: State your postconditions
 
 **Reason**: To avoid interface errors.
 
 **See also**: [postcondition rule](#Ri-post).
 
 
-<a name="Re-noexcept"></a>
-### E.12: Use `noexcept` when exiting a function because of a `throw` is impossible or unacceptable
+### <a name="Re-noexcept"></a> E.12: Use `noexcept` when exiting a function because of a `throw` is impossible or unacceptable
 
 **Reason**: To make error handling systematic, robust, and efficient.
 
@@ -8410,7 +8111,7 @@ Prefer to use exceptions.
 		return log(sqrt(d<=0? 1 : d));
 	}
 
-Here, I know that `compute` will not throw because it is composed out of operations that don't throw. By declaring `compute` to be `noexcept` I give the compiler and human readers information that can make it easier for them to understand and manipulate 'compute`.
+Here, I know that `compute` will not throw because it is composed out of operations that don't throw. By declaring `compute` to be `noexcept` I give the compiler and human readers information that can make it easier for them to understand and manipulate `compute`.
 
 **Note**: Many standard library functions are `noexcept` including all the standard library functions "inherited" from the C standard library.
 
@@ -8427,8 +8128,7 @@ The `noexcept` here states that I am not willing or able to handle the situation
 **See also**: [discussion](#Sd-noexcept).
 
 
-<a name="Re-never-throw"></a>
-### E.13: Never throw while being the direct owner of an object
+### <a name="Re-never-throw"></a> E.13: Never throw while being the direct owner of an object
 
 **Reason**: That would be a leak.
 
@@ -8455,8 +8155,7 @@ One way of avoiding such problems is to use resource handles consistently:
 **See also**: ???resource rule ???
 
 
-<a name="Re-exception-types"></a>
-### E.14: Use purpose-designed user-defined types as exceptions (not built-in types)
+### <a name="Re-exception-types"></a> E.14: Use purpose-designed user-defined types as exceptions (not built-in types)
 
 **Reason**: A user-defined type is unlikely to clash with other people's exceptions.
 
@@ -8531,8 +8230,7 @@ One way of avoiding such problems is to use resource handles consistently:
 **Enforcement**: Catch `throw` and `catch` of a built-in type. Maybe warn about `throw` and `catch` using an standard-library `exception` type. Obviously, exceptions derived from the `std::exception` hierarchy is fine.
 
 
-<a name="Re-exception-ref"></a>
-### E.15: Catch exceptions from a hierarchy by reference
+### <a name="Re-exception-ref"></a> E.15: Catch exceptions from a hierarchy by reference
 
 **Reason**: To prevent slicing.
 
@@ -8553,8 +8251,7 @@ Instead, use
 **Enforcement**: Flag by-value exceptions if their type are part of a hierarchy (could require whole-program analysis to be perfect).
 
 
-<a name="Re-never-fail"></a>
-### E.16: Destructors, deallocation, and `swap` must never fail
+### <a name="Re-never-fail"></a> E.16: Destructors, deallocation, and `swap` must never fail
 
 **Reason**: We don't know how to write reliable programs if a destructor, a swap, or a memory deallocation fails; that is, if it exits by an exception or simply doesn't perform its required action.
 
@@ -8581,8 +8278,7 @@ Instead, use
 **See also**: [discussion](#Sd-never-fail)
 
 
-<a name="Re-not-always"></a>
-### E.17: Don't try to catch every exception in every function
+### <a name="Re-not-always"></a> E.17: Don't try to catch every exception in every function
 
 **Reason**: Catching an exception in a function that cannot take a meaningful recovery action leads to complexity and waste.
 Let an exception propagate until it reaches a function that can handle it.
@@ -8606,8 +8302,7 @@ Let cleanup actions on the unwinding path be handled by [RAII](#Re-raii).
 * Flag source code files with a too high ratio of try-blocks to functions. (??? Problem: define "too high")
 
 
-<a name="Re-catch"></a>
-### E.18: Minimize the use of explicit `try`/`catch`
+### <a name="Re-catch"></a> E.18: Minimize the use of explicit `try`/`catch`
 
 **Reason**: `try`/`catch` is verbose and non-trivial uses error-prone.
 
@@ -8618,8 +8313,7 @@ Let cleanup actions on the unwinding path be handled by [RAII](#Re-raii).
 **Enforcement**: ???
 
 
-<a name="Re-finally"></a>
-### E.19: Use a `final_action` object to express cleanup if no suitable resource handle is available
+### <a name="Re-finally"></a> E.19: Use a `final_action` object to express cleanup if no suitable resource handle is available
 
 **Reason**: `finally` is less verbose and harder to get wrong than `try`/`catch`.
 
@@ -8627,7 +8321,7 @@ Let cleanup actions on the unwinding path be handled by [RAII](#Re-raii).
 
 	void f(int n)
 	{
-		void* p = malloc(1,n);
+		void* p = malloc(1, n);
 		auto __ = finally([] { free(p); });
 		// ...
 	}
@@ -8635,8 +8329,7 @@ Let cleanup actions on the unwinding path be handled by [RAII](#Re-raii).
 **See also** ????
  
 
-<a name="Re-no-throw"></a>
-### E.25: ??? What to do in programs where exceptions cannot be thrown
+### <a name="Re-no-throw"></a> E.25: ??? What to do in programs where exceptions cannot be thrown
 
 **Note**: ??? mostly, you can afford exceptions and code gets simpler with exceptions ???
 
@@ -8644,11 +8337,10 @@ Let cleanup actions on the unwinding path be handled by [RAII](#Re-raii).
 **See also**: [Discussion](#Sd-???).
 
 
-<a name="S-const"></a>
-# Con: Constants and Immutability
+# <a name="S-const"></a> Con: Constants and Immutability
 
 You can't have a race condition on a constant.
-it is easier to reason about a program when many of the objects cannot change threir values.
+it is easier to reason about a program when many of the objects cannot change their values.
 Interfaces that promises "no change" of objects passed as arguments greatly increase readability.
 
 Constant rule summary:
@@ -8660,8 +8352,7 @@ Constant rule summary:
 * [Con.5: Use `constexpr` for values that can be computed at compile time](#Rconst-constexpr)
 
 
-<a name="Rconst-immutable"></a>
-### Con.1: By default, make objects immutable
+### <a name="Rconst-immutable"></a> Con.1: By default, make objects immutable
 
 **Reason**: Immutable objects are easier to reason about, so make object non-`const` only when there is a need to change their value.
 
@@ -8674,8 +8365,7 @@ Constant rule summary:
 **Enforcement**: ???
 
 
-<a name="Rconst-fct"></a>
-### Con.2: By default, make member functions `const`
+### <a name="Rconst-fct"></a> Con.2: By default, make member functions `const`
 
 **Reason**: ???
 
@@ -8686,8 +8376,7 @@ Constant rule summary:
 **Enforcement**: ???
 
 
-<a name="Rconst-ref"></a>
-### Con.3: By default, pass pointers and references to `const`s
+### <a name="Rconst-ref"></a> Con.3: By default, pass pointers and references to `const`s
 
 **Reason**: ???
 
@@ -8698,8 +8387,7 @@ Constant rule summary:
 **Enforcement**: ???
 
 
-<a name="Rconst-const"></a>
-### Con.4: Use `const` to define objects with values that do not change after construction
+### <a name="Rconst-const"></a> Con.4: Use `const` to define objects with values that do not change after construction
 
 **Reason**: ???
 
@@ -8710,8 +8398,7 @@ Constant rule summary:
 **Enforcement**: ???
 
 
-<a name="Rconst-constexpr"></a>
-### Con.5: Use `constexpr` for values that can be computed at compile time
+### <a name="Rconst-constexpr"></a> Con.5: Use `constexpr` for values that can be computed at compile time
 
 **Reason**: ???
 
@@ -8722,8 +8409,7 @@ Constant rule summary:
 **Enforcement**: ???
 
 
-<a name="S-templates"></a>
-# T: Templates and generic programming
+# <a name="S-templates"></a> T: Templates and generic programming
 
 Generic programming is programming using types and algorithms parameterized by types, values, and algorithms.
 In C++, generic programming is supported by the `template` language mechanisms.
@@ -8822,14 +8508,12 @@ Other template rules summary:
 * [T.??: ????](#Rt-???)
 
 
-<a name="SS-GP"></a>
-## T.gp: Generic programming
+## <a name="SS-GP"></a> T.gp: Generic programming
 
 Generic programming is programming using types and algorithms parameterized by types, values, and algorithms.
 
 
-<a name="Rt-raise"></a>
-### T.1: Use templates to raise the level of abstraction of code
+### <a name="Rt-raise"></a> T.1: Use templates to raise the level of abstraction of code
 
 **Reason**: Generality. Re-use. Efficiency. Encourages consistent definition of user types.
 
@@ -8884,8 +8568,7 @@ is to efficiently generalize operations/algorithms over a set of types with simi
 * Do not flag the definition of the "overly simple" concepts themselves; they may simply be building blocks for more useful concepts.
 
 
-<a name="Rt-algo"></a>
-### T.2: Use templates to express algorithms that apply to many argument types
+### <a name="Rt-algo"></a> T.2: Use templates to express algorithms that apply to many argument types
 
 **Reason**: Generality. Minimizing the amount of source code. Interoperability. Re-use.
 
@@ -8893,7 +8576,7 @@ is to efficiently generalize operations/algorithms over a set of types with simi
 
 	template<typename Iter, typename Val>
 		// requires Input_iterator<Iter>
-		//       && Equality_comparable<Value_type<Iter>,Val>
+		//       && Equality_comparable<Value_type<Iter>, Val>
 	Iter find(Iter b, Iter e, Val v)
 	{
 		// ...
@@ -8905,8 +8588,7 @@ Don't overabstract.
 **Enforcement**: ??? tough, probably needs a human
 
 
-<a name="Rt-cont"></a>
-### T.3: Use templates to express containers and ranges
+### <a name="Rt-cont"></a> T.3: Use templates to express containers and ranges
 
 **Reason**: Containers need an element type, and expressing that as a template argument is general, reusable, and type safe.
 It also avoids brittle or inefficient workarounds. Convention: That's the way the STL does it.
@@ -8932,7 +8614,7 @@ It also avoids brittle or inefficient workarounds. Convention: That's the way th
 		int sz;
 	};
 	
-	Container c(10,sizeof(double));
+	Container c(10, sizeof(double));
 	((double*)c.elem)[] = 9.9;
 	
 This doesn't directly express the intent of the programmer and hides the structure of the program from the type system and optimizer.
@@ -8948,8 +8630,7 @@ See [Stable base](#Rt-abi).
 * Flag uses of `void*`s and casts outside low-level implementation code
 
 
-<a name="Rt-expr"></a>
-### T.4: Use templates to express syntax tree manipulation
+### <a name="Rt-expr"></a> T.4: Use templates to express syntax tree manipulation
 
 **Reason**: ???
 
@@ -8961,8 +8642,7 @@ See [Stable base](#Rt-abi).
 
 
 
-<a name="Rt-generic-oo"></a>
-### T.5: Combine generic and OO techniques to amplify their strengths, not their costs
+### <a name="Rt-generic-oo"></a> T.5: Combine generic and OO techniques to amplify their strengths, not their costs
 
 **Reason**: Generic and OO techniques are complementary.
 
@@ -8983,12 +8663,10 @@ See [Stable base](#Rt-abi).
 **Note**: In a class template, nonvirtual functions are only instantiated if they're used -- but virtual functions are instantiated every time. This can bloat code size, and may overconstrain a generic type by instantiating functionality that is never needed. Avoid this, even though the standard facets made this mistake.
 
 **Enforcement**:
+
 * Flag a class template that declares new (non-inherited) virtual functions.
 
-
-
-<a name="SS-concepts"></a>
-## TPG.concepts: Concept rules
+## <a name="SS-concepts"></a> TPG.concepts: Concept rules
 
 Concepts is a facility for specifying requirements for template arguments.
 It is an [ISO technical specification](#Ref-conceptsTS), but not yet supported by currently shipping compilers.
@@ -9015,11 +8693,9 @@ Concept definition rule summary:
 * ???
 
 
-<a name="SS-concept-use"></a>
-## T.con-use: Concept use
+## <a name="SS-concept-use"></a> T.con-use: Concept use
 
-<a name="Rt-concepts"></a>
-### T.10: Specify concepts for all template arguments
+### <a name="Rt-concepts"></a> T.10: Specify concepts for all template arguments
 
 **Reason**: Correctness and readability.
 The assumed meaning (syntax and semantics) of a template argument is fundamental to the interface of a template.
@@ -9030,7 +8706,7 @@ Specifying concepts for template arguments is a powerful design tool.
 
 	template<typename Iter, typename Val>
 		requires Input_iterator<Iter>
-		         && Equality_comparable<Value_type<Iter>,Val>
+		         && Equality_comparable<Value_type<Iter>, Val>
 	Iter find(Iter b, Iter e, Val v)
 	{
 		// ...
@@ -9039,7 +8715,7 @@ Specifying concepts for template arguments is a powerful design tool.
 or equivalently and more succinctly
 
 	template<Input_iterator Iter, typename Val>
-		requires Equality_comparable<Value_type<Iter>,Val>
+		requires Equality_comparable<Value_type<Iter>, Val>
 	Iter find(Iter b, Iter e, Val v)
 	{
 		// ...
@@ -9049,7 +8725,7 @@ or equivalently and more succinctly
 
 	template<typename Iter, typename Val>
 		// requires Input_iterator<Iter>
-		//       && Equality_comparable<Value_type<Iter>,Val>
+		//       && Equality_comparable<Value_type<Iter>, Val>
 	Iter find(Iter b, Iter e, Val v)
 	{
 		// ...
@@ -9064,8 +8740,7 @@ This is typically only needed when (as part of template metaprogramming code) we
 **Enforcement**: Flag template type arguments without concepts
 
 
-<a name="Rt-std"></a>
-### T.11: Whenever possible use standard concepts
+### <a name="Rt-std"></a> T.11: Whenever possible use standard concepts
 
 **Reason**: "Standard" concepts (as provided by the GSL, the ISO concepts TS, and hopefully soon the ISO standard itself)
 saves us the work of thinking up our own concepts, are better thought out than we can manage to do in a hurry, and improves interoperability.
@@ -9095,8 +8770,7 @@ It is better and simpler just to use `Sortable`:
 * Develop a concept-discovery tool (e.g., see [an early experiment](http://www.stroustrup.com/sle2010_webversion.pdf).
 
 	
-<a name="Rt-auto"></a>
-### T.12: Prefer concept names over `auto` for local variables
+### <a name="Rt-auto"></a> T.12: Prefer concept names over `auto` for local variables
 
 **Reason**: `auto` is the weakest concept. Concept names convey more meaning than just `auto`.
 
@@ -9111,8 +8785,7 @@ It is better and simpler just to use `Sortable`:
 * ???
 
 
-<a name="Rt-shorthand"></a>
-### T.13: Prefer the shorthand notation for simple, single-type argument concepts
+### <a name="Rt-shorthand"></a> T.13: Prefer the shorthand notation for simple, single-type argument concepts
 
 **Reason**: Readability. Direct expression of an idea.
 
@@ -9135,14 +8808,12 @@ The shorter versions better match the way we speak. Note that many templates don
 * Later, flag declarations that first introduces a typename and then constrains it with a simple, single-type-argument concept.
 
 
-<a name="SS=concept-def"></a>
-## T.con-def: Concept definition rules
+## <a name="SS=concept-def"></a> T.con-def: Concept definition rules
 
 ???
 
 
-<a name="Rt-low"></a>
-### T.20: Avoid "concepts" without meaningful semantics
+### <a name="Rt-low"></a> T.20: Avoid "concepts" without meaningful semantics
 
 **Reason**: Concepts are meant to express semantic notions, such as "a number", "a range" of elements, and "totally ordered."
 Simple constraints, such as "has a `+` operator" and "has a `>` operator" cannot be meaningfully specified in isolation
@@ -9161,11 +8832,11 @@ and should be used only as building blocks for meaningful concepts, rather than 
 	
 	int x = 7;
 	int y = 9;
-	auto z = plus(x,y);	// z = 18
+	auto z = plus(x, y);	// z = 18
 	
 	string xx = "7";
 	string yy = "9";
-	auto zz = plus(xx,yy);	// zz = "79"
+	auto zz = plus(xx, yy);	// zz = "79"
 
 Maybe the concatenation was expected. More likely, it was an accident. Defining minus equivalently would give dramatically different sets of accepted types.
 This `Addable` violates the mathematical rule that addition is supposed to be commutative: `a+b == b+a`,
@@ -9189,11 +8860,11 @@ This `Addable` violates the mathematical rule that addition is supposed to be co
 
 	int x = 7;
 	int y = 9;
-	auto z = plus(x,y);	// z = 18
+	auto z = plus(x, y);	// z = 18
 	
 	string xx = "7";
 	string yy = "9";
-	auto zz = plus(xx,yy);	// error: string is not a Number
+	auto zz = plus(xx, yy);	// error: string is not a Number
 	
 **Note**: Concepts with multiple operations have far lower chance of accidentally matching a type than a single-operation concept.
 	
@@ -9203,14 +8874,13 @@ This `Addable` violates the mathematical rule that addition is supposed to be co
 * Flag uses of `enable_if` that appears to simulate single-operation `concepts`.
 
 
-<a name="Rt-complete"></a>
-### T.21: Define concepts to define complete sets of operations
+### <a name="Rt-complete"></a> T.21: Define concepts to define complete sets of operations
 
 **Reason**: Improves interoperability. Helps implementers and maintainers.
 
 **Example, bad**:
 
-	template<typename T> Subtractable = requires(T a, T,b) { a-b; }	// correct syntax?
+	template<typename T> Subtractable = requires(T a, T, b) { a-b; }	// correct syntax?
 
 This makes no semantic sense. You need at least `+` to make `-` meaningful and useful.
 
@@ -9222,8 +8892,7 @@ Examples of complete sets are
 **Enforcement**: ???
 
 
-<a name="Rt-axiom"></a>
-### T.22: Specify axioms for concepts
+### <a name="Rt-axiom"></a> T.22: Specify axioms for concepts
 
 **Reason**: A meaningful/useful concept has a semantic meaning.
 Expressing this semantics in a informal, semi-formal, or informal way makes the concept comprehensible to readers and the effort to express it can catch conceptual errors.
@@ -9252,7 +8921,7 @@ Once language support is available, the `//` in front of the axiom can be remove
 
 **Note**: The GSL concepts have well defined semantics; see the Palo Alto TR and the Ranges TS.
 
-**Exception**: Early versions of a new "concept" still under development will often just define simple sets of contraints without a well-specified semantics.
+**Exception**: Early versions of a new "concept" still under development will often just define simple sets of constraints without a well-specified semantics.
 Finding good semantics can take effort and time.
 An incomplete set of constraints can still be very useful:
 
@@ -9266,8 +8935,7 @@ However, it should not be assumed to be stable. Each new use case may require su
 * Look for the word "axiom" in concept definition comments
 
 
-<a name="Rt-refine"></a>
-### T.23: Differentiate a refined concept from its more general case by adding new use patterns.
+### <a name="Rt-refine"></a> T.23: Differentiate a refined concept from its more general case by adding new use patterns.
 
 **Reason**: Otherwise they cannot be distinguished automatically by the compiler.
 
@@ -9289,8 +8957,7 @@ they do not need any special declarations to "hook into the concept".
 * Flag a concept that has exactly the same requirements as another already-seen concept (neither is more refined). To disambiguate them, see [T.24](#Rt-tag).
 
 
-<a name="Rt-tag"></a>
-### T.24: Use tag classes or traits to differentiate concepts that differ only in semantics.
+### <a name="Rt-tag"></a> T.24: Use tag classes or traits to differentiate concepts that differ only in semantics.
 
 **Reason**: Two concepts requiring the same syntax but having different semantics leads to ambiguity unless the programmer differentiates them.
 
@@ -9306,8 +8973,8 @@ they do not need any special declarations to "hook into the concept".
 The programmer (in a library) must define `is_contiguous` (a trait) appropriately.
 
 **Note**: Traits can be trains classes or type traits.
-These can be user-defined or standard-libray ones.
-Prefer the standard-libray ones.
+These can be user-defined or standard-library ones.
+Prefer the standard-library ones.
 
 **Enforcement**:
 
@@ -9315,8 +8982,7 @@ Prefer the standard-libray ones.
 * Flag the definition of identical concepts.
 
 
-<a name="Rt-not"></a>
-### T.25: Avoid negating constraints.
+### <a name="Rt-not"></a> T.25: Avoid negating constraints.
 
 **Reason**: Clarity. Maintainability.
 Functions with complementary requirements expressed using negation are brittle.
@@ -9354,8 +9020,7 @@ The compiler will select the overload and emit an appropriate error.
 * Flag all constraint negation
 
 
-<a name="Rt-use"></a>
-### T.27: Prefer to define concepts in terms of use-patterns rather than simple syntax
+### <a name="Rt-use"></a> T.27: Prefer to define concepts in terms of use-patterns rather than simple syntax
 
 **Reason**: The definition is more readable and corresponds directly to what a user has to write.
 Conversions are taken into account. You don't have to remember the names of all the type traits.
@@ -9367,13 +9032,11 @@ Conversions are taken into account. You don't have to remember the names of all 
 **Enforcement**: ???
 
 
-<a name="SS-temp-interface"></a>
-## Template interfaces
+## <a name="SS-temp-interface"></a> Template interfaces
 
 ???
 
-<a name="Rt-fo"></a>
-### T.40: Use function objects to pass operations to algorithms
+### <a name="Rt-fo"></a> T.40: Use function objects to pass operations to algorithms
 
 **Reason**: Function objects can carry more information through an interface than a "plain" pointer to function.
 In general, passing function objects give better performance than passing pointers to functions.
@@ -9381,14 +9044,14 @@ In general, passing function objects give better performance than passing pointe
 **Example**:
 
 	bool greater(double x, double y) { return x>y; }
-	sort(v,greater);								// pointer to function: potentially slow
-	sort(v,[](double x, double y) { return x>y; });	// function object
-	sort(v,greater<>);								// function object
+	sort(v, greater);								// pointer to function: potentially slow
+	sort(v, [](double x, double y) { return x>y; });	// function object
+	sort(v, greater<>);								// function object
 	
 	bool greater_than_7(double x) { return x>7; }
-	auto x = find(v,greater_than_7);				// pointer to function: inflexible
-	auto y = find(v,[](double x) { return x>7; });	// function object: carries the needed data
-	auto y = find(v,Greater_than<double>(7));		// function object: carries the needed data
+	auto x = find(v, greater_than_7);				// pointer to function: inflexible
+	auto y = find(v, [](double x) { return x>7; });	// function object: carries the needed data
+	auto y = find(v, Greater_than<double>(7));		// function object: carries the needed data
 	
 	??? these lambdas are crying out for auto parameters -- any objection to making the change?
 	
@@ -9402,8 +9065,7 @@ In general, passing function objects give better performance than passing pointe
 * Flag pointers to functions passed as arguments to a template (risk of false positives).
 
 
-<a name="Rt-operations"></a>
-### T.41: Require complete sets of operations for a concept
+### <a name="Rt-operations"></a> T.41: Require complete sets of operations for a concept
 
 **Reason**: Ease of comprehension.
 Improved interoperability.
@@ -9420,8 +9082,7 @@ The rule supports the view that a concept should reflect a (mathematically) cohe
 **Enforcement**: ???
 
 
-<a name="Rt-alias"></a>
-### T.42: Use template aliases to simplify notation and hide implementation details
+### <a name="Rt-alias"></a> T.42: Use template aliases to simplify notation and hide implementation details
 
 **Reason**: Improved readability. Implementation hiding. Note that template aliases replace many uses of traits to compute a type. They can also be used to wrap a trait.
 
@@ -9449,8 +9110,7 @@ This saves the user of `Value_type` from having to know the technique used to im
 * ???
 
 
-<a name="Rt-using"></a>
-### T.43: Prefer `using` over `typedef` for defining aliases
+### <a name="Rt-using"></a> T.43: Prefer `using` over `typedef` for defining aliases
 
 **Reason**: Improved readability: With `using`, the new name comes first rather than being embedded somewhere in a declaration.
 Generality: `using` can be used for template aliases, whereas `typedef`s can't easily be templates.
@@ -9473,15 +9133,14 @@ Uniformity: `using` is syntactically similar to `auto`.
 * Flag uses of `typedef`. This will give a lot of "hits" :-(
 
 
-<a name="Rt-deduce"></a>
-### T.44: Use function templates to deduce class template argument types (where feasible)
+### <a name="Rt-deduce"></a> T.44: Use function templates to deduce class template argument types (where feasible)
 
 **Reason**: Writing the template argument types explicitly can be tedious and unnecessarily verbose.
 
 **Example**:
 
-	tuple<int,string,double> t1 = {1,"Hamlet",3.14};	// explicit type
-	auto t2 = make_tuple(1,"Ophelia"s,3.14);			// better; deduced type
+	tuple<int, string, double> t1 = {1, "Hamlet", 3.14};	// explicit type
+	auto t2 = make_tuple(1, "Ophelia"s, 3.14);			// better; deduced type
 
 Note the use of the `s` suffix to ensure that the string is a `std::string`, rather than a C-style string.
 
@@ -9496,8 +9155,7 @@ Note the use of the `s` suffix to ensure that the string is a `std::string`, rat
 
 
 
-<a name="Rt-regular"></a>
-### T.46: Require template arguments to be at least `Regular` or `SemiRegular`
+### <a name="Rt-regular"></a> T.46: Require template arguments to be at least `Regular` or `SemiRegular`
 
 **Reason**: ???
 
@@ -9508,8 +9166,7 @@ Note the use of the `s` suffix to ensure that the string is a `std::string`, rat
 **Enforcement**: ???
 
 
-<a name="Rt-visible"></a>
-### T.47: Avoid highly visible unconstrained templates with common names
+### <a name="Rt-visible"></a> T.47: Avoid highly visible unconstrained templates with common names
 
 **Reason**: ???
 
@@ -9519,8 +9176,7 @@ Note the use of the `s` suffix to ensure that the string is a `std::string`, rat
 
 **Enforcement**: ???
 
-<a name="Rt-concept-def"></a>
-### T.48: If your compiler does not support concepts, fake them with `enable_if`
+### <a name="Rt-concept-def"></a> T.48: If your compiler does not support concepts, fake them with `enable_if`
 
 **Reason**: ???
 
@@ -9531,8 +9187,7 @@ Note the use of the `s` suffix to ensure that the string is a `std::string`, rat
 **Enforcement**: ???
 
 
-<a name="Rt-erasure"></a>
-### T.49: Where possible, avoid type-erasure
+### <a name="Rt-erasure"></a> T.49: Where possible, avoid type-erasure
 
 **Reason**: Type erasure incurs an extra level of indirection by hiding type information behind a separate compilation boundary.
 
@@ -9545,8 +9200,7 @@ Note the use of the `s` suffix to ensure that the string is a `std::string`, rat
 **Enforcement**: ???
 
 
-<a name="Rt-unconstrained-adl"></a>
-### T.50: Avoid writing an unconstrained template in the same namespace as a type
+### <a name="Rt-unconstrained-adl"></a> T.50: Avoid writing an unconstrained template in the same namespace as a type
 
 **Reason**: ADL will find the template even when you think it shouldn't.
 
@@ -9560,14 +9214,12 @@ Note the use of the `s` suffix to ensure that the string is a `std::string`, rat
 
 
 
-<a name="SS=temp-def"></a>
-## TCP.def: Template definitions
+## <a name="SS=temp-def"></a> TCP.def: Template definitions
 
 ???
 
 
-<a name="Rt-depend"></a>
-### T.60: Minimize a template's context dependencies
+### <a name="Rt-depend"></a> T.60: Minimize a template's context dependencies
 
 **Reason**: Eases understanding. Minimizes errors from unexpected dependencies. Eases tool creation.
 
@@ -9576,13 +9228,12 @@ Note the use of the `s` suffix to ensure that the string is a `std::string`, rat
 	???
 	
 **Note**: Having a template operate only on its arguments would be one way of reducing the number of dependencies to a minimum,
-but that would generally be unmaneageable. For example, an algorithm usually uses other algorithms.
+but that would generally be unmanageable. For example, an algorithm usually uses other algorithms.
 
 **Enforcement**: ??? Tricky
 
 
-<a name="Rt-scary"></a>
-### T.61: Do not over-parameterize members (SCARY)
+### <a name="Rt-scary"></a> T.61: Do not over-parameterize members (SCARY)
 
 **Reason**: A member that does not depend on a template parameter cannot be used except for a specific template argument.
 This limits use and typically increases code size.
@@ -9610,7 +9261,7 @@ This limits use and typically increases code size.
 	
 	
 	List<int> lst1;
-	List<int,my_allocator> lst2;
+	List<int, my_allocator> lst2;
 	
 	???
 
@@ -9638,7 +9289,7 @@ This looks innocent enough, but ???
 	};
 	
 	List<int> lst1;
-	List<int,my_allocator> lst2;
+	List<int, my_allocator> lst2;
 	
 	???
 
@@ -9648,8 +9299,7 @@ This looks innocent enough, but ???
 * Flag member functions that do not depend on every template argument
 
 
-<a name="Rt-nondependent"></a>
-### T.62: Place non-dependent template members in a non-templated base class
+### <a name="Rt-nondependent"></a> T.62: Place non-dependent template members in a non-templated base class
 
 **Reason**: ???
 
@@ -9686,8 +9336,7 @@ For N==1, we have a choice of a base class of a class in the surrounding scope a
 * Flag ???
 
 
-<a name="Rt-specialization"></a>
-### T.64: Use specialization to provide alternative implementations of class templates
+### <a name="Rt-specialization"></a> T.64: Use specialization to provide alternative implementations of class templates
 
 **Reason**: A template defines a general interface.
 Specialization offers a powerful mechanism for providing alternative implementations of that interface.
@@ -9703,8 +9352,7 @@ Specialization offers a powerful mechanism for providing alternative implementat
 **Enforcement**: ???
 
 
-<a name="Rt-tag-dispatch"></a>
-### T.65: Use tag dispatch to provide alternative implementations of a function
+### <a name="Rt-tag-dispatch"></a> T.65: Use tag dispatch to provide alternative implementations of a function
 
 **Reason**: A template defines a general interface. ???
 
@@ -9717,8 +9365,7 @@ Specialization offers a powerful mechanism for providing alternative implementat
 **Enforcement**: ???
 
 
-<a name="Rt-enable_if"></a>
-### T.66: Use selection using `enable_if` to optionally define a function
+### <a name="Rt-enable_if"></a> T.66: Use selection using `enable_if` to optionally define a function
 
 **Reason**: ???
 
@@ -9729,8 +9376,7 @@ Specialization offers a powerful mechanism for providing alternative implementat
 **Enforcement**: ???
 
 
-<a name="Rt-customization"></a>
-### T.69: Inside a template, don't make an unqualified nonmember function call unless you intend it to be a customization point
+### <a name="Rt-customization"></a> T.69: Inside a template, don't make an unqualified nonmember function call unless you intend it to be a customization point
 
 **Reason**: To provide only intended flexibility, and avoid accidental environmental changes.
 
@@ -9761,19 +9407,17 @@ There are three major ways to let calling code customize a template.
 	}
 
 **Enforcement**:
+
 * In a template, flag an unqualified call to a nonmember function that passes a variable of dependent type when there is a nonmember function of the same name in the template's namespace.
 
-
-<a name="SS-temp-hier"></a>
-## T.temp-hier: Template and hierarchy rules:
+## <a name="SS-temp-hier"></a> T.temp-hier: Template and hierarchy rules:
 
 Templates are the backbone of C++'s support for generic programming and class hierarchies the backbone of its support
 for object-oriented programming.
 The two language mechanisms can be use effectively in combination, but a few design pitfalls must be avoided.
 
 
-<a name="Rt-hier"></a>
-### T.80: Do not naively templatize a class hierarchy
+### <a name="Rt-hier"></a> T.80: Do not naively templatize a class hierarchy
 
 **Reason**: Templatizing a class hierarchy that has many functions, especially many virtual functions, can lead to code bloat.
 
@@ -9783,7 +9427,7 @@ The two language mechanisms can be use effectively in combination, but a few des
 	struct Container {			// an interface
 		virtual T* get(int i);
 		virtual T* first();
-		virtial T* next();
+		virtual T* next();
 		virtual void sort();
 	};
 	
@@ -9804,15 +9448,14 @@ Similar for `Vector<string>::sort()`.
 Unless those two functions are called that's code bloat.
 Imagine what this would do to a class hierarchy with dozens of member functions and dozens of derived classes with many instantiations.
 
-**Note**: In many cases you can provide a stable interface by not parameterizing a base; see [???](#Rt-abi).
+**Note**: In many cases you can provide a stable interface by not parameterizing a base; see [Rule](#Rt-abi).
 
 **Enforcement**:
 
 * Flag virtual functions that depend on a template argument. ??? False positives
 
 
-<a name="Rt-array"></a>
-### T.81: Do not mix hierarchies and arrays
+### <a name="Rt-array"></a> T.81: Do not mix hierarchies and arrays
 
 **Reason**: An array of derived classes can implicitly "decay" to a pointer to a base class with potential disastrous results.
 
@@ -9858,8 +9501,7 @@ Note that the assignment in `maul2()` violated the no-slicing [Rule](#???).
 * Detect this horror!
 
 
-<a name="Rt-linear"></a>
-### T.82: Linearize a hierarchy when virtual functions are undesirable
+### <a name="Rt-linear"></a> T.82: Linearize a hierarchy when virtual functions are undesirable
 
 **Reason**: ???
 
@@ -9870,8 +9512,7 @@ Note that the assignment in `maul2()` violated the no-slicing [Rule](#???).
 **Enforcement**: ???
 
 
-<a name="Rt-virtual"></a>
-### T.83: Do not declare a member function template virtual
+### <a name="Rt-virtual"></a> T.83: Do not declare a member function template virtual
 
 **Reason** C++ does not support that.
 If it did, vtbls could not be generated until link time.
@@ -9891,8 +9532,7 @@ And in general, implementations must deal with dynamic linking.
 
 
 
-<a name="Rt-abi"></a>
-### T.84: Use a non-template core implementation to provide an ABI-stable interface
+### <a name="Rt-abi"></a> T.84: Use a non-template core implementation to provide an ABI-stable interface
 
 **Reason**: Improve stability of code. Avoids code bloat.
 
@@ -9936,14 +9576,12 @@ Instead of using a separate "base" type, another common technique is to speciali
 **Enforcement**: ???
 
 
-<a name="SS-variadic"></a>
-## T.var: Variadic template rules
+## <a name="SS-variadic"></a> T.var: Variadic template rules
 
 ???
 
 
-<a name="Rt-variadic"></a>
-### T.100: Use variadic templates when you need a function that takes a variable number of arguments of a variety of types
+### <a name="Rt-variadic"></a> T.100: Use variadic templates when you need a function that takes a variable number of arguments of a variety of types
 
 **Reason**: Variadic templates is the most general mechanism for that, and is both efficient and type-safe. Don't use C varargs.
 
@@ -9956,8 +9594,7 @@ Instead of using a separate "base" type, another common technique is to speciali
     * Flag uses of `va_arg` in user code.
 
 
-<a name="Rt-variadic-pass"></a>
-### T.101: ??? How to pass arguments to a variadic template ???
+### <a name="Rt-variadic-pass"></a> T.101: ??? How to pass arguments to a variadic template ???
 
 **Reason**: ???
 
@@ -9968,8 +9605,7 @@ Instead of using a separate "base" type, another common technique is to speciali
 **Enforcement**: ???
 
 
-<a name="Rt-variadic-process"></a>
-### T.102: How to process arguments to a variadic template
+### <a name="Rt-variadic-process"></a> T.102: How to process arguments to a variadic template
 
 **Reason**: ???
 
@@ -9980,8 +9616,7 @@ Instead of using a separate "base" type, another common technique is to speciali
 **Enforcement**: ???
 
 
-<a name="Rt-variadic-not"></a>
-### T.103: Don't use variadic templates for homogeneous argument lists
+### <a name="Rt-variadic-not"></a> T.103: Don't use variadic templates for homogeneous argument lists
 
 **Reason** There are more precise ways of specifying a homogeneous sequence, such as an `initializer_list`.
 
@@ -9992,8 +9627,7 @@ Instead of using a separate "base" type, another common technique is to speciali
 **Enforcement**: ???
 
 
-<a name="SS-meta"></a>
-## T.meta: Template metaprogramming (TMP)
+## <a name="SS-meta"></a> T.meta: Template metaprogramming (TMP)
 
 Templates provide a general mechanism for compile-time programming.
 
@@ -10002,8 +9636,7 @@ Templates offer Turing-complete (modulo memory capacity) duck typing at compile 
 The syntax and techniques needed are pretty horrendous.
 
 
-<a name="Rt-metameta"></a>
-### T.120: Use template metaprogramming only when you really need to
+### <a name="Rt-metameta"></a> T.120: Use template metaprogramming only when you really need to
 
 **Reason**: Template metaprogramming is hard to get right, slows down compilation, and is often very hard to maintain.
 However, there are real-world examples where template metaprogramming provides better performance that any alternative short of expert-level assembly code.
@@ -10029,8 +9662,7 @@ Instead, use concepts. But see [How to emulate concepts if you don't have langua
 **Note**: If you feel the need to hide your template metaprogramming in macros, you have probably gone too far.
 
 
-<a name="Rt-emulate"></a>
-### T.121: Use template metaprogramming primarily to emulate concepts
+### <a name="Rt-emulate"></a> T.121: Use template metaprogramming primarily to emulate concepts
 
 **Reason**: Until concepts become generally available, we need to emulate them using TMP.
 Use cases that require concepts (e.g. overloading based on concepts) are among the most common (and simple) uses of TMP.
@@ -10038,11 +9670,11 @@ Use cases that require concepts (e.g. overloading based on concepts) are among t
 **Example**:
 
 	template<typename Iter>
-	    /*requires*/ enable_if<random_access_iterator<Iter>,void>
+	    /*requires*/ enable_if<random_access_iterator<Iter>, void>
 	advance(Iter p, int n) { p += n; }
 
 	template<typename Iter>
-	    /*requires*/ enable_if<forward_iterator<Iter>,void>
+	    /*requires*/ enable_if<forward_iterator<Iter>, void>
 	advance(Iter p, int n) { assert(n>=0); while (n--) ++p;}
 	
 **Note**: Such code is much simpler using concepts:
@@ -10054,8 +9686,7 @@ Use cases that require concepts (e.g. overloading based on concepts) are among t
 **Enforcement**: ???
 
 
-<a name="Rt-tmp"></a>
-### T.122: Use templates (usually template aliases) to compute types at compile time
+### <a name="Rt-tmp"></a> T.122: Use templates (usually template aliases) to compute types at compile time
 
 **Reason**: Template metaprogramming is the only directly supported and half-way principled way of generating types at compile time.
 
@@ -10068,8 +9699,7 @@ Use cases that require concepts (e.g. overloading based on concepts) are among t
 **Enforcement**: ???
 
 
-<a name="Rt-fct"></a>
-### T.123: Use `constexpr` functions to compute values at compile time
+### <a name="Rt-fct"></a> T.123: Use `constexpr` functions to compute values at compile time
 
 **Reason**: A function is the most obvious and conventional way of expressing the computation of a value.
 Often a `constexpr` function implies less compile-time overhead than alternatives.
@@ -10087,15 +9717,14 @@ Often a `constexpr` function implies less compile-time overhead than alternative
 		return res;
 	}
 	
-	constexpr auto f7 = pow(pi,7);
+	constexpr auto f7 = pow(pi, 7);
 
 **Enforcement**:
 
     * Flag template metaprograms yielding a value. These should be replaced with `constexpr` functions.
 
 
-<a name="Rt-std"></a>
-### T.124: Prefer to use standard-library TMP facilities
+### <a name="Rt-std"></a> T.124: Prefer to use standard-library TMP facilities
 
 **Reason**: Facilities defined in the standard, such as `conditional`, `enable_if`, and `tuple`, are portable and can be assumed to be known.
 
@@ -10106,8 +9735,7 @@ Often a `constexpr` function implies less compile-time overhead than alternative
 **Enforcement**: ???
 
 
-<a name="Rt-lib"></a>
-### T.125: If you need to go beyond the standard-library TMP facilities, use an existing library
+### <a name="Rt-lib"></a> T.125: If you need to go beyond the standard-library TMP facilities, use an existing library
 
 **Reason**: Getting advanced TMP facilities is not easy and using a library makes you part of a (hopefully supportive) community.
 Write your own "advanced TMP support" only if you really have to.
@@ -10119,12 +9747,10 @@ Write your own "advanced TMP support" only if you really have to.
 **Enforcement**: ???
 
 
-<a name="SS-temp-other"></a>
-## Other template rules
+## <a name="SS-temp-other"></a> Other template rules
 
 
-<a name="Rt-name"></a>
-### T.140: Name all nontrivial operations
+### <a name="Rt-name"></a> T.140: Name all nontrivial operations
 
 **Reason**: Documentation, readability, opportunity for reuse.
 
@@ -10146,8 +9772,7 @@ Write your own "advanced TMP support" only if you really have to.
 **Enforcement**: ???
 
 
-<a name="Rt-lambda"></a>
-### T.141: Use an unnamed lambda if you need a simple function object in one place only
+### <a name="Rt-lambda"></a> T.141: Use an unnamed lambda if you need a simple function object in one place only
 
 **Reason**: That makes the code concise and gives better locality than alternatives.
 
@@ -10162,8 +9787,7 @@ Write your own "advanced TMP support" only if you really have to.
 * Look for identical and near identical lambdas (to be replaced with named functions or named lambdas).
 
 
-<a name="Rt-var"></a>
-### T.142?: Use template variables to simplify notation
+### <a name="Rt-var"></a> T.142?: Use template variables to simplify notation
 
 **Reason**: Improved readability.
 
@@ -10174,8 +9798,7 @@ Write your own "advanced TMP support" only if you really have to.
 **Enforcement**: ???
 
 
-<a name="Rt-nongeneric"></a>
-### T.143: Don't write unintentionally nongeneric code
+### <a name="Rt-nongeneric"></a> T.143: Don't write unintentionally nongeneric code
 
 **Reason**: Generality. Reusability. Don't gratuitously commit to details; use the most general facilities available.
 
@@ -10225,8 +9848,7 @@ Of course, range-for is better still where it does what you want.
 * Flag functions that take a pointer or reference to a more-derived type but only use functions declared in a base type.
 
 
-<a name="Rt-specialize-function"></a>
-### T.144: Don't specialize function templates
+### <a name="Rt-specialize-function"></a> T.144: Don't specialize function templates
 
 **Reason**: You can't partially specialize a function template per language rules. You can fully specialize a function template but you almost certainly want to overload instead -- because function template specializations don't participate in overloading, they don't act as you probably wanted. Rarely, you should actually specialize by delegating to a class template that you can specialize properly.
 
@@ -10237,14 +9859,10 @@ Of course, range-for is better still where it does what you want.
 **Exceptions**: If you do have a valid reason to specialize a function template, just write a single function template that delegates to a class template, then specialize the class template (including the ability to write partial specializations).
 	
 **Enforcement**:
+
 * Flag all specializations of a function template. Overload instead.
 
-
-
-
-
-<a name="S-cpl"></a>
-# CPL: C-style programming
+# <a name="S-cpl"></a> CPL: C-style programming
 
 C and C++ are closely related languages.
 They both originate in "Classic C" from 1978 and have evolved in ISO committees since then.
@@ -10257,8 +9875,7 @@ C rule summary:
 * [CPL.3: If you must use C for interfaces, use C++ in the code using such interfaces](#Rcpl-interface)
 
 
-<a name="Rcpl-C"></a>
-### CPL.1: Prefer C++ to C
+### <a name="Rcpl-C"></a> CPL.1: Prefer C++ to C
 
 **Reason**: C++ provides better type checking and more notational support.
 It provides better support for high-level programming and often generates faster code.
@@ -10273,8 +9890,7 @@ It provides better support for high-level programming and often generates faster
 **Enforcement**: Use a C++ compiler.
 
 
-<a name="Rcpl-subset"></a>
-### CPL.2: If you must use C, use the common subset of C and C++, and compile the C code as C++
+### <a name="Rcpl-subset"></a> CPL.2: If you must use C, use the common subset of C and C++, and compile the C code as C++
 
 **Reason**: That subset can be compiled with both C and C++ compilers, and when compiled as C++ is better type checked than "pure C."
 
@@ -10287,12 +9903,11 @@ It provides better support for high-level programming and often generates faster
 
 **Enforcement**:
 
-    * Flag if using a build mode that compiles code as C.
-	* The C++ compiler will enforce that the code is valid C++ unless you use C extension options.
+* Flag if using a build mode that compiles code as C.
+  * The C++ compiler will enforce that the code is valid C++ unless you use C extension options.
 
 
-<a name="Rcpl-interface"></a>
-### CPL.3: If you must use C for interfaces, use C++ in the calling code using such interfaces
+### <a name="Rcpl-interface"></a> CPL.3: If you must use C for interfaces, use C++ in the calling code using such interfaces
 
 **Reason**: C++ is more expressive than C and offer better support for many types of programming.
 
@@ -10323,8 +9938,7 @@ Whenever possible encapsulate the low-level interface in an interface that follo
 **Enforcement**: None needed
 
 
-<a name="S-source"></a>
-#SF: Source files
+# <a name="S-source"></a> SF: Source files
 
 Distinguish between declarations (used as interfaces) and definitions (used as implementations)
 Use header files to represent interfaces and to emphasize logical structure.
@@ -10347,8 +9961,7 @@ Source file rule summary:
 
 
 
-<a name="Rs-suffix"></a>
-### SF.1: Use a `.cpp` suffix for code files and `.h` for interface files
+### <a name="Rs-suffix"></a> SF.1: Use a `.cpp` suffix for code files and `.h` for interface files
 
 **Reason**: Convention
 
@@ -10379,11 +9992,10 @@ Examples are `.hh` and `.cxx`. Use such names equivalently.
 **Enforcement**:
 
 * Flag non-conventional file names.
-* Check that `.h` and `.cpp`` (and equivalents) follow the rules below.
+* Check that `.h` and `.cpp` (and equivalents) follow the rules below.
 
 
-<a name="Rs-inline"></a>
-### SF.2: A `.h` file may not contain object definitions or non-inline function definitions
+### <a name="Rs-inline"></a> SF.2: A `.h` file may not contain object definitions or non-inline function definitions
 
 **Reason**: Including entities subject to the one-definition rule leads to linkage errors.
 
@@ -10407,12 +10019,11 @@ Examples are `.hh` and `.cxx`. Use such names equivalently.
 **Enforcement**: Check the positive list above.
 
 
-<a name="Rs-suffix"></a>
-### SF.3: Use `.h` files for all declarations used in multiple sourcefiles
+### <a name="Rs-suffix"></a> SF.3: Use `.h` files for all declarations used in multiple sourcefiles
 
 **Reason**: Maintainability. Readability.
 
-**example, bad**:
+**Example, bad**:
 
 	// bar.cpp:
 	void bar() { cout << "bar\n"; }
@@ -10429,8 +10040,7 @@ The user of `bar` cannot know if the interface used is complete and correct. At 
 * Flag declarations of entities in other source files not placed in a `.h`.
 
 
-<a name="Rs-include-order"></a>
-### SF.4: Include `.h` files before other declarations in a file
+### <a name="Rs-include-order"></a> SF.4: Include `.h` files before other declarations in a file
 
 **Reason**: Minimize context dependencies and increase readability.
 
@@ -10458,8 +10068,7 @@ The user of `bar` cannot know if the interface used is complete and correct. At 
 **Enforcement**: Easy.
 	
 
-<a name="Rs-consistency"></a>
-### SF.5: A `.cpp` file must include the `.h` file(s) that defines its interface
+### <a name="Rs-consistency"></a> SF.5: A `.cpp` file must include the `.h` file(s) that defines its interface
 
 **Reason** This enables the compiler to do an early consistency check.
 
@@ -10475,7 +10084,7 @@ The user of `bar` cannot know if the interface used is complete and correct. At 
 	int bar(double) { /* ... */ }
 	double foobar(int);
 
-Thw errors will not be caught until link time for a program calling `bar` or `foobar`.
+The errors will not be caught until link time for a program calling `bar` or `foobar`.
 
 **Example**:
 
@@ -10498,8 +10107,7 @@ but systematic use of `.h` files increases the likelyhood that it is caught earl
 **Enforcement**: ???
 
 
-<a name="Rs-using"></a>
-### SF.6: Use `using`-directives for transition, for foundation libraries (such as `std`), or within a local scope
+### <a name="Rs-using"></a> SF.6: Use `using`-directives for transition, for foundation libraries (such as `std`), or within a local scope
 
 **Reason**: ???
 
@@ -10510,8 +10118,7 @@ but systematic use of `.h` files increases the likelyhood that it is caught earl
 **Enforcement**: ???
 
 
-<a name="Rs-using-directive"></a>
-### SF.7: Don't put a `using`-directive in a header file
+### <a name="Rs-using-directive"></a> SF.7: Don't put a `using`-directive in a header file
 
 **Reason** Doing so takes away an `#include`r's ability to effectively disambiguate and to use alternatives.
 
@@ -10522,8 +10129,7 @@ but systematic use of `.h` files increases the likelyhood that it is caught earl
 **Enforcement**: ???
 
 
-<a name="Rs-guards"></a>
-### SF.8: Use `#include` guards for all `.h` files
+### <a name="Rs-guards"></a> SF.8: Use `#include` guards for all `.h` files
 
 **Reason**: To avoid files being `#include`d several times.
 
@@ -10538,8 +10144,7 @@ but systematic use of `.h` files increases the likelyhood that it is caught earl
 **Enforcement**: Flag `.h` files without `#include` guards
 
 
-<a name="Rs-cycles"></a>
-### SF.9: Avoid cyclic dependencies among source files
+### <a name="Rs-cycles"></a> SF.9: Avoid cyclic dependencies among source files
 
 **Reason**: Cycles complicates comprehension and slows down compilation.
 Complicates conversion to use language-supported modules (when they become available).
@@ -10557,11 +10162,10 @@ Complicates conversion to use language-supported modules (when they become avail
 	// file3.h:
 	#include "file1.h"
 
-**Enforcement: Flag all cycles.
 
+**Enforcement**: Flag all cycles.
 
-<a name="Rs-namespace"></a>
-### SF.20: Use `namespace`s to express logical structure
+### <a name="Rs-namespace"></a> SF.20: Use `namespace`s to express logical structure
 
 **Reason**: ???
 
@@ -10572,8 +10176,7 @@ Complicates conversion to use language-supported modules (when they become avail
 **Enforcement**: ???
 
 
-<a name="Rs-unnamed"></a>
-### SF.21: Don't use an unnamed (anonymous) namespace in a header
+### <a name="Rs-unnamed"></a> SF.21: Don't use an unnamed (anonymous) namespace in a header
 
 **Reason**: It is almost always a bug to mention an unnamed namespace in a header file.
 
@@ -10586,8 +10189,7 @@ Complicates conversion to use language-supported modules (when they become avail
 
 
 
-<a name="Rs-unnamed2"></a>
-### SF.22: Use an unnamed (anonymous) namespace for all internal/nonexported entities
+### <a name="Rs-unnamed2"></a> SF.22: Use an unnamed (anonymous) namespace for all internal/nonexported entities
 
 **Reason**:
 nothing external can depend on an entity in a nested unnamed namespace.
@@ -10601,21 +10203,19 @@ Consider putting every definition in an implementation source file should be in 
 * ???
 
 
-<a name="S-stdlib"></a>
-# STL: The Standard Library
+# <a name="S-stdlib"></a> SL: The Standard Library
 
 Using only the bare language, every task is tedious (in any language).
 Using a suitable library any task can be reasonably simple.
 
 Standard-library rule summary:
 
-* [STL.1: Use libraries wherever possible](#Rstl-lib)
-* [STL2.: Prefer the standard library to other libraries](#Rstl-stl)
+* [SL.1: Use libraries wherever possible](#Rsl-lib)
+* [SL.2: Prefer the standard library to other libraries](#Rsl-sl)
 * ???
 
 
-<a name="Rstl-lib"></a>
-### STL.1:  Use libraries wherever possible
+### <a name="Rsl-lib"></a> SL.1:  Use libraries wherever possible
 
 **Reason**: Save time. Don't re-invent the wheel.
 Don't replicate the work of others.
@@ -10624,61 +10224,55 @@ Help other people when you make improvements.
 
 **References**: ???
 
-<a name="Rstl-stl"></a>
-### STL2.: Prefer the standard library to other libraries
+### <a name="Rsl-sl"></a> SL.2: Prefer the standard library to other libraries
 
 **Reason**. More people know the standard library.
 It is more likely to be stable, well-maintained, and widely available than your own code or most other libraries.
 
-## STL.con: Containers
+## SL.con: Containers
 
 ???
 
-## STL.str: String
+## SL.str: String
 
 ???
 
-## STL.io: Iostream
+## SL.io: Iostream
 
 ???
 
-### STL.???: Use character-level input only when you have to; _expr.low_.
+### SL.???: Use character-level input only when you have to; _expr.low_.
 
-### STL.???: When reading, always consider ill-formed input; _expr.low_.
+### SL.???: When reading, always consider ill-formed input; _expr.low_.
 
-## STL.regex: Regex
+## SL.regex: Regex
 
 ???
 
-## STL:c: The C standard library
+## SL:c: The C standard library
 
-### STL.???: C-style strings
+### SL.???: C-style strings
 
-### STL.???: printf/scanf
+### SL.???: printf/scanf
 
-<a name"S-A"></a>
-# A: Architectural Ideas
+# <a name"S-A"></a> A: Architectural Ideas
 
 This section contains ideas about ???
 
-<a name"Ra-stable"></a>
-### A.1 Separate stable from less stable part of code
+### <a name"Ra-stable"></a> A.1 Separate stable from less stable part of code
 
 ???
 
-<a name"Ra-reuse"></a>
-### A.2 Express potentially reusable parts as a library
+### <a name"Ra-reuse"></a> A.2 Express potentially reusable parts as a library
 
 ???
 
-<a name"Ra-lib"></a>
-### A.3 Express potentially separately maintained parts as a library
+### <a name"Ra-lib"></a> A.3 Express potentially separately maintained parts as a library
 
 ???
 
 
-<a name="S-not"></a>
-# Non-Rules and myths
+# <a name="S-not"></a> Non-Rules and myths
 
 This section contains rules and guidelines that are popular somewhere, but that we deliberately don't recommend.
 In the context of the styles of programming we recommend and support with the guidelines, these "non-rules" would do harm.
@@ -10693,8 +10287,7 @@ Non-rule summary:
 * goto exit
 
 
-<a name="S-references"></a>
-# RF: References
+# <a name="S-references"></a> RF: References
 
 Many coding standards, rules, and guidelines have been written for C++, and especially for specialized uses of C++.
 Many
@@ -10730,8 +10323,7 @@ Reference sections:
 * [RF.man: Manuals](#SS-man)
 
 
-<a name="SS-rules"></a>
-## RF.rules: Coding rules
+## <a name="SS-rules"></a> RF.rules: Coding rules
 
 * [Boost Library Requirements and Guidelines](http://www.boost.org/development/requirements.html).
 ???.
@@ -10771,18 +10363,16 @@ Somewhat brief, pre-C++11, and (not unreasonably) adjusted to its domain.
 * ???
 
 
-<a name="SS-books"></a>
-## RF.books: Books with coding guidelines
+## <a name="SS-books"></a> RF.books: Books with coding guidelines
 
-* Scott Meyers: Effective C++ (???). Addison-Wesley 2014. Beware of overly technical and overly definite rules.
-* Sutter and Alexandrescu: C++ Coding Standards. Addison-Wesley 2005. More a set of meta-rules than a set of rules. Pre-C++11. Recommended.
-* <a name="BS2005"></a>
-Bjarne Stroustrup: [A rationale for semantically enhanced library languages](http://www.stroustrup.com/SELLrationale.pdf).
-LCSD05. October 2005.
-* Stroustrup: [A Tour of C++](http://www.stroustrup.com/Tour.html).
+* [[Meyers14]](#Meyers14) Scott Meyers: Effective Modern C++ (???). Addison-Wesley 2014. Beware of overly technical and overly definite rules.
+* [[SuttAlex05]](#SuttAlex05) Sutter and Alexandrescu: C++ Coding Standards. Addison-Wesley 2005. More a set of meta-rules than a set of rules. Pre-C++11. Recommended.
+* [[Stroustrup05]](#Stroustrup05) Bjarne Stroustrup: [A rationale for semantically enhanced library languages](http://www.stroustrup.com/SELLrationale.pdf). 
+  LCSD05. October 2005.
+* [[Stroustrup14]](#Stroustrup05) Stroustrup: [A Tour of C++](http://www.stroustrup.com/Tour.html).
 Addison Wesley 2014.
 Each chapter ends with an advice section consisting of a set of recommendations.
-* Stroustrup: [The C++ Programming Language (4th Edition)](http://www.stroustrup.com/4th.html).
+* [[Stroustrup13]](#Stroustrup13) Stroustrup: [The C++ Programming Language (4th Edition)](http://www.stroustrup.com/4th.html).
 Addison Wesley 2013.
 Each chapter ends with an advice section consisting of a set of recommendations.
 * Stroustrup: [Style Guide](http://www.stroustrup.com/Programming/PPP-style.pdf)
@@ -10791,28 +10381,26 @@ Mostly low-level naming and layout rules.
 Primarily a teaching tool.
 
 
-<a name="SS-C++"></a>
-## RF.C++: C++ Programming (C++11/C++14)
+## <a name="SS-C++"></a> RF.C++: C++ Programming (C++11/C++14)
 
 * TC++PL4
 * Tour++
 * Programming: Principles and Practice using C++
 
 
-<a name="SS-web"></a>
-## RF.web: Websites
+## <a name="SS-web"></a> RF.web: Websites
 
 * [isocpp.org](http://www.isocpp.com)
 * [Bjarne Stroustrup's home pages](http://www.stroustrup.com)
 * [WG21](http://www.open-std.org/jtc1/sc22/wg21/)
-* [Boost](http://www.boost.org)
+* <a name="Boost"></a>
+  [Boost](http://www.boost.org)
 * [Adobe open source](http://www.adobe.com/open-source.html)
 * [Poco libraries](http://pocoproject.org/)
 
 
 
-<a name="SS-vid"></a>
-## RS.video: Videos about "modern C++"
+## <a name="SS-vid"></a> RS.video: Videos about "modern C++"
 
 * Bjarne Stroustrup: [C++11 Style](http://channel9.msdn.com/Events/GoingNative/GoingNative-2012/Keynote-Bjarne-Stroustrup-Cpp11-Style). 2012.
 * Bjarne Stroustrup: [The Essence of C++: With Examples in C++84, C++98, C++11, and C++14](http://channel9.msdn.com/Events/GoingNative/2013/Opening-Keynote-Bjarne-Stroustrup). 2013
@@ -10822,8 +10410,7 @@ Primarily a teaching tool.
 * ??? more ???
 
 
-<a name="SS-man"></a>
-## RF.man: Manuals
+## <a name="SS-man"></a> RF.man: Manuals
 
 * ISO C++ Standard C++11
 * ISO C++ Standard C++14
@@ -10832,8 +10419,7 @@ Primarily a teaching tool.
 * WG21 Ranges report
  
  
-<a name="SS-ack"></a>
-## Acknowledgements
+## <a name="SS-ack"></a> Acknowledgements
 
 Thanks to the many people who contributed rules, suggestions, supporting information, references, etc.:
 
@@ -10846,8 +10432,7 @@ Thanks to the many people who contributed rules, suggestions, supporting informa
 * Sergey Zubkov
 
 
-<a name="S-profile"></a>
-# Profiles
+# <a name="S-profile"></a> Profiles
 
 A "profile" is a set of deterministic and portably enforceable subset rules (i.e., restrictions) that are designed to achieve a specific guarantee. "Deterministic" means they require only local analysis and could be implemented in a compiler (though they don't need to be). "Portably enforceable" means they are like language rules, so programmers can count on enforcement tools giving the same answer for the same code.
 
@@ -10859,10 +10444,7 @@ Profiles summary:
 * [Pro.bounds: Bounds safety](#SS-bounds)
 * [Pro.lifetime: Lifetime safety](#SS-lifetime)
 
-
-
-<a name="SS-type"></a>
-## Type safety profile
+## <a name="SS-type"></a> Type safety profile
 
 This profile makes it easier to construct code that uses types correctly and avoids inadvertent type punning. It does so by focusing on removing the primary sources of type violations, including unsafe uses of casts and unions.
 
@@ -10870,17 +10452,16 @@ For the purposes of this section, type-safety is defined to be the property that
 
 The following are under consideration but not yet in the rules below, and may be better in other profiles:
 
-   - narrowing arithmetic promotions/conversions (likely part of a separate safe-arithmetic profile)
-   - arithmetic cast from negative floating point to unsigned integral type (ditto)
-   - selected undefined behavior: ??? this is a big bucket, start with Gaby's UB list
-   - selected unspecified behavior: ??? would this really be about safety, or more a portability concern?
-   - constness violations? if we rely on it for safety
+* narrowing arithmetic promotions/conversions (likely part of a separate safe-arithmetic profile)
+* arithmetic cast from negative floating point to unsigned integral type (ditto)
+* selected undefined behavior: ??? this is a big bucket, start with Gaby's UB list
+* selected unspecified behavior: ??? would this really be about safety, or more a portability concern?
+* constness violations? if we rely on it for safety
 
 An implementation of this profile shall recognize the following patterns in source code as non-conforming and issue a diagnostic.
 
 
-<a name="Pro-type-reinterpretcast"></a>
-### Type.1: Don't use `reinterpret_cast`.
+### <a name="Pro-type-reinterpretcast"></a> Type.1: Don't use `reinterpret_cast`.
 
 **Reason**:
 Use of these casts can violate type safety and cause the program to access a variable that is actually of type `X` to be accessed as if it were of an unrelated type `Z`.
@@ -10893,8 +10474,7 @@ Use of these casts can violate type safety and cause the program to access a var
 **Enforcement**: Issue a diagnostic for any use of `reinterpret_cast`. To fix: Consider using a `variant` instead.
 
 
-<a name="Pro-type-downcast"></a>
-### Type.2: Don't use `static_cast` downcasts. Use `dynamic_cast` instead.
+### <a name="Pro-type-downcast"></a> Type.2: Don't use `static_cast` downcasts. Use `dynamic_cast` instead.
 
 **Reason**:
 Use of these casts can violate type safety and cause the program to access a variable that is actually of type `X` to be accessed as if it were of an unrelated type `Z`.
@@ -10920,8 +10500,7 @@ Use of these casts can violate type safety and cause the program to access a var
 **Enforcement**: Issue a diagnostic for any use of `static_cast` to downcast, meaning to cast from a pointer or reference to `X` to a pointer or reference to a type that is not `X` or an accessible base of `X`. To fix: If this is a downcast or cross-cast then use a `dynamic_cast` instead, otherwise consider using a `variant` instead.
 
 
-<a name="Pro-type-constcast"></a>
-### Type.3: Don't use `const_cast` to cast away `const` (i.e., at all).
+### <a name="Pro-type-constcast"></a> Type.3: Don't use `const_cast` to cast away `const` (i.e., at all).
 
 **Reason**:
 Casting away `const` is a lie. If the variable is actually declared `const`, it's a lie punishable by undefined behavior.
@@ -10944,8 +10523,7 @@ Casting away `const` is a lie. If the variable is actually declared `const`, it'
 **Enforcement**: Issue a diagnostic for any use of `const_cast`. To fix: Either don't use the variable in a non-`const` way, or don't make it `const`.
 
 
-<a name="Pro-type-cstylecast"></a>
-### Type.4: Don't use C-style `(T)expression` casts that would perform a `static_cast` downcast, `const_cast`, or `reinterpret_cast`.
+### <a name="Pro-type-cstylecast"></a> Type.4: Don't use C-style `(T)expression` casts that would perform a `static_cast` downcast, `const_cast`, or `reinterpret_cast`.
 
 **Reason**:
 Use of these casts can violate type safety and cause the program to access a variable that is actually of type `X` to be accessed as if it were of an unrelated type `Z`.
@@ -10986,15 +10564,13 @@ Note that a C-style `(T)expression` cast means to perform the first of the follo
 
 
 
-<a name="Pro-type-init"></a>
-### Type.5: Don't use a variable before it has been initialized.
+### <a name="Pro-type-init"></a> Type.5: Don't use a variable before it has been initialized.
 
 [ES.20: Always initialize an object](#Res-always) is required.
 
 
 
-<a name="Pro-type-memberinit"></a>
-### Type.6: Always initialize a member variable.
+### <a name="Pro-type-memberinit"></a> Type.6: Always initialize a member variable.
 
 **Reason**:
 Before a variable has been initialized, it does not contain a deterministic valid value of its type. It could contain any arbitrary bit pattern, which could be different on each call.
@@ -11010,12 +10586,11 @@ Before a variable has been initialized, it does not contain a deterministic vali
     use(x2);
 
 **Enforcement**:
-   - Issue a diagnostic for any constructor of a non-trivially-constructible type that does not initialize all member variables. To fix: Write a data member initializer, or mention it in the member initializer list.
-   - Issue a diagnostic when constructing an object of a trivially constructible type without `()` or `{}` to initialize its members. To fix: Add `()` or `{}`.
 
+* Issue a diagnostic for any constructor of a non-trivially-constructible type that does not initialize all member variables. To fix: Write a data member initializer, or mention it in the member initializer list.
+* Issue a diagnostic when constructing an object of a trivially constructible type without `()` or `{}` to initialize its members. To fix: Add `()` or `{}`.
 
-<a name="Pro-type-unions"></a>
-### Type.7: Avoid accessing members of raw unions. Prefer `variant` instead.
+### <a name="Pro-type-unions"></a> Type.7: Avoid accessing members of raw unions. Prefer `variant` instead.
 
 **Reason**:
 Reading from a union member assumes that member was the last one written, and writing to a union member assumes another member with a nontrivial destructor had its destructor called. This is fragile because it cannot generally be enforced to be safe in the language and so relies on programmer discipline to get it right.
@@ -11028,7 +10603,7 @@ Reading from a union member assumes that member was the last one written, and wr
     u.i = 42;
     use(u.d); // BAD, undefined
     
-    variant<int,double> u;
+    variant<int, double> u;
     u = 42; // u  now contains int
     use(u.get<int>()); // ok
     use(u.get<double>()); // throws ??? update this when standardization finalizes the variant design
@@ -11036,12 +10611,10 @@ Reading from a union member assumes that member was the last one written, and wr
 Note that just copying a union is not type-unsafe, so safe code can pass a union from one piece of unsafe code to another.
 
 **Enforcement**:
-   - Issue a diagnostic for accessing a member of a union. To fix: Use a `variant` instead.
-   
- 
 
-<a name="Pro-type-varargs"></a>
-### Type.8: Avoid reading from varargs or passing vararg arguments. Prefer variadic template parameters instead.
+* Issue a diagnostic for accessing a member of a union. To fix: Use a `variant` instead.
+
+### <a name="Pro-type-varargs"></a> Type.8: Avoid reading from varargs or passing vararg arguments. Prefer variadic template parameters instead.
 
 **Reason**:
 Reading from a vararg assumes that the correct type was actually passed. Passing to varargs assumes the correct type will be read. This is fragile because it cannot generally be enforced to be safe in the language and so relies on programmer discipline to get it right.
@@ -11069,13 +10642,11 @@ Reading from a vararg assumes that the correct type was actually passed. Passing
 Note: Declaring a `...` parameter is sometimes useful for techniques that don't involve actual argument passing, notably to declare “take-anything” functions so as to disable "everything else" in an overload set or express a catchall case in a template metaprogram.
     
 **Enforcement**:
-   - Issue a diagnostic for using `va_list`, `va_start`, or `va_arg`. To fix: Use a variadic template parameter list instead.
-   - Issue a diagnostic for passing an argument to a vararg parameter. To fix: Use a different function, or `[[suppress(types)]]`.
 
+* Issue a diagnostic for using `va_list`, `va_start`, or `va_arg`. To fix: Use a variadic template parameter list instead.
+* Issue a diagnostic for passing an argument to a vararg parameter. To fix: Use a different function, or `[[suppress(types)]]`.
 
-
-<a name="SS-bounds"></a>
-## Bounds safety profile
+## <a name="SS-bounds"></a> Bounds safety profile
 
 This profile makes it easier to construct code that operates within the bounds of allocated blocks of memory. It does so by focusing on removing the primary sources of bounds violations: pointer arithmetic and array indexing. One of the core features of this profile is to restrict pointers to only refer to single objects, not arrays.
 
@@ -11088,8 +10659,7 @@ The following are under consideration but not yet in the rules below, and may be
 An implementation of this profile shall recognize the following patterns in source code as non-conforming and issue a diagnostic.
 
 
-<a name="Pro-bounds-arithmetic"></a>
-### Bounds.1: Don't use pointer arithmetic. Use `array_view` instead.
+### <a name="Pro-bounds-arithmetic"></a> Bounds.1: Don't use pointer arithmetic. Use `array_view` instead.
 
 **Reason**:
 Pointers should only refer to single objects, and pointer arithmetic is fragile and easy to get wrong. `array_view` is a bounds-checked, safe type for accessing arrays of data.
@@ -11141,15 +10711,14 @@ Pointers should only refer to single objects, and pointer arithmetic is fragile 
 Issue a diagnostic for any arithmetic operation on an expression of pointer type that results in a value of pointer type.
 
 
-<a name="Pro-bounds-arrayindex"></a>
-### Bounds.2: Only index into arrays using constant expressions.
+### <a name="Pro-bounds-arrayindex"></a> Bounds.2: Only index into arrays using constant expressions.
 
 **Reason**:
 Dynamic accesses into arrays are difficult for both tools and humans to validate as safe. `array_view` is a bounds-checked, safe type for accessing arrays of data. `at()` is another alternative that ensures single accesses are bounds-checked. If iterators are needed to access an array, use the iterators from an `array_view` constructed over the array.
 
 **Example; bad**:
 
-    void f(array<int,10> a, int pos)
+    void f(array<int, 10> a, int pos)
     {
         a[pos/2] = 1; // BAD
         a[pos-1] = 2; // BAD
@@ -11161,15 +10730,15 @@ Dynamic accesses into arrays are difficult for both tools and humans to validate
 
     // ALTERNATIVE A: Use an array_view
 
-	// A1: Change parameter type to use array_view
-    void f(array_view<int,10> a, int pos)
+    // A1: Change parameter type to use array_view
+    void f(array_view<int, 10> a, int pos)
     {
         a[pos/2] = 1; // OK
         a[pos-1] = 2; // OK
     }
 
     // A2: Add local array_view and use that
-    void f(array<int,10> arr, int pos)
+    void f(array<int, 10> arr, int pos)
     {
         array_view<int> a = arr, int pos)
         a[pos/2] = 1; // OK
@@ -11177,7 +10746,7 @@ Dynamic accesses into arrays are difficult for both tools and humans to validate
     }
 
     // ALTERNATIVE B: Use at() for access
-    void f()(array<int,10> a, int pos)
+    void f()(array<int, 10> a, int pos)
     {
         at(a, pos/2) = 1; // OK
         at(a, pos-1) = 2; // OK
@@ -11198,7 +10767,7 @@ Dynamic accesses into arrays are difficult for both tools and humans to validate
     void f()
     {
         int arr[COUNT];
-		array_view<int> av = arr;
+        array_view<int> av = arr;
         for (int i = 0; i < COUNT; ++i)
             av[i] = i;
     }
@@ -11208,7 +10777,7 @@ Dynamic accesses into arrays are difficult for both tools and humans to validate
     {
         int arr[COUNT];
         for (int i = 0; i < COUNT; ++i)
-            at(arr,i) = i;
+            at(arr, i) = i;
     }
 
 
@@ -11228,8 +10797,7 @@ Issue a diagnostic for any indexing expression on an expression or variable of a
     }
 
 
-<a name="Pro-bounds-decay"></a>
-### Bounds.3: No array-to-pointer decay.
+### <a name="Pro-bounds-decay"></a> Bounds.3: No array-to-pointer decay.
 
 **Reason**:
 Pointers should not be used as arrays. `array_view` is a bounds-checked, safe alternative to using pointers to access arrays.
@@ -11263,8 +10831,7 @@ Pointers should not be used as arrays. `array_view` is a bounds-checked, safe al
 Issue a diagnostic for any expression that would rely on implicit conversion of an array type to a pointer type.
 
 
-<a name="Pro-bounds-stdlib"></a>
-### Bounds.4: Don't use standard library functions and types that are not bounds-checked.
+### <a name="Pro-bounds-stdlib"></a> Bounds.4: Don't use standard library functions and types that are not bounds-checked.
 
 **Reason**:
 These functions all have bounds-safe overloads that take `array_view`. Standard types such as `vector` can be modified to perform bounds-checks under the bounds profile (in a compatible way, such as by adding contracts), or used with `at()`.
@@ -11273,7 +10840,7 @@ These functions all have bounds-safe overloads that take `array_view`. Standard 
 
     void f()
     {
-        array<int,10> a, b;
+        array<int, 10> a, b;
         memset(a.data(), 0, 10); 		// BAD, and contains a length error
         memcmp(a.data(), b.data(), 10); // BAD, and contains a length error
     }
@@ -11282,9 +10849,9 @@ These functions all have bounds-safe overloads that take `array_view`. Standard 
 
     void f()
     {
-        array<int,10> a, b;
+        array<int, 10> a, b;
         memset(a, 0); 	// OK
-        memcmp({a,b}); 	// OK
+        memcmp({a, b}); 	// OK
     }
 
 **Example**: If code is using an unmodified standard library, then there are still workarounds that enable use of `std::array` and `std::vector` in a bounds-safe manner. Code can call the `.at()` member function on each class, which will result in an `std::out_of_range` exception being thrown. Alternatively, code can call the `at()` free function, which will result in fail-fast (or a customized action) on a bounds violation.
@@ -11301,26 +10868,23 @@ These functions all have bounds-safe overloads that take `array_view`. Standard 
     }
 
 **Enforcement**:
-   - Issue a diagnostic for any call to a standard library function that is not bounds-checked. ??? insert link to a list of banned functions
+
+* Issue a diagnostic for any call to a standard library function that is not bounds-checked. ??? insert link to a list of banned functions
 
 **TODO Notes**:
-   - Impact on the standard library will require close coordination with WG21, if only to ensure compatibility even if never standardized.
-   - We are considering specifying bounds-safe overloads for stdlib (especially C stdlib) functions like `memcmp` and shipping them in the GSL.
-   - For existing stdlib functions and types like `vector` that are not fully bounds-checked, the goal is for these features to be bounds-checked when called from code with the bounds profile on, and unchecked when called from legacy code, possibly using constracts (concurrently being proposed by several WG21 members).
 
+* Impact on the standard library will require close coordination with WG21, if only to ensure compatibility even if never standardized.
+* We are considering specifying bounds-safe overloads for stdlib (especially C stdlib) functions like `memcmp` and shipping them in the GSL.
+* For existing stdlib functions and types like `vector` that are not fully bounds-checked, the goal is for these features to be bounds-checked when called from code with the bounds profile on, and unchecked when called from legacy code, possibly using contracts (concurrently being proposed by several WG21 members).
 
-
-
-<a name="SS-lifetime"></a>
-## Lifetime safety profile
+## <a name="SS-lifetime"></a> Lifetime safety profile
 
 
 
 
 
 
-<a name="S-gsl"></a>
-# GSL: Guideline support library
+# <a name="S-gsl"></a> GSL: Guideline support library
 
 The GSL is a small library of facilities designed to support this set of guidelines.
 Without these facilities, the guidelines would have to be far more restrictive on language details.
@@ -11333,8 +10897,7 @@ Where desirable, they can be "instrumented" with additional functionality (e.g.,
 These Guidelines assume a `variant` type, but this is not currently in GSL because the design is being actively refined in the standards committee.
 
 
-<a name="SS-views"></a>
-## GSL.view: Views
+## <a name="SS-views"></a> GSL.view: Views
 
 These types allow the user to distinguish between owning and non-owning pointers and between pointers to a single object and pointers to the first element of a sequence.
 
@@ -11369,10 +10932,10 @@ An `owner<T>` is assumed to refer to an object on the free store (heap).
 If something is not supposed to be `nullptr`, say so:
 
 * `not_null<T>`		// `T` is usually a pointer type (e.g., `not_null<int*>` and `not_null<owner<Foo*>>`) that may not be `nullptr`.
-`T` can be any type for which `==nullptr` is meaningful.
+  `T` can be any type for which `==nullptr` is meaningful.
 
-* `array_view<T>`	// [`p`:`p+n`), constructor from `{p,q}` and `{p,n}`; `T` is the pointer type
-* `array_view_p<T>`	// `{p,predicate}` [`p`:`q`) where `q` is the first element for which `predicate(*p)` is true
+* `array_view<T>`	// [`p`:`p+n`), constructor from `{p, q}` and `{p, n}`; `T` is the pointer type
+* `array_view_p<T>`	// `{p, predicate}` [`p`:`q`) where `q` is the first element for which `predicate(*p)` is true
 * `string_view`		// `array_view<char>`
 * `cstring_view`	// `array_view<const char>`
 
@@ -11380,51 +10943,46 @@ A `*_view<T>` refers to zero or more mutable `T`s unless `T` is a `const` type.
 
 "Pointer arithmetic" is best done within `array_view`s.
 A `char*` that points to something that is not a C-style string (e.g., a pointer into an input buffer) should be represented by an `array_view`.
-There is no really good way to say "pointer to a single `char` (`string_view{p,1}` can do that, and `T*` where `T` is a `char` in a template that has not been specialized for C-style strings).
+There is no really good way to say "pointer to a single `char` (`string_view{p, 1}` can do that, and `T*` where `T` is a `char` in a template that has not been specialized for C-style strings).
 
 * `zstring`		// a `char*` supposed to be a C-style string; that is, a zero-terminated sequence of `char` or `null_ptr`
-* `czstring`	// a `const char*` supposed to be a C-style string; that is, a zero-terminated sequence of `const` `char` ort `null_ptr`
+* `czstring`	// a `const char*` supposed to be a C-style string; that is, a zero-terminated sequence of `const` `char` or `null_ptr`
 
 Logically, those last two aliases are not needed, but we are not always logical,
 and they make the distinction between a pointer to one `char` and a pointer to a C-style string explicit.
-A sequence of characters that is not assumed to be zero-terminated sould be a `char*`, rather than a `zstring`.
+A sequence of characters that is not assumed to be zero-terminated should be a `char*`, rather than a `zstring`.
 French accent optional.
 
 Use `not_null<zstring>` for C-style strings that cannot be `nullptr`. ??? Do we need a name for `not_null<zstring>`? or is its ugliness a feature?
 
 
-<a name="SS-ownership"></a>
-## GSL.owner: Ownership pointers
+## <a name="SS-ownership"></a> GSL.owner: Ownership pointers
 
-* `unique_ptr<T>`	// unique ownership: `std::unique_ptr<T>`
-* `shared_ptr<T>`	// shared ownership: `std::shared_ptr<T>` (a counted pointer)
-* `stack_array<T>`	// A stack-allocated array. The number of elements are determined at construction and fixed thereafter. The elements are mutable unless `T` is a `const` type.
-* `dyn_array<T>`	// ??? needed ??? A heap-allocated array. The number of elements are determined at construction and fixed thereafter.
-The elements are mutable unless `T` is a `const` type. Basically an `array_view` that allocates and owns its elements.
+* `unique_ptr<T>`     // unique ownership: `std::unique_ptr<T>`
+* `shared_ptr<T>`     // shared ownership: `std::shared_ptr<T>` (a counted pointer)
+* `stack_array<T>`    // A stack-allocated array. The number of elements are determined at construction and fixed thereafter. The elements are mutable unless `T` is a `const` type.
+* `dyn_array<T>`      // ??? needed ??? A heap-allocated array. The number of elements are determined at construction and fixed thereafter.
+  The elements are mutable unless `T` is a `const` type. Basically an `array_view` that allocates and owns its elements.
 
+## <a name="SS-assertions"></a> GSL.assert: Assertions
 
-<a name="SS-assertions"></a>
-## GSL.assert: Assertions
-
-* `Expects`		// precondition assertion. Currently placed in function bodies. Later, should be moved to declarations.
-				// `Expects(p)` terminates the program unless `p==true`
-				// ??? `Expect` in under control of some options (enforcement, error message, alternatives to terminate)
-* `Ensures`		// postcondition assertion.	Currently placed in function bodies. Later, should be moved to declarations.
+* `Expects`     // precondition assertion. Currently placed in function bodies. Later, should be moved to declarations.
+                // `Expects(p)` terminates the program unless `p==true`
+                // ??? `Expect` in under control of some options (enforcement, error message, alternatives to terminate)
+* `Ensures`     // postcondition assertion.	Currently placed in function bodies. Later, should be moved to declarations.
 
 
-<a name="SS-utilities"></a>
-## GSL.util: Utilities
+## <a name="SS-utilities"></a> GSL.util: Utilities
 
 * `finally`		// `finally(f)` makes a `final_action{f}` with a destructor that invokes `f`
 * `narrow_cast`	// `narrow_cast<T>(x)` is `static_cast<T>(x)`
 * `narrow`		// `narrow<T>(x)` is `static_cast<T>(x)` if `static_cast<T>(x)==x` or it throws `narrowing_error`
 * `implicit`	// "Marker" to put on single-argument constructors to explicitly make them non-explicit
-(I don't know how to do that except with a macro: `#define implicit`).
+  (I don't know how to do that except with a macro: `#define implicit`).
 * `move_owner`	// `p=move_owner(q)` means `p=q` but ???
 
 
-<a name="SS-concepts"></a>
-## GSL.concept: Concepts
+## <a name="SS-concepts"></a> GSL.concept: Concepts
 
 These concepts (type predicates) are borrowed from Andrew Sutton's Origin library, the Range proposal, and the ISO WG21 Palo Alto TR.
 They are likely to be very similar to what will become part of the ISO C++ standard.
@@ -11453,8 +11011,7 @@ The notation is that of the ISO WG21 Concepts TS (???ref???).
 * ...
 
 
-<a name="S-naming"></a>
-# NL: Naming and layout rules
+# <a name="S-naming"></a> NL: Naming and layout rules
 
 Consistent naming and layout are helpful. If for no other reason because it minimizes "my style is better than your style" arguments.
 However, there are many, many, different styles around and people are passionate about them (pro and con).
@@ -11484,12 +11041,11 @@ IDEs also tend to have defaults and a range of alternatives.These rules are sugg
 More specific and detailed rules are easier to enforce.
 
 
-<a name="Rl-comments"></a>
-###  NL.1: Don't say in comments what can be clearly stated in code
+### <a name="Rl-comments"></a> NL.1: Don't say in comments what can be clearly stated in code
 
 **Reason**: Compilers do not read comments.
 Comments are less precise than code.
-Comments are not updates as consistently as code.
+Comments are not updated as consistently as code.
 
 **Example, bad**:
 
@@ -11498,8 +11054,7 @@ Comments are not updates as consistently as code.
 **Enforcement**: Build an AI program that interprets colloquial English text and see if what is said could be better expressed in C++.
 
 
-<a name="Rl-comments-intent"></a>
-###  NL.2: State intent in comments
+### <a name="Rl-comments-intent"></a> NL.2: State intent in comments
 
 **Reason**: Code says what is done, not what is supposed to be done. Often intent can be stated more clearly and concisely than the implementation.
 
@@ -11514,16 +11069,14 @@ Comments are not updates as consistently as code.
 **Note**: If the comment and the code disagrees, both are likely to be wrong.
 
 
-<a name="Rl-comments-crisp"></a>
-### NL.3: Keep comments crisp
+### <a name="Rl-comments-crisp"></a> NL.3: Keep comments crisp
 
 **Reason**: Verbosity slows down understanding and makes the code harder to read by spreading it around in the source file.
 
 **Enforcement**: not possible.
 
 
-<a name="Rl-indent"></a>
-### NL.4: Maintain a consistent indentation style
+### <a name="Rl-indent"></a> NL.4: Maintain a consistent indentation style
 
 **Reason**: Readability. Avoidance of "silly mistakes."
 
@@ -11534,11 +11087,10 @@ Comments are not updates as consistently as code.
 	if (i==j)
 		return i;
 
-Enforcement: Use a tool.
+**Enforcement**: Use a tool.
 
 
-<a name="Rl-name-type"></a>
-### NL.5 Don't encode type information in names
+### <a name="Rl-name-type"></a> NL.5 Don't encode type information in names
 
 **Rationale**: If names reflects type rather than functionality, it becomes hard to change the types used to provide that functionality.
 Names with types encoded are either verbose or cryptic.
@@ -11569,8 +11121,7 @@ This is not evil.
 This is not evil.
 
 
-<a name="Rl-name-length"></a>
-### NL.7: Make the length of a name roughly proportional to the length of its scope
+### <a name="Rl-name-length"></a> NL.7: Make the length of a name roughly proportional to the length of its scope
 
 **Rationale**: ???
 
@@ -11581,8 +11132,7 @@ This is not evil.
 **Enforcement**: ???
 
 
-<a name="Rl-name"></a>
-### NL.8: Use a consistent naming style
+### <a name="Rl-name"></a> NL.8: Use a consistent naming style
 
 **Rationale**: Consistence in naming and naming style increases readability.
 
@@ -11622,8 +11172,7 @@ Some conventions capitalize the first letter, some don't.
 	
 
 
-<a name="Rl-space"></a>
-### NL 9: Use ALL_CAPS for macro names only
+### <a name="Rl-space"></a> NL 9: Use ALL_CAPS for macro names only
 
 **Reason**: To avoid confusing macros from names that obeys scope and type rules
 
@@ -11642,10 +11191,9 @@ Some conventions capitalize the first letter, some don't.
 
 
 
-<a name="Rl-camel"></a>
-### NL.10: Avoid CamelCase
+### <a name="Rl-camel"></a> NL.10: Avoid CamelCase
 
-**Reason**: The use of underscores to separate parts of a name is the originale C and C++ style and used in the C++ standard library.
+**Reason**: The use of underscores to separate parts of a name is the original C and C++ style and used in the C++ standard library.
 If you prefer CamelCase, you have to choose among different flavors of camelCase.
 
 **Example**:
@@ -11655,8 +11203,7 @@ If you prefer CamelCase, you have to choose among different flavors of camelCase
 **Enforcement**: Impossible.
 
 
-<a name="Rl-space"></a>
-### NL.15: Use spaces sparingly
+### <a name="Rl-space"></a> NL.15: Use spaces sparingly
 
 **Reason**: Too much space makes the text larger and distracts.
 
@@ -11684,8 +11231,7 @@ If you prefer CamelCase, you have to choose among different flavors of camelCase
 
 
 
-<a name="Rl-order"></a>
-### NL.16: Use a conventional class member declaration order
+### <a name="Rl-order"></a> NL.16: Use a conventional class member declaration order
 
 **Reason**: A conventional order of members improves readability.
 
@@ -11707,8 +11253,7 @@ Private types and functions can be placed with private data.
 **Enforcement**: Flag departures from the suggested order. There will be a lot of old code that doesn't follow this rule.
 
 
-<a name="Rl-knr"></a>
-### NL.17: Use K&R-derived layout
+### <a name="Rl-knr"></a> NL.17: Use K&R-derived layout
 
 **Reason**: This is the original C and C++ layout. It preserves vertical space well. It distinguishes different language constructs (such as functions and classes well).
 
@@ -11763,8 +11308,7 @@ Private types and functions can be placed with private data.
 **Enforcement**: If you want enforcement, use an IDE to reformat.
  
 
-<a name="Rl-ptr"></a>
-### NL.18: Use C++-style declarator layout
+### <a name="Rl-ptr"></a> NL.18: Use C++-style declarator layout
 
 **Reason**: The C-style layout emphasizes use in expressions and grammar, whereas the C++-style emphasizes types.
 The use in expressions argument doesn't hold for references.
@@ -11778,16 +11322,14 @@ The use in expressions argument doesn't hold for references.
 **Enforcement**: Impossible in the face of history.
 
 
-<a name="S-libraries"></a>
-# Appendix A: Libraries
+# <a name="S-libraries"></a> Appendix A: Libraries
 
 This section lists recommended libraries, and explicitly recommends a few.
 
 ??? Suitable for the general guide? I think not ???
 
 
-<a name="S-modernizing"></a>
-# Appendix B: Modernizing code
+# <a name="S-modernizing"></a> Appendix B: Modernizing code
 
 Ideally, we follow all rules in all code.
 Realistically, we have to deal with a lot of old code:
@@ -11818,11 +11360,11 @@ How best to do it depends on the code, the pressure for updates, the backgrounds
 Here are some (very general) ideas:
 
 * The ideal is "just upgrade everything." That gives the most benefits for the shortest total time.
-In most circumstances, it is also impossible.
+  In most circumstances, it is also impossible.
 * We could convert a code base module for module, but any rules that affects interfaces (especially ABIs), such as [use `array_view`](#SS-views), cannot be done on a per-module basis.
 * We could convert code "bottom up" starting with the rules we estimate will give the greatest benefits and/or the least trouble in a given code base.
 * We could start by focusing on the interfaces, e.g., make sure that no resources are lost and no pointer is misused.
-This would be a set of changes across the whole code base, but would most likely have huge benefits.
+  This would be a set of changes across the whole code base, but would most likely have huge benefits.
 
 Whichever way you choose, please note that the most advantages come with the highest conformance to the guidelines.
 The guidelines are not a random set of unrelated rules where you can randomly pick and choose with an expectation of success.
@@ -11831,13 +11373,12 @@ We would dearly love to hear about experience and about tools used.
 Modernization can be much faster, simpler, and safer when supported with analysis tools and even code transformation tools.
 
 
-<a name="S-discussion"></a>
-# Appendix C: Discussion
+# <a name="S-discussion"></a> Appendix C: Discussion
 
 This section contains follow-up material on rules and sets of rules.
 In particular, here we present further rationale, longer examples, and discussions of alternatives.
 
-### <a name="Sd order">Discussion: Define and initialize member variables in the order of member declaration</a>
+### <a name="Sd-order"></a> Discussion: Define and initialize member variables in the order of member declaration
 
 Member variables are always initialized in the order they are declared in the class definition, so write them in that order in the constructor initialization list. Writing them in a different order just makes the code confusing because it won't run in the order you see, and that can make it hard to see order-dependent bugs.
 
@@ -11861,20 +11402,20 @@ If the class definition and the constructor body are in separate files, the long
 
 **References**
 
-[Cline99] Â§22.03-11 ï‚Ÿ [Dewhurst03] Â§52-53 ï‚Ÿ [Koenig97] Â§4 ï‚Ÿ [Lakos96] Â§10.3.5 ï‚Ÿ [Meyers97] Â§13 ï‚Ÿ [Murray93] Â§2.1.3 ï‚Ÿ [Sutter00] Â§47
+[[Cline99]](#Cline99) §22.03-11, [[Dewhurst03]](Dewhurst03) §52-53, [[Koenig97]](#Koenig97) §4, [[Lakos96]](#Lakos96) §10.3.5, [[Meyers97]](#Meyers97) §13, [[Murray93]](#Murray93) §2.1.3, [[Sutter00]](#Sutter00) §47
 
-### <a name="???">Use of `=`, `{}`, and `()` as initializers</a>
+### <a name="???"></a> Use of `=`, `{}`, and `()` as initializers
 
 ???
 
-### <a name="Sd factory">Discussion: Use a factory function if you need "virtual behavior" during initialization</a>
+### <a name="Sd-factory"></a> Discussion: Use a factory function if you need "virtual behavior" during initialization
 
 If your design wants virtual dispatch into a derived class from a base class constructor or destructor for functions like `f` and `g`, you need other techniques, such as a post-constructor -- a separate member function the caller must invoke to complete initialization, which can safely call `f` and `g` because in member functions virtual calls behave normally. Some techniques for this are shown in the References. Here's a non-exhaustive list of options:
 
-   * *Pass the buck:* Just document that user code must call the post-initialization function right after constructing an object.
-   * *Post-initialize lazily:* Do it during the first call of a member function. A Boolean flag in the base class tells whether or not post-construction has taken place yet.
-   * *Use virtual base class semantics:* Language rules dictate that the constructor most-derived class decides which base constructor will be invoked; you can use that to your advantage. (See [Taligent94].)
-   * *Use a factory function:* This way, you can easily force a mandatory invocation of a post-constructor function.
+* *Pass the buck:* Just document that user code must call the post-initialization function right after constructing an object.
+* *Post-initialize lazily:* Do it during the first call of a member function. A Boolean flag in the base class tells whether or not post-construction has taken place yet.
+* *Use virtual base class semantics:* Language rules dictate that the constructor most-derived class decides which base constructor will be invoked; you can use that to your advantage. (See [[Taligent94]](#Taligent94).)
+* *Use a factory function:* This way, you can easily force a mandatory invocation of a post-constructor function.
 
 Here is an example of the last option:
 
@@ -11917,18 +11458,17 @@ If the requirements above are met, the design guarantees that `PostInitialize` h
 
 In summary, no post-construction technique is perfect. The worst techniques dodge the whole issue by simply asking the caller to invoke the post-constructor manually. Even the best require a different syntax for constructing objects (easy to check at compile time) and/or cooperation from derived class authors (impossible to check at compile time).
 
-**References**: [Alexandrescu01] Â§3 ï‚Ÿ [Boost] ï‚Ÿ [Dewhurst03] Â§75 ï‚Ÿ [Meyers97] Â§46 ï‚Ÿ [Stroustrup00] Â§15.4.3 ï‚Ÿ [Taligent94]
+**References**: [[Alexandrescu01]](#Alexandrescu01) §3, [[Boost]](#Boost), [[Dewhurst03]](#Dewhurst03) §75, [[Meyers97]](#Meyers97) §46, [[Stroustrup00]](#Stroustrup00) §15.4.3, [[Taligent94]](#Taligent94)
 
  
 
  
-
-###<a name="Sd dtor">Discussion: Make base class destructors public and virtual, or protected and nonvirtual</a>
+### <a name="Sd-dtor"></a> Discussion: Make base class destructors public and virtual, or protected and nonvirtual
 
 Should destruction behave virtually? That is, should destruction through a pointer to a `base` class should be allowed? If yes, then `base`'s destructor must be public in order to be callable, and virtual otherwise calling it results in undefined behavior. Otherwise, it should be protected so that only derived classes can invoke it in their own destructors, and nonvirtual since it doesn't need to behave virtually virtual.
 
 **Example**: The common case for a base class is that it's intended to have publicly derived classes, and so calling code is just about sure to use something like a `shared_ptr<base>`:
-    
+
 ```
 class base {
 public:
@@ -11991,14 +11531,15 @@ In this rare case, you could make the destructor public and nonvirtual but clear
 In general, however, avoid concrete base classes (see Item 35). For example, `unary_function` is a bundle-of-typedefs that was never intended to be instantiated standalone. It really makes no sense to give it a public destructor; a better design would be to follow this Item's advice and give it a protected nonvirtual destructor.
 
 
-**References**: [C++CS Item 50]; [Cargill92] pp. 77-79, 207 Å¸ [Cline99] Â§21.06, 21.12-13 Å¸ [Henricson97] pp. 110-114 Å¸ [Koenig97] Chapters 4, 11 Å¸ [Meyers97] Â§14 Å¸ [Stroustrup00] Â§12.4.2 Å¸ [Sutter02] Â§27 Å¸ [Sutter04] Â§18
+**References**: [[C++CS]](#C++CS) Item 50, [[Cargill92]](#Cargill92) pp. 77-79, 207¸ [[Cline99]](#Cline99) §21.06, 21.12-13¸ [[Henricson97]](#Henricson97) pp. 110-114¸ [[Koenig97]](#Koenig97) Chapters 4, 11¸ [[Meyers97]](#Meyers97) §14¸ [[Stroustrup00]](#Stroustrup00) §12.4.2¸ [[Sutter02]](#Sutter02) §27¸ [[Sutter04]](#Sutter04) §18
 
 
+### <a name="Sd-noexcept"></a> Discussion: Usage of noexecpt
+
+???
 
 
-
-<a name="Sd-never-fail"></a>
-### Dicussion: Destructors, deallocation, and swap must never fail
+### <a name="Sd-never-fail"></a> Discussion: Destructors, deallocation, and swap must never fail
 
 Never allow an error to be reported from a destructor, a resource deallocation function (e.g., `operator delete`), or a `swap` function using `throw`. It is nearly impossible to write useful code if these operations can fail, and even if something does go wrong it nearly never makes any sense to retry. Specifically, types whose destructors may throw an exception are flatly forbidden from use with the C++ standard library. Most destructors are now implicitly `noexcept` by default.
 
@@ -12008,12 +11549,12 @@ Never allow an error to be reported from a destructor, a resource deallocation f
 class nefarious {
 public:
     nefarious()  { /* code that could throw */ }   // ok
-    ~nefarious() { /* code that could throw */ }   // BAD, should be noexcept
+    ~nefarious() { /* code that could throw */ }   // BAD, should not throw
     // ...
 };
 ```
 
-* 1. `nefarious` objects are hard to use safely even as local variables:
+1. `nefarious` objects are hard to use safely even as local variables:
 
 ```
 void test(string& s) {
@@ -12023,7 +11564,7 @@ void test(string& s) {
 ```
 Here, copying `s` could throw, and if that throws and if `n`'s destructor then also throws, the program will exit via `std::terminate` because two exceptions can't be propagated simultaneously.
 
-* 2. Classes with `nefarious` members or bases are also hard to use safely, because their destructors must invoke `nefarious`' destructor, and are similarly poisoned by its poor behavior:
+2. Classes with `nefarious` members or bases are also hard to use safely, because their destructors must invoke `nefarious`' destructor, and are similarly poisoned by its poor behavior:
 
 ```
 class innocent_bystander {
@@ -12039,22 +11580,22 @@ void test(string& s) {
 
 Here, if constructing `copy2` throws, we have the same problem because `i`'s destructor now also can throw, and if so we'll invoke `std::terminate`.
 
-* 3. You can't reliably create global or static `nefarious` objects either:
+3. You can't reliably create global or static `nefarious` objects either:
 
 ```
 static nefarious n;       // oops, any destructor exception can't be caught
 ```
 
-* 4. You can't reliably create arrays of `nefarious`:
+4. You can't reliably create arrays of `nefarious`:
 
 ```
 void test() {
-    std::array<nefarious,10> arr; // this line can std::terminate(!)
+    std::array<nefarious, 10> arr; // this line can std::terminate(!)
 ```
 
 The behavior of arrays is undefined in the presence of destructors that throw because there is no reasonable rollback behavior that could ever be devised. Just think: What code can the compiler generate for constructing an `arr` where, if the fourth object's constructor throws, the code has to give up and in its cleanup mode tries to call the destructors of the already-constructed objects... and one or more of those destructors throws? There is no satisfactory answer.
 
-* 5. You can't use `Nefarious` objects in standard containers:
+5. You can't use `Nefarious` objects in standard containers:
 
 ```
 std::vector<nefarious> vec(10);   // this is line can std::terminate()
@@ -12067,9 +11608,9 @@ The standard library forbids all destructors used with it from throwing. You can
 
 Consider the following advice and requirements found in the C++ Standard:
 
-> If a destructor called during stack unwinding exits with an exception, terminate is called (15.5.1). So destructors should generally catch exceptions and not let them propagate out of the destructor. --[C++03] Â§15.2(3)
+> If a destructor called during stack unwinding exits with an exception, terminate is called (15.5.1). So destructors should generally catch exceptions and not let them propagate out of the destructor. --[[C++03]](#C++03) §15.2(3)
 >
-> No destructor operation defined in the C++ Standard Library [including the destructor of any type that is used to instantiate a standard library template] will throw an exception. --[C++03] Â§17.4.4.8(3)
+> No destructor operation defined in the C++ Standard Library [including the destructor of any type that is used to instantiate a standard library template] will throw an exception. --[[C++03]](#C++03) §17.4.4.8(3)
 
 Deallocation functions, including specifically overloaded `operator delete` and `operator delete[]`, fall into the same category, because they too are used during cleanup in general, and during exception handling in particular, to back out of partial work that needs to be undone.
 Besides destructors and deallocation functions, common error-safety techniques rely also on `swap` operations never failing--in this case, not because they are used to implement a guaranteed rollback, but because they are used to implement a guaranteed commit. For example, here is an idiomatic implementation of `operator=` for a type `T` that performs copy construction followed by a call to a no-fail `swap`:
@@ -12088,12 +11629,12 @@ Fortunately, when releasing a resource, the scope for failure is definitely smal
 When using exceptions as your error handling mechanism, always document this behavior by declaring these functions `noexcept`. (See Item 75.)
 
 
-**References**: C++CS Item 51; [C++03] Â§15.2(3), Â§17.4.4.8(3) Å¸ [Meyers96] Â§11 Å¸ [Stroustrup00] Â§14.4.7, Â§E.2-4 Å¸ [Sutter00] Â§8, Â§16 Å¸ [Sutter02] Â§18-19
+**References**: [[C++CS]](#C++CS) Item 51; [[C++03]](#C++03) §15.2(3), §17.4.4.8(3)¸ [[Meyers96]](#Meyers96) §11¸ [[Stroustrup00]](#Stroustrup00) §14.4.7, §E.2-4¸ [[Sutter00]](#Sutter00) §8, §16¸ [[Sutter02]](#Sutter02) §18-19
 
 
 
 
-## <a name ="Sd consistent">Define Copy, move, and destroy consistently</a>
+## <a name ="Sd-consistent"></a> Define Copy, move, and destroy consistently
 
 **Reason**: ???
 
@@ -12124,26 +11665,26 @@ When using exceptions as your error handling mechanism, always document this beh
 
 If you define a destructor, you should not use the compiler-generated copy or move operation; you probably need to define or suppress copy and/or move.
 
+    class X {
+        HANDLE hnd;
+        // ...
+    public:
 
-	class X {
-	    HANDLE hnd;
-	    // ...
-	public:
  	   ~X() { /* custom stuff, such as closing hnd */ }
 
-		// suspicious: no mention of copying or moving -- what happens to hnd?
-	};
+    	// suspicious: no mention of copying or moving -- what happens to hnd?
+    };
 
-	X x1;
-	X x2 = x1; // pitfall: either fails to compile, or does something suspicious
-	x2 = x1;   // pitfall: either fails to compile, or does something suspicious
+    X x1;
+    X x2 = x1; // pitfall: either fails to compile, or does something suspicious
+    x2 = x1;   // pitfall: either fails to compile, or does something suspicious
 
 If you define copying, and any base or member has a type that defines a move operation, you should also define a move operation.
 
-	class x {
-	    string s; // defines more efficient move operations
-	    // ... other data members ...
-	public:
+    class x {
+        string s; // defines more efficient move operations
+        // ... other data members ...
+    public:
     	x(const x&) { /* stuff */ }
     	x& operator=(const x&) { /* stuff */ }
 
@@ -12151,12 +11692,12 @@ If you define copying, and any base or member has a type that defines a move ope
    	 //      (why wasn't the custom "stuff" repeated here?)
 	};
 
-	x test()
-	{
-	    x local;
+    x test()
+    {
+        x local;
     	// ...
     	return local;  // pitfall: will be inefficient and/or do the wrong thing
-	}
+    }
 
 If you define any of the copy constructor, copy assignment operator, or destructor, you probably should define the others.
 
@@ -12168,30 +11709,30 @@ If you define any of the copy constructor, copy assignment operator, or destruct
 
 In many cases, holding properly encapsulated resources using RAII "owning" objects can eliminate the need to write these operations yourself. (See Item 13.)
 
-Prefer compiler-generated (including `=default`) special members; only these can be classified as "trivial," and at least one major standard library vendor heavily optimizes for classes having trivial special members. This is likely to become common practice.
+Prefer compiler-generated (including `=default`) special members; only these can be classified as "trivial", and at least one major standard library vendor heavily optimizes for classes having trivial special members. This is likely to become common practice.
 
 **Exceptions**: When any of the special functions are declared only to make them nonpublic or virtual, but without special semantics, it doesn't imply that the others are needed.
 In rare cases, classes that have members of strange types (such as reference members) are an exception because they have peculiar copy semantics.
 In a class holding a reference, you likely need to write the copy constructor and the assignment operator, but the default destructor already does the right thing. (Note that using a reference member is almost always wrong.)
 
-**References**: C++CS Item 52; [Cline99] Â§30.01-14 Å¸ [Koenig97] Â§4 Å¸ [Stroustrup00] Â§5.5, Â§10.4 Å¸ [SuttHysl04b]
+**References**: [[C++CS]](#C++CS) Item 52; [[Cline99]](#Cline99) §30.01-14¸ [[Koenig97]](#Koenig97) §4¸ [[Stroustrup00]](#Stroustrup00) §5.5, §10.4¸ [[SuttHysl04b]](#SuttHysl04b)
 
 
 
 Resource management rule summary:
 
-* [Provide strong resource safety; that is, never leak anything that you think of as a resource](#Cr safety)
-* [Never throw while holding a resource not owned by a handle](#Cr never)
-* [A "raw" pointer or reference is never a resource handle](#Cr raw)
-* [Never let a pointer outlive the object it points to](#Cr outlive)
-* [Use templates to express containers (and other resource handles)](#Cr templates)
-* [Return containers by value (relying on move for efficiency)](#Cr value return)
-* [If a class is a resource handle, it needs a constructor, a destructor, and copy and/or move operations](#Cr handle)
-* [If a class is a container, give it an initializer-list constructor](#Cr list)
+* [Provide strong resource safety; that is, never leak anything that you think of as a resource](#Cr-safety)
+* [Never throw while holding a resource not owned by a handle](#Cr-never)
+* [A "raw" pointer or reference is never a resource handle](#Cr-raw)
+* [Never let a pointer outlive the object it points to](#Cr-outlive)
+* [Use templates to express containers (and other resource handles)](#Cr-templates)
+* [Return containers by value (relying on move for efficiency)](#Cr-value-return)
+* [If a class is a resource handle, it needs a constructor, a destructor, and copy and/or move operations](#Cr-handle)
+* [If a class is a container, give it an initializer-list constructor](#Cr-list)
 
 
 
-### <a name="Cr safety">Provide strong resource safety; that is, never leak anything that you think of as a resource</a>
+### <a name="Cr-safety"></a> Provide strong resource safety; that is, never leak anything that you think of as a resource
 
 **Reason**: Prevent leaks. Leaks can lead to performance degradation, mysterious error, system crashes, and security violations.
 
@@ -12207,7 +11748,7 @@ Resource management rule summary:
 		int sz;
 	};
 
-This class is a resource handle. It manages the lifetime of the `T`s. To do so, `Vector` must define or delete <a ref="???">the set of special operations</a> (constructors, a destructor, etc.).
+This class is a resource handle. It manages the lifetime of the `T`s. To do so, `Vector` must define or delete [the set of special operations](???) (constructors, a destructor, etc.).
 
 **Example**:
 
@@ -12216,7 +11757,7 @@ This class is a resource handle. It manages the lifetime of the `T`s. To do so, 
 **Enforcement**: The basic technique for preventing leaks is to have every resource owned by a resource handle with a suitable destructor. A checker can find "naked `new`s". Given a list of C-style allocation functions (e.g., `fopen()`), a checker can also find uses that are not managed by a resource handle. In general, "naked pointers" can be viewed with suspicion, flagged, and/or analyzed. A a complete list of resources cannot be generated without human input (the definition of "a resource" is necessarily too general), but a tool can be "parameterized" with a resource list.
 
 
-### <a name="Cr never">Never throw while holding a resource not owned by a handle</a>
+### <a name="Cr-never"></a> Never throw while holding a resource not owned by a handle
 
 **Reason**: That would be a leak.
 
@@ -12224,7 +11765,7 @@ This class is a resource handle. It manages the lifetime of the `T`s. To do so, 
 	
 	void f(int i)
 	{
-		FILE* f = fopen("a file","r");
+		FILE* f = fopen("a file", "r");
 		ifstream is { "another file" };
 		// ...
 		if (i==0) return;
@@ -12234,9 +11775,9 @@ This class is a resource handle. It manages the lifetime of the `T`s. To do so, 
 
 If `i==0` the file handle for `a file` is leaked. On the other hand, the `ifstream` for `another file` will correctly close its file (upon destruction). If you must use an explicit pointer, rather than a resource handle with specific semantics, use a `unique_ptr` or a `shared_ptr`:
 
-void f(int i)
+	void f(int i)
 	{
-		unique_ptr<FILE> f = fopen("a file","r");
+		unique_ptr<FILE> f = fopen("a file", "r");
 		// ...
 		if (i==0) return;
 		// ...
@@ -12250,14 +11791,14 @@ For starters, we know about the standard-library containers, `string`, and smart
 The use of `array_view` and `string_view` should help a lot (they are not resource handles).
 
 
-### <a name="Cr raw">A "raw" pointer or reference is never a resource handle</a>
+### <a name="Cr-raw"></a> A "raw" pointer or reference is never a resource handle
 
 **Reason** To be able to distinguish owners from views.
 
 **Note**: This is independent of how you "spell" pointer: `T*`, `T&`, `Ptr<T>` and `Range<T>` are not owners.
 
 
-### <a name="Cr outlive">Never let a pointer outlive the object it points to</a>
+### <a name="Cr-outlive"></a> Never let a pointer outlive the object it points to
 
 **Reason**: To avoid extremely hard-to-find errors. Dereferencing such a pointer is undefined behavior and could lead to violations of the type system.
 
@@ -12272,9 +11813,9 @@ The use of `array_view` and `string_view` should help a lot (they are not resour
 	void use()
 	{
 		string* p = bad();
-		vector<int> xx = {7,8,9};
+		vector<int> xx = {7, 8, 9};
 		string x = *p;		// undefined behavior: x may not be 1
-		*p = "Evil!";		// undefined behavior: we don't know what (if anytihng) is allocated a location p
+		*p = "Evil!";		// undefined behavior: we don't know what (if anything) is allocated a location p
 	}
 
 The `string`s of `v` are destroyed upon exit from `bad()` and so is `v` itself. This the returned pointer points to unallocated memory on the free store. This memory (pointed into by `p`) may have been reallocated by the time `*p` is executed. There may be no `string` to read and a write through `p` could easily corrupt objects of unrelated types.
@@ -12282,7 +11823,7 @@ The `string`s of `v` are destroyed upon exit from `bad()` and so is `v` itself. 
 **Enforcement**: Most compilers already warn about simple cases and has the information to do more. Consider any pointer returned from a function suspect. Use containers, resource handles, and views (e.g., `array_view` known not to be resource handles) to lower the number of cases to be examined. For starters, consider every class with a destructor a resource handle.
 
 
-### <a name="Cr templates">Use templates to express containers (and other resource handles)</a>
+### <a name="Cr-templates"></a> Use templates to express containers (and other resource handles)
 
 **Reason**: To provide statically type-safe manipulation of elements.
 
@@ -12294,7 +11835,7 @@ The `string`s of `v` are destroyed upon exit from `bad()` and so is `v` itself. 
 		int sz;
 	};
 
-### <a name="Cr value return">Return containers by value (relying on move for efficiency)</a>
+### <a name="Cr-value-return"></a> Return containers by value (relying on move for efficiency)
 
 **Reason**: To simplify code and eliminate a need for explicit memory management. To bring an object into a surrounding scope, thereby extending its lifetime.
 
@@ -12309,13 +11850,13 @@ The `string`s of `v` are destroyed upon exit from `bad()` and so is `v` itself. 
 **Enforcement**: Check for pointers and references returned from functions and see if they are assigned to resource handles (e.g., to a `unique_ptr`).
 
 
-### <a name="Cr handle">If a class is a resource handle, it needs a constructor, a destructor, and copy and/or move operations</a>
+### <a name="Cr-handle"></a> If a class is a resource handle, it needs a constructor, a destructor, and copy and/or move operations
 
 **Reason**: To provide complete control of the lifetime of the resource. To provide a coherent set of operations on the resource.
 
 **Example**:
 
-	messing with pointers
+    ??? Messing with pointers
 
 **Note**: If all members are resource handles, rely on the default special operations where possible.
 
@@ -12329,7 +11870,7 @@ Now `Named` has a default constructor, a destructor, and efficient copy and move
 **Enforcement**: In general, a tool cannot know if a class is a resource handle. However, if a class has some of [the default operations](???), it should have all, and if a class has a member that is a resource handle, it should be considered a resource handle.
 
 
-### <a name="Cr list">If a class is a container, give it an initializer-list constructor</a>
+### <a name="Cr-list"></a> If a class is a container, give it an initializer-list constructor
 
 **Reason**: It is common to need an initial set of elements.
 
@@ -12346,12 +11887,11 @@ Now `Named` has a default constructor, a destructor, and efficient copy and move
 **Enforcement**: When is a class a container?
 
 
-<a name="S-unclassified"></a>
-# To-do: Unclassified proto-rules
+# <a name="S-unclassified"></a> To-do: Unclassified proto-rules
 
 This is our to-do list.
 Eventually, the entries will become rules or parts of rules.
-Aternatively, we will decide that no change is needed and delete the entry.
+Alternatively, we will decide that no change is needed and delete the entry.
 
 * No long-distance friendship
 * Should physical design (what's in a file) and large-scale design (libraries, groups of libraries) be addressed?
@@ -12361,34 +11901,36 @@ Aternatively, we will decide that no change is needed and delete the entry.
 * Avoid implicit conversions
 * Const member functions should be thread safe "¦ aka, but I don't really change the variable, just assign it a value the first time its called "¦ argh
 * Always initialize variables, use initialization lists for member variables.
-* Anyone writing a public interface which takes or returns void* should have their toes set on fire. Â Â That one has been a personal favourite of mine for a number of years. :)
+* Anyone writing a public interface which takes or returns void* should have their toes set on fire. That one has been a personal favourite of mine for a number of years. :)
 * Use `const`'ness wherever possible: member functions, variables and (yippee) const_iterators
 * Use `auto`
 * `(size)` vs. `{initializers}` vs. `{Extent{size}}`
 * Don't overabstract
 * Never pass a pointer down the call stack
 * falling through a function bottom
-* Should there be guidelines to choose between polymorphisms? YES. classic (virtual functions, reference semantics) vs. Sean Parent style (value semantics, type-erased, kind of like std::function)  vs. CRTP/static? YES Perhaps even vs. tag dispatch?
+* Should there be guidelines to choose between polymorphisms? YES. classic (virtual functions, reference semantics) vs. Sean Parent style (value semantics, type-erased, kind of like `std::function`)  vs. CRTP/static? YES Perhaps even vs. tag dispatch?
 * Speaking of virtual functions, should non-virtual interface be promoted? NO. (public non-virtual foo() calling private/protected do_foo())? Not a new thing, seeing as locales/streams use it, but it seems to be under-emphasized.
 * should virtual calls be banned from ctors/dtors in your guidelines? YES. A lot of people ban them, even though I think it's a big strength of C++ that they are ??? -preserving (D disappointed me so much when it went the Java way). WHAT WOULD BE A GOOD EXAMPLE?
 * Speaking of lambdas, what would weigh in on the decision between lambdas and (local?) classes in algorithm calls and other callback scenarios?
-* And speaking of std::bind, Stephen T. Lavavej criticizes it so much I'm starting to wonder if it is indeed going to fade away in future. Should lambdas be recommended instead?
+* And speaking of `std::bind`, Stephen T. Lavavej criticizes it so much I'm starting to wonder if it is indeed going to fade away in future. Should lambdas be recommended instead?
 * What to do with leaks out of temporaries? : `p = (s1+s2).c_str();`
 * pointer/iterator invalidation leading to dangling pointers
 
-	void bad()
-	{
-		int* p = new int[700];
-		    int* q = &p[7];
-    	delete p;
+  Example:
 
-    	vector<int> v(700);
-    	int* q2 = &v[7];
-    	v.resize(900);
+    void bad()
+    {
+    int* p = new int[700];
+        int* q = &p[7];
+        delete p;
 
-  	  // ... use q and q2 ...
-	}
-	
+        vector<int> v(700);
+        int* q2 = &v[7];
+        v.resize(900);
+
+        // ... use q and q2 ...
+    }
+
 * LSP
 * private inheritance vs/and membership
 * avoid static class members variables (race conditions, almost-global variables)
@@ -12403,3 +11945,55 @@ Aternatively, we will decide that no change is needed and delete the entry.
 * individual `shared_ptr` objects are not thread-safe: a thread cannot call a non-const member function of `shared_ptr` while another thread accesses (but different threads can call non-const member functions on copies of a `shared_ptr` that refer to the same shared object)
 
 * rules for arithmetic
+
+
+
+# Bibliography
+
+* <a name="Alexandrescu01"></a>
+  [Alexandrescu01]  A. Alexandrescu. Modern C++ Design (Addison-Wesley, 2001).
+* <a name="C++03"></a>
+  [C++03]           ISO/IEC 14882:2003(E), Programming LanguagesC++ (updated ISO and ANSI C++ Standard including the contents of [C++98] plus errata corrections).
+* <a name="C++CS"></a>
+  [C++CS]
+* <a name="Cargill92"></a>
+  [Cargill92]       T. Cargill. C++ Programming Style (Addison-Wesley, 1992).
+* <a name="Cline99"></a>
+  [Cline99]         M. Cline, G. Lomow, and M. Girou. C++ FAQs (2ndEdition) (Addison-Wesley, 1999).
+* <a name="Dewhurst03"></a>
+  [Dewhurst03]      S. Dewhurst. C++ Gotchas (Addison-Wesley, 2003).
+* <a name="Henricson97"></a>
+  [Henricson97]     M. Henricson and E. Nyquist. Industrial Strength C++ (Prentice Hall, 1997).
+* <a name="Koenig97"></a>
+  [Koenig97]        A. Koenig and B. Moo. Ruminations on C++ (Addison-Wesley, 1997).
+* <a name="Lakos96"></a>
+  [Lakos96]         J. Lakos. Large-Scale C++ Software Design (Addison-Wesley, 1996).
+* <a name="Meyers96"></a>
+  [Meyers96]        S. Meyers. More Effective C++ (Addison-Wesley, 1996).
+* <a name="Meyers97"></a>
+  [Meyers97]        S. Meyers. Effective C++ (2ndEdition) (Addison-Wesley, 1997).
+* <a name="Meyers97"></a>
+  [Meyers14]        S. Meyers. Effective Modern C++ (Addison-Wesley, 2014).
+* <a name="Murray93"></a>
+  [Murray93]        R. Murray. C++ Strategies and Tactics (Addison-Wesley, 1993).
+* <a name="Stroustrup00"></a>
+  [Stroustrup00]    B. Stroustrup. The C++ Programming Language (Special 3rdEdition) (Addison-Wesley, 2000).
+* <a name="Stroustrup05"></a>
+  [Stroustrup05]    B. Stroustrup. [A rationale for semantically enhanced library languages](http://www.stroustrup.com/SELLrationale.pdf).
+* <a name="Stroustrup13"></a>
+  [Stroustrup13]    B. Stroustrup. [The C++ Programming Language (4th Edition)](http://www.stroustrup.com/4th.html). Addison Wesley 2013.
+* <a name="Stroustrup14"></a>
+  [Stroustrup14]    B. Stroustrup. [A Tour of C++](http://www.stroustrup.com/Tour.html).
+Addison Wesley 2014.
+* <a name="SuttHysl04b"></a>
+  [SuttHysl04b]     H. Sutter and J. Hyslop. "Collecting Shared Objects" (C/C++ Users Journal, 22(8), August 2004).
+* <a name="SuttAlex05"></a>
+  [SuttAlex05]      H. Sutter and  A. Alexandrescu. C++ Coding Standards. Addison-Wesley 2005.
+* <a name="Sutter00"></a>
+  [Sutter00]        H. Sutter. Exceptional C++ (Addison-Wesley, 2000).
+* <a name="Sutter02"></a>
+  [Sutter02]        H. Sutter. More Exceptional C++ (Addison-Wesley, 2002).
+* <a name="Sutter04"></a>
+  [Sutter04]        H. Sutter. Exceptional C++ Style (Addison-Wesley, 2004).
+* <a name="Taligent94"></a>
+  [Taligent94]      Taligent's Guide to Designing Programs (Addison-Wesley, 1994).
