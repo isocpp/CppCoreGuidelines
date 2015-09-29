@@ -1150,7 +1150,7 @@ Better still, use [RAII](#Rr-raii) to ensure that the postcondition ("the lock m
 
 	void manipulate(Record& r)	// best
 	{
-		lock_guard _ {m};
+		lock_guard<mutex> _ {m};
 		// ...
 	}
 	
@@ -2723,7 +2723,7 @@ Concrete types are also often referred to as value types to distinguish them fro
 Concrete type rule summary:
 
 * [C.10: Prefer a concrete type over more complicated classes](#Rc-concrete)
-* [C.11: Make a concrete types regular](#Rc-regular)
+* [C.11: Make concrete types regular](#Rc-regular)
 
 
 ### <a name="Rc-concrete"></a> C.10 Prefer a concrete type over more complicated classes
@@ -2770,7 +2770,7 @@ This is done where dynamic allocation is prohibited (e.g. hard real-time) and to
 **Enforcement**: ???
 
 
-### <a name="Rc-regular"></a> C.11: Make a concrete types regular
+### <a name="Rc-regular"></a> C.11: Make concrete types regular
 
 **Reason**: Regular types are easier to understand and reason about than types that are not regular (irregularities requires extra effort to understand and use).
 
@@ -8324,7 +8324,7 @@ Let cleanup actions on the unwinding path be handled by [RAII](#Re-raii).
 	void f(int n)
 	{
 		void* p = malloc(1, n);
-		auto __ = finally([] { free(p); });
+		auto _ = finally([] { free(p); });
 		// ...
 	}
 
