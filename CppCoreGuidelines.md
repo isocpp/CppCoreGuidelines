@@ -2987,16 +2987,16 @@ Only if you need code that is not simply destructors of members executed, define
 **Example**:
 
 	template<typename A>
-	struct Final_action {	// slightly simplified
+	struct final_action {	// slightly simplified
 		A act;
-		Final_action(F a) :act{a} {}
-		~Final_action() { act(); }
+		final_action(F a) :act{a} {}
+		~final_action() { act(); }
 	};
 
 	template<typename A>
-	Final_action<A> finally(A act)	// deduce action type
+	final_action<A> finally(A act)	// deduce action type
 	{
-		return Final_action<A>{a};
+		return final_action<A>{a};
 	}
 
 	void test()
@@ -3007,12 +3007,12 @@ Only if you need code that is not simply destructors of members executed, define
 		// ...
 	} // act done here
 
-The whole purpose of `Final_action` is to get a piece of code (usually a lambda) executed upon destruction.
+The whole purpose of `final_action` is to get a piece of code (usually a lambda) executed upon destruction.
 
 **Note**: There are two general categories of classes that need a user-defined destructor:
 
 * A class with a resource that is not already represented as a class with a destructor, e.g., a `vector` or a transaction class.
-* A class that exists primarily to execute an action upon destruction, such as a tracer or `Final_action`.
+* A class that exists primarily to execute an action upon destruction, such as a tracer or `final_action`.
 
 **Example, bad**:
 
@@ -7880,7 +7880,7 @@ Error-handling rule summary:
 * [E.16: Destructors, deallocation, and `swap` must never fail](#Re-never-fail)
 * [E.17: Don't try to catch every exception in every function](#Re-not-always)
 * [E.18: Minimize the use of explicit `try`/`catch`](#Re-catch)
-* [E.19: Use a `Final_action` object to express cleanup if no suitable resource handle is available](#Re-finally)
+* [E.19: Use a `final_action` object to express cleanup if no suitable resource handle is available](#Re-finally)
 
 * [E.25: ??? What to do in programs where exceptions cannot be thrown](#Re-no-throw)
 * ???
@@ -8046,7 +8046,7 @@ Unless you really need pointer semantics, use a local resource object:
 		// ...
 	}
 
-**Note**: If there is no obvious resource handle, cleanup actions can be represented by a [`Finally` object](#Re-finally)
+**Note**: If there is no obvious resource handle, cleanup actions can be represented by a [`final_action` object](#Re-finally)
 
 **Note**: But what do we do if we are writing a program where exceptions cannot be used?
 First challenge that assumption; there are many anti-exceptions myths around.
@@ -8316,7 +8316,7 @@ Let cleanup actions on the unwinding path be handled by [RAII](#Re-raii).
 **Enforcement**: ???
 
 
-### <a name="Re-finally"></a> E.19: Use a `Final_action` object to express cleanup if no suitable resource handle is available
+### <a name="Re-finally"></a> E.19: Use a `final_action` object to express cleanup if no suitable resource handle is available
 
 **Reason**: `finally` is less verbose and harder to get wrong than `try`/`catch`.
 
@@ -10980,7 +10980,7 @@ Use `not_null<zstring>` for C-style strings that cannot be `nullptr`. ??? Do we 
 
 ## <a name="SS-utilities"></a> GSL.util: Utilities
 
-* `finally`		// `finally(f)` makes a `Final_act{f}` with a destructor that invokes `f`
+* `finally`		// `finally(f)` makes a `final_action{f}` with a destructor that invokes `f`
 * `narrow_cast`	// `narrow_cast<T>(x)` is `static_cast<T>(x)`
 * `narrow`		// `narrow<T>(x)` is `static_cast<T>(x)` if `static_cast<T>(x)==x` or it throws `narrowing_error`
 * `implicit`	// "Marker" to put on single-argument constructors to explicitly make them non-explicit
