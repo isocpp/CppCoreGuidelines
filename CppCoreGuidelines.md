@@ -7157,16 +7157,16 @@ Some of these expressions are unconditionally bad (e.g., they rely on undefined 
 
 **Example**:
 
-	x=k*y+z;	// OK
+	x=k*y+z;              // OK
 
-	auto t1 = k*y;	// bad: unnecessarily verbose
+	auto t1 = k*y;        // bad: unnecessarily verbose
 	x = t1+z;
 
-	if(0<=x && x<max) // OK
+	if(0<=x && x<max)     // OK
 
-	auto t1 = 0<=x;		// bad: unnecessarily verbose
+	auto t1 = 0<=x;		    // bad: unnecessarily verbose
 	auto t2 = x<max;
-	if(t1 && t2) // ...
+	if(t1 && t2)          // ...
 
 
 **Enforcement**: Tricky. How complicated must an expression be to be considered complicated? Writing computations as statements with one operation each is also confusing. Things to consider:
@@ -7475,8 +7475,8 @@ There can be code in the `...` part that causes the `delete` never to happen.
 	{
 		int a1[7];
 		int a2[9];
-		if (&a1[5]<&a2[7]) 		// bad: undefined
-		if (0<&a1[5]-&a2[7])	// bad: undefined
+		if (&a1[5] < &a2[7]) {}       // bad: undefined
+		if (0 < &a1[5] - &a2[7]) {}   // bad: undefined
 	}
 
 **Note**: This example has many more problems.
@@ -10775,7 +10775,7 @@ Dynamic accesses into arrays are difficult for both tools and humans to validate
 **Example; good**:
 
     // ALTERNATIVE A: Use an array_view
-    void f()
+    void f1()
     {
         int arr[COUNT];
         array_view<int> av = arr;
@@ -10784,7 +10784,7 @@ Dynamic accesses into arrays are difficult for both tools and humans to validate
     }
 
     // ALTERNATIVE B: Use at() for access
-    void f()
+    void f2()
     {
         int arr[COUNT];
         for (int i = 0; i < COUNT; ++i)
@@ -11152,25 +11152,25 @@ Choose a "house style", but leave "imported" libraries with their original style
 
 **Example**, ISO Standard, use lower case only and digits, separate words with underscores:
 
-	int
-	vector
-	my_map
+* `int`
+* `vector`
+* `my_map`
 
 Avoid double underscores `__`
 
 **Example**: [Stroustrup](http://www.stroustrup.com/Programming/PPP-style.pdf):
 ISO Standard, but with upper case used for your own types and concepts:
 
-	int
-	vector
-	My_map
+* `int`
+* `vector`
+* `My_map`
 
 **Example**: CamelCase: capitalize each word in a multi-word identifier
 
-	int
-	vector
-	MyMap
-	myMap
+* `int`
+* `vector`
+* `MyMap`
+* `myMap`
 
 Some conventions capitalize the first letter, some don't.
 
@@ -11961,11 +11961,11 @@ The `string`s of `v` are destroyed upon exit from `bad()` and so is `v` itself. 
 
 **Example**:
 
-	vector
+	??? vector
 
 **Example**:
 
-	factory
+	??? factory
 
 **Enforcement**: Check for pointers and references returned from functions and see if they are assigned to resource handles (e.g., to a `unique_ptr`).
 
