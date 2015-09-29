@@ -732,7 +732,7 @@ or may only need part of the value that is more easily checked than the whole.
      		// Should I handle the degenerate case here?
      		return sqrt(x*x + y*y + z*z - e*e);
    		}
-		   
+
 		???
 	};
 
@@ -1416,8 +1416,8 @@ There are functions that are best expressed with four individual arguments, but 
 **Alternative**: Use default arguments or overloads to allow the most common forms of calls to be done with fewer arguments.
 
 **Enforcement**:
-   - Warn when a functions declares two iterators (including pointers) of the same type instead of a range or a view.
-   - (Not enforceable) This is a philosophical guideline that is infeasible to check directly.
+* Warn when a functions declares two iterators (including pointers) of the same type instead of a range or a view.
+* (Not enforceable) This is a philosophical guideline that is infeasible to check directly.
 
 
 ### <a name="Ri-unrelated"></a> I.15: Avoid adjacent unrelated parameters of the same type
@@ -1788,7 +1788,7 @@ An inline function is part of the ABI.
 **Exception**: Template functions (incl. template member functions) must be in headers and therefore inline.
 
 **Enforcement**: Flag `inline` functions that are more than three statements and could have been declared out of line (such as class member functions).
-To fix: Declare the function out of line. [[NM: Certainly possible, but size-based metrics can be very annoying.]]
+To fix: Declare the function out of line. (NM: Certainly possible, but size-based metrics can be very annoying.)
 
 
 ### <a name="Rf-noexcept"></a> F.6: If your function may not throw, declare it `noexcept`
@@ -2696,7 +2696,7 @@ Placing them in the same namespace as the class makes their relationship to the 
 
 * Flag global functions taking argument types from a single namespace.
 
-		
+
 ### <a name="Rc-const"></a> C.6: Declare a member function that does not modify the state of its object `const`
 
 **Reason**: More precise statement of design intent, better readability, more errors caught by the compiler, more optimization opportunities.
@@ -3725,32 +3725,32 @@ How would a maintainer know whether `j` was deliberately uninitialized (probably
 
 **Example*:
 
-	class B {
-	protected:
-	    B() { /* ... */ }					// create an imperfectly initialized object
+    class B {
+    protected:
+        B() { /* ... */ }                   // create an imperfectly initialized object
 
-	    virtual void PostInitialize()       // to be called right after construction
-	    {
-			// ...
-			f();	// GOOD: virtual dispatch is safe
-			// ...
-		}
+        virtual void PostInitialize()       // to be called right after construction
+        {
+            // ...
+            f();    // GOOD: virtual dispatch is safe
+            // ...
+        }
 
-	public:
-	    virtual void f() = 0;
+    public:
+        virtual void f() = 0;
 
-	    template<class T>
-	    static shared_ptr<T> Create()	// interface for creating objects
-		{
-	        auto p = make_shared<T>();
-	        p->PostInitialize();
-	        return p;
-	    }
-	};
+        template<class T>
+        static shared_ptr<T> Create()    // interface for creating objects
+        {
+            auto p = make_shared<T>();
+            p->PostInitialize();
+            return p;
+        }
+    };
 
-	class D : public B { /* "¦ */ };			// some derived class
+    class D : public B { /* "¦ */ };            // some derived class
 
-	shared_ptr<D> p = D::Create<D>();		// creating a D object
+    shared_ptr<D> p = D::Create<D>();        // creating a D object
 
 By making the constructor `protected` we avoid an incompletely constructed object escaping into the wild.
 By providing the factory function `Create()`, we make construction (on the free store) convenient.
@@ -4722,7 +4722,7 @@ Note that because of language rules, the covariant return type cannot be a smart
 * Flag a class with a virtual function and a non-user-defined copy operation.
 * Flag an assignment of base class objects (objects of a class from which another has been derived).
  
-  
+
 ### <a name="Rh-get"></a> C.131: Avoid trivial getters and setters
 
 **Reason**: A trivial getter or setter adds no semantic value; the data item could just as well be `public`.
@@ -5585,7 +5585,7 @@ They are a notable source of errors.
 
 **Exception**: An immutable (`const`) global does not introduce the problems we try to avoid by banning global objects.
 
-**Enforcement**: [[??? NM: Obviously we can warn about non-const statics....do we want to?]]
+**Enforcement**: (??? NM: Obviously we can warn about non-const statics....do we want to?)
 
 
 ## <a name="SS-alloc"></a> R.alloc: Allocation and deallocation
@@ -5822,9 +5822,9 @@ be able to destroy a cyclic structure.
 
 	???
 
-**Note**:  ??? [[HS: A lot of people say "to break cycles", while I think "temporary shared ownership" is more to the point.]]
-???[[BS: breaking cycles is what you must do; temporarily sharing ownership is how you do it.
-You could "temporarily share ownership simply by using another `stared_ptr`.]]
+**Note**:  ??? (HS: A lot of people say "to break cycles", while I think "temporary shared ownership" is more to the point.)
+???(BS: breaking cycles is what you must do; temporarily sharing ownership is how you do it.
+You could "temporarily share ownership simply by using another `stared_ptr`.)
 
 **Enforcement**: ???probably impossible. If we could statically detect cycles, we wouldn't need `weak_ptr`
 
@@ -6493,10 +6493,10 @@ However, beware that this may leave uninitialized data beyond the input - and th
 
 The cost of initializing that array could be significant in some situations.
 However, such examples do tend to leave uninitialized variables accessible, so they should be treated with suspicion.
-	
-	constexpr int max = 8*1024;
-	int buf[max] = {0};				// better in some situations
-	f.read(buf, max);
+
+    constexpr int max = 8*1024;
+    int buf[max] = {0};				// better in some situations
+    f.read(buf, max);
 
 When feasible use a library function that is know not to overflow. For example:
 
@@ -6796,13 +6796,13 @@ The definition of `a2` is C but not C++ and is considered a security risk
 If at all possible, reduce the conditions to a simple set of alternatives (e.g., an `enum`) and don't mix up selection and initialization.
 
 **Example**:
-	
-	owner<istream&> in = [&]{
-		switch (source) {
-		case default: 		owned=false; return cin;
-		case command_line:  owned=true;  return *new istringstream{argv[2]};
-		case file: 			owned=true;  return *new ifstream{argv[2]};
-	}();
+
+    owner<istream&> in = [&]{
+        switch (source) {
+        case default:       owned=false; return cin;
+        case command_line:  owned=true;  return *new istringstream{argv[2]};
+        case file:          owned=true;  return *new ifstream{argv[2]};
+    }();
 
 **Enforcement**: Hard. At best a heuristic. Look for an uninitialized variable followed by a loop assigning to it.
 
@@ -8771,7 +8771,7 @@ It is better and simpler just to use `Sortable`:
 * Look for unconstrained arguments, templates that use "unusual"/non-standard concepts, templates that use "homebrew" concepts without axioms.
 * Develop a concept-discovery tool (e.g., see [an early experiment](http://www.stroustrup.com/sle2010_webversion.pdf).
 
-	
+
 ### <a name="Rt-auto"></a> T.12: Prefer concept names over `auto` for local variables
 
 **Reason**: `auto` is the weakest concept. Concept names convey more meaning than just `auto`.
@@ -10367,14 +10367,14 @@ Somewhat brief, pre-C++11, and (not unreasonably) adjusted to its domain.
 
 ## <a name="SS-books"></a> RF.books: Books with coding guidelines
 
-* [[Meyers14]](#Meyers14) Scott Meyers: Effective Modern C++ (???). Addison-Wesley 2014. Beware of overly technical and overly definite rules.
-* [[SuttAlex05]](#SuttAlex05) Sutter and Alexandrescu: C++ Coding Standards. Addison-Wesley 2005. More a set of meta-rules than a set of rules. Pre-C++11. Recommended.
-* [[Stroustrup05]](#Stroustrup05) Bjarne Stroustrup: [A rationale for semantically enhanced library languages](http://www.stroustrup.com/SELLrationale.pdf). 
+* [Meyers14](#Meyers14) Scott Meyers: Effective Modern C++ (???). Addison-Wesley 2014. Beware of overly technical and overly definite rules.
+* [SuttAlex05](#SuttAlex05) Sutter and Alexandrescu: C++ Coding Standards. Addison-Wesley 2005. More a set of meta-rules than a set of rules. Pre-C++11. Recommended.
+* [Stroustrup05](#Stroustrup05) Bjarne Stroustrup: [A rationale for semantically enhanced library languages](http://www.stroustrup.com/SELLrationale.pdf).
   LCSD05. October 2005.
-* [[Stroustrup14]](#Stroustrup05) Stroustrup: [A Tour of C++](http://www.stroustrup.com/Tour.html).
+* [Stroustrup14](#Stroustrup05) Stroustrup: [A Tour of C++](http://www.stroustrup.com/Tour.html).
 Addison Wesley 2014.
 Each chapter ends with an advice section consisting of a set of recommendations.
-* [[Stroustrup13]](#Stroustrup13) Stroustrup: [The C++ Programming Language (4th Edition)](http://www.stroustrup.com/4th.html).
+* [Stroustrup13](#Stroustrup13) Stroustrup: [The C++ Programming Language (4th Edition)](http://www.stroustrup.com/4th.html).
 Addison Wesley 2013.
 Each chapter ends with an advice section consisting of a set of recommendations.
 * Stroustrup: [Style Guide](http://www.stroustrup.com/Programming/PPP-style.pdf)
@@ -10420,7 +10420,7 @@ Primarily a teaching tool.
 * ISO C++ Concepts TS
 * WG21 Ranges report
  
- 
+
 ## <a name="SS-ack"></a> Acknowledgements
 
 Thanks to the many people who contributed rules, suggestions, supporting information, references, etc.:
@@ -10642,7 +10642,7 @@ Reading from a vararg assumes that the correct type was actually passed. Passing
     sum( 3.14159, 2.71828 ); // ok: ~5.85987
 
 Note: Declaring a `...` parameter is sometimes useful for techniques that don't involve actual argument passing, notably to declare “take-anything” functions so as to disable "everything else" in an overload set or express a catchall case in a template metaprogram.
-    
+
 **Enforcement**:
 
 * Issue a diagnostic for using `va_list`, `va_start`, or `va_arg`. To fix: Use a variadic template parameter list instead.
@@ -11503,34 +11503,34 @@ If your design wants virtual dispatch into a derived class from a base class con
 
 Here is an example of the last option:
 
-	class B {
-	public:
-	    B() { /* ... */ f(); /*...*/ }		// BAD: see Item 49.1
+    class B {
+    public:
+        B() { /* ... */ f(); /*...*/ }        // BAD: see Item 49.1
 
- 	   virtual void f() = 0;
+        virtual void f() = 0;
 
- 	   // ...
-	};
+        // ...
+    };
 
-	class B {
-	protected:
-  	  B() { /* ... */ }
-  	  virtual void PostInitialize()       // called right after construction
-  	      { /* ... */ f(); /*...*/ }		// GOOD: virtual dispatch is safe
-	public:
-   		virtual void f() = 0;
+    class B {
+    protected:
+        B() { /* ... */ }
+        virtual void PostInitialize()       // called right after construction
+            { /* ... */ f(); /*...*/ }        // GOOD: virtual dispatch is safe
+    public:
+        virtual void f() = 0;
 
-    	template<class T>
-    	static shared_ptr<T> Create() {		// interface for creating objects
-        	auto p = make_shared<T>();
-        	p->PostInitialize();
-        	return p;
-    	}
-	};
+        template<class T>
+        static shared_ptr<T> Create() {        // interface for creating objects
+            auto p = make_shared<T>();
+            p->PostInitialize();
+            return p;
+        }
+    };
 
-	class D : public B { /* "¦ */ };			// some derived class
+    class D : public B { /* "¦ */ };            // some derived class
 
-	shared_ptr<D> p = D::Create<D>();		// creating a D object
+    shared_ptr<D> p = D::Create<D>();    	// creating a D object
 
 This design requires the following discipline:
 
@@ -11694,7 +11694,7 @@ Consider the following advice and requirements found in the C++ Standard:
 
 > If a destructor called during stack unwinding exits with an exception, terminate is called (15.5.1). So destructors should generally catch exceptions and not let them propagate out of the destructor. --[[C++03]](#C++03) §15.2(3)
 >
-> No destructor operation defined in the C++ Standard Library [including the destructor of any type that is used to instantiate a standard library template] will throw an exception. --[[C++03]](#C++03) §17.4.4.8(3)
+> No destructor operation defined in the C++ Standard Library (including the destructor of any type that is used to instantiate a standard library template) will throw an exception. --[[C++03]](#C++03) §17.4.4.8(3)
 
 Deallocation functions, including specifically overloaded `operator delete` and `operator delete[]`, fall into the same category, because they too are used during cleanup in general, and during exception handling in particular, to back out of partial work that needs to be undone.
 Besides destructors and deallocation functions, common error-safety techniques rely also on `swap` operations never failing--in this case, not because they are used to implement a guaranteed rollback, but because they are used to implement a guaranteed commit. For example, here is an idiomatic implementation of `operator=` for a type `T` that performs copy construction followed by a call to a no-fail `swap`:
@@ -12000,20 +12000,18 @@ Alternatively, we will decide that no change is needed and delete the entry.
 * What to do with leaks out of temporaries? : `p = (s1+s2).c_str();`
 * pointer/iterator invalidation leading to dangling pointers
 
-  Example:
+        void bad()
+        {
+            int* p = new int[700];
+            int* q = &p[7];
+            delete p;
 
-    void bad()
-    {
-    int* p = new int[700];
-        int* q = &p[7];
-        delete p;
+            vector<int> v(700);
+            int* q2 = &v[7];
+            v.resize(900);
 
-        vector<int> v(700);
-        int* q2 = &v[7];
-        v.resize(900);
-
-        // ... use q and q2 ...
-    }
+            // ... use q and q2 ...
+        }
 
 * LSP
 * private inheritance vs/and membership
@@ -12030,54 +12028,53 @@ Alternatively, we will decide that no change is needed and delete the entry.
 
 * rules for arithmetic
 
-
-
 # Bibliography
 
 * <a name="Alexandrescu01"></a>
-  [Alexandrescu01]  A. Alexandrescu. Modern C++ Design (Addison-Wesley, 2001).
+  [Alexandrescu01][]:  A. Alexandrescu. Modern C++ Design (Addison-Wesley, 2001).
 * <a name="C++03"></a>
-  [C++03]           ISO/IEC 14882:2003(E), Programming LanguagesC++ (updated ISO and ANSI C++ Standard including the contents of [C++98] plus errata corrections).
+  [C++03][]:           ISO/IEC 14882:2003(E), Programming LanguagesC++ (updated ISO and ANSI C++ Standard including the contents of (C++98) plus errata corrections).
 * <a name="C++CS"></a>
-  [C++CS]
+  [C++CS][]:
 * <a name="Cargill92"></a>
-  [Cargill92]       T. Cargill. C++ Programming Style (Addison-Wesley, 1992).
+  [Cargill92][]:       T. Cargill. C++ Programming Style (Addison-Wesley, 1992).
 * <a name="Cline99"></a>
-  [Cline99]         M. Cline, G. Lomow, and M. Girou. C++ FAQs (2ndEdition) (Addison-Wesley, 1999).
+  [Cline99][]:         M. Cline, G. Lomow, and M. Girou. C++ FAQs (2ndEdition) (Addison-Wesley, 1999).
 * <a name="Dewhurst03"></a>
-  [Dewhurst03]      S. Dewhurst. C++ Gotchas (Addison-Wesley, 2003).
+  [Dewhurst03][]:      S. Dewhurst. C++ Gotchas (Addison-Wesley, 2003).
 * <a name="Henricson97"></a>
-  [Henricson97]     M. Henricson and E. Nyquist. Industrial Strength C++ (Prentice Hall, 1997).
+  [Henricson97][]:     M. Henricson and E. Nyquist. Industrial Strength C++ (Prentice Hall, 1997).
 * <a name="Koenig97"></a>
-  [Koenig97]        A. Koenig and B. Moo. Ruminations on C++ (Addison-Wesley, 1997).
+  [Koenig97][]:        A. Koenig and B. Moo. Ruminations on C++ (Addison-Wesley, 1997).
 * <a name="Lakos96"></a>
-  [Lakos96]         J. Lakos. Large-Scale C++ Software Design (Addison-Wesley, 1996).
+  [Lakos96][]:         J. Lakos. Large-Scale C++ Software Design (Addison-Wesley, 1996).
 * <a name="Meyers96"></a>
-  [Meyers96]        S. Meyers. More Effective C++ (Addison-Wesley, 1996).
+  [Meyers96][]:        S. Meyers. More Effective C++ (Addison-Wesley, 1996).
 * <a name="Meyers97"></a>
-  [Meyers97]        S. Meyers. Effective C++ (2ndEdition) (Addison-Wesley, 1997).
+  [Meyers97][]:        S. Meyers. Effective C++ (2ndEdition) (Addison-Wesley, 1997).
 * <a name="Meyers97"></a>
-  [Meyers14]        S. Meyers. Effective Modern C++ (Addison-Wesley, 2014).
+  [Meyers14][]:        S. Meyers. Effective Modern C++ (Addison-Wesley, 2014).
 * <a name="Murray93"></a>
-  [Murray93]        R. Murray. C++ Strategies and Tactics (Addison-Wesley, 1993).
+  [Murray93][]:        R. Murray. C++ Strategies and Tactics (Addison-Wesley, 1993).
 * <a name="Stroustrup00"></a>
-  [Stroustrup00]    B. Stroustrup. The C++ Programming Language (Special 3rdEdition) (Addison-Wesley, 2000).
+  [Stroustrup00][]:    B. Stroustrup. The C++ Programming Language (Special 3rdEdition) (Addison-Wesley, 2000).
 * <a name="Stroustrup05"></a>
-  [Stroustrup05]    B. Stroustrup. [A rationale for semantically enhanced library languages](http://www.stroustrup.com/SELLrationale.pdf).
+  [Stroustrup05][]:    B. Stroustrup. [A rationale for semantically enhanced library languages](http://www.stroustrup.com/SELLrationale.pdf).
 * <a name="Stroustrup13"></a>
-  [Stroustrup13]    B. Stroustrup. [The C++ Programming Language (4th Edition)](http://www.stroustrup.com/4th.html). Addison Wesley 2013.
+  [Stroustrup13][]:    B. Stroustrup. [The C++ Programming Language (4th Edition)](http://www.stroustrup.com/4th.html). Addison Wesley 2013.
 * <a name="Stroustrup14"></a>
-  [Stroustrup14]    B. Stroustrup. [A Tour of C++](http://www.stroustrup.com/Tour.html).
-Addison Wesley 2014.
+  [Stroustrup14][]:    B. Stroustrup. [A Tour of C++](http://www.stroustrup.com/Tour.html).
+  Addison Wesley 2014.
 * <a name="SuttHysl04b"></a>
-  [SuttHysl04b]     H. Sutter and J. Hyslop. "Collecting Shared Objects" (C/C++ Users Journal, 22(8), August 2004).
+  [SuttHysl04b][]:     H. Sutter and J. Hyslop. "Collecting Shared Objects" (C/C++ Users Journal, 22(8), August 2004).
 * <a name="SuttAlex05"></a>
-  [SuttAlex05]      H. Sutter and  A. Alexandrescu. C++ Coding Standards. Addison-Wesley 2005.
+  [SuttAlex05][]:      H. Sutter and  A. Alexandrescu. C++ Coding Standards. Addison-Wesley 2005.
 * <a name="Sutter00"></a>
-  [Sutter00]        H. Sutter. Exceptional C++ (Addison-Wesley, 2000).
+  [Sutter00][]:        H. Sutter. Exceptional C++ (Addison-Wesley, 2000).
 * <a name="Sutter02"></a>
-  [Sutter02]        H. Sutter. More Exceptional C++ (Addison-Wesley, 2002).
+  [Sutter02][]:        H. Sutter. More Exceptional C++ (Addison-Wesley, 2002).
 * <a name="Sutter04"></a>
-  [Sutter04]        H. Sutter. Exceptional C++ Style (Addison-Wesley, 2004).
+  [Sutter04][]:        H. Sutter. Exceptional C++ Style (Addison-Wesley, 2004).
 * <a name="Taligent94"></a>
-  [Taligent94]      Taligent's Guide to Designing Programs (Addison-Wesley, 1994).
+  [Taligent94][]: Taligent's Guide to Designing Programs (Addison-Wesley, 1994).
+
