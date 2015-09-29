@@ -9058,9 +9058,9 @@ In general, passing function objects give better performance than passing pointe
 	sort(v, greater<>);								// function object
 
 	bool greater_than_7(double x) { return x>7; }
-	auto x = find(v, greater_than_7);				// pointer to function: inflexible
-	auto y = find(v, [](double x) { return x>7; });	// function object: carries the needed data
-	auto y = find(v, Greater_than<double>(7));		// function object: carries the needed data
+	auto x = find_if(v, greater_than_7);				// pointer to function: inflexible
+	auto y = find_if(v, [](double x) { return x>7; });	// function object: carries the needed data
+	auto y = find_if(v, Greater_than<double>(7));		// function object: carries the needed data
 
 	??? these lambdas are crying out for auto parameters -- any objection to making the change?
 
