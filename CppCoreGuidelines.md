@@ -11430,14 +11430,14 @@ No. `stack_array` is guaranteed to be allocated on the stack. Although a `std::a
 No. `dyn_array` is not resizable, and is a safe way to refer to a heap-allocated fixed-size array. Unlike `vector`, it is intended to replace array-`new[]`. Unlike the `dynarray` that has been proposed in the committee, this does not anticipate compiler/language magic to somehow allocate it on the stack when it is a member of an object that is allocated on the stack; it simply refers to a "dynamic" or heap-based array.
 
 
-### <a name="Faq-gsl-expects"></a> FAQ.59. Is `Expects` the same as `assert`? 
+### <a name="Faq-gsl-expects"></a> FAQ.59: Is `Expects` the same as `assert`? 
 
-No. It is a placeholder for language support for contracts.
+No. It is a placeholder for language support for contract preconditions.
 
 
-### <a name="Faq-gsl-ensures"></a> FAQ.60. Is `Expects` the same as `assert`? 
+### <a name="Faq-gsl-ensures"></a> FAQ.60: Is `Ensures` the same as `assert`? 
 
-No. It is a placeholder for language support for contracts.
+No. It is a placeholder for language support for contract postconditions.
 
 
 
