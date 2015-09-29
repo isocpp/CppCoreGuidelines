@@ -4624,7 +4624,20 @@ not using this (over)general interface in favor of a particular interface found 
 
 **Example**:
 
-	???
+	class Container{
+		public:
+			  virtual double& operator[](int)=0// pure virtual function
+			  virtual int size() const = 0// const member function
+			  virtual ~Container(){}// destructor
+			  } ;
+
+	class Vector_Container : public Container{
+			   Vector v ;
+		   public:
+			  Vector_Container(int s) : v(s){}
+			  ~Vector_Container(){}
+			   double& operator[](int i){return v[i]}
+			   };
 	
 **Exceptions**:
 * A base class constructor that does work, such as registering an object somewhere, may need a constructor.
@@ -10169,11 +10182,15 @@ Complicates conversion to use language-supported modules (when they become avail
 
 ### <a name="Rs-namespace"></a> SF.20: Use `namespace`s to express logical structure
 
-**Reason**: ???
+**Reason**:  A namespace is a mechanism for expressing logical grouping, that is if some declarations logically 		     belong together according to some criteria , they can be put in a common namespace to express that 	     fact.
 
 **Example**:
 
-	???
+	namespace Parser{
+	double prim(bool);
+	double term(bool);
+	double expr(bool);
+	}
 
 **Enforcement**: ???
 
