@@ -808,8 +808,8 @@ Prefer [RAII](#Rr-raii):
 		if (p==nullptr) throw Nullptr_error{};
 		int n = strlen(p);
 		auto buf = new char[n];
-		for (int i = 0; i<n; ++i) buf[i] = p[i];
 		if (buf==nullptr) throw Allocation_error{};
+		for (int i = 0; i<n; ++i) buf[i] = p[i];
 		// ... manipulate buffer ...
 		X x;
 		x.ch = 'a';
@@ -1639,7 +1639,7 @@ If there was a need, we could further templatize `read()` and `print()` on the d
 	{
 		input >> value;
 		// check for errors
-	}
+	};
 
 	auto print(auto& output, const auto& value)
 	{
@@ -1736,7 +1736,7 @@ Small simple functions are easily inlined where the cost of a function call is s
 		constexpr int max_exp = 17;     // constexpr enables  this to be used in Expects
 		Expects(0<=n && n<max_exp);		// prevent silliness and overflow
 		int x = 1;
-		for (int i=2; i<=n; ++i) x*= n;
+		for (int i=2; i<=n; ++i) x*= i;
 		return x;
 	}
 
@@ -2013,7 +2013,7 @@ When I call `length(r)` should I test for `r==nullptr` first? Should the impleme
 
 **Example**:
 
-	X* find(array_view<X> r, const X& v)	// find v in r
+	X* find(array_view<X> r, const X& v);	// find v in r
 
 	vector<X> vec;
 	// ...
