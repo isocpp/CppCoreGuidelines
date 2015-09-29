@@ -3078,7 +3078,7 @@ Here `p` refers to `pp` but does not own it.
 **Enforcement**:
 
 * (Simple) If a class has pointer or reference member variables that are owners
-  (e.g., deemed owners by using `GSL::owner`), then they should be referenced in its destructor.
+  (e.g., deemed owners by using `gsl::owner`), then they should be referenced in its destructor.
 * (Hard) Determine if pointer or reference member variables are owners when there is no explicit statement of ownership
   (e.g., look into the constructors).
 
