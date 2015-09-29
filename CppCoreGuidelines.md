@@ -11100,7 +11100,8 @@ Hungarian notation is evil (at least in a strongly statically-typed language).
 
 **Example**:
 
-	???
+	string output_str; // bad
+	string output; // better
 
 **Note**: Some styles distinguishes members from local variable, and/or from global variable.
 
@@ -11200,7 +11201,9 @@ If you prefer CamelCase, you have to choose among different flavors of camelCase
 
 **Example**:
 
-	???
+	ThisIsDifficultToRead; // bad
+	CPPProgramStatus; // worse
+	this_is_easier_to_read; // better
 	
 **Enforcement**: Impossible.
 
