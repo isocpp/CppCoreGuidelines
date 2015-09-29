@@ -718,23 +718,23 @@ The date is validated twice (by the `Date` constructor) and passed as a characte
 There are cases where checking early is dumb because you may not ever need the value,
 or may only need part of the value that is more easily checked than the whole.
 
-	class Jet {	// Physics says: e*e < x*x + y*y + z*z
-   		float fx, fy, fz, fe;
-	public:
-   		Jet(float x, float y, float z, float e)
-			:fx(x), fy(y), fz(z), fe(e)
-		{
-			// Should I check the here that the values are physically meaningful?
-   		}
+    class Jet {    // Physics says: e*e < x*x + y*y + z*z
+        float fx, fy, fz, fe;
+    public:
+       Jet(float x, float y, float z, float e)
+            :fx(x), fy(y), fz(z), fe(e)
+        {
+            // Should I check the here that the values are physically meaningful?
+        }
 
-   		float m() const
-		{
-     		// Should I handle the degenerate case here?
-     		return sqrt(x*x + y*y + z*z - e*e);
-   		}
+        float m() const
+        {
+             // Should I handle the degenerate case here?
+             return sqrt(x*x + y*y + z*z - e*e);
+        }
 
-		???
-	};
+        ???
+    };
 
 The physical law for a jet (`e*e < x*x + y*y + z*z`) is not an invariant because the possibility of measurement errors.
 
@@ -2585,8 +2585,8 @@ Subsections:
 
 **Example**:
 
-	void draw(int x, int y, int x2, int y2);	// BAD: unnecessary implicit relationships
-	void draw(Point from, Point to)				// better
+	void draw(int x, int y, int x2, int y2);  // BAD: unnecessary implicit relationships
+	void draw(Point from, Point to);          // better
 
 **Note**: A simple class without virtual functions implies no space or time overhead.
 
@@ -3024,7 +3024,7 @@ The whole purpose of `final_action` is to get a piece of code (usually a lambda)
 		string s;
 		int i;
 		vector<int> vi;
-	}
+	};
 
 The default destructor does it better, more efficiently, and can't get it wrong.
 
@@ -3353,7 +3353,7 @@ It is often a good idea to express the invariant as an `Ensure` on the construct
 	struct Rec2{
 		string s;
 		int i;
-		Rec2(const string& ss, int ii = 0} :s{ss}, i{ii} {}		// redundant
+		Rec2(const string& ss, int ii = 0) :s{ss}, i{ii} {}		// redundant
 	};
 
 	Rec r1 {"Foo", 7};
@@ -3413,7 +3413,7 @@ The idiom of having constructors acquire resources and destructors release them 
 		// ...
 	public:
 		X2(const string& name)
-			:f{fopen(name.c_str(), "r"}
+			:f{fopen(name.c_str(), "r")}
 		{
 			if (f==nullptr) throw runtime_error{"could not open" + name};
 			// ...
@@ -3438,7 +3438,7 @@ The idiom of having constructors acquire resources and destructors release them 
 		// ...
 	public:
 		X3(const string& name)
-			:f{fopen(name.c_str(), "r"}, valid{false}
+			:f{fopen(name.c_str(), "r")}, valid{false}
 		{
 			if (f) valid=true;
 			// ...
@@ -3451,7 +3451,7 @@ The idiom of having constructors acquire resources and destructors release them 
 
 	void f()
 	{
-		X3 file {Heraclides"};
+		X3 file {"Heraclides"};
 		file.read();	// crash or bad read!
 		// ...
 		if (is_valid()()) {
@@ -3881,6 +3881,7 @@ Types can be defined to move for logical as well as performance reasons.
 		T* elem;
 		int sz;
 	};
+  }
 
 	Vector& Vector::operator=(const Vector& a)
 	{
@@ -4049,6 +4050,7 @@ Consider:
 
 **Example**:
 
+	template<typename T>
 	class X {	// OK: value semantics
 	public:
 		X();
@@ -4134,6 +4136,7 @@ A non-throwing move will be used more efficiently by standard-library and langua
 
 **Example**:
 
+	template<typename T>
 	class Vector {
 		// ...
 		Vector(Vector&& a) noexcept :elem{a.elem}, sz{a.sz} { a.sz=0; a.elem=nullptr; }
@@ -4148,6 +4151,7 @@ These copy operations do not throw.
 
 **Example, bad**:
 
+	template<typename T>
 	class Vector2 {
 		// ...
 		Vector2(Vector2&& a) { *this = a; }				// just use the copy
@@ -6414,8 +6418,8 @@ or better using concepts
 or
 
 	double scalbn(		// better: x*pow(FLT_RADIX, n); FLT_RADIX is usually 2
-		double x; 	// base value
-		int n;		// exponent
+		double x, 	// base value
+		int n		// exponent
 	);
 
 or
@@ -6439,7 +6443,7 @@ or
 	auto s = v.size();
 	auto h = t.future();
 	auto q = new int[s];
-	auto f = [](int x){ return x+10; }
+	auto f = [](int x){ return x+10; };
 
 In each case, we save writing a longish, hard-to-remember type that the compiler already knows but a programmer could get wrong.
 
@@ -8066,7 +8070,7 @@ One strategy is to add a `valid()` operation to every resource handle:
 
 	void f()
 	{
-		Vector<string> vs(100);	// not std::vector: valid() added
+		vector<string> vs(100);	// not std::vector: valid() added
 		if (!vs.valid()) {
 			// handle error or exit
 		}
@@ -8606,7 +8610,7 @@ It also avoids brittle or inefficient workarounds. Convention: That's the way th
 		int sz;
 	};
 
-	Vector<double> v(10);
+	vector<double> v(10);
 	v[7] = 9.9;
 
 **Example, bad**:
@@ -9441,14 +9445,14 @@ The two language mechanisms can be use effectively in combination, but a few des
 		// ...
 	};
 
-	Vector<int> vi;
-	Vector<string> vs;
+	vector<int> vi;
+	vector<string> vs;
 
 It is probably a dumb idea to define a `sort` as a member function of a container,
 but it is not unheard of and it makes a good example of what not to do.
 
-Given this, the compiler cannot know if `Vector<int>::sort()` is called, so it must generate code for it.
-Similar for `Vector<string>::sort()`.
+Given this, the compiler cannot know if `vector<int>::sort()` is called, so it must generate code for it.
+Similar for `vector<string>::sort()`.
 Unless those two functions are called that's code bloat.
 Imagine what this would do to a class hierarchy with dozens of member functions and dozens of derived classes with many instantiations.
 
@@ -10798,8 +10802,8 @@ Issue a diagnostic for any indexing expression on an expression or variable of a
 
     void f(int i, int j)
     {
-    	a[i + j] = 12; 		// BAD, could be rewritten as...
-        at(a, i + j) = 12; 	// OK - bounds-checked
+        a[i + j] = 12;      // BAD, could be rewritten as...
+        at(a, i + j) = 12;  // OK - bounds-checked
     }
 
 
@@ -11966,7 +11970,7 @@ Now `Named` has a default constructor, a destructor, and efficient copy and move
 
 	template<typename T> class Vector {
 	public:
-		Vector<std::initializer_list<T>);
+		vector<std::initializer_list<T>>;
 		// ...
 	};
 
