@@ -128,7 +128,7 @@ Comments and suggestions for improvements are most welcome.
 We plan to modify and extend this document as our understanding improves and the language and the set of available libraries improve.
 
 
-# <a name ="S-introduction"></a> In: Introduction
+# <a name="S-introduction"></a> In: Introduction
 
 This is a set of core guidelines for modern C++, C++14, and taking likely future enhancements and taking ISO Technical Specifications (TSs) into account.
 The aim is to help C++ programmers to write simpler, more efficient, more maintainable code.
@@ -143,12 +143,12 @@ Introduction summary:
 * [In.sec: Major sections](#SS-sec)
 
 
-## <a name ="SS-readers"></a> In.target: Target readership
+## <a name="SS-readers"></a> In.target: Target readership
 
 All C++ programmers. This includes [programmers who might consider C](#S-cpl).
 
 
-## <a name ="SS-aims"></a> In.aims: Aims
+## <a name="SS-aims"></a> In.aims: Aims
 
 The purpose of this document is to help developers to adopt modern C++ (C++11, C++14, and soon C++17) and to achieve a more uniform style across code bases.
 
@@ -261,7 +261,7 @@ The profiles are intended to be used by tools, but also serve as an aid to the h
 We do not limit our comment in the **Enforcement** sections to things we know how to enforce; some comments are mere wishes that might inspire some tool builder.
 
 
-## <a name ="SS-struct"></a> In.struct: The structure of this document
+## <a name="SS-struct"></a> In.struct: The structure of this document
 
 Each rule (guideline, suggestion) can have several parts:
 
@@ -292,7 +292,7 @@ It is meant to be helpful, rather than complete, fully accurate on technical det
 Recommended information sources can be found in [the references](#S-references).
 
 
-## <a name ="SS-sec"></a> In.sec: Major sections
+## <a name="SS-sec"></a> In.sec: Major sections
 
 * [P: Philosophy](#S-philosophy)
 * [I: Interfaces](#S-interfaces)
@@ -324,7 +324,7 @@ Supporting sections:
 
 These sections are not orthogonal.
 
-Each section (e.g., "P" for "Philosophy") and each subsection (e.g., "C.hier" for "Class Hierachies (OOP)") have an abbreviation for ease of searching and reference.
+Each section (e.g., "P" for "Philosophy") and each subsection (e.g., "C.hier" for "Class Hierarchies (OOP)") have an abbreviation for ease of searching and reference.
 The main section abbreviations are also used in rule numbers (e.g., "C.11" for "Make concrete types regular").
 
 
@@ -718,23 +718,23 @@ The date is validated twice (by the `Date` constructor) and passed as a characte
 There are cases where checking early is dumb because you may not ever need the value,
 or may only need part of the value that is more easily checked than the whole.
 
-	class Jet {	// Physics says: e*e < x*x + y*y + z*z
-   		float fx, fy, fz, fe;
-	public:
-   		Jet(float x, float y, float z, float e)
-			:fx(x), fy(y), fz(z), fe(e)
-		{
-			// Should I check the here that the values are physically meaningful?
-   		}
+    class Jet {    // Physics says: e*e < x*x + y*y + z*z
+        float fx, fy, fz, fe;
+    public:
+       Jet(float x, float y, float z, float e)
+            :fx(x), fy(y), fz(z), fe(e)
+        {
+            // Should I check the here that the values are physically meaningful?
+        }
 
-   		float m() const
-		{
-     		// Should I handle the degenerate case here?
-     		return sqrt(x*x + y*y + z*z - e*e);
-   		}
+        float m() const
+        {
+             // Should I handle the degenerate case here?
+             return sqrt(x*x + y*y + z*z - e*e);
+        }
 
-		???
-	};
+        // ???
+    };
 
 The physical law for a jet (`e*e < x*x + y*y + z*z`) is not an invariant because the possibility of measurement errors.
 
@@ -2158,7 +2158,7 @@ If the writer of `g()` makes an assumption about the size of `buffer` a bad logi
 **Enforcement**: Flag a function that takes a `TP&&` parameter (where `TP` is a template type parameter name) and uses it without `std::forward`.
 
 
-### <a name ="Rf-pass-ref-move"></a> F.25: Use a `T&&` parameter together with `move` for rare optimization opportunities
+### <a name="Rf-pass-ref-move"></a> F.25: Use a `T&&` parameter together with `move` for rare optimization opportunities
 
 **Reason**: Moving from an object leaves an object in its moved-from state behind.
 In general, moved-from objects are dangerous. The only guaranteed operation is destruction (more generally, member functions without preconditions).
@@ -2431,7 +2431,7 @@ It can be detected/prevented with similar techniques.
 
 **Example**:
 
-	???
+    // ???
 
 **Enforcement**: ???
 
@@ -2585,8 +2585,8 @@ Subsections:
 
 **Example**:
 
-	void draw(int x, int y, int x2, int y2);	// BAD: unnecessary implicit relationships
-	void draw(Point from, Point to)				// better
+	void draw(int x, int y, int x2, int y2);  // BAD: unnecessary implicit relationships
+	void draw(Point from, Point to);          // better
 
 **Note**: A simple class without virtual functions implies no space or time overhead.
 
@@ -3024,7 +3024,7 @@ The whole purpose of `final_action` is to get a piece of code (usually a lambda)
 		string s;
 		int i;
 		vector<int> vi;
-	}
+	};
 
 The default destructor does it better, more efficiently, and can't get it wrong.
 
@@ -3088,7 +3088,7 @@ Here `p` refers to `pp` but does not own it.
 
 **Example**:
 
-	???
+    // ???
 
 **Note**: If the `T*` or `T&` is owning, mark it `owning`. If the `T*` is not owning, consider marking it `ptr`.
 This will aide documentation and analysis.
@@ -3353,7 +3353,7 @@ It is often a good idea to express the invariant as an `Ensure` on the construct
 	struct Rec2{
 		string s;
 		int i;
-		Rec2(const string& ss, int ii = 0} :s{ss}, i{ii} {}		// redundant
+		Rec2(const string& ss, int ii = 0) :s{ss}, i{ii} {}		// redundant
 	};
 
 	Rec r1 {"Foo", 7};
@@ -3413,7 +3413,7 @@ The idiom of having constructors acquire resources and destructors release them 
 		// ...
 	public:
 		X2(const string& name)
-			:f{fopen(name.c_str(), "r"}
+			:f{fopen(name.c_str(), "r")}
 		{
 			if (f==nullptr) throw runtime_error{"could not open" + name};
 			// ...
@@ -3438,7 +3438,7 @@ The idiom of having constructors acquire resources and destructors release them 
 		// ...
 	public:
 		X3(const string& name)
-			:f{fopen(name.c_str(), "r"}, valid{false}
+			:f{fopen(name.c_str(), "r")}, valid{false}
 		{
 			if (f) valid=true;
 			// ...
@@ -3451,7 +3451,7 @@ The idiom of having constructors acquire resources and destructors release them 
 
 	void f()
 	{
-		X3 file {Heraclides"};
+		X3 file {"Heraclides"};
 		file.read();	// crash or bad read!
 		// ...
 		if (is_valid()()) {
@@ -3881,6 +3881,7 @@ Types can be defined to move for logical as well as performance reasons.
 		T* elem;
 		int sz;
 	};
+  }
 
 	Vector& Vector::operator=(const Vector& a)
 	{
@@ -4049,6 +4050,7 @@ Consider:
 
 **Example**:
 
+	template<typename T>
 	class X {	// OK: value semantics
 	public:
 		X();
@@ -4134,6 +4136,7 @@ A non-throwing move will be used more efficiently by standard-library and langua
 
 **Example**:
 
+	template<typename T>
 	class Vector {
 		// ...
 		Vector(Vector&& a) noexcept :elem{a.elem}, sz{a.sz} { a.sz=0; a.elem=nullptr; }
@@ -4148,6 +4151,7 @@ These copy operations do not throw.
 
 **Example, bad**:
 
+	template<typename T>
 	class Vector2 {
 		// ...
 		Vector2(Vector2&& a) { *this = a; }				// just use the copy
@@ -4459,7 +4463,7 @@ Of course there are way of making `==` work in a hierarchy, but the naive approa
 
 **Example**:
 
-	???
+    // ???
 
 **Enforcement**: ???
 
@@ -4470,7 +4474,7 @@ Of course there are way of making `==` work in a hierarchy, but the naive approa
 
 **Example**:
 
-	???
+    // ???
 
 **Enforcement**: ???
 
@@ -4597,7 +4601,7 @@ not using this (over)general interface in favor of a particular interface found 
 
 **Example**:
 
-	???
+    // ???
 
 **Enforcement**:
 
@@ -4610,7 +4614,7 @@ not using this (over)general interface in favor of a particular interface found 
 
 **Example**:
 
-	???
+    // ???
 
 **Enforcement**: ???
 
@@ -4625,7 +4629,7 @@ not using this (over)general interface in favor of a particular interface found 
 
 **Example**:
 
-	???
+    // ???
 
 **Exceptions**:
 * A base class constructor that does work, such as registering an object somewhere, may need a constructor.
@@ -4695,7 +4699,7 @@ not using this (over)general interface in favor of a particular interface found 
 
 **Example**:
 
-	???
+    // ???
 
 **Enforcement**: ???
 
@@ -4788,7 +4792,7 @@ This kind of "vector" isn't meant to be used as a base class at all.
 
 **Example**:
 
-	???
+    // ???
 
 **Note**: Protected member function can be just fine.
 
@@ -4801,7 +4805,7 @@ This kind of "vector" isn't meant to be used as a base class at all.
 
 **Example**:
 
-	???
+    // ???
 
 **Enforcement**: Flag any class that has data members with different access levels.
 
@@ -4812,7 +4816,7 @@ This kind of "vector" isn't meant to be used as a base class at all.
 
 **Example**:
 
-	???
+    // ???
 
 **Note**: This is a very common use of inheritance because the need for multiple different interfaces to an implementation is common
 and such interfaces are often not easily or naturally organized into a single-rooted hierarchy.
@@ -4828,7 +4832,7 @@ and such interfaces are often not easily or naturally organized into a single-ro
 
 **Example**:
 
-	???
+    // ???
 
 **Note**: This a relatively rare use because implementation can often be organized into a single-rooted hierarchy.
 
@@ -4841,7 +4845,7 @@ and such interfaces are often not easily or naturally organized into a single-ro
 
 **Example**:
 
-	???
+    // ???
 
 **Note**: ???
 
@@ -4853,7 +4857,7 @@ and such interfaces are often not easily or naturally organized into a single-ro
 
 **Example**:
 
-	???
+   // ???
 
 
 ## C.hier-access: Accessing objects in a hierarchy
@@ -4940,7 +4944,7 @@ and that your use of `dynamic_cast` is really performance critical.
 
 **Example**:
 
-	???
+    // ???
 
 **Enforcement**: ???
 
@@ -4951,7 +4955,7 @@ and that your use of `dynamic_cast` is really performance critical.
 
 **Example**:
 
-	???
+    // ???
 
 **Enforcement**: ???
 
@@ -5186,7 +5190,7 @@ Union rule summary:
 
 **Example**:
 
-	???
+    // ???
 
 **Enforcement**: ???
 
@@ -5201,7 +5205,7 @@ Union rule summary:
 
 **Example**:
 
-	???
+    // ???
 
 **Enforcement**: ???
 
@@ -5213,7 +5217,7 @@ Union rule summary:
 
 **Example**:
 
-	???
+    // ???
 
 **Enforcement**: ???
 
@@ -5240,7 +5244,7 @@ Enumeration rule summary:
 
 **Example**:
 
-	???
+    // ???
 
 **Enforcement**: ???
 
@@ -5251,7 +5255,7 @@ Enumeration rule summary:
 
 **Example**:
 
-	???
+    // ???
 
 **Enforcement**: ???
 
@@ -5262,7 +5266,7 @@ Enumeration rule summary:
 
 **Example**:
 
-	???
+    // ???
 
 **Enforcement**: ???
 
@@ -5273,7 +5277,7 @@ Enumeration rule summary:
 
 **Example**:
 
-	???
+    // ???
 
 **Enforcement**: ???
 
@@ -5284,7 +5288,7 @@ Enumeration rule summary:
 
 **Example**:
 
-	???
+    // ???
 
 **Enforcement**: ???
 
@@ -5295,7 +5299,7 @@ Enumeration rule summary:
 
 **Example**:
 
-	???
+    // ???
 
 **Enforcement**: ???
 
@@ -5333,7 +5337,7 @@ Here, we ignore such cases.
   * [R.14: ??? array vs. pointer parameter](#Rr-ap)
   * [R.15: Always overload matched allocation/deallocation pairs](#Rr-pair)
 
-* <a name ="Rr-summary-smartptrs"></a> Smart pointer rule summary:
+* <a name="Rr-summary-smartptrs"></a> Smart pointer rule summary:
   * [R.20: Use `unique_ptr` or `shared_ptr` to represent ownership](#Rr-owner)
   * [R.21: Prefer `unique_ptr` over `shared_ptr` unless you need to share ownership](#Rr-unique)
   * [R.22: Use `make_shared()` to make `shared_ptr`s](#Rr-make_shared)
@@ -5348,7 +5352,7 @@ Here, we ignore such cases.
   * [R.36: Take a `const shared_ptr<widget>&` parameter to express that it might retain a reference count to the object ???](#Rr-sharedptrparam-const&)
   * [R.37: Do not pass a pointer or reference obtained from an aliased smart pointer](#Rr-smartptrget)
 
-### <a name ="Rr-raii"></a> Rule R.1: Manage resources automatically using resource handles and RAII (resource acquisition is initialization)
+### <a name="Rr-raii"></a> Rule R.1: Manage resources automatically using resource handles and RAII (resource acquisition is initialization)
 
 **Reason**: To avoid leaks and the complexity of manual resource management.
  C++'s language-enforced constructor/destructor symmetry mirrors the symmetry inherent in resource acquire/release function pairs such as `fopen`/`fclose`, `lock`/`unlock`, and `new`/`delete`.
@@ -5402,7 +5406,7 @@ What is `Port`? A handy wrapper that encapsulates the resource:
 **See also**: [RAII](#Rr-raii).
 
 
-### <a name ="Rr-use-ptr"></a> R.2: In interfaces, use raw pointers to denote individual objects (only)
+### <a name="Rr-use-ptr"></a> R.2: In interfaces, use raw pointers to denote individual objects (only)
 
 **Reason**: Arrays are best represented by a container type (e.g., `vector` (owning)) or an `array_view` (non-owning).
 Such containers and views hold sufficient information to do range checking.
@@ -5592,7 +5596,7 @@ They are a notable source of errors.
 ## <a name="SS-alloc"></a> R.alloc: Allocation and deallocation
 
 
-### <a name ="Rr-mallocfree"></a> R.10: Avoid `malloc()` and `free()`
+### <a name="Rr-mallocfree"></a> R.10: Avoid `malloc()` and `free()`
 
 **Reason**: `malloc()` and `free()` do not support construction and destruction, and do not mix well with `new` and `delete`.
 
@@ -5633,7 +5637,7 @@ In such cases, consider the `nothrow` versions of `new`.
 **Enforcement**: Flag explicit use of `malloc` and `free`.
 
 
-### <a name ="Rr-newdelete"></a> R.11: Avoid calling `new` and `delete` explicitly
+### <a name="Rr-newdelete"></a> R.11: Avoid calling `new` and `delete` explicitly
 
 **Reason**: The pointer returned by `new` should belong to a resource handle (that can call `delete`).
 If the pointer returned from `new` is assigned to a plain/naked pointer, the object can be leaked.
@@ -5646,7 +5650,7 @@ If you have a naked `new`, you probably need a naked `delete` somewhere, so you 
 **Enforcement**: (Simple) Warn on any explicit use of `new` and `delete`. Suggest using `make_unique` instead.
 
 
-### <a name ="Rr-immediate-alloc"></a> R.12: Immediately give the result of an explicit resource allocation to a manager object
+### <a name="Rr-immediate-alloc"></a> R.12: Immediately give the result of an explicit resource allocation to a manager object
 
 **Reason**: If you don't, an exception or a return may lead to a leak.
 
@@ -5678,7 +5682,7 @@ The use of the file handle (in `ifstream`) is simple, efficient, and safe.
 * Flag explicit allocations used to initialize pointers  (problem: how many direct resource allocations can we recognize?)
 
 
-### <a name ="Rr-single-alloc"></a> R.13: Perform at most one explicit resource allocation in a single expression statement
+### <a name="Rr-single-alloc"></a> R.13: Perform at most one explicit resource allocation in a single expression statement
 
 **Reason**: If you perform two explicit resource allocations in one statement,
 you could leak resources because the order of evaluation of many subexpressions, including function arguments, is unspecified.
@@ -5713,13 +5717,13 @@ Write your own factory wrapper if there is not one already.
 * Flag expressions with multiple explicit resource allocations (problem: how many direct resource allocations can we recognize?)
 
 
-### <a name ="Rr-ap"></a> R.14: ??? array vs. pointer parameter
+### <a name="Rr-ap"></a> R.14: ??? array vs. pointer parameter
 
 **Reason**: An array decays to a pointer, thereby losing its size, opening the opportunity for range errors.
 
 **Example**:
 
-    ??? what do we recommend: f(int*[]) or f(int**) ???
+    // ??? what do we recommend: f(int*[]) or f(int**) ???
 
 **Alternative**: Use `array_view` to preserve size information.
 
@@ -5791,7 +5795,7 @@ This will leak the object used to initialize `p1` (only).
 **Enforcement**: (Simple) Warn if a function uses a `Shared_ptr` with an object allocated within the function, but never returns the `Shared_ptr` or passes it to a function requiring a `Shared_ptr&`. Suggest using `unique_ptr` instead.
 
 
-### <a name ="Rr-make_shared"></a> R.22: Use `make_shared()` to make `shared_ptr`s
+### <a name="Rr-make_shared"></a> R.22: Use `make_shared()` to make `shared_ptr`s
 
 **Reason**: If you first make an object and then gives it to a `shared_ptr` constructor, you (most likely) do one more allocation (and later deallocation) than if you use `make_shared()` because the reference counts must be allocated separately from the object.
 
@@ -5805,7 +5809,7 @@ The `make_shared()` version mentions `X` only once, so it is usually shorter (as
 **Enforcement**: (Simple) Warn if a `shared_ptr` is constructed from the result of `new` rather than `make_shared`.
 
 
-### <a name ="Rr-make_unique"></a> Rule R.23: Use `make_unique()` to make `unique_ptr`s
+### <a name="Rr-make_unique"></a> Rule R.23: Use `make_unique()` to make `unique_ptr`s
 
 **Reason**: for convenience and consistency with `shared_ptr`.
 
@@ -5814,14 +5818,14 @@ The `make_shared()` version mentions `X` only once, so it is usually shorter (as
 **Enforcement**: (Simple) Warn if a `Shared_ptr` is constructed from the result of `new` rather than `make_unique`.
 
 
-### <a name ="Rr-weak_ptr"></a> R.24: Use `std::weak_ptr` to break cycles of `shared_ptr`s
+### <a name="Rr-weak_ptr"></a> R.24: Use `std::weak_ptr` to break cycles of `shared_ptr`s
 
 **Reason**: `shared_ptr`'s rely on use counting and the use count for a cyclic structure never goes to zero, so we need a mechanism to
 be able to destroy a cyclic structure.
 
 **Example**:
 
-	???
+    // ???
 
 **Note**:  ??? (HS: A lot of people say "to break cycles", while I think "temporary shared ownership" is more to the point.)
 ???(BS: breaking cycles is what you must do; temporarily sharing ownership is how you do it.
@@ -6414,8 +6418,8 @@ or better using concepts
 or
 
 	double scalbn(		// better: x*pow(FLT_RADIX, n); FLT_RADIX is usually 2
-		double x; 	// base value
-		int n;		// exponent
+		double x, 	// base value
+		int n		// exponent
 	);
 
 or
@@ -6439,7 +6443,7 @@ or
 	auto s = v.size();
 	auto h = t.future();
 	auto q = new int[s];
-	auto f = [](int x){ return x+10; }
+	auto f = [](int x){ return x+10; };
 
 In each case, we save writing a longish, hard-to-remember type that the compiler already knows but a programmer could get wrong.
 
@@ -6866,7 +6870,7 @@ Even if we hadn't left a well-know bug in `SQUARE` there are much better behaved
 
 **Example**:
 
-	??? <vararg>
+    // ??? <vararg>
 
 **Alternative**: Overloading. Templates. Veriadic templates.
 
@@ -6983,7 +6987,7 @@ This will copy each elements of `vs` into `s`. Better
 
 **Example**:
 
-	???
+    // ???
 
 **Enforcement**: ???
 
@@ -7038,7 +7042,7 @@ The termination conditions is at the end (where it can be overlooked) and the co
 
 **Example**:
 
-	???
+    // ???
 
 **Example**: There is a fair amount of use of the C goto-exit idiom:
 
@@ -7067,7 +7071,7 @@ This is an ad-hoc simulation of destructors. Declare your resources with handles
 
 **Example**:
 
-	???
+    // ???
 
 **Enforcement**: ???
 
@@ -7078,7 +7082,7 @@ This is an ad-hoc simulation of destructors. Declare your resources with handles
 
 **Example**:
 
-	???
+    // ???
 
 **Note**: Multiple case labels of a single statement is OK:
 
@@ -7099,7 +7103,7 @@ This is an ad-hoc simulation of destructors. Declare your resources with handles
 
 **Example**:
 
-	???
+    // ???
 
 **Enforcement**: ???
 
@@ -7152,16 +7156,16 @@ Some of these expressions are unconditionally bad (e.g., they rely on undefined 
 
 **Example**:
 
-	x=k*y+z;	// OK
+	x=k*y+z;              // OK
 
-	auto t1 = k*y;	// bad: unnecessarily verbose
+	auto t1 = k*y;        // bad: unnecessarily verbose
 	x = t1+z;
 
-	if(0<=x && x<max) // OK
+	if(0<=x && x<max) {}  // OK
 
-	auto t1 = 0<=x;		// bad: unnecessarily verbose
+	auto t1 = 0<=x;		    // bad: unnecessarily verbose
 	auto t2 = x<max;
-	if(t1 && t2) // ...
+	if(t1 && t2) {}       // ...
 
 
 **Enforcement**: Tricky. How complicated must an expression be to be considered complicated? Writing computations as statements with one operation each is also confusing. Things to consider:
@@ -7213,7 +7217,7 @@ but consider mixing bitwise logical operations with other operators in need of p
 
 **Example**:
 
-	???
+    // ???
 
 **Enforcement**: We need a heuristic limiting the complexity of pointer arithmetic statement.
 
@@ -7231,7 +7235,7 @@ A good rule of thumb is that you should not read a value twice in an expression 
 
 **Example**:
 
-	???
+    // ???
 
 **Note**: What is safe?
 
@@ -7343,7 +7347,7 @@ We also include lossy arithmetic casts, such as from a negative floating point t
 
 **Example**:
 
-	???
+    // ???
 
 **Note**: Programmer who write casts typically assumes that they know what they are doing.
 In fact, they often disable the general rules for using values.
@@ -7381,7 +7385,7 @@ The named casts are:
 
 **Example**:
 
-	???
+    // ???
 
 **Note**: ???
 
@@ -7398,7 +7402,7 @@ Such examples are often handled as well or better using `mutable` or an indirect
 
 **Example**:
 
-	???
+    // ???
 
 **Enforcement**: Flag `const_cast`s.
 
@@ -7470,8 +7474,10 @@ There can be code in the `...` part that causes the `delete` never to happen.
 	{
 		int a1[7];
 		int a2[9];
-		if (&a1[5]<&a2[7]) 		// bad: undefined
-		if (0<&a1[5]-&a2[7])	// bad: undefined
+		if (&a1[5]<&a2[7]) { 		// bad: undefined
+    }
+		if (0<&a1[5]-&a2[7]) {	// bad: undefined
+    }
 	}
 
 **Note**: This example has many more problems.
@@ -7487,7 +7493,7 @@ There can be code in the `...` part that causes the `delete` never to happen.
 
 **Example**:
 
-	???
+    // ???
 
 **Note** Unfortunately, C++ uses signed integers for array subscripts and the standard library uses unsigned integers for container subscripts.
 This precludes consistency.
@@ -7501,7 +7507,7 @@ This precludes consistency.
 
 **Example**:
 
-	???
+    // ???
 
 **Exception**: Use unsigned types if you really want modulo arithmetic.
 
@@ -7514,7 +7520,7 @@ This precludes consistency.
 
 **Example**:
 
-	???
+    // ???
 
 **Exception**: Use unsigned types if you really want modulo arithmetic.
 
@@ -7579,7 +7585,7 @@ Incrementing a value beyond a maximum value can lead to memory corruption and un
 
 **Example**:
 
-	???
+    // ???
 
 **Alternative**: For critical applications that can afford some overhead, use a range-checked integer and/or floating-point type.
 
@@ -7764,7 +7770,7 @@ Libraries using threads my be used from some other part of the program.
 
 **Example**:
 
-	???
+    // ???
 
 **Exception**: There are examples where code will never be run in a multi-threaded environment.
 However, here are also many examples where code that was "known" to never run in a multi-threaded program
@@ -7982,7 +7988,7 @@ Not all member function can be called.
 
 **Example**:
 
-	???
+    // ???
 
 **See also**: [If a constructor cannot construct a valid object, throw an exception](#Rc-throw)
 
@@ -8066,7 +8072,7 @@ One strategy is to add a `valid()` operation to every resource handle:
 
 	void f()
 	{
-		Vector<string> vs(100);	// not std::vector: valid() added
+		vector<string> vs(100);	// not std::vector: valid() added
 		if (!vs.valid()) {
 			// handle error or exit
 		}
@@ -8311,7 +8317,7 @@ Let cleanup actions on the unwinding path be handled by [RAII](#Re-raii).
 
 **Example**:
 
-	???
+    // ???
 
 **Enforcement**: ???
 
@@ -8361,9 +8367,9 @@ Constant rule summary:
 
 **Example**:
 
-	for (
-	container
-	???
+    // for (
+    // container
+    // ???
 
 **Enforcement**: ???
 
@@ -8374,7 +8380,7 @@ Constant rule summary:
 
 **Example**:
 
-	???
+    // ???
 
 **Enforcement**: ???
 
@@ -8385,7 +8391,7 @@ Constant rule summary:
 
 **Example**:
 
-	???
+    // ???
 
 **Enforcement**: ???
 
@@ -8396,7 +8402,7 @@ Constant rule summary:
 
 **Example**:
 
-	???
+    // ???
 
 **Enforcement**: ???
 
@@ -8407,7 +8413,7 @@ Constant rule summary:
 
 **Example**:
 
-	???
+    // ???
 
 **Enforcement**: ???
 
@@ -8606,7 +8612,7 @@ It also avoids brittle or inefficient workarounds. Convention: That's the way th
 		int sz;
 	};
 
-	Vector<double> v(10);
+	vector<double> v(10);
 	v[7] = 9.9;
 
 **Example, bad**:
@@ -8639,7 +8645,7 @@ See [Stable base](#Rt-abi).
 
 **Example**:
 
-	???
+    // ???
 
 **Exceptions**: ???
 
@@ -8928,7 +8934,7 @@ Once language support is available, the `//` in front of the axiom can be remove
 Finding good semantics can take effort and time.
 An incomplete set of constraints can still be very useful:
 
-	??? binary tree: rotate(), ...
+    // ??? binary tree: rotate(), ...
 
 A "concept" that is incomplete or without a well-specified semantics can still be useful.
 However, it should not be assumed to be stable. Each new use case may require such an incomplete concepts to be improved.
@@ -9031,7 +9037,7 @@ Conversions are taken into account. You don't have to remember the names of all 
 
 **Example**:
 
-	???
+    // ???
 
 **Enforcement**: ???
 
@@ -9057,7 +9063,7 @@ In general, passing function objects give better performance than passing pointe
 	auto y = find(v, [](double x) { return x>7; });	// function object: carries the needed data
 	auto y = find(v, Greater_than<double>(7));		// function object: carries the needed data
 
-	??? these lambdas are crying out for auto parameters -- any objection to making the change?
+	// ??? these lambdas are crying out for auto parameters -- any objection to making the change?
 
 **Note**: Lambdas generate function objects.
 
@@ -9081,7 +9087,7 @@ The rule supports the view that a concept should reflect a (mathematically) cohe
 
 **Example**:
 
-	???
+    // ???
 
 **Enforcement**: ???
 
@@ -9165,7 +9171,7 @@ Note the use of the `s` suffix to ensure that the string is a `std::string`, rat
 
 **Example**:
 
-	???
+    // ???
 
 **Enforcement**: ???
 
@@ -9176,7 +9182,7 @@ Note the use of the `s` suffix to ensure that the string is a `std::string`, rat
 
 **Example**:
 
-	???
+    // ???
 
 **Enforcement**: ???
 
@@ -9186,7 +9192,7 @@ Note the use of the `s` suffix to ensure that the string is a `std::string`, rat
 
 **Example**:
 
-	???
+    // ???
 
 **Enforcement**: ???
 
@@ -9197,7 +9203,7 @@ Note the use of the `s` suffix to ensure that the string is a `std::string`, rat
 
 **Example**:
 
-	???
+    // ???
 
 **Exceptions**: Type erasure is sometimes appropriate, such as for `std::function`.
 
@@ -9210,7 +9216,7 @@ Note the use of the `s` suffix to ensure that the string is a `std::string`, rat
 
 **Example**:
 
-	???
+    // ???
 
 **Note**: This rule should not be necessary; the committee cannot agree on how to fix ADL, but at least making it not consider unconstrained templates would solve many of the actual problems and remove the need for this rule.
 
@@ -9229,7 +9235,7 @@ Note the use of the `s` suffix to ensure that the string is a `std::string`, rat
 
 **Example**:
 
-	???
+    // ???
 
 **Note**: Having a template operate only on its arguments would be one way of reducing the number of dependencies to a minimum,
 but that would generally be unmanageable. For example, an algorithm usually uses other algorithms.
@@ -9267,7 +9273,7 @@ This limits use and typically increases code size.
 	List<int> lst1;
 	List<int, my_allocator> lst2;
 
-	???
+	// ???
 
 This looks innocent enough, but ???
 
@@ -9295,7 +9301,7 @@ This looks innocent enough, but ???
 	List<int> lst1;
 	List<int, my_allocator> lst2;
 
-	???
+	// ???
 
 **Enforcement**:
 
@@ -9316,7 +9322,7 @@ This looks innocent enough, but ???
 		// ...
 	};
 
-???
+	// ???
 
 	struct Foo_base {
 		enum { v1, v2 };
@@ -9347,9 +9353,9 @@ Specialization offers a powerful mechanism for providing alternative implementat
 
 **Example**:
 
-	??? string specialization (==)
+    // ??? string specialization (==)
 
-	??? representation specialization ?
+    // ??? representation specialization ?
 
 **Note**: ???
 
@@ -9362,7 +9368,7 @@ Specialization offers a powerful mechanism for providing alternative implementat
 
 **Example**:
 
-	??? that's how we get algorithms like `std::copy` which compiles into a `memmove` call if appropriate for the arguments.
+    // ??? that's how we get algorithms like `std::copy` which compiles into a `memmove` call if appropriate for the arguments.
 
 **Note**: When `concept`s become available such alternatives can be distinguished directly.
 
@@ -9375,7 +9381,7 @@ Specialization offers a powerful mechanism for providing alternative implementat
 
 **Example**:
 
-	???
+    // ???
 
 **Enforcement**: ???
 
@@ -9441,14 +9447,14 @@ The two language mechanisms can be use effectively in combination, but a few des
 		// ...
 	};
 
-	Vector<int> vi;
-	Vector<string> vs;
+	vector<int> vi;
+	vector<string> vs;
 
 It is probably a dumb idea to define a `sort` as a member function of a container,
 but it is not unheard of and it makes a good example of what not to do.
 
-Given this, the compiler cannot know if `Vector<int>::sort()` is called, so it must generate code for it.
-Similar for `Vector<string>::sort()`.
+Given this, the compiler cannot know if `vector<int>::sort()` is called, so it must generate code for it.
+Similar for `vector<string>::sort()`.
 Unless those two functions are called that's code bloat.
 Imagine what this would do to a class hierarchy with dozens of member functions and dozens of derived classes with many instantiations.
 
@@ -9511,7 +9517,7 @@ Note that the assignment in `maul2()` violated the no-slicing [Rule](#???).
 
 **Example**:
 
-	???
+    // ???
 
 **Enforcement**: ???
 
@@ -9591,7 +9597,7 @@ Instead of using a separate "base" type, another common technique is to speciali
 
 **Example**:
 
-	??? printf
+    // ??? printf
 
 **Enforcement**:
 
@@ -9604,7 +9610,7 @@ Instead of using a separate "base" type, another common technique is to speciali
 
 **Example**:
 
-	??? beware of move-only and reference arguments
+    // ??? beware of move-only and reference arguments
 
 **Enforcement**: ???
 
@@ -9615,7 +9621,7 @@ Instead of using a separate "base" type, another common technique is to speciali
 
 **Example**:
 
-	??? forwarding, type checking, references
+    // ??? forwarding, type checking, references
 
 **Enforcement**: ???
 
@@ -9626,7 +9632,7 @@ Instead of using a separate "base" type, another common technique is to speciali
 
 **Example**:
 
-	???
+    // ???
 
 **Enforcement**: ???
 
@@ -9649,7 +9655,7 @@ For example, if you really need AST manipulation at compile time (e.g., for opti
 
 **Example, bad**:
 
-	???
+    // ???
 
 **Example, bad**:
 
@@ -9659,7 +9665,7 @@ Instead, use concepts. But see [How to emulate concepts if you don't have langua
 
 **Example**:
 
-	??? good
+    // ??? good
 
 **Alternative**: If the result is a value, rather than a type, use a [`constexpr` function](#Rt-fct).
 
@@ -9698,7 +9704,7 @@ Use cases that require concepts (e.g. overloading based on concepts) are among t
 
 **Example**:
 
-	??? big object / small object optimization
+    // ??? big object / small object optimization
 
 **Enforcement**: ???
 
@@ -9734,7 +9740,7 @@ Often a `constexpr` function implies less compile-time overhead than alternative
 
 **Example**:
 
-	???
+    // ???
 
 **Enforcement**: ???
 
@@ -9746,7 +9752,7 @@ Write your own "advanced TMP support" only if you really have to.
 
 **Example**:
 
-	???
+    // ???
 
 **Enforcement**: ???
 
@@ -9760,11 +9766,11 @@ Write your own "advanced TMP support" only if you really have to.
 
 **Example**:
 
-	???
+    // ???
 
 **Example; good**:
 
-	???
+    // ???
 
 **Note**: whether functions, lambdas, or operators.
 
@@ -9782,7 +9788,7 @@ Write your own "advanced TMP support" only if you really have to.
 
 **Example**:
 
-	??? for-loop equivalent
+    // ??? for-loop equivalent
 
 **Exception**: Naming a lambda can be useful for clarity even if it is used only once
 
@@ -9797,7 +9803,7 @@ Write your own "advanced TMP support" only if you really have to.
 
 **Example**:
 
-	???
+    // ???
 
 **Enforcement**: ???
 
@@ -9858,7 +9864,7 @@ Of course, range-for is better still where it does what you want.
 
 **Example**:
 
-	???
+    // ???
 
 **Exceptions**: If you do have a valid reason to specialize a function template, just write a single function template that delegates to a class template, then specialize the class template (including the ability to write partial specializations).
 
@@ -10005,7 +10011,7 @@ Examples are `.hh` and `.cxx`. Use such names equivalently.
 
 **Example**:
 
-	???
+    // ???
 
 **Alternative formulation**: A `.h` file must contain only:
 
@@ -10117,7 +10123,7 @@ but systematic use of `.h` files increases the likelyhood that it is caught earl
 
 **Example**:
 
-	???
+    // ???
 
 **Enforcement**: ???
 
@@ -10128,7 +10134,7 @@ but systematic use of `.h` files increases the likelyhood that it is caught earl
 
 **Example**:
 
-	???
+    // ???
 
 **Enforcement**: ???
 
@@ -10175,7 +10181,7 @@ Complicates conversion to use language-supported modules (when they become avail
 
 **Example**:
 
-	???
+    // ???
 
 **Enforcement**: ???
 
@@ -10186,7 +10192,7 @@ Complicates conversion to use language-supported modules (when they become avail
 
 **Example**:
 
-	???
+    // ???
 
 **Enforcement**:
 
@@ -10202,7 +10208,7 @@ Consider putting every definition in an implementation source file should be in 
 
 **Example**: An API class and its members can't live in an unnamed namespace; but any "helper" class or function that is defined in an implementation source file should be at an unnamed namespace scope.
 
-	???
+    // ???
 
 **Enforcement**:
 
@@ -10660,7 +10666,7 @@ For the purposes of this document, bounds-safety is defined to be the property t
 
 The following are under consideration but not yet in the rules below, and may be better in other profiles:
 
-   -
+* ???
 
 An implementation of this profile shall recognize the following patterns in source code as non-conforming and issue a diagnostic.
 
@@ -10708,7 +10714,7 @@ Pointers should only refer to single objects, and pointer arithmetic is fragile 
 
         a[4] = 1; // OK
 
-        a[count – 1] = 2; // OK
+        a[count - 1] = 2; // OK
 
         use(a.data(), 3); // OK
     }
@@ -10770,7 +10776,7 @@ Dynamic accesses into arrays are difficult for both tools and humans to validate
 **Example; good**:
 
     // ALTERNATIVE A: Use an array_view
-    void f()
+    void f1()
     {
         int arr[COUNT];
         array_view<int> av = arr;
@@ -10779,7 +10785,7 @@ Dynamic accesses into arrays are difficult for both tools and humans to validate
     }
 
     // ALTERNATIVE B: Use at() for access
-    void f()
+    void f2()
     {
         int arr[COUNT];
         for (int i = 0; i < COUNT; ++i)
@@ -10798,7 +10804,7 @@ Issue a diagnostic for any indexing expression on an expression or variable of a
 
     void f(int i, int j)
     {
-    	a[i + j] = 12; 		// BAD, could be rewritten as...
+        a[i + j] = 12; 		// BAD, could be rewritten as...
         at(a, i + j) = 12; 	// OK - bounds-checked
     }
 
@@ -11104,7 +11110,7 @@ Hungarian notation is evil (at least in a strongly statically-typed language).
 
 **Example**:
 
-	???
+    // ???
 
 **Note**: Some styles distinguishes members from local variable, and/or from global variable.
 
@@ -11133,7 +11139,7 @@ This is not evil.
 
 **Example**:
 
-	???
+    // ???
 
 **Enforcement**: ???
 
@@ -11147,25 +11153,25 @@ Choose a "house style", but leave "imported" libraries with their original style
 
 **Example**, ISO Standard, use lower case only and digits, separate words with underscores:
 
-	int
-	vector
-	my_map
+* `int`
+* `vector`
+* `my_map`
 
 Avoid double underscores `__`
 
 **Example**: [Stroustrup](http://www.stroustrup.com/Programming/PPP-style.pdf):
 ISO Standard, but with upper case used for your own types and concepts:
 
-	int
-	vector
-	My_map
+* `int`
+* `vector`
+* `My_map`
 
 **Example**: CamelCase: capitalize each word in a multi-word identifier
 
-	int
-	vector
-	MyMap
-	myMap
+* `int`
+* `vector`
+* `MyMap`
+* `myMap`
 
 Some conventions capitalize the first letter, some don't.
 
@@ -11184,7 +11190,7 @@ Some conventions capitalize the first letter, some don't.
 
 **Example**:
 
-	???
+    // ???
 
 **Note**: This rule applies to non-macro symbolic constants
 
@@ -11204,7 +11210,7 @@ If you prefer CamelCase, you have to choose among different flavors of camelCase
 
 **Example**:
 
-	???
+    // ???
 
 **Enforcement**: Impossible.
 
@@ -11254,7 +11260,7 @@ Private types and functions can be placed with private data.
 
 **Example**:
 
-	???
+    // ???
 
 **Enforcement**: Flag departures from the suggested order. There will be a lot of old code that doesn't follow this rule.
 
@@ -11722,7 +11728,7 @@ When using exceptions as your error handling mechanism, always document this beh
 
 
 
-## <a name ="Sd-consistent"></a> Define Copy, move, and destroy consistently
+## <a name="Sd-consistent"></a> Define Copy, move, and destroy consistently
 
 **Reason**: ???
 
@@ -11758,9 +11764,8 @@ If you define a destructor, you should not use the compiler-generated copy or mo
         // ...
     public:
 
- 	   ~X() { /* custom stuff, such as closing hnd */ }
-
-    	// suspicious: no mention of copying or moving -- what happens to hnd?
+        ~X() { /* custom stuff, such as closing hnd */ }
+        // suspicious: no mention of copying or moving -- what happens to hnd?
     };
 
     X x1;
@@ -11773,18 +11778,18 @@ If you define copying, and any base or member has a type that defines a move ope
         string s; // defines more efficient move operations
         // ... other data members ...
     public:
-    	x(const x&) { /* stuff */ }
-    	x& operator=(const x&) { /* stuff */ }
+        x(const x&) { /* stuff */ }
+        x& operator=(const x&) { /* stuff */ }
 
-    	// BAD: failed to also define a move construction and move assignment
-   	 //      (why wasn't the custom "stuff" repeated here?)
-	};
+        //    BAD: failed to also define a move construction and move assignment
+        //   (why wasn't the custom "stuff" repeated here?)
+    };
 
     x test()
     {
         x local;
-    	// ...
-    	return local;  // pitfall: will be inefficient and/or do the wrong thing
+        // ...
+        return local;  // pitfall: will be inefficient and/or do the wrong thing
     }
 
 If you define any of the copy constructor, copy assignment operator, or destructor, you probably should define the others.
@@ -11840,7 +11845,7 @@ This class is a resource handle. It manages the lifetime of the `T`s. To do so, 
 
 **Example**:
 
-	??? "odd" non-memory resource ???
+    // ??? "odd" non-memory resource ???
 
 **Enforcement**: The basic technique for preventing leaks is to have every resource owned by a resource handle with a suitable destructor. A checker can find "naked `new`s". Given a list of C-style allocation functions (e.g., `fopen()`), a checker can also find uses that are not managed by a resource handle. In general, "naked pointers" can be viewed with suspicion, flagged, and/or analyzed. A a complete list of resources cannot be generated without human input (the definition of "a resource" is necessarily too general), but a tool can be "parameterized" with a resource list.
 
@@ -11929,11 +11934,11 @@ The `string`s of `v` are destroyed upon exit from `bad()` and so is `v` itself. 
 
 **Example**:
 
-	vector
+	// ??? vector
 
 **Example**:
 
-	factory
+	// ??? factory
 
 **Enforcement**: Check for pointers and references returned from functions and see if they are assigned to resource handles (e.g., to a `unique_ptr`).
 
@@ -11944,7 +11949,7 @@ The `string`s of `v` are destroyed upon exit from `bad()` and so is `v` itself. 
 
 **Example**:
 
-    ??? Messing with pointers
+* ??? Messing with pointers
 
 **Note**: If all members are resource handles, rely on the default special operations where possible.
 
@@ -11966,7 +11971,7 @@ Now `Named` has a default constructor, a destructor, and efficient copy and move
 
 	template<typename T> class Vector {
 	public:
-		Vector<std::initializer_list<T>);
+		vector<std::initializer_list<T>>;
 		// ...
 	};
 
