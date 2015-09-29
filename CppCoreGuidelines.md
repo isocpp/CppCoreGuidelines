@@ -2896,7 +2896,7 @@ However, a programmer can disalble or replace these defaults.
 	Named_map nm;		// default construct
 	Named_map nm2 {nm};	// copy construct
 
-Since `std::map` and `string` have all the special functions, not further work is needed.
+Since `std::map` and `string` have all the special functions, no further work is needed.
 
 **Note**: This is known as "the rule of zero".
 
