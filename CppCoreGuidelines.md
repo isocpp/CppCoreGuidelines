@@ -1956,9 +1956,10 @@ such as passing a `const int&`, returning an `array<BigPOD>` by value, and retur
 * Identify an array with a length specified separately
 * Identify a location in an array
 
-Confusion about what meaning a `T*` is the source of many serious errors, so using separate names for pointers of these separate uses makes code clearer.
-For debugging, `owner<T*>` and `not_null<T>` can be instrumented to check.
+Using separate names for each of these uses improves code quality because confusion about the meaning of any particular `T*` is the source of many serious errors.
 For example, `not_null<T*>` makes it obvious to a reader (human or machine) that a test for `nullptr` is not necessary before dereference.
+Additionally, when debugging, `owner<T*>` and `not_null<T>` can be instrumented to check for correctness.
+
 
 **Example**: Consider
 
