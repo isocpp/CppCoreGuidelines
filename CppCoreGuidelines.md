@@ -2143,7 +2143,7 @@ If the writer of `g()` makes an assumption about the size of `buffer` a bad logi
 	void fill(Package&);	// OK
 
 	int val();				// OK
-	val(int&);				// Bad: Is val reading its argument
+	void val(int&);				// Bad: Is val reading its argument
 
 **Enforcement**: Hard to choose a cutover value for the size of the value returned.
 
@@ -2184,8 +2184,8 @@ If you have performance justification to optimize for rvalues, overload on `&&` 
 
 **Enforcement**:
 
-* Flag all `X&&` parameters (where `X` is not a template type parameter name) and uses it without `std::move`.
-* Flag access to moved-from objects
+* Flag all `X&&` parameters (where `X` is not a template type parameter name) and code that uses them without `std::move`.
+* Flag access to moved-from objects.
 
 
 ### <a name="Rf-unique_ptr"></a> F.26: Use a `unique_ptr<T>` to transfer ownership where a pointer is needed
@@ -2216,7 +2216,7 @@ If you have performance justification to optimize for rvalues, overload on `&&` 
 
 **Example**:
 
-	shared_ptr<Image> im { read_image(somewhere); };
+	shared_ptr<Image> im { read_image(somewhere) };
 
 	std::thread t0 {shade, args0, top_left, im};
 	std::thread t1 {shade, args1, top_right, im};
@@ -2372,8 +2372,8 @@ This applies to references as well:
 
 Here on one popular implementation I got the output
 
-	*p == 9
-	cx == 999
+	*p == 999
+	gx == 999
 
 I expected that because the call of `g()` reuses the stack space abandoned by the call of `f()` so `*p` refers to the space now occupied by `gx`.
 
@@ -2384,7 +2384,7 @@ Imagine what a cracker could do with that dangling pointer.
 
 Fortunately, most (all?) modern compilers catch and warn against this simple case.
 
-**Note**: you can construct similar examples using references.
+**Note**: You can construct similar examples using references.
 
 **Note**: This applies only to non-`static` local variables.
 All `static` variables are (as their name indicates) statically allocated, so that pointers to them cannot dangle.
@@ -2560,7 +2560,7 @@ For passthrough functions that pass in parameters (by ordinary reference or by p
 
 # <a name="S-class"></a> C: Classes and Class Hierarchies
 
-A class is a user-defined type, for which a programmer can define the representation, operations, and  interfaces.
+A class is a user-defined type, for which a programmer can define the representation, operations, and interfaces.
 Class hierarchies are used to organize related classes into hierarchical structures.
 
 Class rule summary:
@@ -2596,14 +2596,14 @@ Subsections:
 
 **Note**: From a language perspective `class` and `struct` differ only in the default visibility of their members.
 
-**Enforcement**: Probably impossible. Maybe a heuristic looking for date items used together is possible.
+**Enforcement**: Probably impossible. Maybe a heuristic looking for data items used together is possible.
 
 
 ### <a name="Rc-struct"></a> C.2: Use `class` if the class has an invariant; use `struct` if the data members can vary independently
 
-**Reason**: Ease of comprehension. The use of `class` alerts the programmer to the need for an invariant
+**Reason**: Ease of comprehension. The use of `class` alerts the programmer to the need for an invariant.
 
-**Note**: An invariant is logical condition for the members of an object that a constructor must establish for the public member functions to assume. After the invariant is established (typically by a constructor) every member function can be called for the object. An invariant can be stated informally (e.g., in a comment) or more formally using `Expects`.
+**Note**: An invariant is a logical condition for the members of an object that a constructor must establish for the public member functions to assume. After the invariant is established (typically by a constructor) every member function can be called for the object. An invariant can be stated informally (e.g., in a comment) or more formally using `Expects`.
 
 **Example**:
 
@@ -2629,7 +2629,7 @@ but
 
 ### <a name="Rc-interface"></a> C.3: Represent the distinction between an interface and an implementation using a class
 
-**Reason**: an explicit distinction between interface and implementation improves readability and simplifies maintenance.
+**Reason**: An explicit distinction between interface and implementation improves readability and simplifies maintenance.
 
 **Example**:
 
