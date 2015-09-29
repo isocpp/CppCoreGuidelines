@@ -2064,7 +2064,7 @@ When I call `length(s)` should I test for `s==nullptr` first? Should the impleme
 **Exception**: Sinks (that is, a function that eventually destroys an object or passes it along to another sink), may benefit ???
 
 **Note**: A reference may be assumed to refer to a valid object (language rule).
-There in no (legitimate) "null reference."
+There is no (legitimate) "null reference."
 If you need the notion of an optional value, use a pointer, `std::optional`, or a special value used to denote "no value."
 
 **Enforcement**:
