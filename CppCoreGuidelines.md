@@ -1435,6 +1435,10 @@ Use `const` for the "from" argument:
 
 		void copy_n(const T* p, T* q, int n); // copy from [p:p+n) to [q:q+n)
 
+**Example**: If the order of the parameters is not important, there is no problem:
+
+                int max(int a, int b);
+
 **Alternative**: Don't pass arrays as pointers, pass an object representing a range (e.g., an `array_view`):
 
 		void copy_n(array_view<const T> p, array_view<T> q); // copy from p to q
