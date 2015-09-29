@@ -7263,20 +7263,20 @@ The call will most likely be `f(0, 1)` or `f(1, 0)`, but you don't know which. T
 
 **Example**:
 
-	for (int m = 1; m<=12; ++m)	// don't: magic constant 12
+	for (int m = 1; m <= 12; ++m)	// don't: magic constant 12
 		cout << month[m] << '\n';
 
 No, we don't all know that there a 12 month, numbered 1..12, in a year. Better:
 
-	constexp int last_month = 12;	// months are numbered 1..12
+	constexpr int last_month = 12;	// months are numbered 1..12
 
-	for (int m = first_month; m<=last_month; ++m)	// better
+	for (int m = first_month; m <= last_month; ++m)	// better
 		cout << month[m] << '\n';
 
 Better still, don't expose constants:
 
 	for(auto m : month)
-		cout << m <<'\n';
+		cout << m << '\n';
 
 **Enforcement**: Flag literals in code. Give a pass to `0`, `1`, `nullptr`, `\n`, `""`, and others on a positive list.
 
