@@ -11415,6 +11415,34 @@ Because `string_view` is still undergoing standardization, and is in a state for
 
 
 
+### <a name="Faq-gsl-owner"></a> FAQ.56: Is `owner` the same as the proposed `observer_ptr`?
+
+No. `owner` owns, is an alias, and can be applied to any indirection type.
+
+
+### <a name="Faq-gsl-stack-array"></a> FAQ.57: Is `stack_array` the same as the standard `array`?
+
+No. `stack_array` is guaranteed to be allocated on the stack.
+
+
+### <a name="Faq-gsl-dyn-array"></a> FAQ.58: Is `dyn_array` the same as `vector`?
+
+No. `dyn_array` is not resizable, and is a safe way to refer to a heap-allocated fixed-size array.
+
+
+### <a name="Faq-gsl-expects"></a> FAQ.59. Is `Expects` the same as `assert`? 
+
+No. It is a placeholder for language support for contracts.
+
+
+### <a name="Faq-gsl-ensures"></a> FAQ.60. Is `Expects` the same as `assert`? 
+
+No. It is a placeholder for language support for contracts.
+
+
+
+
+
 # <a name="S-libraries"></a> Appendix A: Libraries
 
 This section lists recommended libraries, and explicitly recommends a few.
