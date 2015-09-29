@@ -87,7 +87,6 @@ Definitions of terms used to express and discuss the rules, that are not languag
 * resource
 * exception guarantee
 
-
 # <a name="S-abstract"></a> Abstract
 
 This document is a set of guidelines for using C++ well.
@@ -127,7 +126,6 @@ We plan to build tools for that and hope others will too.
 Comments and suggestions for improvements are most welcome.
 We plan to modify and extend this document as our understanding improves and the language and the set of available libraries improve.
 
-
 # <a name="S-introduction"></a> In: Introduction
 
 This is a set of core guidelines for modern C++, C++14, and taking likely future enhancements and taking ISO Technical Specifications (TSs) into account.
@@ -142,11 +140,9 @@ Introduction summary:
 * [In.struct: The structure of this document](#SS-struct)
 * [In.sec: Major sections](#SS-sec)
 
-
 ## <a name="SS-readers"></a> In.target: Target readership
 
 All C++ programmers. This includes [programmers who might consider C](#S-cpl).
-
 
 ## <a name="SS-aims"></a> In.aims: Aims
 
@@ -229,7 +225,6 @@ The rules are not value-neutral.
 They are meant to make code simpler and more correct/safer than most existing C++ code, without loss of performance.
 They are meant to inhibit perfectly valid C++ code that correlates with errors, spurious complexity, and poor performance.
 
-
 ## <a name="SS-force"></a> In.force: Enforcement
 
 Rules with no enforcement are unmanageable for large code bases.
@@ -260,7 +255,6 @@ For a start, we have a few profiles corresponding to common needs (desires, idea
 The profiles are intended to be used by tools, but also serve as an aid to the human reader.
 We do not limit our comment in the **Enforcement** sections to things we know how to enforce; some comments are mere wishes that might inspire some tool builder.
 
-
 ## <a name="SS-struct"></a> In.struct: The structure of this document
 
 Each rule (guideline, suggestion) can have several parts:
@@ -290,7 +284,6 @@ If you feel that a discussion is missing or incomplete, send us an email.
 This is not a language manual.
 It is meant to be helpful, rather than complete, fully accurate on technical details, or a guide to existing code.
 Recommended information sources can be found in [the references](#S-references).
-
 
 ## <a name="SS-sec"></a> In.sec: Major sections
 
@@ -326,7 +319,6 @@ These sections are not orthogonal.
 
 Each section (e.g., "P" for "Philosophy") and each subsection (e.g., "C.hier" for "Class Hierarchies (OOP)") have an abbreviation for ease of searching and reference.
 The main section abbreviations are also used in rule numbers (e.g., "C.11" for "Make concrete types regular").
-
 
 # <a name="S-philosophy"></a> P: Philosophy
 
@@ -1436,7 +1428,6 @@ Every object passed as a raw pointer (or iterator) is assumed to be owned by the
 * (Simple) Warn on failure to either `reset` or explicitly `delete` an `owner` pointer on every code path.
 * (Simple) Warn if the return value of `new` or a function call with return value of pointer type is assigned to a raw pointer.
 
-
 ### <a name="Ri-nullptr"></a> I.12: Declare a pointer that must not be null as `not_null`
 
 ##### Reason
@@ -1706,11 +1697,9 @@ Other function rules:
 
 Functions have strong similarities to lambdas and function objects so see also Section ???.
 
-
 ## <a name="SS-fct-def"></a> F.def: Function definitions
 
 A function definition is a function declaration that also specifies the function's implementation, the function body.
-
 
 ### <a name="Rf-package"></a> F.1: "Package" meaningful operations as carefully named functions
 
@@ -1763,7 +1752,6 @@ Similarly, lambdas used as callback arguments are sometimes non-trivial, yet unl
 
 * See [Keep functions short](#Rf-single)
 * Flag identical and very similar lambdas used in different places.
-
 
 ### <a name="Rf-logical"></a> F.2: A function should perform a single logical operation
 
@@ -2210,7 +2198,6 @@ A `not_null<T*>` is assumed not to be the `nullptr`; a `T*` may be the `nullptr`
 ##### Enforcement
 
 * (Simple) ((Bounds)) Warn for any arithmetic operation on an expression of pointer type that results in a value of pointer type.
-
 
 ### <a name="Rf-nullptr"></a> F.17: Use a `not_null<T>` to indicate that "null" is not a valid value
 
@@ -2803,6 +2790,7 @@ Flag any use of `&&` as a return type, except in `std::move` and `std::forward`.
 * Warn on use of a named non-generic lambda (e.g., `auto x = [](int i){ /*...*/; };`) that captures nothing and appears at global scope. Write an ordinary function instead.
 
 ### <a name="Rf-default-args"></a> F.51: Prefer overloading over default arguments for virtual functions
+
 ??? possibly other situations?
 
 ##### Reason
@@ -3070,7 +3058,6 @@ Concrete type rule summary:
 * [C.10: Prefer a concrete type over more complicated classes](#Rc-concrete)
 * [C.11: Make concrete types regular](#Rc-regular)
 
-
 ### <a name="Rc-concrete"></a> C.10 Prefer a concrete type over more complicated classes
 
 ##### Reason
@@ -3225,12 +3212,10 @@ Other default operations rules:
 * [C.88: Make `<` symmetric with respect of operand types and `noexcept`](#Rc-lt)
 * [C.89: Make a `hash` `noexcept`](#Rc-hash)
 
-
 ## <a name="SS-defop"></a> C.defop: Default Operations
 
 By default, the language supply the default operations with their default semantics.
 However, a programmer can disable or replace these defaults.
-
 
 ### <a name="Rc-zero"></a> C.20: If you can avoid defining default operations, do
 
@@ -3544,7 +3529,7 @@ The default copy operation will just copy the `p1.p` into `p2.p` leading to a do
 	}
 
 
- ##### Note
+##### Note
 
 Often the simplest way to get a destructor is to replace the pointer with a smart pointer (e.g., `std::unique_ptr`)
  and let the compiler arrange for proper destruction to be done implicitly.
@@ -3929,7 +3914,6 @@ However, most realistic `Date` classes has a "first date" (e.g. January 1, 1970 
 ##### Enforcement
 
 * Flag classes without a default constructor
-
 
 ### <a name="Rc-default00"></a> C.44: Prefer default constructors to be simple and non-throwing
 
@@ -4513,6 +4497,7 @@ Consider:
 ##### Enforcement
 
 Equivalent to what is done for [copy-assignment](#Rc-copy-assignment).
+
 * (Simple) An assignment operator should not be virtual. Here be dragons!
 * (Simple) An assignment operator should return `T&` to enable chaining, not alternatives like `const T&` which interfere with composability and putting objects in containers.
 * (Moderate) A move assignment operator should (implicitly or explicitly) invoke all base and member move assignment operators.
@@ -5144,9 +5129,7 @@ not using this (over)general interface in favor of a particular interface found 
 	???
 
 ##### Enforcement
-
 ???
-
 ## C.hierclass: Designing classes in a hierarchy:
 
 ### <a name="Rh-abstract-ctor"></a> C.126: An abstract class typically doesn't need a constructor
@@ -5429,7 +5412,7 @@ This a relatively rare use because implementation can often be organized into a 
 
 ##### Example
 
-	???
+    ???
 
 ## C.hier-access: Accessing objects in a hierarchy
 
@@ -5842,7 +5825,7 @@ Union rule summary:
 
 ##### Example
 
-	???
+    ???
 
 ##### Enforcement
 
@@ -5875,7 +5858,6 @@ Enumeration rule summary:
 ##### Enforcement
 
 ???
-
 ### <a name="Renum-set"></a> Enum.2: Use enumerations to represent sets of named constants
 
 ##### Reason
@@ -5889,7 +5871,6 @@ Enumeration rule summary:
 ##### Enforcement
 
 ???
-
 ### <a name="Renum-class"></a> Enum.3: Prefer class enums over ``plain'' enums
 
 ##### Reason
@@ -5931,7 +5912,6 @@ Enumeration rule summary:
 ##### Enforcement
 
 ???
-
 ### <a name="Renum-unnamed"></a> Enum.6: Use unnamed enumerations for ???
 
 ##### Reason
@@ -5940,12 +5920,11 @@ Enumeration rule summary:
 
 ##### Example
 
-	???
+    ???
 
 ##### Enforcement
 
 ???
-
 # <a name="S-resource"></a> R: Resource management
 
 This section contains rules related to resources.
@@ -8571,7 +8550,6 @@ Some people optimize out of habit or because it's fun.
 ##### Note
 
 If your program spends most of its time waiting for the web or for a human, optimization of in-memory computation is probably useless.
-
 ???
 
 ### <a name="Rper-simple"></a> PER.4: Don't assume that complicated code is necessarily faster than simple code
@@ -8627,31 +8605,25 @@ make the job of the optimizer much harder. Simple code often optimizes better th
 
 ???
 
-
 ### <a name="Rper-Comp"></a> PER.11: Move computation from run time to compile time
 
 ???
-
 
 ### <a name="Rper-alias"></a> PER.12: Eliminate redundant aliases
 
 ???
 
-
 ### <a name="Rper-indirect"></a> PER.13: Eliminate redundant indirections
 
 ???
-
 
 ### <a name="Rper-alloc"></a> PER.14: Minimize the number of allocations and deallocations
 
 ???
 
-
 ### <a name="Rper-alloc0"></a> PER.15: Do not allocate on a critical branch
 
 ???
-
 
 ### <a name="Rper-compact"></a> PER.16: Use compact data structures
 
@@ -9336,7 +9308,6 @@ Let cleanup actions on the unwinding path be handled by [RAII](#Re-raii).
 ##### Note
 
 ??? mostly, you can afford exceptions and code gets simpler with exceptions ???
-
 **See also**: [Discussion](#Sd-???).
 
 # <a name="S-const"></a> Con: Constants and Immutability
@@ -9523,11 +9494,9 @@ Other template rules summary:
 * [T.144: Don't specialize function templates](#Rt-specialize-function)
 * [T.??: ????](#Rt-???)
 
-
 ## <a name="SS-GP"></a> T.gp: Generic programming
 
 Generic programming is programming using types and algorithms parameterized by types, values, and algorithms.
-
 
 ### <a name="Rt-raise"></a> T.1: Use templates to raise the level of abstraction of code
 
@@ -10599,8 +10568,7 @@ In many cases you can provide a stable interface by not parameterizing a base; s
 ##### Enforcement
 
 * Flag virtual functions that depend on a template argument. ??? False positives
-
-### <a name="Rt-array"></a> T.81: Do not mix hierarchies and arrays
+  ### <a name="Rt-array"></a> T.81: Do not mix hierarchies and arrays
 
 ##### Reason
 
@@ -11523,7 +11491,6 @@ This section contains ideas about ???
 
 ???
 
-
 # <a name="S-not"></a> Non-Rules and myths
 
 This section contains rules and guidelines that are popular somewhere, but that we deliberately don't recommend.
@@ -11537,7 +11504,6 @@ Non-rule summary:
 * one class per source file
 * two-phase initialization
 * goto exit
-
 
 # <a name="S-references"></a> RF: References
 
@@ -11639,7 +11605,6 @@ Primarily a teaching tool.
 * Tour++
 * Programming: Principles and Practice using C++
 
-
 ## <a name="SS-web"></a> RF.web: Websites
 
 * [isocpp.org](http://www.isocpp.com)
@@ -11650,8 +11615,6 @@ Primarily a teaching tool.
 * [Adobe open source](http://www.adobe.com/open-source.html)
 * [Poco libraries](http://pocoproject.org/)
 
-
-
 ## <a name="SS-vid"></a> RS.video: Videos about "modern C++"
 
 * Bjarne Stroustrup: [C++11 Style](http://channel9.msdn.com/Events/GoingNative/GoingNative-2012/Keynote-Bjarne-Stroustrup-Cpp11-Style). 2012.
@@ -11661,7 +11624,6 @@ Primarily a teaching tool.
 * Sutter: ???
 * ??? more ???
 
-
 ## <a name="SS-man"></a> RF.man: Manuals
 
 * ISO C++ Standard C++11
@@ -11669,7 +11631,6 @@ Primarily a teaching tool.
 * Palo Alto "Concepts" TR
 * ISO C++ Concepts TS
 * WG21 Ranges report
-
 
 ## <a name="SS-ack"></a> Acknowledgements
 
@@ -11682,7 +11643,6 @@ Thanks to the many people who contributed rules, suggestions, supporting informa
 * Gabriel Dos Reis
 * Zhuang, Jiangang (Jeff)
 * Sergey Zubkov
-
 
 # <a name="S-profile"></a> Profiles
 
@@ -12141,11 +12101,6 @@ If code is using an unmodified standard library, then there are still workaround
 
 ## <a name="SS-lifetime"></a> Lifetime safety profile
 
-
-
-
-
-
 # <a name="S-gsl"></a> GSL: Guideline support library
 
 The GSL is a small library of facilities designed to support this set of guidelines.
@@ -12157,7 +12112,6 @@ The support library facilities are designed to be extremely lightweight (zero-ov
 Where desirable, they can be "instrumented" with additional functionality (e.g., checks) for tasks such as debugging.
 
 These Guidelines assume a `variant` type, but this is not currently in GSL because the design is being actively refined in the standards committee.
-
 
 ## <a name="SS-views"></a> GSL.view: Views
 
@@ -12217,7 +12171,6 @@ French accent optional.
 
 Use `not_null<zstring>` for C-style strings that cannot be `nullptr`. ??? Do we need a name for `not_null<zstring>`? or is its ugliness a feature?
 
-
 ## <a name="SS-ownership"></a> GSL.owner: Ownership pointers
 
 * `unique_ptr<T>`     // unique ownership: `std::unique_ptr<T>`
@@ -12233,7 +12186,6 @@ Use `not_null<zstring>` for C-style strings that cannot be `nullptr`. ??? Do we 
                 // ??? `Expect` in under control of some options (enforcement, error message, alternatives to terminate)
 * `Ensures`     // postcondition assertion.	Currently placed in function bodies. Later, should be moved to declarations.
 
-
 ## <a name="SS-utilities"></a> GSL.util: Utilities
 
 * `finally`		// `finally(f)` makes a `final_action{f}` with a destructor that invokes `f`
@@ -12242,7 +12194,6 @@ Use `not_null<zstring>` for C-style strings that cannot be `nullptr`. ??? Do we 
 * `implicit`	// "Marker" to put on single-argument constructors to explicitly make them non-explicit
   (I don't know how to do that except with a macro: `#define implicit`).
 * `move_owner`	// `p=move_owner(q)` means `p=q` but ???
-
 
 ## <a name="SS-concepts"></a> GSL.concept: Concepts
 
@@ -12272,7 +12223,6 @@ The notation is that of the ISO WG21 Concepts TS (???ref???).
 * `Relation`
 * ...
 
-
 # <a name="S-naming"></a> NL: Naming and layout rules
 
 Consistent naming and layout are helpful. If for no other reason because it minimizes "my style is better than your style" arguments.
@@ -12301,7 +12251,6 @@ Most of these rules are aesthetic and programmers hold strong opinions.
 IDEs also tend to have defaults and a range of alternatives.These rules are suggested defaults to follow unless you have reasons not to.
 
 More specific and detailed rules are easier to enforce.
-
 
 ### <a name="Rl-comments"></a> NL.1: Don't say in comments what can be clearly stated in code
 
@@ -12398,7 +12347,6 @@ Some styles distinguishes types from non-types.
 
 This is not evil.
 
-
 ### <a name="Rl-name-length"></a> NL.7: Make the length of a name roughly proportional to the length of its scope
 
 **Rationale**: ???
@@ -12482,8 +12430,6 @@ This rule applies to non-macro symbolic constants
 * Flag macros with lower-case letters
 * Flag ALL_CAPS non-macro names
 
-
-
 ### <a name="Rl-camel"></a> NL.10: Avoid CamelCase
 
 ##### Reason
@@ -12530,8 +12476,6 @@ Some IDEs have their own opinions and adds distracting space.
 ##### Note
 
 We value well-placed whitespace as a significant help for readability. Just don't overdo it.
-
-
 
 ### <a name="Rl-order"></a> NL.16: Use a conventional class member declaration order
 
@@ -12651,87 +12595,69 @@ This section covers answers to frequently asked questions about these guidelines
 
 See the top of this page. This is an open source project to maintain modern authoritative guidelines for writing C++ code using the current C++ Standard (as of this writing, C++14). The guidelines are designed to be modern, machine-enforceable wherever possible, and open to contributions and forking so that organizations can easily incorporate them into their own corporate coding guidelines.
 
-
 ### <a name="Faq-announced"></a> FAQ.2: When and where was this work first announced?
 
 It was announced by [Bjarne Stroustrup in his CppCon 2015 opening keynote, “Writing Good C++14”](https://isocpp.org/blog/2015/09/stroustrup-cppcon15-keynote). See also the [accompanying isocpp.org blog post](https://isocpp.org/blog/2015/09/bjarne-stroustrup-announces-cpp-core-guidelines), and for the rationale of the type and memory safety guidelines see [Herb Sutter’s follow-up CppCon 2015 talk, “Writing Good C++14... By Default”](https://isocpp.org/blog/2015/09/sutter-cppcon15-day2plenary).
-
 
 ### <a name="Faq-maintainers"></a> FAQ.3: Who are the authors and maintainers of these guidelines?
 
 The initial primary authors and maintainers are Bjarne Stroustrup and Herb Sutter, and the guidelines so far were developed with contributions from experts at CERN, Microsoft, Morgan Stanley, and several other organizations. At the time of their release, the guidelines are in a "0.6" state, and contributions are welcome. As Stroustrup said in his announcement: "We need help!"
 
-
 ### <a name="Faq-contribute"></a> FAQ.4: How can I contribute?
 
 See [CONTRIBUTING.md](https://github.com/isocpp/CppCoreGuidelines/blob/master/CONTRIBUTING.md). We appreciate volunteer help!
-
 
 ### <a name="Faq-maintainer"></a> FAQ.5: How can I become an editor/maintainer?
 
 By contributing a lot first and having the consistent quality of your contributions recognized. See [CONTRIBUTING.md](https://github.com/isocpp/CppCoreGuidelines/blob/master/CONTRIBUTING.md). We appreciate volunteer help!
 
-
 ### <a name="Faq-iso"></a> FAQ.6: Have these guidelines been approved by the ISO C++ standards committee? Do they represent the consensus of the committee?
 
 No. These guidelines are outside the standard. They are intended to serve the standard, and be maintained as current guidelines about how to use the current Standard C++ effectively. We aim to keep them in sync with the standard as that is evolved by the committee.
-
 
 ### <a name="Faq-isocpp"></a> FAQ.7: If these guidelines are not approved by the committee, why are they under `github.com/isocpp`?
 
 Because `isocpp` is the Standard C++ Foundation; the committee’s repositories are under [github.com/*cplusplus*](https://github.com/cplusplus). Some neutral organization has to own the copyright and license to make it clear this is not being dominated by any one person or vendor. The natural entity is the Foundation, which exists to promote the use and up-to-date understanding of modern Standard C++ and the work of the committee. This follows the same pattern that isocpp.org did for the [C++ FAQ](https://isocpp.org/faq), which was initially the work of Bjarne Stroustrup, Marshall Cline, and Herb Sutter and contributed to the open project in the same way.
 
-
 ### <a name="Faq-cpp98"></a> FAQ.8: Will there be a C++98 version of these Guidelines? a C++11 version?
 
 No. These guidelines are about how to best use Standard C++14 (and, if you have an implementation available, the Concepts Lite Technical Specification) and write code assuming you have a modern conforming compiler.
-
 
 ### <a name="Faq-language-extensions"></a> FAQ.9: Do these guidelines propose new language features?
 
 No. These guidelines are about how to best use Standard C++14 + the Concepts Lite Technical Specification, and they limit themselves to recommending only those features.
 
-
 ### <a name="Faq-gsl"></a> FAQ.50: What is the GSL (guideline support library)?
 
 The GSL is the small set of types and aliases specified in these guidelines. As of this writing, their specification herein is too sparse; we plan to add a WG21-style interface specification to ensure that different implementations agree, and to propose as a contribution for possible standardization, subject as usual to whatever the committee decides to accept/improve/alter/reject.
-
 
 ### <a name="Faq-msgsl"></a> FAQ.51: Is [github.com/Microsoft/GSL](https://github.com/Microsoft/GSL) the GSL?
 
 No. That is just a first implementation contributed by Microsoft. Other implementations by other vendors are encouraged, as are forks of and contributions to that implementation. As of this writing one week into the public project, at least one GPLv3 open source implementation already exists. We plan to produce a WG21-style interface specification to ensure that different implementations agree.
 
-
 ### <a name="Faq-gsl-implementation"></a> FAQ.52: Why not supply an actual GSL implementation in/with these guidelines?
 
 We are reluctant to bless one particular implementation because we do not want to make people think there is only one, and inadvertently stifle parallel implementations. And if these guidelines included an actual implementation, then whoever contributed it could be mistakenly seen as too influential. We prefer to follow the long-standing approach of the committee, namely to specify interfaces, not implementations. But at the same time we want at least one implementation available; we hope for many.
-
 
 ### <a name="Faq-boost"></a> FAQ.53: Why weren’t the GSL types proposed through Boost?
 
 Because we want to use them immediately, and because they are temporary in that we want to retire them as soon as types that fill the same needs exist in the standard library.
 
-
 ### <a name="Faq-gsl-iso"></a> FAQ.54: Has the GSL (guideline support library) been approved by the ISO C++ standards committee?
 
 No. The GSL exists only to supply a few types and aliases that are not currently in the standard library. If the committee decides on standardized versions (of these or other types that fill the same need) then they can be removed from the GSL.
-
 
 ### <a name="Faq-gsl-string-view"></a> FAQ.55: If you’re using the standard types where available, why is the GSL `string_view` different from the `string_view` in the Library Fundamentals 1 Technical Specification? Why not just use the committee-approved `string_view`?
 
 Because `string_view` is still undergoing standardization, and is in a state for public review input to improve it. Types that appear in Technical Specifications (TSes) are not yet part of the International Standard (IS), and one reason they are put in TSes first is to gain experience with the feature before they are cast in a final form to become part of the standard. Some of the GSL authors are contributing what we have learned about `string_view` in the process of developing these guidelines, and a discussion of the differences, as a paper for the next ISO meeting for consideration along with all the other similar papers for the committee to consider as it decides on the final form of this feature.
 
-
-
 ### <a name="Faq-gsl-owner"></a> FAQ.56: Is `owner` the same as the proposed `observer_ptr`?
 
 No. `owner` owns, is an alias, and can be applied to any indirection type. The main intent of `observer_ptr` is to signify a *non*-owning pointer.
 
-
 ### <a name="Faq-gsl-stack-array"></a> FAQ.57: Is `stack_array` the same as the standard `array`?
 
 No. `stack_array` is guaranteed to be allocated on the stack. Although a `std::array` contains its storage directly inside itself, the `array` object can be put anywhere, including the heap.
-
 
 ### <a name="Faq-gsl-dyn-array"></a> FAQ.58: Is `dyn_array` the same as `vector` or the proposed `dynarray`?
 
@@ -12747,16 +12673,11 @@ No. It is a placeholder for language support for contract preconditions.
 
 No. It is a placeholder for language support for contract postconditions.
 
-
-
-
-
 # <a name="S-libraries"></a> Appendix A: Libraries
 
 This section lists recommended libraries, and explicitly recommends a few.
 
 ??? Suitable for the general guide? I think not ???
-
 
 # <a name="S-modernizing"></a> Appendix B: Modernizing code
 
@@ -12800,7 +12721,6 @@ The guidelines are not a random set of unrelated rules where you can randomly pi
 
 We would dearly love to hear about experience and about tools used.
 Modernization can be much faster, simpler, and safer when supported with analysis tools and even code transformation tools.
-
 
 # <a name="S-discussion"></a> Appendix C: Discussion
 
@@ -12889,9 +12809,6 @@ In summary, no post-construction technique is perfect. The worst techniques dodg
 
 **References**: [[Alexandrescu01]](#Alexandrescu01) §3, [[Boost]](#Boost), [[Dewhurst03]](#Dewhurst03) §75, [[Meyers97]](#Meyers97) §46, [[Stroustrup00]](#Stroustrup00) §15.4.3, [[Taligent94]](#Taligent94)
 
-
-
-
 ### <a name="Sd-dtor"></a> Discussion: Make base class destructors public and virtual, or protected and nonvirtual
 
 Should destruction behave virtually? That is, should destruction through a pointer to a `base` class should be allowed? If yes, then `base`'s destructor must be public in order to be callable, and virtual otherwise calling it results in undefined behavior. Otherwise, it should be protected so that only derived classes can invoke it in their own destructors, and nonvirtual since it doesn't need to behave virtually virtual.
@@ -12965,14 +12882,11 @@ In this rare case, you could make the destructor public and nonvirtual but clear
 
 In general, however, avoid concrete base classes (see Item 35). For example, `unary_function` is a bundle-of-typedefs that was never intended to be instantiated standalone. It really makes no sense to give it a public destructor; a better design would be to follow this Item's advice and give it a protected nonvirtual destructor.
 
-
 **References**: [[C++CS]](#C++CS) Item 50, [[Cargill92]](#Cargill92) pp. 77-79, 207¸ [[Cline99]](#Cline99) §21.06, 21.12-13¸ [[Henricson97]](#Henricson97) pp. 110-114¸ [[Koenig97]](#Koenig97) Chapters 4, 11¸ [[Meyers97]](#Meyers97) §14¸ [[Stroustrup00]](#Stroustrup00) §12.4.2¸ [[Sutter02]](#Sutter02) §27¸ [[Sutter04]](#Sutter04) §18
-
 
 ### <a name="Sd-noexcept"></a> Discussion: Usage of noexecpt
 
 ???
-
 
 ### <a name="Sd-never-fail"></a> Discussion: Destructors, deallocation, and swap must never fail
 
@@ -13026,6 +12940,7 @@ static nefarious n;       // oops, any destructor exception can't be caught
 ```
 void test() {
     std::array<nefarious, 10> arr; // this line can std::terminate(!)
+
 }
 ```
 
@@ -13066,11 +12981,7 @@ Fortunately, when releasing a resource, the scope for failure is definitely smal
 
 When using exceptions as your error handling mechanism, always document this behavior by declaring these functions `noexcept`. (See Item 75.)
 
-
 **References**: [[C++CS]](#C++CS) Item 51; [[C++03]](#C++03) §15.2(3), §17.4.4.8(3)¸ [[Meyers96]](#Meyers96) §11¸ [[Stroustrup00]](#Stroustrup00) §14.4.7, §E.2-4¸ [[Sutter00]](#Sutter00) §8, §16¸ [[Sutter02]](#Sutter02) §18-19
-
-
-
 
 ## <a name="Sd-consistent"></a> Define Copy, move, and destroy consistently
 
@@ -13103,7 +13014,6 @@ If you define a move constructor, you must also define a move assignment operato
     x x1;
     x x2 = x1; // ok
     x2 = x1;   // pitfall: either fails to compile, or does something suspicious
-
 
 If you define a destructor, you should not use the compiler-generated copy or move operation; you probably need to define or suppress copy and/or move.
 
@@ -13144,7 +13054,6 @@ If you define any of the copy constructor, copy assignment operator, or destruct
 
 ##### Note
 
-
 If you need to define any of these five functions, it means you need it to do more than its default behavior--and the five are asymmetrically interrelated. Here's how:
 
 * If you write/disable either of the copy constructor or the copy assignment operator, you probably need to do the same for the other: If one does "special" work, probably so should the other because the two functions should have similar effects. (See Item 53, which expands on this point in isolation.)
@@ -13160,8 +13069,6 @@ In rare cases, classes that have members of strange types (such as reference mem
 In a class holding a reference, you likely need to write the copy constructor and the assignment operator, but the default destructor already does the right thing. (Note that using a reference member is almost always wrong.)
 
 **References**: [[C++CS]](#C++CS) Item 52; [[Cline99]](#Cline99) §30.01-14¸ [[Koenig97]](#Koenig97) §4¸ [[Stroustrup00]](#Stroustrup00) §5.5, §10.4¸ [[SuttHysl04b]](#SuttHysl04b)
-
-
 
 Resource management rule summary:
 
