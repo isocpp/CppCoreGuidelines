@@ -712,7 +712,7 @@ If all we had was a typo so that we meant to use `n` as the bound, the code coul
 		// ...
 	}
 	
-The date is validated twice (by the `Date` constructor) and passed as an character string (unstructured data).
+The date is validated twice (by the `Date` constructor) and passed as a character string (unstructured data).
 
 **Example**: Excess checking can be costly.
 There are cases where checking early is dumb because you may not ever need the value,
