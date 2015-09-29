@@ -11417,17 +11417,17 @@ Because `string_view` is still undergoing standardization, and is in a state for
 
 ### <a name="Faq-gsl-owner"></a> FAQ.56: Is `owner` the same as the proposed `observer_ptr`?
 
-No. `owner` owns, is an alias, and can be applied to any indirection type.
+No. `owner` owns, is an alias, and can be applied to any indirection type. The main intent of `observer_ptr` is to signify a *non*-owning pointer.
 
 
 ### <a name="Faq-gsl-stack-array"></a> FAQ.57: Is `stack_array` the same as the standard `array`?
 
-No. `stack_array` is guaranteed to be allocated on the stack.
+No. `stack_array` is guaranteed to be allocated on the stack. Although a `std::array` contains its storage directly inside itself, the `array` object can be put anywhere, including the heap.
 
 
 ### <a name="Faq-gsl-dyn-array"></a> FAQ.58: Is `dyn_array` the same as `vector`?
 
-No. `dyn_array` is not resizable, and is a safe way to refer to a heap-allocated fixed-size array.
+No. `dyn_array` is not resizable, and is a safe way to refer to a heap-allocated fixed-size array. It is intended to replace array-`new[]`.
 
 
 ### <a name="Faq-gsl-expects"></a> FAQ.59. Is `Expects` the same as `assert`? 
