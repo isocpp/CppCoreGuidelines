@@ -11435,7 +11435,7 @@ No. `dyn_array` is not resizable, and is a safe way to refer to a heap-allocated
 No. It is a placeholder for language support for contracts.
 
 
-### <a name="Faq-gsl-ensures"></a> FAQ.60. Is `Expects` the same as `assert`? 
+### <a name="Faq-gsl-ensures"></a> FAQ.60. Is `Ensures` the same as `assert`? 
 
 No. It is a placeholder for language support for contracts.
 
