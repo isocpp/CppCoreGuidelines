@@ -6,7 +6,7 @@ Here are video recordings of those talks:
 - Large Scale C++ With Modules: What You Should Know (Gabriel Dos Reis)
 - Contracts for Dependable C++ (Gabriel Dos Reis)
 - More than lint: modern static analysis for C++ (Neil MacIntosh):
-- A few good types: `Evolving array_view` and `string_view` for safe C++ code (Neil MacIntosh): 
+- A few good types: Evolving `array_view` and `string_view` for safe C++ code (Neil MacIntosh): 
 
 The YouTube channel for [CppCon](http://cppcon.org) is here: https://www.youtube.com/channel/UCMlGfpWw-RUdWX_JbLCukXg
 
