@@ -104,7 +104,7 @@ And it will run fast - you can afford to do things right.
 We are less concerned with low-level issues, such as naming conventions and indentation style.
 However, no topic that can help a programmer is out of bounds.
 
-Our initial set of rules emphasize safety (of various forms) and simplicity.
+Our initial set of rules emphasizes safety (of various forms) and simplicity.
 They may very well be too strict.
 We expect to have to introduce more exceptions to better accommodate real-world needs.
 We also need more rules.
@@ -724,7 +724,7 @@ or may only need part of the value that is more easily checked than the whole.
        Jet(float x, float y, float z, float e)
             :fx(x), fy(y), fz(z), fe(e)
         {
-            // Should I check the here that the values are physically meaningful?
+            // Should I check here that the values are physically meaningful?
         }
 
         float m() const
@@ -973,9 +973,9 @@ That's part of the problem.
 		return my_x;
 	}
 
-This one of the most effective solution to problem related to initialization order.
+This is one of the most effective solutions to problems related to initialization order.
 In a multi-threaded environment the initialization of the static object does not introduce a race condition
-(unless you carelessly access a shared objects from within its constructor).
+(unless you carelessly access a shared object from within its constructor).
 
 If you, as many do, define a singleton as a class for which only one object is created, functions like `myX` are not singletons,
 and this useful technique is not an exception to the no-singleton rule.
@@ -989,7 +989,7 @@ and this useful technique is not an exception to the no-singleton rule.
 ### <a name="Ri-typed"></a> I.4: Make interfaces precisely and strongly typed
 
 Reason: Types are the simplest and best documentation, have well-defined meaning, and are guaranteed to be checked at compile time.
-Also, precisely typed code often optimize better.
+Also, precisely typed code is often optimized better.
 
 **Example; don't**: Consider
 
@@ -1179,7 +1179,7 @@ Postconditions related only to internal state belongs in the definition/implemen
 
 **Alternative**: Postconditions of the form "this resource must be released" are best expressed by [RAII](#Rr-raii).
 
-Ideally, that `Ensures` should be part of the interface that's not easily done. For now, we place it in the definition (function body).
+Ideally, that `Ensures` should be part of the interface, but that's not easily done. For now, we place it in the definition (function body).
 
 **Enforcement**: (Not enforceable) Finding the variety of ways postconditions can be asserted is not feasible. Warning about those that can be easily identified (`assert()`) has questionable value in the absence of a language facility.
 
@@ -1201,7 +1201,7 @@ Ideally, that `Ensures` should be part of the interface that's not easily done. 
 
 **See also**: See [generic programming](???) and [???](???)
 
-**Enforcement**: (Not enforceable yet) A language facility is under specification. When the language facility is available, warn if any non-variadic template parameter is not constrained by a concept (in its declaration or mentioned in a `requires` clause.
+**Enforcement**: (Not enforceable yet) A language facility is under specification. When the language facility is available, warn if any non-variadic template parameter is not constrained by a concept (in its declaration or mentioned in a `requires` clause).
 
 
 ### <a name="Ri-except"></a> I.10: Use exceptions to signal a failure to perform a required task
@@ -1224,7 +1224,7 @@ For example, not being able to connect to a remote server is not by itself an er
 the server can refuse a connection for all kinds of reasons, so the natural thing is to return a result that the caller always has to check.
 However, if failing to make a connection is considered an error, then a failure should throw an exception.
 
-**Exception**: Many traditional interface functions (e.g., UNIX signal handlers) use error codes (e.g., `errno`) to report what are really status codes, rather than errors. You don't have good alternative to using such, so calling these does not violate the rule.
+**Exception**: Many traditional interface functions (e.g., UNIX signal handlers) use error codes (e.g., `errno`) to report what are really status codes, rather than errors. You don't have a good alternative to using such, so calling these does not violate the rule.
 
 **Alternative**: If you can't use exceptions (e.g. because your code is full of old-style raw-pointer use or because there are hard-real-time constraints),
 consider using a style that returns a pair of values:
@@ -1437,7 +1437,7 @@ Use `const` for the "from" argument:
 
 **Alternative**: Don't pass arrays as pointers, pass an object representing a range (e.g., an `array_view`):
 
-		void copy_n(array_view<const T> p, array_view<T> q); // copy from b to q
+		void copy_n(array_view<const T> p, array_view<T> q); // copy from p to q
 
 **Enforcement**: (Simple) Warn if two consecutive parameters share the same type.
 
@@ -1504,7 +1504,7 @@ Function definition rules:
 * [F.4: If a function may have to be evaluated at compile time, declare it `constexpr`](#Rf-constexpr)
 * [F.5: If a function is very small and time critical, declare it inline](#Rf-inline)
 * [F.6: If your function may not throw, declare it `noexcept`](#Rf-noexcept)
-* [F.7: For general use, take `T*` arguments rather than a smart pointers](#Rf-smart)
+* [F.7: For general use, take `T*` arguments rather than smart pointers](#Rf-smart)
 * [F.8: Prefer pure functions](#Rf-pure)
 
 Argument passing rules:
@@ -1564,7 +1564,7 @@ If something is a well-specified action, separate it out from its surrounding co
 	}
 
 Almost everything is wrong with `read_and_print`.
-It reads, it writes (to a fixed `ostream`), it write error messages (to a fixed `ostream`), it handles only `int`s.
+It reads, it writes (to a fixed `ostream`), it writes error messages (to a fixed `ostream`), it handles only `int`s.
 There is nothing to reuse, logically separate operations are intermingled and local variables are in scope after the end of their logical use.
 For a tiny example, this looks OK, but if the input operation, the output operation, and the error handling had been more complicated the tangled
 mess could become hard to understand.
@@ -1585,7 +1585,7 @@ Naming that lambda breaks up the expression into its logical parts and provides 
 
 The shortest code is not always the best for performance or maintainability.
 
-**Exception**: Loop bodies, including lambdas used as loop bodies, rarely needs to be named.
+**Exception**: Loop bodies, including lambdas used as loop bodies, rarely need to be named.
 However, large loop bodies (e.g., dozens of lines or dozens of pages) can be a problem.
 The rule [Keep functions short](#Rf-single) implies "Keep loop bodies short."
 Similarly, lambdas used as callback arguments are sometimes non-trivial, yet unlikely to be re-usable.
@@ -1740,7 +1740,7 @@ Small simple functions are easily inlined where the cost of a function call is s
 		return x;
 	}
 
-This is C++14. For C++11, use a functional formulation of `fac()`.
+This is C++14. For C++11, use a recursive formulation of `fac()`.
 
 **Note**: `constexpr` does not guarantee compile-time evaluation;
 it just guarantees that the function can be evaluated at compile time for constant expression arguments if the programmer requires it or the compiler decides to do so to optimize.
@@ -1829,7 +1829,7 @@ so don't just sprinkle `noexcept` all over the place.
 * Flag throwing `swap`, `move`, destructors, and default constructors.
 
 
-### <a name="Rf-smart"></a> F.7: For general use, take `T*` arguments rather than a smart pointers
+### <a name="Rf-smart"></a> F.7: For general use, take `T*` arguments rather than smart pointers
 
 **Reason**: Passing a smart pointer transfers or shares ownership.
 Passing by smart pointer restricts the use of a function to callers that use smart pointers.
@@ -1893,7 +1893,7 @@ If you have multiple values to return, [use a tuple](#Rf-T-multi) or similar mul
 
 * For non-value types, such as types in an inheritance hierarchy, return the object by `unique_ptr` or `shared_ptr`.
 * If a type is expensive to move (e.g., `array<BigPOD>`), consider allocating it on the free store and return a handle (e.g., `unique_ptr`), or passing it in a non-`const` reference to a target object to fill (to be used as an out-parameter).
-* In the special case of allowing a caller to reuse an object that carries capacity (e.g., `std::string`, `std::vector`) across multiple calls to the function in an inner loop, treat it as an in/out parameter instead and pass by `&`. This one use of the more generally named "caller-allocated out" pattern.
+* In the special case of allowing a caller to reuse an object that carries capacity (e.g., `std::string`, `std::vector`) across multiple calls to the function in an inner loop, treat it as an in/out parameter instead and pass by `&`. This is one use of the more generally named "caller-allocated out" pattern.
 
 **For an "in-out" parameter:** Pass by non-`const` reference. This makes it clear to callers that the object is assumed to be modified.
 
@@ -1947,7 +1947,7 @@ such as passing a `const int&`, returning an `array<BigPOD>` by value, and retur
 
 ### <a name="Rf-ptr"></a> F.16: Use `T*` or `owner<T*>` to designate a single object
 
-**Reason**: In traditional C and C++ code, "Plain `T*` is used for many weakly-related purposes, such as
+**Reason**: In traditional C and C++ code, plain `T*` is used for many weakly-related purposes, such as
 
 * Identify a (single) object (not to be deleted by this function)
 * Point to an object allocated on the free store (and delete it later)
@@ -1956,7 +1956,6 @@ such as passing a `const int&`, returning an `array<BigPOD>` by value, and retur
 * Identify an array with a length specified separately
 * Identify a location in an array
 
-Using separate names for each of these uses improves code quality because confusion about the meaning of any particular `T*` is the source of many serious errors.
 For example, `not_null<T*>` makes it obvious to a reader (human or machine) that a test for `nullptr` is not necessary before dereference.
 Additionally, when debugging, `owner<T*>` and `not_null<T>` can be instrumented to check for correctness.
 
