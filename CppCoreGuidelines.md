@@ -158,7 +158,7 @@ However, we do believe that a program that uses a rule is less error-prone and m
 Often, rules also lead to faster/easier initial development.
 As far as we can tell, these rules lead to code that performs as well or better than older, more conventional techniques;
 they are meant to follow the zero-overhead principle
-("what you don't use, you don't pay for" or "When you use an abstraction mechanism appropriately,
+("what you don't use, you don't pay for" or "when you use an abstraction mechanism appropriately,
 you get at least as good performance as if you had handcoded using lower-level language constructs").
 Consider these rules ideals for new code, opportunities to exploit when working on older code, and try to approximate these ideas as closely as feasible.
 Remember:
@@ -471,11 +471,11 @@ A programmer should be familiar with
 * [The ISO C++ standard library](#S-stdlib)
 * Whatever foundation libraries are used for the current project(s)
 
-**Note**: Alternative formulation: Say what should be done, rather than just how it should be done
+**Note**: Alternative formulation: Say what should be done, rather than just how it should be done.
 
 **Note**: Some language constructs express intent better than others.
 
-**Example**: if two `int`s are meant to be the coordinates of a 2D point, say so:
+**Example**: If two `int`s are meant to be the coordinates of a 2D point, say so:
 
 		drawline(int, int, int, int);	// obscure
 		drawline(Point, Point);		// clearer
@@ -782,7 +782,7 @@ Prefer [RAII](#Rr-raii):
   Where feasible, replace owners with standard-library resource handles (as in the example above).
   Alternatively, mark an owner as such using `owner` from [the GSL](#S-gsl).
 * Look for naked `new` and `delete`
-* look for known resource allocating functions returning raw pointers (such as `fopen`, `malloc`, and `strdup`)
+* Look for known resource allocating functions returning raw pointers (such as `fopen`, `malloc`, and `strdup`)
 
 
 ### <a name="Rp-waste"></a> P.9: Don't waste time or space
@@ -933,7 +933,7 @@ Functions can be template functions and sets of functions can be classes or clas
 
 Who else might modify `data`?
 
-**Note**: global constants are useful.
+**Note**: Global constants are useful.
 
 **Note**: The rule against global variables applies to namespace scope variables as well.
 
@@ -1025,8 +1025,8 @@ Obviously, we cannot catch all errors through the static type system
 
 **Enforcement**:
 
-* (Simple) Report the use of void* as a parameter or return type.
-* (Hard to do well) Look for member functions with many built-in type arguments
+* (Simple) Report the use of `void*` as a parameter or return type.
+* (Hard to do well) Look for member functions with many built-in type arguments.
 
 
 ### <a name="Ri-pre"></a> I.5: State preconditions (if any)
@@ -1058,7 +1058,7 @@ We don't need to mention it for each member function.
 
 **Enforcement**: (Not enforceable)
 
-**See also**: the rules for passing pointers.
+**See also**: The rules for passing pointers.
 
 
 ### <a name="Ri-expects"></a> I.6: Prefer `Expects()` for expressing preconditions
@@ -1080,7 +1080,7 @@ We don't need to mention it for each member function.
 
 **Note**: `Expects()` can also be used to check a condition in the middle of an algorithm.
 
-**Enforcement**: (Not enforceable) Finding the variety of ways preconditions can be asserted is not feasible. Warning about those that can be easily identified (assert()) has questionable value in the absence of a language facility.
+**Enforcement**: (Not enforceable) Finding the variety of ways preconditions can be asserted is not feasible. Warning about those that can be easily identified (`assert()`) has questionable value in the absence of a language facility.
 
 
 ### <a name="Ri-post"></a> I.7: State postconditions
@@ -1122,7 +1122,7 @@ There was no postcondition stating that the buffer should be cleared and the opt
 		Ensures(buffer[0]==0);
 	}
 
-**Note** postconditions are often informally stated in a comment that states the purpose of a function; `Ensures()` can be used to make this more systematic, visible, and checkable.
+**Note**: Postconditions are often informally stated in a comment that states the purpose of a function; `Ensures()` can be used to make this more systematic, visible, and checkable.
 
 **Note**: Postconditions are especially important when they relate to something that is not directly reflected in a returned result, such as a state of a data structure used.
 
@@ -1175,13 +1175,13 @@ Postconditions related only to internal state belongs in the definition/implemen
 		Ensures(buffer[0]==0);
 	}
 
-**Note**: postconditions can be stated in many ways, including comments, `if`-statements, and `assert()`. This can make them hard to distinguish from ordinary code, hard to update, hard to manipulate by tools, and may have the wrong semantics.
+**Note**: Postconditions can be stated in many ways, including comments, `if`-statements, and `assert()`. This can make them hard to distinguish from ordinary code, hard to update, hard to manipulate by tools, and may have the wrong semantics.
 
 **Alternative**: Postconditions of the form "this resource must be released" are best expressed by [RAII](#Rr-raii).
 
 Ideally, that `Ensures` should be part of the interface that's not easily done. For now, we place it in the definition (function body).
 
-**Enforcement**: (Not enforceable) Finding the variety of ways postconditions can be asserted is not feasible. Warning about those that can be easily identified (assert()) has questionable value in the absence of a language facility.
+**Enforcement**: (Not enforceable) Finding the variety of ways postconditions can be asserted is not feasible. Warning about those that can be easily identified (`assert()`) has questionable value in the absence of a language facility.
 
 
 ### <a name="Ri-concepts"></a> I.9: If an interface is a template, document its parameters using concepts
@@ -1249,7 +1249,7 @@ consider using a style that returns a pair of values:
 **Enforcement**:
 
 * (Not enforceable) This is a philosophical guideline that is infeasible to check directly.
-* look for `errno`.
+* Look for `errno`.
 
 
 ### <a name="Ri-raw"></a> I.11: Never transfer ownership by a raw pointer (`T*`)
@@ -1279,7 +1279,7 @@ Consider returning the result by value (use move semantics if the result is larg
 However that is less elegant and less efficient unless reference semantics are needed.
 
 **Alternative**: Sometimes older code can't be modified because of ABI compatibility requirements or lack of resources.
-In that case, mark owning pointers using `owner` :
+In that case, mark owning pointers using `owner`:
 
 	owner<X*> compute(args)		// It is now clear that ownership is transferred
 	{
@@ -1480,9 +1480,9 @@ This will force every derived class to compute a center -- even if that's non-tr
 
 **Exception**: You can carefully craft an interface using a few carefully selected higher-level C++ types. See ???.
 
-**Exception**: Common ABIs are emerging on some platforms freeing you from the more Draconian restrictions.
+**Exception**: Common ABIs are emerging on some platforms freeing you from the more draconian restrictions.
 
-**Note**: if you use a single compiler, you can use full C++ in interfaces. That may require recompilation after an upgrade to a new compiler version.
+**Note**: If you use a single compiler, you can use full C++ in interfaces. That may require recompilation after an upgrade to a new compiler version.
 
 **Enforcement**: (Not enforceable) It is difficult to reliably identify where an interface forms part of an ABI.
 
@@ -1550,7 +1550,7 @@ A function definition is a function declaration that also specifies the function
 ### <a name="Rf-package"></a> F.1: "Package" meaningful operations as carefully named functions
 
 **Reason**: Factoring out common code makes code more readable, more likely to be reused, and limit errors from complex code.
-If something is a well-specified action, separate it out from its  surrounding code and give it a name.
+If something is a well-specified action, separate it out from its surrounding code and give it a name.
 
 **Example, don't**:
 
@@ -1825,7 +1825,7 @@ so don't just sprinkle `noexcept` all over the place.
 
 **Enforcement**:
 
-* Flag functions that are not `noexcept`, yet cannot throw
+* Flag functions that are not `noexcept`, yet cannot throw.
 * Flag throwing `swap`, `move`, destructors, and default constructors.
 
 
@@ -1861,7 +1861,7 @@ Passing a shared smart pointer (e.g., `std::shared_ptr`) implies a run-time cost
 
 **Note**: `constexpr` functions are pure.
 
-**Enforcement**: not possible.
+**Enforcement**: Not possible.
 
 
 ## <a name="SS-call"></a> F.call: Argument passing
@@ -1971,11 +1971,11 @@ When I call `length(r)` should I test for `r==nullptr` first? Should the impleme
 
 	int length(Record* p);	// the implementor of length() must assume that p==nullptr is possible
 
-**Note**: A `not_null<T>` is assumed not to be the `nullptr`; a `T*` may be the `nullptr`; both can be represented in memory as a `T*` (so no run-time overhead is implied).
+**Note**: A `not_null<T*>` is assumed not to be the `nullptr`; a `T*` may be the `nullptr`; both can be represented in memory as a `T*` (so no run-time overhead is implied).
 
 **Note**: `owner<T*>` represents ownership.
 
-**Also**: Assume that a `T*` obtained from a smart pointer to `T` (e.g., unique_ptr<`T`>) points to a single element.
+**Also**: Assume that a `T*` obtained from a smart pointer to `T` (e.g., `unique_ptr<T>`) points to a single element.
 
 **See also**: [Support library](#S-gsl).
 
@@ -2022,7 +2022,7 @@ When I call `length(r)` should I test for `r==nullptr` first? Should the impleme
 
 **Note**: Ranges are extremely common in C++ code. Typically, they are implicit and their correct use is very hard to ensure. In particular, given a pair of arguments `(p, n)` designating an array [`p`:`p+n`), it is in general impossible to know if there really are n elements to access following `*p`. `array_view<T>` and `array_view_p<T>` are simple helper classes designating a [p:q) range and a range starting with p and ending with the first element for which a predicate is true, respectively.
 
-**Note**: an `array_view<T>` object does not own its elements and is so small that it can be passed by value.
+**Note**: An `array_view<T>` object does not own its elements and is so small that it can be passed by value.
 
 **Note**: Passing an `array_view` object as an argument is exactly as efficient as passing a pair of pointer arguments or passing a pointer and an integer count.
 
