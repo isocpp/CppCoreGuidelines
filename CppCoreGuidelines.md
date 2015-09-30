@@ -5140,10 +5140,14 @@ It also ensures exception safety in complex expressions.
 
 	auto q = make_unique<Foo>(7);		// Better: no repetition of Foo
 
-	// Not exception-safe: the compiler may interleave the computations of arguments
-	// and decide first to allocate memory for Foo, construct Foo, then call bar,
-	// then construct unique_ptr<Foo>. If bar throws, Foo will not be destroyed, and
-	// the memory allocated for it will leak.
+	// Not exception-safe: the compiler may interleave the computations of arguments as follows:
+	//
+	// 1. allocate memory for Foo,
+	// 2. construct Foo,
+	// 3. call bar,
+	// 4. construct unique_ptr<Foo>.
+	//
+	// If bar throws, Foo will not be destroyed, and the memory allocated for it will leak.
 	f(unique_ptr<Foo>(new Foo()), bar());
 
 	// Exception-safe: calls to functions are never interleaved.
