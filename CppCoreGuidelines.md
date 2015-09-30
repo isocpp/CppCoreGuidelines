@@ -2981,9 +2981,9 @@ If the answer is "yes", much of the design of the class follows (see [the rule o
 
 ### <a name="Rc-dtor"></a> C.30: Define a destructor if a class needs an explicit action at object destruction
 
-**Reason**: A destructor is implicitly invoked at the end of an objects lifetime.
+**Reason**: A destructor is implicitly invoked at the end of an object's lifetime.
 If the default destructor is sufficient, use it.
-Only if you need code that is not simply destructors of members executed, define a non-default destructor.
+Only define a non-default destructor if a class needs to execute code that is not already part of its members' destructors.
 
 **Example**:
 
