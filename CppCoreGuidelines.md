@@ -2944,8 +2944,8 @@ If you don't want a default operation, suppress it with `=delete`.
 
 ### <a name="Rc-matched"></a> C.22: Make default operations consistent
 
-**Reason**: The default operations are conceptually a matched set. Their semantics is interrelated.
-Users will be surprised if copy/move construction and copy/move assignment do logically different things. Users will be surprised if constructors and destructors do not provide a consistent view of resource management. Users will be surprised if copy and move doesn't reflect the way constructors and destructors work.
+**Reason**: The default operations are conceptually a matched set. Their semantics are interrelated.
+Users will be surprised if copy/move construction and copy/move assignment do logically different things. Users will be surprised if constructors and destructors do not provide a consistent view of resource management. Users will be surprised if copy and move don't reflect the way constructors and destructors work.
 
 **Example; bad**:
 
