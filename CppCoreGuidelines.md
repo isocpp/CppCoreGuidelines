@@ -3843,8 +3843,8 @@ The common action gets tedious to write and may accidentally not be common.
 
 ## <a name="SS-copy"></a> C.copy: Copy and move
 
-Value type should generally be copyable, but interfaces in a class hierarchy should not.
-Resource handles, may or may not be copyable.
+Value types should generally be copyable, but interfaces in a class hierarchy should not.
+Resource handles may or may not be copyable.
 Types can be defined to move for logical as well as performance reasons.
 
 
