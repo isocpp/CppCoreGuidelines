@@ -1945,7 +1945,7 @@ Avoid "esoteric techniques" such as:
 **See also**: [implicit arguments](#Ri-explicit).
 
 **Enforcement**: This is a philosophical guideline that is infeasible to check directly and completely.
-However, many of the the detailed rules (F.16-F.45) can be checked,
+However, many of the detailed rules (F.16-F.45) can be checked,
 such as passing a `const int&`, returning an `array<BigPOD>` by value, and returning a pointer to free store alloced by the function.
 
 
@@ -3448,7 +3448,7 @@ The idiom of having constructors acquire resources and destructors release them 
 			// ...
 		}
 
-		void is_valid()() { return valid; }
+		void is_valid() { return valid; }
 		void read();		// read from f
 		// ...
 	};
@@ -3458,7 +3458,7 @@ The idiom of having constructors acquire resources and destructors release them 
 		X3 file {"Heraclides"};
 		file.read();	// crash or bad read!
 		// ...
-		if (is_valid()()) {
+		if (is_valid()) {
 			file.read();
 			// ...
 		}
@@ -3892,13 +3892,13 @@ Types can be defined to move for logical as well as performance reasons.
 		if (a.sz>sz)
 		{
 			// ... use the swap technique, it can't be bettered ...
-			*return *this
+			return *this
 		}
 		// ... copy sz elements from *a.elem to elem ...
 		if (a.sz<sz) {
 			// ... destroy the surplus elements in *this* and adjust size ...
 		}
-		return *this*
+		return *this;
 	}
 
 By writing directly to the target elements, we will get only [the basic guarantee](#???) rather than the strong guaranteed offered by the `swap` technique. Beware of [self assignment](#Rc-copy-self).
