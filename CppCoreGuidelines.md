@@ -3814,7 +3814,7 @@ The common action gets tedious to write and may accidentally not be common.
 
 **Reason**: If you need those constructors for a derived class, re-implementeing them is tedious and error prone.
 
-**Example**: `std::vector` has a lot of tricky constructors, so it I want my own `vector`, I don't want to reimplement them:
+**Example**: `std::vector` has a lot of tricky constructors, so if I want my own `vector`, I don't want to reimplement them:
 
 	class Rec {
 		// ... data and lots of nice constructors ...
