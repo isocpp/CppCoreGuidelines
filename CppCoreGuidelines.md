@@ -11614,8 +11614,7 @@ Some conventions capitalize the first letter, some don't.
 **Example**:
 
 ```
-void f()
-{
+void f() {
   const int SIZE{1000}; //Bad, use 'size' instead
   int v[SIZE];
 }
