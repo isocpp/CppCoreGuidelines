@@ -5054,7 +5054,7 @@ Overload rule summary:
 * [C.164: Avoid conversion operators](#Ro-conversion)
 * [C.170: If you feel like overloading a lambda, use a generic lambda](#Ro-lambda)
 
-### <a name="Ro-conventional"></a> C.140: Define operators primarily to mimic conventional usage
+### <a name="Ro-conventional"></a> C.160: Define operators primarily to mimic conventional usage
 
 **Reason**: Minimize surprises.
 
@@ -5067,7 +5067,7 @@ Overload rule summary:
 **Enforcement**: Possibly impossible.
 
 
-### <a name="Ro-symmetric"></a> C.141: Use nonmember functions for symmetric operators
+### <a name="Ro-symmetric"></a> C.161: Use nonmember functions for symmetric operators
 
 **Reason**: If you use member functions, you need two.
 Unless you use a non-member function for (say) `==`, `a==b` and `b==a` will be subtly different.
@@ -5079,7 +5079,7 @@ Unless you use a non-member function for (say) `==`, `a==b` and `b==a` will be s
 **Enforcement**: Flag member operator functions.
 
 
-### <a name="Ro-equivalent"></a> C.142: Overload operations that are roughly equivalent
+### <a name="Ro-equivalent"></a> C.162: Overload operations that are roughly equivalent
 
 **Reason**: Having different names for logically equivalent operations on different argument types is confusing, leads to encoding type information in function names, and inhibits generic programming.
 
@@ -5100,7 +5100,7 @@ These three functions all prints their arguments (appropriately). Adding to the 
 **Enforcement**: ???
 
 
-### <a name="Ro-equivalent-2"></a> C.143: Overload only for operations that are roughly equivalent
+### <a name="Ro-equivalent-2"></a> C.163: Overload only for operations that are roughly equivalent
 
 **Reason**: Having the same name for logically different functions is confusing and leads to errors when using generic programming.
 
@@ -5122,7 +5122,7 @@ The two operations are still fundamentally different (and unrelated) but the nam
 **Enforcement**: ???
 
 
-### <a name="Ro-conversion"></a> C.144: Avoid conversion operators
+### <a name="Ro-conversion"></a> C.164: Avoid conversion operators
 
 **Reason**: Implicit conversions can be essential (e.g., `double` to '`int`) but often cause surprises (e.g., `String` to C-style string).
 
