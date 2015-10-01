@@ -13304,7 +13304,7 @@ Most compilers already warn about simple cases and has the information to do mor
 	    return ...;
 	}
 	
-	auto v = get_large_vector(); //return by value is ok, most modern compilers won't copy the vector
+	auto v = get_large_vector(); //return by value is ok, most modern compilers will do copy elision
 
 ##### Example
 
