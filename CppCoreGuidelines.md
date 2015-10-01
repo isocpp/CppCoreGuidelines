@@ -435,7 +435,7 @@ very hard in general.
 ##### Note
 
 There are environments where extensions are necessary, e.g., to access system resources.
-In such cases, localize to use of necessary extensions and control their use with non-core Coding Guidelines.
+In such cases, localize the use of necessary extensions and control their use with non-core Coding Guidelines.
 
 ##### Note
 
