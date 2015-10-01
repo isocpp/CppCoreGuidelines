@@ -13291,7 +13291,7 @@ Most compilers already warn about simple cases and has the information to do mor
 		int sz;
 	};
 
-### <a name="Cr-value-return"></a> Return containers by value (relying on move for efficiency)
+### <a name="Cr-value-return"></a> Return containers by value (relying on move or copy elision for efficiency)
 
 ##### Reason
 
@@ -13299,7 +13299,12 @@ Most compilers already warn about simple cases and has the information to do mor
 
 ##### Example
 
-	??? vector
+	vector<int> get_large_vector()
+	{
+	    return ...;
+	}
+	
+	auto v = get_large_vector(); //return by value is ok, most modern compilers won't copy the vector
 
 ##### Example
 
