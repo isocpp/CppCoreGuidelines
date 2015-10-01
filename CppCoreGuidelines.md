@@ -7910,9 +7910,35 @@ This is an ad-hoc simulation of destructors. Declare your resources with handles
 
  ??? loop, switch ???
 
-##### Example
+##### Example, bad
 
-	???
+    switch(eventType)
+    {
+    case Information:
+        update_status_bar();
+        break;
+    case Warning:
+        write_event_log();
+    case Error:
+        display_error_window(); //in addition to write_event_log() - bad
+        break;
+    }
+    
+##### Example, good
+
+    switch(eventType)
+    {
+    case Information:
+        update_status_bar();
+        break;
+    case Warning:
+        write_event_log();
+        break;
+    case Error:
+        write_event_log();	
+        display_error_window(); //the intention is clear - good
+        break;
+    }
 
 ##### Note
 
@@ -7928,7 +7954,7 @@ Multiple case labels of a single statement is OK:
 
 ##### Enforcement
 
-???
+(Simple) Every non-empty `case` should end with a `break`.
 
 ### <a name="Res-default"></a> ES.79: ??? `default`
 
