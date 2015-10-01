@@ -7915,12 +7915,12 @@ This is an ad-hoc simulation of destructors. Declare your resources with handles
     switch(eventType)
     {
     case Information:
-        UpdateStatusBar();
+        update_status_bar();
         break;
     case Warning:
-        WriteToEventLog();
+        write_event_log();
     case Error:
-        DisplayErrorWindow(); //in addition to WriteToEventLog - bad
+        display_error_window(); //in addition to write_event_log() - bad
         break;
     }
     
@@ -7929,14 +7929,14 @@ This is an ad-hoc simulation of destructors. Declare your resources with handles
     switch(eventType)
     {
     case Information:
-        UpdateStatusBar();
+        update_status_bar();
         break;
     case Warning:
-        WriteToEventLog();
+        write_event_log();
         break;
     case Error:
-        WriteToEventLog();	
-        DisplayErrorWindow(); //the intention is clear - good
+        write_event_log();	
+        display_error_window(); //the intention is clear - good
         break;
     }
 
