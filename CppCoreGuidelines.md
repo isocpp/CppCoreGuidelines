@@ -1445,7 +1445,7 @@ Every object passed as a raw pointer (or iterator) is assumed to be owned by the
 
 ##### Example
 
-	int length(const char* p);		// it is not clear whether strlen(nullptr) is valid
+	int length(const char* p);		// it is not clear whether length(nullptr) is valid
 
 	length(nullptr);				// OK?
 
