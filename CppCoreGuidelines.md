@@ -8660,7 +8660,19 @@ make the job of the optimizer much harder. Simple code often optimizes better th
 
  Performance is very sensitive to cache performance and cache algorithms favor simple (usually linear) access to adjacent data.
 
-???
+##### Example
+
+    int matrix[rows][cols];
+    
+    //bad
+    for(int c=0; c<cols; ++c)
+        for(int r=0; r<rows; ++r)
+            sum += matrix[r][c];
+    
+    //good
+    for(int r=0; r<rows; ++r)
+        for(int c=0; c<cols; ++c)
+            sum += matrix[r][c];
 
 ### <a name="Rper-context"></a> PER.30: Avoid context switches on the critical path
 
