@@ -6842,7 +6842,7 @@ Arithmetic rules:
 * [ES.101: use unsigned types for bit manipulation](#Res-unsigned)
 * [ES.102: Used signed types for arithmetic](#Res-signed)
 * [ES.103: Don't overflow](#Res-overflow)
-* [ES.104: Don't underflow](#Res-overflow)
+* [ES.104: Don't underflow](#Res-underflow)
 * [ES.105: Don't divide by zero](#Res-zero)
 
 ### <a name="Res-lib"></a> ES.1: Prefer the standard library to other libraries and to "handcrafted code"
@@ -8461,7 +8461,7 @@ Incrementing a value beyond a maximum value can lead to memory corruption and un
 
 ???
 
-### <a name="Res-overflow"></a> ES.104: Don't underflow
+### <a name="Res-underflow"></a> ES.104: Don't underflow
 
 ##### Reason
 
@@ -13352,7 +13352,7 @@ Alternatively, we will decide that no change is needed and delete the entry.
   \[Meyers96\]:        S. Meyers. More Effective C++ (Addison-Wesley, 1996).
 * <a name="Meyers97"></a>
   \[Meyers97\]:        S. Meyers. Effective C++ (2ndEdition) (Addison-Wesley, 1997).
-* <a name="Meyers97"></a>
+* <a name="Meyers14"></a>
   \[Meyers14\]:        S. Meyers. Effective Modern C++ (Addison-Wesley, 2014).
 * <a name="Murray93"></a>
   \[Murray93\]:        R. Murray. C++ Strategies and Tactics (Addison-Wesley, 1993).
