@@ -13285,7 +13285,7 @@ Most compilers already warn about simple cases and has the information to do mor
 
 ##### Example
 
-	template<typename T> class Vvector {
+	template<typename T> class Vector {
 		// ...
 		T* elem;	// point to sz elements of type T
 		int sz;
