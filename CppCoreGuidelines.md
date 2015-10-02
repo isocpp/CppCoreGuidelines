@@ -8681,17 +8681,17 @@ make the job of the optimizer much harder. Simple code often optimizes better th
 
 ##### Example
 
-        int matrix[ROWS][COLS];
-        
-        //bad
-        for(int c=0; c<COLS; ++c)
-            for(int r=0; r<ROWS; ++r)
-                sum += matrix[r][c];
-        
-        //good
+    int matrix[ROWS][COLS];
+    
+    //bad
+    for(int c=0; c<COLS; ++c)
         for(int r=0; r<ROWS; ++r)
-            for(int c=0; c<COLS; ++c)
-                sum += matrix[r][c];
+            sum += matrix[r][c];
+    
+    //good
+    for(int r=0; r<ROWS; ++r)
+        for(int c=0; c<COLS; ++c)
+            sum += matrix[r][c];
 
 ### <a name="Rper-context"></a> PER.30: Avoid context switches on the critical path
 
