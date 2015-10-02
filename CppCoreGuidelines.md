@@ -8380,7 +8380,9 @@ This example has many more problems.
 
 ##### Example
 
-    ???
+    unsigned x = 100;
+    unsigned y = 102;
+    cout << abs(x-y) << '\n'; //wrong result
 
 ##### Note
 
