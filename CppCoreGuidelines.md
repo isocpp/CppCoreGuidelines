@@ -2493,7 +2493,7 @@ You need to pass a pointer rather than an object if what you are transferring is
 Prefer a `unique_ptr` over a `shared_ptr` if there is never more than one owner at a time.
 `shared_ptr` is for shared ownership.
 
-**Alternative**: Have a single object own the shared object (e.g. a scoped object) and destroy that (preferably implicitly) when all users have completd.
+**Alternative**: Have a single object own the shared object (e.g. a scoped object) and destroy that (preferably implicitly) when all users have completed.
 
 ##### Enforcement
 
@@ -4906,7 +4906,7 @@ If a `swap` tries to exit with an exception, it's a bad design error and the pro
 
 ##### Reason
 
- Assymetric treatment of operands is surprising and a source of errors where conversions are possible.
+ Asymmetric treatment of operands is surprising and a source of errors where conversions are possible.
 `==` is a fundamental operations and programmers should be able to use it without fear of failure.
 
 ##### Example
@@ -7674,7 +7674,7 @@ Scream when you see a lower case macro.
 
 	??? <vararg>
 
-**Alternative**: Overloading. Templates. Veriadic templates.
+**Alternative**: Overloading. Templates. Variadic templates.
 
 ##### Note
 
@@ -8611,7 +8611,7 @@ Getting good performance measurements can be hard and require specialized tools.
 
 ##### Note
 
-A few simple microbenchmarks using Unix `time` or the standard library `<chrono>` can help dispell the most obvious myths.
+A few simple microbenchmarks using Unix `time` or the standard library `<chrono>` can help dispel the most obvious myths.
 If you can't measure your complete system accurately, at least try to measure a few of your key operations and algorithms.
 A profiler can help tell you which parts of your system are performance critical.
 Often, you will be surprised.
@@ -8714,9 +8714,9 @@ Libraries using threads my be used from some other part of the program.
 	???
 
 **Exception**: There are examples where code will never be run in a multi-threaded environment.
-However, here are also many examples where code that was "known" to never run in a multi-threaded program
+However, there are also many examples where code that was "known" to never run in a multi-threaded program
 was run as part of a multi-threaded program. Often years later.
-Typically, such programs leads to a painful effort to remove data races.
+Typically, such programs lead to a painful effort to remove data races.
 
 ### <a name="Rconc-races"></a> CP.2: Avoid data races
 
@@ -11329,7 +11329,7 @@ The errors will not be caught until link time for a program calling `bar` or `fo
 
 The return-type error for `foobar` is now caught immediately when `foo.cpp` is compiled.
 The argument-type error for `bar` cannot be caught until link time because of the possibility of overloading,
-but systematic use of `.h` files increases the likelyhood that it is caught earlier by the programmer.
+but systematic use of `.h` files increases the likelihood that it is caught earlier by the programmer.
 
 ##### Enforcement
 
@@ -11580,7 +11580,7 @@ Reference sections:
 * [Boost Library Requirements and Guidelines](http://www.boost.org/development/requirements.html).
 ???.
 * [Bloomberg: BDE C++ Coding](https://github.com/bloomberg/bde/wiki/CodingStandards.pdf).
-Has a stong emphasis on code organization and layout.
+Has a strong emphasis on code organization and layout.
 * Facebook: ???
 * [GCC Coding Conventions](https://gcc.gnu.org/codingconventions.html).
 C++03 and (reasonably) a bit backwards looking.
@@ -12704,7 +12704,7 @@ No. That is just a first implementation contributed by Microsoft. Other implemen
 
 ### <a name="Faq-gsl-implementation"></a> FAQ.52: Why not supply an actual GSL implementation in/with these guidelines?
 
-We are reluctant to bless one particular implementation because we do not want to make people think there is only one, and inadvertently stifle parallel implementations. And if these guidelines included an actual implementation, then whover contributed it could be mistakenly seen as too influential. We prefer to follow the long-standing approach of the committee, namely to specify interfaces, not implementations. But at the same time we want at least one implementation available; we hope for many.
+We are reluctant to bless one particular implementation because we do not want to make people think there is only one, and inadvertently stifle parallel implementations. And if these guidelines included an actual implementation, then whoever contributed it could be mistakenly seen as too influential. We prefer to follow the long-standing approach of the committee, namely to specify interfaces, not implementations. But at the same time we want at least one implementation available; we hope for many.
 
 
 ### <a name="Faq-boost"></a> FAQ.53: Why weren’t the GSL types proposed through Boost?
