@@ -13065,7 +13065,7 @@ Resource management rule summary:
 * [A "raw" pointer or reference is never a resource handle](#Cr-raw)
 * [Never let a pointer outlive the object it points to](#Cr-outlive)
 * [Use templates to express containers (and other resource handles)](#Cr-templates)
-* [Return containers by value (relying on move for efficiency)](#Cr-value-return)
+* [Return containers by value (relying on move or copy elision for efficiency)](#Cr-value-return)
 * [If a class is a resource handle, it needs a constructor, a destructor, and copy and/or move operations](#Cr-handle)
 * [If a class is a container, give it an initializer-list constructor](#Cr-list)
 
@@ -13186,7 +13186,7 @@ Most compilers already warn about simple cases and has the information to do mor
     	int sz;
     };
 
-### <a name="Cr-value-return"></a> Return containers by value (relying on move for efficiency)
+### <a name="Cr-value-return"></a> Return containers by value (relying on move or copy elision for efficiency)
 
 ##### Reason
 
@@ -13194,7 +13194,12 @@ Most compilers already warn about simple cases and has the information to do mor
 
 ##### Example
 
-    ??? vector
+    vector<int> get_large_vector()
+    {
+        return ...;
+    }
+    
+    auto v = get_large_vector(); //return by value is ok, most modern compilers will do copy elision
 
 ##### Example
 
