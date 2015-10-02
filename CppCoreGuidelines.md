@@ -5965,6 +5965,7 @@ Here, we ignore such cases.
   * [R.15: Always overload matched allocation/deallocation pairs](#Rr-pair)
 
 * <a name="Rr-summary-smartptrs"></a> Smart pointer rule summary:
+
   * [R.20: Use `unique_ptr` or `shared_ptr` to represent ownership](#Rr-owner)
   * [R.21: Prefer `unique_ptr` over `shared_ptr` unless you need to share ownership](#Rr-unique)
   * [R.22: Use `make_shared()` to make `shared_ptr`s](#Rr-make_shared)
@@ -6841,7 +6842,7 @@ Arithmetic rules:
 * [ES.101: use unsigned types for bit manipulation](#Res-unsigned)
 * [ES.102: Used signed types for arithmetic](#Res-signed)
 * [ES.103: Don't overflow](#Res-overflow)
-* [ES.104: Don't underflow](#Res-overflow)
+* [ES.104: Don't underflow](#Res-underflow)
 * [ES.105: Don't divide by zero](#Res-zero)
 
 ### <a name="Res-lib"></a> ES.1: Prefer the standard library to other libraries and to "handcrafted code"
@@ -8460,7 +8461,7 @@ Incrementing a value beyond a maximum value can lead to memory corruption and un
 
 ???
 
-### <a name="Res-overflow"></a> ES.104: Don't underflow
+### <a name="Res-underflow"></a> ES.104: Don't underflow
 
 ##### Reason
 
@@ -10589,7 +10590,8 @@ In many cases you can provide a stable interface by not parameterizing a base; s
 ##### Enforcement
 
 * Flag virtual functions that depend on a template argument. ??? False positives
-  ### <a name="Rt-array"></a> T.81: Do not mix hierarchies and arrays
+
+### <a name="Rt-array"></a> T.81: Do not mix hierarchies and arrays
 
 ##### Reason
 
@@ -11101,6 +11103,7 @@ Use a C++ compiler.
 ##### Enforcement
 
 * Flag if using a build mode that compiles code as C.
+
   * The C++ compiler will enforce that the code is valid C++ unless you use C extension options.
 
 ### <a name="Rcpl-interface"></a> CPL.3: If you must use C for interfaces, use C++ in the calling code using such interfaces
@@ -13349,7 +13352,7 @@ Alternatively, we will decide that no change is needed and delete the entry.
   \[Meyers96\]:        S. Meyers. More Effective C++ (Addison-Wesley, 1996).
 * <a name="Meyers97"></a>
   \[Meyers97\]:        S. Meyers. Effective C++ (2ndEdition) (Addison-Wesley, 1997).
-* <a name="Meyers97"></a>
+* <a name="Meyers14"></a>
   \[Meyers14\]:        S. Meyers. Effective Modern C++ (Addison-Wesley, 2014).
 * <a name="Murray93"></a>
   \[Murray93\]:        R. Murray. C++ Strategies and Tactics (Addison-Wesley, 1993).
