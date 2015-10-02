@@ -1049,6 +1049,7 @@ Very hard in general
 
 * Look for classes with name that includes `singleton`
 * Look for classes for which only a single object is created (by counting objects or by examining constructors)
+* Look for every class T where one of the static data members or static local variables is of type T, T* or T&.
 
 ### <a name="Ri-typed"></a> I.4: Make interfaces precisely and strongly typed
 
