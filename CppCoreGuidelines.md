@@ -12288,9 +12288,9 @@ Naming and layout rules:
 * [NL.3: Keep comments crisp](#Rl-comments-crisp)
 * [NL.4: Maintain a consistent indentation style](#Rl-indent)
 * [NL.5: Don't encode type information in names](#Rl-name-type)
-* [NL.6: Make the length of a name roughly proportional to the length of its scope](#Rl-name-length)
-* [NL.7: Use a consistent naming style](#Rl-name)
-* [NL 9: Use ALL_CAPS for macro names only](#Rl-space)
+* [NL.7: Make the length of a name roughly proportional to the length of its scope](#Rl-name-length)
+* [NL.8: Use a consistent naming style](#Rl-name)
+* [NL 9: Use ALL_CAPS for macro names only](#Rl-all-caps)
 * [NL.10: Avoid CamelCase](#Rl-camel)
 * [NL.15: Use spaces sparingly](#Rl-space)
 * [NL.16: Use a conventional class member declaration order](#Rl-order)
@@ -12461,7 +12461,7 @@ Try to be consistent in your use of acronyms, lengths of identifiers:
 
 Would be possible except for the use of libraries with varying conventions.
 
-### <a name="Rl-space"></a> NL 9: Use ALL_CAPS for macro names only
+### <a name="Rl-all-caps"></a> NL 9: Use ALL_CAPS for macro names only
 
 ##### Reason
 
