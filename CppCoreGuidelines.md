@@ -2818,7 +2818,7 @@ Flag any use of `&&` as a return type, except in `std::move` and `std::forward`.
 
 	class derived : public base {
 	public:
-		override int multiply(int value, int factor = 10);
+		int multiply(int value, int factor = 10) override;
 	};
 
 	derived d;
