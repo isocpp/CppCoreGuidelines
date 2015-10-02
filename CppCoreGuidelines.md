@@ -9325,7 +9325,7 @@ Let cleanup actions on the unwinding path be handled by [RAII](#Re-raii).
 	void f(int n)
 	{
 		void* p = malloc(1, n);
-		auto _ = finally([] { free(p); });
+		auto _ = finally([p] { free(p); });
 		// ...
 	}
 
