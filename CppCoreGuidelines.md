@@ -96,8 +96,7 @@ In other words, what would you like your code to look like in 5 years' time, giv
 
 The guidelines are focused on relatively higher-level issues, such as interfaces, resource management, memory management, and concurrency.
 Such rules affect application architecture and library design.
-Following the rules will lead to code that is statically type safe,
-has no resource leaks, and catches many more programming logic errors than is common in code today.
+Following the rules will lead to code that is statically type safe, has no resource leaks, and catches many more programming logic errors than is common in code today.
 And it will run fast - you can afford to do things right.
 
 We are less concerned with low-level issues, such as naming conventions and indentation style.
@@ -148,14 +147,8 @@ All C++ programmers. This includes [programmers who might consider C](#S-cpl).
 
 The purpose of this document is to help developers to adopt modern C++ (C++11, C++14, and soon C++17) and to achieve a more uniform style across code bases.
 
-We do not suffer the delusion that every one of these rules can be effectively applied to every code base.
-Upgrading old systems is hard.
-However, we do believe that a program that uses a rule is less error-prone and more maintainable than one that does not.
-Often, rules also lead to faster/easier initial development.
-As far as we can tell, these rules lead to code that performs as well or better than older, more conventional techniques;
-they are meant to follow the zero-overhead principle
-("what you don't use, you don't pay for" or "when you use an abstraction mechanism appropriately,
-you get at least as good performance as if you had handcoded using lower-level language constructs").
+We do not suffer the delusion that every one of these rules can be effectively applied to every code base. Upgrading old systems is hard. However, we do believe that a program that uses a rule is less error-prone and more maintainable than one that does not. Often, rules also lead to faster/easier initial development. 
+As far as we can tell, these rules lead to code that performs as well or better than older, more conventional techniques; they are meant to follow the zero-overhead principle ("what you don't use, you don't pay for" or "when you use an abstraction mechanism appropriately, you get at least as good performance as if you had handcoded using lower-level language constructs").
 Consider these rules ideals for new code, opportunities to exploit when working on older code, and try to approximate these ideas as closely as feasible.
 Remember:
 
@@ -170,8 +163,7 @@ that make the use of the most error-prone features of C++ redundant, so that the
 
 The rules emphasize static type safety and resource safety.
 For that reason, they emphasize possibilities for range checking, for avoiding dereferencing `nullptr`, for avoiding dangling pointers, and the systematic use of exceptions (via RAII).
-Partly to achieve that and partly to minimize obscure code as a source of errors,
-the rules also emphasize simplicity and the hiding of necessary complexity behind well-specified interfaces.
+Partly to achieve that and partly to minimize obscure code as a source of errors, the rules also emphasize simplicity and the hiding of necessary complexity behind well-specified interfaces.
 
 Many of the rules are prescriptive.
 We are uncomfortable with rules that simply states "don't do that!" without offering an alternative.
@@ -344,7 +336,7 @@ Without a philosophical basis the more concrete/specific/checkable rules lack ra
 
 ##### Reason
 
- Compilers don't read comments (or design documents) and neither do many programmers (consistently).
+Compilers don't read comments (or design documents) and neither do many programmers (consistently).
 What is expressed in code has a defined semantics and can (in principle) be checked by compilers and other tools.
 
 ##### Example
@@ -412,7 +404,7 @@ If we wanted both absolute speed and deltas, we would have defined a `Delta` typ
 
 ##### Enforcement
 
-very hard in general.
+Very hard in general.
 
 * use `const` consistently (check if member functions modify their object; check if functions modify arguments passed by pointer or reference)
 * flag uses of casts (casts neuter the type system)
@@ -422,7 +414,7 @@ very hard in general.
 
 ##### Reason
 
- This is a set of guidelines for writing ISO Standard C++.
+This is a set of guidelines for writing ISO Standard C++.
 
 ##### Note
 
@@ -431,8 +423,7 @@ In such cases, localize the use of necessary extensions and control their use wi
 
 ##### Note
 
-There are environments where restrictions on use of standard C++ language or library features are necessary,
-e.g., to avoid dynamic memory allocation as required by aircraft control software standards.
+There are environments where restrictions on use of standard C++ language or library features are necessary, e.g., to avoid dynamic memory allocation as required by aircraft control software standards.
 In such cases, control their (dis)use with non-core Coding Guidelines.
 
 ##### Enforcement
@@ -443,7 +434,7 @@ Use an up-to-date C++ compiler (currently C++11 or C++14) with a set of options 
 
 ##### Reason
 
- Unless the intent of some code is stated (e.g., in names or comments), it is impossible to tell whether the code does what it is supposed to do.
+Unless the intent of some code is stated (e.g., in names or comments), it is impossible to tell whether the code does what it is supposed to do.
 
 ##### Example
 
@@ -506,7 +497,7 @@ There is a huge scope for cleverness and semi-automated program transformation.
 
 ##### Reason
 
- Ideally, a program would be completely statically (compile-time) type safe.
+Ideally, a program would be completely statically (compile-time) type safe.
 Unfortunately, that is not possible. Problem areas:
 
 * unions
@@ -536,7 +527,7 @@ For example:
 
 ##### Reason
 
- Code clarity and performance. You don't need to write error handlers for errors caught at compile time.
+Code clarity and performance. You don't need to write error handlers for errors caught at compile time.
 
 ##### Example
 
@@ -573,7 +564,7 @@ For example:
 
 ##### Reason
 
- Leaving hard-to-detect errors in a program is asking for crashes and bad results.
+Leaving hard-to-detect errors in a program is asking for crashes and bad results.
 
 ##### Note
 
@@ -607,7 +598,7 @@ Also, it is implicit that `f2()` is supposed to `delete` its argument (or did th
 
 ##### Example, bad
 
- The standard library resource management pointers fail to pass the size when they point to an object:
+The standard library resource management pointers fail to pass the size when they point to an object:
 
     extern void f3(unique_ptr<int[]>, int n);	// separately compiled, possibly dynamically loaded
 
@@ -661,7 +652,7 @@ How do we transfer both ownership and all information needed for validating use?
 
 * ???
 * show how possible checks are avoided by interfaces that pass polymorphic base classes around, when they actually know what they need?
-  		Or strings as "free-style" options
+  Or strings as "free-style" options
 
 ##### Enforcement
 
@@ -672,7 +663,7 @@ How do we transfer both ownership and all information needed for validating use?
 
 ##### Reason
 
- Avoid "mysterious" crashes.
+Avoid "mysterious" crashes.
 Avoid errors leading to (possibly unrecognized) wrong results.
 
 ##### Example
@@ -725,7 +716,7 @@ If all we had was a typo so that we meant to use `n` as the bound, the code coul
 
 ##### Example, bad
 
- Don't repeatedly check the same value. Don't pass structured data as strings:
+Don't repeatedly check the same value. Don't pass structured data as strings:
 
     Date read_date(istream& is);	// read date from istream
 
@@ -750,8 +741,7 @@ The date is validated twice (by the `Date` constructor) and passed as a characte
 ##### Example
 
 Excess checking can be costly.
-There are cases where checking early is dumb because you may not ever need the value,
-or may only need part of the value that is more easily checked than the whole.
+There are cases where checking early is dumb because you may not ever need the value, or may only need part of the value that is more easily checked than the whole.
 
     class Jet {    // Physics says: e*e < x*x + y*y + z*z
         float fx, fy, fz, fe;
@@ -787,7 +777,7 @@ The physical law for a jet (`e*e < x*x + y*y + z*z`) is not an invariant because
 
 ##### Reason
 
- Essential for long-running programs. Efficiency. Ability to recover from errors.
+Essential for long-running programs. Efficiency. Ability to recover from errors.
 
 ##### Example, bad
 
@@ -824,7 +814,7 @@ Prefer [RAII](#Rr-raii):
 
 ##### Reason
 
- This is C++.
+This is C++.
 
 ##### Note
 
@@ -922,11 +912,11 @@ See also
 
 ##### Reason
 
- Correctness. Assumptions not stated in an interface are easily overlooked and hard to test.
+Correctness. Assumptions not stated in an interface are easily overlooked and hard to test.
 
 ##### Example, bad
 
-Controlling the behavior of a function through a global (namespace scope) variable (a call mode) is implicit and potentially confusing. For example,
+Controlling the behavior of a function through a global (namespace scope) variable (a call mode) is implicit and potentially confusing. For example:
 
     int rnd(double d)
     {
@@ -940,7 +930,7 @@ The use of a non-local control is potentially confusing, but controls only imple
 
 ##### Example, bad
 
- Reporting through non-local variables (e.g., `errno`) is easily ignored. For example:
+Reporting through non-local variables (e.g., `errno`) is easily ignored. For example:
 
     fprintf(connection, "logging: %d %d %d\n", x, y, s); // don't: no test of printf's return value
 
@@ -963,7 +953,7 @@ Functions can be template functions and sets of functions can be classes or clas
 
 ##### Reason
 
- Non-`const` global variables hide dependencies and make the dependencies subject to unpredictable changes.
+Non-`const` global variables hide dependencies and make the dependencies subject to unpredictable changes.
 
 ##### Example
 
@@ -1011,7 +1001,7 @@ You cannot have a race condition on immutable data.
 
 ##### Reason
 
- Singletons are basically complicated global objects in disguise.
+Singletons are basically complicated global objects in disguise.
 
 ##### Example
 
@@ -1040,8 +1030,7 @@ This is one of the most effective solutions to problems related to initializatio
 In a multi-threaded environment the initialization of the static object does not introduce a race condition
 (unless you carelessly access a shared object from within its constructor).
 
-If you, as many do, define a singleton as a class for which only one object is created, functions like `myX` are not singletons,
-and this useful technique is not an exception to the no-singleton rule.
+If you, as many do, define a singleton as a class for which only one object is created, functions like `myX` are not singletons, and this useful technique is not an exception to the no-singleton rule.
 
 ##### Enforcement
 
@@ -1057,7 +1046,7 @@ Also, precisely typed code is often optimized better.
 
 ##### Example, don't
 
- Consider
+Consider:
 
     void pass(void* data);	// void* is suspicious
 
@@ -1069,7 +1058,7 @@ Consider using a variant or a pointer to base instead. (Future note: Consider a 
 
 ##### Example, bad
 
-Consider
+Consider:
 
     void draw_rect(int, int, int, int);	// great opportunities for mistakes
 
@@ -1132,11 +1121,11 @@ std::chrono::duration types introduced in C++11 helps making the unit of time du
 
 ##### Reason
 
- Arguments have meaning that may constrain their proper use in the callee.
+Arguments have meaning that may constrain their proper use in the callee.
 
 ##### Example
 
-Consider
+Consider:
 
     double sqrt(double x);
 
@@ -1173,7 +1162,7 @@ We don't need to mention it for each member function.
 
 ##### Reason
 
- To make it clear that the condition is a precondition and to enable tool use.
+To make it clear that the condition is a precondition and to enable tool use.
 
 ##### Example
 
@@ -1204,11 +1193,11 @@ Preconditions should be part of the interface rather than part of the implementa
 
 ##### Reason
 
- To detect misunderstandings about the result and possibly catch erroneous implementations.
+To detect misunderstandings about the result and possibly catch erroneous implementations.
 
 ##### Example, bad
 
-Consider
+Consider:
 
     int area(int height, int width) { return height*width; }	// bad
 
@@ -1226,7 +1215,7 @@ Consider using:
 
 ##### Example, bad
 
- Consider a famous security bug
+Consider a famous security bug:
 
     void f()	// problematic
     {
@@ -1297,7 +1286,7 @@ Postconditions related only to internal state belongs in the definition/implemen
 
 ##### Reason
 
- To make it clear that the condition is a postcondition and to enable tool use.
+To make it clear that the condition is a postcondition and to enable tool use.
 
 ##### Example
 
@@ -1325,7 +1314,7 @@ Ideally, that `Ensures` should be part of the interface, but that's not easily d
 
 ##### Reason
 
- Make the interface precisely specified and compile-time checkable in the (not so distant) future.
+Make the interface precisely specified and compile-time checkable in the (not so distant) future.
 
 ##### Example
 
@@ -1352,7 +1341,7 @@ Soon (maybe in 2016), most compilers will be able to check `requires` clauses on
 
 ##### Reason
 
- It should not be possible to ignore an error because that could leave the system or a computation in an undefined (or unexpected) state.
+It should not be possible to ignore an error because that could leave the system or a computation in an undefined (or unexpected) state.
 This is a major source of errors.
 
 ##### Example
@@ -1372,8 +1361,7 @@ However, if failing to make a connection is considered an error, then a failure 
 
 **Exception**: Many traditional interface functions (e.g., UNIX signal handlers) use error codes (e.g., `errno`) to report what are really status codes, rather than errors. You don't have a good alternative to using such, so calling these does not violate the rule.
 
-**Alternative**: If you can't use exceptions (e.g. because your code is full of old-style raw-pointer use or because there are hard-real-time constraints),
-consider using a style that returns a pair of values:
+**Alternative**: If you can't use exceptions (e.g. because your code is full of old-style raw-pointer use or because there are hard-real-time constraints), consider using a style that returns a pair of values:
 
     int val;
     int error_code;
@@ -1403,11 +1391,11 @@ We don't consider "performance" a valid reason not to use exceptions.
 
 ##### Reason
 
- If there is any doubt whether the caller or the callee owns an object, leaks or premature destruction will occur.
+If there is any doubt whether the caller or the callee owns an object, leaks or premature destruction will occur.
 
 ##### Example
 
-Consider
+Consider:
 
     X* compute(args)	// don't
     {
@@ -1462,7 +1450,7 @@ Every object passed as a raw pointer (or iterator) is assumed to be owned by the
 
 ##### Reason
 
- To help avoid dereferencing `nullptr` errors. To improve performance by avoiding redundant checks for `nullptr`.
+To help avoid dereferencing `nullptr` errors. To improve performance by avoiding redundant checks for `nullptr`.
 
 ##### Example
 
@@ -1498,7 +1486,7 @@ Note: `length()` is, of course, `std::strlen()` in disguise.
 
 ##### Example
 
-Consider
+Consider:
 
     void copy_n(const T* p, T* q, int n); // copy from [p:p+n) to [q:q+n)
 
@@ -1506,13 +1494,15 @@ What if there are fewer than `n` elements in the array pointed to by `q`? Then, 
 What if there are fewer than `n` elements in the array pointed to by `p`? Then, we read some probably unrelated memory.
 Either is undefined behavior and a potentially very nasty bug.
 
-**Alternative**: Consider using explicit ranges,
+##### Alternative
+
+Consider using explicit ranges:
 
     void copy(array_view<const T> r, array_view<T> r2); // copy r to r2
 
 ##### Example, bad
 
- Consider
+Consider:
 
     void draw(Shape* p, int n);	// poor interface; poor code
     Circle arr[10];
@@ -1545,7 +1535,7 @@ This `draw2()` passes the same amount of information to `draw()`, but makes the 
 
 ##### Reason
 
- Having many arguments opens opportunities for confusion. Passing lots of arguments is often costly compared to alternatives.
+Having many arguments opens opportunities for confusion. Passing lots of arguments is often costly compared to alternatives.
 
 ##### Example
 
@@ -1590,11 +1580,11 @@ There are functions that are best expressed with four individual arguments, but 
 
 ##### Reason
 
- Adjacent arguments of the same type are easily swapped by mistake.
+Adjacent arguments of the same type are easily swapped by mistake.
 
 ##### Example, bad
 
-Consider
+Consider:
 
     	void copy_n(T* p, T* q, int n); // copy from [p:p+n) to [q:q+n)
 
@@ -1610,7 +1600,9 @@ If the order of the parameters is not important, there is no problem:
 
     int max(int a, int b);
 
-**Alternative**: Don't pass arrays as pointers, pass an object representing a range (e.g., an `array_view`):
+##### Alternative
+
+Don't pass arrays as pointers, pass an object representing a range (e.g., an `array_view`):
 
     void copy_n(array_view<const T> p, array_view<T> q); // copy from p to q
 
@@ -1622,7 +1614,7 @@ If the order of the parameters is not important, there is no problem:
 
 ##### Reason
 
- Abstract classes are more likely to be stable than base classes with state.
+Abstract classes are more likely to be stable than base classes with state.
 
 ##### Example, bad
 
@@ -1659,7 +1651,7 @@ This will force every derived class to compute a center -- even if that's non-tr
 
 ##### Reason
 
- Different compilers implement different binary layouts for classes, exception handling, function names, and other implementation details.
+Different compilers implement different binary layouts for classes, exception handling, function names, and other implementation details.
 
 **Exception**: You can carefully craft an interface using a few carefully selected higher-level C++ types. See ???.
 
@@ -1735,7 +1727,7 @@ A function definition is a function declaration that also specifies the function
 
 ##### Reason
 
- Factoring out common code makes code more readable, more likely to be reused, and limit errors from complex code.
+Factoring out common code makes code more readable, more likely to be reused, and limit errors from complex code.
 If something is a well-specified action, separate it out from its surrounding code and give it a name.
 
 ##### Example, don't
@@ -1757,8 +1749,7 @@ mess could become hard to understand.
 
 ##### Note
 
-If you write a non-trivial lambda that potentially can be used in more than one place,
-give it a name by assigning it to a (usually non-local) variable.
+If you write a non-trivial lambda that potentially can be used in more than one place, give it a name by assigning it to a (usually non-local) variable.
 
 ##### Example
 
@@ -1787,11 +1778,11 @@ Similarly, lambdas used as callback arguments are sometimes non-trivial, yet unl
 
 ##### Reason
 
- A function that performs a single operation is simpler to understand, test, and reuse.
+A function that performs a single operation is simpler to understand, test, and reuse.
 
 ##### Example
 
-Consider
+Consider:
 
     void read_and_print()	// bad
     {
@@ -1847,12 +1838,12 @@ If there was a need, we could further templatize `read()` and `print()` on the d
 
 ##### Reason
 
- Large functions are hard to read, more likely to contain complex code, and more likely to have variables in larger than minimal scopes.
+Large functions are hard to read, more likely to contain complex code, and more likely to have variables in larger than minimal scopes.
 Functions with complex control structures are more likely to be long and more likely to hide logical errors
 
 ##### Example
 
-Consider
+Consider:
 
     double simpleFunc(double val, int flag1, int flag2)
     	// simpleFunc: takes a value and calculates the expected ASIC output, given the two mode flags.
@@ -1987,7 +1978,7 @@ The compiler gives an error if a non-`constexpr` function is called where a cons
 
 ##### Reason
 
- Some optimizers are good at inlining without hints from the programmer, but don't rely on it.
+Some optimizers are good at inlining without hints from the programmer, but don't rely on it.
 Measure! Over the last 40 years or so, we have been promised compilers that can inline better than humans without hints from humans.
 We are still waiting.
 Specifying `inline` encourages the compiler to do a better job.
@@ -2014,7 +2005,7 @@ To fix: Declare the function out of line. (NM: Certainly possible, but size-base
 
 ##### Reason
 
- If an exception is not supposed to be thrown, the program cannot be assumed to cope with the error and should be terminated as soon as possible. Declaring a function `noexcept` helps optimizers by reducing the number of alternative execution paths. It also speeds up the exit after failure.
+If an exception is not supposed to be thrown, the program cannot be assumed to cope with the error and should be terminated as soon as possible. Declaring a function `noexcept` helps optimizers by reducing the number of alternative execution paths. It also speeds up the exit after failure.
 
 ##### Example
 
@@ -2044,8 +2035,7 @@ Unless the program is crafted to survive memory exhaustion, that may be just the
 ##### Note
 
 In most programs, most functions can throw
-(e.g., because they use `new`, call functions that do, or use library functions that reports failure by throwing),
-so don't just sprinkle `noexcept` all over the place.
+(e.g., because they use `new`, call functions that do, or use library functions that reports failure by throwing), so don't just sprinkle `noexcept` all over the place.
 `noexcept` is most useful for frequently used, low-level functions.
 
 ##### Note
@@ -2061,7 +2051,7 @@ Destructors, `swap` functions, move operations, and default constructors should 
 
 ##### Reason
 
- Passing a smart pointer transfers or shares ownership.
+Passing a smart pointer transfers or shares ownership.
 Passing by smart pointer restricts the use of a function to callers that use smart pointers.
 Passing a shared smart pointer (e.g., `std::shared_ptr`) implies a run-time cost.
 
@@ -2085,7 +2075,7 @@ Flag smart pointer arguments.
 
 ##### Reason
 
- Pure functions are easier to reason about, sometimes easier to optimize (and even parallelize), and sometimes can be memoized.
+Pure functions are easier to reason about, sometimes easier to optimize (and even parallelize), and sometimes can be memoized.
 
 ##### Example
 
@@ -2108,9 +2098,8 @@ There are a variety of ways to pass arguments to a function and to return values
 
 ##### Reason
 
- Using "unusual and clever" techniques causes surprises, slows understanding by other programmers, and encourages bugs.
-If you really feel the need for an optimization beyond the common techniques, measure to ensure that it really is an improvement,
-and document/comment because the improvement may not be portable.
+Using "unusual and clever" techniques causes surprises, slows understanding by other programmers, and encourages bugs.
+If you really feel the need for an optimization beyond the common techniques, measure to ensure that it really is an improvement, and document/comment because the improvement may not be portable.
 
 ![Normal parameter passing table](./param-passing-normal.png "Normal parameter passing")
 
@@ -2184,14 +2173,13 @@ The (optional) return value optimization doesn't handle the assignment case.
 ##### Enforcement
 
 This is a philosophical guideline that is infeasible to check directly and completely.
-However, many of the detailed rules (F.16-F.45) can be checked,
-such as passing a `const int&`, returning an `array<BigPOD>` by value, and returning a pointer to free store alloced by the function.
+However, many of the detailed rules (F.16-F.45) can be checked, such as passing a `const int&`, returning an `array<BigPOD>` by value, and returning a pointer to free store alloced by the function.
 
 ### <a name="Rf-ptr"></a> F.16: Use `T*` or `owner<T*>` to designate a single object
 
 ##### Reason
 
- In traditional C and C++ code, plain `T*` is used for many weakly-related purposes, such as
+In traditional C and C++ code, plain `T*` is used for many weakly-related purposes, such as:
 
 * Identify a (single) object (not to be deleted by this function)
 * Point to an object allocated on the free store (and delete it later)
@@ -2205,7 +2193,7 @@ Additionally, when debugging, `owner<T*>` and `not_null<T>` can be instrumented 
 
 ##### Example
 
-Consider
+Consider:
 
     int length(Record* p);
 
@@ -2235,7 +2223,7 @@ A `not_null<T*>` is assumed not to be the `nullptr`; a `T*` may be the `nullptr`
 
 ##### Reason
 
- Clarity. Making it clear that a test for null isn't needed.
+Clarity. Making it clear that a test for null isn't needed.
 
 ##### Example
 
@@ -2262,7 +2250,7 @@ A `not_null<T*>` is assumed not to be the `nullptr`; a `T*` may be the `nullptr`
 
 ##### Reason
 
- Informal/non-explicit ranges are a source of errors
+Informal/non-explicit ranges are a source of errors.
 
 ##### Example
 
@@ -2299,7 +2287,7 @@ We must distinguish C-style strings from a pointer to a single character or an o
 
 ##### Example
 
-Consider
+Consider:
 
     int length(const char* p);
 
@@ -2319,7 +2307,7 @@ When I call `length(s)` should I test for `s==nullptr` first? Should the impleme
 
 ##### Reason
 
- Copying large objects can be expensive. A `const T&` is always cheap and protects the caller from unintended modification.
+Copying large objects can be expensive. A `const T&` is always cheap and protects the caller from unintended modification.
 
 ##### Example
 
@@ -2344,7 +2332,7 @@ If you need the notion of an optional value, use a pointer, `std::optional`, or 
 
 ##### Reason
 
- Nothing beats the simplicity and safety of copying.
+Nothing beats the simplicity and safety of copying.
 For small objects (up to two or three words) it is also faster than alternatives.
 
 ##### Example
@@ -2363,7 +2351,7 @@ For small objects (up to two or three words) it is also faster than alternatives
 
 ##### Reason
 
- A called function can write to a non-`const` reference argument, so assume that it does.
+A called function can write to a non-`const` reference argument, so assume that it does.
 
 ##### Example
 
@@ -2386,8 +2374,7 @@ Thus `T&` could be and in-out-parameter. That can in itself be a problem and a s
     	// ...
     }
 
-Here, the writer of `g()` is supplying a buffer for `f()` to fill,
-but `f()` simply replaces it (at a somewhat higher cost than a simple copy of the characters).
+Here, the writer of `g()` is supplying a buffer for `f()` to fill, but `f()` simply replaces it (at a somewhat higher cost than a simple copy of the characters).
 If the writer of `g()` makes an assumption about the size of `buffer` a bad logic error can happen.
 
 ##### Enforcement
@@ -2399,7 +2386,7 @@ If the writer of `g()` makes an assumption about the size of `buffer` a bad logi
 
 ##### Reason
 
- A return value is harder to miss and harder to misuse than a `T&` (an in-out parameter); [see also](#Rf-T-return); [see also](#Rf-T-multi).
+A return value is harder to miss and harder to misuse than a `T&` (an in-out parameter); [see also](#Rf-T-return); [see also](#Rf-T-multi).
 
 ##### Example
 
@@ -2422,7 +2409,7 @@ Hard to choose a cutover value for the size of the value returned.
 
 ##### Reason
 
- When `TP` is a template type parameter, `TP&&` is a forwarding reference -- it both *ignores* and *preserves* const-ness and rvalue-ness. Therefore any code that uses a `T&&` is implicitly declaring that it itself doesn't care about the variable's const-ness and rvalue-ness (because it is ignored), but that intends to pass the value onward to other code that does care about const-ness and rvalue-ness (because it is preserved). When used as a parameter `TP&&` is safe because any temporary objects passed from the caller will live for the duration of the function call. A parameter of type `TP&&` should essentially always be passed onward via `std::forward` in the body of the function.
+When `TP` is a template type parameter, `TP&&` is a forwarding reference -- it both *ignores* and *preserves* const-ness and rvalue-ness. Therefore any code that uses a `T&&` is implicitly declaring that it itself doesn't care about the variable's const-ness and rvalue-ness (because it is ignored), but that intends to pass the value onward to other code that does care about const-ness and rvalue-ness (because it is preserved). When used as a parameter `TP&&` is safe because any temporary objects passed from the caller will live for the duration of the function call. A parameter of type `TP&&` should essentially always be passed onward via `std::forward` in the body of the function.
 
 ##### Example
 
@@ -2439,7 +2426,7 @@ Flag a function that takes a `TP&&` parameter (where `TP` is a template type par
 
 ##### Reason
 
- Moving from an object leaves an object in its moved-from state behind.
+Moving from an object leaves an object in its moved-from state behind.
 In general, moved-from objects are dangerous. The only guaranteed operation is destruction (more generally, member functions without preconditions).
 The standard library additionally requires that a moved-from object can be assigned to.
 If you have performance justification to optimize for rvalues, overload on `&&` and then `move` from the parameter ([example of such overloading](#)).
@@ -2466,7 +2453,7 @@ If you have performance justification to optimize for rvalues, overload on `&&` 
 
 ##### Reason
 
- Using `unique_ptr` is the cheapest way to pass a pointer safely.
+Using `unique_ptr` is the cheapest way to pass a pointer safely.
 
 ##### Example
 
@@ -2493,7 +2480,7 @@ You need to pass a pointer rather than an object if what you are transferring is
 
 ##### Reason
 
- Using `std::shared_ptr` is the standard way to represent shared ownership. That is, the last owner deletes the object.
+Using `std::shared_ptr` is the standard way to represent shared ownership. That is, the last owner deletes the object.
 
 ##### Example
 
@@ -2522,7 +2509,7 @@ Prefer a `unique_ptr` over a `shared_ptr` if there is never more than one owner 
 
 ##### Reason
 
- It's self-documenting. A `&` parameter could be either in/out or out-only.
+It's self-documenting. A `&` parameter could be either in/out or out-only.
 
 ##### Example
 
@@ -2541,7 +2528,7 @@ Flag non-const reference parameters that are not read before being written to an
 
 ##### Reason
 
- A return value is self-documenting as an "output-only" value.
+A return value is self-documenting as an "output-only" value.
 And yes, C++ does have multiple return values, by convention of using a `tuple`, with the extra convenience of `tie` at the call site.
 
 ##### Example
@@ -2576,8 +2563,7 @@ With C++11 we can write this, putting the results directly in existing local var
 
 ##### Note
 
-In some cases it may be useful to return a specific, user-defined `Value_or_error` type along the lines of `variant<T, error_code>`,
-rather than using the generic `tuple`.
+In some cases it may be useful to return a specific, user-defined `Value_or_error` type along the lines of `variant<T, error_code>`, rather than using the generic `tuple`.
 
 ##### Enforcement
 
@@ -2588,7 +2574,7 @@ rather than using the generic `tuple`.
 
 ##### Reason
 
- That's what pointers are good for.
+That's what pointers are good for.
 Returning a `T*` to transfer ownership is a misuse.
 
 ##### Note
@@ -2643,7 +2629,7 @@ A slightly different variant of the problem is placing pointers in a container t
 
 ##### Reason
 
- To avoid the crashes and data corruption that can result from the use of such a dangling pointer.
+To avoid the crashes and data corruption that can result from the use of such a dangling pointer.
 
 ##### Example, bad
 
@@ -2671,7 +2657,7 @@ After the return from a function its local objects no longer exist:
 
     }
 
-Here on one popular implementation I got the output
+Here on one popular implementation I got the output:
 
     *p == 999
     gx == 999
@@ -2723,8 +2709,7 @@ The pointer stored in `glob` could be used much later and cause trouble in unpre
 
 ##### Note
 
-The address of a local variable can be "returned"/leaked by a return statement,
-by a `T&` out-parameter, as a member of a returned object, as an element of a returned array, and more.
+The address of a local variable can be "returned"/leaked by a return statement, by a `T&` out-parameter, as a member of a returned object, as an element of a returned array, and more.
 
 ##### Note
 
@@ -2742,7 +2727,7 @@ Preventable through static analysis.
 
 ##### Reason
 
- The language guarantees that a `T&` refers to an object, so that testing for `nullptr` isn't necessary.
+The language guarantees that a `T&` refers to an object, so that testing for `nullptr` isn't necessary.
 
 **See also**: The return of a reference must not imply transfer of ownership:
 [discussion of dangling pointer prevention](#???) and [discussion of ownership](#???).
@@ -2759,7 +2744,7 @@ Preventable through static analysis.
 
 ##### Reason
 
- It's asking to return a reference to a destroyed temporary object. A `&&` is a magnet for temporary objects. This is fine when the reference to the temporary is being passed "downward" to a callee, because the temporary is guaranteed to outlive the function call. (See [F.24](#Rf-pass-ref-ref) and [F.25](#Rf-pass-ref-move).) However, it's not fine when passing such a reference "upward" to a larger caller scope. See also [F54](#Rf-local-ref-ref).
+It's asking to return a reference to a destroyed temporary object. A `&&` is a magnet for temporary objects. This is fine when the reference to the temporary is being passed "downward" to a callee, because the temporary is guaranteed to outlive the function call. (See [F.24](#Rf-pass-ref-ref) and [F.25](#Rf-pass-ref-move).) However, it's not fine when passing such a reference "upward" to a larger caller scope. See also [F54](#Rf-local-ref-ref).
 
 For passthrough functions that pass in parameters (by ordinary reference or by perfect forwarding) and want to return values, use simple `auto` return type deduction (not `auto&&`).
 
@@ -2793,7 +2778,7 @@ Flag any use of `&&` as a return type, except in `std::move` and `std::forward`.
 
 ##### Reason
 
- Functions can't capture local variables or be declared at local scope; if you need those things, prefer a lambda where possible, and a handwritten function object where not. On the other hand, lambdas and function objects don't overload; if you need to overload, prefer a function (the workarounds to make lambdas overload are ornate). If either will work, prefer writing a function; use the simplest tool necessary.
+Functions can't capture local variables or be declared at local scope; if you need those things, prefer a lambda where possible, and a handwritten function object where not. On the other hand, lambdas and function objects don't overload; if you need to overload, prefer a function (the workarounds to make lambdas overload are ornate). If either will work, prefer writing a function; use the simplest tool necessary.
 
 ##### Example
 
@@ -2827,7 +2812,7 @@ Flag any use of `&&` as a return type, except in `std::move` and `std::forward`.
 
 ##### Reason
 
- Virtual function overrides do not inherit default arguments, leading to surprises.
+Virtual function overrides do not inherit default arguments, leading to surprises.
 
 ##### Example, bad
 
@@ -2876,7 +2861,7 @@ This is a simple three-stage parallel pipeline. Each `stage` object encapsulates
 
 ##### Reason
 
- Pointers and references to locals shouldn't outlive their scope. Lambdas that capture by reference are just another place to store a reference to a local object, and shouldn't do so if they (or a copy) outlive the scope.
+Pointers and references to locals shouldn't outlive their scope. Lambdas that capture by reference are just another place to store a reference to a local object, and shouldn't do so if they (or a copy) outlive the scope.
 
 ##### Example
 
@@ -2919,7 +2904,7 @@ Subsections:
 
 ##### Reason
 
- Ease of comprehension. If data is related (for fundamental reasons), that fact should be reflected in code.
+Ease of comprehension. If data is related (for fundamental reasons), that fact should be reflected in code.
 
 ##### Example
 
@@ -2942,7 +2927,7 @@ Probably impossible. Maybe a heuristic looking for data items used together is p
 
 ##### Reason
 
- Ease of comprehension. The use of `class` alerts the programmer to the need for an invariant.
+Ease of comprehension. The use of `class` alerts the programmer to the need for an invariant.
 
 ##### Note
 
@@ -2955,7 +2940,7 @@ An invariant is a logical condition for the members of an object that a construc
     	int volume;
     };
 
-but
+but:
 
     class Date {
     private:
@@ -2975,7 +2960,7 @@ Look for `struct`s with all data private and `class`es with public members.
 
 ##### Reason
 
- An explicit distinction between interface and implementation improves readability and simplifies maintenance.
+An explicit distinction between interface and implementation improves readability and simplifies maintenance.
 
 ##### Example
 
@@ -2995,9 +2980,7 @@ For example, we can now change the representation of a `Date` without affecting 
 ##### Note
 
 Using a class in this way to represent the distinction between interface and implementation is of course not the only way.
-For example, we can use a set of declarations of freestanding functions in a namespace,
-an abstract base class,
-or a template function with concepts to represent an interface.
+For example, we can use a set of declarations of freestanding functions in a namespace, an abstract base class, or a template function with concepts to represent an interface.
 The most important issue is to explicitly distinguish between an interface and its implementation "details."
 Ideally, and typically, an interface is far more stable than its implementation(s).
 
@@ -3009,7 +2992,7 @@ Ideally, and typically, an interface is far more stable than its implementation(
 
 ##### Reason
 
- Less coupling than with member functions, fewer functions that can cause trouble by modifying object state, reduces the number of functions that needs to be modified after a change in representation.
+Less coupling than with member functions, fewer functions that can cause trouble by modifying object state, reduces the number of functions that needs to be modified after a change in representation.
 
 ##### Example
 
@@ -3036,8 +3019,7 @@ The snag is that many member functions that do not need to touch data members di
 
 ##### Reason
 
- A helper function is a function (usually supplied by the writer of a class) that does not need direct access to the representation of the class,
-yet is seen as part of the useful interface to the class.
+A helper function is a function (usually supplied by the writer of a class) that does not need direct access to the representation of the class, yet is seen as part of the useful interface to the class.
 Placing them in the same namespace as the class makes their relationship to the class obvious and allows them to be found by argument dependent lookup.
 
 ##### Example
@@ -3061,7 +3043,7 @@ Placing them in the same namespace as the class makes their relationship to the 
 
 ##### Reason
 
- More precise statement of design intent, better readability, more errors caught by the compiler, more optimization opportunities.
+More precise statement of design intent, better readability, more errors caught by the compiler, more optimization opportunities.
 
 ##### Example
 
@@ -3094,7 +3076,7 @@ Concrete type rule summary:
 
 ##### Reason
 
- A concrete type is fundamentally simpler than a hierarchy:
+A concrete type is fundamentally simpler than a hierarchy:
 easier to design, easier to implement, easier to use, easier to reason about, smaller, and faster.
 You need a reason (use cases) for using a hierarchy.
 
@@ -3145,7 +3127,7 @@ This is done where dynamic allocation is prohibited (e.g. hard real-time) and to
 
 ##### Reason
 
- Regular types are easier to understand and reason about than types that are not regular (irregularities requires extra effort to understand and use).
+Regular types are easier to understand and reason about than types that are not regular (irregularities requires extra effort to understand and use).
 
 ##### Example
 
@@ -3253,7 +3235,7 @@ However, a programmer can disable or replace these defaults.
 
 ##### Reason
 
- It's the simplest and gives the cleanest semantics.
+It's the simplest and gives the cleanest semantics.
 
 ##### Example
 
@@ -3277,13 +3259,13 @@ This is known as "the rule of zero".
 ##### Enforcement
 
 (Not enforceable) While not enforceable, a good static analyzer can detect patterns that indicate a possible improvement to meet this rule.
- For example, a class with a (pointer, size) pair of member and a destructor that `delete`s the pointer could probably be converted to a `vector`.
+For example, a class with a (pointer, size) pair of member and a destructor that `delete`s the pointer could probably be converted to a `vector`.
 
 ### <a name="Rc-five"></a> C.21: If you define or `=delete` any default operation, define or `=delete` them all
 
 ##### Reason
 
- The semantics of the special functions are closely related, so it one needs to be non-default, the odds are that other need modification.
+The semantics of the special functions are closely related, so it one needs to be non-default, the odds are that other need modification.
 
 ##### Example, bad
 
@@ -3332,7 +3314,7 @@ Relying on an implicitly generated copy operation in a class with a destructor i
 
 ##### Reason
 
- The default operations are conceptually a matched set. Their semantics are interrelated.
+The default operations are conceptually a matched set. Their semantics are interrelated.
 Users will be surprised if copy/move construction and copy/move assignment do logically different things. Users will be surprised if constructors and destructors do not provide a consistent view of resource management. Users will be surprised if copy and move don't reflect the way constructors and destructors work.
 
 ##### Example, bad
@@ -3368,7 +3350,7 @@ If the answer is "yes", much of the design of the class follows (see [the rule o
 
 ##### Reason
 
- A destructor is implicitly invoked at the end of an object's lifetime.
+A destructor is implicitly invoked at the end of an object's lifetime.
 If the default destructor is sufficient, use it.
 Only define a non-default destructor if a class needs to execute code that is not already part of its members' destructors.
 
@@ -3430,7 +3412,7 @@ Look for likely "implicit resources", such as pointers and references. Look for 
 
 ##### Reason
 
- Prevention of resource leaks, especially in error cases.
+Prevention of resource leaks, especially in error cases.
 
 ##### Note
 
@@ -3487,7 +3469,7 @@ Here `p` refers to `pp` but does not own it.
 
 ##### Reason
 
- There is a lot of code that is non-specific about ownership.
+There is a lot of code that is non-specific about ownership.
 
 ##### Example
 
@@ -3506,7 +3488,7 @@ Look at the initialization of raw member pointers and member references and see 
 
 ##### Reason
 
- An owned object must be `deleted` upon destruction of the object that owns it.
+An owned object must be `deleted` upon destruction of the object that owns it.
 
 ##### Example
 
@@ -3562,13 +3544,12 @@ The default copy operation will just copy the `p1.p` into `p2.p` leading to a do
 
 ##### Note
 
-Often the simplest way to get a destructor is to replace the pointer with a smart pointer (e.g., `std::unique_ptr`)
- and let the compiler arrange for proper destruction to be done implicitly.
+Often the simplest way to get a destructor is to replace the pointer with a smart pointer (e.g., `std::unique_ptr`) and let the compiler arrange for proper destruction to be done implicitly.
 
 ##### Note
 
 Why not just require all owning pointers to be "smart pointers"?
- That would sometimes require non-trivial code changes and may affect ABIs.
+That would sometimes require non-trivial code changes and may affect ABIs.
 
 ##### Enforcement
 
@@ -3579,7 +3560,7 @@ Why not just require all owning pointers to be "smart pointers"?
 
 ##### Reason
 
- A reference member may represent a resource.
+A reference member may represent a resource.
 It should not do so, but in older code, that's common.
 See [pointer members and destructors](#Rc-dtor-ptr).
 Also, copying may lead to slicing.
@@ -3622,9 +3603,9 @@ Unless `Shape` has its [copy assignment `=deleted`](#Rc-copy-virtual), only the 
 ##### Note
 
 Why not just require all owning references to be replaced by "smart pointers"?
- Changing from references to smart pointers implies code changes.
- We don't (yet) have smart references.
- Also, that may affect ABIs.
+Changing from references to smart pointers implies code changes.
+We don't (yet) have smart references.
+Also, that may affect ABIs.
 
 ##### Enforcement
 
@@ -3635,7 +3616,7 @@ Why not just require all owning references to be replaced by "smart pointers"?
 
 ##### Reason
 
- To prevent undefined behavior.
+To prevent undefined behavior.
 If an application attempts to delete a derived class object through a base class pointer, the result is undefined if the base class's destructor is non-virtual.
 In general, the writer of a base class does not know the appropriate action to be done upon destruction.
 
@@ -3685,7 +3666,7 @@ A destructor must be `public` or it will prevent stack allocation and normal hea
 
 ##### Reason
 
- In general we do not know how to write error-free code if a destructor should fail.
+In general we do not know how to write error-free code if a destructor should fail.
 The standard library requires that all classes it deals with have destructors that do not exit by throwing.
 
 ##### Example
@@ -3753,7 +3734,7 @@ A constructor defined how an object is initialized (constructed).
 
 ##### Reason
 
- That's what constructors are for.
+That's what constructors are for.
 
 ##### Example
 
@@ -3811,7 +3792,7 @@ Also, the default for `int` would be better done as a [member initializer](#Rc-i
 
 ##### Reason
 
- A constructor establishes the invariant for a class. A user of a class should be able to assume that a constructed object is usable.
+A constructor establishes the invariant for a class. A user of a class should be able to assume that a constructed object is usable.
 
 ##### Example, bad
 
@@ -3847,7 +3828,7 @@ The idiom of having constructors acquire resources and destructors release them 
 
 ##### Reason
 
- Leaving behind an invalid object is asking for trouble.
+Leaving behind an invalid object is asking for trouble.
 
 ##### Example
 
@@ -3924,8 +3905,7 @@ For a variable definition (e.g., on the stack or as a member of another object) 
 
 ##### Reason
 
- Many language and library facilities rely on default constructors,
-e.g. `T a[10]` and `std::vector<T> v(10)` default initializes their elements.
+Many language and library facilities rely on default constructors, e.g. `T a[10]` and `std::vector<T> v(10)` default initializes their elements.
 
 ##### Example
 
@@ -3950,7 +3930,7 @@ However, most realistic `Date` classes has a "first date" (e.g. January 1, 1970 
 
 ##### Reason
 
- Being able to set a value to "the default" without operations that might fail simplifies error handling and reasoning about move operations.
+Being able to set a value to "the default" without operations that might fail simplifies error handling and reasoning about move operations.
 
 ##### Example, problematic
 
@@ -3995,7 +3975,7 @@ Setting a `Vector1` to empty after detecting an error is trivial.
 
 ##### Reason
 
- Using in-class member initializers lets the compiler generate the function for you. The compiler-generated function can be more efficient.
+Using in-class member initializers lets the compiler generate the function for you. The compiler-generated function can be more efficient.
 
 ##### Example, bad
 
@@ -4025,7 +4005,7 @@ Setting a `Vector1` to empty after detecting an error is trivial.
 
 ##### Reason
 
- To avoid unintended conversions.
+To avoid unintended conversions.
 
 ##### Example, bad
 
@@ -4061,7 +4041,7 @@ If you really want an implicit conversion from the constructor argument type to 
 
 ##### Reason
 
- To minimize confusion and errors. That is the order in which the initialization happens (independent of the order of member initializers).
+To minimize confusion and errors. That is the order in which the initialization happens (independent of the order of member initializers).
 
 ##### Example, bad
 
@@ -4085,7 +4065,7 @@ If you really want an implicit conversion from the constructor argument type to 
 
 ##### Reason
 
- Makes it explicit that the same value is expected to be used in all constructors. Avoids repetition. Avoids maintenance problems. It leads to the shortest and most efficient code.
+Makes it explicit that the same value is expected to be used in all constructors. Avoids repetition. Avoids maintenance problems. It leads to the shortest and most efficient code.
 
 ##### Example, bad
 
@@ -4134,7 +4114,7 @@ How would a maintainer know whether `j` was deliberately uninitialized (probably
 
 ##### Reason
 
- An initialization explicitly states that initialization, rather than assignment, is done and can be more elegant and efficient. Prevents "use before set" errors.
+An initialization explicitly states that initialization, rather than assignment, is done and can be more elegant and efficient. Prevents "use before set" errors.
 
 ##### Example, good
 
@@ -4165,8 +4145,7 @@ How would a maintainer know whether `j` was deliberately uninitialized (probably
 
 ##### Reason
 
- If the state of a base class object must depend on the state of a derived part of the object,
- we need to use a virtual function (or equivalent) while minimizing the window of opportunity to misuse an imperfectly constructed object.
+If the state of a base class object must depend on the state of a derived part of the object, we need to use a virtual function (or equivalent) while minimizing the window of opportunity to misuse an imperfectly constructed object.
 
 ##### Example, bad
 
@@ -4226,7 +4205,7 @@ Conventional factory functions allocate on the free store, rather than on the st
 
 ##### Reason
 
- To avoid repetition and accidental differences
+To avoid repetition and accidental differences.
 
 ##### Example, bad
 
@@ -4273,7 +4252,7 @@ The common action gets tedious to write and may accidentally not be common.
 
 ##### Reason
 
- If you need those constructors for a derived class, re-implementeing them is tedious and error prone.
+If you need those constructors for a derived class, re-implementeing them is tedious and error prone.
 
 ##### Example
 
@@ -4313,7 +4292,7 @@ Types can be defined to move for logical as well as performance reasons.
 
 ##### Reason
 
- It is simple and efficient. If you want to optimize for rvalues, provide an overload that takes a `&&` (see [F.24](#Rf-pass-ref-ref)).
+It is simple and efficient. If you want to optimize for rvalues, provide an overload that takes a `&&` (see [F.24](#Rf-pass-ref-ref)).
 
 ##### Example
 
@@ -4385,7 +4364,7 @@ See [copy constructor vs. `clone()`](#Rc-copy-virtual).
 
 ##### Reason
 
- That is the generally assumed semantics. After `x=y`, we should have `x==y`.
+That is the generally assumed semantics. After `x=y`, we should have `x==y`.
 After a copy `x` and `y` can be independent objects (value semantics, the way non-pointer built-in types and the standard-library types work) or refer to a shared object (pointer semantics, the way pointers work).
 
 ##### Example
@@ -4456,7 +4435,7 @@ Prefer copy semantics unless you are building a "smart pointer". Value semantics
 
 ##### Reason
 
- If `x=x` changes the value of `x`, people will be surprised and bad errors will occur (often including leaks).
+If `x=x` changes the value of `x`, people will be surprised and bad errors will occur (often including leaks).
 
 ##### Example
 
@@ -4522,7 +4501,7 @@ Consider:
 
 ##### Reason
 
- It is simple and efficient.
+It is simple and efficient.
 
 **See**: [The rule for copy-assignment](#Rc-copy-assignment).
 
@@ -4538,7 +4517,7 @@ Equivalent to what is done for [copy-assignment](#Rc-copy-assignment).
 
 ##### Reason
 
- That is the generally assumed semantics. After `x=std::move(y)` the value of `x` should be the value `y` had and `y` should be in a valid state.
+That is the generally assumed semantics. After `x=std::move(y)` the value of `x` should be the value `y` had and `y` should be in a valid state.
 
 ##### Example
 
@@ -4588,7 +4567,7 @@ Unless there is an exceptionally strong reason not to, make `x=std::move(y); y=z
 
 ##### Reason
 
- If `x=x` changes the value of `x`, people will be surprised and bad errors may occur. However, people don't usually directly write a self-assignment that turn into a move, but it can occur. However, `std::swap` is implemented using move operations so if you accidentally do `swap(a, b)` where `a` and `b` refer to the same object, failing to handle self-move could be a serious and subtle error.
+If `x=x` changes the value of `x`, people will be surprised and bad errors may occur. However, people don't usually directly write a self-assignment that turn into a move, but it can occur. However, `std::swap` is implemented using move operations so if you accidentally do `swap(a, b)` where `a` and `b` refer to the same object, failing to handle self-move could be a serious and subtle error.
 
 ##### Example
 
@@ -4637,7 +4616,7 @@ Here is a way to move a pointer without a test (imagine it as code in the implem
 
 ##### Reason
 
- A throwing move violates most people's reasonably assumptions.
+A throwing move violates most people's reasonably assumptions.
 A non-throwing move will be used more efficiently by standard-library and language facilities.
 
 ##### Example
@@ -4678,7 +4657,7 @@ This `Vector2` is not just inefficient, but since a vector copy requires allocat
 
 ##### Reason
 
- To prevent slicing, because the normal copy operations will copy only the base portion of a derived object.
+To prevent slicing, because the normal copy operations will copy only the base portion of a derived object.
 
 ##### Example, bad
 
@@ -4729,7 +4708,7 @@ A class with any virtual function should not have a copy constructor or copy ass
 
 ##### Reason
 
- The compiler is more likely to get the default semantics right and you cannot implement these function better than the compiler.
+The compiler is more likely to get the default semantics right and you cannot implement these function better than the compiler.
 
 ##### Example
 
@@ -4771,7 +4750,7 @@ Writing out the bodies of the copy and move operations is verbose, tedious, and 
 
 ##### Reason
 
- In a few cases, a default operation is not desirable.
+In a few cases, a default operation is not desirable.
 
 ##### Example
 
@@ -4821,7 +4800,7 @@ The elimination of a default operation is (should be) based on the desired seman
 
 ##### Reason
 
- The function called will be that of the object constructed so far, rather than a possibly overriding function in a derived class.
+The function called will be that of the object constructed so far, rather than a possibly overriding function in a derived class.
 This can be most confusing.
 Worse, a direct or indirect call to an unimplemented pure virtual function from a constructor or destructor results in undefined behavior.
 
@@ -4858,7 +4837,7 @@ Note that calling a specific explicitly qualified function is not a virtual call
 
 ##### Reason
 
- A `swap` can be handy for implementing a number of idioms, from smoothly moving objects around to implementing assignment easily to providing a guaranteed commit function that enables strongly error-safe calling code. Consider using swap to implement copy assignment in terms of copy construction. See also [destructors, deallocation, and swap must never fail](#Re-never-fail).
+A `swap` can be handy for implementing a number of idioms, from smoothly moving objects around to implementing assignment easily to providing a guaranteed commit function that enables strongly error-safe calling code. Consider using swap to implement copy assignment in terms of copy construction. See also [destructors, deallocation, and swap must never fail](#Re-never-fail).
 
 ##### Example, good
 
@@ -4923,7 +4902,7 @@ If a `swap` tries to exit with an exception, it's a bad design error and the pro
 
 ##### Reason
 
- Asymmetric treatment of operands is surprising and a source of errors where conversions are possible.
+Asymmetric treatment of operands is surprising and a source of errors where conversions are possible.
 `==` is a fundamental operations and programmers should be able to use it without fear of failure.
 
 ##### Example
@@ -4959,7 +4938,7 @@ The alternative is to make two failure states compare equal and any valid state 
 
 ##### Reason
 
- It is really hard to write a foolproof and useful `==` for a hierarchy.
+It is really hard to write a foolproof and useful `==` for a hierarchy.
 
 ##### Example, bad
 
@@ -5095,7 +5074,7 @@ Accessing objects in a hierarchy rule summary:
 
 ##### Reason
 
- Direct representation of ideas in code eases comprehension and maintenance. Make sure the idea represented in the base class exactly matches all derived types and there is not a better way to express it than using the tight coupling of inheritance.
+Direct representation of ideas in code eases comprehension and maintenance. Make sure the idea represented in the base class exactly matches all derived types and there is not a better way to express it than using the tight coupling of inheritance.
 
 Do *not* use inheritance when simply having a data member will do. Usually this means that the derived type needs to override a base virtual function or needs access to a protected member.
 
@@ -5140,7 +5119,7 @@ not using this (over)general interface in favor of a particular interface found 
 
 ##### Reason
 
- A class is more stable (less brittle) if it does not contain data. Interfaces should normally be composed entirely of public pure virtual functions.
+A class is more stable (less brittle) if it does not contain data. Interfaces should normally be composed entirely of public pure virtual functions.
 
 ##### Example
 
@@ -5154,7 +5133,7 @@ not using this (over)general interface in favor of a particular interface found 
 
 ##### Reason
 
- Such as on an ABI (link) boundary.
+Such as on an ABI (link) boundary.
 
 ##### Example
 
@@ -5170,7 +5149,7 @@ not using this (over)general interface in favor of a particular interface found 
 
 ##### Reason
 
- An abstract class typically does not have any data for a constructor to initialize.
+An abstract class typically does not have any data for a constructor to initialize.
 
 ##### Example
 
@@ -5190,7 +5169,7 @@ Flag abstract classes with constructors.
 
 ##### Reason
 
- A class with a virtual function is usually (and in general) used via a pointer to base, including that the last user has to call delete on a pointer to base, often via a smart pointer to base.
+A class with a virtual function is usually (and in general) used via a pointer to base, including that the last user has to call delete on a pointer to base, often via a smart pointer to base.
 
 ##### Example, bad
 
@@ -5221,7 +5200,7 @@ There are people who don't follow this rule because they plan to use a class onl
 
 ##### Reason
 
- Readability. Detection of mistakes. Explicit `override` allows the compiler to catch mismatch of types and/or names between base and derived classes.
+Readability. Detection of mistakes. Explicit `override` allows the compiler to catch mismatch of types and/or names between base and derived classes.
 
 ##### Example, bad
 
@@ -5262,7 +5241,7 @@ There are people who don't follow this rule because they plan to use a class onl
 
 ##### Reason
 
- Copying a base is usually slicing. If you really need copy semantics, copy deeply: Provide a virtual `clone` function that will copy the actual most-derived type, and in derived classes return the derived type (use a covariant return type).
+Copying a base is usually slicing. If you really need copy semantics, copy deeply: Provide a virtual `clone` function that will copy the actual most-derived type, and in derived classes return the derived type (use a covariant return type).
 
 ##### Example
 
@@ -5287,7 +5266,7 @@ Note that because of language rules, the covariant return type cannot be a smart
 
 ##### Reason
 
- A trivial getter or setter adds no semantic value; the data item could just as well be `public`.
+A trivial getter or setter adds no semantic value; the data item could just as well be `public`.
 
 ##### Example
 
@@ -5322,7 +5301,7 @@ Flag multiple `get` and `set` member functions that simply access a member witho
 
 ##### Reason
 
- Redundant `virtual` increases run-time and object-code size.
+Redundant `virtual` increases run-time and object-code size.
 A virtual function can be overridden and is thus open to mistakes in a derived class.
 A virtual function ensures code replication in a templated hierarchy.
 
@@ -5369,7 +5348,7 @@ Flag classes with `protected` data.
 
 ##### Reason
 
- If they don't, the type is confused about what it's trying to do. Only if the type is not really an abstraction, but just a convenience bundle to group individual variables with no larger behavior (a behaviorless bunch of variables), make all data members `public` and don't provide functions with behavior. Otherwise, the type is an abstraction, so make all its data members `private`. Don't mix `public` and `private` data.
+If they don't, the type is confused about what it's trying to do. Only if the type is not really an abstraction, but just a convenience bundle to group individual variables with no larger behavior (a behaviorless bunch of variables), make all data members `public` and don't provide functions with behavior. Otherwise, the type is an abstraction, so make all its data members `private`. Don't mix `public` and `private` data.
 
 ##### Example
 
@@ -5383,7 +5362,7 @@ Flag any class that has data members with different access levels.
 
 ##### Reason
 
- Not all classes will necessarily support all interfaces, and not all callers will necessarily want to deal with all operations. Especially to break apart monolithic interfaces into "aspects" of behavior supported by a given derived class.
+Not all classes will necessarily support all interfaces, and not all callers will necessarily want to deal with all operations. Especially to break apart monolithic interfaces into "aspects" of behavior supported by a given derived class.
 
 ##### Example
 
@@ -5454,7 +5433,7 @@ This a relatively rare use because implementation can often be organized into a 
 
 ##### Reason
 
- If you have a class with a virtual function, you don't (in general) know which class provided the function to be used.
+If you have a class with a virtual function, you don't (in general) know which class provided the function to be used.
 
 ##### Example
 
@@ -5541,7 +5520,7 @@ Flag all uses of `static_cast` for downcasts, including C-style casts that perfo
 
 ##### Reason
 
- Casting to a reference expresses that you intend to end up with a valid object, so the cast must succeed. `dynamic_cast` will then throw if it does not succeed.
+Casting to a reference expresses that you intend to end up with a valid object, so the cast must succeed. `dynamic_cast` will then throw if it does not succeed.
 
 ##### Example
 
@@ -5555,7 +5534,7 @@ Flag all uses of `static_cast` for downcasts, including C-style casts that perfo
 
 ##### Reason
 
- ???
+???
 
 ##### Example
 
@@ -5569,7 +5548,7 @@ Flag all uses of `static_cast` for downcasts, including C-style casts that perfo
 
 ##### Reason
 
- Avoid resource leaks.
+Avoid resource leaks.
 
 ##### Example
 
@@ -5625,7 +5604,7 @@ It also gives an opportunity to eliminate a separate allocation for the referenc
 
 ##### Reason
 
- Subscripting the resulting base pointer will lead to invalid object access and probably to memory corruption.
+Subscripting the resulting base pointer will lead to invalid object access and probably to memory corruption.
 
 ##### Example
 
@@ -5663,7 +5642,7 @@ Overload rule summary:
 
 ##### Reason
 
- Minimize surprises.
+Minimize surprises.
 
 ##### Example, bad
 
@@ -5679,7 +5658,7 @@ Possibly impossible.
 
 ##### Reason
 
- If you use member functions, you need two.
+If you use member functions, you need two.
 Unless you use a non-member function for (say) `==`, `a==b` and `b==a` will be subtly different.
 
 ##### Example
@@ -5694,11 +5673,11 @@ Flag member operator functions.
 
 ##### Reason
 
- Having different names for logically equivalent operations on different argument types is confusing, leads to encoding type information in function names, and inhibits generic programming.
+Having different names for logically equivalent operations on different argument types is confusing, leads to encoding type information in function names, and inhibits generic programming.
 
 ##### Example
 
-Consider
+Consider:
 
     void print(int a);
     void print(int a, int base);
@@ -5720,11 +5699,11 @@ These three functions all prints their arguments (appropriately). Adding to the 
 
 ##### Reason
 
- Having the same name for logically different functions is confusing and leads to errors when using generic programming.
+Having the same name for logically different functions is confusing and leads to errors when using generic programming.
 
 ##### Example
 
-Consider
+Consider:
 
     void open_gate(Gate& g);	// remove obstacle from garage exit lane
     void fopen(const char*name, const char* mode);	// open file
@@ -5735,7 +5714,7 @@ The two operations are fundamentally different (and unrelated) so it is good tha
     void open(const char*name, const char* mode ="r");	// open file
 
 The two operations are still fundamentally different (and unrelated) but the names have been reduced to their (common) minimum, opening opportunities for confusion.
- Fortunately, the type system will catch many such mistakes.
+Fortunately, the type system will catch many such mistakes.
 
 ##### Note
 
@@ -5749,7 +5728,7 @@ be particularly careful about common and popular names, such as `open`, `move`, 
 
 ##### Reason
 
- Implicit conversions can be essential (e.g., `double` to '`int`) but often cause surprises (e.g., `String` to C-style string).
+Implicit conversions can be essential (e.g., `double` to '`int`) but often cause surprises (e.g., `String` to C-style string).
 
 ##### Note
 
@@ -5788,7 +5767,7 @@ Flag all conversion operators.
 
 ##### Reason
 
- You can overload by defining two different lambdas with the same name
+You can overload by defining two different lambdas with the same name.
 
 ##### Example
 
@@ -5837,7 +5816,7 @@ Union rule summary:
 
 ##### Reason
 
- Naked unions are a source of type errors.
+Naked unions are a source of type errors.
 
 **Alternative**: Wrap them in a class together with a type field.
 
@@ -5883,7 +5862,7 @@ Enumeration rule summary:
 
 ##### Reason
 
- Macros do not obey scope and type rules.
+Macros do not obey scope and type rules.
 
 ##### Example
 
@@ -5897,7 +5876,7 @@ Enumeration rule summary:
 
 ##### Reason
 
- ???
+???
 
 ##### Example
 
@@ -5911,7 +5890,7 @@ Enumeration rule summary:
 
 ##### Reason
 
- to minimize surprises
+To minimize surprises.
 
 ##### Example
 
@@ -5925,7 +5904,7 @@ Enumeration rule summary:
 
 ##### Reason
 
- Convenience of us and avoidance of errors.
+Convenience of use and avoidance of errors.
 
 ##### Example
 
@@ -5939,7 +5918,7 @@ Enumeration rule summary:
 
 ##### Reason
 
- Avoid clashes with macros
+Avoid clashes with macros.
 
 ##### Example
 
@@ -5972,8 +5951,7 @@ The fundamental aim is to ensure that we don't leak any resources and that we do
 An entity that is responsible for releasing a resource is called an owner.
 
 There are a few cases where leaks can be acceptable or even optimal:
-if you are writing a program that simply produces an output based on an input and the amount of memory needed is proportional to the size of the input,
-the optimal strategy (for performance and ease of programming) is sometimes simply never to delete anything.
+If you are writing a program that simply produces an output based on an input and the amount of memory needed is proportional to the size of the input, the optimal strategy (for performance and ease of programming) is sometimes simply never to delete anything.
 If you have enough memory to handle your largest input, leak away, but be sure to give a good error message if you are wrong.
 Here, we ignore such cases.
 
@@ -6015,14 +5993,13 @@ Here, we ignore such cases.
 
 ##### Reason
 
- To avoid leaks and the complexity of manual resource management.
- C++'s language-enforced constructor/destructor symmetry mirrors the symmetry inherent in resource acquire/release function pairs such as `fopen`/`fclose`, `lock`/`unlock`, and `new`/`delete`.
- Whenever you deal with a resource that needs paired acquire/release function calls,
- encapsulate that resource in an object that enforces pairing for you -- acquire the resource in its constructor, and release it in its destructor.
+To avoid leaks and the complexity of manual resource management.
+C++'s language-enforced constructor/destructor symmetry mirrors the symmetry inherent in resource acquire/release function pairs such as `fopen`/`fclose`, `lock`/`unlock`, and `new`/`delete`.
+Whenever you deal with a resource that needs paired acquire/release function calls, encapsulate that resource in an object that enforces pairing for you -- acquire the resource in its constructor, and release it in its destructor.
 
 ##### Example, bad
 
- Consider
+Consider:
 
     void send( X* x, cstring_view destination ) {
         auto port = OpenPort(destination);
@@ -6040,7 +6017,7 @@ Further, if any of the code marked `...` throws an exception, then `x` is leaked
 
 ##### Example
 
-Consider
+Consider:
 
     void send( unique_ptr<X> x, cstring_view destination ) { // x owns the X
         Port port{destination};            // port owns the PortHandle
@@ -6076,7 +6053,7 @@ Where a resource is "ill-behaved" in that it isn't represented as a class with a
 
 ##### Reason
 
- Arrays are best represented by a container type (e.g., `vector` (owning)) or an `array_view` (non-owning).
+Arrays are best represented by a container type (e.g., `vector` (owning)) or an `array_view` (non-owning).
 Such containers and views hold sufficient information to do range checking.
 
 ##### Example, bad
@@ -6116,7 +6093,7 @@ However, where `nullptr` is a possible value, a reference may not be an reasonab
 
 ##### Reason
 
- There is nothing (in the C++ standard or in most code) to say otherwise and most raw pointers are non-owning.
+There is nothing (in the C++ standard or in most code) to say otherwise and most raw pointers are non-owning.
 We want owning pointers identified so that we can reliably and efficiently delete the objects pointed to by owning pointers.
 
 ##### Example
@@ -6181,9 +6158,7 @@ Returning a (raw) pointer imposes a life-time management burden on the caller; t
     	delete p;
     }
 
-In addition to suffering from then problem from [leak](#???), this adds a spurious allocation and deallocation operation,
-and is needlessly verbose. If Gadget is cheap to move out of a function (i.e., is small or has an efficient move operation),
-just return it "by value:'
+In addition to suffering from then problem from [leak](#???), this adds a spurious allocation and deallocation operation, and is needlessly verbose. If Gadget is cheap to move out of a function (i.e., is small or has an efficient move operation), just return it "by value:'
 
     Gadget make_gadget(int n)
     {
@@ -6198,8 +6173,7 @@ This rule applies to factory functions.
 
 ##### Note
 
-If pointer semantics is required (e.g., because the return type needs to refer to a base class of a class hierarchy (an interface)),
-return a "smart pointer."
+If pointer semantics is required (e.g., because the return type needs to refer to a base class of a class hierarchy (an interface)), return a "smart pointer."
 
 ##### Enforcement
 
@@ -6213,7 +6187,7 @@ return a "smart pointer."
 
 ##### Reason
 
- There is nothing (in the C++ standard or in most code) to say otherwise and most raw references are non-owning.
+There is nothing (in the C++ standard or in most code) to say otherwise and most raw references are non-owning.
 We want owners identified so that we can reliably and efficiently delete the objects pointed to by owning pointers.
 
 ##### Example
@@ -6235,7 +6209,7 @@ See [the raw pointer rule](#Rr-ptr)
 
 ##### Reason
 
- A scoped object is a local object, a global object, or a member.
+A scoped object is a local object, a global object, or a member.
 This implies that there is no separate allocation and deallocation cost in excess that already used for the containing scope or object.
 The members of a scoped object are themselves scoped and the scoped object's constructor and destructor manage the members' lifetimes.
 
@@ -6267,7 +6241,7 @@ Instead, use a local variable:
 
 ##### Reason
 
- Global variables can be accessed from everywhere so they can introduce surprising dependencies between apparently unrelated objects.
+Global variables can be accessed from everywhere so they can introduce surprising dependencies between apparently unrelated objects.
 They are a notable source of errors.
 
 **Warning**: The initialization of global objects is not totally ordered. If you use a global object initialize it with a constant.
@@ -6332,7 +6306,7 @@ Flag explicit use of `malloc` and `free`.
 
 ##### Reason
 
- The pointer returned by `new` should belong to a resource handle (that can call `delete`).
+The pointer returned by `new` should belong to a resource handle (that can call `delete`).
 If the pointer returned from `new` is assigned to a plain/naked pointer, the object can be leaked.
 
 ##### Note
@@ -6350,7 +6324,7 @@ If you have a naked `new`, you probably need a naked `delete` somewhere, so you 
 
 ##### Reason
 
- If you don't, an exception or a return may lead to a leak.
+If you don't, an exception or a return may lead to a leak.
 
 ##### Example, bad
 
@@ -6383,8 +6357,7 @@ The use of the file handle (in `ifstream`) is simple, efficient, and safe.
 
 ##### Reason
 
- If you perform two explicit resource allocations in one statement,
-you could leak resources because the order of evaluation of many subexpressions, including function arguments, is unspecified.
+If you perform two explicit resource allocations in one statement, you could leak resources because the order of evaluation of many subexpressions, including function arguments, is unspecified.
 
 ##### Example
 
@@ -6419,7 +6392,7 @@ Write your own factory wrapper if there is not one already.
 
 ##### Reason
 
- An array decays to a pointer, thereby losing its size, opening the opportunity for range errors.
+An array decays to a pointer, thereby losing its size, opening the opportunity for range errors.
 
 ##### Example
 
@@ -6461,11 +6434,11 @@ Flag incomplete pairs.
 
 ##### Reason
 
- They can prevent resource leaks.
+They can prevent resource leaks.
 
 ##### Example
 
-Consider
+Consider:
 
     void f()
     {
@@ -6485,11 +6458,11 @@ This will leak the object used to initialize `p1` (only).
 
 ##### Reason
 
- a `unique_ptr` is conceptually simpler and more predictable (you know when destruction happens) and faster (you don't implicitly maintain a use count).
+A `unique_ptr` is conceptually simpler and more predictable (you know when destruction happens) and faster (you don't implicitly maintain a use count).
 
 ##### Example, bad
 
- This needlessly adds and maintains a reference count
+This needlessly adds and maintains a reference count.
 
     void f()
     {
@@ -6499,7 +6472,7 @@ This will leak the object used to initialize `p1` (only).
 
 ##### Example
 
-This is more efficient
+This is more efficient:
 
     void f()
     {
@@ -6515,11 +6488,11 @@ This is more efficient
 
 ##### Reason
 
- If you first make an object and then gives it to a `shared_ptr` constructor, you (most likely) do one more allocation (and later deallocation) than if you use `make_shared()` because the reference counts must be allocated separately from the object.
+If you first make an object and then gives it to a `shared_ptr` constructor, you (most likely) do one more allocation (and later deallocation) than if you use `make_shared()` because the reference counts must be allocated separately from the object.
 
 ##### Example
 
-Consider
+Consider:
 
     shared_ptr<X> p1 { new X{2} }; // bad
     auto p = make_shared<X>(2);    // good
@@ -6534,7 +6507,7 @@ The `make_shared()` version mentions `X` only once, so it is usually shorter (as
 
 ##### Reason
 
- for convenience and consistency with `shared_ptr`.
+For convenience and consistency with `shared_ptr`.
 
 ##### Note
 
@@ -6569,7 +6542,7 @@ You could "temporarily share ownership simply by using another `stared_ptr`.)
 
 ##### Reason
 
- Accepting a smart pointer to a `widget` is wrong if the function just needs the `widget` itself.
+Accepting a smart pointer to a `widget` is wrong if the function just needs the `widget` itself.
 It should be able to accept any `widget` object, not just ones whose lifetimes are managed by a particular kind of smart pointer.
 A function that does not manipulate lifetime should take raw pointers or references instead.
 
@@ -6614,7 +6587,7 @@ A function that does not manipulate lifetime should take raw pointers or referen
 
 ##### Reason
 
- The rules in the following section also work for other kinds of third-party and custom smart pointers and are very useful for diagnosing common smart pointer errors that cause performance and correctness problems.
+The rules in the following section also work for other kinds of third-party and custom smart pointers and are very useful for diagnosing common smart pointer errors that cause performance and correctness problems.
 You want the rules to work on all the smart pointers you use.
 
 Any type (including primary template or specialization) that overloads unary `*` and `->` is considered a smart pointer:
@@ -6639,14 +6612,13 @@ Any type (including primary template or specialization) that overloads unary `*`
 Both cases are an error under the [`sharedptrparam` guideline](#Rr-smartptrparam):
 `p` is a `Shared_ptr`, but nothing about its sharedness is used here and passing it by value is a silent pessimization;
 these functions should accept a smart pointer only if they need to participate in the widget's lifetime management. Otherwise they should accept a `widget*`, if it can be `nullptr`. Otherwise, and ideally, the function should accept a `widget&`.
-These smart pointers match the `Shared_ptr` concept,
-so these guideline enforcement rules work on them out of the box and expose this common pessimization.
+These smart pointers match the `Shared_ptr` concept, so these guideline enforcement rules work on them out of the box and expose this common pessimization.
 
 ### <a name="Rr-uniqueptrparam"></a> R.32: Take a `unique_ptr<widget>` parameter to express that a function assumes ownership of a `widget`
 
 ##### Reason
 
- Using `unique_ptr` in this way both documents and enforces the function call's ownership transfer.
+Using `unique_ptr` in this way both documents and enforces the function call's ownership transfer.
 
 ##### Example
 
@@ -6668,7 +6640,7 @@ so these guideline enforcement rules work on them out of the box and expose this
 
 ##### Reason
 
- Using `unique_ptr` in this way both documents and enforces the function call's reseating semantics.
+Using `unique_ptr` in this way both documents and enforces the function call's reseating semantics.
 
 ##### Note
 
@@ -6692,7 +6664,7 @@ so these guideline enforcement rules work on them out of the box and expose this
 
 ##### Reason
 
- This makes the function's ownership sharing explicit.
+This makes the function's ownership sharing explicit.
 
 ##### Example, good
 
@@ -6712,7 +6684,7 @@ so these guideline enforcement rules work on them out of the box and expose this
 
 ##### Reason
 
- This makes the function's reseating explicit.
+This makes the function's reseating explicit.
 
 ##### Note
 
@@ -6736,7 +6708,7 @@ so these guideline enforcement rules work on them out of the box and expose this
 
 ##### Reason
 
- This makes the function's ??? explicit.
+This makes the function's ??? explicit.
 
 ##### Example, good
 
@@ -6756,7 +6728,7 @@ so these guideline enforcement rules work on them out of the box and expose this
 
 ##### Reason
 
- Violating this rule is the number one cause of losing reference counts and finding yourself with a dangling pointer.
+Violating this rule is the number one cause of losing reference counts and finding yourself with a dangling pointer.
 Functions should prefer to pass raw pointers and references down call chains.
 At the top of the call tree where you obtain the raw pointer or reference from a smart pointer that keeps the object alive.
 You need to be sure that smart pointer cannot be inadvertently be reset or reassigned from within the call tree below
@@ -6880,7 +6852,7 @@ Arithmetic rules:
 
 ##### Reason
 
- Code using a library can be much easier to write than code working directly with language features, much shorter, tend to be of a higher level of abstraction, and the library code is presumably already tested.
+Code using a library can be much easier to write than code working directly with language features, much shorter, tend to be of a higher level of abstraction, and the library code is presumably already tested.
 The ISO C++ standard library is among the most widely know and best tested libraries.
 It is available as part of all C++ Implementations.
 
@@ -6888,11 +6860,11 @@ It is available as part of all C++ Implementations.
 
     auto sum = accumulate(begin(a), end(a), 0.0);	// good
 
-a range version of `accumulate` would be even better
+a range version of `accumulate` would be even better:
 
     auto sum = accumulate(v, 0.0); // better
 
-but don't hand-code a well-known algorithm
+but don't hand-code a well-known algorithm:
 
     int max = v.size();		// bad: verbose, purpose unstated
     double sum = 0.0;
@@ -6909,7 +6881,7 @@ Not easy. ??? Look for messy loops, nested loops, long functions, absence of fun
 
 ##### Reason
 
- A "suitable abstraction" (e.g., library or class) is closer to the application concepts than the bare language, leads to shorter and clearer code, and is likely to be better tested.
+A "suitable abstraction" (e.g., library or class) is closer to the application concepts than the bare language, leads to shorter and clearer code, and is likely to be better tested.
 
 ##### Example
 
@@ -6950,7 +6922,7 @@ A declaration is a statement. a declaration introduces a name into a scope and m
 
 ##### Reason
 
- Readability. Minimize resource retention. Avoid accidental misuse of value.
+Readability. Minimize resource retention. Avoid accidental misuse of value.
 
 **Alternative formulation**: Don't declare a name in an unnecessarily large scope.
 
@@ -7012,7 +6984,7 @@ I am assuming that `Record` is large and doesn't have a good move operation so t
 
 ##### Reason
 
- Readability. Minimize resource retention.
+Readability. Minimize resource retention.
 
 ##### Example
 
@@ -7042,7 +7014,7 @@ I am assuming that `Record` is large and doesn't have a good move operation so t
 
 ##### Reason
 
- Readability. Lowering the chance of clashes between unrelated non-local names.
+Readability. Lowering the chance of clashes between unrelated non-local names.
 
 ##### Example
 
@@ -7093,7 +7065,7 @@ Here, there is a chance that the reader knows what `trim_tail` means and that th
 
 ##### Example, bad
 
- Argument names of large functions are de facto non-local and should be meaningful:
+Argument names of large functions are de facto non-local and should be meaningful:
 
     void complicated_algorithm(vector<Record>&vr, const vector<int>& vi, map<string, int>& out)
     // read from events in vr (marking used Records) for the indices in vi placing (name, index) pairs into out
@@ -7111,7 +7083,7 @@ Check length of local and non-local names. Also take function length into accoun
 
 ##### Reason
 
- Such names slow down comprehension and increase the likelihood of error.
+Such names slow down comprehension and increase the likelihood of error.
 
 ##### Example
 
@@ -7125,7 +7097,7 @@ Check names against a list of known confusing letter and digit combinations.
 
 ##### Reason
 
- Such names are commonly used for macros. Thus, ALL_CAPS name are vulnerable to unintended macro substitution.
+Such names are commonly used for macros. Thus, ALL_CAPS name are vulnerable to unintended macro substitution.
 
 ##### Example
 
@@ -7156,7 +7128,7 @@ Flag all uses of ALL CAPS. For older code, accept ALL CAPS for macro names and f
 
 ##### Reason
 
- One-declaration-per line increases readability and avoid mistake related to the C/C++ grammar. It leaves room for a `//`-comment
+One-declaration-per line increases readability and avoid mistake related to the C/C++ grammar. It leaves room for a `//`-comment.
 
 ##### Example, bad
 
@@ -7169,7 +7141,7 @@ Flag all uses of ALL CAPS. For older code, accept ALL CAPS for macro names and f
     template <class InputIterator, class Predicate>
     bool any_of(InputIterator first, InputIterator last, Predicate pred);
 
-or better using concepts
+or better using concepts:
 
     bool any_of(InputIterator first, InputIterator last, Predicate pred);
 
@@ -7177,14 +7149,14 @@ or better using concepts
 
     double scalbn(double x, int n);	 	// OK: x*pow(FLT_RADIX, n); FLT_RADIX is usually 2
 
-or
+or:
 
     double scalbn(		// better: x*pow(FLT_RADIX, n); FLT_RADIX is usually 2
     	double x, 	// base value
     	int n		// exponent
     );
 
-or
+or:
 
     double scalbn(double base, int exponent);	// better: base*pow(FLT_RADIX, exponent); FLT_RADIX is usually 2
 
@@ -7202,7 +7174,7 @@ Flag non-function arguments with multiple declarators involving declarator opera
 
 ##### Example
 
-Consider
+Consider:
 
     auto p = v.begin();	// vector<int>::iterator
     auto s = v.size();
@@ -7239,7 +7211,7 @@ Flag redundant repetition of type names in a declaration.
 
 ##### Reason
 
- Avoid used-before-set errors and their associated undefined behavior.
+Avoid used-before-set errors and their associated undefined behavior.
 
 ##### Example
 
@@ -7314,7 +7286,7 @@ Sometimes, a lambda can be used as an initializer to avoid an uninitialized vari
     	return p.second;
     };
 
-or maybe
+or maybe:
 
     Value v = []() {
     	auto p = get_value();	// get_value() returns a pair<error_code, Value>
@@ -7334,7 +7306,7 @@ or maybe
 
 ##### Reason
 
- Readability. To limit the scope in which the variable can be used.
+Readability. To limit the scope in which the variable can be used.
 
 ##### Example
 
@@ -7350,7 +7322,7 @@ Flag declaration that distant from their first use.
 
 ##### Reason
 
- Readability. Limit the scope in which a variable can be used. Don't risk used-before-set. Initialization is often more efficient than assignment.
+Readability. Limit the scope in which a variable can be used. Don't risk used-before-set. Initialization is often more efficient than assignment.
 
 ##### Example, bad
 
@@ -7390,7 +7362,7 @@ For initializers of moderate complexity, including for `const` variables, consid
 
 ##### Reason
 
- The rules for `{}` initialization is simpler, more general, and safer than for other forms of initialization, and unambiguous.
+The rules for `{}` initialization is simpler, more general, and safer than for other forms of initialization, and unambiguous.
 
 ##### Example
 
@@ -7469,7 +7441,7 @@ Tricky.
 
 ##### Reason
 
- Using `std::unique_ptr` is the simplest way to avoid leaks. And it is free compared to alternatives
+Using `std::unique_ptr` is the simplest way to avoid leaks. And it is free compared to alternatives
 
 ##### Example
 
@@ -7492,7 +7464,7 @@ Look for raw pointers that are targets of `new`, `malloc()`, or functions that m
 
 ##### Reason
 
- That way you can't change the value by mistake. That way may offer the compiler optimization opportunities.
+That way you can't change the value by mistake. That way may offer the compiler optimization opportunities.
 
 ##### Example
 
@@ -7511,7 +7483,7 @@ Look to see if a variable is actually mutated, and flag it if not. Unfortunately
 
 ##### Reason
 
- Readability.
+Readability.
 
 ##### Example, bad
 
@@ -7530,7 +7502,7 @@ Flag recycled variables.
 
 ##### Reason
 
- They are readable and don't implicitly convert to pointers.
+They are readable and don't implicitly convert to pointers.
 They are not confused with non-standard extensions of built-in arrays.
 
 ##### Example, bad
@@ -7574,7 +7546,7 @@ The definition of `a2` is C but not C++ and is considered a security risk
 
 ##### Reason
 
- It nicely encapsulates local initialization, including cleaning up scratch variables needed only for the initialization, without needing to create a needless nonlocal yet nonreusable function. It also works for variables that should be `const` but only after some initialization work.
+It nicely encapsulates local initialization, including cleaning up scratch variables needed only for the initialization, without needing to create a needless nonlocal yet nonreusable function. It also works for variables that should be `const` but only after some initialization work.
 
 ##### Example, bad
 
@@ -7623,7 +7595,7 @@ Hard. At best a heuristic. Look for an uninitialized variable followed by a loop
 
 ##### Reason
 
- Macros are a major source of bugs.
+Macros are a major source of bugs.
 Macros don't obey the usual scope and type rules.
 Macros ensure that the human reader see something different from whet the compiler sees.
 Macros complicates tool building.
@@ -7646,7 +7618,7 @@ Scream when you see a macro that isn't just use for source control (e.g., `#ifde
 
 ##### Reason
 
- Macros are a major source of bugs.
+Macros are a major source of bugs.
 Macros don't obey the usual scope and type rules.
 Macros don't obey the usual rules for argument passing.
 Macros ensure that the human reader see something different from whet the compiler sees.
@@ -7670,7 +7642,7 @@ Scream when you see a macro that isn't just use for source control (e.g., `#ifde
 
 ##### Reason
 
- Convention. Readability. Distinguishing macros.
+Convention. Readability. Distinguishing macros.
 
 ##### Example
 
@@ -7686,7 +7658,7 @@ Scream when you see a lower case macro.
 
 ##### Reason
 
- Not type safe. Requires messy cast-and-macro-laden code to get working right.
+Not type safe. Requires messy cast-and-macro-laden code to get working right.
 
 ##### Example
 
@@ -7724,7 +7696,7 @@ Statements control the flow of control (except for function calls and exception 
     	}
     }
 
-rather than
+rather than:
 
     void use2(int n)
     {
@@ -7742,7 +7714,7 @@ Flag if-then-else chains that check against constants (only).
 
 ##### Reason
 
- Readability. Error prevention. Efficiency.
+Readability. Error prevention. Efficiency.
 
 ##### Example
 
@@ -7790,7 +7762,7 @@ Look at loops, if a traditional loop just looks at each element of a  sequence, 
 
 ##### Reason
 
- Readability: the complete logic of the loop is visible "up front". The scope of the loop variable can be limited.
+Readability: the complete logic of the loop is visible "up front". The scope of the loop variable can be limited.
 
 ##### Example
 
@@ -7828,7 +7800,7 @@ Look at loops, if a traditional loop just looks at each element of a  sequence, 
 
 ##### Reason
 
- Limit the loop variable visibility to the scope of the loop.
+Limit the loop variable visibility to the scope of the loop.
 Avoid using the loop variable for other purposes after the loop.
 
 ##### Example
@@ -7858,7 +7830,7 @@ is only accessible in the loop body unblocks optimizations such as hoisting, str
 
 ##### Reason
 
- Readability, avoidance of errors.
+Readability, avoidance of errors.
 The termination conditions is at the end (where it can be overlooked) and the condition is not checked the first time through. ???
 
 ##### Example
@@ -7877,7 +7849,7 @@ The termination conditions is at the end (where it can be overlooked) and the co
 
 ##### Reason
 
- Readability, avoidance of errors. There are better control structures for humans; `goto` is for machine generated code.
+Readability, avoidance of errors. There are better control structures for humans; `goto` is for machine generated code.
 
 ##### Exception
 
@@ -7966,7 +7938,7 @@ Multiple case labels of a single statement is OK:
 
 ##### Reason
 
- Readability.
+Readability.
 
 ##### Example
 
@@ -7989,7 +7961,7 @@ Expressions manipulate values.
 
 ##### Reason
 
- Complicated expressions are error-prone.
+Complicated expressions are error-prone.
 
 ##### Example
 
@@ -8044,22 +8016,21 @@ Tricky. How complicated must an expression be to be considered complicated? Writ
 
 ##### Reason
 
- Avoid errors. Readability. Not everyone has the operator table memorized.
+Avoid errors. Readability. Not everyone has the operator table memorized.
 
 ##### Example
 
     if (a && b==1)	// OK?
     if (a & b==1)	// OK?
 
-Note: We recommend that programmers know their precedence table for the arithmetic operations, the logical operations,
-but consider mixing bitwise logical operations with other operators in need of parentheses.
+Note: We recommend that programmers know their precedence table for the arithmetic operations, the logical operations, but consider mixing bitwise logical operations with other operators in need of parentheses.
 
     if (a && b==1)	// OK: means a&&(b==1)
     if (a & b==1)	// bad: means (a&b)==1
 
 ##### Note
 
-You should know enough not to need parentheses for
+You should know enough not to need parentheses for:
 
     if (a<0 || a<=max) {
     	// ...
@@ -8075,7 +8046,7 @@ You should know enough not to need parentheses for
 
 ##### Reason
 
- Complicated pointer manipulation is a major source of errors.
+Complicated pointer manipulation is a major source of errors.
 
 * Do all pointer arithmetic on an `array_view` (exception ++p in simple loop???)
 * Avoid pointers to pointers
@@ -8093,7 +8064,7 @@ We need a heuristic limiting the complexity of pointer arithmetic statement.
 
 ##### Reason
 
- You have no idea what such code does. Portability.
+You have no idea what such code does. Portability.
 Even if it does something sensible for you, it may do something different on another compiler (e.g., the next release of your compiler) or with a different optimizer setting.
 
 ##### Example
@@ -8118,7 +8089,7 @@ Can be detected by a good analyzer.
 
 ##### Reason
 
- that order is unspecified
+Because that order is unspecified.
 
 ##### Example
 
@@ -8142,7 +8113,7 @@ Can be detected by a good analyzer.
 
 ##### Reason
 
- Unnamed constants embedded in expressions are easily overlooked and often hard to understand:
+Unnamed constants embedded in expressions are easily overlooked and often hard to understand:
 
 ##### Example
 
@@ -8169,7 +8140,7 @@ Flag literals in code. Give a pass to `0`, `1`, `nullptr`, `\n`, `""`, and other
 
 ##### Reason
 
- A narrowing conversion destroys information, often unexpectedly so.
+A narrowing conversion destroys information, often unexpectedly so.
 
 ##### Example
 
@@ -8214,11 +8185,11 @@ A good analyzer can detect all narrowing conversions. However, flagging all narr
 
 ##### Reason
 
- Readability. Minimize surprises: `nullptr` cannot be confused with an `int`.
+Readability. Minimize surprises: `nullptr` cannot be confused with an `int`.
 
 ##### Example
 
-Consider
+Consider:
 
     void f(int);
     void f(char*);
@@ -8233,7 +8204,7 @@ Flag uses of `0` and `NULL` for pointers. The transformation may be helped by si
 
 ##### Reason
 
- Casts are a well-known source of errors. Makes some optimizations unreliable.
+Casts are a well-known source of errors. Makes some optimizations unreliable.
 
 ##### Example
 
@@ -8266,7 +8237,7 @@ If you feel the need for a lot of casts, there may be a fundamental design probl
 
 ##### Reason
 
- Readability. Error avoidance.
+Readability. Error avoidance.
 Named casts are more specific than a C-style or functional cast, allowing the compiler to catch some errors.
 
 The named casts are:
@@ -8296,7 +8267,7 @@ Flag C-style and functional casts.
 
 ##### Reason
 
- It makes a lie out of `const`
+It makes a lie out of `const`.
 
 ##### Note
 
@@ -8316,7 +8287,7 @@ Flag `const_cast`s.
 
 ##### Reason
 
- Constructs that cannot overflow, don't, and usually runs faster:
+Constructs that cannot overflow, don't, and usually runs faster:
 
 ##### Example
 
@@ -8333,7 +8304,7 @@ Look for explicit range checks and heuristically suggest alternatives.
 
 ##### Reason
 
- Direct resource management in application code is error-prone and tedious.
+Direct resource management in application code is error-prone and tedious.
 
 ##### Note
 
@@ -8360,7 +8331,7 @@ Flag naked `new`s and naked `delete`s.
 
 ##### Reason
 
- That's what the language requires and mistakes can lead to resource release errors and/or memory corruption.
+That's what the language requires and mistakes can lead to resource release errors and/or memory corruption.
 
 ##### Example, bad
 
@@ -8384,7 +8355,7 @@ This example not only violates the [no naked `new` rule](#Res-new) as in the pre
 
 ##### Reason
 
- The result of doing so is undefined.
+The result of doing so is undefined.
 
 ##### Example, bad
 
@@ -8408,7 +8379,7 @@ This example has many more problems.
 
 ##### Reason
 
- Avoid wrong results.
+Avoid wrong results.
 
 ##### Example
 
@@ -8429,7 +8400,7 @@ Compilers already know and sometimes warn.
 
 ##### Reason
 
- Unsigned types support bit manipulation without surprises from sign bits.
+Unsigned types support bit manipulation without surprises from sign bits.
 
 ##### Example
 
@@ -8445,7 +8416,7 @@ Compilers already know and sometimes warn.
 
 ##### Reason
 
- Unsigned types support bit manipulation without surprises from sign bits.
+Unsigned types support bit manipulation without surprises from sign bits.
 
 ##### Example
 
@@ -8461,7 +8432,7 @@ Compilers already know and sometimes warn.
 
 ##### Reason
 
- Overflow usually makes your numeric algorithm meaningless.
+Overflow usually makes your numeric algorithm meaningless.
 Incrementing a value beyond a maximum value can lead to memory corruption and undefined behavior.
 
 ##### Example, bad
@@ -8496,7 +8467,7 @@ Incrementing a value beyond a maximum value can lead to memory corruption and un
 
 ##### Reason
 
- Decrementing a value beyond a maximum value can lead to memory corruption and undefined behavior.
+Decrementing a value beyond a maximum value can lead to memory corruption and undefined behavior.
 
 ##### Example, bad
 
@@ -8517,7 +8488,7 @@ Incrementing a value beyond a maximum value can lead to memory corruption and un
 
 ##### Reason
 
- The result is undefined and probably a crash.
+The result is undefined and probably a crash.
 
 ##### Note
 
@@ -8566,7 +8537,7 @@ Performance rule summary:
 
 ##### Reason
 
- If there is no need for optimization, the main result of the effort will be more errors and higher maintenance costs.
+If there is no need for optimization, the main result of the effort will be more errors and higher maintenance costs.
 
 ##### Note
 
@@ -8578,7 +8549,7 @@ Some people optimize out of habit or because it's fun.
 
 ##### Reason
 
- Elaborately optimized code is usually larger and harder to change than unoptimized code.
+Elaborately optimized code is usually larger and harder to change than unoptimized code.
 
 ???
 
@@ -8586,7 +8557,7 @@ Some people optimize out of habit or because it's fun.
 
 ##### Reason
 
- Optimizing a non-performance-critical part of a program has no effect on system performance.
+Optimizing a non-performance-critical part of a program has no effect on system performance.
 
 ##### Note
 
@@ -8597,7 +8568,7 @@ If your program spends most of its time waiting for the web or for a human, opti
 
 ##### Reason
 
- Simple code can be very fast. Optimizers sometimes do marvels with simple code
+Simple code can be very fast. Optimizers sometimes do marvels with simple code
 
 ##### Note
 
@@ -8609,7 +8580,7 @@ If your program spends most of its time waiting for the web or for a human, opti
 
 ##### Reason
 
- Low-level code sometimes inhibits optimizations. Optimizers sometimes do marvels with high-level code
+Low-level code sometimes inhibits optimizations. Optimizers sometimes do marvels with high-level code.
 
 ##### Note
 
@@ -8621,7 +8592,7 @@ If your program spends most of its time waiting for the web or for a human, opti
 
 ##### Reason
 
- The field of performance is littered with myth and bogus folklore.
+The field of performance is littered with myth and bogus folklore.
 Modern hardware and optimizers defy naive assumptions; even experts are regularly surprised.
 
 ##### Note
@@ -8641,8 +8612,7 @@ Often, you will be surprised.
 
 ##### Reason
 
- Type violations, weak types (e.g. `void*`s), and low level code (e.g., manipulation of sequences as individual bytes)
-make the job of the optimizer much harder. Simple code often optimizes better than hand-crafted complex code.
+Type violations, weak types (e.g. `void*`s), and low level code (e.g., manipulation of sequences as individual bytes) make the job of the optimizer much harder. Simple code often optimizes better than hand-crafted complex code.
 
 ???
 
@@ -8670,7 +8640,7 @@ make the job of the optimizer much harder. Simple code often optimizes better th
 
 ##### Reason
 
- Performance is typically dominated by memory access times.
+Performance is typically dominated by memory access times.
 
 ???
 
@@ -8682,7 +8652,7 @@ make the job of the optimizer much harder. Simple code often optimizes better th
 
 ##### Reason
 
- Performance is typically dominated by memory access times.
+Performance is typically dominated by memory access times.
 
 ???
 
@@ -8690,7 +8660,7 @@ make the job of the optimizer much harder. Simple code often optimizes better th
 
 ##### Reason
 
- Performance is very sensitive to cache performance and cache algorithms favor simple (usually linear) access to adjacent data.
+Performance is very sensitive to cache performance and cache algorithms favor simple (usually linear) access to adjacent data.
 
 ##### Example
 
@@ -8730,7 +8700,7 @@ See also:
 
 ##### Reason
 
- It is hard to be certain that concurrency isn't used now or sometime in the future.
+It is hard to be certain that concurrency isn't used now or sometime in the future.
 Code gets re-used.
 Libraries using threads my be used from some other part of the program.
 
@@ -8747,7 +8717,7 @@ Typically, such programs lead to a painful effort to remove data races.
 
 ##### Reason
 
- Unless you do, nothing is guaranteed to work and subtle errors will persist.
+Unless you do, nothing is guaranteed to work and subtle errors will persist.
 
 ##### Note
 
@@ -8771,8 +8741,7 @@ Concurrency rule summary:
 Speaking of concurrency, should there be a note about the dangers of `std::atomic` (weapons)?
 A lot of people, myself included, like to experiment with `std::memory_order`, but it is perhaps best to keep a close watch on those things in production code.
 Even vendors mess this up: Microsoft had to fix their `shared_ptr` (weak refcount decrement wasn't synchronized-with the destructor, if I recall correctly, although it was only a problem on ARM, not Intel)
-and everyone (gcc, clang, Microsoft, and intel) had to fix their `compare_exchange_*` this year,
-after an implementation bug caused losses to some finance company and they were kind enough to let the community know.
+and everyone (gcc, clang, Microsoft, and intel) had to fix their `compare_exchange_*` this year, after an implementation bug caused losses to some finance company and they were kind enough to let the community know.
 
 It should definitely mention that `volatile` does not provide atomicity, does not synchronize between threads, and does not prevent instruction reordering (neither compiler nor hardware), and simply has nothing to do with concurrency.
 
@@ -8815,7 +8784,7 @@ Lock-free programming rule summary:
 
 ##### Reason
 
- It's error-prone and requires expert level knowledge of language features, machine architecture, and data structures.
+It's error-prone and requires expert level knowledge of language features, machine architecture, and data structures.
 
 **Alternative**: Use lock-free data structures implemented by others as part of some library.
 
@@ -8866,13 +8835,13 @@ Error-handling rule summary:
 
 ##### Reason
 
- a consistent and complete strategy for handling errors and resource leaks is hard to retrofit into a system.
+A consistent and complete strategy for handling errors and resource leaks is hard to retrofit into a system.
 
 ### <a name="Re-throw"></a> E.2: Throw an exception to signal that a function can't perform its assigned task
 
 ##### Reason
 
- To make error handling systematic, robust, and non-repetitive.
+To make error handling systematic, robust, and non-repetitive.
 
 ##### Example
 
@@ -8888,14 +8857,13 @@ Error-handling rule summary:
     	// ...
     }
 
-Here, `vector` and `string`s constructors may not be able to allocate sufficient memory for their elements,
-`vector`s constructor may not be able copy the `Thing`s in its initializer list, and `File_handle` may not be able to open the required file.
+Here, `vector` and `string`s constructors may not be able to allocate sufficient memory for their elements, `vector`s constructor may not be able copy the `Thing`s in its initializer list, and `File_handle` may not be able to open the required file.
 In each case, they throw an exception for `use()`'s caller to handle.
 If `use()` could handle the failure to construct `bar` it can take control using `try`/`catch`.
 In either case, `Foo`'s constructor correctly destroys constructed members before passing control to whatever tried to create a `Foo`.
 Note that there is no return value that could contain an error code.
 
-The `File_handle` constructor might defined like this
+The `File_handle` constructor might defined like this:
 
     File_handle::File_handle(const string& name, const string& mode)
         :f{fopen(name.c_str(), mode.c_str())}
@@ -8955,8 +8923,7 @@ There is nothing exceptional about finding a value in a `vector`.
 
 ##### Reason
 
- To use an objects it must be in a valid state (defined formally or informally by an invariant)
-and to recover from an error every object not destroyed must be in a valid state.
+To use an objects it must be in a valid state (defined formally or informally by an invariant) and to recover from an error every object not destroyed must be in a valid state.
 
 ##### Note
 
@@ -8966,7 +8933,7 @@ An [invariant](#Rc-struct) is logical condition for the members of an object tha
 
 ##### Reason
 
- Leaving an object without its invariant established is asking for trouble.
+Leaving an object without its invariant established is asking for trouble.
 Not all member function can be called.
 
 ##### Example
@@ -8983,7 +8950,7 @@ Not all member function can be called.
 
 ##### Reason
 
- Leaks are typically unacceptable. RAII ("Resource Acquisition Is Initialization") is the simplest, most systematic way of preventing leaks.
+Leaks are typically unacceptable. RAII ("Resource Acquisition Is Initialization") is the simplest, most systematic way of preventing leaks.
 
 ##### Example
 
@@ -8995,7 +8962,7 @@ Not all member function can be called.
     	// ...
     }
 
-We could carefully release the resource before the throw
+We could carefully release the resource before the throw:
 
     void f2(int i)	// Clumsy: explicit release
     {
@@ -9054,8 +9021,7 @@ We know of only a few good reasons:
   (in particular without a recognizable ownership strategy) so that exceptions could cause leaks.
 * We get fired if we challenge our manager's ancient wisdom.
 
-Only the first of these reasons is fundamental,
-so whenever possible, use exception to implement RAII.
+Only the first of these reasons is fundamental, so whenever possible, use exception to implement RAII.
 When exceptions cannot be used, simulate RAII.
 That is, systematically check that objects are valid after construction and still release all resources in the destructor.
 One strategy is to add a `valid()` operation to every resource handle:
@@ -9075,9 +9041,7 @@ One strategy is to add a `valid()` operation to every resource handle:
     	// ...
     } // destructors clean up as usual
 
-Obviously, this increases the size of the code,
-doesn't allow for implicit propagation of "exceptions" (`valid()` checks),
-and `valid()` checks can be forgotten.
+Obviously, this increases the size of the code, doesn't allow for implicit propagation of "exceptions" (`valid()` checks), and `valid()` checks can be forgotten.
 Prefer to use exceptions.
 
 **See also**: [discussion](#Sd-noexcept).
@@ -9090,7 +9054,7 @@ Prefer to use exceptions.
 
 ##### Reason
 
- To avoid interface errors.
+To avoid interface errors.
 
 **See also**: [precondition rule](#Ri-pre).
 
@@ -9098,7 +9062,7 @@ Prefer to use exceptions.
 
 ##### Reason
 
- To avoid interface errors.
+To avoid interface errors.
 
 **See also**: [postcondition rule](#Ri-post).
 
@@ -9106,7 +9070,7 @@ Prefer to use exceptions.
 
 ##### Reason
 
- To make error handling systematic, robust, and efficient.
+To make error handling systematic, robust, and efficient.
 
 ##### Example
 
@@ -9137,7 +9101,7 @@ The `noexcept` here states that I am not willing or able to handle the situation
 
 ##### Reason
 
- That would be a leak.
+That would be a leak.
 
 ##### Example
 
@@ -9165,7 +9129,7 @@ One way of avoiding such problems is to use resource handles consistently:
 
 ##### Reason
 
- A user-defined type is unlikely to clash with other people's exceptions.
+A user-defined type is unlikely to clash with other people's exceptions.
 
 ##### Example
 
@@ -9244,7 +9208,7 @@ Catch `throw` and `catch` of a built-in type. Maybe warn about `throw` and `catc
 
 ##### Reason
 
- To prevent slicing.
+To prevent slicing.
 
 ##### Example
 
@@ -9256,7 +9220,7 @@ Catch `throw` and `catch` of a built-in type. Maybe warn about `throw` and `catc
     	// ...
     }
 
-Instead, use
+Instead, use:
 
     catch (exception& e) { /* ... */ }
 
@@ -9268,7 +9232,7 @@ Flag by-value exceptions if their type are part of a hierarchy (could require wh
 
 ##### Reason
 
- We don't know how to write reliable programs if a destructor, a swap, or a memory deallocation fails; that is, if it exits by an exception or simply doesn't perform its required action.
+We don't know how to write reliable programs if a destructor, a swap, or a memory deallocation fails; that is, if it exits by an exception or simply doesn't perform its required action.
 
 ##### Example, don't
 
@@ -9304,7 +9268,7 @@ Catch destructors, deallocation operations, and `swap`s that `throw`. Catch such
 
 ##### Reason
 
- Catching an exception in a function that cannot take a meaningful recovery action leads to complexity and waste.
+Catching an exception in a function that cannot take a meaningful recovery action leads to complexity and waste.
 Let an exception propagate until it reaches a function that can handle it.
 Let cleanup actions on the unwinding path be handled by [RAII](#Re-raii).
 
@@ -9381,7 +9345,7 @@ Constant rule summary:
 
 ##### Reason
 
- Immutable objects are easier to reason about, so make object non-`const` only when there is a need to change their value.
+Immutable objects are easier to reason about, so make object non-`const` only when there is a need to change their value.
 
 ##### Example
 
@@ -9555,11 +9519,11 @@ Generic programming is programming using types and algorithms parameterized by t
 
 ##### Reason
 
- Generality. Re-use. Efficiency. Encourages consistent definition of user types.
+Generality. Re-use. Efficiency. Encourages consistent definition of user types.
 
 ##### Example, bad
 
- Conceptually, the following requirements are wrong because what we want of `T` is more than just the very low-level concepts of "can be incremented" or "can be added":
+Conceptually, the following requirements are wrong because what we want of `T` is more than just the very low-level concepts of "can be incremented" or "can be added":
 
     template<typename T, typename A>
     	// requires Incrementable<T>
@@ -9599,8 +9563,7 @@ For additional generality and reusability, we could also use a more general `Con
 ##### Note
 
 If we define a template to require exactly the operations required for a single implementation of a single algorithm
-(e.g., requiring just `+=` rather than also `=` and `+`) and only those,
-we have overconstrained maintainers.
+(e.g., requiring just `+=` rather than also `=` and `+`) and only those, we have overconstrained maintainers.
 We aim to minimize requirements on template arguments, but the absolutely minimal requirements of an implementation is rarely a meaningful concept.
 
 ##### Note
@@ -9617,7 +9580,7 @@ is to efficiently generalize operations/algorithms over a set of types with simi
 
 ##### Reason
 
- Generality. Minimizing the amount of source code. Interoperability. Re-use.
+Generality. Minimizing the amount of source code. Interoperability. Re-use.
 
 ##### Example
 
@@ -9644,7 +9607,7 @@ Don't overabstract.
 
 ##### Reason
 
- Containers need an element type, and expressing that as a template argument is general, reusable, and type safe.
+Containers need an element type, and expressing that as a template argument is general, reusable, and type safe.
 It also avoids brittle or inefficient workarounds. Convention: That's the way the STL does it.
 
 ##### Example
@@ -9675,8 +9638,7 @@ This doesn't directly express the intent of the programmer and hides the structu
 
 Hiding the `void*` behind macros simply obscures the problems and introduces new opportunities for confusion.
 
-**Exceptions**: If you need an ABI-stable interface,
-you might have to provide a base implementation and express the (type-safe) template in terms of that.
+**Exceptions**: If you need an ABI-stable interface, you might have to provide a base implementation and express the (type-safe) template in terms of that.
 See [Stable base](#Rt-abi).
 
 ##### Enforcement
@@ -9699,7 +9661,7 @@ See [Stable base](#Rt-abi).
 
 ##### Reason
 
- Generic and OO techniques are complementary.
+Generic and OO techniques are complementary.
 
 ##### Example
 
@@ -9759,7 +9721,7 @@ Concept definition rule summary:
 
 ##### Reason
 
- Correctness and readability.
+Correctness and readability.
 The assumed meaning (syntax and semantics) of a template argument is fundamental to the interface of a template.
 A concept dramatically improves documentation and error handling for the template.
 Specifying concepts for template arguments is a powerful design tool.
@@ -9774,7 +9736,7 @@ Specifying concepts for template arguments is a powerful design tool.
     	// ...
     }
 
-or equivalently and more succinctly
+or equivalently and more succinctly:
 
     template<Input_iterator Iter, typename Val>
     	requires Equality_comparable<Value_type<Iter>, Val>
@@ -9866,7 +9828,7 @@ Hard.
 
 ##### Reason
 
- Readability. Direct expression of an idea.
+Readability. Direct expression of an idea.
 
 ##### Example
 
@@ -9896,7 +9858,7 @@ The shorter versions better match the way we speak. Note that many templates don
 
 ##### Reason
 
- Concepts are meant to express semantic notions, such as "a number", "a range" of elements, and "totally ordered."
+Concepts are meant to express semantic notions, such as "a number", "a range" of elements, and "totally ordered."
 Simple constraints, such as "has a `+` operator" and "has a `>` operator" cannot be meaningfully specified in isolation
 and should be used only as building blocks for meaningful concepts, rather than in user code.
 
@@ -9920,7 +9882,7 @@ and should be used only as building blocks for meaningful concepts, rather than 
     auto zz = plus(xx, yy);	// zz = "79"
 
 Maybe the concatenation was expected. More likely, it was an accident. Defining minus equivalently would give dramatically different sets of accepted types.
-This `Addable` violates the mathematical rule that addition is supposed to be commutative: `a+b == b+a`,
+This `Addable` violates the mathematical rule that addition is supposed to be commutative: `a+b == b+a`.
 
 ##### Note
 
@@ -9962,7 +9924,7 @@ Concepts with multiple operations have far lower chance of accidentally matching
 
 ##### Reason
 
- Improves interoperability. Helps implementers and maintainers.
+Improves interoperability. Helps implementers and maintainers.
 
 ##### Example, bad
 
@@ -9983,7 +9945,7 @@ Examples of complete sets are
 
 ##### Reason
 
- A meaningful/useful concept has a semantic meaning.
+A meaningful/useful concept has a semantic meaning.
 Expressing this semantics in a informal, semi-formal, or informal way makes the concept comprehensible to readers and the effort to express it can catch conceptual errors.
 Specifying semantics is a powerful design tool.
 
@@ -10035,7 +9997,7 @@ However, it should not be assumed to be stable. Each new use case may require su
 
 ##### Reason
 
- Otherwise they cannot be distinguished automatically by the compiler.
+Otherwise they cannot be distinguished automatically by the compiler.
 
 ##### Example
 
@@ -10059,7 +10021,7 @@ they do not need any special declarations to "hook into the concept".
 
 ##### Reason
 
- Two concepts requiring the same syntax but having different semantics leads to ambiguity unless the programmer differentiates them.
+Two concepts requiring the same syntax but having different semantics leads to ambiguity unless the programmer differentiates them.
 
 ##### Example
 
@@ -10087,7 +10049,7 @@ Prefer the standard-library ones.
 
 ##### Reason
 
- Clarity. Maintainability.
+Clarity. Maintainability.
 Functions with complementary requirements expressed using negation are brittle.
 
 ##### Example
@@ -10129,7 +10091,7 @@ The compiler will select the overload and emit an appropriate error.
 
 ##### Reason
 
- The definition is more readable and corresponds directly to what a user has to write.
+The definition is more readable and corresponds directly to what a user has to write.
 Conversions are taken into account. You don't have to remember the names of all the type traits.
 
 ##### Example
@@ -10148,7 +10110,7 @@ Conversions are taken into account. You don't have to remember the names of all 
 
 ##### Reason
 
- Function objects can carry more information through an interface than a "plain" pointer to function.
+Function objects can carry more information through an interface than a "plain" pointer to function.
 In general, passing function objects give better performance than passing pointers to functions.
 
 ##### Example
@@ -10182,7 +10144,7 @@ The performance argument depends on compiler and optimizer technology.
 
 ##### Reason
 
- Ease of comprehension.
+Ease of comprehension.
 Improved interoperability.
 Flexibility for template implementers.
 
@@ -10204,7 +10166,7 @@ The rule supports the view that a concept should reflect a (mathematically) cohe
 
 ##### Reason
 
- Improved readability. Implementation hiding. Note that template aliases replace many uses of traits to compute a type. They can also be used to wrap a trait.
+Improved readability. Implementation hiding. Note that template aliases replace many uses of traits to compute a type. They can also be used to wrap a trait.
 
 ##### Example
 
@@ -10233,7 +10195,7 @@ This saves the user of `Value_type` from having to know the technique used to im
 
 ##### Reason
 
- Improved readability: With `using`, the new name comes first rather than being embedded somewhere in a declaration.
+Improved readability: With `using`, the new name comes first rather than being embedded somewhere in a declaration.
 Generality: `using` can be used for template aliases, whereas `typedef`s can't easily be templates.
 Uniformity: `using` is syntactically similar to `auto`.
 
@@ -10257,7 +10219,7 @@ Uniformity: `using` is syntactically similar to `auto`.
 
 ##### Reason
 
- Writing the template argument types explicitly can be tedious and unnecessarily verbose.
+Writing the template argument types explicitly can be tedious and unnecessarily verbose.
 
 ##### Example
 
@@ -10327,7 +10289,7 @@ Flag uses where an explicitly specialized type exactly matches the types of the 
 
 ##### Reason
 
- Type erasure incurs an extra level of indirection by hiding type information behind a separate compilation boundary.
+Type erasure incurs an extra level of indirection by hiding type information behind a separate compilation boundary.
 
 ##### Example
 
@@ -10343,7 +10305,7 @@ Flag uses where an explicitly specialized type exactly matches the types of the 
 
 ##### Reason
 
- ADL will find the template even when you think it shouldn't.
+ADL will find the template even when you think it shouldn't.
 
 ##### Example
 
@@ -10365,7 +10327,7 @@ This rule should not be necessary; the committee cannot agree on how to fix ADL,
 
 ##### Reason
 
- Eases understanding. Minimizes errors from unexpected dependencies. Eases tool creation.
+Eases understanding. Minimizes errors from unexpected dependencies. Eases tool creation.
 
 ##### Example
 
@@ -10373,8 +10335,7 @@ This rule should not be necessary; the committee cannot agree on how to fix ADL,
 
 ##### Note
 
-Having a template operate only on its arguments would be one way of reducing the number of dependencies to a minimum,
-but that would generally be unmanageable. For example, an algorithm usually uses other algorithms.
+Having a template operate only on its arguments would be one way of reducing the number of dependencies to a minimum, but that would generally be unmanageable. For example, an algorithm usually uses other algorithms.
 
 ##### Enforcement
 
@@ -10384,7 +10345,7 @@ but that would generally be unmanageable. For example, an algorithm usually uses
 
 ##### Reason
 
- A member that does not depend on a template parameter cannot be used except for a specific template argument.
+A member that does not depend on a template parameter cannot be used except for a specific template argument.
 This limits use and typically increases code size.
 
 ##### Example, bad
@@ -10490,7 +10451,7 @@ For N==1, we have a choice of a base class of a class in the surrounding scope a
 
 ##### Reason
 
- A template defines a general interface.
+A template defines a general interface.
 Specialization offers a powerful mechanism for providing alternative implementations of that interface.
 
 ##### Example
@@ -10511,7 +10472,7 @@ Specialization offers a powerful mechanism for providing alternative implementat
 
 ##### Reason
 
- A template defines a general interface. ???
+A template defines a general interface. ???
 
 ##### Example
 
@@ -10543,7 +10504,7 @@ When `concept`s become available such alternatives can be distinguished directly
 
 ##### Reason
 
- To provide only intended flexibility, and avoid accidental environmental changes.
+To provide only intended flexibility, and avoid accidental environmental changes.
 
 If you intend to call your own helper function `helper(t)` with a value `t` that depends on a template type parameter, put it in a `::detail` namespace and qualify the call as `detail::helper(t);`. Otherwise the call becomes a customization point where any function `helper` in the namespace of `t`'s type can be invoked instead -- falling into the second option below, and resulting in problems like [unintentionally invoking unconstrained function templates of that name that happen to be in the same namespace as `t`'s type](#Rt-unconstrained-adl).
 
@@ -10585,7 +10546,7 @@ The two language mechanisms can be use effectively in combination, but a few des
 
 ##### Reason
 
- Templatizing a class hierarchy that has many functions, especially many virtual functions, can lead to code bloat.
+Templatizing a class hierarchy that has many functions, especially many virtual functions, can lead to code bloat.
 
 ##### Example, bad
 
@@ -10606,8 +10567,7 @@ The two language mechanisms can be use effectively in combination, but a few des
     vector<int> vi;
     vector<string> vs;
 
-It is probably a dumb idea to define a `sort` as a member function of a container,
-but it is not unheard of and it makes a good example of what not to do.
+It is probably a dumb idea to define a `sort` as a member function of a container, but it is not unheard of and it makes a good example of what not to do.
 
 Given this, the compiler cannot know if `vector<int>::sort()` is called, so it must generate code for it.
 Similar for `vector<string>::sort()`.
@@ -10626,7 +10586,7 @@ In many cases you can provide a stable interface by not parameterizing a base; s
 
 ##### Reason
 
- An array of derived classes can implicitly "decay" to a pointer to a base class with potential disastrous results.
+An array of derived classes can implicitly "decay" to a pointer to a base class with potential disastrous results.
 
 ##### Example
 
@@ -10711,7 +10671,7 @@ The compiler handles that.
 
 ##### Reason
 
- Improve stability of code. Avoids code bloat.
+Improve stability of code. Avoids code bloat.
 
 ##### Example
 
@@ -10764,7 +10724,7 @@ Instead of using a separate "base" type, another common technique is to speciali
 
 ##### Reason
 
- Variadic templates is the most general mechanism for that, and is both efficient and type-safe. Don't use C varargs.
+Variadic templates is the most general mechanism for that, and is both efficient and type-safe. Don't use C varargs.
 
 ##### Example
 
@@ -10828,7 +10788,7 @@ The syntax and techniques needed are pretty horrendous.
 
 ##### Reason
 
- Template metaprogramming is hard to get right, slows down compilation, and is often very hard to maintain.
+Template metaprogramming is hard to get right, slows down compilation, and is often very hard to maintain.
 However, there are real-world examples where template metaprogramming provides better performance that any alternative short of expert-level assembly code.
 Also, there are real-world examples where template metaprogramming expresses the fundamental ideas better than run-time code.
 For example, if you really need AST manipulation at compile time (e.g., for optional matrix operation folding) there may be no other way in C++.
@@ -10857,7 +10817,7 @@ If you feel the need to hide your template metaprogramming in macros, you have p
 
 ##### Reason
 
- Until concepts become generally available, we need to emulate them using TMP.
+Until concepts become generally available, we need to emulate them using TMP.
 Use cases that require concepts (e.g. overloading based on concepts) are among the most common (and simple) uses of TMP.
 
 ##### Example
@@ -10886,7 +10846,7 @@ Such code is much simpler using concepts:
 
 ##### Reason
 
- Template metaprogramming is the only directly supported and half-way principled way of generating types at compile time.
+Template metaprogramming is the only directly supported and half-way principled way of generating types at compile time.
 
 ##### Note
 
@@ -10904,7 +10864,7 @@ Such code is much simpler using concepts:
 
 ##### Reason
 
- A function is the most obvious and conventional way of expressing the computation of a value.
+A function is the most obvious and conventional way of expressing the computation of a value.
 Often a `constexpr` function implies less compile-time overhead than alternatives.
 
 ##### Note
@@ -10932,7 +10892,7 @@ Often a `constexpr` function implies less compile-time overhead than alternative
 
 ##### Reason
 
- Facilities defined in the standard, such as `conditional`, `enable_if`, and `tuple`, are portable and can be assumed to be known.
+Facilities defined in the standard, such as `conditional`, `enable_if`, and `tuple`, are portable and can be assumed to be known.
 
 ##### Example
 
@@ -10946,7 +10906,7 @@ Often a `constexpr` function implies less compile-time overhead than alternative
 
 ##### Reason
 
- Getting advanced TMP facilities is not easy and using a library makes you part of a (hopefully supportive) community.
+Getting advanced TMP facilities is not easy and using a library makes you part of a (hopefully supportive) community.
 Write your own "advanced TMP support" only if you really have to.
 
 ##### Example
@@ -10963,7 +10923,7 @@ Write your own "advanced TMP support" only if you really have to.
 
 ##### Reason
 
- Documentation, readability, opportunity for reuse.
+Documentation, readability, opportunity for reuse.
 
 ##### Example
 
@@ -10990,7 +10950,7 @@ whether functions, lambdas, or operators.
 
 ##### Reason
 
- That makes the code concise and gives better locality than alternatives.
+That makes the code concise and gives better locality than alternatives.
 
 ##### Example
 
@@ -11006,7 +10966,7 @@ whether functions, lambdas, or operators.
 
 ##### Reason
 
- Improved readability.
+Improved readability.
 
 ##### Example
 
@@ -11020,7 +10980,7 @@ whether functions, lambdas, or operators.
 
 ##### Reason
 
- Generality. Reusability. Don't gratuitously commit to details; use the most general facilities available.
+Generality. Reusability. Don't gratuitously commit to details; use the most general facilities available.
 
 ##### Example
 
@@ -11076,7 +11036,7 @@ Use the least-derived class that has the functionality you need.
 
 ##### Reason
 
- You can't partially specialize a function template per language rules. You can fully specialize a function template but you almost certainly want to overload instead -- because function template specializations don't participate in overloading, they don't act as you probably wanted. Rarely, you should actually specialize by delegating to a class template that you can specialize properly.
+You can't partially specialize a function template per language rules. You can fully specialize a function template but you almost certainly want to overload instead -- because function template specializations don't participate in overloading, they don't act as you probably wanted. Rarely, you should actually specialize by delegating to a class template that you can specialize properly.
 
 ##### Example
 
@@ -11104,7 +11064,7 @@ C rule summary:
 
 ##### Reason
 
- C++ provides better type checking and more notational support.
+C++ provides better type checking and more notational support.
 It provides better support for high-level programming and often generates faster code.
 
 ##### Example
@@ -11122,7 +11082,7 @@ Use a C++ compiler.
 
 ##### Reason
 
- That subset can be compiled with both C and C++ compilers, and when compiled as C++ is better type checked than "pure C."
+That subset can be compiled with both C and C++ compilers, and when compiled as C++ is better type checked than "pure C."
 
 ##### Example
 
@@ -11141,7 +11101,7 @@ Use a C++ compiler.
 
 ##### Reason
 
- C++ is more expressive than C and offer better support for many types of programming.
+C++ is more expressive than C and offer better support for many types of programming.
 
 ##### Example
 
@@ -11202,7 +11162,7 @@ Source file rule summary:
 
 ##### Reason
 
- Convention
+Convention
 
 ##### Note
 
@@ -11238,7 +11198,7 @@ Examples are `.hh` and `.cxx`. Use such names equivalently.
 
 ##### Reason
 
- Including entities subject to the one-definition rule leads to linkage errors.
+Including entities subject to the one-definition rule leads to linkage errors.
 
 ##### Example
 
@@ -11265,7 +11225,7 @@ Check the positive list above.
 
 ##### Reason
 
- Maintainability. Readability.
+Maintainability. Readability.
 
 ##### Example, bad
 
@@ -11287,7 +11247,7 @@ The user of `bar` cannot know if the interface used is complete and correct. At 
 
 ##### Reason
 
- Minimize context dependencies and increase readability.
+Minimize context dependencies and increase readability.
 
 ##### Example
 
@@ -11351,8 +11311,7 @@ The errors will not be caught until link time for a program calling `bar` or `fo
     double foobar(int);		// error: wrong return type
 
 The return-type error for `foobar` is now caught immediately when `foo.cpp` is compiled.
-The argument-type error for `bar` cannot be caught until link time because of the possibility of overloading,
-but systematic use of `.h` files increases the likelihood that it is caught earlier by the programmer.
+The argument-type error for `bar` cannot be caught until link time because of the possibility of overloading, but systematic use of `.h` files increases the likelihood that it is caught earlier by the programmer.
 
 ##### Enforcement
 
@@ -11390,7 +11349,7 @@ Doing so takes away an `#include`r's ability to effectively disambiguate and to 
 
 ##### Reason
 
- To avoid files being `#include`d several times.
+To avoid files being `#include`d several times.
 
 ##### Example
 
@@ -11402,13 +11361,13 @@ Doing so takes away an `#include`r's ability to effectively disambiguate and to 
 
 ##### Enforcement
 
-Flag `.h` files without `#include` guards
+Flag `.h` files without `#include` guards.
 
 ### <a name="Rs-cycles"></a> SF.9: Avoid cyclic dependencies among source files
 
 ##### Reason
 
- Cycles complicates comprehension and slows down compilation.
+Cycles complicates comprehension and slows down compilation.
 Complicates conversion to use language-supported modules (when they become available).
 
 ##### Note
@@ -11448,7 +11407,7 @@ Flag all cycles.
 
 ##### Reason
 
- It is almost always a bug to mention an unnamed namespace in a header file.
+It is almost always a bug to mention an unnamed namespace in a header file.
 
 ##### Example
 
@@ -11490,7 +11449,7 @@ Standard-library rule summary:
 
 ##### Reason
 
- Save time. Don't re-invent the wheel.
+Save time. Don't re-invent the wheel.
 Don't replicate the work of others.
 Benefit from other people's work when they make improvements.
 Help other people when you make improvements.
@@ -12216,8 +12175,7 @@ There is no really good way to say "pointer to a single `char` (`string_view{p, 
 * `zstring`		// a `char*` supposed to be a C-style string; that is, a zero-terminated sequence of `char` or `null_ptr`
 * `czstring`	// a `const char*` supposed to be a C-style string; that is, a zero-terminated sequence of `const` `char` or `null_ptr`
 
-Logically, those last two aliases are not needed, but we are not always logical,
-and they make the distinction between a pointer to one `char` and a pointer to a C-style string explicit.
+Logically, those last two aliases are not needed, but we are not always logical, and they make the distinction between a pointer to one `char` and a pointer to a C-style string explicit.
 A sequence of characters that is not assumed to be zero-terminated should be a `char*`, rather than a `zstring`.
 French accent optional.
 
@@ -12308,7 +12266,7 @@ More specific and detailed rules are easier to enforce.
 
 ##### Reason
 
- Compilers do not read comments.
+Compilers do not read comments.
 Comments are less precise than code.
 Comments are not updated as consistently as code.
 
@@ -12324,7 +12282,7 @@ Build an AI program that interprets colloquial English text and see if what is s
 
 ##### Reason
 
- Code says what is done, not what is supposed to be done. Often intent can be stated more clearly and concisely than the implementation.
+Code says what is done, not what is supposed to be done. Often intent can be stated more clearly and concisely than the implementation.
 
 ##### Example
 
@@ -12342,7 +12300,7 @@ If the comment and the code disagrees, both are likely to be wrong.
 
 ##### Reason
 
- Verbosity slows down understanding and makes the code harder to read by spreading it around in the source file.
+Verbosity slows down understanding and makes the code harder to read by spreading it around in the source file.
 
 ##### Enforcement
 
@@ -12352,7 +12310,7 @@ not possible.
 
 ##### Reason
 
- Readability. Avoidance of "silly mistakes."
+Readability. Avoidance of "silly mistakes."
 
 ##### Example, bad
 
@@ -12428,7 +12386,7 @@ ISO Standard, use lower case only and digits, separate words with underscores:
 * `vector`
 * `my_map`
 
-Avoid double underscores `__`
+Avoid double underscores `__`.
 
 ##### Example
 
@@ -12441,7 +12399,7 @@ ISO Standard, but with upper case used for your own types and concepts:
 
 ##### Example
 
-CamelCase: capitalize each word in a multi-word identifier
+CamelCase: capitalize each word in a multi-word identifier:
 
 * `int`
 * `vector`
@@ -12465,7 +12423,7 @@ Would be possible except for the use of libraries with varying conventions.
 
 ##### Reason
 
- To avoid confusing macros from names that obeys scope and type rules
+To avoid confusing macros from names that obeys scope and type rules.
 
 ##### Example
 
@@ -12473,7 +12431,7 @@ Would be possible except for the use of libraries with varying conventions.
 
 ##### Note
 
-This rule applies to non-macro symbolic constants
+This rule applies to non-macro symbolic constants:
 
     enum bad { BAD, WORSE, HORRIBLE }; // BAD
 
@@ -12486,7 +12444,7 @@ This rule applies to non-macro symbolic constants
 
 ##### Reason
 
- The use of underscores to separate parts of a name is the original C and C++ style and used in the C++ standard library.
+The use of underscores to separate parts of a name is the original C and C++ style and used in the C++ standard library.
 If you prefer CamelCase, you have to choose among different flavors of camelCase.
 
 ##### Example
@@ -12501,7 +12459,7 @@ Impossible.
 
 ##### Reason
 
- Too much space makes the text larger and distracts.
+Too much space makes the text larger and distracts.
 
 ##### Example, bad
 
@@ -12533,7 +12491,7 @@ We value well-placed whitespace as a significant help for readability. Just don'
 
 ##### Reason
 
- A conventional order of members improves readability.
+A conventional order of members improves readability.
 
 When declaring a class use the following order
 
@@ -12558,7 +12516,7 @@ Flag departures from the suggested order. There will be a lot of old code that d
 
 ##### Reason
 
- This is the original C and C++ layout. It preserves vertical space well. It distinguishes different language constructs (such as functions and classes well).
+This is the original C and C++ layout. It preserves vertical space well. It distinguishes different language constructs (such as functions and classes well).
 
 ##### Note
 
@@ -12626,7 +12584,7 @@ If you want enforcement, use an IDE to reformat.
 
 ##### Reason
 
- The C-style layout emphasizes use in expressions and grammar, whereas the C++-style emphasizes types.
+The C-style layout emphasizes use in expressions and grammar, whereas the C++-style emphasizes types.
 The use in expressions argument doesn't hold for references.
 
 ##### Example
@@ -13121,7 +13079,7 @@ Resource management rule summary:
 
 ##### Reason
 
- Prevent leaks. Leaks can lead to performance degradation, mysterious error, system crashes, and security violations.
+Prevent leaks. Leaks can lead to performance degradation, mysterious error, system crashes, and security violations.
 
 **Alternative formulation**: Have every resource represented as an object of some class managing its lifetime.
 
@@ -13149,7 +13107,7 @@ The basic technique for preventing leaks is to have every resource owned by a re
 
 ##### Reason
 
- That would be a leak.
+That would be a leak.
 
 ##### Example
 
@@ -13196,7 +13154,7 @@ This is independent of how you "spell" pointer: `T*`, `T&`, `Ptr<T>` and `Range<
 
 ##### Reason
 
- To avoid extremely hard-to-find errors. Dereferencing such a pointer is undefined behavior and could lead to violations of the type system.
+To avoid extremely hard-to-find errors. Dereferencing such a pointer is undefined behavior and could lead to violations of the type system.
 
 ##### Example
 
@@ -13224,7 +13182,7 @@ Most compilers already warn about simple cases and has the information to do mor
 
 ##### Reason
 
- To provide statically type-safe manipulation of elements.
+To provide statically type-safe manipulation of elements.
 
 ##### Example
 
@@ -13238,7 +13196,7 @@ Most compilers already warn about simple cases and has the information to do mor
 
 ##### Reason
 
- To simplify code and eliminate a need for explicit memory management. To bring an object into a surrounding scope, thereby extending its lifetime.
+To simplify code and eliminate a need for explicit memory management. To bring an object into a surrounding scope, thereby extending its lifetime.
 
 ##### Example
 
@@ -13261,7 +13219,7 @@ Check for pointers and references returned from functions and see if they are as
 
 ##### Reason
 
- To provide complete control of the lifetime of the resource. To provide a coherent set of operations on the resource.
+To provide complete control of the lifetime of the resource. To provide a coherent set of operations on the resource.
 
 ##### Example
 
@@ -13286,7 +13244,7 @@ In general, a tool cannot know if a class is a resource handle. However, if a cl
 
 ##### Reason
 
- It is common to need an initial set of elements.
+It is common to need an initial set of elements.
 
 ##### Example
 
@@ -13300,7 +13258,7 @@ In general, a tool cannot know if a class is a resource handle. However, if a cl
 
 ##### Enforcement
 
- When is a class a container?
+When is a class a container? ???
 
 # <a name="S-unclassified"></a> To-do: Unclassified proto-rules
 
@@ -13329,7 +13287,7 @@ Alternatively, we will decide that no change is needed and delete the entry.
 * Speaking of lambdas, what would weigh in on the decision between lambdas and (local?) classes in algorithm calls and other callback scenarios?
 * And speaking of `std::bind`, Stephen T. Lavavej criticizes it so much I'm starting to wonder if it is indeed going to fade away in future. Should lambdas be recommended instead?
 * What to do with leaks out of temporaries? : `p = (s1+s2).c_str();`
-* pointer/iterator invalidation leading to dangling pointers
+* pointer/iterator invalidation leading to dangling pointers:
 
         void bad()
         {
