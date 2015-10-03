@@ -8451,7 +8451,7 @@ Incrementing a value beyond a maximum value can lead to memory corruption and un
 
     int area(int h, int w) { return h*w; }
 
-    auto a = area(10'000'000*100'000'000);	// bad
+    auto a = area(10'000'000, 100'000'000);	// bad
 
 **Exception**: Use unsigned types if you really want modulo arithmetic.
 
