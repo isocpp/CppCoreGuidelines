@@ -5297,17 +5297,17 @@ Note that because of language rules, the covariant return type cannot be a smart
     public:
         point(int xx, int yy) : x{xx}, y{yy} { }
         int get_x() { return x; }
-    	void set_x(int xx) { x = xx; }
+        void set_x(int xx) { x = xx; }
         int get_y() { return y; }
-    	void set_y(int yy) { y = yy; }
-    	// no behavioral member functions
+        void set_y(int yy) { y = yy; }
+        // no behavioral member functions
     };
 
 Consider making such a class a `struct` -- that is, a behaviorless bunch of variables, all public data and no member functions.
 
     struct point {
-    	int x = 0;
-    	int y = 0;
+        int x = 0;
+        int y = 0;
     };
 
 ##### Note
@@ -8695,12 +8695,12 @@ make the job of the optimizer much harder. Simple code often optimizes better th
 ##### Example
 
     int matrix[rows][cols];
-    
+
     //bad
     for(int c=0; c<cols; ++c)
         for(int r=0; r<rows; ++r)
             sum += matrix[r][c];
-    
+
     //good
     for(int r=0; r<rows; ++r)
         for(int c=0; c<cols; ++c)
@@ -12819,7 +12819,7 @@ Here is an example of the last option:
 
     class B {
     public:
-        B() { /* ... */ f(); /*...*/ }        // BAD: see Item 49.1
+        B() { /* ... */ f(); /*...*/ }      // BAD: see Item 49.1
 
         virtual void f() = 0;
 
@@ -12830,7 +12830,7 @@ Here is an example of the last option:
     protected:
         B() { /* ... */ }
         virtual void PostInitialize()       // called right after construction
-            { /* ... */ f(); /*...*/ }        // GOOD: virtual dispatch is safe
+            { /* ... */ f(); /*...*/ }      // GOOD: virtual dispatch is safe
     public:
         virtual void f() = 0;
 
@@ -12842,9 +12842,9 @@ Here is an example of the last option:
         }
     };
 
-    class D : public B { /* "¦ */ };            // some derived class
+    class D : public B { /* "¦ */ };        // some derived class
 
-    shared_ptr<D> p = D::Create<D>();    	// creating a D object
+    shared_ptr<D> p = D::Create<D>();    	  // creating a D object
 
 This design requires the following discipline:
 
@@ -13246,7 +13246,7 @@ Most compilers already warn about simple cases and has the information to do mor
     {
         return ...;
     }
-    
+
     auto v = get_large_vector(); //return by value is ok, most modern compilers will do copy elision
 
 ##### Example
