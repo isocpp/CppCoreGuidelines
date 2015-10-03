@@ -12981,8 +12981,7 @@ Here, if constructing `copy2` throws, we have the same problem because `i`'s des
 
     void test() {
         std::array<nefarious, 10> arr; // this line can std::terminate(!)
-
-}
+    }
 
 The behavior of arrays is undefined in the presence of destructors that throw because there is no reasonable rollback behavior that could ever be devised. Just think: What code can the compiler generate for constructing an `arr` where, if the fourth object's constructor throws, the code has to give up and in its cleanup mode tries to call the destructors of the already-constructed objects... and one or more of those destructors throws? There is no satisfactory answer.
 
