@@ -11924,7 +11924,7 @@ For the purposes of this document, bounds-safety is defined to be the property t
 
 The following are under consideration but not yet in the rules below, and may be better in other profiles:
 
-   -
+* ???
 
 An implementation of this profile shall recognize the following patterns in source code as non-conforming and issue a diagnostic.
 
