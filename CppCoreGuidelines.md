@@ -12171,23 +12171,23 @@ References are never owners.
 
 The names are mostly ISO standard-library style (lower case and underscore):
 
-* `T*`			// The `T*` is not an owner, may be `nullptr` (Assumed to be pointing to a single element)
-* `char*`		// A C-style string (a zero-terminated array of characters); can be `nullptr`
-* `const char*`	// A C-style string; can be `nullptr`
-* `T&`			// The `T&` is not an owner, may not be `&(T&)*nullptr` (language rule)
+* `T*`			// The `T*` is not an owner, may be null; assumed to be pointing to a single element.
+* `char*`		// A C-style string (a zero-terminated array of characters); may be null.
+* `const char*` 	// A C-style string; may be null.
+* `T&`			// The `T&` is not an owner, must not be `*static_cast<T*>(nullptr)` (language rule; there are no "null references").
 
 The "raw-pointer" notation (e.g. `int*`) is assumed to have its most common meaning; that is, a pointer points to an object, but does not own it.
 Owners should be converted to resource handles (e.g., `unique_ptr` or `vector<T>`) or marked `owner<T*>`
 
-* `owner<T*>`		// a `T*`that owns the object pointed/referred to; can be `nullptr`
-* `owner<T&>`		// a `T&` that owns the object pointed/referred to
+* `owner<T*>`		// a `T*`that owns the object pointed/referred to; may be `nullptr`.
+* `owner<T&>`		// a `T&` that owns the object pointed/referred to.
 
 `owner` is used to mark owning pointers in code that cannot be upgraded to use proper resource handles.
-Reasons for that include
+Reasons for that include:
 
-* cost of conversion
-* the pointer is used with an ABI
-* the pointer is part of the implementation of a resource handle.
+* Cost of conversion.
+* The pointer is used with an ABI.
+* The pointer is part of the implementation of a resource handle.
 
 An `owner<T>` differs from a resource handle for a `T` by still requiring an explicit `delete`.
 
