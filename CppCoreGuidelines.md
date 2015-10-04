@@ -1088,9 +1088,40 @@ Comments and parameter names can help, but we could be explicit:
 Obviously, we cannot catch all errors through the static type system
 (e.g., the fact that a first argument is supposed to be a top-left point is left to convention (naming and comments)).
 
-##### Example
+##### Example, bad
 
-??? units: time duration ???
+In the following example, it is not clear from the interface what time_to_blink means: Seconds? Milliseconds?
+
+    void blink_led(int time_to_blink) //bad - the unit is ambiguous
+    {
+        //...
+        //do something with time_to_blink
+        //...
+    }
+
+    void use()
+    {
+        blink_led(2);
+    }
+
+##### Example, good
+
+std::chrono::duration types introduced in C++11 helps making the unit of time duration explicit.
+
+    template<class rep, class period>
+    void blink_led(duration<rep, period> time_to_blink) //good - accepts any unit
+    {
+        auto milliseconds_to_blink = duration_cast<milliseconds>(time_to_blink);
+        //...
+        //do something with milliseconds_to_blink
+        //...
+    }
+
+    void use()
+    {
+        blink_led(2s);
+        blink_led(1500ms);
+    }
 
 ##### Enforcement
 
