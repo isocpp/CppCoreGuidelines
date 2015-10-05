@@ -5291,17 +5291,17 @@ A trivial getter or setter adds no semantic value; the data item could just as w
     public:
         point(int xx, int yy) : x{xx}, y{yy} { }
         int get_x() { return x; }
-    	void set_x(int xx) { x = xx; }
+        void set_x(int xx) { x = xx; }
         int get_y() { return y; }
-    	void set_y(int yy) { y = yy; }
-    	// no behavioral member functions
+        void set_y(int yy) { y = yy; }
+        // no behavioral member functions
     };
 
 Consider making such a class a `struct` -- that is, a behaviorless bunch of variables, all public data and no member functions.
 
     struct point {
-    	int x = 0;
-    	int y = 0;
+        int x = 0;
+        int y = 0;
     };
 
 ##### Note
@@ -8680,12 +8680,12 @@ Performance is very sensitive to cache performance and cache algorithms favor si
 ##### Example
 
     int matrix[rows][cols];
-    
+
     //bad
     for(int c=0; c<cols; ++c)
         for(int r=0; r<rows; ++r)
             sum += matrix[r][c];
-    
+
     //good
     for(int r=0; r<rows; ++r)
         for(int c=0; c<cols; ++c)
@@ -11898,7 +11898,7 @@ For the purposes of this document, bounds-safety is defined to be the property t
 
 The following are under consideration but not yet in the rules below, and may be better in other profiles:
 
-   -
+* ???
 
 An implementation of this profile shall recognize the following patterns in source code as non-conforming and issue a diagnostic.
 
@@ -12792,7 +12792,7 @@ Here is an example of the last option:
 
     class B {
     public:
-        B() { /* ... */ f(); /*...*/ }        // BAD: see Item 49.1
+        B() { /* ... */ f(); /*...*/ }      // BAD: see Item 49.1
 
         virtual void f() = 0;
 
@@ -12803,7 +12803,7 @@ Here is an example of the last option:
     protected:
         B() { /* ... */ }
         virtual void PostInitialize()       // called right after construction
-            { /* ... */ f(); /*...*/ }        // GOOD: virtual dispatch is safe
+            { /* ... */ f(); /*...*/ }      // GOOD: virtual dispatch is safe
     public:
         virtual void f() = 0;
 
@@ -12815,9 +12815,9 @@ Here is an example of the last option:
         }
     };
 
-    class D : public B { /* "¦ */ };            // some derived class
+    class D : public B { /* "¦ */ };        // some derived class
 
-    shared_ptr<D> p = D::Create<D>();    	// creating a D object
+    shared_ptr<D> p = D::Create<D>();    	  // creating a D object
 
 This design requires the following discipline:
 
@@ -12954,8 +12954,7 @@ Here, if constructing `copy2` throws, we have the same problem because `i`'s des
 
     void test() {
         std::array<nefarious, 10> arr; // this line can std::terminate(!)
-
-}
+    }
 
 The behavior of arrays is undefined in the presence of destructors that throw because there is no reasonable rollback behavior that could ever be devised. Just think: What code can the compiler generate for constructing an `arr` where, if the fourth object's constructor throws, the code has to give up and in its cleanup mode tries to call the destructors of the already-constructed objects... and one or more of those destructors throws? There is no satisfactory answer.
 
@@ -13219,7 +13218,7 @@ To simplify code and eliminate a need for explicit memory management. To bring a
     {
         return ...;
     }
-    
+
     auto v = get_large_vector(); //return by value is ok, most modern compilers will do copy elision
 
 ##### Example
