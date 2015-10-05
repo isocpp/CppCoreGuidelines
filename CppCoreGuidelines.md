@@ -2673,7 +2673,6 @@ After the return from a function its local objects no longer exist:
         int* p = f();
         int z = *p;    // read from abandoned stack frame (bad)
         g(p);          // pass pointer to abandoned stack frame to function (bad)
-
     }
 
 Here on one popular implementation I got the output:
@@ -9991,7 +9990,7 @@ Specifying semantics is a powerful design tool.
             {a - b} -> T;
             {a * b} -> T;
             {a / b} -> T;
-        };
+        }
 
 ##### Note
 
