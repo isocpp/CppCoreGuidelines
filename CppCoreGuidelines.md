@@ -12174,7 +12174,7 @@ The names are mostly ISO standard-library style (lower case and underscore):
 * `T*`			// The `T*` is not an owner, may be null; assumed to be pointing to a single element.
 * `char*`		// A C-style string (a zero-terminated array of characters); may be null.
 * `const char*` 	// A C-style string; may be null.
-* `T&`			// The `T&` is not an owner, must not be `*static_cast<T*>(nullptr)` (language rule; there are no "null references").
+* `T&`			// The `T&` is not an owner and can never be a "null reference"; references are always bound to objects.
 
 The "raw-pointer" notation (e.g. `int*`) is assumed to have its most common meaning; that is, a pointer points to an object, but does not own it.
 Owners should be converted to resource handles (e.g., `unique_ptr` or `vector<T>`) or marked `owner<T*>`
