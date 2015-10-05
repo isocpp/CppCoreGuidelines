@@ -147,7 +147,7 @@ All C++ programmers. This includes [programmers who might consider C](#S-cpl).
 
 The purpose of this document is to help developers to adopt modern C++ (C++11, C++14, and soon C++17) and to achieve a more uniform style across code bases.
 
-We do not suffer the delusion that every one of these rules can be effectively applied to every code base. Upgrading old systems is hard. However, we do believe that a program that uses a rule is less error-prone and more maintainable than one that does not. Often, rules also lead to faster/easier initial development. 
+We do not suffer the delusion that every one of these rules can be effectively applied to every code base. Upgrading old systems is hard. However, we do believe that a program that uses a rule is less error-prone and more maintainable than one that does not. Often, rules also lead to faster/easier initial development.
 As far as we can tell, these rules lead to code that performs as well or better than older, more conventional techniques; they are meant to follow the zero-overhead principle ("what you don't use, you don't pay for" or "when you use an abstraction mechanism appropriately, you get at least as good performance as if you had handcoded using lower-level language constructs").
 Consider these rules ideals for new code, opportunities to exploit when working on older code, and try to approximate these ideas as closely as feasible.
 Remember:
@@ -1083,11 +1083,11 @@ Obviously, we cannot catch all errors through the static type system
 
 In the following example, it is not clear from the interface what time_to_blink means: Seconds? Milliseconds?
 
-    void blink_led(int time_to_blink) //bad - the unit is ambiguous
+    void blink_led(int time_to_blink) // bad - the unit is ambiguous
     {
-        //...
-        //do something with time_to_blink
-        //...
+        // ...
+        // do something with time_to_blink
+        // ...
     }
 
     void use()
@@ -1099,11 +1099,11 @@ In the following example, it is not clear from the interface what time_to_blink 
 
 std::chrono::duration types introduced in C++11 helps making the unit of time duration explicit.
 
-    void blink_led(milliseconds time_to_blink) //good - the unit is explicit
+    void blink_led(milliseconds time_to_blink) // good - the unit is explicit
     {
-        //...
-        //do something with time_to_blink
-        //...
+        // ...
+        // do something with time_to_blink
+        // ...
     }
 
     void use()
@@ -1114,13 +1114,13 @@ std::chrono::duration types introduced in C++11 helps making the unit of time du
 The function can also be written in such a way that it will accept any time duration unit.
 
     template<class rep, class period>
-    void blink_led(duration<rep, period> time_to_blink) //good - accepts any unit
+    void blink_led(duration<rep, period> time_to_blink) // good - accepts any unit
     {
-        //assuming that millisecond is the smallest relevant unit
+        // assuming that millisecond is the smallest relevant unit
         auto milliseconds_to_blink = duration_cast<milliseconds>(time_to_blink);
-        //...
-        //do something with milliseconds_to_blink
-        //...
+        // ...
+        // do something with milliseconds_to_blink
+        // ...
     }
 
     void use()
@@ -1770,11 +1770,11 @@ If you write a non-trivial lambda that potentially can be used in more than one 
 
 ##### Example
 
-    sort(a, b, [](T x, T y) { return x.valid() && y.valid() && x.value()<y.value(); });
+    sort(a, b, [](T x, T y) { return x.valid() && y.valid() && x.value() < y.value(); });
 
 Naming that lambda breaks up the expression into its logical parts and provides a strong hint to the meaning of the lambda.
 
-    auto lessT = [](T x, T y) { return x.valid() && y.valid() && x.value()<y.value(); };
+    auto lessT = [](T x, T y) { return x.valid() && y.valid() && x.value() < y.value(); };
 
     sort(a, b, lessT);
     find_if(a, b, lessT);
@@ -1947,7 +1947,7 @@ The (in)famous factorial:
         constexpr int max_exp = 17;      // constexpr enables  this to be used in Expects
         Expects(0 <= n && n < max_exp);  // prevent silliness and overflow
         int x = 1;
-        for (int i = 2; i <= n; ++i) x*= i;
+        for (int i = 2; i <= n; ++i) x *= i;
         return x;
     }
 
@@ -2096,7 +2096,7 @@ Pure functions are easier to reason about, sometimes easier to optimize (and eve
 ##### Example
 
     template<class T>
-    auto square(T t) { return t*t; }
+    auto square(T t) { return t * t; }
 
 ##### Note
 
@@ -3613,9 +3613,9 @@ If the `Handle` owns the object referred to by `s` it must have a destructor.
 
 Independently of whether `Handle` owns its `Shape`, we must consider the default copy operations suspect:
 
-    Handle x {*new Circle{p1, 17}};	// the Handle had better own the Circle or we have a leak
+    Handle x {*new Circle{p1, 17}};  // the Handle had better own the Circle or we have a leak
     Handle y {*new Triangle{p1, p2, p3}};
-    x = y;		// the default assignment will try *x.s=*y.s
+    x = y;     // the default assignment will try *x.s = *y.s
 
 That `x=y` is highly suspect.
 Assigning a `Triangle` to a `Circle`?
@@ -4420,12 +4420,12 @@ After a copy `x` and `y` can be independent objects (value semantics, the way no
 
 ##### Example
 
-    class X2 {	// OK: pointer semantics
+    class X2 {  // OK: pointer semantics
     public:
         X2();
-        X2(const X&) = default;	// shallow copy
+        X2(const X&) = default; // shallow copy
         ~X2() = default;
-        void modify();			// change the value of X
+        void modify();          // change the value of X
         // ...
     private:
         T* p;
@@ -4441,7 +4441,7 @@ After a copy `x` and `y` can be independent objects (value semantics, the way no
     X2 y = x;
     if (x != y) throw Bad{};
     x.modify();
-    if (x != y) throw Bad{};	// assume pointer semantics
+    if (x != y) throw Bad{};  // assume pointer semantics
 
 ##### Note
 
@@ -4577,7 +4577,7 @@ Often, we can easily and cheaply do better: The standard library assumes that it
 
 ##### Note
 
-Unless there is an exceptionally strong reason not to, make `x=std::move(y); y=z;` work with the conventional semantics.
+Unless there is an exceptionally strong reason not to, make `x = std::move(y); y = z;` work with the conventional semantics.
 
 ##### Enforcement
 
@@ -4587,7 +4587,7 @@ Unless there is an exceptionally strong reason not to, make `x=std::move(y); y=z
 
 ##### Reason
 
-If `x=x` changes the value of `x`, people will be surprised and bad errors may occur. However, people don't usually directly write a self-assignment that turn into a move, but it can occur. However, `std::swap` is implemented using move operations so if you accidentally do `swap(a, b)` where `a` and `b` refer to the same object, failing to handle self-move could be a serious and subtle error.
+If `x = x` changes the value of `x`, people will be surprised and bad errors may occur. However, people don't usually directly write a self-assignment that turn into a move, but it can occur. However, `std::swap` is implemented using move operations so if you accidentally do `swap(a, b)` where `a` and `b` refer to the same object, failing to handle self-move could be a serious and subtle error.
 
 ##### Example
 
@@ -4965,7 +4965,10 @@ It is really hard to write a foolproof and useful `==` for a hierarchy.
     class B {
         string name;
         int number;
-        virtual bool operator==(const B& a) const { return name == a.name && number == a.number; }
+        virtual bool operator==(const B& a) const
+        {
+             return name == a.name && number == a.number;
+        }
         // ...
     };
 
@@ -4973,7 +4976,10 @@ It is really hard to write a foolproof and useful `==` for a hierarchy.
 
     class D :B {
         char character;
-        virtual bool operator==(const D& a) const { return name == a.name && number == a.number && character == a.character; }
+        virtual bool operator==(const D& a) const
+        {
+            return name == a.name && number == a.number && character == a.character;
+        }
         // ...
     };
 
@@ -5267,7 +5273,7 @@ Copying a base is usually slicing. If you really need copy semantics, copy deepl
 
     class base {
     public:
-        virtual base* clone() =0;
+        virtual base* clone() = 0;
     };
 
     class derived : public base {
@@ -8415,7 +8421,7 @@ Avoid wrong results.
 
     unsigned x = 100;
     unsigned y = 102;
-    cout << abs(x-y) << '\n'; //wrong result
+    cout << abs(x-y) << '\n'; // wrong result
 
 ##### Note
 
@@ -8696,14 +8702,14 @@ Performance is very sensitive to cache performance and cache algorithms favor si
 
     int matrix[rows][cols];
 
-    //bad
-    for (int c=0; c<cols; ++c)
-        for (int r=0; r<rows; ++r)
+    // bad
+    for (int c = 0; c < cols; ++c)
+        for (int r = 0; r < rows; ++r)
             sum += matrix[r][c];
 
-    //good
-    for (int r=0; r<rows; ++r)
-        for (int c=0; c<cols; ++c)
+    // good
+    for (int r = 0; r < rows; ++r)
+        for (int c = 0; c < cols; ++c)
             sum += matrix[r][c];
 
 ### <a name="Rper-context"></a> PER.30: Avoid context switches on the critical path
@@ -13245,7 +13251,7 @@ To simplify code and eliminate a need for explicit memory management. To bring a
         return ...;
     }
 
-    auto v = get_large_vector(); //return by value is ok, most modern compilers will do copy elision
+    auto v = get_large_vector(); //  return by value is ok, most modern compilers will do copy elision
 
 ##### Example
 
