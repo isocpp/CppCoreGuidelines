@@ -12470,7 +12470,10 @@ To avoid confusing macros from names that obeys scope and type rules.
 
 ##### Example
 
-    ???
+    void f() {
+      const int SIZE{1000}; //Bad, use 'size' instead
+      int v[SIZE];
+    }
 
 ##### Note
 
