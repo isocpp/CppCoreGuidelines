@@ -1108,9 +1108,24 @@ In the following example, it is not clear from the interface what time_to_blink 
 
 std::chrono::duration types introduced in C++11 helps making the unit of time duration explicit.
 
+    void blink_led(milliseconds time_to_blink) //good - the unit is explicit
+    {
+        //...
+        //do something with time_to_blink
+        //...
+    }
+
+    void use()
+    {
+        blink_led(1500ms);
+    }
+
+The function can also be written in such a way that it will accept any time duration unit.
+
     template<class rep, class period>
     void blink_led(duration<rep, period> time_to_blink) //good - accepts any unit
     {
+        //assuming that millisecond is the smallest relevant unit
         auto milliseconds_to_blink = duration_cast<milliseconds>(time_to_blink);
         //...
         //do something with milliseconds_to_blink
