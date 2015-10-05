@@ -5524,6 +5524,40 @@ Like other casts, `dynamic_cast` is overused.
 Prefer [static polymorphism](#???) to hierarchy navigation where it is possible (no run-time resolution necessary)
 and reasonably convenient.
 
+##### Note
+
+Downcasting to a more derived type is against Liskov’s substitution principle. It means the interface is lying. The interface says it depends on the base type but it actually depends on specific derived types. It is a sign of poor design. 
+
+For example, the following example is an antipattern: The function play_notes was supposed to depend on the interface only but it depends on the specifics of the flute type.
+
+    class musical_instrument
+    {
+    public:
+        virtual void play(musical_note n) const = 0;
+    };
+    
+    class piano : public musical_instrument {
+        void play(musical_note n) const override {...}
+    };
+    class flute : public musical_instrument {
+        void play(musical_note n) const override {...}
+        void make_fade_out_sound();
+    };
+
+    // bad - depends on the specifics of the flute type
+    void play_notes(const musical_instrument* m, const vector<musical_note>& notes)
+    {
+        for (auto n : notes)
+        {
+            m->play(n);
+            const flute* f = dynamic_cast<const flute*>(m); // sign of bad design
+            if (f != nullptr)
+            {
+                f->make_fade_out_sound();
+            }
+        }
+    }
+
 ##### Exception
 
 If your implementation provided a really slow `dynamic_cast`, you may have to use a workaround.
@@ -5534,7 +5568,8 @@ and that your use of `dynamic_cast` is really performance critical.
 
 ##### Enforcement
 
-Flag all uses of `static_cast` for downcasts, including C-style casts that perform a `static_cast`.
+* Flag all uses of `static_cast` for downcasts, including C-style casts that perform a `static_cast`. Warn that downcasting may indicate poor design. Suggest replacing them by `dynamic_cast` if downcasting is unavoidable.
+* Flag all uses of `dynamic_cast` for downcasts. Warn that this may indicate poor design.
 
 ### <a name="Rh-ptr-cast"></a> C.147: Use `dynamic_cast` to a reference type when failure to find the required class is considered an error
 
