@@ -2548,13 +2548,15 @@ And yes, C++ does have multiple return values, by convention of using a `tuple`,
 
 ##### Example
 
-    int f(const string& input, /*output only*/ string& output_data) { // BAD: output-only parameter documented in a comment
+    int f(const string& input, /*output only*/ string& output_data) // BAD: output-only parameter documented in a comment
+    {
     	// ...
     	output_data = something();
     	return status;
     }
 
-    tuple<int, string> f(const string& input) { // GOOD: self-documenting
+    tuple<int, string> f(const string& input) // GOOD: self-documenting
+    {
     	// ...
     	return make_tuple(something(), status);
     }
@@ -2768,7 +2770,8 @@ For passthrough functions that pass in parameters (by ordinary reference or by p
 If `F` returns by value, this function returns a reference to a temporary.
 
     template<class F>
-    auto&& wrapper(F f) {
+    auto&& wrapper(F f)
+    {
     	log_call(typeid(f)); // or whatever instrumentation
         return f();
     }
@@ -2778,7 +2781,8 @@ If `F` returns by value, this function returns a reference to a temporary.
 Better:
 
     template<class F>
-    auto wrapper(F f) {
+    auto wrapper(F f)
+    {
     	log_call(typeid(f)); // or whatever instrumentation
         return f();
     }
@@ -2861,7 +2865,8 @@ Flag all uses of default arguments in virtual functions.
 
 This is a simple three-stage parallel pipeline. Each `stage` object encapsulates a worker thread and a queue, has a `process` function to enqueue work, and in its destructor automatically blocks waiting for the queue to empty before ending the thread.
 
-    void send_packets(buffers& bufs) {
+    void send_packets(buffers& bufs)
+    {
         stage encryptor  ([] (buffer& b){ encrypt(b); });
         stage compressor ([&](buffer& b){ compress(b); encryptor.process(b); });
         stage decorator  ([&](buffer& b){ decorate(b); compressor.process(b); });
@@ -4351,8 +4356,7 @@ But what if you can get significant better performance by not making a temporary
 
     Vector& Vector::operator=(const Vector& a)
     {
-    	if (a.sz>sz)
-    	{
+    	if (a.sz>sz) {
     		// ... use the swap technique, it can't be bettered ...
     		return *this
     	}
@@ -6016,7 +6020,8 @@ Whenever you deal with a resource that needs paired acquire/release function cal
 
 Consider:
 
-    void send(X* x, cstring_view destination) {
+    void send(X* x, cstring_view destination)
+    {
         auto port = OpenPort(destination);
         my_mutex.lock();
         // ...
@@ -6034,7 +6039,8 @@ Further, if any of the code marked `...` throws an exception, then `x` is leaked
 
 Consider:
 
-    void send(unique_ptr<X> x, cstring_view destination) { // x owns the X
+    void send(unique_ptr<X> x, cstring_view destination)  // x owns the X
+    {
         Port port{destination};            // port owns the PortHandle
         lock_guard<mutex> guard{my_mutex}; // guard owns the lock
         // ...
@@ -6564,7 +6570,8 @@ A function that does not manipulate lifetime should take raw pointers or referen
 ##### Example, bad
 
     // callee
-    void f(shared_ptr<widget>& w) {
+    void f(shared_ptr<widget>& w)
+    {
         // ...
         use(*w); // only use of w -- the lifetime is not used at all
         // ...
@@ -6580,7 +6587,8 @@ A function that does not manipulate lifetime should take raw pointers or referen
 ##### Example, good
 
     // callee
-    void f(widget& w) {
+    void f(widget& w)
+    {
         // ...
         use(w);
         // ...
@@ -6614,13 +6622,15 @@ Any type (including primary template or specialization) that overloads unary `*`
 
     // use Boost's intrusive_ptr
     #include <boost/intrusive_ptr.hpp>
-    void f(boost::intrusive_ptr<widget> p) { 	// error under rule 'sharedptrparam'
+    void f(boost::intrusive_ptr<widget> p)  // error under rule 'sharedptrparam'
+    {
         p->foo();
     }
 
     // use Microsoft's CComPtr
     #include <atlbase.h>
-    void f(CComPtr<widget> p) {                // error under rule 'sharedptrparam'
+    void f(CComPtr<widget> p)               // error under rule 'sharedptrparam'
+    {
         p->foo();
     }
 
@@ -6759,18 +6769,21 @@ Consider this code:
     // global (static or heap), or aliased local...
     shared_ptr<widget> g_p = ...;
 
-    void f(widget& w) {
+    void f(widget& w)
+    {
     	g();
     	use(w);  // A
     }
 
-    void g() {
+    void g()
+    {
     	g_p = ... ; // oops, if this was the last shared_ptr to that widget, destroys the widget
     }
 
 The following should not pass code review:
 
-    void my_code() {
+    void my_code()
+    {
         f(*g_p);	// BAD: passing pointer or reference obtained from a nonlocal smart pointer
                     //      that could be inadvertently reset somewhere inside f or it callees
         g_p->func(); // BAD: same reason, just passing it as a "this" pointer
@@ -6778,7 +6791,8 @@ The following should not pass code review:
 
 The fix is simple -- take a local copy of the pointer to "keep a ref count" for your call tree:
 
-    void my_code() {
+    void my_code()
+    {
     	auto pin = g_p; // cheap: 1 increment covers this entire function and all the call trees below us
     	f(*pin);      // GOOD: passing pointer or reference obtained from a local unaliased smart pointer
     	pin->func();    // GOOD: same reason
@@ -10528,21 +10542,24 @@ There are three major ways to let calling code customize a template.
 * Call a member function. Callers can provide any type with such a named member function.
 
         template<class T>
-        void test(T t) {
+        void test(T t)
+        {
             t.f();    // require T to provide f()
         }
 
 * Call a nonmember function without qualification. Callers can provide any type for which there is such a function available in the caller's context or in the namespace of the type.
 
         template<class T>
-        void test(T t) {
+        void test(T t)
+        {
             f(t);     // require f(/*T*/) be available in caller's cope or in T's namespace
         }
 
 * Invoke a "trait" -- usually a type alias to compute a type, or a `constexpr` function to compute a value, or in rarer cases a traditional traits template to be specialized on the user's type.
 
         template<class T>
-        void test(T t) {
+        void test(T t)
+        {
             test_traits<T>::f(t);    // require customizing test_traits<> to get non-default functions/types
             test_traits<T>::value_type x;
         }
@@ -11031,12 +11048,14 @@ Use the least-derived class that has the functionality you need.
     	void j();
     };
 
-    void myfunc(derived& param) {	// bad, unless there is a specific reason for limiting to derived1 objects only
+    void myfunc(derived& param)  // bad, unless there is a specific reason for limiting to derived1 objects only
+    {
     	use(param.f());
     	use(param.g());
     }
 
-    void myfunc(base& param) {		// good, uses only base interface so only commit to that
+    void myfunc(base& param)   // good, uses only base interface so only commit to that
+    {
     	use(param.f());
     	use(param.g());
     }
@@ -11749,7 +11768,8 @@ Casting away `const` is a lie. If the variable is actually declared `const`, it'
 
 ##### Example, bad
 
-    void f(const int& i) {
+    void f(const int& i)
+    {
         const_cast<int&>(i) = 42;   // BAD
     }
 
@@ -12808,7 +12828,8 @@ Here is an example of the last option:
         virtual void f() = 0;
 
         template<class T>
-        static shared_ptr<T> Create() {        // interface for creating objects
+        static shared_ptr<T> Create()       // interface for creating objects
+        {
             auto p = make_shared<T>();
             p->PostInitialize();
             return p;
@@ -12922,7 +12943,8 @@ Never allow an error to be reported from a destructor, a resource deallocation f
 1. `nefarious` objects are hard to use safely even as local variables:
 
 
-    void test(string& s) {
+    void test(string& s)
+    {
         nefarious n;          // trouble brewing
         string copy = s;      // copy the string
     } // destroy copy and then n
@@ -12937,7 +12959,8 @@ Here, copying `s` could throw, and if that throws and if `n`'s destructor then a
         // ...
     };
 
-    void test(string& s) {
+    void test(string& s)
+    {
         innocent_bystander i; // more trouble brewing
         string copy = s;      // copy the string
     } // destroy copy and then i
@@ -12952,7 +12975,8 @@ Here, if constructing `copy2` throws, we have the same problem because `i`'s des
 4. You can't reliably create arrays of `nefarious`:
 
 
-    void test() {
+    void test()
+    {
         std::array<nefarious, 10> arr; // this line can std::terminate(!)
     }
 
