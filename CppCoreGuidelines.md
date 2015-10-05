@@ -2561,13 +2561,13 @@ And yes, C++ does have multiple return values, by convention of using a `tuple`,
 
 ##### Example
 
-    int f( const string& input, /*output only*/ string& output_data ) { // BAD: output-only parameter documented in a comment
+    int f(const string& input, /*output only*/ string& output_data) { // BAD: output-only parameter documented in a comment
     	// ...
     	output_data = something();
     	return status;
     }
 
-    tuple<int, string> f( const string& input ) { // GOOD: self-documenting
+    tuple<int, string> f(const string& input) { // GOOD: self-documenting
     	// ...
     	return make_tuple(something(), status);
     }
@@ -2576,16 +2576,16 @@ In fact, C++98's standard library already used this convenient feature, because 
 For example, given a `set<string> myset`, consider:
 
     // C++98
-    result = myset.insert( "Hello" );
-    if (result.second) do_something_with( result.first );    // workaround
+    result = myset.insert("Hello");
+    if (result.second) do_something_with(result.first);    // workaround
 
 With C++11 we can write this, putting the results directly in existing local variables:
 
     Sometype iter;                                          // default initialize if we haven't already
     Someothertype success;                                  // used these variables for some other purpose
 
-    tie( iter, success ) = myset.insert( "Hello" );         // normal return value
-    if (success) do_something_with( iter );
+    tie(iter, success) = myset.insert("Hello");         // normal return value
+    if (success) do_something_with(iter);
 
 **Exception**: For types like `string` and `vector` that carry additional capacity, it can sometimes be useful to treat it as in/out instead by using the "caller-allocated out" pattern, which is to pass an output-only object by reference to non-`const` so that when the callee writes to it the object can reuse any capacity or other resources that it already contains. This technique can dramatically reduce the number of allocations in a loop that repeatedly calls other functions to get string values, by using a single string object for the entire loop.
 
@@ -2876,7 +2876,7 @@ Flag all uses of default arguments in virtual functions.
 
 This is a simple three-stage parallel pipeline. Each `stage` object encapsulates a worker thread and a queue, has a `process` function to enqueue work, and in its destructor automatically blocks waiting for the queue to empty before ending the thread.
 
-    void send_packets( buffers& bufs ) {
+    void send_packets(buffers& bufs) {
         stage encryptor  ([] (buffer& b){ encrypt(b); });
         stage compressor ([&](buffer& b){ compress(b); encryptor.process(b); });
         stage decorator  ([&](buffer& b){ decorate(b); compressor.process(b); });
@@ -6039,7 +6039,7 @@ Here, we ignore such cases.
 
  Consider
 
-    void send( X* x, cstring_view destination ) {
+    void send(X* x, cstring_view destination) {
         auto port = OpenPort(destination);
         my_mutex.lock();
         // ...
@@ -6057,7 +6057,7 @@ Further, if any of the code marked `...` throws an exception, then `x` is leaked
 
 Consider
 
-    void send( unique_ptr<X> x, cstring_view destination ) { // x owns the X
+    void send(unique_ptr<X> x, cstring_view destination) { // x owns the X
         Port port{destination};            // port owns the PortHandle
         lock_guard<mutex> guard{my_mutex}; // guard owns the lock
         // ...
@@ -6072,7 +6072,7 @@ What is `Port`? A handy wrapper that encapsulates the resource:
     class Port {
         PortHandle port;
     public:
-        Port( cstring_view destination ) : port{OpenPort(destination)} { }
+        Port(cstring_view destination) : port{OpenPort(destination)} { }
         ~Port() { ClosePort(port); }
         operator PortHandle() { return port; }
 
@@ -6403,11 +6403,11 @@ you could leak resources because the order of evaluation of many subexpressions,
 
 ##### Example
 
-    void fun( shared_ptr<Widget> sp1, shared_ptr<Widget> sp2 );
+    void fun(shared_ptr<Widget> sp1, shared_ptr<Widget> sp2);
 
 This `fun` can be called like this:
 
-    fun( shared_ptr<Widget>(new Widget(a, b)), shared_ptr<Widget>(new Widget(c, d)) );	// BAD: potential leak
+    fun(shared_ptr<Widget>(new Widget(a, b)), shared_ptr<Widget>(new Widget(c, d)));	// BAD: potential leak
 
 This is exception-unsafe because the compiler may reorder the two expressions building the function's two arguments.
 In particular, the compiler can interleave execution of the two expressions:
@@ -6418,11 +6418,11 @@ This subtle problem has a simple solution: Never perform more than one explicit 
 For example:
 
     shared_ptr<Widget> sp1(new Widget(a, b)); // Better, but messy
-    fun( sp1, new Widget(c, d) );
+    fun(sp1, new Widget(c, d));
 
 The best solution is to avoid explicit allocation entirely use factory functions that return owning objects:
 
-    fun( make_shared<Widget>(a, b), make_shared<Widget>(c, d) ); // Best
+    fun(make_shared<Widget>(a, b), make_shared<Widget>(c, d)); // Best
 
 Write your own factory wrapper if there is not one already.
 
@@ -6591,34 +6591,34 @@ A function that does not manipulate lifetime should take raw pointers or referen
 ##### Example, bad
 
     // callee
-    void f( shared_ptr<widget>& w ) {
+    void f(shared_ptr<widget>& w) {
         // ...
-        use( *w ); // only use of w -- the lifetime is not used at all
+        use(*w); // only use of w -- the lifetime is not used at all
         // ...
     };
 
     // caller
     shared_ptr<widget> my_widget = /*...*/;
-    f( my_widget );
+    f(my_widget);
 
     widget stack_widget;
-    f( stack_widget ); // error
+    f(stack_widget); // error
 
 ##### Example, good
 
     // callee
-    void f( widget& w ) {
+    void f(widget& w) {
         // ...
-        use( w );
+        use(w);
         // ...
     };
 
     // caller
     shared_ptr<widget> my_widget = /*...*/;
-    f( *my_widget );
+    f(*my_widget);
 
     widget stack_widget;
-    f( stack_widget ); // ok -- now this works
+    f(stack_widget); // ok -- now this works
 
 ##### Enforcement
 
@@ -6691,11 +6691,11 @@ so these guideline enforcement rules work on them out of the box and expose this
 
 ##### Example
 
-    void reseat( unique_ptr<widget>& ); // "will" or "might" reseat pointer
+    void reseat(unique_ptr<widget>&); // "will" or "might" reseat pointer
 
 ##### Example, bad
 
-    void thinko( const unique_ptr<widget>& ); // usually not what you want
+    void thinko(const unique_ptr<widget>&); // usually not what you want
 
 ##### Enforcement
 
@@ -6711,11 +6711,11 @@ so these guideline enforcement rules work on them out of the box and expose this
 
 ##### Example, good
 
-    void share( shared_ptr<widget> );            // share – "will" retain refcount
+    void share(shared_ptr<widget>);            // share – "will" retain refcount
 
-    void reseat( shared_ptr<widget>& );          // "might" reseat ptr
+    void reseat(shared_ptr<widget>&);          // "might" reseat ptr
 
-    void may_share( const shared_ptr<widget>& ); // "might" retain refcount
+    void may_share(const shared_ptr<widget>&); // "might" retain refcount
 
 ##### Enforcement
 
@@ -6735,11 +6735,11 @@ so these guideline enforcement rules work on them out of the box and expose this
 
 ##### Example, good
 
-    void share( shared_ptr<widget> );            // share – "will" retain refcount
+    void share(shared_ptr<widget>);            // share – "will" retain refcount
 
-    void reseat( shared_ptr<widget>& );          // "might" reseat ptr
+    void reseat(shared_ptr<widget>&);          // "might" reseat ptr
 
-    void may_share( const shared_ptr<widget>& ); // "might" retain refcount
+    void may_share(const shared_ptr<widget>&); // "might" retain refcount
 
 ##### Enforcement
 
@@ -6755,11 +6755,11 @@ so these guideline enforcement rules work on them out of the box and expose this
 
 ##### Example, good
 
-    void share( shared_ptr<widget> );            // share – "will" retain refcount
+    void share(shared_ptr<widget>);            // share – "will" retain refcount
 
-    void reseat( shared_ptr<widget>& );          // "might" reseat ptr
+    void reseat(shared_ptr<widget>&);          // "might" reseat ptr
 
-    void may_share( const shared_ptr<widget>& ); // "might" retain refcount
+    void may_share(const shared_ptr<widget>&); // "might" retain refcount
 
 ##### Enforcement
 
@@ -6787,7 +6787,7 @@ Consider this code:
     // global (static or heap), or aliased local...
     shared_ptr<widget> g_p = ...;
 
-    void f( widget& w ) {
+    void f(widget& w) {
     	g();
     	use(w);  // A
     }
@@ -6799,7 +6799,7 @@ Consider this code:
 The following should not pass code review:
 
     void my_code() {
-        f( *g_p );	// BAD: passing pointer or reference obtained from a nonlocal smart pointer
+        f(*g_p);	// BAD: passing pointer or reference obtained from a nonlocal smart pointer
                     //      that could be inadvertently reset somewhere inside f or it callees
         g_p->func(); // BAD: same reason, just passing it as a "this" pointer
     }
@@ -6808,7 +6808,7 @@ The fix is simple -- take a local copy of the pointer to "keep a ref count" for 
 
     void my_code() {
     	auto pin = g_p; // cheap: 1 increment covers this entire function and all the call trees below us
-    	f( *pin );      // GOOD: passing pointer or reference obtained from a local unaliased smart pointer
+    	f(*pin);      // GOOD: passing pointer or reference obtained from a local unaliased smart pointer
     	pin->func();    // GOOD: same reason
     }
 
@@ -7194,9 +7194,9 @@ or better using concepts
 
 or
 
-    double scalbn(		// better: x*pow(FLT_RADIX, n); FLT_RADIX is usually 2
-    	double x, 	// base value
-    	int n		// exponent
+    double scalbn(    // better: x*pow(FLT_RADIX, n); FLT_RADIX is usually 2
+    	double x,       // base value
+    	int n           // exponent
     );
 
 or
@@ -7377,10 +7377,10 @@ Flag declaration that distant from their first use.
 
     SomeLargeType var;	// ugly CaMeLcAsEvArIaBlE
 
-    if( cond )	// some non-trivial condition
-    	Set( &var );
+    if (cond)	// some non-trivial condition
+    	Set(&var);
     else if (cond2 || !cond3) {
-    	var = Set2( 3.14 );
+    	var = Set2(3.14);
     }
     else {
     	var = 0;
@@ -8012,7 +8012,7 @@ Expressions manipulate values.
 
     while ((cin>>c1, cin>>c2), c1==c2) // bad: two non-local variables assigned in a sub-expressions
 
-    for (char c1, c2; cin>>c1>>c2 && c1==c2; )	// better, but possibly still too complicated
+    for (char c1, c2; cin >> c1 >> c2 && c1 == c2;)	// better, but possibly still too complicated
 
     int x = ++i + ++j;	// OK: iff i and j are not aliased
 
@@ -8792,7 +8792,7 @@ after an implementation bug caused losses to some finance company and they were 
 It should definitely mention that `volatile` does not provide atomicity, does not synchronize between threads, and does not prevent instruction reordering (neither compiler nor hardware), and simply has nothing to do with concurrency.
 
     if(source->pool != YARROW_FAST_POOL && source->pool != YARROW_SLOW_POOL) {
-    	THROW( YARROW_BAD_SOURCE );
+    	THROW(YARROW_BAD_SOURCE);
     }
 
 ??? Is `std::async` worth using in light of future (and even existing, as libraries) parallelism facilities? What should the guidelines recommend if someone wants to parallelize, e.g., `std::accumulate` (with the additional precondition of commutativity), or merge sort?
@@ -11908,21 +11908,21 @@ Reading from a vararg assumes that the correct type was actually passed. Passing
 
     int sum(...) {
         // ...
-        while( /*...*/ )
+        while(/*...*/)
             result += va_arg(list, int); // BAD, assumes it will be passed ints
         // ...
     }
 
-    sum( 3, 2 ); // ok
-    sum( 3.14159, 2.71828 ); // BAD, undefined
+    sum(3, 2); // ok
+    sum(3.14159, 2.71828); // BAD, undefined
 
     template<class ...Args>
     auto sum(Args... args) { // GOOD, and much more flexible
         return (... + args); // note: C++17 "fold expression"
     }
 
-    sum( 3, 2 ); // ok: 5
-    sum( 3.14159, 2.71828 ); // ok: ~5.85987
+    sum(3, 2); // ok: 5
+    sum(3.14159, 2.71828); // ok: ~5.85987
 
 Note: Declaring a `...` parameter is sometimes useful for techniques that don't involve actual argument passing, notably to declare “take-anything” functions so as to disable "everything else" in an overload set or express a catchall case in a template metaprogram.
 
@@ -12522,7 +12522,7 @@ Impossible.
 
     #include < map >
 
-    int main ( int argc , char * argv [ ] )
+    int main (int argc , char * argv [ ])
     {
     	// ...
     }
@@ -13021,7 +13021,7 @@ Consider the following advice and requirements found in the C++ Standard:
 Deallocation functions, including specifically overloaded `operator delete` and `operator delete[]`, fall into the same category, because they too are used during cleanup in general, and during exception handling in particular, to back out of partial work that needs to be undone.
 Besides destructors and deallocation functions, common error-safety techniques rely also on `swap` operations never failing--in this case, not because they are used to implement a guaranteed rollback, but because they are used to implement a guaranteed commit. For example, here is an idiomatic implementation of `operator=` for a type `T` that performs copy construction followed by a call to a no-fail `swap`:
 
-    T& T::operator=( const T& other ) {
+    T& T::operator=(const T& other) {
         auto temp = other;
         swap(temp);
     }
