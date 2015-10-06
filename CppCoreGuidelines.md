@@ -166,15 +166,15 @@ For that reason, they emphasize possibilities for range checking, for avoiding d
 Partly to achieve that and partly to minimize obscure code as a source of errors, the rules also emphasize simplicity and the hiding of necessary complexity behind well-specified interfaces.
 
 Many of the rules are prescriptive.
-We are uncomfortable with rules that simply states "don't do that!" without offering an alternative.
+We are uncomfortable with rules that simply state "don't do that!" without offering an alternative.
 One consequence of that is that some rules can be supported only by heuristics, rather than precise and mechanically verifiable checks.
 Other rules articulate general principles. For these more general rules, more detailed and specific rules provide partial checking.
 
 These guidelines address a core of C++ and its use.
 We expect that most large organizations, specific application areas, and even large projects will need further rules, possibly further restrictions, and further library support.
-For example, hard-real time programmers typically can't use free store (dynamic memory) freely and will be restricted in their choice of libraries.
+For example, hard real-time programmers typically can't use free store (dynamic memory) freely and will be restricted in their choice of libraries.
 We encourage the development of such more specific rules as addenda to these core guidelines.
-Build your ideal small foundation library and use that, rather than lowering you level of programming to glorified assembly code.
+Build your ideal small foundation library and use that, rather than lowering your level of programming to glorified assembly code.
 
 The rules are designed to allow [gradual adoption](#S-modernizing).
 
@@ -188,7 +188,7 @@ The rules are not intended to be minimal or orthogonal.
 In particular, general rules can be simple, but unenforceable.
 Also, it is often hard to understand the implications of a general rule.
 More specialized rules are often easier to understand and to enforce, but without general rules, they would just be a long list of special cases.
-We provide rules aimed as helping novices as well as rules supporting expert use.
+We provide rules aimed at helping novices as well as rules supporting expert use.
 Some rules can be completely enforced, but others are based on heuristics.
 
 These rules are not meant to be read serially, like a book.
@@ -226,7 +226,7 @@ But different people have different needs.
 But people don't like to read lots of rules.
 But people can't remember many rules.
 So, we need subsetting to meet a variety of needs.
-But arbitrary subsetting leads to chaos: We want guidelines that help a lot of people, make code more uniform, and strongly encourages people to modernize their code.
+But arbitrary subsetting leads to chaos: We want guidelines that help a lot of people, make code more uniform, and strongly encourage people to modernize their code.
 We want to encourage best practices, rather than leave all to individual choices and management pressures.
 The ideal is to use all rules; that gives the greatest benefits.
 
@@ -325,7 +325,7 @@ Philosophy rules summary:
 * [P.5: Prefer compile-time checking to run-time checking](#Rp-compile-time)
 * [P.6: What cannot be checked at compile time should be checkable at run time](#Rp-run-time)
 * [P.7: Catch run-time errors early](#Rp-early)
-* [P.8: Don't leak any resource](#Rp-leak)
+* [P.8: Don't leak any resources](#Rp-leak)
 * [P.9: Don't waste time or space](#Rp-waste)
 
 Philosophical rules are generally not mechanically checkable.
@@ -337,7 +337,7 @@ Without a philosophical basis the more concrete/specific/checkable rules lack ra
 ##### Reason
 
 Compilers don't read comments (or design documents) and neither do many programmers (consistently).
-What is expressed in code has a defined semantics and can (in principle) be checked by compilers and other tools.
+What is expressed in code has defined semantics and can (in principle) be checked by compilers and other tools.
 
 ##### Example
 
@@ -383,8 +383,8 @@ A much clearer expression of intent would be:
 A well-designed library expresses intent (what is to be done, rather than just how something is being done) far better than direct use of language features.
 
 A C++ programmer should know the basics of the standard library, and use it where appropriate.
-Any programmer should know the basics of the foundation libraries of the project being worked on, and use it appropriately.
-Any programmer using these guidelines should know the [Guidelines Support Library](#S-gsl), and use it appropriately.
+Any programmer should know the basics of the foundation libraries of the project being worked on, and use them appropriately.
+Any programmer using these guidelines should know the [guideline support library](#S-gsl), and use it appropriately.
 
 ##### Example
 
@@ -487,7 +487,7 @@ Look for common patterns for which there are better alternatives
 
 * simple `for` loops vs. range-`for` loops
 * `f(T*, int)` interfaces vs. `f(array_view<T>)` interfaces
-* loop variable in a too large scope
+* loop variables in too large a scope
 * naked `new` and `delete`
 * functions with many arguments of built-in types
 
@@ -557,8 +557,8 @@ Code clarity and performance. You don't need to write error handlers for errors 
 
 ##### Enforcement
 
-* look for pointer arguments
-* look for run-time checks for range violations.
+* Look for pointer arguments.
+* Look for run-time checks for range violations.
 
 ### <a name="Rp-run-time"></a> P.6: What cannot be checked at compile time should be checkable at run time
 
@@ -656,7 +656,7 @@ How do we transfer both ownership and all information needed for validating use?
 
 ##### Enforcement
 
-* Flag (pointer, count) interfaces (this will flag a lot of examples that can't be fixed for compatibility reasons)
+* Flag (pointer, count)-style interfaces (this will flag a lot of examples that can't be fixed for compatibility reasons)
 * ???
 
 ### <a name="Rp-early"></a> P.7: Catch run-time errors early
@@ -684,7 +684,7 @@ Avoid errors leading to (possibly unrecognized) wrong results.
     }
 
 Here we made a small error in `use1` that will lead to corrupted data or a crash.
-The (pointer, count) interface leaves `increment1()` with no realistic way of  defending itself against out-of-range errors.
+The (pointer, count)-style interface leaves `increment1()` with no realistic way of  defending itself against out-of-range errors.
 Assuming that we could check subscripts for out of range access, the error would not be discovered until `p[10]` was accessed.
 We could check earlier and improve the code:
 
@@ -762,19 +762,19 @@ There are cases where checking early is dumb because you may not ever need the v
         ???
     };
 
-The physical law for a jet (`e*e < x*x + y*y + z*z`) is not an invariant because the possibility of measurement errors.
+The physical law for a jet (`e*e < x*x + y*y + z*z`) is not an invariant because of the possibility for measurement errors.
 
 ???
 
 ##### Enforcement
 
 * Look at pointers and arrays: Do range-checking early
-* Look at conversions: eliminate or mark narrowing conversions.
+* Look at conversions: Eliminate or mark narrowing conversions
 * Look for unchecked values coming from input
 * Look for structured data (objects of classes with invariants) being converted into strings
 * ???
 
-### <a name="Rp-leak"></a> P.8: Don't leak any resource
+### <a name="Rp-leak"></a> P.8: Don't leak any resources
 
 ##### Reason
 
@@ -805,7 +805,7 @@ Prefer [RAII](#Rr-raii):
 
 ##### Enforcement
 
-* Look at pointers: classify them into non-owners (the default) and owners.
+* Look at pointers: Classify them into non-owners (the default) and owners.
   Where feasible, replace owners with standard-library resource handles (as in the example above).
   Alternatively, mark an owner as such using `owner` from [the GSL](#S-gsl).
 * Look for naked `new` and `delete`
@@ -867,7 +867,7 @@ There are several more performance bugs and gratuitous complication.
 
 An individual example of waste is rarely significant, and where it is significant, it is typically easily eliminated by an expert.
 However, waste spread liberally across a code base can easily be significant and experts are not always as available as we would like.
-The aim of this rule (and the more specific rules that supports it) is to eliminate most waste related to the use of C++ before it happens.
+The aim of this rule (and the more specific rules that support it) is to eliminate most waste related to the use of C++ before it happens.
 After that, we can look at waste related to algorithms and requirements, but that is beyond the scope of these guidelines.
 
 ##### Enforcement
@@ -927,7 +927,7 @@ Controlling the behavior of a function through a global (namespace scope) variab
 It will not be obvious to a caller that the meaning of two calls of `rnd(7.2)` might give different results.
 
 **Exception**: Sometimes we control the details of a set of operations by an environment variable, e.g., normal vs. verbose output or debug vs. optimized.
-The use of a non-local control is potentially confusing, but controls only implementation details of an otherwise fixed semantics.
+The use of a non-local control is potentially confusing, but controls only implementation details of otherwise fixed semantics.
 
 ##### Example, bad
 
@@ -935,7 +935,7 @@ Reporting through non-local variables (e.g., `errno`) is easily ignored. For exa
 
     fprintf(connection, "logging: %d %d %d\n", x, y, s); // don't: no test of printf's return value
 
-What if the connection goes down so than no logging output is produced? See Rule I.??.
+What if the connection goes down so that no logging output is produced? See Rule I.??.
 
 **Alternative**: Throw an exception. An exception cannot be ignored.
 
@@ -983,9 +983,9 @@ Global constants are useful.
 The rule against global variables applies to namespace scope variables as well.
 
 **Alternative**: If you use global (more generally namespace scope data) to avoid copying, consider passing the data as an object by const reference.
-Another solution is to define the data as the state of some objects and the operations as member functions.
+Another solution is to define the data as the state of some object and the operations as member functions.
 
-**Warning**: Beware of data races: if one thread can access nonlocal data (or data passed by reference) while another thread execute the callee, we can have a data race.
+**Warning**: Beware of data races: If one thread can access nonlocal data (or data passed by reference) while another thread executes the callee, we can have a data race.
 Every pointer or reference to mutable data is a potential data race.
 
 ##### Note
@@ -1036,10 +1036,10 @@ If you, as many do, define a singleton as a class for which only one object is c
 
 ##### Enforcement
 
-Very hard in general
+Very hard in general.
 
-* Look for classes with name that includes `singleton`
-* Look for classes for which only a single object is created (by counting objects or by examining constructors)
+* Look for classes with names that include `singleton`.
+* Look for classes for which only a single object is created (by counting objects or by examining constructors).
 
 ### <a name="Ri-typed"></a> I.4: Make interfaces precisely and strongly typed
 
@@ -1160,8 +1160,8 @@ Ideally, that `Expects(x >= 0)` should be part of the interface of `sqrt()` but 
 
 ##### Note
 
-Prefer a formal specification of requirements, such as `Expects(p != nullptr);` If that is infeasible, use English text in comments, such as
-`// the sequence [p:q) is ordered using <`
+Prefer a formal specification of requirements, such as `Expects(p != nullptr);`. If that is infeasible, use English text in comments, such as
+`// the sequence [p:q) is ordered using <`.
 
 ##### Note
 
@@ -1173,7 +1173,7 @@ We don't need to mention it for each member function.
 
 (Not enforceable)
 
-**See also**: The rules for passing pointers.
+**See also**: The rules for passing pointers. ???
 
 ### <a name="Ri-expects"></a> I.6: Prefer `Expects()` for expressing preconditions
 
@@ -1449,7 +1449,7 @@ That is, its value must be `delete`d or transferred to another owner, as is done
 
 `owner` is used similarly in the implementation of resource handles.
 
-`owner` is defined in the [Guideline Support Library](#S-gsl).
+`owner` is defined in the [guideline support library](#S-gsl).
 
 ##### Note
 
