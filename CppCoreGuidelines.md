@@ -4403,7 +4403,7 @@ After a copy `x` and `y` can be independent objects (value semantics, the way no
 
     bool operator==(const X& a, const X& b)
     {
-        return sz == a.sz && equal(p, p + sz, a.p, a.p + sz);
+        return a.sz == b.sz && equal(a.p, a.p + a.sz, b.p, b.p + b.sz);
     }
 
     X::X(const X& a)
