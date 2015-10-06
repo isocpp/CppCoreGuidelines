@@ -4434,7 +4434,7 @@ After a copy `x` and `y` can be independent objects (value semantics, the way no
 
     bool operator==(const X2& a, const X2& b)
     {
-        return sz == a.sz && p == a.p;
+        return a.sz == b.sz && a.p == b.p;
     }
 
     X2 x;
