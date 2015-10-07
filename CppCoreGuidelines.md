@@ -12952,51 +12952,51 @@ Never allow an error to be reported from a destructor, a resource deallocation f
 1. `nefarious` objects are hard to use safely even as local variables:
 
 
-    void test(string& s)
-    {
-        nefarious n;          // trouble brewing
-        string copy = s;      // copy the string
-    } // destroy copy and then n
+        void test(string& s)
+        {
+            nefarious n;          // trouble brewing
+            string copy = s;      // copy the string
+        } // destroy copy and then n
 
-Here, copying `s` could throw, and if that throws and if `n`'s destructor then also throws, the program will exit via `std::terminate` because two exceptions can't be propagated simultaneously.
+    Here, copying `s` could throw, and if that throws and if `n`'s destructor then also throws, the program will exit via `std::terminate` because two exceptions can't be propagated simultaneously.
 
 2. Classes with `nefarious` members or bases are also hard to use safely, because their destructors must invoke `nefarious`' destructor, and are similarly poisoned by its poor behavior:
 
 
-    class innocent_bystander {
-        nefarious member;     // oops, poisons the enclosing class's destructor
-        // ...
-    };
+        class innocent_bystander {
+            nefarious member;     // oops, poisons the enclosing class's destructor
+            // ...
+        };
 
-    void test(string& s)
-    {
-        innocent_bystander i; // more trouble brewing
-        string copy = s;      // copy the string
-    } // destroy copy and then i
+        void test(string& s)
+        {
+            innocent_bystander i; // more trouble brewing
+            string copy2 = s;      // copy the string
+        } // destroy copy and then i
 
-Here, if constructing `copy2` throws, we have the same problem because `i`'s destructor now also can throw, and if so we'll invoke `std::terminate`.
+    Here, if constructing `copy2` throws, we have the same problem because `i`'s destructor now also can throw, and if so we'll invoke `std::terminate`.
 
 3. You can't reliably create global or static `nefarious` objects either:
 
 
-    static nefarious n;       // oops, any destructor exception can't be caught
+        static nefarious n;       // oops, any destructor exception can't be caught
 
 4. You can't reliably create arrays of `nefarious`:
 
 
-    void test()
-    {
-        std::array<nefarious, 10> arr; // this line can std::terminate(!)
-    }
+        void test()
+        {
+            std::array<nefarious, 10> arr; // this line can std::terminate(!)
+        }
 
-The behavior of arrays is undefined in the presence of destructors that throw because there is no reasonable rollback behavior that could ever be devised. Just think: What code can the compiler generate for constructing an `arr` where, if the fourth object's constructor throws, the code has to give up and in its cleanup mode tries to call the destructors of the already-constructed objects... and one or more of those destructors throws? There is no satisfactory answer.
+    The behavior of arrays is undefined in the presence of destructors that throw because there is no reasonable rollback behavior that could ever be devised. Just think: What code can the compiler generate for constructing an `arr` where, if the fourth object's constructor throws, the code has to give up and in its cleanup mode tries to call the destructors of the already-constructed objects... and one or more of those destructors throws? There is no satisfactory answer.
 
 5. You can't use `Nefarious` objects in standard containers:
 
 
-    std::vector<nefarious> vec(10);   // this is line can std::terminate()
+        std::vector<nefarious> vec(10);   // this is line can std::terminate()
 
-The standard library forbids all destructors used with it from throwing. You can't store `nefarious` objects in standard containers or use them with any other part of the standard library.
+    The standard library forbids all destructors used with it from throwing. You can't store `nefarious` objects in standard containers or use them with any other part of the standard library.
 
 ##### Note
 
