@@ -1930,7 +1930,7 @@ Small simple functions are easily inlined where the cost of a function call is s
 * Flag functions that do not "fit on a screen."
   How big is a screen? Try 60 lines by 140 characters; that's roughly the maximum that's comfortable for a book page.
 * Flag functions that are too complex. How complex is too complex?
-  You could use cyclomatic complexity. Try "more that 10 logical path through." Count a simple switch as one path.
+  You could use cyclomatic complexity. Try "more than 10 logical path through." Count a simple switch as one path.
 
 ### <a name="Rf-constexpr"></a> F.4: If a function may have to be evaluated at compile time, declare it `constexpr`
 
@@ -3286,7 +3286,7 @@ For example, a class with a (pointer, size) pair of member and a destructor that
 
 ##### Reason
 
-The semantics of the special functions are closely related, so it one needs to be non-default, the odds are that other need modification.
+The semantics of the special functions are closely related, so if one needs to be non-default, the odds are that others need modification too.
 
 ##### Example, bad
 
@@ -3911,7 +3911,7 @@ Leaving behind an invalid object is asking for trouble.
 
 ##### Note
 
-For a variable definition (e.g., on the stack or as a member of another object) there is no explicit function call from which an error code could be returned. Leaving behind an invalid object an relying on users to consistently check an `is_valid()` function before use is tedious, error-prone, and inefficient.
+For a variable definition (e.g., on the stack or as a member of another object) there is no explicit function call from which an error code could be returned. Leaving behind an invalid object and relying on users to consistently check an `is_valid()` function before use is tedious, error-prone, and inefficient.
 
 **Exception**: There are domains, such as some hard-real-time systems (think airplane controls) where (without additional tool support) exception handling is not sufficiently predictable from a timing perspective. There the `is_valid()` technique must be used. In such cases, check `is_valid()` consistently and immediately to simulate [RAII](#Rr-raii).
 
@@ -4901,7 +4901,7 @@ Providing a nonmember `swap` function in the same namespace as your type for cal
         y = tmp;
     }
 
-This is not just slow, but if a memory allocation occur for the elements in `tmp`, this `swap` may throw and would make STL algorithms fail is used with them.
+This is not just slow, but if a memory allocation occur for the elements in `tmp`, this `swap` may throw and would make STL algorithms fail if used with them.
 
 ##### Enforcement
 
@@ -4992,7 +4992,7 @@ It is really hard to write a foolproof and useful `==` for a hierarchy.
     B& b2 = d2;
     b2 == d;	// compares name and number, ignores d2's and d's character
 
-Of course there are way of making `==` work in a hierarchy, but the naive approaches do not scale
+Of course there are ways of making `==` work in a hierarchy, but the naive approaches do not scale
 
 ##### Enforcement
 
@@ -5184,7 +5184,7 @@ An abstract class typically does not have any data for a constructor to initiali
 ##### Exceptions
 
 * A base class constructor that does work, such as registering an object somewhere, may need a constructor.
-* In extremely rare cases, you might find a reasonable for an abstract class to have a bit of data shared by all derived classes
+* In extremely rare cases, you might find it reasonable for an abstract class to have a bit of data shared by all derived classes
   (e.g., use statistics data, debug information, etc.); such classes tend to have constructors. But be warned: Such classes also tend to be prone to requiring virtual inheritance.
 
 ##### Enforcement
@@ -6302,13 +6302,13 @@ They are a notable source of errors.
     {
         Record* p1 = static_cast<Record*>(malloc(sizeof(Record)));
         // p1 may be nullptr
-        // *p1 is not initialized; in particular, that string isn't a string, but a string-sizes bag of bits
+        // *p1 is not initialized; in particular, that string isn't a string, but a string-sized bag of bits
 
         auto p2 = new Record;
 
         // unless an exception is thrown, *p2 is default initialized
         auto p3 = new(nothrow) Record;
-        // p3 may be nullptr; if not, *p2 is default initialized
+        // p3 may be nullptr; if not, *p3 is default initialized
 
         // ...
 
@@ -7205,7 +7205,7 @@ Flag non-function arguments with multiple declarators involving declarator opera
 ##### Reason
 
 * Simple repetition is tedious and error prone.
-* When you us `auto`, the name of the declared entity is in a fixed position in the declaration, increasing readability.
+* When you use `auto`, the name of the declared entity is in a fixed position in the declaration, increasing readability.
 * In a template function declaration the return type can be a member type.
 
 ##### Example
@@ -8156,7 +8156,7 @@ Unnamed constants embedded in expressions are easily overlooked and often hard t
     for (int m = 1; m <= 12; ++m)	// don't: magic constant 12
         cout << month[m] << '\n';
 
-No, we don't all know that there a 12 month, numbered 1..12, in a year. Better:
+No, we don't all know that there are 12 months, numbered 1..12, in a year. Better:
 
     constexpr int last_month = 12;	// months are numbered 1..12
 
@@ -8503,7 +8503,7 @@ Incrementing a value beyond a maximum value can lead to memory corruption and un
 
 ##### Reason
 
-Decrementing a value beyond a maximum value can lead to memory corruption and undefined behavior.
+Decrementing a value beyond a minimum value can lead to memory corruption and undefined behavior.
 
 ##### Example, bad
 
@@ -9211,7 +9211,7 @@ A user-defined type is unlikely to clash with other people's exceptions.
 
 ##### Note
 
-The standard-library classes derived from `exception` should be used only as base classes or for exceptions that require only "generic" handling. Like built-in types, their use could class with other people's use of them.
+The standard-library classes derived from `exception` should be used only as base classes or for exceptions that require only "generic" handling. Like built-in types, their use could clash with other people's use of them.
 
 ##### Example, don't
 
@@ -9912,7 +9912,7 @@ and should be used only as building blocks for meaningful concepts, rather than 
 
     int x = 7;
     int y = 9;
-    auto z = plus(x, y);	// z = 18
+    auto z = plus(x, y);	// z = 16
 
     string xx = "7";
     string yy = "9";
@@ -10073,7 +10073,7 @@ The programmer (in a library) must define `is_contiguous` (a trait) appropriatel
 
 ##### Note
 
-Traits can be trains classes or type traits.
+Traits can be trait classes or type traits.
 These can be user-defined or standard-library ones.
 Prefer the standard-library ones.
 
@@ -10560,7 +10560,7 @@ There are three major ways to let calling code customize a template.
         template<class T>
         void test(T t)
         {
-            f(t);     // require f(/*T*/) be available in caller's cope or in T's namespace
+            f(t);     // require f(/*T*/) be available in caller's scope or in T's namespace
         }
 
 * Invoke a "trait" -- usually a type alias to compute a type, or a `constexpr` function to compute a value, or in rarer cases a traditional traits template to be specialized on the user's type.
@@ -11056,7 +11056,7 @@ Use the least-derived class that has the functionality you need.
         void j();
     };
 
-    void myfunc(derived& param)  // bad, unless there is a specific reason for limiting to derived1 objects only
+    void myfunc(derived1& param)  // bad, unless there is a specific reason for limiting to derived1 objects only
     {
         use(param.f());
         use(param.g());
@@ -12019,7 +12019,7 @@ Dynamic accesses into arrays are difficult for both tools and humans to validate
     }
 
     // ALTERNATIVE B: Use at() for access
-    void f()(array<int, 10> a, int pos)
+    void f(array<int, 10> a, int pos)
     {
         at(a, pos / 2) = 1; // OK
         at(a, pos - 1) = 2; // OK
@@ -12213,7 +12213,7 @@ A `*_view<T>` refers to zero or more mutable `T`s unless `T` is a `const` type.
 
 "Pointer arithmetic" is best done within `array_view`s.
 A `char*` that points to something that is not a C-style string (e.g., a pointer into an input buffer) should be represented by an `array_view`.
-There is no really good way to say "pointer to a single `char` (`string_view{p, 1}` can do that, and `T*` where `T` is a `char` in a template that has not been specialized for C-style strings).
+There is no really good way to say "pointer to a single `char`" (`string_view{p, 1}` can do that, and `T*` where `T` is a `char` in a template that has not been specialized for C-style strings).
 
 * `zstring`		// a `char*` supposed to be a C-style string; that is, a zero-terminated sequence of `char` or `null_ptr`
 * `czstring`	// a `const char*` supposed to be a C-style string; that is, a zero-terminated sequence of `const` `char` or `null_ptr`
@@ -12543,7 +12543,7 @@ When declaring a class use the following order
 * functions
 * data
 
-Used the `public` before `protected` before `private` order.
+Use the `public` before `protected` before `private` order.
 
 Private types and functions can be placed with private data.
 
@@ -13218,7 +13218,7 @@ To avoid extremely hard-to-find errors. Dereferencing such a pointer is undefine
         *p = "Evil!";		// undefined behavior: we don't know what (if anything) is allocated a location p
     }
 
-The `string`s of `v` are destroyed upon exit from `bad()` and so is `v` itself. This the returned pointer points to unallocated memory on the free store. This memory (pointed into by `p`) may have been reallocated by the time `*p` is executed. There may be no `string` to read and a write through `p` could easily corrupt objects of unrelated types.
+The `string`s of `v` are destroyed upon exit from `bad()` and so is `v` itself. The returned pointer points to unallocated memory on the free store. This memory (pointed into by `p`) may have been reallocated by the time `*p` is executed. There may be no `string` to read and a write through `p` could easily corrupt objects of unrelated types.
 
 ##### Enforcement
 
