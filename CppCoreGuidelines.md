@@ -1,6 +1,6 @@
 # <a name="main"></a> C++ Core Guidelines
 
-September 9, 2015
+October 7, 2015
 
 Editors:
 
@@ -53,6 +53,7 @@ Supporting sections:
 * [Appendix A: Libraries](#S-libraries)
 * [Appendix B: Modernizing code](#S-modernizing)
 * [Appendix C: Discussion](#S-discussion)
+* [Glossary](#S-glossary)
 * [To-do: Unclassified proto-rules](#S-unclassified)
 
 or look at a specific language feature
@@ -305,6 +306,7 @@ Supporting sections:
 * [Appendix A: Libraries](#S-libraries)
 * [Appendix B: Modernizing code](#S-modernizing)
 * [Appendix C: Discussion](#S-discussion)
+* [Glossary](#S-glossary)
 * [To-do: Unclassified proto-rules](#S-unclassified)
 
 These sections are not orthogonal.
@@ -3911,11 +3913,20 @@ Leaving behind an invalid object is asking for trouble.
 
 ##### Note
 
-For a variable definition (e.g., on the stack or as a member of another object) there is no explicit function call from which an error code could be returned. Leaving behind an invalid object an relying on users to consistently check an `is_valid()` function before use is tedious, error-prone, and inefficient.
+For a variable definition (e.g., on the stack or as a member of another object) there is no explicit function call from which an error code could be returned.
+Leaving behind an invalid object an relying on users to consistently check an `is_valid()` function before use is tedious, error-prone, and inefficient.
 
-**Exception**: There are domains, such as some hard-real-time systems (think airplane controls) where (without additional tool support) exception handling is not sufficiently predictable from a timing perspective. There the `is_valid()` technique must be used. In such cases, check `is_valid()` consistently and immediately to simulate [RAII](#Rr-raii).
+**Exception**: There are domains, such as some hard-real-time systems (think airplane controls) where (without additional tool support) exception handling is not sufficiently predictable from a timing perspective.
+There the `is_valid()` technique must be used. In such cases, check `is_valid()` consistently and immediately to simulate [RAII](#Rr-raii).
 
-**Alternative**: If you feel tempted to use some "post-constructor initialization" or "two-stage initialization" idiom, try not to do that. If you really have to, look at [factory functions](#Rc-factory).
+**Alternative**: If you feel tempted to use some "post-constructor initialization" or "two-stage initialization" idiom, try not to do that.
+If you really have to, look at [factory functions](#Rc-factory).
+
+##### Note
+
+One reason people have used `init()` functions rather than doing the initialization work in a constructor has been to avoid code replication.
+[Delegating constructors](#Rc-delegating) and [default member initialization](#Rc-in-class-initializer) do that better.
+Another reason is been to delay initialization until an object is needed; the solution to that is often [not to declare a variable until it can be properly initialized](#Res-init)
 
 ##### Enforcement
 
@@ -5354,7 +5365,7 @@ This kind of "vector" isn't meant to be used as a base class at all.
 
 ##### Reason
 
- `protected` data is a source of complexity and errors.
+`protected` data is a source of complexity and errors.
 `protected` data complicated the statement of invariants.
 `protected` data inherently violates the guidance against putting data in base classes, which usually leads to having to deal virtual inheritance as well.
 
@@ -5374,7 +5385,19 @@ Flag classes with `protected` data.
 
 ##### Reason
 
-If they don't, the type is confused about what it's trying to do. Only if the type is not really an abstraction, but just a convenience bundle to group individual variables with no larger behavior (a behaviorless bunch of variables), make all data members `public` and don't provide functions with behavior. Otherwise, the type is an abstraction, so make all its data members `private`. Don't mix `public` and `private` data.
+Prevention of logical confusion leading to errors.
+If the data members don't have the same access level, the type is confused about what it's trying to do.
+Is it a type that maintains an invariant os simply a collection of values?
+
+##### Note
+
+This leaves us with three alternatives:
+
+* *All public*: If you're writing an aggregate bundle-of-variables without an invariant across those variables, then all the variables should be public.
+[Ddeclare such classes `struct` rather than `class`](#Rc-struct)
+* *All protected*: [Avoid `protected` data](#Rh-protected).
+* *All private*: If you’re writing an type that maintains an invariant, then all the variables should be private – it should be encapsulated.
+This is the vast majority of classes. 
 
 ##### Example
 
@@ -5892,21 +5915,42 @@ Macros do not obey scope and type rules.
 
 ##### Example
 
-    ???
+First some bad old code
+
+    // webcolors.h (third party header)
+    #define RED   0xFF0000
+    #define GREEN 0x00FF00
+    #define BLUE  0x0000FF
+
+    // productinfo.h
+    // The following define product subtypes based on color
+    #define RED    0
+    #define PURPLE 1
+    #define BLUE   2
+
+    int webby = BLUE;   // webby==2; probably not what was desired
+    
+instead use an `enum`:
+
+    enum class Webcolor { red=0xFF0000, green=0x00FF00, blue=0x0000FF };
+    enum class Productinfo { red=0, purple=1, blue=2 };
+
+    int webby = blue;   // error: be specific
+    Webcolor webby = Webcolor::blue;
 
 ##### Enforcement
 
-???
+Flag macros that define integer values
 
 ### <a name="Renum-set"></a> Enum.2: Use enumerations to represent sets of named constants
 
 ##### Reason
 
-???
+An enumeration shows the enumerators to be related and can be a named type
 
 ##### Example
 
-    ???
+    enum class Webcolor { red=0xFF0000, green=0x00FF00, blue=0x0000FF };
 
 ##### Enforcement
 
@@ -5920,7 +5964,19 @@ To minimize surprises.
 
 ##### Example
 
-    ???
+    enum Webcolor { red=0xFF0000, green=0x00FF00, blue=0x0000FF };
+    enum Productinfo { red=0, purple=1, blue=2 };
+
+    int webby = blue;   // error, ambiguous: be specific
+    Webcolor webby = Webcolor::blue;
+    
+instead use an `enum class`:
+
+    enum class Webcolor { red=0xFF0000, green=0x00FF00, blue=0x0000FF };
+    enum class Productinfo { red=0, purple=1, blue=2 };
+
+    int webby = blue;   // error: blue undefined in this scope
+    Webcolor webby = Webcolor::blue;
 
 ##### Enforcement
 
@@ -6871,7 +6927,7 @@ Statement rules:
 * [ES.75: Avoid `do`-statements](#Res-do)
 * [ES.76: Avoid `goto`](#Res-goto)
 * [ES.77: ??? `continue`](#Res-continue)
-* [ES.78: ??? `break`](#Res-break)
+* [ES.78: Always end non-empty a `case` with a `break`](#Res-break)
 * [ES.79: ??? `default`](#Res-default)
 * [ES.85: Make empty statements visible](#Res-empty)
 
@@ -7248,6 +7304,8 @@ Flag redundant repetition of type names in a declaration.
 ##### Reason
 
 Avoid used-before-set errors and their associated undefined behavior.
+Avoid problems with comprehension of complex initialization.
+Simplify refactoring.
 
 ##### Example
 
@@ -7267,13 +7325,81 @@ No, `i = 7` does not initialize `i`; it assigns to it. Also, `i` can be read in 
         // ...
     }
 
+##### Note
+
+The *always initialize* rule is deliberately stronger than the *an object must be set before used* language rule.
+The latter, more relaxed rule, catches the technical bugs, but:
+
+* It leads to less readable code
+* It encourages people to declare names in greater than necessary scopes
+* It leads to harder to read code
+* It leads to logic bugs by encouraging complex code
+* It hampers refactoring
+
+The *always initialize* rule is a style rule aimed to improve maintainability as well as a rule protecting against used-before-set errors.
+
+##### Example
+
+Here is an example that is often considered to demonstrate the need for a more relaxed rule for initialization
+
+    widget i, j; // "widget" a type that's expensive to initialize, possibly a large POD
+
+    if (cond) {     // bad: i and j are initialized "late"
+        i = f1();
+        j = f2();
+    }
+    else {
+        i = f3();
+        j = f4();
+    }
+
+This cannot trivially be rewritten to initialize `i` and `j` with initializers.
+Note that for types with a default constructor, attempting to postpone initialization simply leads to a default initialization followed by an assignment.
+A popular reason for such examples is "efficiency", but a compiler that can detect whether we made a used-before-set error can also eliminate any redundant double initialization.
+
+At the cost of repeating `cond` we could write
+
+    widget i = (cond) ? f1() : f3();
+    widget j = (cond) ? f2() : f4();
+    
+Assuming that there is a logical connection between `i` and `j`, that connection should probably be expressed in code:
+
+    pair<widget,widget> make_related_widgets(bool x)
+    {
+        return (x) ? {f1(),f2()} : {f3(),f4() };
+    }
+    
+    auto init = make_related_widgets(cond);
+    widget i = init.first;
+    widget j = init.second;
+    
+Obviously, what we really would like is a construct that initialized n variables from a `tuple`. For example:
+ 
+    auto {i,j} = make_related_widgets(cond);    // Not C++14
+    
+Today, we might approximate that using `tie()`:
+
+    widget i;       // bad: uninitialized variable
+    widget j;
+    tie(i,j) = make_related_widgets(cond);
+
+This may be seen as an example of the *immediately initialize from input* exception below.
+
+Creating optimal and equivalent code from all of these examples should be well within the capabilities of modern C++ compilers.
+
+##### Note
+
+Complex initialization has been popular with clever programmers for decades.
+It has also been a major source of errors and complexity.
+Many such errors are introduced during maintenance years after the initial implementation.
+
 ##### Exception
 
 It you are declaring an object that is just about to be initialized from input, initializing it would cause a double initialization.
 However, beware that this may leave uninitialized data beyond the input - and that has been a fertile source of errors and security breaches:
 
     constexpr int max = 8*1024;
-    int buf[max];					// OK, but suspicious
+    int buf[max];					// OK, but suspicious: uninitialized
     f.read(buf, max);
 
 The cost of initializing that array could be significant in some situations.
@@ -7283,10 +7409,10 @@ However, such examples do tend to leave uninitialized variables accessible, so t
     int buf[max] = {0};				// better in some situations
     f.read(buf, max);
 
-When feasible use a library function that is know not to overflow. For example:
+When feasible use a library function that is known not to overflow. For example:
 
     string s;	// s is default initialized to ""
-    cin >> s;		// s expands to hold the string
+    cin >> s;	// s expands to hold the string
 
 Don't consider simple variables that are targets for input operations exceptions to this rule:
 
@@ -7302,41 +7428,55 @@ In the not uncommon case where the input target and the input operation get sepa
 
 A good optimizer should know about input operations and eliminate the redundant operation.
 
-##### Exception
+##### Example:
 
-Sometimes, we want to initialize a set of variables with a call to a function that returns several values.
-That can lead to uninitialized variables (exceptly as for input operations):
+Using an `unitialized` value is a symptom of a problem and not a solution:
 
-    error_code ec;
-    Value v;
-    tie(ec, v) = get_value();	// get_value() returns a pair<error_code, Value>
+    widget i = uninit;  // bad
+    widget j = uninit;
+
+    // ...
+    use(i);         // possibly used before set
+    // ...
+    
+    if (cond) {     // bad: i and j are initialized "late"
+        i = f1();
+        j = f2();
+    }
+    else {
+        i = f3();
+        j = f4();
+    }
+
+Now the compiler cannot even simply detect a used-befor-set.
 
 ##### Note
 
 Sometimes, a lambda can be used as an initializer to avoid an uninitialized variable.
 
     error_code ec;
-    Value v = [&]() {
+    Value v = [&] {
         auto p = get_value();	// get_value() returns a pair<error_code, Value>
         ec = p.first;
         return p.second;
-    };
+    }();
 
 or maybe:
 
-    Value v = []() {
+    Value v = [] {
         auto p = get_value();	// get_value() returns a pair<error_code, Value>
         if (p.first) throw Bad_value{p.first};
         return p.second;
-    };
+    }();
 
 **See also**: [ES.28](#Res-lambda-init)
 
 ##### Enforcement
 
 * Flag every uninitialized variable.
-  Don't flag variables of user-defined types with default constructors.
-* Check that the uninitialized buffer is read into *immediately* after declaration.
+Don't flag variables of user-defined types with default constructors.
+* Check that an uninitialized buffer is written into *immediately* after declaration.
+Passing a uninitialized variable as a non-`const` reference argument can be assumed to be a write into the variable.
 
 ### <a name="Res-introduce"></a> ES.21: Don't introduce a variable (or constant) before you need to use it
 
@@ -7930,15 +8070,43 @@ This is an ad-hoc simulation of destructors. Declare your resources with handles
 
 ???
 
-### <a name="Res-break"></a> ES.78: Always end a `case` with a `break`
+### <a name="Res-break"></a> ES.78: Always end non-empty a `case` with a `break`
 
 ##### Reason
 
- ??? loop, switch ???
-
+ Accidentally leaving out a `break` is a fairly common bug.
+ A deliberate fallthrough is a maintenance hazard.
+ 
 ##### Example
 
-    ???
+    switch(eventType)
+    {
+    case Information:
+        update_status_bar();
+        break;
+    case Warning:
+        write_event_log();
+    case Error:
+        display_error_window(); // Bad
+        break;
+    }
+    
+It is easy to overlook the fallthrough. Be explicit:
+
+    switch(eventType)
+    {
+    case Information:
+        update_status_bar();
+        break;
+    case Warning:
+        write_event_log();
+        // fall through
+    case Error:
+        display_error_window(); // Bad
+        break;
+    }
+
+There is a proposal for a `[[fallthrough]]` annotation.
 
 ##### Note
 
@@ -7954,7 +8122,7 @@ Multiple case labels of a single statement is OK:
 
 ##### Enforcement
 
-???
+Flag all fall throughs from non-empty `case`s.
 
 ### <a name="Res-default"></a> ES.79: ??? `default`
 
@@ -12236,16 +12404,17 @@ Use `not_null<zstring>` for C-style strings that cannot be `nullptr`. ??? Do we 
 
 * `Expects`     // precondition assertion. Currently placed in function bodies. Later, should be moved to declarations.
                 // `Expects(p)` terminates the program unless `p == true`
-                // ??? `Expect` in under control of some options (enforcement, error message, alternatives to terminate)
+                // `Expect` in under control of some options (enforcement, error message, alternatives to terminate)
 * `Ensures`     // postcondition assertion.	Currently placed in function bodies. Later, should be moved to declarations.
+
+These assertions is currently macros (yuck!) pending standard commission decisions on contracts and assertion syntax.
 
 ## <a name="SS-utilities"></a> GSL.util: Utilities
 
 * `finally`		// `finally(f)` makes a `final_action{f}` with a destructor that invokes `f`
 * `narrow_cast`	// `narrow_cast<T>(x)` is `static_cast<T>(x)`
 * `narrow`		// `narrow<T>(x)` is `static_cast<T>(x)` if `static_cast<T>(x) == x` or it throws `narrowing_error`
-* `implicit`	// "Marker" to put on single-argument constructors to explicitly make them non-explicit
-  (I don't know how to do that except with a macro: `#define implicit`).
+* `[[implicit]]`	// "Marker" to put on single-argument constructors to explicitly make them non-explicit.
 * `move_owner`	// `p = move_owner(q)` means `p = q` but ???
 
 ## <a name="SS-concepts"></a> GSL.concept: Concepts
@@ -13305,6 +13474,42 @@ It is common to need an initial set of elements.
 ##### Enforcement
 
 When is a class a container? ???
+
+# <a name="S-glossary"></a> Glossary
+
+A relatively informal definition of twrms used in the guidelines
+
+* *abstract*: class a class that cannot be directly used to create objects; often used to define an interface to derived classes.
+A class is made abstract by having a pure virtual function or a protected constructor.
+* *abstraction*: a description of something that selectively and deliberately ignores (hides) details (e.g., implementation details); selective ignorance.
+* *address*: a value that allows us to find an object in a computer’s memory.
+* *algorithm*: a procedure or formula for solving a problem; a finite series of computational steps to produce a result. 
+* *alias*: an alternative way of referring to an object; often a name, pointer, or reference.
+* *application*: a program or a collection of programs that is considered an entity by its users. 
+* *approximation*: something (e.g., a value or a design) that is close to the perfect or ideal (value or design).
+Often an approximation is a result of trade-offs among ideals.
+* *argument*: a value passed to a function or a template, in which it is accessed through a parameter.
+* *array*: a homogeneous sequence of elements, usually numbered, e.g., [0:max).
+* *assertion*: a statement inserted into a program to state (assert) that something must always be true at this point in the program.
+* *base class*: a class used as the base of a class hierarchy. Typically a base class has one or more virtual functions.
+* *bit*: the basic unit of information in a computer. A bit can have the value 0 or the value 1.
+* *bug*: an error in a program.
+* *byte*: the basic unit of addressing in most computers. Typically, a byte holds 8 bits.
+* *class*: a user-defined type that may contain data members, function members, and member types.
+* *code*: a program or a part of a program; ambiguously used for both source code and object code.
+* *compiler*: a program that turns source code into object code.
+* *complexity*: a hard-to-precisely-define notion or measure of the difficulty of constructing a solution to a problem or of the solution itself.
+Sometimes complexity is used to (simply) mean an estimate of the number of operations needed to execute an algorithm.
+* *computation*: the execution of some code, usually taking some input and producing some output.
+* *concept*: (1) a notion, and idea; (2) a set of requirements, usually for a template argument
+* *concrete class*: class for which objects can be created.
+* ???
+* *Global variable*: Technically, a named object in namespace scope
+* ???
+* *STL*: The containers, iterators, and algorithms part of the standard library
+* ???
+
+
 
 # <a name="S-unclassified"></a> To-do: Unclassified proto-rules
 
