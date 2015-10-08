@@ -3807,7 +3807,7 @@ Also, the default for `int` would be better done as a [member initializer](#Rc-i
 
 ##### Enforcement
 
-* Flag classes with user-define copy operations but no destructor (a user-defined copy is a good indicator that the class has an invariant)
+* Flag classes with user-define copy operations but no constructor (a user-defined copy is a good indicator that the class has an invariant)
 
 ### <a name="Rc-complete"></a> C.41: A constructor should create a fully initialized object
 
