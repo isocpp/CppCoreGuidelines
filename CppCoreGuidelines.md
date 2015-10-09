@@ -1728,6 +1728,7 @@ Value return rules:
 * [F.43: Never (directly or indirectly) return a pointer to a local object](#Rf-dangle)
 * [F.44: Return a `T&` when "returning no object" isn't an option](#Rf-return-ref)
 * [F.45: Don't return a `T&&`](#Rf-return-ref-ref)
+* [F.46: `int` is the return type for `main()`](#Rf-main)
 
 Other function rules:
 
@@ -2827,6 +2828,28 @@ Functions can't capture local variables or be declared at local scope; if you ne
 ##### Enforcement
 
 * Warn on use of a named non-generic lambda (e.g., `auto x = [](int i){ /*...*/; };`) that captures nothing and appears at global scope. Write an ordinary function instead.
+
+
+### <a name="Rf-main"></a> F.46: `int` is the return type for `main()`
+
+##### Reason
+
+It's a language rule, but violated through "language extensions" so often that it is worth mentioning.
+Declaring `main` (the one global `main` of a program) `void` limits portability.
+
+##### Example
+
+        void main() { /* ... */ };  // bad, not C++
+        
+        int main()
+        {
+            std::cout << "This is the way to do it\n";
+        }
+
+##### Enforcement
+
+* The compiler should do it
+* If the compiler doesn't do it, let tools flag it
 
 ### <a name="Rf-default-args"></a> F.51: Prefer overloading over default arguments for virtual functions
 
@@ -5095,6 +5118,7 @@ Designing rules for classes in a hierarchy summary:
 * [C.136: Use multiple inheritance to represent the union of implementation attributes](#Rh-mi-implementation)
 * [C.137: Use `virtual` bases to avoid overly general base classes](#Rh-vbase)
 * [C.138: Create an overload set for a derived class and its bases with `using`](#Rh-using)
+* [C.139: Use `final` sparingly](#Rh-final)
 
 Accessing objects in a hierarchy rule summary:
 
@@ -5475,6 +5499,68 @@ This a relatively rare use because implementation can often be organized into a 
 ##### Example
 
     ???
+    
+    
+### <a name="Rh-final"></a> C.139: Use `final` sparingly
+    
+##### Reason
+
+Capping a hierarchy with 'final` is rarely needed for logical reasons and can be damaging to the extensibility of a hierarchy.
+Capping an individual virtual function with `final` is error-prone as that `final` can easily be overlooked when defining/overriding a set of functions.
+
+##### Example, bad
+
+    class Widget { /* ... */ };
+    
+    class My_widget final : public Widget { /* ... */ };    // nobody will ever want to improve My_widget (or so you thought)
+    
+    class My_improved_widget : public My_widget { /* ... */ };  // error: can't do that
+    
+##### Example, bad
+
+    struct Interface {
+        virtual int f() = 0;
+        virtual int g() = 0;
+    };
+    
+    class My_implementation : public Interface {
+        int f() override;
+        int g() final;  // I want g() to be FAST!
+        // ...
+    };
+    
+    class Better_implementation : public My_implementation {
+        int f();
+        int g();
+        // ...
+    };
+    
+    void use(Interface* p)
+    {
+        int x = p->f();    // Better_implementation::f()
+        int y = p->g();    // My_implementation::g() Surprise?
+    }
+    
+    // ...
+    
+    use(new Better_interface{});
+    
+The problem is easy to see in a small example, but in a large hierarchy with many virtual functions, reliable spotting such problems require tools.
+Consistent use of `override` would catch this.
+
+##### Note
+
+Claims of performance improvements from `final` should be substantiated.
+Too often, such claims are based on conjecture or experience with other languages.
+
+There are examples where `final` can be important for both logical and performance reasons.
+One example is a performance-critical AST hierarchy in a compiler or language analysis tool.
+New derived classes are not added every year and only by library implementers.
+However, misuses are (or at least has been) far more common.
+
+##### Enforcement
+
+Flag uses of `final`.
 
 ## C.hier-access: Accessing objects in a hierarchy
 
@@ -7385,7 +7471,9 @@ Today, we might approximate that using `tie()`:
 
 This may be seen as an example of the *immediately initialize from input* exception below.
 
-Creating optimal and equivalent code from all of these examples should be well within the capabilities of modern C++ compilers.
+Creating optimal and equivalent code from all of these examples should be well within the capabilities of modern C++ compilers
+(but don't make performance claims without measuring; a compiler may very well not generate optimal code for every example and
+there may be language rules preventing some optimization that you would have liked in a particular case)..
 
 ##### Note
 
@@ -12468,6 +12556,7 @@ Naming and layout rules:
 * [NL.16: Use a conventional class member declaration order](#Rl-order)
 * [NL.17: Use K&R-derived layout](#Rl-knr)
 * [NL.18: Use C++-style declarator layout](#Rl-ptr)
+* [NL.25: Don't use `void` as an argument type](#Rl-void)
 
 Most of these rules are aesthetic and programmers hold strong opinions.
 IDEs also tend to have defaults and a range of alternatives.These rules are suggested defaults to follow unless you have reasons not to.
@@ -12808,6 +12897,28 @@ The use in expressions argument doesn't hold for references.
 ##### Enforcement
 
 Impossible in the face of history.
+
+### <a name="Rl-void"></a> NL.25: Don't use `void` as an argument type
+
+##### Reason
+
+It's verbose and only needed where C compatibility matters.
+
+##### Example
+
+    void f(void);   // bad
+    
+    void g();       // better
+    
+###### Note
+
+Even Dennis Ritchie deemed `void f(void)` an abomination.
+You can make an argument for that abomination in C when function prototypes were rare so that banning
+
+    int f();
+    f(1,2,"weird but valid C89");   // hope that f() is defined int f(a,b,c) char* c; { /* ... */ }
+    
+would have cause major problems, but not in the 21st century and in C++.
 
 # <a name="S-faq"></a> FAQ: Answers to frequently asked questions
 
