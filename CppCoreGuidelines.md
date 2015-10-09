@@ -1,6 +1,6 @@
 # <a name="main"></a> C++ Core Guidelines
 
-October 7, 2015
+October 9, 2015
 
 Editors:
 
@@ -1273,15 +1273,16 @@ Consider a function that manipulates a `Record`, using a `mutex` to avoid race c
         // ... no m.unlock() ...
     }
 
-Here, we "forgot" to state that the `mutex` should be released, so we don't know if the failure to ensure release of the `mutex` was a bug or a feature. Stating the postcondition would have made it clear:
+Here, we "forgot" to state that the `mutex` should be released, so we don't know if the failure to ensure release of the `mutex` was a bug or a feature.
+Stating the postcondition would have made it clear:
 
-    void manipulate(Record& r)    // better: hold the mutex m while and only while manipulating r
+    void manipulate(Record& r)    // postcondition: m is unlocked upon exit
     {
         m.lock();
         // ... no m.unlock() ...
     }
 
-The bug is now obvious.
+The bug is now obvious (but only to a human reading comments)
 
 Better still, use [RAII](#Rr-raii) to ensure that the postcondition ("the lock must be released") is enforced in code:
 
@@ -5638,6 +5639,51 @@ Like other casts, `dynamic_cast` is overused.
 [Prefer virtual functions to casting](#???).
 Prefer [static polymorphism](#???) to hierarchy navigation where it is possible (no run-time resolution necessary)
 and reasonably convenient.
+
+##### Note
+
+Some people use `dynamic_cast` where a `typeid` would have been more appropriate;
+`dynamic_cast` is a general "is kind of" operation for discovering the best interface to an object,
+whereas `typeid` is a "give me the exact type of this object" operation to discover the actual type of an object.
+The latter is an inherently simpler operation that ought to be faster.
+The latter (`typeid`) is easily hand-crafted if necessary (e.g., if working on a system where RTTI is - for some reason - prohibited),
+the former (`dynamic_cast`) is far harder to implement correctly in general.
+
+Consider:
+
+    struct B {
+        const char * name {"B"};
+        virtual const char* id() const { return name; }
+        // ...
+    };
+    
+    struct D : B {
+        const char * name {"D"};
+        const char* id() const override { return name; }
+        // ...
+    };
+    
+    void use()
+    {
+        B* pb1 = new B;
+        B* pb2 = new D;
+        
+        cout << pb1->id(); // "B"
+        cout << pb2->id(); // "D"
+        
+        if (pb1->id()==pb2->id()) // *pb1 is the same type as *pb2
+        if (pb2 == "D") {         // looks innocent
+                D* pd = static_cast<D*>(pb1);
+                // ...
+        }
+        // ...
+    }
+    
+The result of `pb2=="D"` is actually implementation defined.
+We added it to warn of the dangers of home-brew RTTI.
+This code may work as expected for years, just to fail on a new machine or new compiler that does not unify character literals.
+
+If you implement your own RTTI, be careful.
 
 ##### Exception
 
@@ -10956,8 +11002,14 @@ And in general, implementations must deal with dynamic linking.
         template<class T>
         virtual bool intersect(T* p);	// error: template cannot be virtual
     };
+    
+##### Note
 
-**Alternative**: ??? double dispatch, visitor, calculate which function to call
+We need a rule because people keep asking about this
+
+##### Alternative
+
+Double dispatch, visitors, calculate which function to call
 
 ##### Enforcement
 
@@ -12019,6 +12071,30 @@ Use of these casts can violate type safety and cause the program to access a var
 
     derived2* p2 = static_cast<derived2*>(p); // BAD, tries to treat d1 as a derived2, which it is not
     cout << p2.get_s(); // tries to access d1's nonexistent string member, instead sees arbitrary bytes near d1
+    
+##### Example, bad
+
+    struct Foo { int a, b; };
+    struct Foobar : Foo { int bar; };
+ 
+    void use(int i, Foo& x)
+    {
+        if (0<i) {
+            Foobar& x1 = dynamic_cast<Foobar&>(x);  // error: Foo is not polymorphic
+            Foobar& x2 = static_cast<Foobar&>(x);   // bad
+            // ...
+        }
+        // ...
+    }
+    
+    // ...
+    
+    use(99,*new Foo{1,2});  // not a Foobar
+    
+If a class hierarchy isn't polymorphic, avoid casting.
+It is entirely unsafe.
+Look for a better design.
+See also [C.146](#Rh-dynamic_cast).
 
 ##### Enforcement
 
@@ -12748,9 +12824,20 @@ This rule applies to non-macro symbolic constants:
 The use of underscores to separate parts of a name is the original C and C++ style and used in the C++ standard library.
 If you prefer CamelCase, you have to choose among different flavors of camelCase.
 
+##### Note
+
+This rule is a default to use only if you have a choice.
+Often, you don't have a choice and must follow an established style for [consistency](#Rl-name).
+The need for consistency beats personal taste.
+
 ##### Example
 
-    ???
+[Stroustrup](http://www.stroustrup.com/Programming/PPP-style.pdf):
+ISO Standard, but with upper case used for your own types and concepts:
+
+* `int`
+* `vector`
+* `My_map`
 
 ##### Enforcement
 
