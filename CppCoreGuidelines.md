@@ -5681,7 +5681,7 @@ Consider:
     
 The result of `pb2=="D"` is actually implementation defined.
 We added it to warn of the dangers of home-brew RTTI.
-This code may work as expected for years, just to fail on a new machine or new compiler that does not unify character literals.
+This code may work as expected for years, just to fail on a new machine, new compiler, or a new linker that does not unify character literals.
 
 If you implement your own RTTI, be careful.
 
@@ -5692,6 +5692,10 @@ However, all workarounds that cannot be statically resolved involve explicit cas
 You will basically be crafting your own special-purpose `dynamic_cast`.
 So, first make sure that your `dynamic_cast` really is as slow as you think it is (there are a fair number of unsupported rumors about)
 and that your use of `dynamic_cast` is really performance critical.
+
+We are of the opinion that current implementations of `dynamic_cast` are unnecessarily slow.
+For example, under sutitable conditions, it is possible to perform a `dynamic_cast` in [fast constant time](http://www.stroustrup.com/fast_dynamic_casting.pdf).
+However, compatibility makes changes difficult even if all agree that an effort to optimize is worth while.
 
 ##### Enforcement
 
