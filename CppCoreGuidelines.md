@@ -12857,9 +12857,23 @@ Would be possible except for the use of libraries with varying conventions.
 
 To avoid confusing macros from names that obeys scope and type rules.
 
+<<<<<<< HEAD
+```
+void f() {
+  const int SIZE{1000}; //Bad, use 'size' instead
+  int v[SIZE];
+}
+```
+	
+**Note**: This rule applies to non-macro symbolic constants
+=======
 ##### Example
+>>>>>>> 7fc11d61da830a68610a3ede46038ae6c4d56f2d
 
-    ???
+    void f() {
+      const int SIZE{1000}; //Bad, use 'size' instead
+      int v[SIZE];
+    }
 
 ##### Note
 
