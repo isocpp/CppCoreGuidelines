@@ -595,7 +595,8 @@ Ideally we catch all errors (that are not errors in the programmer's logic) at e
 
 ##### Example, bad
 
-    extern void f(int* p);  // separately compiled, possibly dynamically loaded
+    // separately compiled, possibly dynamically loaded
+    extern void f(int* p);
 
     void g(int n)
     {
@@ -608,11 +609,12 @@ Here, a crucial bit of information (the number of elements) has been so thorough
 
 We can of course pass the number of elements along with the pointer:
 
-    extern void f2(int* p, int n);  // separately compiled, possibly dynamically loaded
+    // separately compiled, possibly dynamically loaded
+    extern void f2(int* p, int n);
 
     void g2(int n)
     {
-        f2(new int[n], m);    // bad: the wrong number of elements can be passed to f()
+        f2(new int[n], m);  // bad: a wrong number of elements can be passed to f()
     }
 
 Passing the number of elements as an argument is better (and far more common) than just passing the pointer and relying on some (unstated) convention for knowing or discovering the number of elements. However (as shown), a simple typo can introduce a serious error. The connection between the two arguments of `f2()` is conventional, rather than explicit.
@@ -1000,7 +1002,8 @@ The use of a non-local control is potentially confusing, but controls only imple
 
 Reporting through non-local variables (e.g., `errno`) is easily ignored. For example:
 
-    fprintf(connection, "logging: %d %d %d\n", x, y, s); // don't: no test of printf's return value
+    // don't: no test of printf's return value
+    fprintf(connection, "logging: %d %d %d\n", x, y, s);
 
 What if the connection goes down so that no logging output is produced? See I.??.
 
@@ -1439,7 +1442,8 @@ This is a major source of errors.
     int printf(const char* ...);    // bad: return negative number if output fails
 
     template <class F, class ...Args>
-    explicit thread(F&& f, Args&&... args);    // good: throw system_error if unable to start the new thread
+    // good: throw system_error if unable to start the new thread
+    explicit thread(F&& f, Args&&... args);
 
 ##### Note: What is an error?
 
@@ -1993,7 +1997,8 @@ Functions with complex control structures are more likely to be long and more li
 Consider:
 
     double simpleFunc(double val, int flag1, int flag2)
-        // simpleFunc: takes a value and calculates the expected ASIC output, given the two mode flags.
+        // simpleFunc: takes a value and calculates the expected ASIC output,
+        // given the two mode flags.
     {
 
         double intermediate;
@@ -2036,12 +2041,14 @@ We can refactor:
     }
 
     double simpleFunc(double val, int flag1, int flag2)
-        // simpleFunc: takes a value and calculates the expected ASIC output, given the two mode flags.
+        // simpleFunc: takes a value and calculates the expected ASIC output,
+        // given the two mode flags.
     {
         if (flag1 > 0)
             return func1_muon(val, flag2);
         if (flag1 == -1)
-            return func1_tau(-val, flag1, flag2);    // handled by func1_tau: flag1 = -flag1;
+            // handled by func1_tau: flag1 = -flag1;
+            return func1_tau(-val, flag1, flag2);
         return 0.;
     }
 
@@ -2327,7 +2334,8 @@ For advanced uses (only), where you really need to optimize for rvalues passed t
 
     int multiply(int, int); // just input ints, pass by value
 
-    string& concatenate(string&, const string& suffix); // suffix is input-only but not as cheap as an int, pass by const&
+    // suffix is input-only but not as cheap as an int, pass by const&
+    string& concatenate(string&, const string& suffix);
 
     void sink(unique_ptr<widget>);  // input only, and consumes the widget
 
@@ -2875,8 +2883,8 @@ After the return from a function its local objects no longer exist:
     void h()
     {
         int* p = f();
-        int z = *p;    // read from abandoned stack frame (bad)
-        g(p);          // pass pointer to abandoned stack frame to function (bad)
+        int z = *p;  // read from abandoned stack frame (bad)
+        g(p);        // pass pointer to abandoned stack frame to function (bad)
     }
 
 Here on one popular implementation I got the output:
@@ -3076,7 +3084,8 @@ Functions can't capture local variables or be declared at local scope; if you ne
 
 ##### Example
 
-    // writing a function that should only take an int or a string -- overloading is natural
+    // writing a function that should only take an int or a string
+    // -- overloading is natural
     void f(int);
     void f(const string&);
 
@@ -3303,12 +3312,14 @@ but:
 
     class Date {
     public:
-        Date(int yy, Month mm, char dd);    // validate that {yy, mm, dd} is a valid date and initialize
+        // validate that {yy, mm, dd} is a valid date and initialize
+        Date(int yy, Month mm, char dd);
         // ...
     private:
         int y;
         Month m;
         char d;    // day
+        Date(int yy, Month mm, char dd);
     };
 
 ##### Note
@@ -3338,7 +3349,8 @@ An explicit distinction between interface and implementation improves readabilit
         // ... some representation ...
     public:
         Date();
-        Date(int yy, Month mm, char dd);    // validate that {yy, mm, dd} is a valid date and initialize
+        // validate that {yy, mm, dd} is a valid date and initialize
+        Date(int yy, Month mm, char dd);
 
         int day() const;
         Month month() const;
@@ -3565,7 +3577,10 @@ Regular types are easier to understand and reason about than types that are not 
         vector<Record> vr;
     };
 
-    bool operator==(const Bundle& a, const Bundle& b) { return a.name == b.name && a.vr == b.vr; }
+    bool operator==(const Bundle& a, const Bundle& b)
+    {
+        return a.name == b.name && a.vr == b.vr;
+    }
 
     Bundle b1 { "my bundle", {r1, r2, r3}};
     Bundle b2 = b1;
@@ -4671,9 +4686,9 @@ If the state of a base class object must depend on the state of a derived part o
 
     class B {
     protected:
-        B() { /* ... */ }                   // create an imperfectly initialized object
+        B() { /* ... */ }              // create an imperfectly initialized object
 
-        virtual void PostInitialize()       // to be called right after construction
+        virtual void PostInitialize()  // to be called right after construction
         {
             // ...
             f();    // GOOD: virtual dispatch is safe
@@ -4684,7 +4699,7 @@ If the state of a base class object must depend on the state of a derived part o
         virtual void f() = 0;
 
         template<class T>
-        static shared_ptr<T> Create()    // interface for creating objects
+        static shared_ptr<T> Create()  // interface for creating objects
         {
             auto p = make_shared<T>();
             p->PostInitialize();
@@ -4692,9 +4707,9 @@ If the state of a base class object must depend on the state of a derived part o
         }
     };
 
-    class D : public B { /* "¦ */ };            // some derived class
+    class D : public B { /* "¦ */ };   // some derived class
 
-    shared_ptr<D> p = D::Create<D>();        // creating a D object
+    shared_ptr<D> p = D::Create<D>();  // creating a D object
 
 By making the constructor `protected` we avoid an incompletely constructed object escaping into the wild.
 By providing the factory function `Create()`, we make construction (on the free store) convenient.
