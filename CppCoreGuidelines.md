@@ -5506,7 +5506,7 @@ This a relatively rare use because implementation can often be organized into a 
     
 ##### Reason
 
-Capping a hierarchy with 'final` is rarely needed for logical reasons and can be damaging to the extensibility of a hierarchy.
+Capping a hierarchy with `final` is rarely needed for logical reasons and can be damaging to the extensibility of a hierarchy.
 Capping an individual virtual function with `final` is error-prone as that `final` can easily be overlooked when defining/overriding a set of functions.
 
 ##### Example, bad
