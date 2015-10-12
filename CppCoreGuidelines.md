@@ -5971,7 +5971,7 @@ For example, the general `swap()` will copy the elements of two `vector`s being 
 	
 	void f1(N::X& a, N::X& b)
 	{
-		std::swap(a,b);		// propably not what we we wanted: calls std::swap()
+		std::swap(a,b);		// propably not what we wanted: calls std::swap()
 	}
 
 The `std::swap()` in `f1()` does exactly what we asked it to do: it calls the `swap()` in namespace `std`.
