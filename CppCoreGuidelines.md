@@ -10893,6 +10893,34 @@ When `concept`s become available such alternatives can be distinguished directly
 
 ???
 
+### <a name="Rt-specialization2"></a> T.67: Use specialization to provide alternative implementations for irregular types
+
+##### Reason
+
+ ???
+
+##### Example
+
+    ???
+
+##### Enforcement
+
+???
+
+### <a name="Rt-cast"></a> T.68: Use `{}` rather than `()` within templates to avoid ambiguities
+
+##### Reason
+
+ ???
+
+##### Example
+
+    ???
+
+##### Enforcement
+
+???
+
 ### <a name="Rt-customization"></a> T.69: Inside a template, don't make an unqualified nonmember function call unless you intend it to be a customization point
 
 ##### Reason
