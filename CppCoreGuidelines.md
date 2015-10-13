@@ -9136,7 +9136,7 @@ A lot of people, myself included, like to experiment with `std::memory_order`, b
 Even vendors mess this up: Microsoft had to fix their `shared_ptr` (weak refcount decrement wasn't synchronized-with the destructor, if I recall correctly, although it was only a problem on ARM, not Intel)
 and everyone (gcc, clang, Microsoft, and intel) had to fix their `compare_exchange_*` this year, after an implementation bug caused losses to some finance company and they were kind enough to let the community know.
 
-It should definitely mention that `volatile` does not provide atomicity, does not synchronize between threads, and does not prevent instruction reordering (neither compiler nor hardware), and simply has nothing to do with concurrency.
+It should definitely be mentioned that `volatile` does not provide atomicity, does not synchronize between threads, and does not prevent instruction reordering (neither compiler nor hardware), and simply has nothing to do with concurrency.
 
     if (source->pool != YARROW_FAST_POOL && source->pool != YARROW_SLOW_POOL) {
         THROW(YARROW_BAD_SOURCE);
