@@ -680,7 +680,7 @@ Avoid errors leading to (possibly unrecognized) wrong results.
         const int n = 10;
         int a[n] = {};
         // ...
-        increment1(a, m);   // maybe typo, maybe m<=n is supposed
+        increment1(a, m);   // maybe typo, maybe m <= n is supposed
                             // but assume that m == 20
         // ...
     }
@@ -1341,7 +1341,7 @@ Make the interface precisely specified and compile-time checkable in the (not so
 Use the ISO Concepts TS style of requirements specification. For example:
 
     template<typename Iter, typename Val>
-    //    requires InputIterator<Iter> && EqualityComparable<ValueType<Iter>>, Val>
+    // requires InputIterator<Iter> && EqualityComparable<ValueType<Iter>>, Val>
     Iter find(Iter first, Iter last, Val v)
     {
         // ...
@@ -1913,7 +1913,7 @@ We can refactor:
         // simpleFunc: takes a value and calculates the expected ASIC output, given the two mode flags.
     {
         if (flag1 > 0)
-             return func1_muon(val, flag2);
+            return func1_muon(val, flag2);
         if (flag1 == -1)
             return func1_tau(-val, flag1, flag2);    // handled by func1_tau: flag1 = -flag1;
         return 0.;
@@ -2345,7 +2345,7 @@ If you need the notion of an optional value, use a pointer, `std::optional`, or 
 
 ##### Enforcement
 
-* (Simple) ((Foundation)) Warn when a parameter being passed by value has a size greater than `4*sizeof(int)`.
+* (Simple) ((Foundation)) Warn when a parameter being passed by value has a size greater than `4 * sizeof(int)`.
   Suggest using a `const` reference instead.
 
 ### <a name="Rf-T"></a> F.21: Use a `T` parameter for a small object
@@ -2365,7 +2365,7 @@ For small objects (up to two or three words) it is also faster than alternatives
 
 ##### Enforcement
 
-* (Simple) ((Foundation)) Warn when a `const` parameter being passed by reference has a size less than `3*sizeof(int)`. Suggest passing by value instead.
+* (Simple) ((Foundation)) Warn when a `const` parameter being passed by reference has a size less than `3 * sizeof(int)`. Suggest passing by value instead.
 
 ### <a name="Rf-T-ref"></a> F.22: Use a `T&` for an in-out-parameter
 
@@ -2841,7 +2841,7 @@ Declaring `main` (the one global `main` of a program) `void` limits portability.
 ##### Example
 
         void main() { /* ... */ };  // bad, not C++
-        
+
         int main()
         {
             std::cout << "This is the way to do it\n";
@@ -5422,7 +5422,7 @@ This leaves us with three alternatives:
 [Ddeclare such classes `struct` rather than `class`](#Rc-struct)
 * *All protected*: [Avoid `protected` data](#Rh-protected).
 * *All private*: If you’re writing an type that maintains an invariant, then all the variables should be private – it should be encapsulated.
-This is the vast majority of classes. 
+  This is the vast majority of classes.
 
 ##### Example
 
@@ -5500,10 +5500,10 @@ This a relatively rare use because implementation can often be organized into a 
 ##### Example
 
     ???
-    
-    
+
+
 ### <a name="Rh-final"></a> C.139: Use `final` sparingly
-    
+
 ##### Reason
 
 Capping a hierarchy with `final` is rarely needed for logical reasons and can be damaging to the extensibility of a hierarchy.
@@ -5512,40 +5512,40 @@ Capping an individual virtual function with `final` is error-prone as that `fina
 ##### Example, bad
 
     class Widget { /* ... */ };
-    
+
     class My_widget final : public Widget { /* ... */ };    // nobody will ever want to improve My_widget (or so you thought)
-    
+
     class My_improved_widget : public My_widget { /* ... */ };  // error: can't do that
-    
+
 ##### Example, bad
 
     struct Interface {
         virtual int f() = 0;
         virtual int g() = 0;
     };
-    
+
     class My_implementation : public Interface {
         int f() override;
         int g() final;  // I want g() to be FAST!
         // ...
     };
-    
+
     class Better_implementation : public My_implementation {
         int f();
         int g();
         // ...
     };
-    
+
     void use(Interface* p)
     {
         int x = p->f();    // Better_implementation::f()
         int y = p->g();    // My_implementation::g() Surprise?
     }
-    
+
     // ...
-    
+
     use(new Better_interface{});
-    
+
 The problem is easy to see in a small example, but in a large hierarchy with many virtual functions, reliable spotting such problems require tools.
 Consistent use of `override` would catch this.
 
@@ -5656,30 +5656,30 @@ Consider:
         virtual const char* id() const { return name; }
         // ...
     };
-    
+
     struct D : B {
         const char * name {"D"};
         const char* id() const override { return name; }
         // ...
     };
-    
+
     void use()
     {
         B* pb1 = new B;
         B* pb2 = new D;
-        
+
         cout << pb1->id(); // "B"
         cout << pb2->id(); // "D"
-        
-        if (pb1->id()==pb2->id()) // *pb1 is the same type as *pb2
+
+        if (pb1->id() == pb2->id()) // *pb1 is the same type as *pb2
         if (pb2 == "D") {         // looks innocent
                 D* pd = static_cast<D*>(pb1);
                 // ...
         }
         // ...
     }
-    
-The result of `pb2=="D"` is actually implementation defined.
+
+The result of `pb2 == "D"` is actually implementation defined.
 We added it to warn of the dangers of home-brew RTTI.
 This code may work as expected for years, just to fail on a new machine, new compiler, or a new linker that does not unify character literals.
 
@@ -5959,40 +5959,39 @@ To find function objects and functions defined in a separate namespace to "custo
 
 ##### Example
 
-Consider `swap`. It is a general (standard library) function with a definintion that will work for just about any type.
+Consider `swap`. It is a general (standard library) function with a definition that will work for just about any type.
 However, it is desirable to define specific `swap()`s for specific types.
 For example, the general `swap()` will copy the elements of two `vector`s being swapped, whereas a good specific implementation will not copy elements at all.
 
-	namespace N {
-		My_type X { /* ... */ };
-		void swap(X&,X&);	// optimized swap for N::X
-		// ...
-	}
-	
-	void f1(N::X& a, N::X& b)
-	{
-		std::swap(a,b);		// propably not what we wanted: calls std::swap()
-	}
+    namespace N {
+        My_type X { /* ... */ };
+        void swap(X&, X&);   // optimized swap for N::X
+        // ...
+    }
+
+    void f1(N::X& a, N::X& b)
+    {
+        std::swap(a, b);   // probably not what we wanted: calls std::swap()
+    }
 
 The `std::swap()` in `f1()` does exactly what we asked it to do: it calls the `swap()` in namespace `std`.
 Unfortunately, that's probably not what we wanted.
 How do we get `N::X` considered?
 
-	void f2(N::X& a, N::X& b)
-	{
-		swap(a,b);		// calls N::swap
-	}
-	 
+    void f2(N::X& a, N::X& b)
+    {
+        swap(a,b);   // calls N::swap
+    }
+
 But that may not be what we wanted for generic code.
 There, we typically want the specific function if it exists and the general function if not.
 This is done by including the general function in the lookup for the function:
 
-	void f3(N::X& a, N::X& b)
-	{
-		using std::swap;	// make std::swap available
-		swap(a,b);			// calls N::swap if it exists, otherwise std::swap
-	}
-	
+    void f3(N::X& a, N::X& b)
+    {
+        using std::swap;  // make std::swap available
+        swap(a,b);        // calls N::swap if it exists, otherwise std::swap
+    }
 
 ##### Enforcement
 
@@ -6102,7 +6101,7 @@ Macros do not obey scope and type rules.
 
 ##### Example
 
-First some bad old code
+First some bad old code:
 
     // webcolors.h (third party header)
     #define RED   0xFF0000
@@ -6115,12 +6114,12 @@ First some bad old code
     #define PURPLE 1
     #define BLUE   2
 
-    int webby = BLUE;   // webby==2; probably not what was desired
-    
+    int webby = BLUE;   // webby == 2; probably not what was desired
+
 instead use an `enum`:
 
-    enum class Webcolor { red=0xFF0000, green=0x00FF00, blue=0x0000FF };
-    enum class Productinfo { red=0, purple=1, blue=2 };
+    enum class Webcolor { red = 0xFF0000, green = 0x00FF00, blue = 0x0000FF };
+    enum class Productinfo { red = 0, purple = 1, blue = 2 };
 
     int webby = blue;   // error: be specific
     Webcolor webby = Webcolor::blue;
@@ -6137,7 +6136,7 @@ An enumeration shows the enumerators to be related and can be a named type
 
 ##### Example
 
-    enum class Webcolor { red=0xFF0000, green=0x00FF00, blue=0x0000FF };
+    enum class Webcolor { red = 0xFF0000, green = 0x00FF00, blue = 0x0000FF };
 
 ##### Enforcement
 
@@ -6151,12 +6150,12 @@ To minimize surprises.
 
 ##### Example
 
-    enum Webcolor { red=0xFF0000, green=0x00FF00, blue=0x0000FF };
+    enum Webcolor { red = 0xFF0000, green = 0x00FF00, blue = 0x0000FF };
     enum Productinfo { red=0, purple=1, blue=2 };
 
     int webby = blue;   // error, ambiguous: be specific
     Webcolor webby = Webcolor::blue;
-    
+
 instead use an `enum class`:
 
     enum class Webcolor { red=0xFF0000, green=0x00FF00, blue=0x0000FF };
@@ -6371,8 +6370,8 @@ We want owning pointers identified so that we can reliably and efficiently delet
 
     void f()
     {
-        int* p1 = new int{7};			// bad: raw owning pointer
-        auto p2 = make_unique<int>(7);	// OK: the int is owned by a unique pointer
+        int* p1 = new int{7};           // bad: raw owning pointer
+        auto p2 = make_unique<int>(7);  // OK: the int is owned by a unique pointer
         // ...
     }
 
@@ -6465,9 +6464,9 @@ We want owners identified so that we can reliably and efficiently delete the obj
 
     void f()
     {
-        int& r = *new int{7};			// bad: raw owning reference
+        int& r = *new int{7};  // bad: raw owning reference
         // ...
-        delete &r;						// bad: violated the rule against deleting raw pointers
+        delete &r;             // bad: violated the rule against deleting raw pointers
     }
 
 **See also**: [The raw pointer rule](#Rr-ptr)
@@ -6807,7 +6806,7 @@ You could "temporarily share ownership simply by using another `stared_ptr`.)
 
 ##### Enforcement
 
-???probably impossible. If we could statically detect cycles, we wouldn't need `weak_ptr`
+??? probably impossible. If we could statically detect cycles, we wouldn't need `weak_ptr`
 
 ### <a name="Rr-smartptrparam"></a> R.30: Take smart pointers as parameters only to explicitly express lifetime semantics
 
@@ -7114,7 +7113,7 @@ Statement rules:
 * [ES.75: Avoid `do`-statements](#Res-do)
 * [ES.76: Avoid `goto`](#Res-goto)
 * [ES.77: ??? `continue`](#Res-continue)
-* [ES.78: Always end non-empty a `case` with a `break`](#Res-break)
+* [ES.78: Always end a non-empty `case` with a `break`](#Res-break)
 * [ES.79: ??? `default`](#Res-default)
 * [ES.85: Make empty statements visible](#Res-empty)
 
@@ -7544,26 +7543,26 @@ This cannot trivially be rewritten to initialize `i` and `j` with initializers.
 Note that for types with a default constructor, attempting to postpone initialization simply leads to a default initialization followed by an assignment.
 A popular reason for such examples is "efficiency", but a compiler that can detect whether we made a used-before-set error can also eliminate any redundant double initialization.
 
-At the cost of repeating `cond` we could write
+At the cost of repeating `cond` we could write:
 
     widget i = (cond) ? f1() : f3();
     widget j = (cond) ? f2() : f4();
-    
+
 Assuming that there is a logical connection between `i` and `j`, that connection should probably be expressed in code:
 
     pair<widget,widget> make_related_widgets(bool x)
     {
         return (x) ? {f1(),f2()} : {f3(),f4() };
     }
-    
+
     auto init = make_related_widgets(cond);
     widget i = init.first;
     widget j = init.second;
-    
+
 Obviously, what we really would like is a construct that initialized n variables from a `tuple`. For example:
- 
+
     auto {i,j} = make_related_widgets(cond);    // Not C++14
-    
+
 Today, we might approximate that using `tie()`:
 
     widget i;       // bad: uninitialized variable
@@ -7617,7 +7616,7 @@ In the not uncommon case where the input target and the input operation get sepa
 
 A good optimizer should know about input operations and eliminate the redundant operation.
 
-##### Example:
+##### Example
 
 Using an `unitialized` value is a symptom of a problem and not a solution:
 
@@ -7627,7 +7626,7 @@ Using an `unitialized` value is a symptom of a problem and not a solution:
     // ...
     use(i);         // possibly used before set
     // ...
-    
+
     if (cond) {     // bad: i and j are initialized "late"
         i = f1();
         j = f2();
@@ -7641,7 +7640,7 @@ Now the compiler cannot even simply detect a used-befor-set.
 
 ##### Note
 
-Sometimes, a lambda can be used as an initializer to avoid an uninitialized variable.
+Sometimes, a lambda can be used as an initializer to avoid an uninitialized variable:
 
     error_code ec;
     Value v = [&] {
@@ -7663,9 +7662,9 @@ or maybe:
 ##### Enforcement
 
 * Flag every uninitialized variable.
-Don't flag variables of user-defined types with default constructors.
+  Don't flag variables of user-defined types with default constructors.
 * Check that an uninitialized buffer is written into *immediately* after declaration.
-Passing a uninitialized variable as a non-`const` reference argument can be assumed to be a write into the variable.
+  Passing a uninitialized variable as a non-`const` reference argument can be assumed to be a write into the variable.
 
 ### <a name="Res-introduce"></a> ES.21: Don't introduce a variable (or constant) before you need to use it
 
@@ -8259,13 +8258,13 @@ This is an ad-hoc simulation of destructors. Declare your resources with handles
 
 ???
 
-### <a name="Res-break"></a> ES.78: Always end non-empty a `case` with a `break`
+### <a name="Res-break"></a> ES.78: Always end a non-empty `case` with a `break`
 
 ##### Reason
 
  Accidentally leaving out a `break` is a fairly common bug.
  A deliberate fallthrough is a maintenance hazard.
- 
+
 ##### Example
 
     switch(eventType)
@@ -8279,7 +8278,7 @@ This is an ad-hoc simulation of destructors. Declare your resources with handles
         display_error_window(); // Bad
         break;
     }
-    
+
 It is easy to overlook the fallthrough. Be explicit:
 
     switch(eventType)
@@ -8899,7 +8898,7 @@ this also applies to `%`.
 
 # <a name="S-performance"></a> PER: Performance
 
-???should this section be in the main guide???
+??? should this section be in the main guide???
 
 This section contains rules for people who needs high performance or low-latency.
 That is, rules that relates to how to use as little time and as few resources as possible to achieve a task in a predictably short time.
@@ -11057,7 +11056,7 @@ And in general, implementations must deal with dynamic linking.
         template<class T>
         virtual bool intersect(T* p);	// error: template cannot be virtual
     };
-    
+
 ##### Note
 
 We need a rule because people keep asking about this
@@ -11491,10 +11490,10 @@ That subset can be compiled with both C and C++ compilers, and when compiled as 
 
 ##### Example
 
-    int* p1 = malloc(10*sizeof(int));                      // not C++
-    int* p2 = static_cast<int*>(malloc(10*sizeof(int)));   // not C, C-style C++
-    int* p3 = new int[10];                                 // not C
-    int* p4 = (int*)malloc(10*sizeof(int));                // both C and C++
+    int* p1 = malloc(10 * sizeof(int));                      // not C++
+    int* p2 = static_cast<int*>(malloc(10 * sizeof(int)));   // not C, C-style C++
+    int* p3 = new int[10];                                   // not C
+    int* p4 = (int*)malloc(10 * sizeof(int));                // both C and C++
 
 ##### Enforcement
 
@@ -12126,12 +12125,12 @@ Use of these casts can violate type safety and cause the program to access a var
 
     derived2* p2 = static_cast<derived2*>(p); // BAD, tries to treat d1 as a derived2, which it is not
     cout << p2.get_s(); // tries to access d1's nonexistent string member, instead sees arbitrary bytes near d1
-    
+
 ##### Example, bad
 
     struct Foo { int a, b; };
     struct Foobar : Foo { int bar; };
- 
+
     void use(int i, Foo& x)
     {
         if (0<i) {
@@ -12141,11 +12140,11 @@ Use of these casts can violate type safety and cause the program to access a var
         }
         // ...
     }
-    
+
     // ...
-    
-    use(99,*new Foo{1,2});  // not a Foobar
-    
+
+    use(99, *new Foo{1, 2});  // not a Foobar
+
 If a class hierarchy isn't polymorphic, avoid casting.
 It is entirely unsafe.
 Look for a better design.
@@ -13053,18 +13052,18 @@ It's verbose and only needed where C compatibility matters.
 ##### Example
 
     void f(void);   // bad
-    
+
     void g();       // better
-    
+
 ###### Note
 
 Even Dennis Ritchie deemed `void f(void)` an abomination.
-You can make an argument for that abomination in C when function prototypes were rare so that banning
+You can make an argument for that abomination in C when function prototypes were rare so that banning:
 
     int f();
-    f(1,2,"weird but valid C89");   // hope that f() is defined int f(a,b,c) char* c; { /* ... */ }
-    
-would have cause major problems, but not in the 21st century and in C++.
+    f(1, 2, "weird but valid C89");   // hope that f() is defined int f(a, b, c) char* c; { /* ... */ }
+
+would have caused major problems, but not in the 21st century and in C++.
 
 # <a name="S-faq"></a> FAQ: Answers to frequently asked questions
 
@@ -13734,18 +13733,18 @@ When is a class a container? ???
 
 # <a name="S-glossary"></a> Glossary
 
-A relatively informal definition of twrms used in the guidelines
+A relatively informal definition of terms used in the guidelines
 (based of the glossary in [Programming: Principles and Practice using C++](http://www.stroustrup.com/programming.html))
 
-* *abstract*: class a class that cannot be directly used to create objects; often used to define an interface to derived classes.
-A class is made abstract by having a pure virtual function or a protected constructor.
+* *abstract class*: a class that cannot be directly used to create objects; often used to define an interface to derived classes.
+  A class is made abstract by having a pure virtual function or a protected constructor.
 * *abstraction*: a description of something that selectively and deliberately ignores (hides) details (e.g., implementation details); selective ignorance.
 * *address*: a value that allows us to find an object in a computer’s memory.
-* *algorithm*: a procedure or formula for solving a problem; a finite series of computational steps to produce a result. 
+* *algorithm*: a procedure or formula for solving a problem; a finite series of computational steps to produce a result.
 * *alias*: an alternative way of referring to an object; often a name, pointer, or reference.
-* *application*: a program or a collection of programs that is considered an entity by its users. 
+* *application*: a program or a collection of programs that is considered an entity by its users.
 * *approximation*: something (e.g., a value or a design) that is close to the perfect or ideal (value or design).
-Often an approximation is a result of trade-offs among ideals.
+  Often an approximation is a result of trade-offs among ideals.
 * *argument*: a value passed to a function or a template, in which it is accessed through a parameter.
 * *array*: a homogeneous sequence of elements, usually numbered, e.g., [0:max).
 * *assertion*: a statement inserted into a program to state (assert) that something must always be true at this point in the program.
@@ -13757,20 +13756,20 @@ Often an approximation is a result of trade-offs among ideals.
 * *code*: a program or a part of a program; ambiguously used for both source code and object code.
 * *compiler*: a program that turns source code into object code.
 * *complexity*: a hard-to-precisely-define notion or measure of the difficulty of constructing a solution to a problem or of the solution itself.
-Sometimes complexity is used to (simply) mean an estimate of the number of operations needed to execute an algorithm.
+  Sometimes complexity is used to (simply) mean an estimate of the number of operations needed to execute an algorithm.
 * *computation*: the execution of some code, usually taking some input and producing some output.
 * *concept*: (1) a notion, and idea; (2) a set of requirements, usually for a template argument
 * *concrete class*: class for which objects can be created.
 * *constant*: a value that cannot be changed (in a given scope); not mutable.
 * *constructor*: an operation that initializes (“constructs”) an object.
-Typically a constructor establishes an invariant and often acquires resources needed for an object to be used (which are then typically released by a destructor).
+  Typically a constructor establishes an invariant and often acquires resources needed for an object to be used (which are then typically released by a destructor).
 * *container*: an object that holds elements (other objects).
 * *copy*: an operation that makes two object have values that compare equal. See also move.
 * *correctness*: a program or a piece of a program is correct if it meets its specification.
-Unfortunately, a specification can be incomplete or inconsistent, or can fail to meet users’ reasonable expectations.
-Thus, to produce acceptable code, we sometimes have to do more than just follow the formal specification.
+  Unfortunately, a specification can be incomplete or inconsistent, or can fail to meet users’ reasonable expectations.
+  Thus, to produce acceptable code, we sometimes have to do more than just follow the formal specification.
 * *cost*: the expense (e.g., in programmer time, run time, or space) of producing a program or of executing it.
-Ideally, cost should be a function of complexity.
+  Ideally, cost should be a function of complexity.
 * *customisation point*: ???
 * *data*: values used in a computation.
 * *debugging*: the act of searching for and removing errors from a program; usually far less systematic than testing.
@@ -13788,24 +13787,24 @@ Simplified definition: a declaration that allocates memory.
 * *floating-point number*: a computer’s approximation of a real number, such as 7.93 and 10.78e–3.
 * *function*: a named unit of code that can be invoked (called) from different parts of a program; a logical unit of computation.
 * *generic programming*: a style of programming focused on the design and efficient implementation of algorithms.
-A generic algorithm will work for all argument types that meet its requirements. In C++, generic programming typically uses templates.
+  A generic algorithm will work for all argument types that meet its requirements. In C++, generic programming typically uses templates.
 * *Global variable*: Technically, a named object in namespace scope
 * *handle*: a class that allows access to another through a member pointer or reference. See also resource, copy, move.
 * *header*: a file containing declarations used to share interfaces between parts of a program.
 * *hiding*: the act of preventing a piece of information from being directly seen or accessed.
-For example, a name from a nested (inner) scope can prevent that same name from an outer (enclosing) scope from being directly used.
-* *ideal*: the perfect version of something we are striving for. Usually we have to make trade-offs and settle for an approximation. 
+  For example, a name from a nested (inner) scope can prevent that same name from an outer (enclosing) scope from being directly used.
+* *ideal*: the perfect version of something we are striving for. Usually we have to make trade-offs and settle for an approximation.
 * *implementation*: (1) the act of writing and testing code; (2) the code that implements a program.
 * *infinite loop*: a loop where the termination condition never becomes true. See iteration.
 * *infinite recursion*: a recursion that doesn’t end until the machine runs out of memory to hold the calls.
-In reality, such recursion is never infinite but is terminated by some hardware error. 
+  In reality, such recursion is never infinite but is terminated by some hardware error.
 * *information hiding*: the act of separating interface and implementation, thus hiding implementation details not meant for the user’s attention and providing an abstraction.
 * *initialize*: giving an object its first (initial) value.
 * *input*: values used by a computation (e.g., function arguments and characters typed on a keyboard).
 * *integer*: a whole number, such as 42 and –99.
 * *interface*: a declaration or a set of declarations specifying how a piece of code (such as a function or a class) can be called.
 * *invariant*: something that must be always true at a given point (or points) of a program; typically used to describe the state (set of values) of an object or the state of a loop before entry into the repeated statement.
-* *iteration*: the act of repeatedly executing a piece of code; see recursion. 
+* *iteration*: the act of repeatedly executing a piece of code; see recursion.
 * *iterator*: an object that identifies an element of a sequence.
 * *library*: a collection of types, functions, classes, etc. implementing a set of facilities (abstractions) meant to be potentially used as part of more that one program.
 * *lifetime*: the time from the initialization of an object until it becomes unusable (goes out of scope, is deleted, or the program terminates).
@@ -13820,7 +13819,7 @@ In reality, such recursion is never infinite but is terminated by some hardware 
 * *object-oriented programming*: (OOP) a style of programming focused on the design and use of classes and class hierarchies.
 * *operation*: something that can perform some action, such as a function and an operator.
 * *output*: values produced by a computation (e.g., a function result or lines of characters written on a screen).
-* *overflow*: producing a value that cannot be stored in its intended target. 
+* *overflow*: producing a value that cannot be stored in its intended target.
 * *overload*: defining two functions or operators with the same name but different argument (operand) types.
 * *override*: defining a function in a derived class with the same name and argument types as a virtual function in the base class, thus making the function callable through the interface defined by the base class.
 * *owner*: an object responsible for releasing a resource.
@@ -13863,7 +13862,7 @@ In reality, such recursion is never infinite but is terminated by some hardware 
 * *truncation*: loss of information in a conversion from a type into another that cannot exactly represent the value to be converted.
 * *type*: something that defines a set of possible values and a set of operations for an object.
 * *uninitialized*: the (undefined) state of an object before it is initialized.
-* *unit*: (1) a standard measure that gives meaning to a value (e.g., km for a distance); (2) a distinguished (e.g., named) part of a larger whole. 
+* *unit*: (1) a standard measure that gives meaning to a value (e.g., km for a distance); (2) a distinguished (e.g., named) part of a larger whole.
 * *use case*: a specific (typically simple) use of a program meant to test its functionality and demonstrate its purpose.
 * *value*: a set of bits in memory interpreted according to a type.
 * *variable*: a named object of a given type; contains a value unless uninitialized.
