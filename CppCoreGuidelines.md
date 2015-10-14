@@ -1045,7 +1045,9 @@ Very hard in general
 
 ### <a name="Ri-typed"></a> I.4: Make interfaces precisely and strongly typed
 
-Reason: Types are the simplest and best documentation, have well-defined meaning, and are guaranteed to be checked at compile time.
+##### Reason
+
+Types are the simplest and best documentation, have well-defined meaning, and are guaranteed to be checked at compile time.
 Also, precisely typed code is often optimized better.
 
 ##### Example, don't
