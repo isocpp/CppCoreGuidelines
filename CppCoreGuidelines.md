@@ -9117,6 +9117,25 @@ Unless you do, nothing is guaranteed to work and subtle errors will persist.
 
 If you have any doubts about what this means, go read a book.
 
+##### Note
+Individual `shared_ptr` objects are not thread-safe: Calling a non-const member function of `shared_ptr` while another thread accesses is a data race. But different threads can call non-const member functions on copies of a `shared_ptr` that refer to the same shared object.
+
+    shared_ptr<int> ptr = make_shared<int>(10); //visible to all threads
+
+    //thread-1, thread-2
+    void worker_thread()
+    {
+        shared_ptr<int> my_copy = ptr; //good - threads can do this simultanesously
+        ...
+        my_copy.reset(); //good
+        my_copy.reset(x); //good
+        my_copy = x; //good
+        x = my_copy; //good
+        ...
+        ptr.reset(); //bad - data race
+        ...
+    }
+
 ##### Enforcement
 
 Some is possible, do at least something.
@@ -13927,7 +13946,6 @@ Alternatively, we will decide that no change is needed and delete the entry.
 * When using a `condition_variable`, always protect the condition by a mutex (atomic bool whose value is set outside of the mutex is wrong!), and use the same mutex for the condition variable itself.
 * Never use `atomic_compare_exchange_strong` with `std::atomic<user-defined-struct>` (differences in padding matter, while `compare_exchange_weak` in a loop converges to stable padding)
 * individual `shared_future` objects are not thread-safe: two threads cannot wait on the same `shared_future` object (they can wait on copies of a `shared_future` that refer to the same shared state)
-* individual `shared_ptr` objects are not thread-safe: a thread cannot call a non-const member function of `shared_ptr` while another thread accesses (but different threads can call non-const member functions on copies of a `shared_ptr` that refer to the same shared object)
 
 * rules for arithmetic
 
