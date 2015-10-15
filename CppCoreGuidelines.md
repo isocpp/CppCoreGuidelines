@@ -1085,7 +1085,7 @@ Obviously, we cannot catch all errors through the static type system
 
 ##### Example, bad
 
-In the following example, it is not clear from the interface what time_to_blink means: Seconds? Milliseconds?
+In the following example, it is not clear from the interface what `time_to_blink` means: Seconds? Milliseconds?
 
     void blink_led(int time_to_blink) // bad - the unit is ambiguous
     {
@@ -2431,7 +2431,7 @@ Hard to choose a cutover value for the size of the value returned.
 
 ##### Reason
 
-When `TP` is a template type parameter, `TP&&` is a forwarding reference -- it both *ignores* and *preserves* const-ness and rvalue-ness. Therefore any code that uses a `T&&` is implicitly declaring that it itself doesn't care about the variable's const-ness and rvalue-ness (because it is ignored), but that intends to pass the value onward to other code that does care about const-ness and rvalue-ness (because it is preserved). When used as a parameter `TP&&` is safe because any temporary objects passed from the caller will live for the duration of the function call. A parameter of type `TP&&` should essentially always be passed onward via `std::forward` in the body of the function.
+When `TP` is a template type parameter, `TP&&` is a forwarding reference -- it both *ignores* and *preserves* `const`'ness and rvalue-ness. Therefore any code that uses a `T&&` is implicitly declaring that it itself doesn't care about the variable's `const`'-ness and rvalue-ness (because it is ignored), but that intends to pass the value onward to other code that does care about `const`'-ness and rvalue-ness (because it is preserved). When used as a parameter `TP&&` is safe because any temporary objects passed from the caller will live for the duration of the function call. A parameter of type `TP&&` should essentially always be passed onward via `std::forward` in the body of the function.
 
 ##### Example
 
@@ -2545,7 +2545,7 @@ It's self-documenting. A `&` parameter could be either in/out or out-only.
 
 ##### Enforcement
 
-Flag non-const reference parameters that are not read before being written to and are a type that could be cheaply returned.
+Flag non-`const` reference parameters that are not read before being written to and are a type that could be cheaply returned.
 
 ### <a name="Rf-T-multi"></a> F.41: Prefer to return tuples to multiple out-parameters
 
@@ -4390,8 +4390,6 @@ But what if you can get significant better performance by not making a temporary
         int sz;
     };
 
-  }
-
     Vector& Vector::operator=(const Vector& a)
     {
         if (a.sz > sz) {
@@ -5421,7 +5419,7 @@ Is it a type that maintains an invariant os simply a collection of values?
 This leaves us with three alternatives:
 
 * *All public*: If you're writing an aggregate bundle-of-variables without an invariant across those variables, then all the variables should be public.
-[Ddeclare such classes `struct` rather than `class`](#Rc-struct)
+[Declare such classes `struct` rather than `class`](#Rc-struct)
 * *All protected*: [Avoid `protected` data](#Rh-protected).
 * *All private*: If you’re writing an type that maintains an invariant, then all the variables should be private – it should be encapsulated.
   This is the vast majority of classes.
@@ -6089,9 +6087,9 @@ Enumeration rule summary:
 
 * [Enum.1: Prefer enums over macros](#Renum-macro)
 * [Enum.2: Use enumerations to represent sets of named constants](#Renum-set)
-* [Enum.3: Prefer class enums over ``plain'' enums](#Renum-class)
+* [Enum.3: Prefer class enums over "plain" enums](#Renum-class)
 * [Enum.4: Define operations on enumerations for safe and simple use](#Renum-oper)
-* [Enum.5: Don't use ALL_CAPS for enumerators](#Renum-caps)
+* [Enum.5: Don't use `ALL_CAPS` for enumerators](#Renum-caps)
 * [Enum.6: Use unnamed enumerations for ???](#Renum-unnamed)
 * ???
 
@@ -6144,7 +6142,7 @@ An enumeration shows the enumerators to be related and can be a named type
 
 ???
 
-### <a name="Renum-class"></a> Enum.3: Prefer class enums over ``plain'' enums
+### <a name="Renum-class"></a> Enum.3: Prefer class enums over "plain" enums
 
 ##### Reason
 
@@ -6184,7 +6182,7 @@ Convenience of use and avoidance of errors.
 
 ???
 
-### <a name="Renum-caps"></a> Enum.5: Don't use ALL_CAPS for enumerators
+### <a name="Renum-caps"></a> Enum.5: Don't use `ALL_CAPS` for enumerators
 
 ##### Reason
 
@@ -6524,7 +6522,7 @@ They are a notable source of errors.
 
 ##### Enforcement
 
-(??? NM: Obviously we can warn about non-const statics....do we want to?)
+(??? NM: Obviously we can warn about non-`const` statics....do we want to?)
 
 ## <a name="SS-alloc"></a> R.alloc: Allocation and deallocation
 
@@ -7377,7 +7375,7 @@ Check names against a list of known confusing letter and digit combinations.
 
 ##### Reason
 
-Such names are commonly used for macros. Thus, ALL_CAPS name are vulnerable to unintended macro substitution.
+Such names are commonly used for macros. Thus, `ALL_CAPS` name are vulnerable to unintended macro substitution.
 
 ##### Example
 
@@ -11895,19 +11893,19 @@ It is more likely to be stable, well-maintained, and widely available than your 
 
 ### SL.???: printf/scanf
 
-# <a name"S-A"></a> A: Architectural Ideas
+# <a name="S-A"></a> A: Architectural Ideas
 
 This section contains ideas about ???
 
-### <a name"Ra-stable"></a> A.1 Separate stable from less stable part of code
+### <a name="Ra-stable"></a> A.1 Separate stable from less stable part of code
 
 ???
 
-### <a name"Ra-reuse"></a> A.2 Express potentially reusable parts as a library
+### <a name="Ra-reuse"></a> A.2 Express potentially reusable parts as a library
 
 ???
 
-### <a name"Ra-lib"></a> A.3 Express potentially separately maintained parts as a library
+### <a name="Ra-lib"></a> A.3 Express potentially separately maintained parts as a library
 
 ???
 
@@ -12682,7 +12680,7 @@ Naming and layout rules:
 * [NL.5: Don't encode type information in names](#Rl-name-type)
 * [NL.7: Make the length of a name roughly proportional to the length of its scope](#Rl-name-length)
 * [NL.8: Use a consistent naming style](#Rl-name)
-* [NL 9: Use ALL_CAPS for macro names only](#Rl-all-caps)
+* [NL 9: Use `ALL_CAPS` for macro names only](#Rl-all-caps)
 * [NL.10: Avoid CamelCase](#Rl-camel)
 * [NL.15: Use spaces sparingly](#Rl-space)
 * [NL.16: Use a conventional class member declaration order](#Rl-order)
@@ -12852,7 +12850,7 @@ Try to be consistent in your use of acronyms, lengths of identifiers:
 
 Would be possible except for the use of libraries with varying conventions.
 
-### <a name="Rl-all-caps"></a> NL 9: Use ALL_CAPS for macro names only
+### <a name="Rl-all-caps"></a> NL 9: Use `ALL_CAPS` for macro names only
 
 ##### Reason
 
@@ -12875,7 +12873,7 @@ This rule applies to non-macro symbolic constants:
 ##### Enforcement
 
 * Flag macros with lower-case letters
-* Flag ALL_CAPS non-macro names
+* Flag `ALL_CAPS` non-macro names
 
 ### <a name="Rl-camel"></a> NL.10: Avoid CamelCase
 
@@ -13889,14 +13887,14 @@ Alternatively, we will decide that no change is needed and delete the entry.
 * Const member functions should be thread safe "¦ aka, but I don't really change the variable, just assign it a value the first time its called "¦ argh
 * Always initialize variables, use initialization lists for member variables.
 * Anyone writing a public interface which takes or returns void* should have their toes set on fire. That one has been a personal favourite of mine for a number of years. :)
-* Use `const`'ness wherever possible: member functions, variables and (yippee) const_iterators
+* Use `const`'ness wherever possible: member functions, variables and (yippee) `const_iterators`
 * Use `auto`
 * `(size)` vs. `{initializers}` vs. `{Extent{size}}`
 * Don't overabstract
 * Never pass a pointer down the call stack
 * falling through a function bottom
 * Should there be guidelines to choose between polymorphisms? YES. classic (virtual functions, reference semantics) vs. Sean Parent style (value semantics, type-erased, kind of like `std::function`)  vs. CRTP/static? YES Perhaps even vs. tag dispatch?
-* Speaking of virtual functions, should non-virtual interface be promoted? NO. (public non-virtual foo() calling private/protected do_foo())? Not a new thing, seeing as locales/streams use it, but it seems to be under-emphasized.
+* Speaking of virtual functions, should non-virtual interface be promoted? NO. (public non-virtual `foo()` calling private/protected `do_foo()`)? Not a new thing, seeing as locales/streams use it, but it seems to be under-emphasized.
 * should virtual calls be banned from ctors/dtors in your guidelines? YES. A lot of people ban them, even though I think it's a big strength of C++ that they are ??? -preserving (D disappointed me so much when it went the Java way). WHAT WOULD BE A GOOD EXAMPLE?
 * Speaking of lambdas, what would weigh in on the decision between lambdas and (local?) classes in algorithm calls and other callback scenarios?
 * And speaking of `std::bind`, Stephen T. Lavavej criticizes it so much I'm starting to wonder if it is indeed going to fade away in future. Should lambdas be recommended instead?
@@ -13927,7 +13925,7 @@ Alternatively, we will decide that no change is needed and delete the entry.
 * When using a `condition_variable`, always protect the condition by a mutex (atomic bool whose value is set outside of the mutex is wrong!), and use the same mutex for the condition variable itself.
 * Never use `atomic_compare_exchange_strong` with `std::atomic<user-defined-struct>` (differences in padding matter, while `compare_exchange_weak` in a loop converges to stable padding)
 * individual `shared_future` objects are not thread-safe: two threads cannot wait on the same `shared_future` object (they can wait on copies of a `shared_future` that refer to the same shared state)
-* individual `shared_ptr` objects are not thread-safe: a thread cannot call a non-const member function of `shared_ptr` while another thread accesses (but different threads can call non-const member functions on copies of a `shared_ptr` that refer to the same shared object)
+* individual `shared_ptr` objects are not thread-safe: a thread cannot call a non-`const` member function of `shared_ptr` while another thread accesses (but different threads can call non-`const` member functions on copies of a `shared_ptr` that refer to the same shared object)
 
 * rules for arithmetic
 
