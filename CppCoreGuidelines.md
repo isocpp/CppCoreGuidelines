@@ -13104,6 +13104,19 @@ No. These guidelines are about how to best use Standard C++14 (and, if you have 
 
 No. These guidelines are about how to best use Standard C++14 + the Concepts Lite Technical Specification, and they limit themselves to recommending only those features.
 
+### <a name="Faq-markdown"></a> FAQ.10: What version of Markdown do these guidelines use?
+
+These coding standards are written using [Common Markdown](http://commonmark.org), and `<a>` HTML anchors.
+
+We are considering the following extensions from [GitHub Flavored Markdown (GFM)](https://help.github.com/articles/github-flavored-markdown/):
+
+- fenced code blocks (consistently using indented vs. fenced is under discussion)
+- tables (none yet but we'll likely need them, and this is a GFM extension)
+
+Avoid other HTML tags and other extensions.
+
+Note: We are not yet consistent with this style.
+
 ### <a name="Faq-gsl"></a> FAQ.50: What is the GSL (guideline support library)?
 
 The GSL is the small set of types and aliases specified in these guidelines. As of this writing, their specification herein is too sparse; we plan to add a WG21-style interface specification to ensure that different implementations agree, and to propose as a contribution for possible standardization, subject as usual to whatever the committee decides to accept/improve/alter/reject.
