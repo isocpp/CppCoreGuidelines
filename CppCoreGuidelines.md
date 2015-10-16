@@ -4867,6 +4867,10 @@ To prevent slicing, because the normal copy operations will copy only the base p
 
 It's good to return a smart pointer, but unlike with raw pointers the return type cannot be covariant (for example, `D::clone` can't return a `unique_ptr<D>`. Don't let this tempt you into returning an owning raw pointer; this is a minor drawback compared to the major robustness benefit delivered by the owning smart pointer.
 
+##### Exceptions
+
+If you need covariant return types, return an `owner<derived*>`. See [C.130](#Rh-copy).
+
 ##### Enforcement
 
 A class with any virtual function should not have a copy constructor or copy assignment operator (compiler-generated or handwritten).
@@ -5420,26 +5424,32 @@ Readability. Detection of mistakes. Explicit `override` allows the compiler to c
 
 ##### Reason
 
-Copying a base is usually slicing. If you really need copy semantics, copy deeply: Provide a virtual `clone` function that will copy the actual most-derived type, and in derived classes return the derived type (use a covariant return type).
+Copying a base is usually slicing. If you really need copy semantics, copy deeply: Provide a virtual `clone` function that will copy the actual most-derived type and return an owning pointer to the new object, and then in derived classes return the derived type (use a covariant return type).
 
 ##### Example
 
     class base {
     public:
-        virtual base* clone() = 0;
+        virtual owner<base*> clone() = 0;
+        virtual ~base() = 0;
+
+        base(const base&) = delete;
+        base& operator=(const base&) = delete;
     };
 
     class derived : public base {
     public:
-        derived* clone() override;
+        owner<derived*> clone() override;
+        virtual ~derived() override;
     };
 
-Note that because of language rules, the covariant return type cannot be a smart pointer.
+Note that because of language rules, the covariant return type cannot be a smart pointer. See also [C.67](#Rc-copy-virtual).
 
 ##### Enforcement
 
 * Flag a class with a virtual function and a non-user-defined copy operation.
 * Flag an assignment of base class objects (objects of a class from which another has been derived).
+
 
 ### <a name="Rh-get"></a> C.131: Avoid trivial getters and setters
 
@@ -13336,7 +13346,7 @@ No. These guidelines are about how to best use Standard C++14 + the Concepts Lit
 
 ### <a name="Faq-markdown"></a> FAQ.10: What version of Markdown do these guidelines use?
 
-These coding standards are written using [Common Markdown](http://commonmark.org), and `<a>` HTML anchors.
+These coding standards are written using [CommonMark](http://commonmark.org), and `<a>` HTML anchors.
 
 We are considering the following extensions from [GitHub Flavored Markdown (GFM)](https://help.github.com/articles/github-flavored-markdown/):
 
