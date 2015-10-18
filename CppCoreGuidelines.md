@@ -8263,313 +8263,6 @@ There are rare used of variadic functions in SFINAE code, but those don't actual
 
 Flag definitions of C-style variadic functions.
 
-## ES.stmt: Statements
-
-Statements control the flow of control (except for function calls and exception throws, which are expressions).
-
-### <a name="Res-switch-if"></a> ES.70: Prefer a `switch`-statement to an `if`-statement when there is a choice
-
-##### Reason
-
-* Readability.
-* Efficiency: A `switch` compares against constants and is usually better optimized than a series of tests in an `if`-`then`-`else` chain.
-* a `switch` is enables some heuristic consistency checking. For example, has all values of an `enum` been covered? If not, is there a `default`?
-
-##### Example
-
-    void use(int n)
-    {
-        switch (n) {   // good
-        case 0:   // ...
-        case 7:   // ...
-        }
-    }
-
-rather than:
-
-    void use2(int n)
-    {
-        if (n == 0)   // bad: if-then-else chain comparing against a set of constants
-            // ...
-        else if (n == 7)
-            // ...
-    }
-
-##### Enforcement
-
-Flag if-then-else chains that check against constants (only).
-
-### <a name="Res-for-range"></a> ES.71: Prefer a range-`for`-statement to a `for`-statement when there is a choice
-
-##### Reason
-
-Readability. Error prevention. Efficiency.
-
-##### Example
-
-    for (int i = 0; i < v.size(); ++i)   // bad
-            cout << v[i] << '\n';
-
-    for (auto p = v.begin(); p != v.end(); ++p)   // bad
-        cout << *p << '\n';
-
-    for (auto& x : v)    // OK
-        cout << x << '\n';
-
-    for (int i = 1; i < v.size(); ++i) // touches two elements: can't be a range-for
-        cout << v[i] + v[i-1] << '\n';
-
-    for (int i = 0; i < v.size(); ++i) // possible side-effect: can't be a range-for
-        cout << f(&v[i]) << '\n';
-
-    for (int i = 0; i < v.size(); ++i) { // body messes with loop variable: can't be a range-for
-        if (i % 2)
-            ++i;   // skip even elements
-        else
-            cout << v[i] << '\n';
-    }
-
-A human or a good static analyzer may determine that there really isn't a side effect on `v` in `f(&v[i])` so that the loop can be rewritten.
-
-"Messing with the loop variable" in the body of a loop is typically best avoided.
-
-##### Note
-
-Don't use expensive copies of the loop variable of a range-`for` loop:
-
-    for (string s : vs) // ...
-
-This will copy each elements of `vs` into `s`. Better
-
-    for (string& s : vs) // ...
-
-##### Enforcement
-
-Look at loops, if a traditional loop just looks at each element of a sequence, and there are no side-effects on what it does with the elements, rewrite the loop to a for loop.
-
-### <a name="Res-for-while"></a> ES.72: Prefer a `for`-statement to a `while`-statement when there is an obvious loop variable
-
-##### Reason
-
-Readability: the complete logic of the loop is visible "up front". The scope of the loop variable can be limited.
-
-##### Example
-
-    for (int i = 0; i < vec.size(); i++) {
-     // do work
-    }
-
-##### Example, bad
-
-    int i = 0;
-    while (i < vec.size()) {
-     // do work
-     i++;
-    }
-
-##### Enforcement
-
-???
-
-### <a name="Res-while-for"></a> ES.73: Prefer a `while`-statement to a `for`-statement when there is no obvious loop variable
-
-##### Reason
-
- ???
-
-##### Example
-
-    ???
-
-##### Enforcement
-
-???
-
-### <a name="Res-for-init"></a> ES.74: Prefer to declare a loop variable in the initializer part of as `for`-statement
-
-##### Reason
-
-Limit the loop variable visibility to the scope of the loop.
-Avoid using the loop variable for other purposes after the loop.
-
-##### Example
-
-    for (int i = 0; i < 100; ++i) {   // GOOD: i var is visible only inside the loop
-        // ...
-    }
-
-##### Example, don't
-
-    int j;                            // BAD: j is visible outside the loop
-    for (j = 0; j < 100; ++j) {
-        // ...
-    }
-    // j is still visible here and isn't needed
-
-**See also**: [Don't use a variable for two unrelated purposes](#Res-recycle)
-
-##### Enforcement
-
-Warn when a variable modified inside the `for`-statement is declared outside the loop and not being used outside the loop.
-
-**Discussion**: Scoping the loop variable to the loop body also helps code optimizers greatly. Recognizing that the induction variable
-is only accessible in the loop body unblocks optimizations such as hoisting, strength reduction, loop-invariant code motion, etc.
-
-### <a name="Res-do"></a> ES.75: Avoid `do`-statements
-
-##### Reason
-
-Readability, avoidance of errors.
-The termination conditions is at the end (where it can be overlooked) and the condition is not checked the first time through. ???
-
-##### Example
-
-    int x;
-    do {
-        cin >> x;
-        x
-    } while (x < 0);
-
-##### Enforcement
-
-???
-
-### <a name="Res-goto"></a> ES.76: Avoid `goto`
-
-##### Reason
-
-Readability, avoidance of errors. There are better control structures for humans; `goto` is for machine generated code.
-
-##### Exception
-
-Breaking out of a nested loop. In that case, always jump forwards.
-
-##### Example
-
-    ???
-
-##### Example
-
-There is a fair amount of use of the C goto-exit idiom:
-
-    void f()
-    {
-        // ...
-            goto exit;
-        // ...
-            goto exit;
-        // ...
-    exit:
-        ... common cleanup code ...
-    }
-
-This is an ad-hoc simulation of destructors. Declare your resources with handles with destructors that clean up.
-
-##### Enforcement
-
-* Flag `goto`. Better still flag all `goto`s that do not jump from a nested loop to the statement immediately after a nest of loops.
-
-### <a name="Res-continue"></a> ES.77: ??? `continue`
-
-##### Reason
-
- ???
-
-##### Example
-
-    ???
-
-##### Enforcement
-
-???
-
-### <a name="Res-break"></a> ES.78: Always end a non-empty `case` with a `break`
-
-##### Reason
-
- Accidentally leaving out a `break` is a fairly common bug.
- A deliberate fallthrough is a maintenance hazard.
-
-##### Example
-
-    switch(eventType)
-    {
-    case Information:
-        update_status_bar();
-        break;
-    case Warning:
-        write_event_log();
-    case Error:
-        display_error_window(); // Bad
-        break;
-    }
-
-It is easy to overlook the fallthrough. Be explicit:
-
-    switch(eventType)
-    {
-    case Information:
-        update_status_bar();
-        break;
-    case Warning:
-        write_event_log();
-        // fall through
-    case Error:
-        display_error_window(); // Bad
-        break;
-    }
-
-There is a proposal for a `[[fallthrough]]` annotation.
-
-##### Note
-
-Multiple case labels of a single statement is OK:
-
-    switch (x) {
-    case 'a':
-    case 'b':
-    case 'f':
-        do_something(x);
-        break;
-    }
-
-##### Enforcement
-
-Flag all fall throughs from non-empty `case`s.
-
-### <a name="Res-default"></a> ES.79: ??? `default`
-
-##### Reason
-
- ???
-
-##### Example
-
-    ???
-
-##### Enforcement
-
-???
-
-### <a name="Res-empty"></a> ES.85: Make empty statements visible
-
-##### Reason
-
-Readability.
-
-##### Example
-
-    for (i = 0; i < max; ++i);   // BAD: the empty statement is easily overlooked
-        v[i] = f(v[i]);
-
-    for (auto x : v) {           // better
-        // nothing
-    }
-
-##### Enforcement
-
-Flag empty statements that are not blocks and doesn't "contain" comments.
-
 ## ES.expr: Expressions
 
 Expressions manipulate values.
@@ -8990,6 +8683,313 @@ The result of doing so is undefined.
 This example has many more problems.
 
 ##### Enforcement
+
+## ES.stmt: Statements
+
+Statements control the flow of control (except for function calls and exception throws, which are expressions).
+
+### <a name="Res-switch-if"></a> ES.70: Prefer a `switch`-statement to an `if`-statement when there is a choice
+
+##### Reason
+
+* Readability.
+* Efficiency: A `switch` compares against constants and is usually better optimized than a series of tests in an `if`-`then`-`else` chain.
+* a `switch` is enables some heuristic consistency checking. For example, has all values of an `enum` been covered? If not, is there a `default`?
+
+##### Example
+
+    void use(int n)
+    {
+        switch (n) {   // good
+        case 0:   // ...
+        case 7:   // ...
+        }
+    }
+
+rather than:
+
+    void use2(int n)
+    {
+        if (n == 0)   // bad: if-then-else chain comparing against a set of constants
+            // ...
+        else if (n == 7)
+            // ...
+    }
+
+##### Enforcement
+
+Flag if-then-else chains that check against constants (only).
+
+### <a name="Res-for-range"></a> ES.71: Prefer a range-`for`-statement to a `for`-statement when there is a choice
+
+##### Reason
+
+Readability. Error prevention. Efficiency.
+
+##### Example
+
+    for (int i = 0; i < v.size(); ++i)   // bad
+            cout << v[i] << '\n';
+
+    for (auto p = v.begin(); p != v.end(); ++p)   // bad
+        cout << *p << '\n';
+
+    for (auto& x : v)    // OK
+        cout << x << '\n';
+
+    for (int i = 1; i < v.size(); ++i) // touches two elements: can't be a range-for
+        cout << v[i] + v[i-1] << '\n';
+
+    for (int i = 0; i < v.size(); ++i) // possible side-effect: can't be a range-for
+        cout << f(&v[i]) << '\n';
+
+    for (int i = 0; i < v.size(); ++i) { // body messes with loop variable: can't be a range-for
+        if (i % 2)
+            ++i;   // skip even elements
+        else
+            cout << v[i] << '\n';
+    }
+
+A human or a good static analyzer may determine that there really isn't a side effect on `v` in `f(&v[i])` so that the loop can be rewritten.
+
+"Messing with the loop variable" in the body of a loop is typically best avoided.
+
+##### Note
+
+Don't use expensive copies of the loop variable of a range-`for` loop:
+
+    for (string s : vs) // ...
+
+This will copy each elements of `vs` into `s`. Better
+
+    for (string& s : vs) // ...
+
+##### Enforcement
+
+Look at loops, if a traditional loop just looks at each element of a sequence, and there are no side-effects on what it does with the elements, rewrite the loop to a for loop.
+
+### <a name="Res-for-while"></a> ES.72: Prefer a `for`-statement to a `while`-statement when there is an obvious loop variable
+
+##### Reason
+
+Readability: the complete logic of the loop is visible "up front". The scope of the loop variable can be limited.
+
+##### Example
+
+    for (int i = 0; i < vec.size(); i++) {
+     // do work
+    }
+
+##### Example, bad
+
+    int i = 0;
+    while (i < vec.size()) {
+     // do work
+     i++;
+    }
+
+##### Enforcement
+
+???
+
+### <a name="Res-while-for"></a> ES.73: Prefer a `while`-statement to a `for`-statement when there is no obvious loop variable
+
+##### Reason
+
+ ???
+
+##### Example
+
+    ???
+
+##### Enforcement
+
+???
+
+### <a name="Res-for-init"></a> ES.74: Prefer to declare a loop variable in the initializer part of as `for`-statement
+
+##### Reason
+
+Limit the loop variable visibility to the scope of the loop.
+Avoid using the loop variable for other purposes after the loop.
+
+##### Example
+
+    for (int i = 0; i < 100; ++i) {   // GOOD: i var is visible only inside the loop
+        // ...
+    }
+
+##### Example, don't
+
+    int j;                            // BAD: j is visible outside the loop
+    for (j = 0; j < 100; ++j) {
+        // ...
+    }
+    // j is still visible here and isn't needed
+
+**See also**: [Don't use a variable for two unrelated purposes](#Res-recycle)
+
+##### Enforcement
+
+Warn when a variable modified inside the `for`-statement is declared outside the loop and not being used outside the loop.
+
+**Discussion**: Scoping the loop variable to the loop body also helps code optimizers greatly. Recognizing that the induction variable
+is only accessible in the loop body unblocks optimizations such as hoisting, strength reduction, loop-invariant code motion, etc.
+
+### <a name="Res-do"></a> ES.75: Avoid `do`-statements
+
+##### Reason
+
+Readability, avoidance of errors.
+The termination conditions is at the end (where it can be overlooked) and the condition is not checked the first time through. ???
+
+##### Example
+
+    int x;
+    do {
+        cin >> x;
+        x
+    } while (x < 0);
+
+##### Enforcement
+
+???
+
+### <a name="Res-goto"></a> ES.76: Avoid `goto`
+
+##### Reason
+
+Readability, avoidance of errors. There are better control structures for humans; `goto` is for machine generated code.
+
+##### Exception
+
+Breaking out of a nested loop. In that case, always jump forwards.
+
+##### Example
+
+    ???
+
+##### Example
+
+There is a fair amount of use of the C goto-exit idiom:
+
+    void f()
+    {
+        // ...
+            goto exit;
+        // ...
+            goto exit;
+        // ...
+    exit:
+        ... common cleanup code ...
+    }
+
+This is an ad-hoc simulation of destructors. Declare your resources with handles with destructors that clean up.
+
+##### Enforcement
+
+* Flag `goto`. Better still flag all `goto`s that do not jump from a nested loop to the statement immediately after a nest of loops.
+
+### <a name="Res-continue"></a> ES.77: ??? `continue`
+
+##### Reason
+
+ ???
+
+##### Example
+
+    ???
+
+##### Enforcement
+
+???
+
+### <a name="Res-break"></a> ES.78: Always end a non-empty `case` with a `break`
+
+##### Reason
+
+ Accidentally leaving out a `break` is a fairly common bug.
+ A deliberate fallthrough is a maintenance hazard.
+
+##### Example
+
+    switch(eventType)
+    {
+    case Information:
+        update_status_bar();
+        break;
+    case Warning:
+        write_event_log();
+    case Error:
+        display_error_window(); // Bad
+        break;
+    }
+
+It is easy to overlook the fallthrough. Be explicit:
+
+    switch(eventType)
+    {
+    case Information:
+        update_status_bar();
+        break;
+    case Warning:
+        write_event_log();
+        // fall through
+    case Error:
+        display_error_window(); // Bad
+        break;
+    }
+
+There is a proposal for a `[[fallthrough]]` annotation.
+
+##### Note
+
+Multiple case labels of a single statement is OK:
+
+    switch (x) {
+    case 'a':
+    case 'b':
+    case 'f':
+        do_something(x);
+        break;
+    }
+
+##### Enforcement
+
+Flag all fall throughs from non-empty `case`s.
+
+### <a name="Res-default"></a> ES.79: ??? `default`
+
+##### Reason
+
+ ???
+
+##### Example
+
+    ???
+
+##### Enforcement
+
+???
+
+### <a name="Res-empty"></a> ES.85: Make empty statements visible
+
+##### Reason
+
+Readability.
+
+##### Example
+
+    for (i = 0; i < max; ++i);   // BAD: the empty statement is easily overlooked
+        v[i] = f(v[i]);
+
+    for (auto x : v) {           // better
+        // nothing
+    }
+
+##### Enforcement
+
+Flag empty statements that are not blocks and doesn't "contain" comments.
 
 ## <a name="SS-numbers"></a> Arithmetic
 
