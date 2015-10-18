@@ -9753,11 +9753,19 @@ Immutable objects are easier to reason about, so make object non-`const` only wh
 
 ##### Reason
 
- ???
+Member functions must be `const` in order to not alter any member variables of the class.
 
 ##### Example
 
-    ???
+    class Point {
+        private :
+            int x,
+                y;
+        public :
+            Point(int x, int y);
+            int getX() const;
+            int getY() const;  
+    }
 
 ##### Enforcement
 
@@ -13442,7 +13450,7 @@ These are key functions that must not fail because they are necessary for the tw
 Consider the following advice and requirements found in the C++ Standard:
 
 > If a destructor called during stack unwinding exits with an exception, terminate is called (15.5.1). So destructors should generally catch exceptions and not let them propagate out of the destructor. --[[C++03]](#C++03) §15.2(3)
-> 
+>
 > No destructor operation defined in the C++ Standard Library (including the destructor of any type that is used to instantiate a standard library template) will throw an exception. --[[C++03]](#C++03) §17.4.4.8(3)
 
 Deallocation functions, including specifically overloaded `operator delete` and `operator delete[]`, fall into the same category, because they too are used during cleanup in general, and during exception handling in particular, to back out of partial work that needs to be undone.
@@ -13990,4 +13998,3 @@ Alternatively, we will decide that no change is needed and delete the entry.
   \[Sutter04\]:        H. Sutter. Exceptional C++ Style (Addison-Wesley, 2004).
 * <a name="Taligent94"></a>
   \[Taligent94\]: Taligent's Guide to Designing Programs (Addison-Wesley, 1994).
-
