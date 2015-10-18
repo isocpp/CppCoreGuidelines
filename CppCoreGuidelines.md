@@ -5869,13 +5869,13 @@ Consider:
     void print(int a, int base);
     void print(const string&);
 
-These three functions all prints their arguments (appropriately). Conversely
+These three functions all print their arguments (appropriately). Conversely:
 
     void print_int(int a);
     void print_based(int a, int base);
     void print_string(const string&);
 
-These three functions all prints their arguments (appropriately). Adding to the name just introduced verbosity and inhibits generic code.
+These three functions all print their arguments (appropriately). Adding to the name just introduced verbosity and inhibits generic code.
 
 ##### Enforcement
 
