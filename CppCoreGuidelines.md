@@ -6865,7 +6865,7 @@ You want the rules to work on all the smart pointers you use.
 Any type (including primary template or specialization) that overloads unary `*` and `->` is considered a smart pointer:
 
 * If it is copyable, it is recognized as a reference-counted `Shared_ptr`.
-* If it not copyable, it is recognized as a unique `Unique_ptr`.
+* If it is not copyable, it is recognized as a unique `Unique_ptr`.
 
 ##### Example
 
@@ -7005,7 +7005,7 @@ This makes the function's ??? explicit.
 Violating this rule is the number one cause of losing reference counts and finding yourself with a dangling pointer.
 Functions should prefer to pass raw pointers and references down call chains.
 At the top of the call tree where you obtain the raw pointer or reference from a smart pointer that keeps the object alive.
-You need to be sure that smart pointer cannot be inadvertently be reset or reassigned from within the call tree below
+You need to be sure that the smart pointer cannot inadvertently be reset or reassigned from within the call tree below.
 
 ##### Note
 
