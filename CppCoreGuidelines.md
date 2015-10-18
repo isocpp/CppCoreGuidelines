@@ -1101,7 +1101,7 @@ In the following example, it is not clear from the interface what `time_to_blink
 
 ##### Example, good
 
-std::chrono::duration types introduced in C++11 helps making the unit of time duration explicit.
+`std::chrono::duration` types introduced in C++11 helps making the unit of time duration explicit.
 
     void blink_led(milliseconds time_to_blink) // good - the unit is explicit
     {
