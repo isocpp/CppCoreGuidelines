@@ -6116,7 +6116,7 @@ First some bad old code:
 
     int webby = BLUE;   // webby == 2; probably not what was desired
 
-instead use an `enum`:
+Instead use an `enum`:
 
     enum class Webcolor { red = 0xFF0000, green = 0x00FF00, blue = 0x0000FF };
     enum class Productinfo { red = 0, purple = 1, blue = 2 };
@@ -6156,7 +6156,7 @@ To minimize surprises.
     int webby = blue;   // error, ambiguous: be specific
     Webcolor webby = Webcolor::blue;
 
-instead use an `enum class`:
+Instead use an `enum class`:
 
     enum class Webcolor { red=0xFF0000, green=0x00FF00, blue=0x0000FF };
     enum class Productinfo { red=0, purple=1, blue=2 };
