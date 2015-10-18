@@ -13867,7 +13867,7 @@ Simplified definition: a declaration that allocates memory.
 * *style*: a set of techniques for programming leading to a consistent use of language features; sometimes used in a very restricted sense to refer just to low-level rules for naming and appearance of code.
 * *subtype*: derived type; a type that has all the properties of a type and possibly more.
 * *supertype*: base type; a type that has a subset of the properties of a type.
-* *system*: (1) a program or a set of programs for performing a task on a computer; (2) a shorthand for “operating system,” that is, the fundamental execution environment and tools for a computer.
+* *system*: (1) a program or a set of programs for performing a task on a computer; (2) a shorthand for “operating system”, that is, the fundamental execution environment and tools for a computer.
 * *template*: a class or a function parameterized by one or more types or (compile-time) values; the basic C++ language construct supporting generic programming.
 * *testing*: a systematic search for errors in a program.
 * *trade-off*: the result of balancing several design and implementation criteria.
