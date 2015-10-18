@@ -7881,7 +7881,7 @@ Declaration rules:
 * [ES.31: Don't use macros for constants or "functions"](#Res-macros2)
 * [ES.32: Use `ALL_CAPS` for all macro names](#Res-ALL_CAPS)
 * [ES.33: If you must use macros, give them unique names](#Res-MACROS)
-* [ES.40: Don't define a (C-style) variadic function](#Res-ellipses)
+* [ES.34: Don't define a (C-style) variadic function](#Res-ellipses)
 
 Expression rules:
 
@@ -8860,7 +8860,7 @@ If you are forced to use macros, use long names and supposedly unique prefixes (
 
 Warn against short macro names.
 
-### <a name="Res-ellipses"></a>ES.40: Don't define a (C-style) variadic function
+### <a name="Res-ellipses"></a> ES.34: Don't define a (C-style) variadic function
 
 ##### Reason
 
