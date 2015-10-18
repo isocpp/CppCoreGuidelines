@@ -10141,14 +10141,15 @@ Metaprogramming rule summary:
 * [T.125: If you need to go beyond the standard-library TMP facilities, use an existing library](#Rt-lib)
 * [T.??: ????](#Rt-???)
 
-Other template rules summary:
+Subsections:
 
-* [T.140: Name all nontrivial operations](#Rt-name)
-* [T.141: Use an unnamed lambda if you need a simple function object in one place only](#Rt-lambda)
-* [T.142: Use template variables to simplify notation](#Rt-var)
-* [T.143: Don't write unintentionally nongeneric code](#Rt-nongeneric)
-* [T.144: Don't specialize function templates](#Rt-specialize-function)
-* [T.??: ????](#Rt-???)
+* [T.concepts: Concepts](#SS-t-concepts)
+* [T.intf: Template interfaces](#SS-t-intf)
+* [T.def: Template definition](#SS-t-def)
+* [T.hier: Template hierarchy](#SS-t-hier)
+* [T.variadic: Variadic templates](#SS-t-var)
+* [T.meta: Template Metaprogramming](#SS-t-meta)
+* [T.other: Other rules](#SS-t-other)
 
 ## <a name="SS-GP"></a> T.gp: Generic programming
 
@@ -10328,7 +10329,7 @@ In a class template, nonvirtual functions are only instantiated if they're used 
 
 * Flag a class template that declares new (non-inherited) virtual functions.
 
-## <a name="SS-concepts"></a> T.concepts: Concept rules
+## <a name="SS-t-concepts"></a> T.concepts: Concept rules
 
 Concepts is a facility for specifying requirements for template arguments.
 It is an [ISO technical specification](#Ref-conceptsTS), but not yet supported by currently shipping compilers.
@@ -10354,7 +10355,9 @@ Concept definition rule summary:
 * [T.26: Prefer to define concepts in terms of use-patterns rather than simple syntax](#Rt-use)
 * ???
 
-## <a name="SS-concept-use"></a> T.con-use: Concept use
+## <a name="SS-t-concepts-use"></a> T.concepts.use: Concept use
+
+??? subsection introduction ???
 
 ### <a name="Rt-concepts"></a> T.10: Specify concepts for all template arguments
 
@@ -10490,9 +10493,9 @@ The shorter versions better match the way we speak. Note that many templates don
 * Not feasible in the short term when people convert from the `<typename T>` and `<class T`> notation.
 * Later, flag declarations that first introduces a typename and then constrains it with a simple, single-type-argument concept.
 
-## <a name="SS-concepts-def"></a> T.concepts.def: Concept definition rules
+## <a name="SS-t-concepts-def"></a> T.concepts.def: Concept definition rules
 
-???
+??? subsection introduction ???
 
 ### <a name="Rt-low"></a> T.20: Avoid "concepts" without meaningful semantics
 
@@ -10742,9 +10745,22 @@ Conversions are taken into account. You don't have to remember the names of all 
 
 ???
 
-## <a name="SS-temp-interface"></a> Template interfaces
+## <a name="SS-t-intf"></a> T.intf Template interfaces
 
-???
+??? section introduction ???
+
+Template interface rule summary:
+
+* [T.40: Use function objects to pass operations to algorithms](#Rt-fo)
+* [T.41: Require complete sets of operations for a concept](#Rt-operations)
+* [T.42: Use template aliases to simplify notation and hide implementation details](#Rt-alias)
+* [T.43: Prefer `using` over `typedef` for defining aliases](#Rt-using)
+* [T.44: Use function templates to deduce class template argument types (where feasible)](#Rt-deduce)
+* [T.46: Require template arguments to be at least `Regular` or `SemiRegular`](#Rt-regular)
+* [T.47: Avoid highly visible unconstrained templates with common names](#Rt-visible)
+* [T.48: If your compiler does not support concepts, fake them with `enable_if`](#Rt-concept-def)
+* [T.49: Where possible, avoid type-erasure](#Rt-erasure)
+* [T.50: Avoid writing an unconstrained template in the same namespace as a type](#Rt-unconstrained-adl)
 
 ### <a name="Rt-fo"></a> T.40: Use function objects to pass operations to algorithms
 
@@ -10959,9 +10975,21 @@ This rule should not be necessary; the committee cannot agree on how to fix ADL,
 
 ??? unfortunately this will get many false positives; the standard library violates this widely, by putting many unconstrained templates and types into the single namespace `std`
 
-## <a name="SS-temp-def"></a> T.def: Template definitions
+## <a name="SS-t-def"></a> T.def: Template definitions
 
-???
+??? section introduction ???
+
+Template definition rule summary:
+
+* [T.60: Minimize a template's context dependencies](#Rt-depend)
+* [T.61: Do not over-parameterize members (SCARY)](#Rt-scary)
+* [T.62: Place non-dependent template members in a non-templated base class](#Rt-nondependent)
+* [T.64: Use specialization to provide alternative implementations of class templates](#Rt-specialization)
+* [T.65: Use tag dispatch to provide alternative implementations of functions](#Rt-tag-dispatch)
+* [T.66: Use selection using `enable_if` to optionally define a function](#Rt-enable_if)
+* [T.67: Use specialization to provide alternative implementations for irregular types](#Rt-specialization2)
+* [T.68: Use `{}` rather than `()` within templates to avoid ambiguities](#Rt-cast)
+* [T.69: Inside a template, don't make an unqualified nonmember function call unless you intend it to be a customization point](#Rt-customization)
 
 ### <a name="Rt-depend"></a> T.60: Minimize a template's context dependencies
 
@@ -11179,11 +11207,20 @@ There are three major ways to let calling code customize a template.
 
 * In a template, flag an unqualified call to a nonmember function that passes a variable of dependent type when there is a nonmember function of the same name in the template's namespace.
 
-## <a name="SS-temp-hier"></a> T.temp-hier: Template and hierarchy rules:
+## <a name="SS-t-hier"></a> T.hier: Template and hierarchy rules:
 
 Templates are the backbone of C++'s support for generic programming and class hierarchies the backbone of its support
 for object-oriented programming.
 The two language mechanisms can be use effectively in combination, but a few design pitfalls must be avoided.
+
+Template and hierarchy rule summary:
+
+* [T.80: Do not naively templatize a class hierarchy](#Rt-hier)
+* [T.81: Do not mix hierarchies and arrays](#Rt-array) // ??? somewhere in "hierarchies"
+* [T.82: Linearize a hierarchy when virtual functions are undesirable](#Rt-linear)
+* [T.83: Do not declare a member function template virtual](#Rt-virtual)
+* [T.84: Use a non-template core implementation to provide an ABI-stable interface](#Rt-abi)
+* [T.??: ????](#Rt-???)
 
 ### <a name="Rt-hier"></a> T.80: Do not naively templatize a class hierarchy
 
@@ -11365,9 +11402,17 @@ Instead of using a separate "base" type, another common technique is to speciali
 
 ???
 
-## <a name="SS-variadic"></a> T.var: Variadic template rules
+## <a name="SS-t-var"></a> T.var: Variadic template rules
 
-???
+??? section introduction ???
+
+Variadic template rule summary:
+
+* [T.100: Use variadic templates when you need a function that takes a variable number of arguments of a variety of types](#Rt-variadic)
+* [T.101: ??? How to pass arguments to a variadic template ???](#Rt-variadic-pass)
+* [T.102: ??? How to process arguments to a variadic template ???](#Rt-variadic-process)
+* [T.103: Don't use variadic templates for homogeneous argument lists](#Rt-variadic-not)
+* [T.??: ????](#Rt-???)
 
 ### <a name="Rt-variadic"></a> T.100: Use variadic templates when you need a function that takes a variable number of arguments of a variety of types
 
@@ -11425,13 +11470,23 @@ There are more precise ways of specifying a homogeneous sequence, such as an `in
 
 ???
 
-## <a name="SS-meta"></a> T.meta: Template metaprogramming (TMP)
+## <a name="SS-t-meta"></a> T.meta: Template metaprogramming (TMP)
 
 Templates provide a general mechanism for compile-time programming.
 
 Metaprogramming is programming where at least one input or one result is a type.
 Templates offer Turing-complete (modulo memory capacity) duck typing at compile time.
 The syntax and techniques needed are pretty horrendous.
+
+Metaprogramming rule summary:
+
+* [T.120: Use template metaprogramming only when you really need to](#Rt-metameta)
+* [T.121: Use template metaprogramming primarily to emulate concepts](#Rt-emulate)
+* [T.122: Use templates (usually template aliases) to compute types at compile time](#Rt-tmp)
+* [T.123: Use `constexpr` functions to compute values at compile time](#Rt-fct)
+* [T.124: Prefer to use standard-library TMP facilities](#Rt-std)
+* [T.125: If you need to go beyond the standard-library TMP facilities, use an existing library](#Rt-lib)
+* [T.??: ????](#Rt-???)
 
 ### <a name="Rt-metameta"></a> T.120: Use template metaprogramming only when you really need to
 
@@ -11566,7 +11621,18 @@ Write your own "advanced TMP support" only if you really have to.
 
 ???
 
-## <a name="SS-temp-other"></a> Other template rules
+## <a name="SS-t-other"></a> T.other: Other template rules
+
+??? section introduction ???
+
+Other template rules summary:
+
+* [T.140: Name all nontrivial operations](#Rt-name)
+* [T.141: Use an unnamed lambda if you need a simple function object in one place only](#Rt-lambda)
+* [T.142: Use template variables to simplify notation](#Rt-var)
+* [T.143: Don't write unintentionally nongeneric code](#Rt-nongeneric)
+* [T.144: Don't specialize function templates](#Rt-specialize-function)
+* [T.??: ????](#Rt-???)
 
 ### <a name="Rt-name"></a> T.140: Name all nontrivial operations
 
