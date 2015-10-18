@@ -3817,7 +3817,7 @@ A constructor can be used for convenience even if a class does not have an invar
 
 ##### Note
 
-The C++11 initializer list rules eliminates the need for many constructors. For example:
+The C++11 initializer list rule eliminates the need for many constructors. For example:
 
     struct Rec2{
         string s;
@@ -3978,7 +3978,7 @@ Many language and library facilities rely on default constructors, e.g. `T a[10]
 
 There is no "natural" default date (the big bang is too far back in time to be useful for most people), so this example is non-trivial.
 `{0, 0, 0}` is not a valid date in most calendar systems, so choosing that would be introducing something like floating-point's NaN.
-However, most realistic `Date` classes has a "first date" (e.g. January 1, 1970 is popular), so making that the default is usually trivial.
+However, most realistic `Date` classes have a "first date" (e.g. January 1, 1970 is popular), so making that the default is usually trivial.
 
 ##### Enforcement
 
@@ -4936,7 +4936,7 @@ Providing a nonmember `swap` function in the same namespace as your type for cal
         y = tmp;
     }
 
-This is not just slow, but if a memory allocation occur for the elements in `tmp`, this `swap` may throw and would make STL algorithms fail if used with them.
+This is not just slow, but if a memory allocation occurs for the elements in `tmp`, this `swap` may throw and would make STL algorithms fail if used with them.
 
 ##### Enforcement
 
