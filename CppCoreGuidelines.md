@@ -1388,7 +1388,7 @@ Use the ISO Concepts TS style of requirements specification. For example:
 
 Soon (maybe in 2016), most compilers will be able to check `requires` clauses once the `//` is removed.
 
-**See also**: See [generic programming](???) and [???](???)
+**See also**: See [generic programming](#SS-GP) and [concepts](#SS-t-concepts).
 
 ##### Enforcement
 
@@ -1437,7 +1437,7 @@ We don't consider "performance" a valid reason not to use exceptions.
 * A good rule for performance critical code is to move checking outside the critical part of the code ([checking](#Rper-checking)).
 * In the longer term, more regular code gets better optimized.
 
-**See also**: I.??? and I.??? for reporting precondition and postcondition violations.
+**See also**: [I.5](#Ri-pre) and [I.7](#Ri-post) for reporting precondition and postcondition violations.
 
 ##### Enforcement
 
@@ -6001,7 +6001,7 @@ Subscripting the resulting base pointer will lead to invalid object access and p
 * Flag all combinations of array decay and base to derived conversions.
 * Pass an array as a `span` rather than as a pointer, and don't let the array name suffer a derived-to-base conversion before getting into the `span`
 
-# <a name="SS-overload"></a> C.over: Overloading and overloaded operators
+## <a name="SS-overload"></a> C.over: Overloading and overloaded operators
 
 You can overload ordinary functions, template functions, and operators.
 You cannot overload function objects.
@@ -10328,7 +10328,7 @@ In a class template, nonvirtual functions are only instantiated if they're used 
 
 * Flag a class template that declares new (non-inherited) virtual functions.
 
-## <a name="SS-tpg-concepts"></a> TPG.concepts: Concept rules
+## <a name="SS-concepts"></a> T.concepts: Concept rules
 
 Concepts is a facility for specifying requirements for template arguments.
 It is an [ISO technical specification](#Ref-conceptsTS), but not yet supported by currently shipping compilers.
@@ -10339,8 +10339,8 @@ Concept use rule summary:
 
 * [T.10: Specify concepts for all template arguments](#Rt-concepts)
 * [T.11: Whenever possible use standard concepts](#Rt-std-concepts)
-* [T.14: Prefer concept names over `auto`](#Rt-auto)
-* [T.15: Prefer the shorthand notation for simple, single-type argument concepts](#Rt-shorthand)
+* [T.12: Prefer concept names over `auto`](#Rt-auto)
+* [T.13: Prefer the shorthand notation for simple, single-type argument concepts](#Rt-shorthand)
 * ???
 
 Concept definition rule summary:
@@ -10446,7 +10446,7 @@ Designing a useful concept is challenging.
 Hard.
 
 * Look for unconstrained arguments, templates that use "unusual"/non-standard concepts, templates that use "homebrew" concepts without axioms.
-* Develop a concept-discovery tool (e.g., see [an early experiment](http://www.stroustrup.com/sle2010_webversion.pdf).
+* Develop a concept-discovery tool (e.g., see [an early experiment](http://www.stroustrup.com/sle2010_webversion.pdf)).
 
 ### <a name="Rt-auto"></a> T.12: Prefer concept names over `auto` for local variables
 
@@ -10490,7 +10490,7 @@ The shorter versions better match the way we speak. Note that many templates don
 * Not feasible in the short term when people convert from the `<typename T>` and `<class T`> notation.
 * Later, flag declarations that first introduces a typename and then constrains it with a simple, single-type-argument concept.
 
-## <a name="SS-concept-def"></a> T.con-def: Concept definition rules
+## <a name="SS-concepts-def"></a> T.concepts.def: Concept definition rules
 
 ???
 
@@ -10727,7 +10727,7 @@ The compiler will select the overload and emit an appropriate error.
 * Flag pairs of functions with `C<T>` and `!C<T>` constraints
 * Flag all constraint negation
 
-### <a name="Rt-use"></a> T.27: Prefer to define concepts in terms of use-patterns rather than simple syntax
+### <a name="Rt-use"></a> T.26: Prefer to define concepts in terms of use-patterns rather than simple syntax
 
 ##### Reason
 
@@ -10959,7 +10959,7 @@ This rule should not be necessary; the committee cannot agree on how to fix ADL,
 
 ??? unfortunately this will get many false positives; the standard library violates this widely, by putting many unconstrained templates and types into the single namespace `std`
 
-## <a name="SS-temp-def"></a> TCP.def: Template definitions
+## <a name="SS-temp-def"></a> T.def: Template definitions
 
 ???
 
@@ -14021,7 +14021,7 @@ Now `Named` has a default constructor, a destructor, and efficient copy and move
 
 ##### Enforcement
 
-In general, a tool cannot know if a class is a resource handle. However, if a class has some of [the default operations](???), it should have all, and if a class has a member that is a resource handle, it should be considered a resource handle.
+In general, a tool cannot know if a class is a resource handle. However, if a class has some of [the default operations](#SS-ctor), it should have all, and if a class has a member that is a resource handle, it should be considered a resource handle.
 
 ### <a name="Cr-list"></a> If a class is a container, give it an initializer-list constructor
 
