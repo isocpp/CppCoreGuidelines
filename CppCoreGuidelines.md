@@ -5007,7 +5007,7 @@ It is really hard to write a foolproof and useful `==` for a hierarchy.
         // ...
     };
 
-// `B`'s comparison accepts conversions for its second operand, but not its first.
+`B`'s comparison accepts conversions for its second operand, but not its first.
 
     class D :B {
         char character;
