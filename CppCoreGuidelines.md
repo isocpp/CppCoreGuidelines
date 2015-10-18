@@ -5251,7 +5251,7 @@ A class with a virtual function is usually (and in general) used via a pointer t
 
 ##### Note
 
-There are people who don't follow this rule because they plan to use a class only through a `shared_ptr`: `std::shared_ptr<B> p = std::make_shared<D>(args);` Here, the shared pointer will take care of deletion, so no leak will occur from and inappropriate `delete` of the base. People who do this consistently can get a false positive, but the rule is important -- what if one was allocated using `make_unique`? It's not safe unless the author of `B` ensures that it can never be misused, such as by making all constructors private and providing a factory functions to enforce the allocation with `make_shared`.
+There are people who don't follow this rule because they plan to use a class only through a `shared_ptr`: `std::shared_ptr<B> p = std::make_shared<D>(args);` Here, the shared pointer will take care of deletion, so no leak will occur from an inappropriate `delete` of the base. People who do this consistently can get a false positive, but the rule is important -- what if one was allocated using `make_unique`? It's not safe unless the author of `B` ensures that it can never be misused, such as by making all constructors private and providing a factory function to enforce the allocation with `make_shared`.
 
 ##### Enforcement
 
@@ -5289,7 +5289,7 @@ Readability. Detection of mistakes. Explicit `override` allows the compiler to c
 
 ##### Reason
 
- ??? Herb: I've become a non-fan of implementation inheritance -- seems most often an antipattern. Are there reasonable examples of it?
+ ??? Herb: I've become a non-fan of implementation inheritance -- seems most often an anti-pattern. Are there reasonable examples of it?
 
 ##### Example
 
@@ -5421,7 +5421,7 @@ This leaves us with three alternatives:
 * *All public*: If you're writing an aggregate bundle-of-variables without an invariant across those variables, then all the variables should be public.
 [Declare such classes `struct` rather than `class`](#Rc-struct)
 * *All protected*: [Avoid `protected` data](#Rh-protected).
-* *All private*: If you’re writing an type that maintains an invariant, then all the variables should be private – it should be encapsulated.
+* *All private*: If you’re writing a type that maintains an invariant, then all the variables should be private – it should be encapsulated.
   This is the vast majority of classes.
 
 ##### Example
@@ -5546,7 +5546,7 @@ Capping an individual virtual function with `final` is error-prone as that `fina
 
     use(new Better_interface{});
 
-The problem is easy to see in a small example, but in a large hierarchy with many virtual functions, reliable spotting such problems require tools.
+The problem is easy to see in a small example, but in a large hierarchy with many virtual functions, tools are required for reliably spotting such problems.
 Consistent use of `override` would catch this.
 
 ##### Note
@@ -5695,7 +5695,7 @@ and that your use of `dynamic_cast` is really performance critical.
 
 We are of the opinion that current implementations of `dynamic_cast` are unnecessarily slow.
 For example, under suitable conditions, it is possible to perform a `dynamic_cast` in [fast constant time](http://www.stroustrup.com/fast_dynamic_casting.pdf).
-However, compatibility makes changes difficult even if all agree that an effort to optimize is worth while.
+However, compatibility makes changes difficult even if all agree that an effort to optimize is worthwhile.
 
 ##### Enforcement
 
