@@ -5904,7 +5904,7 @@ Fortunately, the type system will catch many such mistakes.
 
 ##### Note
 
-be particularly careful about common and popular names, such as `open`, `move`, `+`, and `==`.
+Be particularly careful about common and popular names, such as `open`, `move`, `+`, and `==`.
 
 ##### Enforcement
 
@@ -5914,7 +5914,7 @@ be particularly careful about common and popular names, such as `open`, `move`, 
 
 ##### Reason
 
-Implicit conversions can be essential (e.g., `double` to '`int`) but often cause surprises (e.g., `String` to C-style string).
+Implicit conversions can be essential (e.g., `double` to `int`) but often cause surprises (e.g., `String` to C-style string).
 
 ##### Note
 
@@ -6017,7 +6017,7 @@ You can overload by defining two different lambdas with the same name.
 
 ##### Enforcement
 
-The compiler catches attempt to overload a lambda.
+The compiler catches the attempt to overload a lambda.
 
 ## <a name="SS-union"></a> C.union: Unions
 
