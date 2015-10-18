@@ -101,7 +101,7 @@ In other words, what would you like your code to look like in 5 years' time, giv
 The guidelines are focused on relatively higher-level issues, such as interfaces, resource management, memory management, and concurrency.
 Such rules affect application architecture and library design.
 Following the rules will lead to code that is statically type safe, has no resource leaks, and catches many more programming logic errors than is common in code today.
-And it will run fast - you can afford to do things right.
+And it will run fast -- you can afford to do things right.
 
 We are less concerned with low-level issues, such as naming conventions and indentation style.
 However, no topic that can help a programmer is out of bounds.
@@ -263,18 +263,18 @@ name of a profile group-of-rules ("type", "bounds", or "lifetime"), or a specifi
 
 Each rule (guideline, suggestion) can have several parts:
 
-* The rule itself - e.g., **no naked `new`**
-* A rule reference number - e.g., **C.7** (the 7th rule related to classes).
+* The rule itself -- e.g., **no naked `new`**
+* A rule reference number -- e.g., **C.7** (the 7th rule related to classes).
   Since the major sections are not inherently ordered, we use a letter as the first part of a rule reference "number".
   We leave gaps in the numbering to minimize "disruption" when we add or remove rules.
-* **Reason**s (rationales) - because programmers find it hard to follow rules they don't understand
-* **Example**s - because rules are hard to understand in the abstract; can be positive or negative
-* **Alternative**s - for "don't do this" rules
-* **Exception**s - we prefer simple general rules. However, many rules apply widely, but not universally, so exceptions must be listed
-* **Enforcement** - ideas about how the rule might be checked "mechanically"
-* **See also**s - references to related rules and/or further discussion (in this document or elsewhere)
-* **Note**s (comments) - something that needs saying that doesn't fit the other classifications
-* **Discussion** - references to more extensive rationale and/or examples placed outside the main lists of rules
+* **Reason**s (rationales) -- because programmers find it hard to follow rules they don't understand
+* **Example**s -- because rules are hard to understand in the abstract; can be positive or negative
+* **Alternative**s -- for "don't do this" rules
+* **Exception**s -- we prefer simple general rules. However, many rules apply widely, but not universally, so exceptions must be listed
+* **Enforcement** -- ideas about how the rule might be checked "mechanically"
+* **See also**s -- references to related rules and/or further discussion (in this document or elsewhere)
+* **Note**s (comments) -- something that needs saying that doesn't fit the other classifications
+* **Discussion** -- references to more extensive rationale and/or examples placed outside the main lists of rules
 
 Some rules are hard to check mechanically, but they all meet the minimal criteria that an expert programmer can spot many violations without too much trouble.
 We hope that "mechanical" tools will improve with time to approximate what such an expert programmer notices.
@@ -540,11 +540,11 @@ We can ban, restrain, or detect the individual problem categories separately, as
 Always suggest an alternative.
 For example:
 
-* unions - use `variant`
-* casts - minimize their use; templates can help
-* array decay - use `span`
-* range errors - use `span`
-* narrowing conversions - minimize their use and use `narrow` or `narrow_cast` where they are necessary
+* unions -- use `variant`
+* casts -- minimize their use; templates can help
+* array decay -- use `span`
+* range errors -- use `span`
+* narrowing conversions -- minimize their use and use `narrow` or `narrow_cast` where they are necessary
 
 ### <a name="Rp-compile-time"></a>P.5: Prefer compile-time checking to run-time checking
 
@@ -1156,7 +1156,7 @@ Obviously, we cannot catch all errors through the static type system
 
 In the following example, it is not clear from the interface what `time_to_blink` means: Seconds? Milliseconds?
 
-    void blink_led(int time_to_blink) // bad - the unit is ambiguous
+    void blink_led(int time_to_blink) // bad -- the unit is ambiguous
     {
         // ...
         // do something with time_to_blink
@@ -1172,7 +1172,7 @@ In the following example, it is not clear from the interface what `time_to_blink
 
 `std::chrono::duration` types introduced in C++11 helps making the unit of time duration explicit.
 
-    void blink_led(milliseconds time_to_blink) // good - the unit is explicit
+    void blink_led(milliseconds time_to_blink) // good -- the unit is explicit
     {
         // ...
         // do something with time_to_blink
@@ -1187,7 +1187,7 @@ In the following example, it is not clear from the interface what `time_to_blink
 The function can also be written in such a way that it will accept any time duration unit.
 
     template<class rep, class period>
-    void blink_led(duration<rep, period> time_to_blink) // good - accepts any unit
+    void blink_led(duration<rep, period> time_to_blink) // good -- accepts any unit
     {
         // assuming that millisecond is the smallest relevant unit
         auto milliseconds_to_blink = duration_cast<milliseconds>(time_to_blink);
@@ -3056,7 +3056,7 @@ principle of "do as the ints do."
 ##### Note
 
 Historically there was some guidance to make the assignment operator return `const T&`.
-This was primarily to avoid code of the form `(a=b)=c` - such code is not common enough to warrant violating consistency with standard types.
+This was primarily to avoid code of the form `(a=b)=c` -- such code is not common enough to warrant violating consistency with standard types.
 
 ##### Example
 
@@ -6241,7 +6241,7 @@ Some people use `dynamic_cast` where a `typeid` would have been more appropriate
 `dynamic_cast` is a general "is kind of" operation for discovering the best interface to an object,
 whereas `typeid` is a "give me the exact type of this object" operation to discover the actual type of an object.
 The latter is an inherently simpler operation that ought to be faster.
-The latter (`typeid`) is easily hand-crafted if necessary (e.g., if working on a system where RTTI is - for some reason - prohibited),
+The latter (`typeid`) is easily hand-crafted if necessary (e.g., if working on a system where RTTI is -- for some reason -- prohibited),
 the former (`dynamic_cast`) is far harder to implement correctly in general.
 
 Consider:
@@ -7730,7 +7730,7 @@ This makes the function's ownership sharing explicit.
 
 ##### Example, good
 
-    void share(shared_ptr<widget>);            // share – "will" retain refcount
+    void share(shared_ptr<widget>);            // share -- "will" retain refcount
 
     void reseat(shared_ptr<widget>&);          // "might" reseat ptr
 
@@ -7754,7 +7754,7 @@ This makes the function's reseating explicit.
 
 ##### Example, good
 
-    void share(shared_ptr<widget>);            // share – "will" retain refcount
+    void share(shared_ptr<widget>);            // share -- "will" retain refcount
 
     void reseat(shared_ptr<widget>&);          // "might" reseat ptr
 
@@ -7774,7 +7774,7 @@ This makes the function's ??? explicit.
 
 ##### Example, good
 
-    void share(shared_ptr<widget>);            // share – "will" retain refcount
+    void share(shared_ptr<widget>);            // share -- "will" retain refcount
 
     void reseat(shared_ptr<widget>&);          // "might" reseat ptr
 
@@ -8390,7 +8390,7 @@ Many such errors are introduced during maintenance years after the initial imple
 ##### Exception
 
 It you are declaring an object that is just about to be initialized from input, initializing it would cause a double initialization.
-However, beware that this may leave uninitialized data beyond the input - and that has been a fertile source of errors and security breaches:
+However, beware that this may leave uninitialized data beyond the input -- and that has been a fertile source of errors and security breaches:
 
     constexpr int max = 8 * 1024;
     int buf[max];         // OK, but suspicious: uninitialized
@@ -9760,7 +9760,7 @@ This example has many more problems.
 
 ##### Reason
 
-Slicing - that is, copying only part of an object using assignment or initialization - most often leads to errors because
+Slicing -- that is, copying only part of an object using assignment or initialization -- most often leads to errors because
 the object was meant to be considered as a whole.
 In the rare cases where the slicing was deliberate the code can be surprising.
 
@@ -14140,8 +14140,8 @@ Dynamic accesses into arrays are difficult for both tools and humans to validate
     {
         a[pos / 2] = 1; // BAD
         a[pos - 1] = 2; // BAD
-        a[-1] = 3;    // BAD - no replacement, just don't do this
-        a[10] = 4;    // BAD - no replacement, just don't do this
+        a[-1] = 3;    // BAD -- no replacement, just don't do this
+        a[10] = 4;    // BAD -- no replacement, just don't do this
     }
 
 ##### Example, good
@@ -14211,7 +14211,7 @@ Issue a diagnostic for any indexing expression on an expression or variable of a
     void f(int i, int j)
     {
         a[i + j] = 12;      // BAD, could be rewritten as ...
-        at(a, i + j) = 12;  // OK - bounds-checked
+        at(a, i + j) = 12;  // OK -- bounds-checked
     }
 
 ### <a name="Pro-bounds-decay"></a>Bounds.3: No array-to-pointer decay.
@@ -14242,7 +14242,7 @@ Pointers should not be used as arrays. `span` is a bounds-checked, safe alternat
         span av = a;
 
         g(a.data(), a.length());   // OK, if you have no choice
-        g1(a);                     // OK - no decay here, instead use implicit span ctor
+        g1(a);                     // OK -- no decay here, instead use implicit span ctor
     }
 
 ##### Enforcement
@@ -15234,7 +15234,7 @@ Consider the following advice and requirements found in the C++ Standard:
 > No destructor operation defined in the C++ Standard Library (including the destructor of any type that is used to instantiate a standard library template) will throw an exception. --[\[C++03\]](#C++03) §17.4.4.8(3)
 
 Deallocation functions, including specifically overloaded `operator delete` and `operator delete[]`, fall into the same category, because they too are used during cleanup in general, and during exception handling in particular, to back out of partial work that needs to be undone.
-Besides destructors and deallocation functions, common error-safety techniques rely also on `swap` operations never failing--in this case, not because they are used to implement a guaranteed rollback, but because they are used to implement a guaranteed commit. For example, here is an idiomatic implementation of `operator=` for a type `T` that performs copy construction followed by a call to a no-fail `swap`:
+Besides destructors and deallocation functions, common error-safety techniques rely also on `swap` operations never failing -- in this case, not because they are used to implement a guaranteed rollback, but because they are used to implement a guaranteed commit. For example, here is an idiomatic implementation of `operator=` for a type `T` that performs copy construction followed by a call to a no-fail `swap`:
 
     T& T::operator=(const T& other) {
         auto temp = other;
@@ -15319,7 +15319,7 @@ If you define any of the copy constructor, copy assignment operator, or destruct
 
 ##### Note
 
-If you need to define any of these five functions, it means you need it to do more than its default behavior--and the five are asymmetrically interrelated. Here's how:
+If you need to define any of these five functions, it means you need it to do more than its default behavior -- and the five are asymmetrically interrelated. Here's how:
 
 * If you write/disable either of the copy constructor or the copy assignment operator, you probably need to do the same for the other: If one does "special" work, probably so should the other because the two functions should have similar effects. (See Item 53, which expands on this point in isolation.)
 * If you explicitly write the copying functions, you probably need to write the destructor: If the "special" work in the copy constructor is to allocate or duplicate some resource (e.g., memory, file, socket), you need to deallocate it in the destructor.
