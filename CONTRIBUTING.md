@@ -22,6 +22,7 @@ your local changes are appropriate to pull back into the original guidelines, pl
 worldwide. If you or your organization is passionate about helping to create the guidelines consider becoming an editor or maintainer. If
 you're a C++ expert who is serious about participating please 
 [email coreguidelines@isocpp.org](mailto:coreguidelines@isocpp.org?subject=Maintain the C++ Code Guidelines).
+- **Discussions and sharing** If you want to ask a question about the Guidelines on StackOverflow, use the corresponding tag [`cpp-core-guidelines`](http://stackoverflow.com/questions/tagged/cpp-core-guidelines). For questions about Guidelines Support Library, use tag [`guideline-support-library`](http://stackoverflow.com/questions/tagged/guideline-support-library).
  
 ## Contributor License Agreement
 By contributing content to the C++ Core Guidelines (i.e., submitting a pull request for inclusion in this repository) you agree with the 
