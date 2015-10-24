@@ -6758,7 +6758,7 @@ This is more efficient:
 
 ##### Reason
 
-If you first make an object and then gives it to a `shared_ptr` constructor, you (most likely) do one more allocation (and later deallocation) than if you use `make_shared()` because the reference counts must be allocated separately from the object.
+If you first make an object and then give it to a `shared_ptr` constructor, you (most likely) do one more allocation (and later deallocation) than if you use `make_shared()` because the reference counts must be allocated separately from the object.
 
 ##### Example
 
@@ -7726,7 +7726,7 @@ For initializers of moderate complexity, including for `const` variables, consid
 
 ##### Reason
 
-The rules for `{}` initialization is simpler, more general, and safer than for other forms of initialization, and unambiguous.
+The rules for `{}` initialization are simpler, more general, less ambiguous, and safer than for other forms of initialization.
 
 ##### Example
 
@@ -7765,7 +7765,7 @@ For containers, there is a tradition for using `{...}` for a list of elements an
 
 ##### Note
 
-Initialization of a variable declared `auto` with a single value `{v}` surprising results until recently:
+Initialization of a variable declared `auto` with a single value `{v}` had surprising results until recently:
 
     auto x1 {7};        // x1 is an int with the value 7
     auto x2 = {7};      // x2 is an initializer_int<int> with an element 7
