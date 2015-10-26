@@ -7818,7 +7818,7 @@ Using `std::unique_ptr` is the simplest way to avoid leaks. And it is free compa
         // ...
     }
 
-If `leak == true` the object pointer to by `p2` is leaked and the object pointed to by `p1` is not.
+If `leak == true` the object pointed to by `p2` is leaked and the object pointed to by `p1` is not.
 
 ##### Enforcement
 
