@@ -7768,10 +7768,10 @@ For containers, there is a tradition for using `{...}` for a list of elements an
 Initialization of a variable declared `auto` with a single value `{v}` surprising results until recently:
 
     auto x1 {7};        // x1 is an int with the value 7
-    auto x2 = {7};      // x2 is an initializer_int<int> with an element 7
+    auto x2 = {7};      // x2 is an initializer_list<int> with an element 7
 
     auto x11 {7, 8};    // error: two initializers
-    auto x22 = {7, 8};  // x2 is an initializer_int<int> with elements 7 and 8
+    auto x22 = {7, 8};  // x2 is an initializer_list<int> with elements 7 and 8
 
 ##### Exception
 
