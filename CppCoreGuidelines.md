@@ -1101,7 +1101,7 @@ In the following example, it is not clear from the interface what `time_to_blink
 
 ##### Example, good
 
-std::chrono::duration types introduced in C++11 helps making the unit of time duration explicit.
+`std::chrono::duration` types introduced in C++11 helps making the unit of time duration explicit.
 
     void blink_led(milliseconds time_to_blink) // good - the unit is explicit
     {
@@ -3393,7 +3393,7 @@ These operations disagree about copy semantics. This will lead to confusion and 
 "Does this class need a destructor?" is a surprisingly powerful design question.
 For most classes the answer is "no" either because the class holds no resources or because destruction is handled by [the rule of zero](#Rc-zero);
 that is, its members can take care of themselves as concerns destruction.
-If the answer is "yes", much of the design of the class follows (see [the rule of five](#Rc-five).
+If the answer is "yes", much of the design of the class follows (see [the rule of five](#Rc-five)).
 
 ### <a name="Rc-dtor"></a> C.30: Define a destructor if a class needs an explicit action at object destruction
 
@@ -3817,7 +3817,7 @@ A constructor can be used for convenience even if a class does not have an invar
 
 ##### Note
 
-The C++11 initializer list rules eliminates the need for many constructors. For example:
+The C++11 initializer list rule eliminates the need for many constructors. For example:
 
     struct Rec2{
         string s;
@@ -3978,7 +3978,7 @@ Many language and library facilities rely on default constructors, e.g. `T a[10]
 
 There is no "natural" default date (the big bang is too far back in time to be useful for most people), so this example is non-trivial.
 `{0, 0, 0}` is not a valid date in most calendar systems, so choosing that would be introducing something like floating-point's NaN.
-However, most realistic `Date` classes has a "first date" (e.g. January 1, 1970 is popular), so making that the default is usually trivial.
+However, most realistic `Date` classes have a "first date" (e.g. January 1, 1970 is popular), so making that the default is usually trivial.
 
 ##### Enforcement
 
@@ -4936,7 +4936,7 @@ Providing a nonmember `swap` function in the same namespace as your type for cal
         y = tmp;
     }
 
-This is not just slow, but if a memory allocation occur for the elements in `tmp`, this `swap` may throw and would make STL algorithms fail if used with them.
+This is not just slow, but if a memory allocation occurs for the elements in `tmp`, this `swap` may throw and would make STL algorithms fail if used with them.
 
 ##### Enforcement
 
@@ -5007,7 +5007,7 @@ It is really hard to write a foolproof and useful `==` for a hierarchy.
         // ...
     };
 
-// `B`'s comparison accepts conversions for its second operand, but not its first.
+`B`'s comparison accepts conversions for its second operand, but not its first.
 
     class D :B {
         char character;
@@ -5251,7 +5251,7 @@ A class with a virtual function is usually (and in general) used via a pointer t
 
 ##### Note
 
-There are people who don't follow this rule because they plan to use a class only through a `shared_ptr`: `std::shared_ptr<B> p = std::make_shared<D>(args);` Here, the shared pointer will take care of deletion, so no leak will occur from and inappropriate `delete` of the base. People who do this consistently can get a false positive, but the rule is important -- what if one was allocated using `make_unique`? It's not safe unless the author of `B` ensures that it can never be misused, such as by making all constructors private and providing a factory functions to enforce the allocation with `make_shared`.
+There are people who don't follow this rule because they plan to use a class only through a `shared_ptr`: `std::shared_ptr<B> p = std::make_shared<D>(args);` Here, the shared pointer will take care of deletion, so no leak will occur from an inappropriate `delete` of the base. People who do this consistently can get a false positive, but the rule is important -- what if one was allocated using `make_unique`? It's not safe unless the author of `B` ensures that it can never be misused, such as by making all constructors private and providing a factory function to enforce the allocation with `make_shared`.
 
 ##### Enforcement
 
@@ -5289,7 +5289,7 @@ Readability. Detection of mistakes. Explicit `override` allows the compiler to c
 
 ##### Reason
 
- ??? Herb: I've become a non-fan of implementation inheritance -- seems most often an antipattern. Are there reasonable examples of it?
+ ??? Herb: I've become a non-fan of implementation inheritance -- seems most often an anti-pattern. Are there reasonable examples of it?
 
 ##### Example
 
@@ -5421,7 +5421,7 @@ This leaves us with three alternatives:
 * *All public*: If you're writing an aggregate bundle-of-variables without an invariant across those variables, then all the variables should be public.
 [Declare such classes `struct` rather than `class`](#Rc-struct)
 * *All protected*: [Avoid `protected` data](#Rh-protected).
-* *All private*: If you’re writing an type that maintains an invariant, then all the variables should be private – it should be encapsulated.
+* *All private*: If you’re writing a type that maintains an invariant, then all the variables should be private – it should be encapsulated.
   This is the vast majority of classes.
 
 ##### Example
@@ -5546,7 +5546,7 @@ Capping an individual virtual function with `final` is error-prone as that `fina
 
     use(new Better_interface{});
 
-The problem is easy to see in a small example, but in a large hierarchy with many virtual functions, reliable spotting such problems require tools.
+The problem is easy to see in a small example, but in a large hierarchy with many virtual functions, tools are required for reliably spotting such problems.
 Consistent use of `override` would catch this.
 
 ##### Note
@@ -5695,7 +5695,7 @@ and that your use of `dynamic_cast` is really performance critical.
 
 We are of the opinion that current implementations of `dynamic_cast` are unnecessarily slow.
 For example, under suitable conditions, it is possible to perform a `dynamic_cast` in [fast constant time](http://www.stroustrup.com/fast_dynamic_casting.pdf).
-However, compatibility makes changes difficult even if all agree that an effort to optimize is worth while.
+However, compatibility makes changes difficult even if all agree that an effort to optimize is worthwhile.
 
 ##### Enforcement
 
@@ -5869,13 +5869,13 @@ Consider:
     void print(int a, int base);
     void print(const string&);
 
-These three functions all prints their arguments (appropriately). Conversely
+These three functions all print their arguments (appropriately). Conversely:
 
     void print_int(int a);
     void print_based(int a, int base);
     void print_string(const string&);
 
-These three functions all prints their arguments (appropriately). Adding to the name just introduced verbosity and inhibits generic code.
+These three functions all print their arguments (appropriately). Adding to the name just introduced verbosity and inhibits generic code.
 
 ##### Enforcement
 
@@ -5904,7 +5904,7 @@ Fortunately, the type system will catch many such mistakes.
 
 ##### Note
 
-be particularly careful about common and popular names, such as `open`, `move`, `+`, and `==`.
+Be particularly careful about common and popular names, such as `open`, `move`, `+`, and `==`.
 
 ##### Enforcement
 
@@ -5914,7 +5914,7 @@ be particularly careful about common and popular names, such as `open`, `move`, 
 
 ##### Reason
 
-Implicit conversions can be essential (e.g., `double` to '`int`) but often cause surprises (e.g., `String` to C-style string).
+Implicit conversions can be essential (e.g., `double` to `int`) but often cause surprises (e.g., `String` to C-style string).
 
 ##### Note
 
@@ -6017,7 +6017,7 @@ You can overload by defining two different lambdas with the same name.
 
 ##### Enforcement
 
-The compiler catches attempt to overload a lambda.
+The compiler catches the attempt to overload a lambda.
 
 ## <a name="SS-union"></a> C.union: Unions
 
@@ -6116,7 +6116,7 @@ First some bad old code:
 
     int webby = BLUE;   // webby == 2; probably not what was desired
 
-instead use an `enum`:
+Instead use an `enum`:
 
     enum class Webcolor { red = 0xFF0000, green = 0x00FF00, blue = 0x0000FF };
     enum class Productinfo { red = 0, purple = 1, blue = 2 };
@@ -6156,7 +6156,7 @@ To minimize surprises.
     int webby = blue;   // error, ambiguous: be specific
     Webcolor webby = Webcolor::blue;
 
-instead use an `enum class`:
+Instead use an `enum class`:
 
     enum class Webcolor { red=0xFF0000, green=0x00FF00, blue=0x0000FF };
     enum class Productinfo { red=0, purple=1, blue=2 };
@@ -6428,7 +6428,7 @@ Returning a (raw) pointer imposes a life-time management burden on the caller; t
         delete p;
     }
 
-In addition to suffering from the problem from [leak](#???), this adds a spurious allocation and deallocation operation, and is needlessly verbose. If Gadget is cheap to move out of a function (i.e., is small or has an efficient move operation), just return it "by value:'
+In addition to suffering from the problem from [leak](#???), this adds a spurious allocation and deallocation operation, and is needlessly verbose. If Gadget is cheap to move out of a function (i.e., is small or has an efficient move operation), just return it "by value":
 
     Gadget make_gadget(int n)
     {
@@ -6802,7 +6802,7 @@ be able to destroy a cyclic structure.
 
  ??? (HS: A lot of people say "to break cycles", while I think "temporary shared ownership" is more to the point.)
 ???(BS: breaking cycles is what you must do; temporarily sharing ownership is how you do it.
-You could "temporarily share ownership simply by using another `stared_ptr`.)
+You could "temporarily share ownership" simply by using another `stared_ptr`.)
 
 ##### Enforcement
 
@@ -6852,7 +6852,7 @@ A function that does not manipulate lifetime should take raw pointers or referen
 
 ##### Enforcement
 
-* (Simple) Warn if a function takes a parameter of a type that is a `Unique_ptr` or `Shared_ptr` and the function only calls any of: `operator*`, `operator->` or `get()`).
+* (Simple) Warn if a function takes a parameter of a type that is a `Unique_ptr` or `Shared_ptr` and the function only calls any of: `operator*`, `operator->` or `get()`.
   Suggest using a `T*` or `T&` instead.
 
 ### <a name="Rr-smart"></a> R.31: If you have non-`std` smart pointers, follow the basic pattern from `std`
@@ -6865,7 +6865,7 @@ You want the rules to work on all the smart pointers you use.
 Any type (including primary template or specialization) that overloads unary `*` and `->` is considered a smart pointer:
 
 * If it is copyable, it is recognized as a reference-counted `Shared_ptr`.
-* If it not copyable, it is recognized as a unique `Unique_ptr`.
+* If it is not copyable, it is recognized as a unique `Unique_ptr`.
 
 ##### Example
 
@@ -7005,7 +7005,7 @@ This makes the function's ??? explicit.
 Violating this rule is the number one cause of losing reference counts and finding yourself with a dangling pointer.
 Functions should prefer to pass raw pointers and references down call chains.
 At the top of the call tree where you obtain the raw pointer or reference from a smart pointer that keeps the object alive.
-You need to be sure that smart pointer cannot be inadvertently be reset or reassigned from within the call tree below
+You need to be sure that the smart pointer cannot inadvertently be reset or reassigned from within the call tree below.
 
 ##### Note
 
@@ -13867,7 +13867,7 @@ Simplified definition: a declaration that allocates memory.
 * *style*: a set of techniques for programming leading to a consistent use of language features; sometimes used in a very restricted sense to refer just to low-level rules for naming and appearance of code.
 * *subtype*: derived type; a type that has all the properties of a type and possibly more.
 * *supertype*: base type; a type that has a subset of the properties of a type.
-* *system*: (1) a program or a set of programs for performing a task on a computer; (2) a shorthand for “operating system,” that is, the fundamental execution environment and tools for a computer.
+* *system*: (1) a program or a set of programs for performing a task on a computer; (2) a shorthand for “operating system”, that is, the fundamental execution environment and tools for a computer.
 * *template*: a class or a function parameterized by one or more types or (compile-time) values; the basic C++ language construct supporting generic programming.
 * *testing*: a systematic search for errors in a program.
 * *trade-off*: the result of balancing several design and implementation criteria.
