@@ -8412,13 +8412,14 @@ Avoid errors. Readability. Not everyone has the operator table memorized.
 
 ##### Example
 
-    if (a && b == 1)	// OK?
-    if (a & b == 1)	// OK?
+    const unsigned int flag = 2;
+    unsigned int a = flag;
+    
+    if (a & flag != 0)  // bad: means a&(flag != 0)
 
 Note: We recommend that programmers know their precedence table for the arithmetic operations, the logical operations, but consider mixing bitwise logical operations with other operators in need of parentheses.
 
-    if (a && b == 1)	// OK: means a&&(b == 1)
-    if (a & b == 1)	// bad: means (a&b) == 1
+    if ((a & flag) != 0)  // OK: works as intended
 
 ##### Note
 
