@@ -25,7 +25,7 @@ Problems:
 * Update reference sections; many pre-C++11 sources are too old.
 * For a more-or-less up-to-date to-do list see: [To-do: Unclassified proto-rules](#S-unclassified)
 
-You can [Read an explanation of the scope and structure of this Guide](#S-abstract) or just jump straight in:
+你可 [阅读一个本指南的范围和结构解释](#S-abstract) 或直接跳转进入:
 
 * [P: Philosophy 哲学](#S-philosophy)
 * [I: Interfaces 接口](#S-interfaces)
@@ -40,68 +40,63 @@ You can [Read an explanation of the scope and structure of this Guide](#S-abstra
 * [SL: The Standard library 标准库](#S-stdlib)
 * [SF: Source files 源码文件](#S-source)
 * [CPL: C-style programming C形式编程](#S-cpl)
-* [PRO: Profiles 剖面](#S-profile)
-* [GSL: Guideline support library 本指导文件的库](#S-gsl)
+* [PRO: Profiles 配置](#S-profile)
+* [GSL: Guideline support library 本指南涉及的库](#S-gsl)
 * [FAQ: Answers to frequently asked questions 常见问题及回答](#S-faq)
 
-Supporting sections:
+支持部分:
 
-* [NL: Naming and layout](#S-naming)
-* [PER: Performance](#S-performance)
-* [N: Non-Rules and myths](#S-not)
-* [RF: References](#S-references)
-* [Appendix A: Libraries](#S-libraries)
-* [Appendix B: Modernizing code](#S-modernizing)
-* [Appendix C: Discussion](#S-discussion)
+* [NL: Naming and layout 命名和层次](#S-naming)
+* [PER: Performance 性能](#S-performance)
+* [N: Non-Rules and myths 无规则和数学](#S-not)
+* [RF: References 引用](#S-references)
+* [Appendix附件 A: Libraries 库](#S-libraries)
+* [Appendix附件 B: Modernizing code 现代代码](#S-modernizing)
+* [Appendix附件 C: Discussion 讨论](#S-discussion)
 * [Glossary](#S-glossary)
 * [To-do: Unclassified proto-rules](#S-unclassified)
 
-or look at a specific language feature
+或查看特定的语言特性
 
-* [assignment](#S-???)
-* [`class`](#S-class)
-* [constructor](#SS-ctor)
-* [derived `class`](#SS-hier)
-* [destructor](#SS-ctor)
-* [exception](#S-errors)
-* [`for`](#S-???)
-* [`inline`](#S-class)
-* [initialization](#S-???)
-* [lambda expression](#SS-lambdas)
-* [operator](#S-???)
-* [`public`, `private`, and `protected`](#S-???)
-* [`static_assert`](#S-???)
-* [`struct`](#S-class)
-* [`template`](#S-???)
-* [`unsigned`](#S-???)
-* [`virtual`](#SS-hier)
+* [assignment 分配](#S-???)
+* [`class` 类](#S-class)
+* [constructor 构造器](#SS-ctor)
+* [derived `class` 衍生类](#SS-hier)
+* [destructor 析构器](#SS-ctor)
+* [exception 异常](#S-errors)
+* [`for` 循环](#S-???)
+* [`inline` 内联](#S-class)
+* [initialization 初始化](#S-???)
+* [lambda expression lambda表达式](#SS-lambdas)
+* [operator 操作符](#S-???)
+* [`public`, `private`, and `protected` 公开、私有和保护](#S-???)
+* [`static_assert` 静态断言](#S-???)
+* [`struct` 结构](#S-class)
+* [`template` 模板](#S-???)
+* [`unsigned` 无符号数](#S-???)
+* [`virtual` 虚拟](#SS-hier)
 
-Definitions of terms used to express and discuss the rules, that are not language-technical, but refer to design and programming techniques
+一系列经常表达和讨论的规则, 这并非语言特性，而是设计和编程技术
 
-* error
-* exception
-* failure
-* invariant
-* leak
+* error 错误
+* exception 异常
+* failure 失败
+* invariant 
+* leak 泄露
 * precondition
 * postcondition
 * resource
-* exception guarantee
+* exception guarantee 异常保证
 
-# <a name="S-abstract"></a> Abstract
+# <a name="S-abstract"></a> Abstract 抽象
 
-This document is a set of guidelines for using C++ well.
-The aim of this document is to help people to use modern C++ effectively.
-By "modern C++" we mean C++11 and C++14 (and soon C++17).
-In other words, what would you like your code to look like in 5 years' time, given that you can start now? In 10 years' time?
+本文档是一套用于更好地使用C++的指南。本文档的目的是帮助人们有效率地使用现代C++。"现代C++"的意思是C++11和C++14 (以及不久后的C++17)。
+换言之，what would you like your code to look like in 5 years' time, given that you can start now? In 10 years' time?
 
-The guidelines are focused on relatively higher-level issues, such as interfaces, resource management, memory management, and concurrency.
-Such rules affect application architecture and library design.
-Following the rules will lead to code that is statically type safe, has no resource leaks, and catches many more programming logic errors than is common in code today.
-And it will run fast - you can afford to do things right.
+本指南关注于相对更高端的话题，诸如接口、资源管理、内存管理和并发。这些规则作用于程序结构和库设计。
+依照这些规则，将使得代码具有静态类型安全、无资源泄露、捕捉更多程序逻辑错误。并且运行更快-你可以确保处理事情更正确。
 
-We are less concerned with low-level issues, such as naming conventions and indentation style.
-However, no topic that can help a programmer is out of bounds.
+我们极少关注低层级话题，诸如名字转换和缩进风格。并且，没有主题可以帮助程序员脱离绑定。
 
 Our initial set of rules emphasizes safety (of various forms) and simplicity.
 They may very well be too strict.
@@ -131,20 +126,20 @@ We plan to modify and extend this document as our understanding improves and the
 This is a set of core guidelines for modern C++, C++14, and taking likely future enhancements and taking ISO Technical Specifications (TSs) into account.
 The aim is to help C++ programmers to write simpler, more efficient, more maintainable code.
 
-Introduction summary:
+Introduction summary 概括介绍:
 
-* [In.target: Target readership](#SS-readers)
-* [In.aims: Aims](#SS-aims)
-* [In.not: Non-aims](#SS-non)
-* [In.force: Enforcement](#SS-force)
-* [In.struct: The structure of this document](#SS-struct)
-* [In.sec: Major sections](#SS-sec)
+* [In.target受众: Target readership阅读受众](#SS-readers)
+* [In.aims目标: Aims目标](#SS-aims)
+* [In.not除外: Non-aims无目标的](#SS-non)
+* [In.force强制: Enforcement](#SS-force)
+* [In.struct结构: The structure of this document本文档结构](#SS-struct)
+* [In.sec: Major sections重要章节](#SS-sec)
 
-## <a name="SS-readers"></a> In.target: Target readership
+## <a name="SS-readers"></a> In.target受众: 阅读受众
 
-All C++ programmers. This includes [programmers who might consider C](#S-cpl).
+所有C++开发者，包括[可能倾向于C的开发者](#S-cpl).
 
-## <a name="SS-aims"></a> In.aims: Aims
+## <a name="SS-aims"></a> In.aims目标: 目标
 
 The purpose of this document is to help developers to adopt modern C++ (C++11, C++14, and soon C++17) and to achieve a more uniform style across code bases.
 
@@ -153,7 +148,7 @@ As far as we can tell, these rules lead to code that performs as well or better 
 Consider these rules ideals for new code, opportunities to exploit when working on older code, and try to approximate these ideas as closely as feasible.
 Remember:
 
-### <a name="R0"></a> In.0: Don't panic!
+### <a name="R0"></a> In.0: 不崩溃!
 
 Take the time to understand the implications of a guideline rule on your program.
 
@@ -218,7 +213,7 @@ The rules are not value-neutral.
 They are meant to make code simpler and more correct/safer than most existing C++ code, without loss of performance.
 They are meant to inhibit perfectly valid C++ code that correlates with errors, spurious complexity, and poor performance.
 
-## <a name="SS-force"></a> In.force: Enforcement
+## <a name="SS-force"></a> In.force强制: 强制
 
 Rules with no enforcement are unmanageable for large code bases.
 Enforcement of all rules is possible only for a small weak set of rules or for a specific user community.
@@ -248,7 +243,7 @@ For a start, we have a few profiles corresponding to common needs (desires, idea
 The profiles are intended to be used by tools, but also serve as an aid to the human reader.
 We do not limit our comment in the **Enforcement** sections to things we know how to enforce; some comments are mere wishes that might inspire some tool builder.
 
-## <a name="SS-struct"></a> In.struct: The structure of this document
+## <a name="SS-struct"></a> In.struct结构: 本文档结构
 
 Each rule (guideline, suggestion) can have several parts:
 
@@ -278,35 +273,35 @@ This is not a language manual.
 It is meant to be helpful, rather than complete, fully accurate on technical details, or a guide to existing code.
 Recommended information sources can be found in [the references](#S-references).
 
-## <a name="SS-sec"></a> In.sec: Major sections
+## <a name="SS-sec"></a> In.sec: 重要章节
 
-* [P: Philosophy](#S-philosophy)
-* [I: Interfaces](#S-interfaces)
-* [F: Functions](#S-functions)
-* [C: Classes and class hierarchies](#S-class)
-* [Enum: Enumerations](#S-enum)
-* [ES: Expressions and statements](#S-expr)
-* [E: Error handling](#S-errors)
-* [R: Resource management](#S-resource)
-* [T: Templates and generic programming](#S-templates)
-* [CP: Concurrency](#S-concurrency)
-* [SL: The Standard library](#S-stdlib)
-* [SF: Source files](#S-source)
-* [CPL: C-style programming](#S-cpl)
-* [PRO: Profiles](#S-profile)
-* [GSL: Guideline support library](#S-gsl)
-* [FAQ: Answers to frequently asked questions](#S-faq)
+* [P: Philosophy 哲学](#S-philosophy)
+* [I: Interfaces 接口](#S-interfaces)
+* [F: Functions 函数](#S-functions)
+* [C: Classes and class hierarchies 类和继承](#S-class)
+* [Enum: Enumerations 枚举](#S-enum)
+* [ES: Expressions and statements 表达式和状态](#S-expr)
+* [E: Error handling 错误句柄](#S-errors)
+* [R: Resource management 资源管理](#S-resource)
+* [T: Templates and generic programming 模板和范型编程](#S-templates)
+* [CP: Concurrency 并发](#S-concurrency)
+* [SL: The Standard library 标准库](#S-stdlib)
+* [SF: Source files 源文件](#S-source)
+* [CPL: C-style programming C风格编程](#S-cpl)
+* [PRO: Profiles 配置](#S-profile)
+* [GSL: Guideline support library 本指南涉及的库](#S-gsl)
+* [FAQ: Answers to frequently asked questions 常见问题及解答](#S-faq)
 
 Supporting sections:
 
-* [NL: Naming and layout](#S-naming)
-* [PER: Performance](#S-performance)
-* [N: Non-Rules and myths](#S-not)
-* [RF: References](#S-references)
-* [Appendix A: Libraries](#S-libraries)
-* [Appendix B: Modernizing code](#S-modernizing)
-* [Appendix C: Discussion](#S-discussion)
-* [Glossary](#S-glossary)
+* [NL: Naming and layout 命名和层级](#S-naming)
+* [PER: Performance 性能](#S-performance)
+* [N: Non-Rules and myths 无规则和数学](#S-not)
+* [RF: References 引用](#S-references)
+* [Appendix附件 A: Libraries 库](#S-libraries)
+* [Appendix附件 B: Modernizing code 现代代码](#S-modernizing)
+* [Appendix附件 C: Discussion 讨论](#S-discussion)
+* [Glossary 词汇表](#S-glossary)
 * [To-do: Unclassified proto-rules](#S-unclassified)
 
 These sections are not orthogonal.
@@ -314,21 +309,21 @@ These sections are not orthogonal.
 Each section (e.g., "P" for "Philosophy") and each subsection (e.g., "C.hier" for "Class Hierarchies (OOP)") have an abbreviation for ease of searching and reference.
 The main section abbreviations are also used in rule numbers (e.g., "C.11" for "Make concrete types regular").
 
-# <a name="S-philosophy"></a> P: Philosophy
+# <a name="S-philosophy"></a> P: 哲学
 
-The rules in this section are very general.
+本章节的规则非常基本。
 
-Philosophy rules summary:
+哲学规则摘要:
 
-* [P.1: Express ideas directly in code](#Rp-direct)
-* [P.2: Write in ISO Standard C++](#Rp-C++)
-* [P.3: Express intent](#Rp-what)
-* [P.4: Ideally, a program should be statically type safe](#Rp-typesafe)
-* [P.5: Prefer compile-time checking to run-time checking](#Rp-compile-time)
-* [P.6: What cannot be checked at compile time should be checkable at run time](#Rp-run-time)
-* [P.7: Catch run-time errors early](#Rp-early)
-* [P.8: Don't leak any resources](#Rp-leak)
-* [P.9: Don't waste time or space](#Rp-waste)
+* [P.1: Express ideas directly in code 代码里直接表达意图](#Rp-direct)
+* [P.2: Write in ISO Standard C++ 写ISO标准C++](#Rp-C++)
+* [P.3: Express intent 表达意图](#Rp-what)
+* [P.4: Ideally, a program should be statically type safe 理论上，一个程序应该静态类型安全](#Rp-typesafe)
+* [P.5: Prefer compile-time checking to run-time checking 编译期检测优于运行期检测](#Rp-compile-time)
+* [P.6: What cannot be checked at compile time should be checkable at run time 编译期不能检测的可于运行期检测](#Rp-run-time)
+* [P.7: Catch run-time errors early 尽早捕捉运行时错误](#Rp-early)
+* [P.8: Don't leak any resources 不要泄漏任何资源](#Rp-leak)
+* [P.9: Don't waste time or space 不要浪费时间和空间](#Rp-waste)
 
 Philosophical rules are generally not mechanically checkable.
 However, individual rules reflecting these philosophical themes are.
@@ -876,40 +871,40 @@ After that, we can look at waste related to algorithms and requirements, but tha
 
 Many more specific rules aim at the overall goals of simplicity and elimination of gratuitous waste.
 
-# <a name="S-interfaces"></a> I: Interfaces
+# <a name="S-interfaces"></a> I: 接口
 
 An interface is a contract between two parts of a program. Precisely stating what is expected of a supplier of a service and a user of that service is essential.
 Having good (easy-to-understand, encouraging efficient use, not error-prone, supporting testing, etc.) interfaces is probably the most important single aspect of code organization.
 
-Interface rule summary:
+接口规则摘要:
 
-* [I.1: Make interfaces explicit](#Ri-explicit)
-* [I.2: Avoid global variables](#Ri-global)
-* [I.3: Avoid singletons](#Ri-singleton)
-* [I.4: Make interfaces precisely and strongly typed](#Ri-typed)
-* [I.5: State preconditions (if any)](#Ri-pre)
-* [I.6: Prefer `Expects()` for expressing preconditions](#Ri-expects)
-* [I.7: State postconditions](#Ri-post)
-* [I.8: Prefer `Ensures()` for expressing postconditions](#Ri-ensures)
-* [I.9: If an interface is a template, document its parameters using concepts](#Ri-concepts)
-* [I.10: Use exceptions to signal a failure to perform a required tasks](#Ri-except)
-* [I.11: Never transfer ownership by a raw pointer (`T*`)](#Ri-raw)
-* [I.12: Declare a pointer that must not be null as `not_null`](#Ri-nullptr)
-* [I.13: Do not pass an array as a single pointer](#Ri-array)
-* [I.23: Keep the number of function arguments low](#Ri-nargs)
-* [I.24: Avoid adjacent unrelated parameters of the same type](#Ri-unrelated)
-* [I.25: Prefer abstract classes as interfaces to class hierarchies](#Ri-abstract)
-* [I.26: If you want a cross-compiler ABI, use a C-style subset](#Ri-abi)
+* [I.1: Make interfaces explicit 接口要明确](#Ri-explicit)
+* [I.2: Avoid global variables 避免全局变量](#Ri-global)
+* [I.3: Avoid singletons 避免单例](#Ri-singleton)
+* [I.4: Make interfaces precisely and strongly typed 接口要精准且强类型](#Ri-typed)
+* [I.5: State preconditions (if any) 使用先决条件（尽可能）](#Ri-pre)
+* [I.6: Prefer `Expects()` for expressing preconditions 用‘Expects()‘表达先决条件](#Ri-expects)
+* [I.7: State postconditions 使用后置条件](#Ri-post)
+* [I.8: Prefer `Ensures()` for expressing postconditions 用’Ensures()‘表达后置条件](#Ri-ensures)
+* [I.9: If an interface is a template, document its parameters using concepts 如果接口是模板，用concepts确定它的参数](#Ri-concepts)
+* [I.10: Use exceptions to signal a failure to perform a required tasks 执行请求的任务时用异常来通知错误](#Ri-except)
+* [I.11: Never transfer ownership by a raw pointer (`T*`) 绝不用原始指针(`T*`) 来传递自身](#Ri-raw)
+* [I.12: Declare a pointer that must not be null as `not_null` 用’not_null‘决定一个指针必须不为空](#Ri-nullptr)
+* [I.13: Do not pass an array as a single pointer 不要以一个数组作为一个指针进行传递](#Ri-array)
+* [I.23: Keep the number of function arguments low 保持较低的函数参数的个数](#Ri-nargs)
+* [I.24: Avoid adjacent unrelated parameters of the same type 避免相邻的无关参数以相同类型](#Ri-unrelated)
+* [I.25: Prefer abstract classes as interfaces to class hierarchies 抽象类作为接口优于继承](#Ri-abstract)
+* [I.26: If you want a cross-compiler ABI, use a C-style subset 如果你想要一个跨编译器的ABI，请使用C形式子集](#Ri-abi)
 
-See also
+也可以看
 
-* [F: Functions](#S-functions)
-* [C.concrete: Concrete types](#SS-concrete)
-* [C.hier: Class hierarchies](#SS-hier)
-* [C.over: Overloading and overloaded operators](#SS-overload)
-* [C.con: Containers and other resource handles](#SS-containers)
-* [E: Error handling](#S-errors)
-* [T: Templates and generic programming](#S-templates)
+* [F: Functions 函数](#S-functions)
+* [C.concrete: Concrete types 混合类型](#SS-concrete)
+* [C.hier: Class hierarchies 继承](#SS-hier)
+* [C.over: Overloading and overloaded operators 重载操作符](#SS-overload)
+* [C.con: Containers and other resource handles 容器和其他资源句柄](#SS-containers)
+* [E: Error handling 错误句柄](#S-errors)
+* [T: Templates and generic programming 模板和范型编程](#S-templates)
 
 ### <a name="Ri-explicit"></a> I.1: Make interfaces explicit
 
@@ -1687,60 +1682,60 @@ If you use a single compiler, you can use full C++ in interfaces. That may requi
 
 (Not enforceable) It is difficult to reliably identify where an interface forms part of an ABI.
 
-# <a name="S-functions"></a> F: Functions
+# <a name="S-functions"></a> F: 函数
 
 A function specifies an action or a computation that takes the system from one consistent state to the next. It is the fundamental building block of programs.
 
 It should be possible to name a function meaningfully, to specify the requirements of its argument, and clearly state the relationship between the arguments and the result. An implementation is not a specification. Try to think about what a function does as well as about how it does it.
 Functions are the most critical part in most interfaces, so see the interface rules.
 
-Function rule summary:
+函数规则摘要：
 
-Function definition rules:
+函数定义规则：
 
-* [F.1: "Package" meaningful operations as carefully named functions](#Rf-package)
-* [F.2: A function should perform a single logical operation](#Rf-logical)
-* [F.3: Keep functions short and simple](#Rf-single)
-* [F.4: If a function may have to be evaluated at compile time, declare it `constexpr`](#Rf-constexpr)
-* [F.5: If a function is very small and time critical, declare it inline](#Rf-inline)
-* [F.6: If your function may not throw, declare it `noexcept`](#Rf-noexcept)
-* [F.7: For general use, take `T*` arguments rather than smart pointers](#Rf-smart)
-* [F.8: Prefer pure functions](#Rf-pure)
+* [F.1: "Package" meaningful operations as carefully named functions ](#Rf-package)
+* [F.2: A function should perform a single logical operation 一个函数应执行单一逻辑操作](#Rf-logical)
+* [F.3: Keep functions short and simple 保持函数短小且简单](#Rf-single)
+* [F.4: If a function may have to be evaluated at compile time, declare it `constexpr` 如函数必须在编译期确定，标记它`constexpr`](#Rf-constexpr)
+* [F.5: If a function is very small and time critical, declare it inline 如函数很小且性能敏感，标记它为内联](#Rf-inline)
+* [F.6: If your function may not throw, declare it `noexcept` 如函数不愿提供异常，标记它`noexcept`](#Rf-noexcept)
+* [F.7: For general use, take `T*` arguments rather than smart pointers 通常，提供’T*‘优于职能指针](#Rf-smart)
+* [F.8: Prefer pure functions 优先纯函数](#Rf-pure)
 
-Argument passing rules:
+参数提供规则：
 
-* [F.15: Prefer simple and conventional ways of passing information](#Rf-conventional)
-* [F.16: Use `T*` or `owner<T*>` or a smart pointer to designate a single object](#Rf-ptr)
-* [F.17: Use a `not_null<T>` to indicate "null" is not a valid value](#Rf-nullptr)
-* [F.18: Use an `array_view<T>` or an `array_view_p<T>` to designate a half-open sequence](#Rf-range)
-* [F.19: Use a `zstring` or a `not_null<zstring>` to designate a C-style string](#Rf-string)
-* [F.20: Use a `const T&` parameter for a large object](#Rf-const-T-ref)
-* [F.21: Use a `T` parameter for a small object](#Rf-T)
-* [F.22: Use `T&` for an in-out-parameter](#Rf-T-ref)
-* [F.23: Use `T&` for an out-parameter that is expensive to move (only)](#Rf-T-return-out)
-* [F.24: Use a `TP&&` parameter when forwarding (only)](#Rf-pass-ref-ref)
-* [F.25: Use a `T&&` parameter together with `move` for rare optimization opportunities](#Rf-pass-ref-move)
-* [F.26: Use a `unique_ptr<T>` to transfer ownership where a pointer is needed](#Rf-unique_ptr)
-* [F.27: Use a `shared_ptr<T>` to share ownership](#Rf-shared_ptr)
+* [F.15: Prefer simple and conventional ways of passing information ](#Rf-conventional)
+* [F.16: Use `T*` or `owner<T*>` or a smart pointer to designate a single object 用`T*`，`owner<T*>`或智能指针表示一个单一对象](#Rf-ptr)
+* [F.17: Use a `not_null<T>` to indicate "null" is not a valid value 用`not_null<T>`标记“null”为不允许的值](#Rf-nullptr)
+* [F.18: Use an `array_view<T>` or an `array_view_p<T>` to designate a half-open sequence 用`array_view<T>`或`array_view_p<T>`表示一个半开序列](#Rf-range)
+* [F.19: Use a `zstring` or a `not_null<zstring>` to designate a C-style string 用`zstring`或`not_null<zstring>`表示一个C风格字符串](#Rf-string)
+* [F.20: Use a `const T&` parameter for a large object 对巨大对象采用`const T&`参数](#Rf-const-T-ref)
+* [F.21: Use a `T` parameter for a small object 对小对象采用`T`参数](#Rf-T)
+* [F.22: Use `T&` for an in-out-parameter 对输入输出参数用’T&‘](#Rf-T-ref)
+* [F.23: Use `T&` for an out-parameter that is expensive to move (only) 对输出参数用’T&‘，它比move代价大](#Rf-T-return-out)
+* [F.24: Use a `TP&&` parameter when forwarding (only) 仅对转发采用’TP&&‘](#Rf-pass-ref-ref)
+* [F.25: Use a `T&&` parameter together with `move` for rare optimization opportunities 对特定的优化时机，结合’move‘采用’T&&‘](#Rf-pass-ref-move)
+* [F.26: Use a `unique_ptr<T>` to transfer ownership where a pointer is needed 当想要指针时，用’unique_ptr<T>‘传递自身](#Rf-unique_ptr)
+* [F.27: Use a `shared_ptr<T>` to share ownership 用’shared_ptr<T>‘分享自身](#Rf-shared_ptr)
 
-Value return rules:
+返回值规则：
 
-* [F.40: Prefer return values to out-parameters](#Rf-T-return)
-* [F.41: Prefer to return tuples to multiple out-parameters](#Rf-T-multi)
+* [F.40: Prefer return values to out-parameters 返回值优于输出参数](#Rf-T-return)
+* [F.41: Prefer to return tuples to multiple out-parameters 返回tuples优于多个输出参数](#Rf-T-multi)
 * [F.42: Return a `T*` to indicate a position (only)](#Rf-return-ptr)
-* [F.43: Never (directly or indirectly) return a pointer to a local object](#Rf-dangle)
-* [F.44: Return a `T&` when "returning no object" isn't an option](#Rf-return-ref)
-* [F.45: Don't return a `T&&`](#Rf-return-ref-ref)
-* [F.46: `int` is the return type for `main()`](#Rf-main)
+* [F.43: Never (directly or indirectly) return a pointer to a local object 绝不（直接或间接）返回一个指针给本地对象](#Rf-dangle)
+* [F.44: Return a `T&` when "returning no object" isn't an option 当“返回非对象”不是一个选项时，返回’T&‘](#Rf-return-ref)
+* [F.45: Don't return a `T&&` 不要返回’T&&‘](#Rf-return-ref-ref)
+* [F.46: `int` is the return type for `main()` 'main()'返回'int'类型](#Rf-main)
 
-Other function rules:
+其他函数规则：
 
-* [F.50: Use a lambda when a function won't do (to capture local variables, or to write a local function)](#Rf-capture-vs-overload)
-* [F.51: Prefer overloading over default arguments for virtual functions](#Rf-default-args)
-* [F.52: Prefer capturing by reference in lambdas that will be used locally, including passed to algorithms](#Rf-reference-capture)
-* [F.53: Avoid capturing by reference in lambdas that will be used nonlocally, including returned, stored on the heap, or passed to another thread](#Rf-value-capture)
+* [F.50: Use a lambda when a function won't do (to capture local variables, or to write a local function) 当一个函数不能处理时（捕获本地变量或写一个本地函数），使用lambda](#Rf-capture-vs-overload)
+* [F.51: Prefer overloading over default arguments for virtual functions 重载默认参数优于虚拟函数](#Rf-default-args)
+* [F.52: Prefer capturing by reference in lambdas that will be used locally, including passed to algorithms 宁愿在本地将lambda用于引用，包括提供算法](#Rf-reference-capture)
+* [F.53: Avoid capturing by reference in lambdas that will be used nonlocally, including returned, stored on the heap, or passed to another thread 避免将lambda用于非本地引用，包括返回值、存储于栈、或传递给其他线程](#Rf-value-capture)
 
-Functions have strong similarities to lambdas and function objects so see also Section ???.
+函数与lambda、函数对象具有很大的相似度，可见Section ???.
 
 ## <a name="SS-fct-def"></a> F.def: Function definitions
 
@@ -2925,28 +2920,28 @@ Pointers and references to locals shouldn't outlive their scope. Lambdas that ca
 
 ???
 
-# <a name="S-class"></a> C: Classes and Class Hierarchies
+# <a name="S-class"></a> C: 类和继承
 
 A class is a user-defined type, for which a programmer can define the representation, operations, and interfaces.
 Class hierarchies are used to organize related classes into hierarchical structures.
 
-Class rule summary:
+类规则摘要:
 
-* [C.1: Organize related data into structures (`struct`s or `class`es)](#Rc-org)
-* [C.2: Use `class` if the class has an invariant; use `struct` if the data members can vary independently](#Rc-struct)
-* [C.3: Represent the distinction between an interface and an implementation using a class](#Rc-interface)
-* [C.4: Make a function a member only if it needs direct access to the representation of a class](#Rc-member)
-* [C.5: Place helper functions in the same namespace as the class they support](#Rc-helper)
-* [C.6: Declare a member function that does not modify the state of its object `const`](#Rc-const)
+* [C.1: Organize related data into structures (`struct`s or `class`es) 在结构（`struct`或`class`）里组织有关联的数据](#Rc-org)
+* [C.2: Use `class` if the class has an invariant; use `struct` if the data members can vary independently 如有不可变量则用'class'，如数据成员有相当无关性用'struct'](#Rc-struct)
+* [C.3: Represent the distinction between an interface and an implementation using a class 接口和类之间的区别表现](#Rc-interface)
+* [C.4: Make a function a member only if it needs direct access to the representation of a class 仅当直接访问类时才做一个成员函数](#Rc-member)
+* [C.5: Place helper functions in the same namespace as the class they support 在类的同一个命名空间下放置它的帮助函数](#Rc-helper)
+* [C.6: Declare a member function that does not modify the state of its object `const` 标记一个不改变状态的成员函数为‘const’](#Rc-const)
 
-Subsections:
+子章节:
 
-* [C.concrete: Concrete types](#SS-concrete)
-* [C.ctor: Constructors, assignments, and destructors](#SS-ctor)
-* [C.con: Containers and other resource handles](#SS-containers)
-* [C.lambdas: Function objects and lambdas](#SS-lambdas)
-* [C.hier: Class hierarchies (OOP)](#SS-hier)
-* [C.over: Overloading and overloaded operators](#SS-overload)
+* [C.concrete: Concrete types 混合类型](#SS-concrete)
+* [C.ctor: Constructors, assignments, and destructors 构造、分配和析构](#SS-ctor)
+* [C.con: Containers and other resource handles 容器和其他资源句柄](#SS-containers)
+* [C.lambdas: Function objects and lambdas 函数对象和lambda](#SS-lambdas)
+* [C.hier: Class hierarchies (OOP) 继承](#SS-hier)
+* [C.over: Overloading and overloaded operators 重载](#SS-overload)
 * [C.union: Unions](#SS-union)
 
 ### <a name="Rc-org"></a> C.1: Organize related data into structures (`struct`s or `class`es)
@@ -3199,7 +3194,7 @@ In particular, if a concrete type has an assignment also give it an equals opera
 
 ???
 
-## <a name="SS-ctor"></a> C.ctor: Constructors, assignments, and destructors
+## <a name="SS-ctor"></a> C.ctor: 结构、分配和析构
 
 These functions control the lifecycle of objects: creation, copy, move, and destruction.
 Define constructors to guarantee and simplify initialization of classes.
@@ -3218,13 +3213,13 @@ By default, the compiler defines each of these operations if it is used, but the
 The default operations are a set of related operations that together implement the lifecycle semantics of an object.
 By default, C++ treats classes as value-like types, but not all types are value-like.
 
-Set of default operations rules:
+默认操作规则：
 
 * [C.20: If you can avoid defining any default operations, do](#Rc-zero)
 * [C.21: If you define or `=delete` any default operation, define or `=delete` them all](#Rc-five)
 * [C.22: Make default operations consistent](#Rc-matched)
 
-Destructor rules:
+析构规则：
 
 * [C.30: Define a destructor if a class needs an explicit action at object destruction](#Rc-dtor)
 * [C.31: All resources acquired by a class must be released by the class's destructor](#Rc-dtor-release)
@@ -3235,7 +3230,7 @@ Destructor rules:
 * [C.36: A destructor may not fail](#Rc-dtor-fail)
 * [C.37: Make destructors `noexcept`](#Rc-dtor-noexcept)
 
-Constructor rules:
+构造规则：
 
 * [C.40: Define a constructor if a class has an invariant](#Rc-ctor)
 * [C.41: A constructor should create a fully initialized object](#Rc-complete)
@@ -3251,7 +3246,7 @@ Constructor rules:
 * [C.51: Use delegating constructors to represent common actions for all constructors of a class](#Rc-delegating)
 * [C.52: Use inheriting constructors to import constructors into a derived class that does not need further explicit initialization](#Rc-inheriting)
 
-Copy and move rules:
+复制和移动规则：
 
 * [C.60: Make copy assignment non-`virtual`, take the parameter by `const&`, and return by non-`const&`](#Rc-copy-assignment)
 * [C.61: A copy operation should copy](#Rc-copy-semantic)
@@ -3262,7 +3257,7 @@ Copy and move rules:
 * [C.66: Make move operations `noexcept`](#Rc-move-noexcept)
 * [C.67: A base class should suppress copying, and provide a virtual `clone` instead if "copying" is desired](#Rc-copy-virtual)
 
-Other default operations rules:
+Other default operations rules:其他默认操作规则：
 
 * [C.80: Use `=default` if you have to be explicit about using the default semantics](#Rc-=default)
 * [C.81: Use `=delete` when you want to disable default behavior (without wanting an alternative)](#Rc-=delete)
@@ -5091,7 +5086,7 @@ Summary:
 * [F.53: Avoid capturing by reference in lambdas that will be used nonlocally, including returned, stored on the heap, or passed to another thread](#Rf-value-capture)
 * [ES.28: Use lambdas for complex initialization, especially of `const` variables](#Res-lambda-init)
 
-## <a name="SS-hier"></a> C.hier: Class hierarchies (OOP)
+## <a name="SS-hier"></a> C.hier: 继承 (OOP)
 
 A class hierarchy is constructed to represent a set of hierarchically organized concepts (only).
 Typically base classes act as interfaces.
@@ -5809,7 +5804,7 @@ Subscripting the resulting base pointer will lead to invalid object access and p
 * Flag all combinations of array decay and base to derived conversions.
 * Pass an array as an `array_view` rather than as a pointer, and don't let the array name suffer a derived-to-base conversion before getting into the `array_view`
 
-# <a name="SS-overload"></a> C.over: Overloading and overloaded operators
+# <a name="SS-overload"></a> C.over: 重载操作符
 
 You can overload ordinary functions, template functions, and operators.
 You cannot overload function objects.
@@ -6079,7 +6074,7 @@ Naked unions are a source of type errors.
 
 ???
 
-# <a name="S-enum"></a> Enum: Enumerations
+# <a name="S-enum"></a> Enum: 枚举
 
 Enumerations are used to define sets of integer values and for defining types for such sets of values. There are two kind of enumerations, "plain" `enum`s and `class enum`s.
 
@@ -6210,7 +6205,7 @@ Avoid clashes with macros.
 
 ???
 
-# <a name="S-resource"></a> R: Resource management
+# <a name="S-resource"></a> R: 资源管理
 
 This section contains rules related to resources.
 A resource is anything that must be acquired and (explicitly or implicitly) released, such as memory, file handles, sockets, and locks.
