@@ -27,22 +27,22 @@ Problems:
 
 You can [Read an explanation of the scope and structure of this Guide](#S-abstract) or just jump straight in:
 
-* [P: Philosophy](#S-philosophy)
-* [I: Interfaces](#S-interfaces)
-* [F: Functions](#S-functions)
-* [C: Classes and class hierarchies](#S-class)
-* [Enum: Enumerations](#S-enum)
-* [ES: Expressions and statements](#S-expr)
-* [E: Error handling](#S-errors)
-* [R: Resource management](#S-resource)
-* [T: Templates and generic programming](#S-templates)
-* [CP: Concurrency](#S-concurrency)
-* [SL: The Standard library](#S-stdlib)
-* [SF: Source files](#S-source)
-* [CPL: C-style programming](#S-cpl)
-* [PRO: Profiles](#S-profile)
-* [GSL: Guideline support library](#S-gsl)
-* [FAQ: Answers to frequently asked questions](#S-faq)
+* [P: Philosophy 哲学](#S-philosophy)
+* [I: Interfaces 接口](#S-interfaces)
+* [F: Functions 函数](#S-functions)
+* [C: Classes and class hierarchies 类和继承](#S-class)
+* [Enum: Enumerations 枚举](#S-enum)
+* [ES: Expressions and statements 表达式和状态](#S-expr)
+* [E: Error handling 错误句柄](#S-errors)
+* [R: Resource management 资源管理](#S-resource)
+* [T: Templates and generic programming 模板和范型编程](#S-templates)
+* [CP: Concurrency 并发](#S-concurrency)
+* [SL: The Standard library 标准库](#S-stdlib)
+* [SF: Source files 源码文件](#S-source)
+* [CPL: C-style programming C形式编程](#S-cpl)
+* [PRO: Profiles 剖面](#S-profile)
+* [GSL: Guideline support library 本指导文件的库](#S-gsl)
+* [FAQ: Answers to frequently asked questions 常见问题及回答](#S-faq)
 
 Supporting sections:
 
