@@ -6225,7 +6225,7 @@ Here, we ignore such cases.
 
 * Resource management rule summary:
 
-  * [R.1: Manage resources automatically using resource handles and RAII (resource acquisition is initialization)](#Rr-raii)
+  * [R.1: Manage resources automatically using resource handles and RAII (Resource Acquisition Is Initialization)](#Rr-raii)
   * [R.2: In interfaces, use raw pointers to denote individual objects (only)](#Rr-use-ptr)
   * [R.3: A raw pointer (a `T*`) is non-owning](#Rr-ptr)
   * [R.4: A raw reference (a `T&`) is non-owning](#Rr-ref)
@@ -6257,7 +6257,7 @@ Here, we ignore such cases.
   * [R.36: Take a `const shared_ptr<widget>&` parameter to express that it might retain a reference count to the object ???](#Rr-sharedptrparam-const)
   * [R.37: Do not pass a pointer or reference obtained from an aliased smart pointer](#Rr-smartptrget)
 
-### <a name="Rr-raii"></a> Rule R.1: Manage resources automatically using resource handles and RAII (resource acquisition is initialization)
+### <a name="Rr-raii"></a> Rule R.1: Manage resources automatically using resource handles and RAII (Resource Acquisition Is Initialization)
 
 ##### Reason
 
