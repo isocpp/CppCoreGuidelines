@@ -3959,26 +3959,44 @@ Another reason is been to delay initialization until an object is needed; the so
 * (Simple) Every constructor should initialize every member variable (either explicitly, via a delegating ctor call or via default construction).
 * (Unknown) If a constructor has an `Ensures` contract, try to see if it holds as a postcondition.
 
-### <a name="Rc-default0"></a> C.43: Give a class a default constructor
+### <a name="Rc-default0"></a> C.43: Ensure that a class has a default constructor
 
 ##### Reason
 
-Many language and library facilities rely on default constructors, e.g. `T a[10]` and `std::vector<T> v(10)` default initializes their elements.
+Many language and library facilities rely on default constructors to initialize their elements, e.g. `T a[10]` and `std::vector<T> v(10)`.
 
-##### Example
+##### Example , bad
 
-    class Date {
+    class Date { // BAD: no default constructor
     public:
-        Date();
+        Date(int dd, int mm, int yyyy);
         // ...
     };
 
     vector<Date> vd1(1000);	// default Date needed here
     vector<Date> vd2(1000, Date{Month::october, 7, 1885});	// alternative
 
+The default constructor is only auto-generated if there is no user-declared constructor, hence it's impossible to initialize the vector `vd1` in the example above.
+
 There is no "natural" default date (the big bang is too far back in time to be useful for most people), so this example is non-trivial.
 `{0, 0, 0}` is not a valid date in most calendar systems, so choosing that would be introducing something like floating-point's NaN.
 However, most realistic `Date` classes have a "first date" (e.g. January 1, 1970 is popular), so making that the default is usually trivial.
+
+##### Example 
+
+    class Date {
+    public:
+        Date(int dd, int mm, int yyyy);
+        Date() = default; // See also C.45
+        // ...
+    private:
+        int dd = 1;
+        int mm = 1;
+        int yyyy = 1970;
+        // ...
+    };
+
+    vector<Date> vd1(1000);
 
 ##### Enforcement
 
