@@ -7985,22 +7985,22 @@ Scream when you see a macro that isn't just use for source control (e.g., `#ifde
 Macros are a major source of bugs.
 Macros don't obey the usual scope and type rules.
 Macros don't obey the usual rules for argument passing.
-Macros ensure that the human reader see something different from whet the compiler sees.
-Macros complicates tool building.
+Macros ensure that the human reader sees something different from what the compiler sees.
+Macros complicate tool building.
 
 ##### Example, bad
 
     #define PI 3.14
     #define SQUARE(a, b) (a*b)
 
-Even if we hadn't left a well-know bug in `SQUARE` there are much better behaved alternatives; for example:
+Even if we hadn't left a well-known bug in `SQUARE` there are much better behaved alternatives; for example:
 
     constexpr double pi = 3.14;
     template<typename T> T square(T a, T b) { return a*b; }
 
 ##### Enforcement
 
-Scream when you see a macro that isn't just use for source control (e.g., `#ifdef`)
+Scream when you see a macro that isn't just used for source control (e.g., `#ifdef`)
 
 ### <a name="Res-CAPS!"></a> ES.32: Use `ALL_CAPS` for all macro names
 
