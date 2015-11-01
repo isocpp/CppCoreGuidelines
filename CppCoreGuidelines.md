@@ -62,7 +62,7 @@ or look at a specific language feature
 * [`class`](#S-class)
 * [constructor](#SS-ctor)
 * [derived `class`](#SS-hier)
-* [destructor](#SS-ctor)
+* [destructor](#SS-dtor)
 * [exception](#S-errors)
 * [`for`](#S-???)
 * [`inline`](#S-class)
@@ -2768,7 +2768,7 @@ The language guarantees that a `T&` refers to an object, so that testing for `nu
 
 ##### Reason
 
-It's asking to return a reference to a destroyed temporary object. A `&&` is a magnet for temporary objects. This is fine when the reference to the temporary is being passed "downward" to a callee, because the temporary is guaranteed to outlive the function call. (See [F.24](#Rf-pass-ref-ref) and [F.25](#Rf-pass-ref-move).) However, it's not fine when passing such a reference "upward" to a larger caller scope. See also [F54](#Rf-local-ref-ref).
+It's asking to return a reference to a destroyed temporary object. A `&&` is a magnet for temporary objects. This is fine when the reference to the temporary is being passed "downward" to a callee, because the temporary is guaranteed to outlive the function call. (See [F.24](#Rf-pass-ref-ref) and [F.25](#Rf-pass-ref-move).) However, it's not fine when passing such a reference "upward" to a larger caller scope. See also ???.
 
 For passthrough functions that pass in parameters (by ordinary reference or by perfect forwarding) and want to return values, use simple `auto` return type deduction (not `auto&&`).
 
@@ -2942,7 +2942,7 @@ Class rule summary:
 Subsections:
 
 * [C.concrete: Concrete types](#SS-concrete)
-* [C.ctor: Constructors, assignments, and destructors](#SS-ctor)
+* [C.ctor: Constructors, assignments, and destructors](#S-ctor)
 * [C.con: Containers and other resource handles](#SS-containers)
 * [C.lambdas: Function objects and lambdas](#SS-lambdas)
 * [C.hier: Class hierarchies (OOP)](#SS-hier)
@@ -3199,7 +3199,7 @@ In particular, if a concrete type has an assignment also give it an equals opera
 
 ???
 
-## <a name="SS-ctor"></a> C.ctor: Constructors, assignments, and destructors
+## <a name="S-ctor"></a> C.ctor: Constructors, assignments, and destructors
 
 These functions control the lifecycle of objects: creation, copy, move, and destruction.
 Define constructors to guarantee and simplify initialization of classes.
@@ -9827,7 +9827,7 @@ Template use rule summary:
 Concept use rule summary:
 
 * [T.10: Specify concepts for all template arguments](#Rt-concepts)
-* [T.11: Whenever possible use standard concepts](#Rt-std)
+* [T.11: Whenever possible use standard concepts](#Rt-std-concepts)
 * [T.12: Prefer concept names over `auto` for local variables](#Rt-auto)
 * [T.13: Prefer the shorthand notation for simple, single-type argument concepts](#Rt-shorthand)
 * ???
@@ -9891,7 +9891,7 @@ Metaprogramming rule summary:
 * [T.121: Use template metaprogramming primarily to emulate concepts](#Rt-emulate)
 * [T.122: Use templates (usually template aliases) to compute types at compile time](#Rt-tmp)
 * [T.123: Use `constexpr` functions to compute values at compile time](#Rt-fct)
-* [T.124: Prefer to use standard-library TMP facilities](#Rt-std)
+* [T.124: Prefer to use standard-library TMP facilities](#Rt-std-tmp)
 * [T.125: If you need to go beyond the standard-library TMP facilities, use an existing library](#Rt-lib)
 * [T.??: ????](#Rt-???)
 
@@ -10082,7 +10082,7 @@ In a class template, nonvirtual functions are only instantiated if they're used 
 
 * Flag a class template that declares new (non-inherited) virtual functions.
 
-## <a name="SS-concepts"></a> TPG.concepts: Concept rules
+## <a name="SS-tpg-concepts"></a> TPG.concepts: Concept rules
 
 Concepts is a facility for specifying requirements for template arguments.
 It is an [ISO technical specification](#Ref-conceptsTS), but not yet supported by currently shipping compilers.
@@ -10092,7 +10092,7 @@ Concepts are, however, crucial in the thinking about generic programming and the
 Concept use rule summary:
 
 * [T.10: Specify concepts for all template arguments](#Rt-concepts)
-* [T.11: Whenever possible use standard concepts](#Rt-std)
+* [T.11: Whenever possible use standard concepts](#Rt-std-concepts)
 * [T.14: Prefer concept names over `auto`](#Rt-auto)
 * [T.15: Prefer the shorthand notation for simple, single-type argument concepts](#Rt-shorthand)
 * ???
@@ -10162,7 +10162,7 @@ This is typically only needed when (as part of template metaprogramming code) we
 
 Flag template type arguments without concepts
 
-### <a name="Rt-std"></a> T.11: Whenever possible use standard concepts
+### <a name="Rt-std-concepts"></a> T.11: Whenever possible use standard concepts
 
 ##### Reason
 
@@ -11291,7 +11291,7 @@ Often a `constexpr` function implies less compile-time overhead than alternative
 
     * Flag template metaprograms yielding a value. These should be replaced with `constexpr` functions.
 
-### <a name="Rt-std"></a> T.124: Prefer to use standard-library TMP facilities
+### <a name="Rt-std-tmp"></a> T.124: Prefer to use standard-library TMP facilities
 
 ##### Reason
 
@@ -11549,9 +11549,9 @@ Use header files to represent interfaces and to emphasize logical structure.
 
 Source file rule summary:
 
-* [SF.1: Use a `.cpp` suffix for code files and `.h` for interface files](#Rs-suffix)
+* [SF.1: Use a `.cpp` suffix for code files and `.h` for interface files](#Rs-file-suffix)
 * [SF.2: A `.h` file may not contain object definitions or non-inline function definitions](#Rs-inline)
-* [SF.3: Use `.h` files for all declarations used in multiple sourcefiles](#Rs-suffix)
+* [SF.3: Use `.h` files for all declarations used in multiple sourcefiles](#Rs-declaration-header)
 * [SF.4: Include `.h` files before other declarations in a file](#Rs-include-order)
 * [SF.5: A `.cpp` file must include the `.h` file(s) that defines its interface](#Rs-consistency)
 * [SF.6: Use `using`-directives for transition, for foundation libraries (such as `std`), or within a local scope](#Rs-using)
@@ -11563,7 +11563,7 @@ Source file rule summary:
 * [SF.21: Don't use an unnamed (anonymous) namespace in a header](#Rs-unnamed)
 * [SF.22: Use an unnamed (anonymous) namespace for all internal/nonexported entities](#Rs-unnamed2)
 
-### <a name="Rs-suffix"></a> SF.1: Use a `.cpp` suffix for code files and `.h` for interface files
+### <a name="Rs-file-suffix"></a> SF.1: Use a `.cpp` suffix for code files and `.h` for interface files
 
 ##### Reason
 
@@ -11626,7 +11626,7 @@ Including entities subject to the one-definition rule leads to linkage errors.
 
 Check the positive list above.
 
-### <a name="Rs-suffix"></a> SF.3: Use `.h` files for all declarations used in multiple sourcefiles
+### <a name="Rs-declaration-header"></a> SF.3: Use `.h` files for all declarations used in multiple sourcefiles
 
 ##### Reason
 
@@ -12635,7 +12635,7 @@ These assertions is currently macros (yuck!) pending standard commission decisio
 * `[[implicit]]`	// "Marker" to put on single-argument constructors to explicitly make them non-explicit.
 * `move_owner`	// `p = move_owner(q)` means `p = q` but ???
 
-## <a name="SS-concepts"></a> GSL.concept: Concepts
+## <a name="SS-gsl-concepts"></a> GSL.concept: Concepts
 
 These concepts (type predicates) are borrowed from Andrew Sutton's Origin library, the Range proposal, and the ISO WG21 Palo Alto TR.
 They are likely to be very similar to what will become part of the ISO C++ standard.
