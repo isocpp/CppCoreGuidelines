@@ -12962,7 +12962,7 @@ Flag departures from the suggested order. There will be a lot of old code that d
 
 ##### Reason
 
-This is the original C and C++ layout. It preserves vertical space well. It distinguishes different language constructs (such as functions and classes well).
+This is the original C and C++ layout. It preserves vertical space well. It distinguishes different language constructs (such as functions and classes) well.
 
 ##### Note
 
