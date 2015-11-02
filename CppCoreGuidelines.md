@@ -1042,6 +1042,7 @@ Very hard in general.
 
 * Look for classes with names that include `singleton`.
 * Look for classes for which only a single object is created (by counting objects or by examining constructors).
+* If a class X has a public static function that contains a function-local static of the class' type X and returns a pointer or reference to it, ban that.
 
 ### <a name="Ri-typed"></a> I.4: Make interfaces precisely and strongly typed
 
