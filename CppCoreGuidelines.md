@@ -1,6 +1,6 @@
 # <a name="main"></a> C++ Core Guidelines
 
-October 10, 2015
+November 3, 2015
 
 Editors:
 
@@ -896,6 +896,7 @@ Interface rule summary:
 * [I.11: Never transfer ownership by a raw pointer (`T*`)](#Ri-raw)
 * [I.12: Declare a pointer that must not be null as `not_null`](#Ri-nullptr)
 * [I.13: Do not pass an array as a single pointer](#Ri-array)
+* [I.22: Avoid complex initialization of global objects](#Ri-global-init)
 * [I.23: Keep the number of function arguments low](#Ri-nargs)
 * [I.24: Avoid adjacent unrelated parameters of the same type](#Ri-unrelated)
 * [I.25: Prefer abstract classes as interfaces to class hierarchies](#Ri-abstract)
@@ -1554,7 +1555,42 @@ This `draw2()` passes the same amount of information to `draw()`, but makes the 
 * (Simple) ((Bounds)) Warn for any expression that would rely on implicit conversion of an array type to a pointer type. Allow exception for zstring/czstring pointer types.
 * (Simple) ((Bounds)) Warn for any arithmetic operation on an expression of pointer type that results in a value of pointer type. Allow exception for zstring/czstring pointer types.
 
-### <a name="Ri-nargs"></a> I.14: Keep the number of function arguments low
+
+### <a name="Ri-global-init"></a> I.22: Avoid complex initialization of global objects
+
+##### Reason
+
+Complex initialization can lead to undefined order of execution.
+
+##### Example
+
+    // file1.c
+    
+    extern const X x;
+    
+    const Y y = f(x);   // read x; write y
+    
+    // file2.c
+    
+    extern const Y y;
+    
+    const X x = g(y);   // read y; write x 
+    
+Since `x` and `y` are in different translation units the order of calls to `f()` and `g()` are undefined;
+once will access and uninitialized `const`.
+This particular example shows that the order-of-initialization problem for global (namespace scope) objects is not limited to global *variables*.
+
+##### Note
+
+Order of initialization problems become particularly difficult to handle in concurrent code.
+It is usually best to avoid global (namespace scope) objects altogether.
+
+##### Enforcement
+
+* Flag initializers of globals that call non-`constexpr` functions
+* Flag initializers of globals that access `extern` objects
+    
+### <a name="Ri-nargs"></a> I.23: Keep the number of function arguments low
 
 ##### Reason
 
@@ -1599,7 +1635,7 @@ There are functions that are best expressed with four individual arguments, but 
 * Warn when a functions declares two iterators (including pointers) of the same type instead of a range or a view.
 * (Not enforceable) This is a philosophical guideline that is infeasible to check directly.
 
-### <a name="Ri-unrelated"></a> I.15: Avoid adjacent unrelated parameters of the same type
+### <a name="Ri-unrelated"></a> I.24: Avoid adjacent unrelated parameters of the same type
 
 ##### Reason
 
@@ -1633,7 +1669,7 @@ Don't pass arrays as pointers, pass an object representing a range (e.g., an `ar
 
 (Simple) Warn if two consecutive parameters share the same type.
 
-### <a name="Ri-abstract"></a> I.16: Prefer abstract classes as interfaces to class hierarchies
+### <a name="Ri-abstract"></a> I.25: Prefer abstract classes as interfaces to class hierarchies
 
 ##### Reason
 
@@ -1670,7 +1706,7 @@ This will force every derived class to compute a center -- even if that's non-tr
 
 (Simple) Warn if a pointer to a class `C` is assigned to a pointer to a base of `C` and the base class contains data members.
 
-### <a name="Ri-abi"></a> I.16: If you want a cross-compiler ABI, use a C-style subset
+### <a name="Ri-abi"></a> I.26: If you want a cross-compiler ABI, use a C-style subset
 
 ##### Reason
 
@@ -3241,7 +3277,7 @@ Constructor rules:
 * [C.40: Define a constructor if a class has an invariant](#Rc-ctor)
 * [C.41: A constructor should create a fully initialized object](#Rc-complete)
 * [C.42: If a constructor cannot construct a valid object, throw an exception](#Rc-throw)
-* [C.43: Give a class a default constructor](#Rc-default0)
+* [C.43: Ensure that a class has a default constructor](#Rc-default0)
 * [C.44: Prefer default constructors to be simple and non-throwing](#Rc-default00)
 * [C.45: Don't define a default constructor that only initializes data members; use member initializers instead](#Rc-default)
 * [C.46: By default, declare single-argument constructors `explicit`](#Rc-explicit)
@@ -3998,6 +4034,43 @@ However, most realistic `Date` classes have a "first date" (e.g. January 1, 1970
     };
 
     vector<Date> vd1(1000);
+    
+##### Note
+
+A class with members that all have default constructors implicitly gets a default constructor:
+
+    struct X {
+        string s;
+        vector v;
+    };
+    
+    X x; // means X{{},{}}; that is the empty string and the empty vector
+    
+Beware that built-in types are not properly default constructed:
+
+    struct X {
+	   string s;
+	   int i;
+    };
+
+    void f()
+    {
+	   X x;    // x.s is initialized to the empty string; x.i is uninitialized
+
+	   cout << x.s << ' ' << x.i << '\n';
+	   ++x.i;
+    }
+    
+Statically allocated objects of built-in types are by default initialized to `0`, but local built-in variables are not.
+Beware that your compiler may default initialize local built-in variables, whereas an optimized build will not.
+Thus, code like the example above may appear to work, but it relies on undefined behavior.
+Assuming that you want initialization, an explicit default initialization can help:
+
+    struct X {
+	   string s;
+	   int i {};   // default initialize (to 0)
+    };
+
 
 ##### Enforcement
 
@@ -5442,6 +5515,11 @@ This leaves us with three alternatives:
 * *All protected*: [Avoid `protected` data](#Rh-protected).
 * *All private*: If you’re writing a type that maintains an invariant, then all the variables should be private – it should be encapsulated.
   This is the vast majority of classes.
+  
+##### Note
+
+There are undoubtedly examples where a mixture of access levels for data is tempting.
+We have been unable to think of realistic cases that makes it worthwhile to weaken the simple rule.
 
 ##### Example
 
@@ -6533,7 +6611,9 @@ Instead, use a local variable:
 Global variables can be accessed from everywhere so they can introduce surprising dependencies between apparently unrelated objects.
 They are a notable source of errors.
 
-**Warning**: The initialization of global objects is not totally ordered. If you use a global object initialize it with a constant.
+**Warning**: The initialization of global objects is not totally ordered.
+If you use a global object initialize it with a constant.
+Note that it is possible to get undefined initialization order even for `const` objects.
 
 **Exception**: A global object is often better than a singleton.
 
@@ -7784,7 +7864,7 @@ For containers, there is a tradition for using `{...}` for a list of elements an
 
 ##### Note
 
-Initialization of a variable declared `auto` with a single value `{v}` had surprising results until recently:
+Initialization of a variable declared using `auto` with a single value, e.g., `{v}`, had surprising results until recently:
 
     auto x1 {7};        // x1 is an int with the value 7
     auto x2 = {7};      // x2 is an initializer_list<int> with an element 7
@@ -11902,6 +11982,29 @@ It is more likely to be stable, well-maintained, and widely available than your 
 ### SL.???: Use character-level input only when you have to; *expr.low*.
 
 ### SL.???: When reading, always consider ill-formed input; *expr.low*.
+
+### <a name="Rio-endl"> SL.50: Avoid `endl`
+
+### Reason
+
+The `endl` manipulator is mostly equivalent to `'\\n'` and `"\\n"`;
+as most commonly used it simply slows down output by doing redundant `flush()`s.
+This slowdown can be significant compared to `printf`-style output.
+
+##### Example
+
+    cout << "Hello, World!" << endl;    // two output operations and a flush
+    cout << "hello, World!\n";          // one output operation and no flush
+    
+##### Note
+
+For `cin`/`cout` (and equivalent) interaction, there is no reason to flush; that's donr automatically.
+For writing to a file, there is rarely a need to `flush`.
+
+##### Note
+
+Apart from the (occasionally important) issue of preformance,
+the choice between `"\\n"` and `endl` is almost completely aestetic.
 
 ## SL.regex: Regex
 
