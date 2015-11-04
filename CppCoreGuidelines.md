@@ -488,7 +488,7 @@ If two `int`s are meant to be the coordinates of a 2D point, say so:
 Look for common patterns for which there are better alternatives
 
 * simple `for` loops vs. range-`for` loops
-* `f(T*, int)` interfaces vs. `f(array_view<T>)` interfaces
+* `f(T*, int)` interfaces vs. `f(span<T>)` interfaces
 * loop variables in too large a scope
 * naked `new` and `delete`
 * functions with many arguments of built-in types
@@ -521,8 +521,8 @@ For example:
 
 * unions - use `variant`
 * casts - minimize their use; templates can help
-* array decay - use `array_view`
-* range errors - use `array_view`
+* array decay - use `span`
+* range errors - use `span`
 * narrowing conversions - minimize their use and use `narrow` or `narrow_cast` where they are necessary
 
 ### <a name="Rp-compile-time"></a> P.5: Prefer compile-time checking to run-time checking
@@ -553,7 +553,7 @@ Code clarity and performance. You don't need to write error handlers for errors 
 
 ##### Example
 
-    void read(array_view<int> r); // read into the range of integers r
+    void read(span<int> r); // read into the range of integers r
 
 **Alternative formulation**: Don't postpone to run time what can be done well at compile time.
 
@@ -614,13 +614,13 @@ The standard library resource management pointers fail to pass the size when the
 We need to pass the pointer and the number of elements as an integral object:
 
     extern void f4(vector<int>&);       // separately compiled, possibly dynamically loaded
-    extern void f4(array_view<int>);    // separately compiled, possibly dynamically loaded
+    extern void f4(span<int>);    // separately compiled, possibly dynamically loaded
 
     void g3(int n)
     {
         vector<int> v(n);
         f4(v);                     // pass a reference, retain ownership
-        f4(array_view<int>{v});    // pass a view, retain ownership
+        f4(span<int>{v});    // pass a view, retain ownership
     }
 
 This design carries the number of elements along as an integral part of an object, so that errors are unlikely and dynamic (run-time) checking is always feasible, if not always affordable.
@@ -690,7 +690,7 @@ The (pointer, count)-style interface leaves `increment1()` with no realistic way
 Assuming that we could check subscripts for out of range access, the error would not be discovered until `p[10]` was accessed.
 We could check earlier and improve the code:
 
-    void increment2(array_view<int> p)
+    void increment2(span<int> p)
     {
         for (int& x : p) ++x;
     }
@@ -1522,7 +1522,7 @@ Either is undefined behavior and a potentially very nasty bug.
 
 Consider using explicit ranges:
 
-    void copy(array_view<const T> r, array_view<T> r2); // copy r to r2
+    void copy(span<const T> r, span<T> r2); // copy r to r2
 
 ##### Example, bad
 
@@ -1537,14 +1537,14 @@ Passing `10` as the `n` argument may be a mistake: the most common convention is
 
 **Alternative**: Use a support class that ensures that the number of elements is correct and prevents dangerous implicit conversions. For example:
 
-    void draw2(array_view<Circle>);
+    void draw2(span<Circle>);
     Circle arr[10];
     // ...
-    draw2(array_view<Circle>(arr));  // deduce the number of elements
+    draw2(span<Circle>(arr));  // deduce the number of elements
     draw2(arr);    // deduce the element type and array size
 
-    void draw3(array_view<Shape>);
-    draw3(arr);    // error: cannot convert Circle[10] to array_view<Shape>
+    void draw3(span<Shape>);
+    draw3(arr);    // error: cannot convert Circle[10] to span<Shape>
 
 This `draw2()` passes the same amount of information to `draw()`, but makes the fact that it is supposed to be a range of `Circle`s explicit. See ???.
 
@@ -1661,9 +1661,9 @@ If the order of the parameters is not important, there is no problem:
 
 ##### Alternative
 
-Don't pass arrays as pointers, pass an object representing a range (e.g., an `array_view`):
+Don't pass arrays as pointers, pass an object representing a range (e.g., a `span`):
 
-    void copy_n(array_view<const T> p, array_view<T> q);  // copy from p to q
+    void copy_n(span<const T> p, span<T> q);  // copy from p to q
 
 ##### Enforcement
 
@@ -1749,7 +1749,7 @@ Argument passing rules:
 * [F.15: Prefer simple and conventional ways of passing information](#Rf-conventional)
 * [F.16: Use `T*` or `owner<T*>` or a smart pointer to designate a single object](#Rf-ptr)
 * [F.17: Use a `not_null<T>` to indicate "null" is not a valid value](#Rf-nullptr)
-* [F.18: Use an `array_view<T>` or an `array_view_p<T>` to designate a half-open sequence](#Rf-range)
+* [F.18: Use a `span<T>` or a `span_p<T>` to designate a half-open sequence](#Rf-range)
 * [F.19: Use a `zstring` or a `not_null<zstring>` to designate a C-style string](#Rf-string)
 * [F.20: Use a `const T&` parameter for a large object](#Rf-const-T-ref)
 * [F.21: Use a `T` parameter for a small object](#Rf-T)
@@ -2288,7 +2288,7 @@ Clarity. Making it clear that a test for null isn't needed.
 
     not_null<T*> check(T* p) { if (p) return not_null<T*>{p}; throw Unexpected_nullptr{}; }
 
-    void computer(not_null<array_view<int>> p)
+    void computer(not_null<span<int>> p)
     {
     	if (0 < p.size()) {  // bad: redundant test
         // ...
@@ -2297,7 +2297,7 @@ Clarity. Making it clear that a test for null isn't needed.
 
 ##### Note
 
-`not_null` is not just for built-in pointers. It works for `array_view`, `string_view`, `unique_ptr`, `shared_ptr`, and other pointer-like types.
+`not_null` is not just for built-in pointers. It works for `span`, `string_span`, `unique_ptr`, `shared_ptr`, and other pointer-like types.
 
 ##### Enforcement
 
@@ -2305,7 +2305,7 @@ Clarity. Making it clear that a test for null isn't needed.
 * (Simple) Error if a raw pointer is sometimes dereferenced after first being tested against `nullptr` (or equivalent) within the function and sometimes is not.
 * (Simple) Warn if a `not_null` pointer is tested against `nullptr` within a function.
 
-### <a name="Rf-range"></a> F.18: Use an `array_view<T>` or an `array_view_p<T>` to designate a half-open sequence
+### <a name="Rf-range"></a> F.18: Use a `span<T>` or a `span_p<T>` to designate a half-open sequence
 
 ##### Reason
 
@@ -2313,7 +2313,7 @@ Informal/non-explicit ranges are a source of errors.
 
 ##### Example
 
-    X* find(array_view<X> r, const X& v);	// find v in r
+    X* find(span<X> r, const X& v);	// find v in r
 
     vector<X> vec;
     // ...
@@ -2321,21 +2321,21 @@ Informal/non-explicit ranges are a source of errors.
 
 ##### Note
 
-Ranges are extremely common in C++ code. Typically, they are implicit and their correct use is very hard to ensure. In particular, given a pair of arguments `(p, n)` designating an array [`p`:`p+n`), it is in general impossible to know if there really are n elements to access following `*p`. `array_view<T>` and `array_view_p<T>` are simple helper classes designating a [p:q) range and a range starting with p and ending with the first element for which a predicate is true, respectively.
+Ranges are extremely common in C++ code. Typically, they are implicit and their correct use is very hard to ensure. In particular, given a pair of arguments `(p, n)` designating an array [`p`:`p+n`), it is in general impossible to know if there really are n elements to access following `*p`. `span<T>` and `span_p<T>` are simple helper classes designating a [p:q) range and a range starting with p and ending with the first element for which a predicate is true, respectively.
 
 ##### Note
 
-An `array_view<T>` object does not own its elements and is so small that it can be passed by value.
+A `span<T>` object does not own its elements and is so small that it can be passed by value.
 
 ##### Note
 
-Passing an `array_view` object as an argument is exactly as efficient as passing a pair of pointer arguments or passing a pointer and an integer count.
+Passing a `span` object as an argument is exactly as efficient as passing a pair of pointer arguments or passing a pointer and an integer count.
 
 **See also**: [Support library](#S-gsl).
 
 ##### Enforcement
 
-(Complex) Warn where accesses to pointer parameters are bounded by other parameters that are integral types and suggest they could use `array_view` instead.
+(Complex) Warn where accesses to pointer parameters are bounded by other parameters that are integral types and suggest they could use `span` instead.
 
 ### <a name="Rf-string"></a> F.19: Use a `zstring` or a `not_null<zstring>` to designate a C-style string
 
@@ -5904,7 +5904,7 @@ Subscripting the resulting base pointer will lead to invalid object access and p
 ##### Enforcement
 
 * Flag all combinations of array decay and base to derived conversions.
-* Pass an array as an `array_view` rather than as a pointer, and don't let the array name suffer a derived-to-base conversion before getting into the `array_view`
+* Pass an array as a `span` rather than as a pointer, and don't let the array name suffer a derived-to-base conversion before getting into the `span`
 
 # <a name="SS-overload"></a> C.over: Overloading and overloaded operators
 
@@ -6366,7 +6366,7 @@ Whenever you deal with a resource that needs paired acquire/release function cal
 
 Consider:
 
-    void send(X* x, cstring_view destination)
+    void send(X* x, cstring_span destination)
     {
         auto port = OpenPort(destination);
         my_mutex.lock();
@@ -6385,7 +6385,7 @@ Further, if any of the code marked `...` throws an exception, then `x` is leaked
 
 Consider:
 
-    void send(unique_ptr<X> x, cstring_view destination)  // x owns the X
+    void send(unique_ptr<X> x, cstring_span destination)  // x owns the X
     {
         Port port{destination};            // port owns the PortHandle
         lock_guard<mutex> guard{my_mutex}; // guard owns the lock
@@ -6401,7 +6401,7 @@ What is `Port`? A handy wrapper that encapsulates the resource:
     class Port {
         PortHandle port;
     public:
-        Port(cstring_view destination) : port{OpenPort(destination)} { }
+        Port(cstring_span destination) : port{OpenPort(destination)} { }
         ~Port() { ClosePort(port); }
         operator PortHandle() { return port; }
 
@@ -6420,7 +6420,7 @@ Where a resource is "ill-behaved" in that it isn't represented as a class with a
 
 ##### Reason
 
-Arrays are best represented by a container type (e.g., `vector` (owning)) or an `array_view` (non-owning).
+Arrays are best represented by a container type (e.g., `vector` (owning)) or a `span` (non-owning).
 Such containers and views hold sufficient information to do range checking.
 
 ##### Example, bad
@@ -6433,7 +6433,7 @@ Such containers and views hold sufficient information to do range checking.
     }
 
 The compiler does not read comments, and without reading other code you do not know whether `p` really points to `n` elements.
-Use an `array_view` instead.
+Use a `span` instead.
 
 ##### Example
 
@@ -6767,7 +6767,7 @@ An array decays to a pointer, thereby losing its size, opening the opportunity f
 
     ??? what do we recommend: f(int*[]) or f(int**) ???
 
-**Alternative**: Use `array_view` to preserve size information.
+**Alternative**: Use `span` to preserve size information.
 
 ##### Enforcement
 
@@ -8540,7 +8540,7 @@ You should know enough not to need parentheses for:
 
 Complicated pointer manipulation is a major source of errors.
 
-* Do all pointer arithmetic on an `array_view` (exception ++p in simple loop???)
+* Do all pointer arithmetic on a `span` (exception ++p in simple loop???)
 * Avoid pointers to pointers
 * ???
 
@@ -12438,11 +12438,11 @@ The following are under consideration but not yet in the rules below, and may be
 
 An implementation of this profile shall recognize the following patterns in source code as non-conforming and issue a diagnostic.
 
-### <a name="Pro-bounds-arithmetic"></a> Bounds.1: Don't use pointer arithmetic. Use `array_view` instead.
+### <a name="Pro-bounds-arithmetic"></a> Bounds.1: Don't use pointer arithmetic. Use `span` instead.
 
 ##### Reason
 
-Pointers should only refer to single objects, and pointer arithmetic is fragile and easy to get wrong. `array_view` is a bounds-checked, safe type for accessing arrays of data.
+Pointers should only refer to single objects, and pointer arithmetic is fragile and easy to get wrong. `span` is a bounds-checked, safe type for accessing arrays of data.
 
 ##### Example, bad
 
@@ -12470,13 +12470,13 @@ Pointers should only refer to single objects, and pointer arithmetic is fragile 
 
 ##### Example, good
 
-    void f(array_view<int> a) // BETTER: use array_view in the function declaration
+    void f(span<int> a) // BETTER: use span in the function declaration
     {
         if (a.length() < 2) return;
 
         int n = *a++; // OK
 
-        array_view<int> q = a + 1; // OK
+        span<int> q = a + 1; // OK
 
         if (a.length() < 6) return;
 
@@ -12495,7 +12495,7 @@ Issue a diagnostic for any arithmetic operation on an expression of pointer type
 
 ##### Reason
 
-Dynamic accesses into arrays are difficult for both tools and humans to validate as safe. `array_view` is a bounds-checked, safe type for accessing arrays of data. `at()` is another alternative that ensures single accesses are bounds-checked. If iterators are needed to access an array, use the iterators from an `array_view` constructed over the array.
+Dynamic accesses into arrays are difficult for both tools and humans to validate as safe. `span` is a bounds-checked, safe type for accessing arrays of data. `at()` is another alternative that ensures single accesses are bounds-checked. If iterators are needed to access an array, use the iterators from a `span` constructed over the array.
 
 ##### Example, bad
 
@@ -12509,19 +12509,19 @@ Dynamic accesses into arrays are difficult for both tools and humans to validate
 
 ##### Example, good
 
-    // ALTERNATIVE A: Use an array_view
+    // ALTERNATIVE A: Use a span
 
-    // A1: Change parameter type to use array_view
-    void f(array_view<int, 10> a, int pos)
+    // A1: Change parameter type to use span
+    void f(span<int, 10> a, int pos)
     {
         a[pos / 2] = 1; // OK
         a[pos - 1] = 2; // OK
     }
 
-    // A2: Add local array_view and use that
+    // A2: Add local span and use that
     void f(array<int, 10> arr, int pos)
     {
-        array_view<int> a = {arr, pos}
+        span<int> a = {arr, pos}
         a[pos / 2] = 1; // OK
         a[pos - 1] = 2; // OK
     }
@@ -12544,11 +12544,11 @@ Dynamic accesses into arrays are difficult for both tools and humans to validate
 
 ##### Example, good
 
-    // ALTERNATIVE A: Use an array_view
+    // ALTERNATIVE A: Use a span
     void f1()
     {
         int arr[COUNT];
-        array_view<int> av = arr;
+        span<int> av = arr;
         for (int i = 0; i < COUNT; ++i)
             av[i] = i;
     }
@@ -12581,7 +12581,7 @@ Issue a diagnostic for any indexing expression on an expression or variable of a
 
 ##### Reason
 
-Pointers should not be used as arrays. `array_view` is a bounds-checked, safe alternative to using pointers to access arrays.
+Pointers should not be used as arrays. `span` is a bounds-checked, safe alternative to using pointers to access arrays.
 
 ##### Example, bad
 
@@ -12597,15 +12597,15 @@ Pointers should not be used as arrays. `array_view` is a bounds-checked, safe al
 ##### Example, good
 
     void g(int* p, size_t length);
-    void g1(array_view<int> av); // BETTER: get g() changed.
+    void g1(span<int> av); // BETTER: get g() changed.
 
     void f()
     {
         int a[5];
-        array_view av = a;
+        span av = a;
 
         g(a.data(), a.length());	// OK, if you have no choice
-        g1(a);                      // OK - no decay here, instead use implicit array_view ctor
+        g1(a);                      // OK - no decay here, instead use implicit span ctor
     }
 
 ##### Enforcement
@@ -12616,7 +12616,7 @@ Issue a diagnostic for any expression that would rely on implicit conversion of 
 
 ##### Reason
 
-These functions all have bounds-safe overloads that take `array_view`. Standard types such as `vector` can be modified to perform bounds-checks under the bounds profile (in a compatible way, such as by adding contracts), or used with `at()`.
+These functions all have bounds-safe overloads that take `span`. Standard types such as `vector` can be modified to perform bounds-checks under the bounds profile (in a compatible way, such as by adding contracts), or used with `at()`.
 
 ##### Example, bad
 
@@ -12712,16 +12712,16 @@ If something is not supposed to be `nullptr`, say so:
 * `not_null<T>`		// `T` is usually a pointer type (e.g., `not_null<int*>` and `not_null<owner<Foo*>>`) that may not be `nullptr`.
   `T` can be any type for which `==nullptr` is meaningful.
 
-* `array_view<T>`	// [`p`:`p+n`), constructor from `{p, q}` and `{p, n}`; `T` is the pointer type
-* `array_view_p<T>`	// `{p, predicate}` [`p`:`q`) where `q` is the first element for which `predicate(*p)` is true
-* `string_view`		// `array_view<char>`
-* `cstring_view`	// `array_view<const char>`
+* `span<T>`	// [`p`:`p+n`), constructor from `{p, q}` and `{p, n}`; `T` is the pointer type
+* `span_p<T>`	// `{p, predicate}` [`p`:`q`) where `q` is the first element for which `predicate(*p)` is true
+* `string_span`		// `span<char>`
+* `cstring_span`	// `span<const char>`
 
-A `*_view<T>` refers to zero or more mutable `T`s unless `T` is a `const` type.
+A `span<T>` refers to zero or more mutable `T`s unless `T` is a `const` type.
 
-"Pointer arithmetic" is best done within `array_view`s.
-A `char*` that points to something that is not a C-style string (e.g., a pointer into an input buffer) should be represented by an `array_view`.
-There is no really good way to say "pointer to a single `char`" (`string_view{p, 1}` can do that, and `T*` where `T` is a `char` in a template that has not been specialized for C-style strings).
+"Pointer arithmetic" is best done within `span`s.
+A `char*` that points to something that is not a C-style string (e.g., a pointer into an input buffer) should be represented by a `span`.
+There is no really good way to say "pointer to a single `char`" (`string_span{p, 1}` can do that, and `T*` where `T` is a `char` in a template that has not been specialized for C-style strings).
 
 * `zstring`		// a `char*` supposed to be a C-style string; that is, a zero-terminated sequence of `char` or `null_ptr`
 * `czstring`	// a `const char*` supposed to be a C-style string; that is, a zero-terminated sequence of `const` `char` or `null_ptr`
@@ -12738,7 +12738,7 @@ Use `not_null<zstring>` for C-style strings that cannot be `nullptr`. ??? Do we 
 * `shared_ptr<T>`     // shared ownership: `std::shared_ptr<T>` (a counted pointer)
 * `stack_array<T>`    // A stack-allocated array. The number of elements are determined at construction and fixed thereafter. The elements are mutable unless `T` is a `const` type.
 * `dyn_array<T>`      // ??? needed ??? A heap-allocated array. The number of elements are determined at construction and fixed thereafter.
-  The elements are mutable unless `T` is a `const` type. Basically an `array_view` that allocates and owns its elements.
+  The elements are mutable unless `T` is a `const` type. Basically a `span` that allocates and owns its elements.
 
 ## <a name="SS-assertions"></a> GSL.assert: Assertions
 
@@ -13260,9 +13260,9 @@ Because we want to use them immediately, and because they are temporary in that 
 
 No. The GSL exists only to supply a few types and aliases that are not currently in the standard library. If the committee decides on standardized versions (of these or other types that fill the same need) then they can be removed from the GSL.
 
-### <a name="Faq-gsl-string-view"></a> FAQ.55: If you’re using the standard types where available, why is the GSL `string_view` different from the `string_view` in the Library Fundamentals 1 Technical Specification? Why not just use the committee-approved `string_view`?
+### <a name="Faq-gsl-string-view"></a> FAQ.55: If you’re using the standard types where available, why is the GSL `string_span` different from the `string_view` in the Library Fundamentals 1 Technical Specification? Why not just use the committee-approved `string_view`?
 
-Because `string_view` is still undergoing standardization, and is in a state for public review input to improve it. Types that appear in Technical Specifications (TSes) are not yet part of the International Standard (IS), and one reason they are put in TSes first is to gain experience with the feature before they are cast in a final form to become part of the standard. Some of the GSL authors are contributing what we have learned about `string_view` in the process of developing these guidelines, and a discussion of the differences, as a paper for the next ISO meeting for consideration along with all the other similar papers for the committee to consider as it decides on the final form of this feature.
+Because `string_view` is still undergoing standardization, and is in a state for public review input to improve it. Types that appear in Technical Specifications (TSes) are not yet part of the International Standard (IS), and one reason they are put in TSes first is to gain experience with the feature before they are cast in a final form to become part of the standard. Some of the GSL authors are contributing what we have learned about `string_span` in the process of developing these guidelines, and a discussion of the differences between `string_view` and `string_span`, as a paper for the next ISO meeting for consideration along with all the other similar papers for the committee to consider as it decides on the final form of this feature.
 
 ### <a name="Faq-gsl-owner"></a> FAQ.56: Is `owner` the same as the proposed `observer_ptr`?
 
@@ -13322,7 +13322,7 @@ Here are some (very general) ideas:
 
 * The ideal is "just upgrade everything." That gives the most benefits for the shortest total time.
   In most circumstances, it is also impossible.
-* We could convert a code base module for module, but any rules that affects interfaces (especially ABIs), such as [use `array_view`](#SS-views), cannot be done on a per-module basis.
+* We could convert a code base module for module, but any rules that affects interfaces (especially ABIs), such as [use `span`](#SS-views), cannot be done on a per-module basis.
 * We could convert code "bottom up" starting with the rules we estimate will give the greatest benefits and/or the least trouble in a given code base.
 * We could start by focusing on the interfaces, e.g., make sure that no resources are lost and no pointer is misused.
   This would be a set of changes across the whole code base, but would most likely have huge benefits.
@@ -13744,7 +13744,7 @@ The code is simpler as well as correct.
 A checker must consider all "naked pointers" suspicious.
 A checker probably must rely on a human-provided list of resources.
 For starters, we know about the standard-library containers, `string`, and smart pointers.
-The use of `array_view` and `string_view` should help a lot (they are not resource handles).
+The use of `span` and `string_span` should help a lot (they are not resource handles).
 
 ### <a name="Cr-raw"></a> A "raw" pointer or reference is never a resource handle
 
@@ -13782,7 +13782,7 @@ The `string`s of `v` are destroyed upon exit from `bad()` and so is `v` itself. 
 
 ##### Enforcement
 
-Most compilers already warn about simple cases and has the information to do more. Consider any pointer returned from a function suspect. Use containers, resource handles, and views (e.g., `array_view` known not to be resource handles) to lower the number of cases to be examined. For starters, consider every class with a destructor a resource handle.
+Most compilers already warn about simple cases and has the information to do more. Consider any pointer returned from a function suspect. Use containers, resource handles, and views (e.g., `span` known not to be resource handles) to lower the number of cases to be examined. For starters, consider every class with a destructor a resource handle.
 
 ### <a name="Cr-templates"></a> Use templates to express containers (and other resource handles)
 
