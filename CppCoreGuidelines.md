@@ -1661,7 +1661,7 @@ If the order of the parameters is not important, there is no problem:
 
 ##### Alternative
 
-Don't pass arrays as pointers, pass an object representing a range (e.g., an `span`):
+Don't pass arrays as pointers, pass an object representing a range (e.g., a `span`):
 
     void copy_n(span<const T> p, span<T> q);  // copy from p to q
 
@@ -1749,7 +1749,7 @@ Argument passing rules:
 * [F.15: Prefer simple and conventional ways of passing information](#Rf-conventional)
 * [F.16: Use `T*` or `owner<T*>` or a smart pointer to designate a single object](#Rf-ptr)
 * [F.17: Use a `not_null<T>` to indicate "null" is not a valid value](#Rf-nullptr)
-* [F.18: Use an `span<T>` or an `span_p<T>` to designate a half-open sequence](#Rf-range)
+* [F.18: Use a `span<T>` or a `span_p<T>` to designate a half-open sequence](#Rf-range)
 * [F.19: Use a `zstring` or a `not_null<zstring>` to designate a C-style string](#Rf-string)
 * [F.20: Use a `const T&` parameter for a large object](#Rf-const-T-ref)
 * [F.21: Use a `T` parameter for a small object](#Rf-T)
@@ -2305,7 +2305,7 @@ Clarity. Making it clear that a test for null isn't needed.
 * (Simple) Error if a raw pointer is sometimes dereferenced after first being tested against `nullptr` (or equivalent) within the function and sometimes is not.
 * (Simple) Warn if a `not_null` pointer is tested against `nullptr` within a function.
 
-### <a name="Rf-range"></a> F.18: Use an `span<T>` or an `span_p<T>` to designate a half-open sequence
+### <a name="Rf-range"></a> F.18: Use a `span<T>` or a `span_p<T>` to designate a half-open sequence
 
 ##### Reason
 
@@ -2325,11 +2325,11 @@ Ranges are extremely common in C++ code. Typically, they are implicit and their 
 
 ##### Note
 
-An `span<T>` object does not own its elements and is so small that it can be passed by value.
+A `span<T>` object does not own its elements and is so small that it can be passed by value.
 
 ##### Note
 
-Passing an `span` object as an argument is exactly as efficient as passing a pair of pointer arguments or passing a pointer and an integer count.
+Passing a `span` object as an argument is exactly as efficient as passing a pair of pointer arguments or passing a pointer and an integer count.
 
 **See also**: [Support library](#S-gsl).
 
@@ -5904,7 +5904,7 @@ Subscripting the resulting base pointer will lead to invalid object access and p
 ##### Enforcement
 
 * Flag all combinations of array decay and base to derived conversions.
-* Pass an array as an `span` rather than as a pointer, and don't let the array name suffer a derived-to-base conversion before getting into the `span`
+* Pass an array as a `span` rather than as a pointer, and don't let the array name suffer a derived-to-base conversion before getting into the `span`
 
 # <a name="SS-overload"></a> C.over: Overloading and overloaded operators
 
@@ -6420,7 +6420,7 @@ Where a resource is "ill-behaved" in that it isn't represented as a class with a
 
 ##### Reason
 
-Arrays are best represented by a container type (e.g., `vector` (owning)) or an `span` (non-owning).
+Arrays are best represented by a container type (e.g., `vector` (owning)) or a `span` (non-owning).
 Such containers and views hold sufficient information to do range checking.
 
 ##### Example, bad
@@ -6433,7 +6433,7 @@ Such containers and views hold sufficient information to do range checking.
     }
 
 The compiler does not read comments, and without reading other code you do not know whether `p` really points to `n` elements.
-Use an `span` instead.
+Use a `span` instead.
 
 ##### Example
 
@@ -8540,7 +8540,7 @@ You should know enough not to need parentheses for:
 
 Complicated pointer manipulation is a major source of errors.
 
-* Do all pointer arithmetic on an `span` (exception ++p in simple loop???)
+* Do all pointer arithmetic on a `span` (exception ++p in simple loop???)
 * Avoid pointers to pointers
 * ???
 
@@ -12495,7 +12495,7 @@ Issue a diagnostic for any arithmetic operation on an expression of pointer type
 
 ##### Reason
 
-Dynamic accesses into arrays are difficult for both tools and humans to validate as safe. `span` is a bounds-checked, safe type for accessing arrays of data. `at()` is another alternative that ensures single accesses are bounds-checked. If iterators are needed to access an array, use the iterators from an `span` constructed over the array.
+Dynamic accesses into arrays are difficult for both tools and humans to validate as safe. `span` is a bounds-checked, safe type for accessing arrays of data. `at()` is another alternative that ensures single accesses are bounds-checked. If iterators are needed to access an array, use the iterators from a `span` constructed over the array.
 
 ##### Example, bad
 
@@ -12509,7 +12509,7 @@ Dynamic accesses into arrays are difficult for both tools and humans to validate
 
 ##### Example, good
 
-    // ALTERNATIVE A: Use an span
+    // ALTERNATIVE A: Use a span
 
     // A1: Change parameter type to use span
     void f(span<int, 10> a, int pos)
@@ -12544,7 +12544,7 @@ Dynamic accesses into arrays are difficult for both tools and humans to validate
 
 ##### Example, good
 
-    // ALTERNATIVE A: Use an span
+    // ALTERNATIVE A: Use a span
     void f1()
     {
         int arr[COUNT];
@@ -12720,7 +12720,7 @@ If something is not supposed to be `nullptr`, say so:
 A `*_view<T>` refers to zero or more mutable `T`s unless `T` is a `const` type.
 
 "Pointer arithmetic" is best done within `span`s.
-A `char*` that points to something that is not a C-style string (e.g., a pointer into an input buffer) should be represented by an `span`.
+A `char*` that points to something that is not a C-style string (e.g., a pointer into an input buffer) should be represented by a `span`.
 There is no really good way to say "pointer to a single `char`" (`string_span{p, 1}` can do that, and `T*` where `T` is a `char` in a template that has not been specialized for C-style strings).
 
 * `zstring`		// a `char*` supposed to be a C-style string; that is, a zero-terminated sequence of `char` or `null_ptr`
@@ -12738,7 +12738,7 @@ Use `not_null<zstring>` for C-style strings that cannot be `nullptr`. ??? Do we 
 * `shared_ptr<T>`     // shared ownership: `std::shared_ptr<T>` (a counted pointer)
 * `stack_array<T>`    // A stack-allocated array. The number of elements are determined at construction and fixed thereafter. The elements are mutable unless `T` is a `const` type.
 * `dyn_array<T>`      // ??? needed ??? A heap-allocated array. The number of elements are determined at construction and fixed thereafter.
-  The elements are mutable unless `T` is a `const` type. Basically an `span` that allocates and owns its elements.
+  The elements are mutable unless `T` is a `const` type. Basically a `span` that allocates and owns its elements.
 
 ## <a name="SS-assertions"></a> GSL.assert: Assertions
 
