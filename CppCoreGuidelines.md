@@ -12717,7 +12717,7 @@ If something is not supposed to be `nullptr`, say so:
 * `string_span`		// `span<char>`
 * `cstring_span`	// `span<const char>`
 
-A `*_view<T>` refers to zero or more mutable `T`s unless `T` is a `const` type.
+A `span<T>` refers to zero or more mutable `T`s unless `T` is a `const` type.
 
 "Pointer arithmetic" is best done within `span`s.
 A `char*` that points to something that is not a C-style string (e.g., a pointer into an input buffer) should be represented by a `span`.
