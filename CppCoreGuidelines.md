@@ -12003,7 +12003,7 @@ For writing to a file, there is rarely a need to `flush`.
 
 ##### Note
 
-Apart from the (occasionally important) issue of preformance,
+Apart from the (occasionally important) issue of performance,
 the choice between `"\\n"` and `endl` is almost completely aestetic.
 
 ## SL.regex: Regex
