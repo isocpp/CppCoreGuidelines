@@ -2256,7 +2256,7 @@ Consider:
 
     int length(Record* p);
 
-When I call `length(r)` should I test for `r == nullptr` first? Should the implementation of `length()` test for `p == nullptr`?
+When I call `length(p)` should I test for `p == nullptr` first? Should the implementation of `length()` test for `p == nullptr`?
 
     int length(not_null<Record*> p);  // it is the caller's job to make sure p != nullptr
 
