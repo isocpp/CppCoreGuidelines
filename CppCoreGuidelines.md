@@ -7693,7 +7693,7 @@ The cost of initializing that array could be significant in some situations.
 However, such examples do tend to leave uninitialized variables accessible, so they should be treated with suspicion.
 
     constexpr int max = 8*1024;
-    int buf[max] = {0};				// better in some situations
+    int buf[max] = {};				// better in some situations
     f.read(buf, max);
 
 When feasible use a library function that is known not to overflow. For example:
