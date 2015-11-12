@@ -25,7 +25,7 @@ Problems:
 * Update reference sections; many pre-C++11 sources are too old.
 * For a more-or-less up-to-date to-do list see: [To-do: Unclassified proto-rules](#S-unclassified)
 
-You can [Read an explanation of the scope and structure of this Guide](#S-abstract) or just jump straight in:
+You can [read an explanation of the scope and structure of this Guide](#S-abstract) or just jump straight in:
 
 * [P: Philosophy](#S-philosophy)
 * [I: Interfaces](#S-interfaces)
@@ -13893,7 +13893,7 @@ A relatively informal definition of terms used in the guidelines
 * *complexity*: a hard-to-precisely-define notion or measure of the difficulty of constructing a solution to a problem or of the solution itself.
   Sometimes complexity is used to (simply) mean an estimate of the number of operations needed to execute an algorithm.
 * *computation*: the execution of some code, usually taking some input and producing some output.
-* *concept*: (1) a notion, and idea; (2) a set of requirements, usually for a template argument
+* *concept*: (1) a notion, and idea; (2) a set of requirements, usually for a template argument.
 * *concrete class*: class for which objects can be created.
 * *constant*: a value that cannot be changed (in a given scope); not mutable.
 * *constructor*: an operation that initializes (“constructs”) an object.
@@ -13985,7 +13985,7 @@ Simplified definition: a declaration that allocates memory.
 * *specification*: a description of what a piece of code should do.
 * *standard*: an officially agreed upon definition of something, such as a programming language.
 * *state*: a set of values.
-* *STL*: The containers, iterators, and algorithms part of the standard library
+* *STL*: the containers, iterators, and algorithms part of the standard library.
 * *string*: a sequence of characters.
 * *style*: a set of techniques for programming leading to a consistent use of language features; sometimes used in a very restricted sense to refer just to low-level rules for naming and appearance of code.
 * *subtype*: derived type; a type that has all the properties of a type and possibly more.
