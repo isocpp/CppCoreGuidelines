@@ -11998,7 +11998,7 @@ This slowdown can be significant compared to `printf`-style output.
     
 ##### Note
 
-For `cin`/`cout` (and equivalent) interaction, there is no reason to flush; that's donr automatically.
+For `cin`/`cout` (and equivalent) interaction, there is no reason to flush; that's done automatically.
 For writing to a file, there is rarely a need to `flush`.
 
 ##### Note
