@@ -421,7 +421,13 @@ This is a set of guidelines for writing ISO Standard C++.
 ##### Note
 
 There are environments where extensions are necessary, e.g., to access system resources.
-In such cases, localize the use of necessary extensions and control their use with non-core Coding Guidelines.
+In such cases, localize the use of necessary extensions and control their use with non-core Coding Guidelines.  If possible, build interfaces that encapsulate the extensions so they can be turned off or compiled away on systems that do not support those extensions.
+
+Extensions often do not have rigorously defined semantics.  Even extensions that
+are common and implemented by multiple compilers may have slightly different
+behaviors and edge case behavior as a direct result of *not* having a rigorous
+standard definition.  With sufficient use of any such extension, expected
+portability will be impacted.
 
 ##### Note
 
@@ -1565,17 +1571,17 @@ Complex initialization can lead to undefined order of execution.
 ##### Example
 
     // file1.c
-    
+
     extern const X x;
-    
+
     const Y y = f(x);   // read x; write y
-    
+
     // file2.c
-    
+
     extern const Y y;
-    
-    const X x = g(y);   // read y; write x 
-    
+
+    const X x = g(y);   // read y; write x
+
 Since `x` and `y` are in different translation units the order of calls to `f()` and `g()` are undefined;
 once will access and uninitialized `const`.
 This particular example shows that the order-of-initialization problem for global (namespace scope) objects is not limited to global *variables*.
@@ -1589,7 +1595,7 @@ It is usually best to avoid global (namespace scope) objects altogether.
 
 * Flag initializers of globals that call non-`constexpr` functions
 * Flag initializers of globals that access `extern` objects
-    
+
 ### <a name="Ri-nargs"></a> I.23: Keep the number of function arguments low
 
 ##### Reason
@@ -4019,7 +4025,7 @@ There is no "natural" default date (the big bang is too far back in time to be u
 `{0, 0, 0}` is not a valid date in most calendar systems, so choosing that would be introducing something like floating-point's NaN.
 However, most realistic `Date` classes have a "first date" (e.g. January 1, 1970 is popular), so making that the default is usually trivial.
 
-##### Example 
+##### Example
 
     class Date {
     public:
@@ -4034,7 +4040,7 @@ However, most realistic `Date` classes have a "first date" (e.g. January 1, 1970
     };
 
     vector<Date> vd1(1000);
-    
+
 ##### Note
 
 A class with members that all have default constructors implicitly gets a default constructor:
@@ -4043,9 +4049,9 @@ A class with members that all have default constructors implicitly gets a defaul
         string s;
         vector v;
     };
-    
+
     X x; // means X{{},{}}; that is the empty string and the empty vector
-    
+
 Beware that built-in types are not properly default constructed:
 
     struct X {
@@ -4060,7 +4066,7 @@ Beware that built-in types are not properly default constructed:
 	   cout << x.s << ' ' << x.i << '\n';
 	   ++x.i;
     }
-    
+
 Statically allocated objects of built-in types are by default initialized to `0`, but local built-in variables are not.
 Beware that your compiler may default initialize local built-in variables, whereas an optimized build will not.
 Thus, code like the example above may appear to work, but it relies on undefined behavior.
@@ -5515,7 +5521,7 @@ This leaves us with three alternatives:
 * *All protected*: [Avoid `protected` data](#Rh-protected).
 * *All private*: If you’re writing a type that maintains an invariant, then all the variables should be private – it should be encapsulated.
   This is the vast majority of classes.
-  
+
 ##### Note
 
 There are undoubtedly examples where a mixture of access levels for data is tempting.
@@ -8513,7 +8519,7 @@ Avoid errors. Readability. Not everyone has the operator table memorized.
 
     const unsigned int flag = 2;
     unsigned int a = flag;
-    
+
     if (a & flag != 0)  // bad: means a&(flag != 0)
 
 Note: We recommend that programmers know their precedence table for the arithmetic operations, the logical operations, but consider mixing bitwise logical operations with other operators in need of parentheses.
@@ -11995,7 +12001,7 @@ This slowdown can be significant compared to `printf`-style output.
 
     cout << "Hello, World!" << endl;    // two output operations and a flush
     cout << "hello, World!\n";          // one output operation and no flush
-    
+
 ##### Note
 
 For `cin`/`cout` (and equivalent) interaction, there is no reason to flush; that's done automatically.
@@ -13565,7 +13571,7 @@ These are key functions that must not fail because they are necessary for the tw
 Consider the following advice and requirements found in the C++ Standard:
 
 > If a destructor called during stack unwinding exits with an exception, terminate is called (15.5.1). So destructors should generally catch exceptions and not let them propagate out of the destructor. --[[C++03]](#C++03) §15.2(3)
-> 
+>
 > No destructor operation defined in the C++ Standard Library (including the destructor of any type that is used to instantiate a standard library template) will throw an exception. --[[C++03]](#C++03) §17.4.4.8(3)
 
 Deallocation functions, including specifically overloaded `operator delete` and `operator delete[]`, fall into the same category, because they too are used during cleanup in general, and during exception handling in particular, to back out of partial work that needs to be undone.
@@ -14113,4 +14119,3 @@ Alternatively, we will decide that no change is needed and delete the entry.
   \[Sutter04\]:        H. Sutter. Exceptional C++ Style (Addison-Wesley, 2004).
 * <a name="Taligent94"></a>
   \[Taligent94\]: Taligent's Guide to Designing Programs (Addison-Wesley, 1994).
-
