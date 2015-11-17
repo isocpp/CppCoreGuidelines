@@ -421,7 +421,13 @@ This is a set of guidelines for writing ISO Standard C++.
 ##### Note
 
 There are environments where extensions are necessary, e.g., to access system resources.
-In such cases, localize the use of necessary extensions and control their use with non-core Coding Guidelines.
+In such cases, localize the use of necessary extensions and control their use with non-core Coding Guidelines.  If possible, build interfaces that encapsulate the extensions so they can be turned off or compiled away on systems that do not support those extensions.
+
+Extensions often do not have rigorously defined semantics.  Even extensions that
+are common and implemented by multiple compilers may have slightly different
+behaviors and edge case behavior as a direct result of *not* having a rigorous
+standard definition.  With sufficient use of any such extension, expected
+portability will be impacted.
 
 ##### Note
 
