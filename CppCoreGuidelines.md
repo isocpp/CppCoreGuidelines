@@ -32,9 +32,9 @@ You can [read an explanation of the scope and structure of this Guide](#S-abstra
 * [F: Functions](#S-functions)
 * [C: Classes and class hierarchies](#S-class)
 * [Enum: Enumerations](#S-enum)
+* [R: Resource management](#S-resource)
 * [ES: Expressions and statements](#S-expr)
 * [E: Error handling](#S-errors)
-* [R: Resource management](#S-resource)
 * [T: Templates and generic programming](#S-templates)
 * [CP: Concurrency](#S-concurrency)
 * [SL: The Standard library](#S-stdlib)
@@ -116,7 +116,7 @@ In particular, we'd really like to have some of our rules backed up with measure
 You will find some of the rules obvious or even trivial.
 Please remember that one purpose of a guideline is to help someone who is less experienced or coming from a different background or language to get up to speed.
 
-The rules are designed to be supported by an analysis tool.
+Many of the rules are designed to be supported by an analysis tool.
 Violations of rules will be flagged with references (or links) to the relevant rule.
 We do not expect you to memorize all the rules before trying to write code.
 
@@ -235,8 +235,8 @@ This adds up to quite a few dilemmas.
 We try to resolve those using tools.
 Each rule has an **Enforcement** section listing ideas for enforcement.
 Enforcement might be by code review, by static analysis, by compiler, or by run-time checks.
-Wherever possible, we prefer "mechanical" checking (humans are slow and bore easily) and static checking.
-Run-time checks are suggested only rarely where no alternative exists; we do not want to introduce "distributed fat" - if that's what you want, you know where to find it.
+Wherever possible, we prefer "mechanical" checking (humans are slow, inaccurate, and bore easily) and static checking.
+Run-time checks are suggested only rarely where no alternative exists; we do not want to introduce "distributed fat".
 Where appropriate, we label a rule (in the **Enforcement** sections) with the name of groups of related rules (called "profiles").
 A rule can be part of several profiles, or none.
 For a start, we have a few profiles corresponding to common needs (desires, ideals):
@@ -449,7 +449,7 @@ The intent of "just" looping over the elements of `v` is not expressed here. The
 
 Better:
 
-    for (auto x : v) { /* do something with x */ }
+    for (const auto& x : v) { /* do something with x */ }
 
 Now, there is no explicit mention of the iteration mechanism, and the loop operates on a copy of elements so that accidental modification cannot happen. If modification is desired, say so:
 
@@ -780,7 +780,7 @@ The physical law for a jet (`e*e < x*x + y*y + z*z`) is not an invariant because
 
 ##### Reason
 
-Essential for long-running programs. Efficiency. Ability to recover from errors.
+Even a slow growth in resources will, over time, exhaust the availability of those resources. This is particularly important for long-running programs, but is an essential piece of responsible programming behavior.
 
 ##### Example, bad
 
@@ -804,6 +804,15 @@ Prefer [RAII](#Rr-raii):
     }
 
 **See also**: [The resource management section](#S-resource)
+
+##### Note
+
+A leak is colloquially “anything that isn’t cleaned up.”  The more important
+classification is “anything that can no longer be cleaned up.”  For example,
+allocating an object on the heap and then losing the last pointer that points to
+that allocation.  This rule should not be taken as requiring that allocations
+within long-lived objects must be returned during program shutdown.  (Although
+if they can be cleanly and safely de-allocated, they should be.)
 
 ##### Enforcement
 
@@ -942,7 +951,7 @@ What if the connection goes down so that no logging output is produced? See Rule
 
 **Alternative**: Throw an exception. An exception cannot be ignored.
 
-**Alternative formulation**: Avoid passing information across an interface through non-local state.
+**Alternative formulation**: Avoid passing information across an interface through non-local or implicit state.
 Note that non-`const` member functions pass information to other member functions through their object's state.
 
 **Alternative formulation**: An interface should be a function or a set of functions.
@@ -1059,10 +1068,10 @@ Consider:
     void pass(void* data);    // void* is suspicious
 
 Now the callee has to cast the data pointer (back) to a correct type to use it. That is error-prone and often verbose.
-Avoid `void*` in interfaces.
-Consider using a variant or a pointer to base instead. (Future note: Consider a pointer to concept.)
+Avoid `void*`, especially in interfaces.
+Consider using a `variant` or a pointer to base instead. (Future note: Consider a pointer to concept.)
 
-**Alternative**: Often, a template parameter can eliminate the `void*` turning it into a `T*` or something like that.
+**Alternative**: Often, a template parameter can eliminate the `void*` turning it into a `T*` or `T&`.
 
 ##### Example, bad
 
@@ -1304,7 +1313,9 @@ Postconditions related only to internal state belongs in the definition/implemen
 
 ##### Enforcement
 
-(Not enforceable) This is a philosophical guideline that is infeasible to check directly.
+(Not enforceable) This is a philosophical guideline that is infeasible to check
+directly in the general case. Domain specific checkers (like lock-holding
+checkers) exist for many toolchains.
 
 ### <a name="Ri-ensures"></a> I.8: Prefer `Ensures()` for expressing postconditions
 
@@ -1460,7 +1471,10 @@ That is, its value must be `delete`d or transferred to another owner, as is done
 
 ##### Note
 
-Every object passed as a raw pointer (or iterator) is assumed to be owned by the caller, so that its lifetime is handled by the caller.
+Every object passed as a raw pointer (or iterator) is assumed to be owned by the
+caller, so that its lifetime is handled by the caller. Viewed another way:
+ownership transfering APIs are relatively rare compared to pointer-passing APIs,
+so the default is "no ownership transfer."
 
 **See also**: [Argument passing](#Rf-conventional) and [value return](#Rf-T-return).
 
@@ -1520,7 +1534,7 @@ Either is undefined behavior and a potentially very nasty bug.
 
 ##### Alternative
 
-Consider using explicit ranges:
+Consider using explicit spans:
 
     void copy(span<const T> r, span<T> r2); // copy r to r2
 
@@ -1565,17 +1579,17 @@ Complex initialization can lead to undefined order of execution.
 ##### Example
 
     // file1.c
-    
+
     extern const X x;
-    
+
     const Y y = f(x);   // read x; write y
-    
+
     // file2.c
-    
+
     extern const Y y;
-    
-    const X x = g(y);   // read y; write x 
-    
+
+    const X x = g(y);   // read y; write x
+
 Since `x` and `y` are in different translation units the order of calls to `f()` and `g()` are undefined;
 once will access and uninitialized `const`.
 This particular example shows that the order-of-initialization problem for global (namespace scope) objects is not limited to global *variables*.
@@ -1589,7 +1603,7 @@ It is usually best to avoid global (namespace scope) objects altogether.
 
 * Flag initializers of globals that call non-`constexpr` functions
 * Flag initializers of globals that access `extern` objects
-    
+
 ### <a name="Ri-nargs"></a> I.23: Keep the number of function arguments low
 
 ##### Reason
@@ -1664,6 +1678,20 @@ If the order of the parameters is not important, there is no problem:
 Don't pass arrays as pointers, pass an object representing a range (e.g., a `span`):
 
     void copy_n(span<const T> p, span<T> q);  // copy from p to q
+
+##### Alternative
+
+Define a struct as the parameter type and name the fields for those parameters accordingly:
+
+    struct SystemParams {
+        string config_file;
+        string output_path;
+        seconds timeout;
+    };
+    void initialize(SystemParams p);
+
+This has a tendency to make invocations of this clear to future readers, as the parameters
+are often filled in by name at the call site.
 
 ##### Enforcement
 
@@ -1813,11 +1841,11 @@ If you write a non-trivial lambda that potentially can be used in more than one 
 
 ##### Example
 
-    sort(a, b, [](T x, T y) { return x.valid() && y.valid() && x.value() < y.value(); });
+    sort(a, b, [](T x, T y) { return x.rank() < y.rank() && x.value() < y.value(); });
 
 Naming that lambda breaks up the expression into its logical parts and provides a strong hint to the meaning of the lambda.
 
-    auto lessT = [](T x, T y) { return x.valid() && y.valid() && x.value() < y.value(); };
+    auto lessT = [](T x, T y) { return x.rank() < y.rank() && x.value() < y.value(); };
 
     sort(a, b, lessT);
     find_if(a, b, lessT);
@@ -2120,6 +2148,8 @@ Passing a shared smart pointer (e.g., `std::shared_ptr`) implies a run-time cost
     void g(unique_ptr<int>);  // can only accept ints for which you want to transfer ownership
     void g(shared_ptr<int>);  // can only accept ints for which you are willing to share ownership
 
+    void h(const unique_ptr<int>&);  // doesn’t change ownership, but requires a particular ownership of the caller.
+
 ##### Note
 
 We can catch dangling pointers statically, so we don't need to rely on resource management to avoid violations from dangling pointers.
@@ -2225,7 +2255,7 @@ Assuming that `Matrix` has move operations (possibly by keeping its elements in 
 
 ##### Note
 
-The (optional) return value optimization doesn't handle the assignment case.
+The return value optimization doesn't handle the assignment case.
 
 **See also**: [implicit arguments](#Ri-explicit).
 
@@ -2439,7 +2469,6 @@ If the writer of `g()` makes an assumption about the size of `buffer` a bad logi
 ##### Enforcement
 
 * (Moderate) ((Foundation)) Warn about functions with non-`const` reference arguments that do *not* write to them.
-* Flag functions that take a `T&` and replace the `T` referred to, rather what the contents of that `T`
 
 ### <a name="Rf-T-return-out"></a> F.23: Use `T&` for an out-parameter that is expensive to move (only)
 
@@ -2464,6 +2493,9 @@ A return value is harder to miss and harder to misuse than a `T&` (an in-out par
 
 Hard to choose a cutover value for the size of the value returned.
 
+##### Note
+A struct of many (individually cheap-to-move) elements may be in aggregate expensive to move.
+
 ### <a name="Rf-pass-ref-ref"></a> F.24: Use a `TP&&` parameter when forwarding (only)
 
 ##### Reason
@@ -2486,7 +2518,7 @@ Flag a function that takes a `TP&&` parameter (where `TP` is a template type par
 ##### Reason
 
 Moving from an object leaves an object in its moved-from state behind.
-In general, moved-from objects are dangerous. The only guaranteed operation is destruction (more generally, member functions without preconditions).
+In general, moved-from objects are dangerous (similar to leaving a pointer unchanged after deleting its allocation). The only guaranteed operation is destruction (more generally, member functions without preconditions).
 The standard library additionally requires that a moved-from object can be assigned to.
 If you have performance justification to optimize for rvalues, overload on `&&` and then `move` from the parameter ([example of such overloading](#)).
 
@@ -2507,6 +2539,7 @@ If you have performance justification to optimize for rvalues, overload on `&&` 
 
 * Flag all `X&&` parameters (where `X` is not a template type parameter name) and code that uses them without `std::move`.
 * Flag access to moved-from objects.
+* Don't conditionally move from objects
 
 ### <a name="Rf-unique_ptr"></a> F.26: Use a `unique_ptr<T>` to transfer ownership where a pointer is needed
 
@@ -2559,6 +2592,8 @@ Using `std::shared_ptr` is the standard way to represent shared ownership. That 
 Prefer a `unique_ptr` over a `shared_ptr` if there is never more than one owner at a time.
 `shared_ptr` is for shared ownership.
 
+Note that pervasive use of `shared_ptr` has a cost (atomic operations on the `shared_ptr`'s reference count have a measurable aggregate cost).
+
 **Alternative**: Have a single object own the shared object (e.g. a scoped object) and destroy that (preferably implicitly) when all users have completed.
 
 ##### Enforcement
@@ -2584,7 +2619,7 @@ It's self-documenting. A `&` parameter could be either in/out or out-only.
 
 Flag non-`const` reference parameters that are not read before being written to and are a type that could be cheaply returned.
 
-### <a name="Rf-T-multi"></a> F.41: Prefer to return tuples to multiple out-parameters
+### <a name="Rf-T-multi"></a> F.41: Prefer to return tuples or structs to multiple out-parameters
 
 ##### Reason
 
@@ -2648,8 +2683,8 @@ Do not return a pointer to something that is not in the caller's scope.
     Node* find(Node* t, const string& s)  // find s in a binary tree of Nodes
     {
         if (t == nullptr || t->name == s) return t;
-        if (auto p = find(t->left, s)) return p;
-        if (auto p = find(t->right, s)) return p;
+        if ((auto p = find(t->left, s))) return p;
+        if ((auto p = find(t->right, s))) return p;
         return nullptr;
     }
 
@@ -2685,7 +2720,7 @@ This applies to references as well:
 A slightly different variant of the problem is placing pointers in a container that outlives the objects pointed to.
 
 * Compilers tend to catch return of reference to locals and could in many cases catch return of pointers to locals.
-* Static analysis can catch most (all?) common patterns of the use of pointers indicating positions (thus eliminating dangling pointers)
+* Static analysis can catch many common patterns of the use of pointers indicating positions (thus eliminating dangling pointers)
 
 ### <a name="Rf-dangle"></a> F.43: Never (directly or indirectly) return a pointer to a local object
 
@@ -2784,7 +2819,7 @@ It can be detected/prevented with similar techniques.
 
 Preventable through static analysis.
 
-### <a name="Rf-return-ref"></a> F.44: Return a `T&` when "returning no object" isn't an option
+### <a name="Rf-return-ref"></a> F.44: Return a `T&` when "returning no object" isn't needed
 
 ##### Reason
 
@@ -4019,7 +4054,7 @@ There is no "natural" default date (the big bang is too far back in time to be u
 `{0, 0, 0}` is not a valid date in most calendar systems, so choosing that would be introducing something like floating-point's NaN.
 However, most realistic `Date` classes have a "first date" (e.g. January 1, 1970 is popular), so making that the default is usually trivial.
 
-##### Example 
+##### Example
 
     class Date {
     public:
@@ -4034,7 +4069,7 @@ However, most realistic `Date` classes have a "first date" (e.g. January 1, 1970
     };
 
     vector<Date> vd1(1000);
-    
+
 ##### Note
 
 A class with members that all have default constructors implicitly gets a default constructor:
@@ -4043,9 +4078,9 @@ A class with members that all have default constructors implicitly gets a defaul
         string s;
         vector v;
     };
-    
+
     X x; // means X{{},{}}; that is the empty string and the empty vector
-    
+
 Beware that built-in types are not properly default constructed:
 
     struct X {
@@ -4060,7 +4095,7 @@ Beware that built-in types are not properly default constructed:
 	   cout << x.s << ' ' << x.i << '\n';
 	   ++x.i;
     }
-    
+
 Statically allocated objects of built-in types are by default initialized to `0`, but local built-in variables are not.
 Beware that your compiler may default initialize local built-in variables, whereas an optimized build will not.
 Thus, code like the example above may appear to work, but it relies on undefined behavior.
@@ -5515,7 +5550,7 @@ This leaves us with three alternatives:
 * *All protected*: [Avoid `protected` data](#Rh-protected).
 * *All private*: If you’re writing a type that maintains an invariant, then all the variables should be private – it should be encapsulated.
   This is the vast majority of classes.
-  
+
 ##### Note
 
 There are undoubtedly examples where a mixture of access levels for data is tempting.
@@ -6504,12 +6539,12 @@ Also, many ABIs (and essentially all interfaces to C code) use `T*`s, some of th
 ##### Note
 
 `owner<T>` has no default semantics beyond `T*`. It can be used without changing any code using it and without affecting ABIs.
-It is simply a (most valuable) indicator to programmers and analysis tools.
+It is simply a indicator to programmers and analysis tools.
 For example, if an `owner<T>` is a member of a class, that class better have a destructor that `delete`s it.
 
 ##### Example, bad
 
-Returning a (raw) pointer imposes a life-time management burden on the caller; that is, who deletes the pointed-to object?
+Returning a (raw) pointer imposes a life-time management uncertainty on the caller; that is, who deletes the pointed-to object?
 
     Gadget* make_gadget(int n)
     {
@@ -6572,7 +6607,7 @@ We want owners identified so that we can reliably and efficiently delete the obj
 
 See [the raw pointer rule](#Rr-ptr)
 
-### <a name="Rr-scoped"></a> R.5: Prefer scoped objects
+### <a name="Rr-scoped"></a> R.5: Don't heap-allocate unnecessarily
 
 ##### Reason
 
@@ -6884,7 +6919,7 @@ For convenience and consistency with `shared_ptr`.
 
 ##### Enforcement
 
-(Simple) Warn if a `Shared_ptr` is constructed from the result of `new` rather than `make_unique`.
+(Simple) Warn if a `unique_ptr` is constructed from the result of `new` rather than `make_unique`.
 
 ### <a name="Rr-weak_ptr"></a> R.24: Use `std::weak_ptr` to break cycles of `shared_ptr`s
 
@@ -6951,7 +6986,7 @@ A function that does not manipulate lifetime should take raw pointers or referen
 
 ##### Enforcement
 
-* (Simple) Warn if a function takes a parameter of a type that is a `Unique_ptr` or `Shared_ptr` and the function only calls any of: `operator*`, `operator->` or `get()`.
+* (Simple) Warn if a function takes a parameter of a type that is a `unique_ptr` or `shared_ptr` and the function only calls any of: `operator*`, `operator->` or `get()`.
   Suggest using a `T*` or `T&` instead.
 
 ### <a name="Rr-smart"></a> R.31: If you have non-`std` smart pointers, follow the basic pattern from `std`
@@ -6963,8 +6998,8 @@ You want the rules to work on all the smart pointers you use.
 
 Any type (including primary template or specialization) that overloads unary `*` and `->` is considered a smart pointer:
 
-* If it is copyable, it is recognized as a reference-counted `Shared_ptr`.
-* If it is not copyable, it is recognized as a unique `Unique_ptr`.
+* If it is copyable, it is recognized as a reference-counted `shared_ptr`.
+* If it is not copyable, it is recognized as a unique `unique_ptr`.
 
 ##### Example
 
@@ -8513,7 +8548,7 @@ Avoid errors. Readability. Not everyone has the operator table memorized.
 
     const unsigned int flag = 2;
     unsigned int a = flag;
-    
+
     if (a & flag != 0)  // bad: means a&(flag != 0)
 
 Note: We recommend that programmers know their precedence table for the arithmetic operations, the logical operations, but consider mixing bitwise logical operations with other operators in need of parentheses.
@@ -11995,7 +12030,7 @@ This slowdown can be significant compared to `printf`-style output.
 
     cout << "Hello, World!" << endl;    // two output operations and a flush
     cout << "hello, World!\n";          // one output operation and no flush
-    
+
 ##### Note
 
 For `cin`/`cout` (and equivalent) interaction, there is no reason to flush; that's done automatically.
@@ -13565,7 +13600,7 @@ These are key functions that must not fail because they are necessary for the tw
 Consider the following advice and requirements found in the C++ Standard:
 
 > If a destructor called during stack unwinding exits with an exception, terminate is called (15.5.1). So destructors should generally catch exceptions and not let them propagate out of the destructor. --[[C++03]](#C++03) §15.2(3)
-> 
+>
 > No destructor operation defined in the C++ Standard Library (including the destructor of any type that is used to instantiate a standard library template) will throw an exception. --[[C++03]](#C++03) §17.4.4.8(3)
 
 Deallocation functions, including specifically overloaded `operator delete` and `operator delete[]`, fall into the same category, because they too are used during cleanup in general, and during exception handling in particular, to back out of partial work that needs to be undone.
@@ -14113,4 +14148,3 @@ Alternatively, we will decide that no change is needed and delete the entry.
   \[Sutter04\]:        H. Sutter. Exceptional C++ Style (Addison-Wesley, 2004).
 * <a name="Taligent94"></a>
   \[Taligent94\]: Taligent's Guide to Designing Programs (Addison-Wesley, 1994).
-
