@@ -6284,27 +6284,35 @@ An enumeration shows the enumerators to be related and can be a named type
 
 ##### Reason
 
-To minimize surprises.
+To minimize surprises: traditional enums convert to int too readily.
 
 ##### Example
 
-    enum Webcolor { red = 0xFF0000, green = 0x00FF00, blue = 0x0000FF };
-    enum Productinfo { red=0, purple=1, blue=2 };
+    void PrintColor(int color);
 
-    int webby = blue;   // error, ambiguous: be specific
+    enum Webcolor { red = 0xFF0000, green = 0x00FF00, blue = 0x0000FF };
+    enum Productinfo { Red=0, Purple=1, Blue=2 };
+
     Webcolor webby = Webcolor::blue;
+
+    // Clearly at least one of these calls is buggy.
+    PrintColor(webby);
+    PrintColor(Productinfo::Blue);
 
 Instead use an `enum class`:
 
-    enum class Webcolor { red=0xFF0000, green=0x00FF00, blue=0x0000FF };
-    enum class Productinfo { red=0, purple=1, blue=2 };
+    void PrintColor(int color);
 
-    int webby = blue;   // error: blue undefined in this scope
+    enum class Webcolor { red=0xFF0000, green=0x00FF00, blue=0x0000FF };
+    enum class Productinfo { Red=0, Purple=1, Blue=2 };
+
     Webcolor webby = Webcolor::blue;
+    PrintColor(webby);  // Error: cannot convert Webcolor to int.
+    PrintColor(Productinfo::Red);  // Error: cannot convert Productinfo to int.
 
 ##### Enforcement
 
-???
+(Simple) Warn on any non-class enum definition.
 
 ### <a name="Renum-oper"></a> Enum.4: Define operations on enumerations for safe and simple use
 
