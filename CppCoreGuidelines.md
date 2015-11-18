@@ -1048,7 +1048,7 @@ You can use the simplest "singleton" (so simple that it is often not considered 
 
 This is one of the most effective solutions to problems related to initialization and destruction order.
 In a multi-threaded environment the initialization of the static object does not introduce a race condition
-(unless you carelessly access a shared object from within its constructor). At destruction, the object is
+(unless you carelessly access a shared object from within its constructor). At program exit, the object is
 not destructed, so it is safe even in the face of access from un-joined threads.
 
 If you, as many do, define a singleton as a class for which only one object is created, functions like `myX` are not singletons, and this useful technique is not an exception to the no-singleton rule.
