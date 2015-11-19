@@ -1,6 +1,6 @@
 # <a name="main"></a> C++ Core Guidelines
 
-November 3, 2015
+November 18, 2015
 
 Editors:
 
@@ -1797,7 +1797,7 @@ Argument passing rules:
 Value return rules:
 
 * [F.40: Prefer return values to out-parameters](#Rf-T-return)
-* [F.41: Prefer to return tuples to multiple out-parameters](#Rf-T-multi)
+* [F.41: Prefer to return tuples or structs instead of multiple out-parameters](#Rf-T-multi)
 * [F.42: Return a `T*` to indicate a position (only)](#Rf-return-ptr)
 * [F.43: Never (directly or indirectly) return a pointer to a local object](#Rf-dangle)
 * [F.44: Return a `T&` when "returning no object" isn't an option](#Rf-return-ref)
@@ -2625,7 +2625,7 @@ It's self-documenting. A `&` parameter could be either in/out or out-only.
 
 Flag non-`const` reference parameters that are not read before being written to and are a type that could be cheaply returned.
 
-### <a name="Rf-T-multi"></a> F.41: Prefer to return tuples or structs to multiple out-parameters
+### <a name="Rf-T-multi"></a> F.41: Prefer to return tuples or structs instead of multiple out-parameters
 
 ##### Reason
 
@@ -2660,6 +2660,11 @@ With C++11 we can write this, putting the results directly in existing local var
     Someothertype success;                                  // used these variables for some other purpose
 
     tie(iter, success) = myset.insert("Hello");         // normal return value
+    if (success) do_something_with(iter);
+
+With C++17 we may be able to write something like this, also declaring the variables:
+
+    auto { iter, success } = myset.insert("Hello");
     if (success) do_something_with(iter);
 
 **Exception**: For types like `string` and `vector` that carry additional capacity, it can sometimes be useful to treat it as in/out instead by using the "caller-allocated out" pattern, which is to pass an output-only object by reference to non-`const` so that when the callee writes to it the object can reuse any capacity or other resources that it already contains. This technique can dramatically reduce the number of allocations in a loop that repeatedly calls other functions to get string values, by using a single string object for the entire loop.
