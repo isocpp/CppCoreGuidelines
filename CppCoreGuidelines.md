@@ -6750,7 +6750,7 @@ If you don't, an exception or a return may lead to a leak.
     {
         FILE* f = fopen(name, "r");          // open the file
         vector<char> buf(1024);
-        auto _ = finally([] { fclose(f); })  // remember to close the file
+        auto _ = finally([f] { fclose(f); })  // remember to close the file
         // ...
     }
 
@@ -6760,7 +6760,7 @@ The allocation of `buf` may fail and leak the file handle.
 
     void f(const string& name)
     {
-        ifstream {name, "r"};			// open the file
+        ifstream f{name, "r"};			// open the file
         vector<char> buf(1024);
         // ...
     }
