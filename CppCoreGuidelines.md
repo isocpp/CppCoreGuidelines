@@ -9120,7 +9120,7 @@ Simple code can be very fast. Optimizers sometimes do marvels with simple code
 
     // clear expression of intent, fast execution
     
-    vector v(100000);
+    vector<char> v(100000);
     
     for(auto& c : v)
         c = ~c;
@@ -9129,7 +9129,7 @@ Simple code can be very fast. Optimizers sometimes do marvels with simple code
 
     // intended to be faster, but is actually slower
     
-    vector v(100000);
+    vector<char> v(100000);
     
     for(size_t i=0; i<v.size(); i+=sizeof(uint64_t))
     {
