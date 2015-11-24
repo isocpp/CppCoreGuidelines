@@ -8114,7 +8114,7 @@ Hard. At best a heuristic. Look for an uninitialized variable followed by a loop
 
 Macros are a major source of bugs.
 Macros don't obey the usual scope and type rules.
-Macros ensure that the human reader see something different from whet the compiler sees.
+Macros ensure that the human reader see something different from what the compiler sees.
 Macros complicates tool building.
 
 ##### Example, bad
@@ -8245,7 +8245,7 @@ Readability. Error prevention. Efficiency.
         cout << x << '\n';
 
     for (int i = 1; i < v.size(); ++i) // touches two elements: can't be a range-for
-        cout << v[i] + v[-1] << '\n';
+        cout << v[i] + v[i-1] << '\n';
 
     for (int i = 1; i < v.size(); ++i) // possible side-effect: can't be a range-for
         cout << f(&v[i]) << '\n';
