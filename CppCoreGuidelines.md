@@ -1596,8 +1596,8 @@ Complex initialization can lead to undefined order of execution.
 
     const X x = g(y);   // read y; write x
 
-Since `x` and `y` are in different translation units the order of calls to `f()` and `g()` are undefined;
-once will access and uninitialized `const`.
+Since `x` and `y` are in different translation units the order of calls to `f()` and `g()` is undefined;
+one will access an uninitialized `const`.
 This particular example shows that the order-of-initialization problem for global (namespace scope) objects is not limited to global *variables*.
 
 ##### Note
