@@ -328,7 +328,7 @@ The rules in this section are very general.
 Philosophy rules summary:
 
 * [P.1: Express ideas directly in code](#Rp-direct)
-* [P.2: Write in ISO Standard C++](#Rp-C++)
+* [P.2: Write in ISO Standard C++](#Rp-Cplusplus)
 * [P.3: Express intent](#Rp-what)
 * [P.4: Ideally, a program should be statically type safe](#Rp-typesafe)
 * [P.5: Prefer compile-time checking to run-time checking](#Rp-compile-time)
@@ -419,7 +419,7 @@ Very hard in general.
 * flag uses of casts (casts neuter the type system)
 * detect code that mimics the standard library (hard)
 
-### <a name="Rp-C++"></a> P.2: Write in ISO Standard C++
+### <a name="Rp-Cplusplus"></a> P.2: Write in ISO Standard C++
 
 ##### Reason
 
@@ -3311,8 +3311,8 @@ Copy and move rules:
 
 Other default operations rules:
 
-* [C.80: Use `=default` if you have to be explicit about using the default semantics](#Rc-=default)
-* [C.81: Use `=delete` when you want to disable default behavior (without wanting an alternative)](#Rc-=delete)
+* [C.80: Use `=default` if you have to be explicit about using the default semantics](#Rc-default)
+* [C.81: Use `=delete` when you want to disable default behavior (without wanting an alternative)](#Rc-delete)
 * [C.82: Don't call virtual functions in constructors and destructors](#Rc-ctor-virtual)
 * [C.83: For value-like types, consider providing a `noexcept` swap function](#Rc-swap)
 * [C.84: A `swap` may not fail](#Rc-swap-fail)
@@ -4871,7 +4871,7 @@ A class with any virtual function should not have a copy constructor or copy ass
 
 ???
 
-### <a name="Rc-=default"></a> C.80: Use `=default` if you have to be explicit about using the default semantics
+### <a name="Rc-default"></a> C.80: Use `=default` if you have to be explicit about using the default semantics
 
 ##### Reason
 
@@ -4913,7 +4913,7 @@ Writing out the bodies of the copy and move operations is verbose, tedious, and 
 
 (Moderate) The body of a special operation should not have the same accessibility and semantics as the compiler-generated version, because that would be redundant
 
-### <a name="Rc-=delete"></a> C.81: Use `=delete` when you want to disable default behavior (without wanting an alternative)
+### <a name="Rc-delete"></a> C.81: Use `=delete` when you want to disable default behavior (without wanting an alternative)
 
 ##### Reason
 
@@ -7215,7 +7215,7 @@ Declaration rules:
 * [ES.6: Declare names in for-statement initializers and conditions to limit scope](#Res-cond)
 * [ES.7: Keep common and local names short, and keep uncommon and nonlocal names longer](#Res-name-length)
 * [ES.8: Avoid similar-looking names](#Res-name-similar)
-* [ES.9: Avoid `ALL_CAPS` names](#Res-!CAPS)
+* [ES.9: Avoid `ALL_CAPS` names](#Res-not-CAPS)
 * [ES.10: Declare one name (only) per declaration](#Res-name-one)
 * [ES.11: Use `auto` to avoid redundant repetition of type names](#Res-auto)
 * [ES.20: Always initialize an object](#Res-always)
@@ -7229,7 +7229,7 @@ Declaration rules:
 * [ES.28: Use lambdas for complex initialization, especially of `const` variables](#Res-lambda-init)
 * [ES.30: Don't use macros for program text manipulation](#Res-macros)
 * [ES.31: Don't use macros for constants or "functions"](#Res-macros2)
-* [ES.32: Use `ALL_CAPS` for all macro names](#Res-CAPS!)
+* [ES.32: Use `ALL_CAPS` for all macro names](#Res-ALL_CAPS)
 * [ES.40: Don't define a (C-style) variadic function](#Res-ellipses)
 
 Expression rules:
@@ -7518,7 +7518,7 @@ Such names slow down comprehension and increase the likelihood of error.
 
 Check names against a list of known confusing letter and digit combinations.
 
-### <a name="Res-!CAPS"></a> ES.9: Avoid `ALL_CAPS` names
+### <a name="Res-not-CAPS"></a> ES.9: Avoid `ALL_CAPS` names
 
 ##### Reason
 
@@ -8149,7 +8149,7 @@ Even if we hadn't left a well-known bug in `SQUARE` there are much better behave
 
 Scream when you see a macro that isn't just used for source control (e.g., `#ifdef`)
 
-### <a name="Res-CAPS!"></a> ES.32: Use `ALL_CAPS` for all macro names
+### <a name="Res-ALL_CAPS"></a> ES.32: Use `ALL_CAPS` for all macro names
 
 ##### Reason
 
@@ -10412,7 +10412,7 @@ The shorter versions better match the way we speak. Note that many templates don
 * Not feasible in the short term when people convert from the `<typename T>` and `<class T`> notation.
 * Later, flag declarations that first introduces a typename and then constrains it with a simple, single-type-argument concept.
 
-## <a name="SS=concept-def"></a> T.con-def: Concept definition rules
+## <a name="SS-concept-def"></a> T.con-def: Concept definition rules
 
 ???
 
@@ -10881,7 +10881,7 @@ This rule should not be necessary; the committee cannot agree on how to fix ADL,
 
 ??? unfortunately this will get many false positives; the standard library violates this widely, by putting many unconstrained templates and types into the single namespace `std`
 
-## <a name="SS=temp-def"></a> TCP.def: Template definitions
+## <a name="SS-temp-def"></a> TCP.def: Template definitions
 
 ???
 
@@ -12052,7 +12052,7 @@ It is more likely to be stable, well-maintained, and widely available than your 
 
 ### SL.???: When reading, always consider ill-formed input; *expr.low*.
 
-### <a name="Rio-endl"> SL.50: Avoid `endl`
+### <a name="Rio-endl"></a>SL.50: Avoid `endl`
 
 ### Reason
 
@@ -12145,7 +12145,7 @@ Reference sections:
 
 * [RF.rules: Coding rules](#SS-rules)
 * [RF.books: Books with coding guidelines](#SS-books)
-* [RF.C++: C++ Programming (C++11/C++14)](#SS-C++)
+* [RF.C++: C++ Programming (C++11/C++14)](#SS-Cplusplus)
 * [RF.web: Websites](#SS-web)
 * [RS.video: Videos about "modern C++"](#SS-vid)
 * [RF.man: Manuals](#SS-man)
@@ -12206,7 +12206,7 @@ Reference sections:
   Mostly low-level naming and layout rules.
   Primarily a teaching tool.
 
-## <a name="SS-C++"></a> RF.C++: C++ Programming (C++11/C++14)
+## <a name="SS-Cplusplus"></a> RF.C++: C++ Programming (C++11/C++14)
 
 * TC++PL4
 * Tour++
@@ -13444,7 +13444,7 @@ If the class definition and the constructor body are in separate files, the long
 
 [[Cline99]](#Cline99) §22.03-11, [[Dewhurst03]](Dewhurst03) §52-53, [[Koenig97]](#Koenig97) §4, [[Lakos96]](#Lakos96) §10.3.5, [[Meyers97]](#Meyers97) §13, [[Murray93]](#Murray93) §2.1.3, [[Sutter00]](#Sutter00) §47
 
-### <a name="???"></a> Use of `=`, `{}`, and `()` as initializers
+### <a name="TBD"></a> Use of `=`, `{}`, and `()` as initializers
 
 ???
 
@@ -14159,9 +14159,9 @@ Alternatively, we will decide that no change is needed and delete the entry.
 
 * <a name="Alexandrescu01"></a>
   \[Alexandrescu01\]:  A. Alexandrescu. Modern C++ Design (Addison-Wesley, 2001).
-* <a name="C++03"></a>
+* <a name="Cplusplus03"></a>
   \[C++03\]:           ISO/IEC 14882:2003(E), Programming LanguagesC++ (updated ISO and ANSI C++ Standard including the contents of (C++98) plus errata corrections).
-* <a name="C++CS"></a>
+* <a name="CplusplusCS"></a>
   \[C++CS\]:
 * <a name="Cargill92"></a>
   \[Cargill92\]:       T. Cargill. C++ Programming Style (Addison-Wesley, 1992).
