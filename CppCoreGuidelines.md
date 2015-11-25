@@ -8247,10 +8247,10 @@ Readability. Error prevention. Efficiency.
     for (int i = 1; i < v.size(); ++i) // touches two elements: can't be a range-for
         cout << v[i] + v[i-1] << '\n';
 
-    for (int i = 1; i < v.size(); ++i) // possible side-effect: can't be a range-for
+    for (int i = 0; i < v.size(); ++i) // possible side-effect: can't be a range-for
         cout << f(&v[i]) << '\n';
 
-    for (int i = 1; i < v.size(); ++i) { // body messes with loop variable: can't be a range-for
+    for (int i = 0; i < v.size(); ++i) { // body messes with loop variable: can't be a range-for
         if (i % 2)
             ++i;	// skip even elements
         else
