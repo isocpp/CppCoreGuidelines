@@ -2583,7 +2583,7 @@ Using `std::shared_ptr` is the standard way to represent shared ownership. That 
 
 ##### Example
 
-    shared_ptr<Image> im { read_image(somewhere) };
+    shared_ptr<const Image> im { read_image(somewhere) };
 
     std::thread t0 {shade, args0, top_left, im};
     std::thread t1 {shade, args1, top_right, im};
