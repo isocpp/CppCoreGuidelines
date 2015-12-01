@@ -1785,7 +1785,6 @@ Argument passing rules:
 * [F.17: Use a `not_null<T>` to indicate "null" is not a valid value](#Rf-nullptr)
 * [F.18: Use a `span<T>` or a `span_p<T>` to designate a half-open sequence](#Rf-range)
 * [F.19: Use a `zstring` or a `not_null<zstring>` to designate a C-style string](#Rf-string)
-* [F.25: Use a `T&&` parameter together with `move` for rare optimization opportunities](#Rf-pass-ref-move)
 * [F.26: Use a `unique_ptr<T>` to transfer ownership where a pointer is needed](#Rf-unique_ptr)
 * [F.27: Use a `shared_ptr<T>` to share ownership](#Rf-shared_ptr)
 
@@ -2274,8 +2273,8 @@ In particular, an object passed by value does not require an extra reference to 
 For advanced uses (only), where you really need to optimize for rvalues passed to "input-only" parameters:
 
 * If the function is going to unconditionally move from the argument, take it by `&&`.
-* If the function is going to keep a copy of the argument, in addition to passing by `const&` add an overload that passes the parameter by `&&` and in the body `std::move`s it to its destination. (See [F.25](#Rf-pass-ref-move).)
-* In special cases, such as multiple "input + copy" parameters, consider using perfect forwarding. (See [F.24](#Rf-pass-ref-ref).)
+* If the function is going to keep a copy of the argument, in addition to passing by `const&` add an overload that passes the parameter by `&&` and in the body `std::move`s it to its destination.
+* In special cases, such as multiple "input + copy" parameters, consider using perfect forwarding.
 
 ##### Example
 
@@ -2331,6 +2330,9 @@ If you need the notion of an optional value, use a pointer, `std::optional`, or 
 * (Simple) ((Foundation)) Warn when a `const` parameter being passed by reference has a size less than `3 * sizeof(int)`. Suggest passing by value instead.
 * (Moderate) ((Foundation)) Warn about functions with non-`const` reference arguments that do *not* write to them.
 * Flag a function that takes a `TP&&` parameter (where `TP` is a template type parameter name) and uses it without `std::forward`.
+* Flag all `X&&` parameters (where `X` is not a template type parameter name) where the function body uses them without `std::move`.
+* Flag access to moved-from objects.
+* Don't conditionally move from objects
 
 
 **See also**: [implicit arguments](#Ri-explicit).
@@ -2468,34 +2470,6 @@ When I call `length(s)` should I test for `s == nullptr` first? Should the imple
 
 **See also**: [Support library](#S-gsl).
 
-
-### <a name="Rf-pass-ref-move"></a> F.25: Use a `T&&` parameter together with `move` for rare optimization opportunities
-
-##### Reason
-
-Moving from an object leaves an object in its moved-from state behind.
-In general, moved-from objects are dangerous (similar to leaving a pointer unchanged after deleting its allocation). The only guaranteed operation is destruction (more generally, member functions without preconditions).
-The standard library additionally requires that a moved-from object can be assigned to.
-If you have performance justification to optimize for rvalues, overload on `&&` and then `move` from the parameter ([example of such overloading](#)).
-
-##### Example
-
-    void somefct(string&&);
-
-    void user()
-    {
-        string s = "this is going to be fun!";
-        // ...
-        somefct(std::move(s));  // we don't need s any more, give it to somefct()
-        //
-        cout << s << '\n';      // Oops! What happens here?
-    }
-
-##### Enforcement
-
-* Flag all `X&&` parameters (where `X` is not a template type parameter name) and code that uses them without `std::move`.
-* Flag access to moved-from objects.
-* Don't conditionally move from objects
 
 ### <a name="Rf-unique_ptr"></a> F.26: Use a `unique_ptr<T>` to transfer ownership where a pointer is needed
 
