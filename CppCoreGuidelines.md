@@ -1778,9 +1778,18 @@ Function definition rules:
 * [F.7: For general use, take `T*` arguments rather than smart pointers](#Rf-smart)
 * [F.8: Prefer pure functions](#Rf-pure)
 
-Parameter passing rules:
+Parameter passing expression rules:
 
 * [F.15: Prefer simple and conventional ways of passing information](#Rf-conventional)
+* [F.16: For "in" parameters, pass cheaply copied types by value and others by reference to `const`](#Rf-in)
+* [F.17: For "in-out" parameters, pass by reference to non-`const`](#Rf-inout)
+* [F.18: For "consume" parameters, pass by `X&&` and `std::move` the parameter](#Rf-consume)
+* [F.19: For "forward" parameters, pass by `TP&&` and only `std::forward` the parameter](#Rf-forward)
+* [F.20: For "out" output values, prefer return values to output parameters](#Rf-out)
+* [F.21: To return multiple "out" values, prefer returning a tuple or struct](#Rf-out-multi)
+
+Parameter passing semantic rules:
+
 * [F.22: Use `T*` or `owner<T*>` or a smart pointer to designate a single object](#Rf-ptr)
 * [F.23: Use a `not_null<T>` to indicate "null" is not a valid value](#Rf-nullptr)
 * [F.24: Use a `span<T>` or a `span_p<T>` to designate a half-open sequence](#Rf-range)
@@ -1788,9 +1797,8 @@ Parameter passing rules:
 * [F.26: Use a `unique_ptr<T>` to transfer ownership where a pointer is needed](#Rf-unique_ptr)
 * [F.27: Use a `shared_ptr<T>` to share ownership](#Rf-shared_ptr)
 
-Value return rules:
+Value return semantic rules:
 
-* [F.41: Prefer to return tuples or structs instead of multiple out-parameters](#Rf-T-multi)
 * [F.42: Return a `T*` to indicate a position (only)](#Rf-return-ptr)
 * [F.43: Never (directly or indirectly) return a pointer to a local object](#Rf-dangle)
 * [F.44: Return a `T&` when "returning no object" isn't an option](#Rf-return-ref)
@@ -2182,6 +2190,7 @@ Not possible.
 
 There are a variety of ways to pass parameters to a function and to return values.
 
+
 ### <a name="Rf-conventional"></a> Rule F.15: Prefer simple and conventional ways of passing information
 
 ##### Reason
@@ -2191,71 +2200,18 @@ If you really feel the need for an optimization beyond the common techniques, me
 
 ![Normal parameter passing table](./param-passing-normal.png "Normal parameter passing")
 
-**For an "output-only" value:** Prefer return values to output parameters.
-This includes large objects like standard containers that use implicit move operations for performance and to avoid explicit memory management. A return value is self-documenting, whereas a `&` could be either in-out or out-only and is liable to be misused.
-If you have multiple values to return, [use a tuple](#Rf-T-multi) or similar multi-member type.
-
-##### Example
-
-    vector<const int*> find_all(const vector<int>&, int x);  // OK: return pointers to elements with the value x
-
-    void find_all(const vector<int>&, vector<const int*>& out, int x);  // Bad: place pointers to elements with value x in out
-
-##### Note
-
-A struct of many (individually cheap-to-move) elements may be in aggregate expensive to move.
-
-##### Exceptions
-
-* For non-value types, such as types in an inheritance hierarchy, return the object by `unique_ptr` or `shared_ptr`.
-* If a type is expensive to move (e.g., `array<BigPOD>`), consider allocating it on the free store and return a handle (e.g., `unique_ptr`), or passing it in a non-`const` reference to a target object to fill (to be used as an out-parameter).
-* In the special case of allowing a caller to reuse an object that carries capacity (e.g., `std::string`, `std::vector`) across multiple calls to the function in an inner loop, treat it as an in/out parameter instead and pass by `&`. This is one use of the more generally named "caller-allocated out" pattern.
-
-##### Example
-
-    struct Package {      // exceptional case: expensive-to-move object
-        char header[16];
-        char load[2024 - 16];
-    };
-
-    Package fill();       // Bad: large return value
-    void fill(Package&);  // OK
-
-    int val();            // OK
-    void val(int&);       // Bad: Is val reading its argument
+![Advanced parameter passing table](./param-passing-advanced.png "Advanced parameter passing")
 
 
-**For an "in-out" parameter:** Pass by non-`const` reference. This makes it clear to callers that the object is assumed to be modified.
 
-##### Example
+### <a name="Rf-in"></a> Rule F.16: For "in" parameters, pass cheaply copied types by value and others by reference to `const`
 
-    void update(Record& r);  // assume that update writes to r
+##### Reason
 
-##### Note
+Both let the caller know that a function will not modify the argument, and both allow initialization by rvalues.
 
-A `T&` argument can pass information into a function as well as well as out of it.
-Thus `T&` could be an in-out-parameter. That can in itself be a problem and a source of errors:
-
-    void f(string& s)
-    {
-        s = "New York";  // non-obvious error
-    }
-
-    void g()
-    {
-        string buffer = ".................................";
-        f(buffer);
-        // ...
-    }
-
-Here, the writer of `g()` is supplying a buffer for `f()` to fill, but `f()` simply replaces it (at a somewhat higher cost than a simple copy of the characters).
-If the writer of `g()` makes an assumption about the size of `buffer` a bad logic error can happen.
-
-
-**For an "input-only" value:** If the object is cheap to copy, pass by value; nothing beats the simplicity and safety of copying, and for small objects (up to two or three words) it is also faster than passing by reference.
-Otherwise, pass by `const&` which is always cheap for larger objects. Both let the caller know that a function will not modify the argument, and both allow initialization by rvalues.
 What is "cheap to copy" depends on the machine architecture, but two or three words (doubles, pointers, references) are usually best passed by value.
-In particular, an object passed by value does not require an extra reference to access from the function.
+When copying is cheap, nothing beats the simplicity and safety of copying, and for small objects (up to two or three words) it is also faster than passing by reference because it does not require an extra reference to access from the function.
 
 ##### Example
 
@@ -2266,8 +2222,6 @@ In particular, an object passed by value does not require an extra reference to 
     void fct(int x);          // OK: Unbeatable
 
     void fct2(const int& x);  // bad: overhead on access in fct2()
-
-![Advanced parameter passing table](./param-passing-advanced.png "Advanced parameter passing")
 
 For advanced uses (only), where you really need to optimize for rvalues passed to "input-only" parameters:
 
@@ -2311,8 +2265,63 @@ A reference may be assumed to refer to a valid object (language rule).
 There is no (legitimate) "null reference."
 If you need the notion of an optional value, use a pointer, `std::optional`, or a special value used to denote "no value."
 
+##### Enforcement
+* (Simple) ((Foundation)) Warn when a parameter being passed by value has a size greater than `4 * sizeof(int)`.
+  Suggest using a `const` reference instead.
+* (Simple) ((Foundation)) Warn when a `const` parameter being passed by reference has a size less than `3 * sizeof(int)`. Suggest passing by value instead.
 
-**For an "forwarded" value:** If the object is to be passed onward to other code and not directly used by this function, we want to make this function agnostic to the argument `const`-ness and rvalue-ness. In that case, and only that case, make the parameter `TP&&` where `TP` is a template type parameter -- it both *ignores* and *preserves* `const`-ness and rvalue-ness. Therefore any code that uses a `T&&` is implicitly declaring that it itself doesn't care about the variable's `const`'-ness and rvalue-ness (because it is ignored), but that intends to pass the value onward to other code that does care about `const`-ness and rvalue-ness (because it is preserved). When used as a parameter `TP&&` is safe because any temporary objects passed from the caller will live for the duration of the function call. A parameter of type `TP&&` should essentially always be passed onward via `std::forward` in the body of the function.
+
+### <a name="Rf-inout"></a> Rule F.17: For "in-out" parameters, pass by reference to non-`const`
+
+##### Reason
+
+This makes it clear to callers that the object is assumed to be modified.
+
+##### Example
+
+    void update(Record& r);  // assume that update writes to r
+
+##### Note
+
+A `T&` argument can pass information into a function as well as well as out of it.
+Thus `T&` could be an in-out-parameter. That can in itself be a problem and a source of errors:
+
+    void f(string& s)
+    {
+        s = "New York";  // non-obvious error
+    }
+
+    void g()
+    {
+        string buffer = ".................................";
+        f(buffer);
+        // ...
+    }
+
+Here, the writer of `g()` is supplying a buffer for `f()` to fill, but `f()` simply replaces it (at a somewhat higher cost than a simple copy of the characters).
+If the writer of `g()` makes an assumption about the size of `buffer` a bad logic error can happen.
+
+##### Enforcement
+* (Moderate) ((Foundation)) Warn about functions with non-`const` reference arguments that do *not* write to them.
+
+
+### <a name="Rf-consume"></a> Rule F.18: For "consume" parameters, pass by `X&&` and `std::move` the parameter
+
+##### Reason
+
+##### Enforcement
+* Flag all `X&&` parameters (where `X` is not a template type parameter name) where the function body uses them without `std::move`.
+* Flag access to moved-from objects.
+* Don't conditionally move from objects
+
+
+### <a name="Rf-forward"></a> Rule F.19: For "forward" parameters, pass by `TP&&` and only `std::forward` the parameter
+
+##### Reason
+
+If the object is to be passed onward to other code and not directly used by this function, we want to make this function agnostic to the argument `const`-ness and rvalue-ness.
+
+In that case, and only that case, make the parameter `TP&&` where `TP` is a template type parameter -- it both *ignores* and *preserves* `const`-ness and rvalue-ness. Therefore any code that uses a `T&&` is implicitly declaring that it itself doesn't care about the variable's `const`'-ness and rvalue-ness (because it is ignored), but that intends to pass the value onward to other code that does care about `const`-ness and rvalue-ness (because it is preserved). When used as a parameter `TP&&` is safe because any temporary objects passed from the caller will live for the duration of the function call. A parameter of type `TP&&` should essentially always be passed onward via `std::forward` in the body of the function.
 
 ##### Example
 
@@ -2323,24 +2332,105 @@ If you need the notion of an optional value, use a pointer, `std::optional`, or 
  
 
 ##### Enforcement
-
-* (Simple) ((Foundation)) Warn when a parameter being passed by value has a size greater than `4 * sizeof(int)`.
-  Suggest using a `const` reference instead.
-* (Simple) ((Foundation)) Warn when a `const` parameter being passed by reference has a size less than `3 * sizeof(int)`. Suggest passing by value instead.
-* (Moderate) ((Foundation)) Warn about functions with non-`const` reference arguments that do *not* write to them.
 * Flag a function that takes a `TP&&` parameter (where `TP` is a template type parameter name) and uses it without `std::forward`.
-* Flag all `X&&` parameters (where `X` is not a template type parameter name) where the function body uses them without `std::move`.
-* Flag access to moved-from objects.
-* Don't conditionally move from objects
+
+
+### <a name="Rf-out"></a> Rule F.20: For "out" output values, prefer return values to output parameters
+
+##### Reason
+
+A return value is self-documenting, whereas a `&` could be either in-out or out-only and is liable to be misused.
+
+This includes large objects like standard containers that use implicit move operations for performance and to avoid explicit memory management. 
+
+If you have multiple values to return, [use a tuple](#Rf-out-multi) or similar multi-member type.
+
+##### Example
+
+    vector<const int*> find_all(const vector<int>&, int x);  // OK: return pointers to elements with the value x
+
+    void find_all(const vector<int>&, vector<const int*>& out, int x);  // Bad: place pointers to elements with value x in out
+
+##### Note
+
+A struct of many (individually cheap-to-move) elements may be in aggregate expensive to move.
+
+##### Exceptions
+
+* For non-value types, such as types in an inheritance hierarchy, return the object by `unique_ptr` or `shared_ptr`.
+* If a type is expensive to move (e.g., `array<BigPOD>`), consider allocating it on the free store and return a handle (e.g., `unique_ptr`), or passing it in a non-`const` reference to a target object to fill (to be used as an out-parameter).
+* In the special case of allowing a caller to reuse an object that carries capacity (e.g., `std::string`, `std::vector`) across multiple calls to the function in an inner loop, treat it as an in/out parameter instead and pass by `&`. This is one use of the more generally named "caller-allocated out" pattern.
+
+##### Example
+
+    struct Package {      // exceptional case: expensive-to-move object
+        char header[16];
+        char load[2024 - 16];
+    };
+
+    Package fill();       // Bad: large return value
+    void fill(Package&);  // OK
+
+    int val();            // OK
+    void val(int&);       // Bad: Is val reading its argument
+
+##### Enforcement
 * Flag non-`const` reference parameters that are not read before being written to and are a type that could be cheaply returned; they should be "out" return values.
 
 
-**See also**: [implicit arguments](#Ri-explicit).
+### <a name="Rf-out-multi"></a> Rule F.21: To return multiple "out" values, prefer returning a tuple or struct
+
+##### Reason
+
+A return value is self-documenting as an "output-only" value.
+And yes, C++ does have multiple return values, by convention of using a `tuple`, with the extra convenience of `tie` at the call site.
+
+##### Example
+
+    int f(const string& input, /*output only*/ string& output_data) // BAD: output-only parameter documented in a comment
+    {
+        // ...
+        output_data = something();
+        return status;
+    }
+
+    tuple<int, string> f(const string& input) // GOOD: self-documenting
+    {
+        // ...
+        return make_tuple(something(), status);
+    }
+
+In fact, C++98's standard library already used this convenient feature, because a `pair` is like a two-element `tuple`.
+For example, given a `set<string> myset`, consider:
+
+    // C++98
+    result = myset.insert("Hello");
+    if (result.second) do_something_with(result.first);    // workaround
+
+With C++11 we can write this, putting the results directly in existing local variables:
+
+    Sometype iter;                                          // default initialize if we haven't already
+    Someothertype success;                                  // used these variables for some other purpose
+
+    tie(iter, success) = myset.insert("Hello");         // normal return value
+    if (success) do_something_with(iter);
+
+With C++17 we may be able to write something like this, also declaring the variables:
+
+    auto { iter, success } = myset.insert("Hello");
+    if (success) do_something_with(iter);
+
+**Exception**: For types like `string` and `vector` that carry additional capacity, it can sometimes be useful to treat it as in/out instead by using the "caller-allocated out" pattern, which is to pass an output-only object by reference to non-`const` so that when the callee writes to it the object can reuse any capacity or other resources that it already contains. This technique can dramatically reduce the number of allocations in a loop that repeatedly calls other functions to get string values, by using a single string object for the entire loop.
+
+##### Note
+
+In some cases it may be useful to return a specific, user-defined `Value_or_error` type along the lines of `variant<T, error_code>`, rather than using the generic `tuple`.
 
 ##### Enforcement
 
-This is a philosophical guideline that is infeasible to check directly and completely.
-However, many of the detailed rules (F.22-F.45) can be checked, such as passing a `const int&`, returning an `array<BigPOD>` by value, and returning a pointer to free store alloced by the function.
+* Output parameters should be replaced by return values.
+  An output parameter is one that the function writes to, invokes a non-`const` member function, or passes on as a non-`const`.
+
 
 ### <a name="Rf-ptr"></a> F.22: Use `T*` or `owner<T*>` to designate a single object
 
@@ -2530,59 +2620,6 @@ Note that pervasive use of `shared_ptr` has a cost (atomic operations on the `sh
 
 (Not enforceable) This is a too complex pattern to reliably detect.
 
-
-### <a name="Rf-T-multi"></a> F.41: Prefer to return tuples or structs instead of multiple out-parameters
-
-##### Reason
-
-A return value is self-documenting as an "output-only" value.
-And yes, C++ does have multiple return values, by convention of using a `tuple`, with the extra convenience of `tie` at the call site.
-
-##### Example
-
-    int f(const string& input, /*output only*/ string& output_data) // BAD: output-only parameter documented in a comment
-    {
-        // ...
-        output_data = something();
-        return status;
-    }
-
-    tuple<int, string> f(const string& input) // GOOD: self-documenting
-    {
-        // ...
-        return make_tuple(something(), status);
-    }
-
-In fact, C++98's standard library already used this convenient feature, because a `pair` is like a two-element `tuple`.
-For example, given a `set<string> myset`, consider:
-
-    // C++98
-    result = myset.insert("Hello");
-    if (result.second) do_something_with(result.first);    // workaround
-
-With C++11 we can write this, putting the results directly in existing local variables:
-
-    Sometype iter;                                          // default initialize if we haven't already
-    Someothertype success;                                  // used these variables for some other purpose
-
-    tie(iter, success) = myset.insert("Hello");         // normal return value
-    if (success) do_something_with(iter);
-
-With C++17 we may be able to write something like this, also declaring the variables:
-
-    auto { iter, success } = myset.insert("Hello");
-    if (success) do_something_with(iter);
-
-**Exception**: For types like `string` and `vector` that carry additional capacity, it can sometimes be useful to treat it as in/out instead by using the "caller-allocated out" pattern, which is to pass an output-only object by reference to non-`const` so that when the callee writes to it the object can reuse any capacity or other resources that it already contains. This technique can dramatically reduce the number of allocations in a loop that repeatedly calls other functions to get string values, by using a single string object for the entire loop.
-
-##### Note
-
-In some cases it may be useful to return a specific, user-defined `Value_or_error` type along the lines of `variant<T, error_code>`, rather than using the generic `tuple`.
-
-##### Enforcement
-
-* Output parameters should be replaced by return values.
-  An output parameter is one that the function writes to, invokes a non-`const` member function, or passes on as a non-`const`.
 
 ### <a name="Rf-return-ptr"></a> F.42: Return a `T*` to indicate a position (only)
 
