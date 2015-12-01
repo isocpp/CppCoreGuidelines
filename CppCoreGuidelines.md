@@ -1785,7 +1785,6 @@ Argument passing rules:
 * [F.17: Use a `not_null<T>` to indicate "null" is not a valid value](#Rf-nullptr)
 * [F.18: Use a `span<T>` or a `span_p<T>` to designate a half-open sequence](#Rf-range)
 * [F.19: Use a `zstring` or a `not_null<zstring>` to designate a C-style string](#Rf-string)
-* [F.23: Use `T&` for an out-parameter that is expensive to move (only)](#Rf-T-return-out)
 * [F.24: Use a `TP&&` parameter when forwarding (only)](#Rf-pass-ref-ref)
 * [F.25: Use a `T&&` parameter together with `move` for rare optimization opportunities](#Rf-pass-ref-move)
 * [F.26: Use a `unique_ptr<T>` to transfer ownership where a pointer is needed](#Rf-unique_ptr)
@@ -2196,22 +2195,38 @@ If you really feel the need for an optimization beyond the common techniques, me
 ![Normal parameter passing table](./param-passing-normal.png "Normal parameter passing")
 
 **For an "output-only" value:** Prefer return values to output parameters.
-This includes large objects like standard containers that use implicit move operations for performance and to avoid explicit memory management.
+This includes large objects like standard containers that use implicit move operations for performance and to avoid explicit memory management. A return value is harder to miss and harder to misuse than a `T&` (an in-out parameter).
 If you have multiple values to return, [use a tuple](#Rf-T-multi) or similar multi-member type.
 
 ##### Example
 
-    vector<const int*> find_all(const vector<int>&, int x);  // return pointers to elements with the value x
+    vector<const int*> find_all(const vector<int>&, int x);  // OK: return pointers to elements with the value x
 
-##### Example, bad
+    void find_all(const vector<int>&, vector<const int*>& out, int x);  // Bad: place pointers to elements with value x in out
 
-    void find_all(const vector<int>&, vector<const int*>& out, int x);  // place pointers to elements with value x in out
+##### Note
+
+A struct of many (individually cheap-to-move) elements may be in aggregate expensive to move.
 
 ##### Exceptions
 
 * For non-value types, such as types in an inheritance hierarchy, return the object by `unique_ptr` or `shared_ptr`.
 * If a type is expensive to move (e.g., `array<BigPOD>`), consider allocating it on the free store and return a handle (e.g., `unique_ptr`), or passing it in a non-`const` reference to a target object to fill (to be used as an out-parameter).
 * In the special case of allowing a caller to reuse an object that carries capacity (e.g., `std::string`, `std::vector`) across multiple calls to the function in an inner loop, treat it as an in/out parameter instead and pass by `&`. This is one use of the more generally named "caller-allocated out" pattern.
+
+##### Example
+
+    struct Package {      // exceptional case: expensive-to-move object
+        char header[16];
+        char load[2024 - 16];
+    };
+
+    Package fill();       // Bad: large return value
+    void fill(Package&);  // OK
+
+    int val();            // OK
+    void val(int&);       // Bad: Is val reading its argument
+
 
 **For an "in-out" parameter:** Pass by non-`const` reference. This makes it clear to callers that the object is assumed to be modified.
 
@@ -2442,32 +2457,6 @@ When I call `length(s)` should I test for `s == nullptr` first? Should the imple
 
 **See also**: [Support library](#S-gsl).
 
-
-### <a name="Rf-T-return-out"></a> F.23: Use `T&` for an out-parameter that is expensive to move (only)
-
-##### Reason
-
-A return value is harder to miss and harder to misuse than a `T&` (an in-out parameter); [see also](#Rf-T-return); [see also](#Rf-T-multi).
-
-##### Example
-
-    struct Package {
-        char header[16];
-        char load[2024 - 16];
-    };
-
-    Package fill();       // Bad: large return value
-    void fill(Package&);  // OK
-
-    int val();            // OK
-    void val(int&);       // Bad: Is val reading its argument
-
-##### Enforcement
-
-Hard to choose a cutover value for the size of the value returned.
-
-##### Note
-A struct of many (individually cheap-to-move) elements may be in aggregate expensive to move.
 
 ### <a name="Rf-pass-ref-ref"></a> F.24: Use a `TP&&` parameter when forwarding (only)
 
