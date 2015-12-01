@@ -1785,7 +1785,6 @@ Argument passing rules:
 * [F.17: Use a `not_null<T>` to indicate "null" is not a valid value](#Rf-nullptr)
 * [F.18: Use a `span<T>` or a `span_p<T>` to designate a half-open sequence](#Rf-range)
 * [F.19: Use a `zstring` or a `not_null<zstring>` to designate a C-style string](#Rf-string)
-* [F.20: Use a `const T&` parameter for a large object](#Rf-const-T-ref)
 * [F.21: Use a `T` parameter for a small object](#Rf-T)
 * [F.22: Use `T&` for an in-out-parameter](#Rf-T-ref)
 * [F.23: Use `T&` for an out-parameter that is expensive to move (only)](#Rf-T-return-out)
@@ -2219,9 +2218,15 @@ If you have multiple values to return, [use a tuple](#Rf-T-multi) or similar mul
 **For an "in-out" parameter:** Pass by non-`const` reference. This makes it clear to callers that the object is assumed to be modified.
 
 **For an "input-only" value:** If the object is cheap to copy, pass by value.
-Otherwise, pass by `const&`. It is useful to know that a function does not mutate an argument, and both allow initialization by rvalues.
+Otherwise, pass by `const&` which is always cheap. Both let the caller know that a function will not modify the argument, and both allow initialization by rvalues.
 What is "cheap to copy" depends on the machine architecture, but two or three words (doubles, pointers, references) are usually best passed by value.
 In particular, an object passed by value does not require an extra reference to access from the function.
+
+##### Example
+
+    void fct(const string& s);  // OK: pass by const reference; always cheap
+
+    void fct2(string s);        // bad: potentially expensive
 
 ![Advanced parameter passing table](./param-passing-advanced.png "Advanced parameter passing")
 
@@ -2259,9 +2264,19 @@ Assuming that `Matrix` has move operations (possibly by keeping its elements in 
 
     y = m3 + m3;         // move assignment
 
-##### Note
+##### Notes
 
 The return value optimization doesn't handle the assignment case.
+
+A reference may be assumed to refer to a valid object (language rule).
+There is no (legitimate) "null reference."
+If you need the notion of an optional value, use a pointer, `std::optional`, or a special value used to denote "no value."
+
+##### Enforcement
+
+* (Simple) ((Foundation)) Warn when a parameter being passed by value has a size greater than `4 * sizeof(int)`.
+  Suggest using a `const` reference instead.
+
 
 **See also**: [implicit arguments](#Ri-explicit).
 
@@ -2398,30 +2413,6 @@ When I call `length(s)` should I test for `s == nullptr` first? Should the imple
 
 **See also**: [Support library](#S-gsl).
 
-### <a name="Rf-const-T-ref"></a> F.20: Use a `const T&` parameter for a large object
-
-##### Reason
-
-Copying large objects can be expensive. A `const T&` is always cheap and protects the caller from unintended modification.
-
-##### Example
-
-    void fct(const string& s);  // OK: pass by const reference; always cheap
-
-    void fct2(string s);        // bad: potentially expensive
-
-**Exception**: Sinks (that is, a function that eventually destroys an object or passes it along to another sink), may benefit ???
-
-##### Note
-
-A reference may be assumed to refer to a valid object (language rule).
-There is no (legitimate) "null reference."
-If you need the notion of an optional value, use a pointer, `std::optional`, or a special value used to denote "no value."
-
-##### Enforcement
-
-* (Simple) ((Foundation)) Warn when a parameter being passed by value has a size greater than `4 * sizeof(int)`.
-  Suggest using a `const` reference instead.
 
 ### <a name="Rf-T"></a> F.21: Use a `T` parameter for a small object
 
