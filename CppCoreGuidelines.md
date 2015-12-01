@@ -2329,7 +2329,7 @@ In that case, and only that case, make the parameter `TP&&` where `TP` is a temp
     inline auto invoke(F&& f, Args&&... args) {
         return forward<F>(f)(forward<Args>(args)...);
     }
- 
+
 
 ##### Enforcement
 * Flag a function that takes a `TP&&` parameter (where `TP` is a template type parameter name) and uses it without `std::forward`.
@@ -2341,7 +2341,7 @@ In that case, and only that case, make the parameter `TP&&` where `TP` is a temp
 
 A return value is self-documenting, whereas a `&` could be either in-out or out-only and is liable to be misused.
 
-This includes large objects like standard containers that use implicit move operations for performance and to avoid explicit memory management. 
+This includes large objects like standard containers that use implicit move operations for performance and to avoid explicit memory management.
 
 If you have multiple values to return, [use a tuple](#Rf-out-multi) or similar multi-member type.
 
@@ -6493,13 +6493,6 @@ We can fix that problem by making ownership explicit:
 
 ##### Note
 
-The fact that there are billions of lines of code that violate this rule against owning `T*`s cannot be ignored.
-This code cannot all be rewritten (ever assuming good code transformation software).
-This problem cannot be solved (at scale) by transforming all owning pointer to `unique_ptr`s and `shared_ptr`s, partly because we need/use owning "raw pointers" in the implementation of our fundamental resource handles. For example, most `vector` implementations have one owning pointer and two non-owning pointers.
-Also, many ABIs (and essentially all interfaces to C code) use `T*`s, some of them owning.
-
-##### Note
-
 `owner<T>` has no default semantics beyond `T*`. It can be used without changing any code using it and without affecting ABIs.
 It is simply a indicator to programmers and analysis tools.
 For example, if an `owner<T>` is a member of a class, that class better have a destructor that `delete`s it.
@@ -9062,18 +9055,18 @@ Simple code can be very fast. Optimizers sometimes do marvels with simple code
 ##### Example, good
 
     // clear expression of intent, fast execution
-    
+
     vector<uint8_t> v(100000);
-    
+
     for(auto& c : v)
         c = ~c;
 
 ##### Example, bad
 
     // intended to be faster, but is actually slower
-    
+
     vector<uint8_t> v(100000);
-    
+
     for(size_t i=0; i<v.size(); i+=sizeof(uint64_t))
     {
         uint64_t& quad_word = *reinterpret_cast<uint64_t*>(&v[i]);
