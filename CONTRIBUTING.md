@@ -40,12 +40,47 @@ to display, reproduce, perform, distribute and create derivative works of that m
 
 
 ## Pull requests
-We welcome pull requests for scoped changes to the guidelines--bug fixes in examples, clarifying ambiguous text, etc. Significant changes should
-first be discussed in the [Issues](https://github.com/isocpp/CppCoreGuidelines/issues) and the Issue number must be included in the pull
-request. Also please specify the rule number in your Issue and PR.
 
-Changes should be made in a child commit of a recent commit in the master branch. Also, if you are making many small changes please create
-separate PRs to minimize merge issues. 
+We welcome pull requests for scoped changes to the guidelines--bug fixes in
+examples, clarifying ambiguous text, etc.  Significant changes should first be
+discussed in the [Issues](https://github.com/isocpp/CppCoreGuidelines/issues)
+and the Issue number must be included in the pull request.  For
+guideline-related changes, please specify the rule number in your Issue and/or
+Pull Request.
 
-Lastly, to avoid line ending issues, please set `autocrlf = input` and `whitespace = cr-at-eol` in your git configuration.
+Changes should be made in a child commit of a recent commit in the master
+branch.  If you are making many small changes, please create separate PRs to
+minimize merge issues.
 
+### Document Style Guidelines
+
+Documents in this repository are written in an unspecific flavor of Markdown,
+which leaves some ambiguity for formatting text.  We ask that pull requests
+maintain the following style guidelines, though we are aware that the document
+may not already be consistent.
+
+#### Indentation
+
+Code and nested text should use multiples of 4 spaces of indentation, and no
+tab characters, like so:
+
+    void func(const int x)
+    {
+        std::cout << x << std::endl;
+    }
+
+#### Code Blocks
+
+Please use 4-space indentation to trigger code parsing, rather than [fenced code blocks](https://help.github.com/articles/github-flavored-markdown/#fenced-code-blocks) or any other style, like so:
+
+    This is some document text, with an example below:
+
+        void func()
+        {
+            std::cout << "This is code." << std::endl;
+        }
+
+### Miscellaneous
+
+To avoid line-ending issues, please set `autocrlf = input` and `whitespace =
+cr-at-eol` in your git configuration.
