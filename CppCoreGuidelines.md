@@ -1778,13 +1778,13 @@ Function definition rules:
 * [F.7: For general use, take `T*` arguments rather than smart pointers](#Rf-smart)
 * [F.8: Prefer pure functions](#Rf-pure)
 
-Argument passing rules:
+Parameter passing rules:
 
 * [F.15: Prefer simple and conventional ways of passing information](#Rf-conventional)
-* [F.16: Use `T*` or `owner<T*>` or a smart pointer to designate a single object](#Rf-ptr)
-* [F.17: Use a `not_null<T>` to indicate "null" is not a valid value](#Rf-nullptr)
-* [F.18: Use a `span<T>` or a `span_p<T>` to designate a half-open sequence](#Rf-range)
-* [F.19: Use a `zstring` or a `not_null<zstring>` to designate a C-style string](#Rf-string)
+* [F.22: Use `T*` or `owner<T*>` or a smart pointer to designate a single object](#Rf-ptr)
+* [F.23: Use a `not_null<T>` to indicate "null" is not a valid value](#Rf-nullptr)
+* [F.24: Use a `span<T>` or a `span_p<T>` to designate a half-open sequence](#Rf-range)
+* [F.25: Use a `zstring` or a `not_null<zstring>` to designate a C-style string](#Rf-string)
 * [F.26: Use a `unique_ptr<T>` to transfer ownership where a pointer is needed](#Rf-unique_ptr)
 * [F.27: Use a `shared_ptr<T>` to share ownership](#Rf-shared_ptr)
 
@@ -2340,9 +2340,9 @@ If you need the notion of an optional value, use a pointer, `std::optional`, or 
 ##### Enforcement
 
 This is a philosophical guideline that is infeasible to check directly and completely.
-However, many of the detailed rules (F.16-F.45) can be checked, such as passing a `const int&`, returning an `array<BigPOD>` by value, and returning a pointer to free store alloced by the function.
+However, many of the detailed rules (F.22-F.45) can be checked, such as passing a `const int&`, returning an `array<BigPOD>` by value, and returning a pointer to free store alloced by the function.
 
-### <a name="Rf-ptr"></a> F.16: Use `T*` or `owner<T*>` to designate a single object
+### <a name="Rf-ptr"></a> F.22: Use `T*` or `owner<T*>` to designate a single object
 
 ##### Reason
 
@@ -2386,7 +2386,7 @@ A `not_null<T*>` is assumed not to be the `nullptr`; a `T*` may be the `nullptr`
 
 * (Simple) ((Bounds)) Warn for any arithmetic operation on an expression of pointer type that results in a value of pointer type.
 
-### <a name="Rf-nullptr"></a> F.17: Use a `not_null<T>` to indicate that "null" is not a valid value
+### <a name="Rf-nullptr"></a> F.23: Use a `not_null<T>` to indicate that "null" is not a valid value
 
 ##### Reason
 
@@ -2413,7 +2413,7 @@ Clarity. Making it clear that a test for null isn't needed.
 * (Simple) Error if a raw pointer is sometimes dereferenced after first being tested against `nullptr` (or equivalent) within the function and sometimes is not.
 * (Simple) Warn if a `not_null` pointer is tested against `nullptr` within a function.
 
-### <a name="Rf-range"></a> F.18: Use a `span<T>` or a `span_p<T>` to designate a half-open sequence
+### <a name="Rf-range"></a> F.24: Use a `span<T>` or a `span_p<T>` to designate a half-open sequence
 
 ##### Reason
 
@@ -2445,7 +2445,7 @@ Passing a `span` object as an argument is exactly as efficient as passing a pair
 
 (Complex) Warn where accesses to pointer parameters are bounded by other parameters that are integral types and suggest they could use `span` instead.
 
-### <a name="Rf-string"></a> F.19: Use a `zstring` or a `not_null<zstring>` to designate a C-style string
+### <a name="Rf-string"></a> F.25: Use a `zstring` or a `not_null<zstring>` to designate a C-style string
 
 ##### Reason
 
