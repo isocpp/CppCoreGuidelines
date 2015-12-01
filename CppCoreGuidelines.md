@@ -1790,7 +1790,6 @@ Argument passing rules:
 
 Value return rules:
 
-* [F.40: Prefer return values to out-parameters](#Rf-T-return)
 * [F.41: Prefer to return tuples or structs instead of multiple out-parameters](#Rf-T-multi)
 * [F.42: Return a `T*` to indicate a position (only)](#Rf-return-ptr)
 * [F.43: Never (directly or indirectly) return a pointer to a local object](#Rf-dangle)
@@ -2193,7 +2192,7 @@ If you really feel the need for an optimization beyond the common techniques, me
 ![Normal parameter passing table](./param-passing-normal.png "Normal parameter passing")
 
 **For an "output-only" value:** Prefer return values to output parameters.
-This includes large objects like standard containers that use implicit move operations for performance and to avoid explicit memory management. A return value is harder to miss and harder to misuse than a `T&` (an in-out parameter).
+This includes large objects like standard containers that use implicit move operations for performance and to avoid explicit memory management. A return value is self-documenting, whereas a `&` could be either in-out or out-only and is liable to be misused.
 If you have multiple values to return, [use a tuple](#Rf-T-multi) or similar multi-member type.
 
 ##### Example
@@ -2333,6 +2332,7 @@ If you need the notion of an optional value, use a pointer, `std::optional`, or 
 * Flag all `X&&` parameters (where `X` is not a template type parameter name) where the function body uses them without `std::move`.
 * Flag access to moved-from objects.
 * Don't conditionally move from objects
+* Flag non-`const` reference parameters that are not read before being written to and are a type that could be cheaply returned; they should be "out" return values.
 
 
 **See also**: [implicit arguments](#Ri-explicit).
@@ -2530,24 +2530,6 @@ Note that pervasive use of `shared_ptr` has a cost (atomic operations on the `sh
 
 (Not enforceable) This is a too complex pattern to reliably detect.
 
-### <a name="Rf-T-return"></a> F.40: Prefer return values to out-parameters
-
-##### Reason
-
-It's self-documenting. A `&` parameter could be either in/out or out-only.
-
-##### Example
-
-    void incr(int&);
-    int incr(int);
-
-    int i = 0;
-    incr(i);
-    i = incr(i);
-
-##### Enforcement
-
-Flag non-`const` reference parameters that are not read before being written to and are a type that could be cheaply returned.
 
 ### <a name="Rf-T-multi"></a> F.41: Prefer to return tuples or structs instead of multiple out-parameters
 
