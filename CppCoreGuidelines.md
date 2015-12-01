@@ -1785,7 +1785,6 @@ Argument passing rules:
 * [F.17: Use a `not_null<T>` to indicate "null" is not a valid value](#Rf-nullptr)
 * [F.18: Use a `span<T>` or a `span_p<T>` to designate a half-open sequence](#Rf-range)
 * [F.19: Use a `zstring` or a `not_null<zstring>` to designate a C-style string](#Rf-string)
-* [F.22: Use `T&` for an in-out-parameter](#Rf-T-ref)
 * [F.23: Use `T&` for an out-parameter that is expensive to move (only)](#Rf-T-return-out)
 * [F.24: Use a `TP&&` parameter when forwarding (only)](#Rf-pass-ref-ref)
 * [F.25: Use a `T&&` parameter together with `move` for rare optimization opportunities](#Rf-pass-ref-move)
@@ -2216,6 +2215,31 @@ If you have multiple values to return, [use a tuple](#Rf-T-multi) or similar mul
 
 **For an "in-out" parameter:** Pass by non-`const` reference. This makes it clear to callers that the object is assumed to be modified.
 
+##### Example
+
+    void update(Record& r);  // assume that update writes to r
+
+##### Note
+
+A `T&` argument can pass information into a function as well as well as out of it.
+Thus `T&` could be an in-out-parameter. That can in itself be a problem and a source of errors:
+
+    void f(string& s)
+    {
+        s = "New York";  // non-obvious error
+    }
+
+    void g()
+    {
+        string buffer = ".................................";
+        f(buffer);
+        // ...
+    }
+
+Here, the writer of `g()` is supplying a buffer for `f()` to fill, but `f()` simply replaces it (at a somewhat higher cost than a simple copy of the characters).
+If the writer of `g()` makes an assumption about the size of `buffer` a bad logic error can happen.
+
+
 **For an "input-only" value:** If the object is cheap to copy, pass by value; nothing beats the simplicity and safety of copying, and for small objects (up to two or three words) it is also faster than passing by reference.
 Otherwise, pass by `const&` which is always cheap for larger objects. Both let the caller know that a function will not modify the argument, and both allow initialization by rvalues.
 What is "cheap to copy" depends on the machine architecture, but two or three words (doubles, pointers, references) are usually best passed by value.
@@ -2280,6 +2304,7 @@ If you need the notion of an optional value, use a pointer, `std::optional`, or 
 * (Simple) ((Foundation)) Warn when a parameter being passed by value has a size greater than `4 * sizeof(int)`.
   Suggest using a `const` reference instead.
 * (Simple) ((Foundation)) Warn when a `const` parameter being passed by reference has a size less than `3 * sizeof(int)`. Suggest passing by value instead.
+* (Moderate) ((Foundation)) Warn about functions with non-`const` reference arguments that do *not* write to them.
 
 
 **See also**: [implicit arguments](#Ri-explicit).
@@ -2417,40 +2442,6 @@ When I call `length(s)` should I test for `s == nullptr` first? Should the imple
 
 **See also**: [Support library](#S-gsl).
 
-
-### <a name="Rf-T-ref"></a> F.22: Use a `T&` for an in-out-parameter
-
-##### Reason
-
-A called function can write to a non-`const` reference argument, so assume that it does.
-
-##### Example
-
-    void update(Record& r);  // assume that update writes to r
-
-##### Note
-
-A `T&` argument can pass information into a function as well as well as out of it.
-Thus `T&` could be and in-out-parameter. That can in itself be a problem and a source of errors:
-
-    void f(string& s)
-    {
-        s = "New York";  // non-obvious error
-    }
-
-    string g()
-    {
-        string buffer = ".................................";
-        f(buffer);
-        // ...
-    }
-
-Here, the writer of `g()` is supplying a buffer for `f()` to fill, but `f()` simply replaces it (at a somewhat higher cost than a simple copy of the characters).
-If the writer of `g()` makes an assumption about the size of `buffer` a bad logic error can happen.
-
-##### Enforcement
-
-* (Moderate) ((Foundation)) Warn about functions with non-`const` reference arguments that do *not* write to them.
 
 ### <a name="Rf-T-return-out"></a> F.23: Use `T&` for an out-parameter that is expensive to move (only)
 
