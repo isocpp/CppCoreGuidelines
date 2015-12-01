@@ -1785,7 +1785,6 @@ Argument passing rules:
 * [F.17: Use a `not_null<T>` to indicate "null" is not a valid value](#Rf-nullptr)
 * [F.18: Use a `span<T>` or a `span_p<T>` to designate a half-open sequence](#Rf-range)
 * [F.19: Use a `zstring` or a `not_null<zstring>` to designate a C-style string](#Rf-string)
-* [F.21: Use a `T` parameter for a small object](#Rf-T)
 * [F.22: Use `T&` for an in-out-parameter](#Rf-T-ref)
 * [F.23: Use `T&` for an out-parameter that is expensive to move (only)](#Rf-T-return-out)
 * [F.24: Use a `TP&&` parameter when forwarding (only)](#Rf-pass-ref-ref)
@@ -2217,8 +2216,8 @@ If you have multiple values to return, [use a tuple](#Rf-T-multi) or similar mul
 
 **For an "in-out" parameter:** Pass by non-`const` reference. This makes it clear to callers that the object is assumed to be modified.
 
-**For an "input-only" value:** If the object is cheap to copy, pass by value.
-Otherwise, pass by `const&` which is always cheap. Both let the caller know that a function will not modify the argument, and both allow initialization by rvalues.
+**For an "input-only" value:** If the object is cheap to copy, pass by value; nothing beats the simplicity and safety of copying, and for small objects (up to two or three words) it is also faster than passing by reference.
+Otherwise, pass by `const&` which is always cheap for larger objects. Both let the caller know that a function will not modify the argument, and both allow initialization by rvalues.
 What is "cheap to copy" depends on the machine architecture, but two or three words (doubles, pointers, references) are usually best passed by value.
 In particular, an object passed by value does not require an extra reference to access from the function.
 
@@ -2227,6 +2226,10 @@ In particular, an object passed by value does not require an extra reference to 
     void fct(const string& s);  // OK: pass by const reference; always cheap
 
     void fct2(string s);        // bad: potentially expensive
+
+    void fct(int x);          // OK: Unbeatable
+
+    void fct2(const int& x);  // bad: overhead on access in fct2()
 
 ![Advanced parameter passing table](./param-passing-advanced.png "Advanced parameter passing")
 
@@ -2276,6 +2279,7 @@ If you need the notion of an optional value, use a pointer, `std::optional`, or 
 
 * (Simple) ((Foundation)) Warn when a parameter being passed by value has a size greater than `4 * sizeof(int)`.
   Suggest using a `const` reference instead.
+* (Simple) ((Foundation)) Warn when a `const` parameter being passed by reference has a size less than `3 * sizeof(int)`. Suggest passing by value instead.
 
 
 **See also**: [implicit arguments](#Ri-explicit).
@@ -2413,25 +2417,6 @@ When I call `length(s)` should I test for `s == nullptr` first? Should the imple
 
 **See also**: [Support library](#S-gsl).
 
-
-### <a name="Rf-T"></a> F.21: Use a `T` parameter for a small object
-
-##### Reason
-
-Nothing beats the simplicity and safety of copying.
-For small objects (up to two or three words) it is also faster than alternatives.
-
-##### Example
-
-    void fct(int x);          // OK: Unbeatable
-
-    void fct2(const int& x);  // bad: overhead on access in fct2()
-
-    void fct(int& x);         // OK, but means something else; use only for an "out parameter"
-
-##### Enforcement
-
-* (Simple) ((Foundation)) Warn when a `const` parameter being passed by reference has a size less than `3 * sizeof(int)`. Suggest passing by value instead.
 
 ### <a name="Rf-T-ref"></a> F.22: Use a `T&` for an in-out-parameter
 
