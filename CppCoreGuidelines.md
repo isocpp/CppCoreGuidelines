@@ -2347,8 +2347,8 @@ In that case, and only that case, make the parameter `TP&&` where `TP` is a temp
 ##### Example
 
     template <class F, class... Args>
-    inline auto invoke(F&& f, Args&&... args) {
-        return forward<F>(f)(forward<Args>(args)...);
+    inline auto invoke(F f, Args&&... args) {
+        return f(forward<Args>(args)...);
     }
 
 
