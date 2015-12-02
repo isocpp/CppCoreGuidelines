@@ -12811,6 +12811,11 @@ The notation is that of the ISO WG21 Concepts TS (???ref???).
 * `Relation`
 * ...
 
+### <a name="SS-gsl-smartptrconcepts"></a> Smart pointer concepts
+
+Described in [Lifetimes paper](https://github.com/isocpp/CppCoreGuidelines/blob/master/docs/Lifetimes%20I%20and%20II%20-%20v0.9.1.pdf).
+
+
 # <a name="S-naming"></a> NL: Naming and layout rules
 
 Consistent naming and layout are helpful. If for no other reason because it minimizes "my style is better than your style" arguments.
