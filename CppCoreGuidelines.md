@@ -2353,7 +2353,7 @@ In that case, and only that case, make the parameter `TP&&` where `TP` is a temp
 
 
 ##### Enforcement
-* Flag a function that takes a `TP&&` parameter (where `TP` is a template type parameter name) and uses it without `std::forward`.
+* Flag a function that takes a `TP&&` parameter (where `TP` is a template type parameter name) and does anything with it other than `std::forward`ing it exactly once on every static path.
 
 
 ### <a name="Rf-out"></a> Rule F.20: For "out" output values, prefer return values to output parameters
