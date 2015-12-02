@@ -616,6 +616,8 @@ Also, it is implicit that `f2()` is supposed to `delete` its argument (or did th
 The standard library resource management pointers fail to pass the size when they point to an object:
 
     extern void f3(unique_ptr<int[]>, int n);    // separately compiled, possibly dynamically loaded
+                                                 // NB: this assumes the calling code is ABI-compatible, using a
+                                                 // compatible C++ compiler and the same stdlib implementation
 
     void g3(int n)
     {
@@ -627,7 +629,9 @@ The standard library resource management pointers fail to pass the size when the
 We need to pass the pointer and the number of elements as an integral object:
 
     extern void f4(vector<int>&);       // separately compiled, possibly dynamically loaded
-    extern void f4(span<int>);    // separately compiled, possibly dynamically loaded
+    extern void f4(span<int>);          // separately compiled, possibly dynamically loaded
+                                                 // NB: this assumes the calling code is ABI-compatible, using a
+                                                 // compatible C++ compiler and the same stdlib implementation
 
     void g3(int n)
     {
