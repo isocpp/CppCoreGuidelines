@@ -3695,13 +3695,18 @@ Also, that may affect ABIs.
 * A class with a reference data member is suspect.
 * A class with an `owner<T>` reference should define its default operations.
 
-### <a name="Rc-dtor-virtual"></a> C.35: A base class with a virtual function needs a virtual destructor
+### <a name="Rc-dtor-virtual"></a> C.35: A base class destructor should be either public and virtual, or protected and nonvirtual
 
 ##### Reason
 
 To prevent undefined behavior.
-If an application attempts to delete a derived class object through a base class pointer, the result is undefined if the base class's destructor is non-virtual.
+If the destructor is public, then calling code can attempt to destroy a derived class object through a base class pointer, and the result is undefined if the base class's destructor is non-virtual.
+If the destructor is protected, then calling code cannot destroy through a base class pointer and the destructor does not need to be virtual; it does need to be protected, not private, so that derived destructors can invoke it.
 In general, the writer of a base class does not know the appropriate action to be done upon destruction.
+
+##### Discussion
+
+See [this in the Discussion section](#Sd-dtor).
 
 ##### Example, bad
 
@@ -3724,11 +3729,11 @@ In general, the writer of a base class does not know the appropriate action to b
 ##### Note
 
 A virtual function defines an interface to derived classes that can be used without looking at the derived classes.
-Someone using such an interface is likely to also destroy using that interface.
+If the interface allows destroying, it should be safe to do so.
 
 ##### Note
 
-A destructor must be `public` or it will prevent stack allocation and normal heap allocation via smart pointer (or in legacy code explicit `delete`):
+A destructor must be nonprivate or it will prevent using the type :
 
     class X {
         ~X();	// private destructor
@@ -3741,9 +3746,14 @@ A destructor must be `public` or it will prevent stack allocation and normal hea
         auto p = make_unique<X>();  // error: cannot destroy
     }
 
+##### Exception
+
+We can imagine one case where you could want a protected virtual destructor: When an object of a derived type (and only of such a type) should be allowed to destroy *another* object (not itself) through a pointer to base. We haven't seen such a case in practice, though.
+
 ##### Enforcement
 
-(Simple) A class with any virtual functions should have a virtual destructor.
+* A class with any virtual functions should have a destructor that is either public and virtual or else protected and nonvirtual.
+
 
 ### <a name="Rc-dtor-fail"></a> C.36: A destructor may not fail
 
