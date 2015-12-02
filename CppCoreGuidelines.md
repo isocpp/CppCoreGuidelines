@@ -2329,7 +2329,7 @@ In that case, and only that case, make the parameter `TP&&` where `TP` is a temp
     inline auto invoke(F&& f, Args&&... args) {
         return forward<F>(f)(forward<Args>(args)...);
     }
- 
+
 
 ##### Enforcement
 * Flag a function that takes a `TP&&` parameter (where `TP` is a template type parameter name) and uses it without `std::forward`.
@@ -2341,7 +2341,7 @@ In that case, and only that case, make the parameter `TP&&` where `TP` is a temp
 
 A return value is self-documenting, whereas a `&` could be either in-out or out-only and is liable to be misused.
 
-This includes large objects like standard containers that use implicit move operations for performance and to avoid explicit memory management. 
+This includes large objects like standard containers that use implicit move operations for performance and to avoid explicit memory management.
 
 If you have multiple values to return, [use a tuple](#Rf-out-multi) or similar multi-member type.
 
@@ -6252,7 +6252,7 @@ Instead use an `enum class`:
     void PrintColor(int color);
 
     enum class Webcolor { red=0xFF0000, green=0x00FF00, blue=0x0000FF };
-    enum class Productinfo { Red=0, Purple=1, Blue=2 };
+    enum class Productinfo { red=0, purple=1, blue=2 };
 
     Webcolor webby = Webcolor::blue;
     PrintColor(webby);  // Error: cannot convert Webcolor to int.
@@ -9062,18 +9062,18 @@ Simple code can be very fast. Optimizers sometimes do marvels with simple code
 ##### Example, good
 
     // clear expression of intent, fast execution
-    
+
     vector<uint8_t> v(100000);
-    
+
     for(auto& c : v)
         c = ~c;
 
 ##### Example, bad
 
     // intended to be faster, but is actually slower
-    
+
     vector<uint8_t> v(100000);
-    
+
     for(size_t i=0; i<v.size(); i+=sizeof(uint64_t))
     {
         uint64_t& quad_word = *reinterpret_cast<uint64_t*>(&v[i]);
