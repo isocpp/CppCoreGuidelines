@@ -248,6 +248,13 @@ For a start, we have a few profiles corresponding to common needs (desires, idea
 The profiles are intended to be used by tools, but also serve as an aid to the human reader.
 We do not limit our comment in the **Enforcement** sections to things we know how to enforce; some comments are mere wishes that might inspire some tool builder.
 
+Tools that implement these rules shall respect the following syntax to explicitly suppress a rule:
+
+    [[suppress(tag)]]
+    
+where "tag" is the anchor name of the item where the Enrocement rule appears (e.g., for C.134 it is "Rh-public"), or the name of a profile group-of-rules ("types", "bounds", or "lifetime").
+
+
 ## <a name="SS-struct"></a> In.struct: The structure of this document
 
 Each rule (guideline, suggestion) can have several parts:
