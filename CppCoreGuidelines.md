@@ -13484,9 +13484,19 @@ Here is an example of the last option:
             return p;
         }
     };
+    
+    
+    class D : public B {                 // some derived class
+    public:
+        void f() override { /* ...  */ };
 
-    class D : public B { /* "¦ */ };     // some derived class
+    protected:
+        D() {}
 
+        template<class T>
+        friend shared_ptr<T> B::Create();
+    };    
+    
     shared_ptr<D> p = D::Create<D>();    // creating a D object
 
 This design requires the following discipline:
