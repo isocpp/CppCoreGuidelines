@@ -12692,17 +12692,23 @@ These functions all have bounds-safe overloads that take `span`. Standard types 
     void f()
     {
         array<int, 10> a, b;
-        memset(a.data(), 0, 10); 		// BAD, and contains a length error
-        memcmp(a.data(), b.data(), 10); // BAD, and contains a length error
+        memset(a.data(), 0, 10); 		// BAD, and contains a length error (length = 10 * sizeof(int))
+        memcmp(a.data(), b.data(), 10); // BAD, and contains a length error (length = 10 * sizeof(int))
     }
+
+Also, `std::array<>::fill()` or `std::fill()` or even an empty initializer are better candidate than `memset()`.
 
 ##### Example, good
 
     void f()
     {
-        array<int, 10> a, b;
-        memset(a, 0); 	// OK
-        memcmp({a, b}); 	// OK
+        array<int, 10> a, b, c{};       // c is initialized to zero
+        a.fill(0);
+        fill(b.begin(), b.end(), 0);    // std::fill()
+        fill(b, 0);                     // std::fill() + Ranges TS
+
+        if ( a == b ) {
+        }
     }
 
 ##### Example
