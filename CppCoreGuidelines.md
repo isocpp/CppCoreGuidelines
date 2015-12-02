@@ -5195,6 +5195,7 @@ Summary of container rules:
 
 A function object is an object supplying an overloaded `()` so that you can call it.
 A lambda expression (colloquially often shortened to "a lambda") is a notation for generating a function object.
+Function objects should be cheap to copy (and therefore [passed by value](#Rf-in)).
 
 Summary:
 
