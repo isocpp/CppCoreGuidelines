@@ -2198,6 +2198,8 @@ There are a variety of ways to pass parameters to a function and to return value
 Using "unusual and clever" techniques causes surprises, slows understanding by other programmers, and encourages bugs.
 If you really feel the need for an optimization beyond the common techniques, measure to ensure that it really is an improvement, and document/comment because the improvement may not be portable.
 
+The following tables summarize the advice in the following Guidelines, F.16-21.
+
 ![Normal parameter passing table](./param-passing-normal.png "Normal parameter passing")
 
 ![Advanced parameter passing table](./param-passing-advanced.png "Advanced parameter passing")
@@ -2308,6 +2310,12 @@ If the writer of `g()` makes an assumption about the size of `buffer` a bad logi
 ### <a name="Rf-consume"></a> Rule F.18: For "consume" parameters, pass by `X&&` and `std::move` the parameter
 
 ##### Reason
+
+It's efficient and eliminates bugs at the call site: `X&&` binds to rvalues, which requires an explicit `std::move` at the call site if passing an lvalue.
+
+##### Exception
+
+Unique owner types that are move-only and cheap-to-move, such as `unique_ptr`, can also be passed by value which is simpler to write and achieves the same effect. Passing by value  does generate one extra (cheap) move operation, but prefer simplicity and clarity first.
 
 ##### Enforcement
 * Flag all `X&&` parameters (where `X` is not a template type parameter name) where the function body uses them without `std::move`.
