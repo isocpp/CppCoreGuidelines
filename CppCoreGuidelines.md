@@ -2227,9 +2227,9 @@ When copying is cheap, nothing beats the simplicity and safety of copying, and f
 
 For advanced uses (only), where you really need to optimize for rvalues passed to "input-only" parameters:
 
-* If the function is going to unconditionally move from the argument, take it by `&&`.
-* If the function is going to keep a copy of the argument, in addition to passing by `const&` add an overload that passes the parameter by `&&` and in the body `std::move`s it to its destination.
-* In special cases, such as multiple "input + copy" parameters, consider using perfect forwarding.
+* If the function is going to unconditionally move from the argument, take it by `&&`. See [F.21](#Rf-consume).
+* If the function is going to keep a copy of the argument, in addition to passing by `const&` add an overload that passes the parameter by `&&` and in the body `std::move`s it to its destination. Essentially this overloads a "consume"; see [F.21](#Rf-consume).
+* In special cases, such as multiple "input + copy" parameters, consider using perfect forwarding. See [F.19](#Rf-forward).
 
 ##### Example
 
@@ -2271,6 +2271,7 @@ If you need the notion of an optional value, use a pointer, `std::optional`, or 
 * (Simple) ((Foundation)) Warn when a parameter being passed by value has a size greater than `4 * sizeof(int)`.
   Suggest using a `const` reference instead.
 * (Simple) ((Foundation)) Warn when a `const` parameter being passed by reference has a size less than `3 * sizeof(int)`. Suggest passing by value instead.
+* (Simple) ((Foundation)) Warn when a `const` parameter being passed by reference is `move`d.
 
 
 ### <a name="Rf-inout"></a> Rule F.17: For "in-out" parameters, pass by reference to non-`const`
@@ -2305,6 +2306,7 @@ If the writer of `g()` makes an assumption about the size of `buffer` a bad logi
 
 ##### Enforcement
 * (Moderate) ((Foundation)) Warn about functions with non-`const` reference arguments that do *not* write to them.
+* (Simple) ((Foundation)) Warn when a non-`const` parameter being passed by reference is `move`d.
 
 
 ### <a name="Rf-consume"></a> Rule F.18: For "consume" parameters, pass by `X&&` and `std::move` the parameter
