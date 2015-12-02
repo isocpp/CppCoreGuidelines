@@ -66,7 +66,7 @@ tab characters, like so:
 
     void func(const int x)
     {
-        std::cout << x << std::endl;
+        std::cout << x << '\n';
     }
 
 #### Code Blocks
@@ -77,7 +77,7 @@ Please use 4-space indentation to trigger code parsing, rather than [fenced code
 
         void func()
         {
-            std::cout << "This is code." << std::endl;
+            std::cout << "This is code.\n";
         }
 
 ### Miscellaneous
