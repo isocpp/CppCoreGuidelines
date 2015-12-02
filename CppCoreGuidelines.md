@@ -12493,7 +12493,7 @@ Note: Declaring a `...` parameter is sometimes useful for techniques that don't 
 ##### Enforcement
 
 * Issue a diagnostic for using `va_list`, `va_start`, or `va_arg`. To fix: Use a variadic template parameter list instead.
-* Issue a diagnostic for passing an argument to a vararg parameter. To fix: Use a different function, or `[[suppress(types)]]`.
+* Issue a diagnostic for passing an argument to a vararg parameter of a function that does not offer an overload for a more specific type in the position of the vararg. To fix: Use a different function, or `[[suppress(types)]]`.
 
 ## <a name="SS-bounds"></a> Bounds safety profile
 
