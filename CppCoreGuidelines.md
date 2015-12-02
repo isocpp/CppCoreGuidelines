@@ -5215,7 +5215,7 @@ Designing rules for classes in a hierarchy summary:
 * [C.131: Avoid trivial getters and setters](#Rh-get)
 * [C.132: Don't make a function `virtual` without reason](#Rh-virtual)
 * [C.133: Avoid `protected` data](#Rh-protected)
-* [C.134: Ensure all data members have the same access level](#Rh-public)
+* [C.134: Ensure all non-`const` data members have the same access level](#Rh-public)
 * [C.135: Use multiple inheritance to represent multiple distinct interfaces](#Rh-mi-interface)
 * [C.136: Use multiple inheritance to represent the union of implementation attributes](#Rh-mi-implementation)
 * [C.137: Use `virtual` bases to avoid overly general base classes](#Rh-vbase)
@@ -5507,36 +5507,41 @@ Protected member function can be just fine.
 
 Flag classes with `protected` data.
 
-### <a name="Rh-public"></a> C.134: Ensure all data members have the same access level
+### <a name="Rh-public"></a> C.134: Ensure all non-`const` data members have the same access level
 
 ##### Reason
 
 Prevention of logical confusion leading to errors.
-If the data members don't have the same access level, the type is confused about what it's trying to do.
-Is it a type that maintains an invariant os simply a collection of values?
+If the non-`const` data members don't have the same access level, the type is confused about what it's trying to do.
+Is it a type that maintains an invariant or simply a collection of values?
 
-##### Note
+##### Discussion
 
-This leaves us with three alternatives:
+The core question is: What code is responsible for maintaining a meaningful/correct value for that variable?
 
-* *All public*: If you're writing an aggregate bundle-of-variables without an invariant across those variables, then all the variables should be public.
-[Declare such classes `struct` rather than `class`](#Rc-struct)
-* *All protected*: [Avoid `protected` data](#Rh-protected).
-* *All private*: If you’re writing a type that maintains an invariant, then all the variables should be private – it should be encapsulated.
-  This is the vast majority of classes.
+There are exactly two kinds of data members:
 
-##### Note
+* A: Ones that don’t participate in the object’s invariant. Any combination of values for these members is valid.
+* B: Ones that do participate in the object’s invariant. Not every combination of values is meaningful (else there’d be no invariant). Therefore all code that has write access to these variables must know about the invariant, know the semantics, and know (and actively implement and enforce) the rules for keeping the values correct.
 
-There are undoubtedly examples where a mixture of access levels for data is tempting.
-We have been unable to think of realistic cases that makes it worthwhile to weaken the simple rule.
+Data members in category A should just be `public` (or, more rarely, `protected` if you only want derived classes to see them). They don’t need encapsulation. All code in the system might as well see and manipulate them.
 
-##### Example
+Data members in category B should be `private` or `const`. This is because encapsulation is important. To make them non-`private` and non-`const` would mean that the object can't control its own state: An unbounded amount of code beyond the class would need to know about the invariant and participate in maintaining it accurately -- if these data members were `public`, that would be all calling code that uses the object; if they were `protected`, it would be all the code in current and future derived classes. This leads to brittle and tightly coupled code that quickly becomes a nightmare to maintain. Any code that inadvertently sets the data members to an invalid or unexpected combination of values would corrupt the object and all subsequent uses of the object.
 
-    ???
+Most classes are either all A or all B:
+
+* *All public*: If you're writing an aggregate bundle-of-variables without an invariant across those variables, then all the variables should be `public`.
+[By convention, declare such classes `struct` rather than `class`](#Rc-struct)
+* *All private*: If you’re writing a type that maintains an invariant, then all the non-`const` variables should be private -- it should be encapsulated.
+
+##### Exceptions
+
+Occasionally classes will mix A and B, usually for debug reasons. An encapsulated object may contain something like non-`const` debug instrumentation that isn’t part of the invariant and so falls into category A -- it isn’t really part of the object’s value or meaningful observable state either. In that case, the A parts should be treated as A's (made `public`, or in rarer cases `protected` if they should be visible only to derived classes) and the B parts should still be treated like B’s (`private` or `const`).
 
 ##### Enforcement
 
-Flag any class that has data members with different access levels.
+Flag any class that has non-`const` data members with different access levels.
+
 
 ### <a name="Rh-mi-interface"></a> C.135: Use multiple inheritance to represent multiple distinct interfaces
 
