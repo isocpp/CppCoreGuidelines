@@ -5809,9 +5809,9 @@ Use `virtual` only when declaring a new virtual function. Use `override` only wh
     };
 
     struct D : B {
-        void f1(int);      // warn: D::f1() hides B::f1()
-        void f2(int) const;      // warn: no explicit override
-        void f3(double);   // warn: D::f3() hides B::f3()
+        void f1(int);        // warn: D::f1() hides B::f1()
+        void f2(int) const;  // warn: no explicit override
+        void f3(double);     // warn: D::f3() hides B::f3()
         // ...
     };
 
