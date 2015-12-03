@@ -13892,7 +13892,7 @@ To provide statically type-safe manipulation of elements.
 
 ##### Reason
 
-To simplify code and eliminate a need for explicit memory management. To bring an object into a surrounding scope, thereby extending its lifetime. See also [the general item about "out" output values](#Rf-out).
+To simplify code and eliminate a need for explicit memory management. To bring an object into a surrounding scope, thereby extending its lifetime. See also [F.20, the general item about "out" output values](#Rf-out).
 
 ##### Example
 
@@ -13905,7 +13905,7 @@ To simplify code and eliminate a need for explicit memory management. To bring a
 
 ##### Exceptions
 
-See the Exceptions in ["out" output values](#Rf-out).
+See the Exceptions in [F.20](#Rf-out).
 
 ##### Enforcement
 
