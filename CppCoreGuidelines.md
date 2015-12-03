@@ -13892,7 +13892,7 @@ To provide statically type-safe manipulation of elements.
 
 ##### Reason
 
-To simplify code and eliminate a need for explicit memory management. To bring an object into a surrounding scope, thereby extending its lifetime.
+To simplify code and eliminate a need for explicit memory management. To bring an object into a surrounding scope, thereby extending its lifetime. See also [the general item about "out" output values](#Rf-out).
 
 ##### Example
 
@@ -13903,13 +13903,14 @@ To simplify code and eliminate a need for explicit memory management. To bring a
 
     auto v = get_large_vector(); //  return by value is ok, most modern compilers will do copy elision
 
-##### Example
+##### Exceptions
 
-    ??? factory
+See the Exceptions in ["out" output values](#Rf-out).
 
 ##### Enforcement
 
 Check for pointers and references returned from functions and see if they are assigned to resource handles (e.g., to a `unique_ptr`).
+
 
 ### <a name="Cr-handle"></a> If a class is a resource handle, it needs a constructor, a destructor, and copy and/or move operations
 
