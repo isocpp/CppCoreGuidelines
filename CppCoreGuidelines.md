@@ -4596,7 +4596,7 @@ Prefer copy semantics unless you are building a "smart pointer". Value semantics
 
 ##### Enforcement
 
-(Not enforceable).
+(Not enforceable)
 
 ### <a name="Rc-copy-self"></a> C.62: Make copy assignment safe for self-assignment
 
@@ -4728,7 +4728,7 @@ Unless there is an exceptionally strong reason not to, make `x = std::move(y); y
 
 ##### Enforcement
 
-(Not enforceable) look for assignments to members in the move operation. If there is a default constructor, compare those assignments to the initializations in the default constructor.
+(Not enforceable) Look for assignments to members in the move operation. If there is a default constructor, compare those assignments to the initializations in the default constructor.
 
 ### <a name="Rc-move-self"></a> C.65: Make move assignment safe for self-assignment
 
