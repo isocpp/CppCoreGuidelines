@@ -13817,17 +13817,25 @@ That would be a leak.
         fclose(f);
     }
 
-If `i == 0` the file handle for `a file` is leaked. On the other hand, the `ifstream` for `another file` will correctly close its file (upon destruction). If you must use an explicit pointer, rather than a resource handle with specific semantics, use a `unique_ptr` or a `shared_ptr`:
+If `i == 0` the file handle for `a file` is leaked. On the other hand, the `ifstream` for `another file` will correctly close its file (upon destruction). If you must use an explicit pointer, rather than a resource handle with specific semantics, use a `unique_ptr` or a `shared_ptr` with a custom deleter:
 
     void f(int i)
     {
-        unique_ptr<FILE> f = fopen("a file", "r");
+        unique_ptr<FILE, int(*)(FILE*)> f(fopen("a file", "r"), fclose);
         // ...
         if (i == 0) return;
         // ...
     }
 
-The code is simpler as well as correct.
+Better:
+
+    void f(int i)
+    {
+        ifstream input {"a file"};
+        // ...
+        if (i == 0) return;
+        // ...
+    }
 
 ##### Enforcement
 
