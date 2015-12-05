@@ -7230,6 +7230,7 @@ Declaration rules:
 * [ES.30: Don't use macros for program text manipulation](#Res-macros)
 * [ES.31: Don't use macros for constants or "functions"](#Res-macros2)
 * [ES.32: Use `ALL_CAPS` for all macro names](#Res-ALL_CAPS)
+* [ES.33: If you must use macros, give them unique names](#Res-MACROS)
 * [ES.40: Don't define a (C-style) variadic function](#Res-ellipses)
 
 Expression rules:
@@ -8164,6 +8165,28 @@ Convention. Readability. Distinguishing macros.
 ##### Enforcement
 
 Scream when you see a lower case macro.
+
+### <a name="Res-MACROS"></a> ES.33: If you must use macros, give them unique names
+
+##### Reason
+
+Macros do not obey scope rules.
+
+##### Example
+
+    #define MYCHAR        /* BAD, will eventually clash with someone else's MYCHAR*/
+
+    #define ZCORP_CHAR    /* Still evil, but less likely to clash */
+    
+##### Note
+
+Avoid macros if you can: [ES.30](#Res-macros), [ES.31](#Res-macros2), and [ES.32](#Res-ALL_CAPS).
+However, there are billions of lines of code literated with macros and a long tradition for using and overusing macros.
+If you are forced to use macros, use long names and supposedly unique prefixes (e.g., your organization's name) to lower the likelyhood of a clash.
+
+##### Enforcement
+
+Warn against short macro names.
 
 ### <a name="Res-ellipses"></a> ES.40: Don't define a (C-style) variadic function
 
