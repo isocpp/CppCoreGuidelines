@@ -2649,10 +2649,6 @@ Note that pervasive use of `shared_ptr` has a cost (atomic operations on the `sh
 That's what pointers are good for.
 Returning a `T*` to transfer ownership is a misuse.
 
-##### Note
-
-Do not return a pointer to something that is not in the caller's scope.
-
 ##### Example
 
     Node* find(Node* t, const string& s)  // find s in a binary tree of Nodes
@@ -2669,6 +2665,10 @@ Importantly, that does not imply a transfer of ownership of the pointed-to objec
 ##### Note
 
 Positions can also be transferred by iterators, indices, and references.
+
+##### Note
+
+Do not return a pointer to something that is not in the caller's scope; see [F.43](#Rf-dangle).
 
 ##### Example, bad
 
