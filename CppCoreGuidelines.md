@@ -3928,7 +3928,7 @@ Compilers do not read comments.
 ##### Note
 
 If a constructor acquires a resource (to create a valid object), that resource should be [released by the destructor](#Rc-dtor-release).
-The idiom of having constructors acquire resources and destructors release them is called [RAII](#Rr-raii) ("Resource Acquisitions Is Initialization").
+The idiom of having constructors acquire resources and destructors release them is called [RAII](#Rr-raii) ("Resource Acquisition Is Initialization").
 
 ### <a name="Rc-throw"></a> C.42: If a constructor cannot construct a valid object, throw an exception
 
@@ -7721,7 +7721,7 @@ This may be seen as an example of the *immediately initialize from input* except
 
 Creating optimal and equivalent code from all of these examples should be well within the capabilities of modern C++ compilers
 (but don't make performance claims without measuring; a compiler may very well not generate optimal code for every example and
-there may be language rules preventing some optimization that you would have liked in a particular case)..
+there may be language rules preventing some optimization that you would have liked in a particular case).
 
 ##### Note
 
@@ -11208,10 +11208,10 @@ Note that `maul()` violates the a `T*` points to an individual object [Rule](#??
 
     vector<Apple> va = { an_apple, another_apple };	// aa contains Apples (obviously!)
 
-    maul2(aa);		// error: cannot convert a vector<Apple> to a Fruit*
-    maul2(&aa[0]);	// you asked for it
+    maul2(va);		// error: cannot convert a vector<Apple> to a Fruit*
+    maul2(&va[0]);	// you asked for it
 
-    Apple& a0 = &aa[0];	// a Pear?
+    Apple& a0 = &va[0];	// a Pear?
 
 Note that the assignment in `maul2()` violated the no-slicing [Rule](#???).
 
