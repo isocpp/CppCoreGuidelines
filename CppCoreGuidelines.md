@@ -8181,8 +8181,8 @@ Macros do not obey scope rules.
 ##### Note
 
 Avoid macros if you can: [ES.30](#Res-macros), [ES.31](#Res-macros2), and [ES.32](#Res-ALL_CAPS).
-However, there are billions of lines of code literated with macros and a long tradition for using and overusing macros.
-If you are forced to use macros, use long names and supposedly unique prefixes (e.g., your organization's name) to lower the likelyhood of a clash.
+However, there are billions of lines of code littered with macros and a long tradition for using and overusing macros.
+If you are forced to use macros, use long names and supposedly unique prefixes (e.g., your organization's name) to lower the likelihood of a clash.
 
 ##### Enforcement
 
