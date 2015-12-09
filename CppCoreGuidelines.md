@@ -3141,9 +3141,55 @@ Placing them in the same namespace as the class makes their relationship to the 
 
 More precise statement of design intent, better readability, more errors caught by the compiler, more optimization opportunities.
 
-##### Example
+##### Example, bad
 
-    int Date::day() const { return d; }
+    class Shape
+    {
+    public:
+        // ...
+        virtual int getArea() = 0;
+        virtual bool isVisible() = 0;
+    };
+    
+    // ...
+    
+    int calculateTwiceTheArea(const Shape& shape)
+    {
+        return 2 * shape.getArea();  // You can't do that - getArea is not `const`!
+    }
+    
+    /* Alternative version of calculateTwiceTheArea function */
+    int calculateTwiceTheArea(Shape& shape)
+    {
+        return 2 * shape.getArea(); // Now it works but `shape` has become an in/out parameter!
+    }
+
+Besides the above issues, as a user of `Shape` interface not knowing its implementation, it is risky to use both `getArea` and `isVisible` methods because you don't know whether they change its state or not. In a nightmare-case scenario calling `getArea` invokes some rendering-based computations and even if `Shape` is not visible, after `getArea` being called, `isVisible` returns `true`. It can happen because creator of the interface has not guaranteed that `getArea` method cannot change its state. Consider such an example method:
+
+    void mergeShapes(Shape& shape1, Shape& shape2)
+    {
+        if (shape1.getArea() == shape2.getArea() && shape1.isVisible() && shape2.isVisible())
+        {
+            // ... (some fancy merging algorithm)
+            
+            // Notice - if `getArea` had impact on `isVisible` it could make this clause to be unneccessarily executed (or the opposite)
+        }
+    }
+
+##### Example, good
+
+    class Shape
+    {
+    public:
+        // ...
+        virtual int getArea() const = 0;
+        virtual bool isVisible() const = 0;
+        // It's guaranteed by the interface that state will not change when above methods are called
+    };
+
+##### Note
+
+Always declare getters and checker methods (e.g. `isVisible`, `areEqual`, etc) as `const`.
 
 ##### Note
 
@@ -3151,7 +3197,8 @@ More precise statement of design intent, better readability, more errors caught 
 
 ##### Enforcement
 
-Flag non-`const` member functions that do not write to their objects
+* (Simple) Flag non-`const` member functions that do not write to their objects
+* (Moderate) Flag non-`const` methods with names beginning with words like "get", "is", "are", "has", ...
 
 ## <a name="SS-concrete"></a> C.concrete: Concrete types
 
