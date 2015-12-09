@@ -3172,7 +3172,8 @@ Besides the above issues, as a user of `Shape` interface not knowing its impleme
         {
             // ... (some fancy merging algorithm)
             
-            // Notice - if `getArea` had impact on `isVisible` it could make this clause to be unneccessarily executed (or the opposite)
+            // Notice - if `getArea` had impact on `isVisible`,
+            // it could make this clause to be unneccessarily executed (or the opposite)
         }
     }
 
@@ -3198,7 +3199,7 @@ Always declare getters and checker methods (e.g. `isVisible`, `areEqual`, etc) a
 ##### Enforcement
 
 * (Simple) Flag non-`const` member functions that do not write to their objects
-* (Moderate) Flag non-`const` methods with names beginning with words like "get", "is", "are", "has", ...
+* (Moderate) Flag non-`const` methods with names beginning with words like `get`, `is`, `are`, `has`, ...
 
 ## <a name="SS-concrete"></a> C.concrete: Concrete types
 
