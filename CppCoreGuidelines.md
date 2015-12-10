@@ -12866,7 +12866,7 @@ These assertions is currently macros (yuck!) pending standard commission decisio
 * `narrow`		// `narrow<T>(x)` is `static_cast<T>(x)` if `static_cast<T>(x) == x` or it throws `narrowing_error`
 * `[[implicit]]`	// "Marker" to put on single-argument constructors to explicitly make them non-explicit.
 * `move_owner`	// `p = move_owner(q)` means `p = q` but ???
-* `writeonly`   // `writeonly<T>` where `T` is a pointer, reference or span; only non-`const` operations on the `T` object
+* `writeonly`   // `writeonly<prs<T>>` where `prs` is a pointer, reference or span; only non-`const` operations on `T`
 
 ## <a name="SS-gsl-concepts"></a> GSL.concept: Concepts
 
