@@ -13004,7 +13004,7 @@ This is not evil.
 
 Some styles distinguishes types from non-types.
 
-    typename<typename T>
+    template<typename T>
     class Hash_tbl {	// maps string to T
         // ...
     };
