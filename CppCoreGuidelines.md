@@ -1637,7 +1637,7 @@ The standard-library `merge()` is at the limit of what we can comfortably handle
                          OutputIterator result, Compare comp);
 
 Here, we have four template arguments and six function arguments.
-To simplify the most frequent and simplest uses, the comparison argument can be defaulted to `<`:
+To simplify the most frequent and simplest uses, the comparison argument can be defaulted to `operator<`:
 
     template<class InputIterator1, class InputIterator2, class OutputIterator>
     OutputIterator merge(InputIterator1 first1, InputIterator1 last1,
