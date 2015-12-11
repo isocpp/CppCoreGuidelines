@@ -607,7 +607,7 @@ We can of course pass the number of elements along with the pointer:
         f2(new int[n], m);    // bad: the wrong number of elements can be passed to f()
     }
 
-Passing the number of elements as an argument is better (and far more common) that just passing the pointer and relying on some (unstated) convention for knowing or discovering the number of elements. However (as shown), a simple typo can introduce a serious error. The connection between the two arguments of `f2()` is conventional, rather than explicit.
+Passing the number of elements as an argument is better (and far more common) than just passing the pointer and relying on some (unstated) convention for knowing or discovering the number of elements. However (as shown), a simple typo can introduce a serious error. The connection between the two arguments of `f2()` is conventional, rather than explicit.
 
 Also, it is implicit that `f2()` is supposed to `delete` its argument (or did the caller make a second mistake?).
 
