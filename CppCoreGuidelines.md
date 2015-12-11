@@ -10531,7 +10531,7 @@ Examples of complete sets are
 ##### Reason
 
 A meaningful/useful concept has a semantic meaning.
-Expressing this semantics in a informal, semi-formal, or informal way makes the concept comprehensible to readers and the effort to express it can catch conceptual errors.
+Expressing this semantics in a informal, semi-formal, or formal way makes the concept comprehensible to readers and the effort to express it can catch conceptual errors.
 Specifying semantics is a powerful design tool.
 
 ##### Example
@@ -10587,7 +10587,7 @@ Otherwise they cannot be distinguished automatically by the compiler.
 ##### Example
 
     template<typename I>
-    concept bool Input_iterator = requires (I iter) { ++iter; };
+    concept bool Input_iter = requires (I iter) { ++iter; };
 
     template<typename I>
     concept bool Fwd_iter = Input_iter<I> && requires (I iter) { iter++; }
@@ -11183,7 +11183,7 @@ Assume that `Apple` and `Pear` are two kinds of `Fruit`s.
     void maul(Fruit* p)
     {
         *p = Pear{};	// put a Pear into *p
-        p[1] = Pear{};	// put a Pear into p[2]
+        p[1] = Pear{};	// put a Pear into p[1]
     }
 
     Apple aa [] = { an_apple, another_apple };	// aa contains Apples (obviously!)
@@ -11802,7 +11802,7 @@ Including entities subject to the one-definition rule leads to linkage errors.
 
 **Alternative formulation**: A `.h` file must contain only:
 
-* `#include`s of other `.h` files (possibly with include guards
+* `#include`s of other `.h` files (possibly with include guards)
 * templates
 * class definitions
 * function declarations
