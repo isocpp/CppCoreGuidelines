@@ -2047,7 +2047,7 @@ This is C++14. For C++11, use a recursive formulation of `fac()`.
 `constexpr` does not guarantee compile-time evaluation;
 it just guarantees that the function can be evaluated at compile time for constant expression arguments if the programmer requires it or the compiler decides to do so to optimize.
 
-    constexpr int min(int x, int y) { return x < y ? x : y;}
+    constexpr int min(int x, int y) { return x < y ? x : y; }
 
     void test(int v)
     {
