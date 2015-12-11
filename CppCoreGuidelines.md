@@ -3193,10 +3193,10 @@ You need a reason (use cases) for using a hierarchy.
     void use()
     {
         Point1 p11 {1, 2};    // make an object on the stack
-        Point1 p12 {p11};    // a copy
+        Point1 p12 {p11};     // a copy
 
         auto p21 = make_unique<Point2>(1, 2);    // make an object on the free store
-        auto p22 = p21.clone();                    // make a copy
+        auto p22 = p21.clone();                  // make a copy
 
         // ...
     }
@@ -3343,7 +3343,7 @@ It's the simplest and gives the cleanest semantics.
         map<int, int> rep;
     };
 
-    Named_map nm;        // default construct
+    Named_map nm;          // default construct
     Named_map nm2 {nm};    // copy construct
 
 Since `std::map` and `string` have all the special functions, no further work is needed.
@@ -4245,7 +4245,7 @@ Makes it explicit that the same value is expected to be used in all constructors
         int j;
     public:
         X() :i{666}, s{"qqq"} { }    // j is uninitialized
-        X(int ii) :i{ii} {}            // s is "" and j is uninitialized
+        X(int ii) :i{ii} {}          // s is "" and j is uninitialized
         // ...
     };
 
@@ -4258,7 +4258,7 @@ How would a maintainer know whether `j` was deliberately uninitialized (probably
         string s {"qqq"};
         int j {0};
     public:
-        X2() = default;            // all members are initialized to their defaults
+        X2() = default;             // all members are initialized to their defaults
         X2(int ii) :i{ii} {}        // s and j initialized to their defaults
         // ...
     };
@@ -4307,7 +4307,7 @@ An initialization explicitly states that initialization, rather than assignment,
     class C {        // UGLY, aka very bad
         int* p;
     public:
-        C() { cout << *p; p = new int{10};    }    // accidental use before initialized
+        C() { cout << *p; p = new int{10}; }    // accidental use before initialized
         // ...
     };
 
@@ -4481,7 +4481,7 @@ It is simple and efficient. If you want to optimize for rvalues, provide an over
     Foo b;
     Foo f();
 
-    a = b;        // assign lvalue: copy
+    a = b;      // assign lvalue: copy
     a = f();    // assign rvalue: potentially move
 
 ##### Note
@@ -4540,7 +4540,7 @@ After a copy `x` and `y` can be independent objects (value semantics, the way no
     public:
         X();
         X(const X&);    // copy X
-        void modify();    // change the value of X
+        void modify();  // change the value of X
         // ...
         ~X() { delete[] p; }
     private:
@@ -4692,7 +4692,7 @@ That is the generally assumed semantics. After `x=std::move(y)` the value of `x`
     class X {    // OK: value semantics
     public:
         X();
-        X(X&& a);        // move X
+        X(X&& a);         // move X
         void modify();    // change the value of X
         // ...
         ~X() { delete[] p; }
@@ -4705,7 +4705,7 @@ That is the generally assumed semantics. After `x=std::move(y)` the value of `x`
     X::X(X&& a)
         :p{a.p}, sz{a.sz}    // steal representation
     {
-        a.p = nullptr;        // set to "empty"
+        a.p = nullptr;       // set to "empty"
         a.sz = 0;
     }
 
@@ -4806,7 +4806,7 @@ These copy operations do not throw.
     template<typename T>
     class Vector2 {
         // ...
-        Vector2(Vector2&& a) { *this = a; }                // just use the copy
+        Vector2(Vector2&& a) { *this = a; }               // just use the copy
         Vector2& operator=(Vector2&& a) { *this = a; }    // just use the copy
         // ...
     public:
@@ -5387,8 +5387,8 @@ Readability. Detection of mistakes. Explicit `override` allows the compiler to c
     };
 
     struct D : B {
-        void f1(int);        // warn: D::f1() hides B::f1()
-        void f2(int);        // warn: no explicit override
+        void f1(int);       // warn: D::f1() hides B::f1()
+        void f2(int);       // warn: no explicit override
         void f3(double);    // warn: D::f3() hides B::f3()
         // ...
     };
@@ -5884,7 +5884,7 @@ It also ensures exception safety in complex expressions.
 
     unique_ptr<Foo> p {new<Foo>{7}};    // OK: but repetitive
 
-    auto q = make_unique<Foo>(7);        // Better: no repetition of Foo
+    auto q = make_unique<Foo>(7);       // Better: no repetition of Foo
 
     // Not exception-safe: the compiler may interleave the computations of arguments as follows:
     //
@@ -5937,9 +5937,9 @@ Subscripting the resulting base pointer will lead to invalid object access and p
 
     D a[] = { {1, 2}, {3, 4}, {5, 6} };
     B* p = a;    // bad: a decays to &a[0] which is converted to a B*
-    p[1].x = 7;    // overwrite D[0].y
+    p[1].x = 7;  // overwrite D[0].y
 
-    use(a);        // bad: a decays to &a[0] which is converted to a B*
+    use(a);      // bad: a decays to &a[0] which is converted to a B*
 
 ##### Enforcement
 
@@ -6538,7 +6538,7 @@ We can fix that problem by making ownership explicit:
     class X2 {
         // ...
     public:
-        owner<T> p;    // OK: p is owning
+        owner<T> p;  // OK: p is owning
         T* q;        // OK: q is not owning
     };
 
@@ -6860,7 +6860,7 @@ Consider:
     void f()
     {
         X x;
-        X* p1 { new X };            // see also ???
+        X* p1 { new X };               // see also ???
         unique_ptr<T> p2 { new X };    // unique ownership; see also ???
         shared_ptr<T> p3 { new X };    // shared ownership; see also ???
     }
@@ -7654,7 +7654,7 @@ No, `i = 7` does not initialize `i`; it assigns to it. Also, `i` can be read in 
 
     void use(int arg)    // OK
     {
-        int i = 7;        // OK: initialized
+        int i = 7;       // OK: initialized
         string s;        // OK: default initialized
         // ...
     }
@@ -7885,7 +7885,7 @@ The rules for `{}` initialization are simpler, more general, less ambiguous, and
 
 For containers, there is a tradition for using `{...}` for a list of elements and `(...)` for sizes:
 
-    vector<int> v1(10);        // vector of 10 elements with the default value 0
+    vector<int> v1(10);     // vector of 10 elements with the default value 0
     vector<int> v2 {10};    // vector of 1 element with the value 10
 
 ##### Note
@@ -7933,9 +7933,9 @@ Use `={...}` if you really want an `initializer_list<T>`
     void f()
     {
         T x1(1);    // T initialized with 1
-        T x0();        // bad: function declaration (often a mistake)
+        T x0();     // bad: function declaration (often a mistake)
 
-        T y1 {1};    // T initialized with 1
+        T y1 {1};   // T initialized with 1
         T y0 {};    // default initialized T
         // ...
     }
@@ -7960,7 +7960,7 @@ Using `std::unique_ptr` is the simplest way to avoid leaks. And it is free compa
     void use(bool leak)
     {
         auto p1 = make_unique<int>(7);    // OK
-        int* p2 = new int{7};            // bad: might leak
+        int* p2 = new int{7};             // bad: might leak
         // ...
         if (leak) return;
         // ...
@@ -8225,8 +8225,8 @@ Statements control the flow of control (except for function calls and exception 
     void use(int n)
     {
         switch (n) {    // good
-        case 0:    // ...
-        case 7:    // ...
+        case 0:         // ...
+        case 7:         // ...
         }
     }
 
@@ -8725,7 +8725,7 @@ A key example is basic narrowing:
 The guideline support library offers a `narrow` operation for specifying that narrowing is acceptable and a `narrow` ("narrow if") that throws an exception if a narrowing would throw away information:
 
     i = narrow_cast<int>(d);        // OK (you asked for it): narrowing: i becomes 7
-    i = narrow<int>(d);                // OK: throws narrowing_error
+    i = narrow<int>(d);             // OK: throws narrowing_error
 
 We also include lossy arithmetic casts, such as from a negative floating point type to an unsigned integral type:
 
@@ -8756,8 +8756,8 @@ Consider:
 
     void f(int);
     void f(char*);
-    f(0);             // call f(int)
-    f(nullptr);     // call f(char*)
+    f(0);              // call f(int)
+    f(nullptr);        // call f(char*)
 
 ##### Enforcement
 
@@ -8809,10 +8809,10 @@ The named casts are:
 * `const_cast`
 * `reinterpret_cast`
 * `dynamic_cast`
-* `std::move`        // `move(x)` is an rvalue reference to `x`
-* `std::forward`    // `forward(x)` is an rvalue reference to `x`
+* `std::move`           // `move(x)` is an rvalue reference to `x`
+* `std::forward`        // `forward(x)` is an rvalue reference to `x`
 * `gsl::narrow_cast`    // `narrow_cast<T>(x)` is `static_cast<T>(x)`
-* `gsl::narrow`            // `narrow<T>(x)` is `static_cast<T>(x)` if `static_cast<T>(x) == x` or it throws `narrowing_error`
+* `gsl::narrow`         // `narrow<T>(x)` is `static_cast<T>(x)` if `static_cast<T>(x) == x` or it throws `narrowing_error`
 
 ##### Example
 
@@ -8902,7 +8902,7 @@ That's what the language requires and mistakes can lead to resource release erro
     {
         auto p = new X[n];    // n default constructed Xs
         // ...
-        delete p;            // error: just delete the object p, rather than delete the array p[]
+        delete p;             // error: just delete the object p, rather than delete the array p[]
     }
 
 ##### Note
@@ -10402,7 +10402,7 @@ Hard.
 ##### Example
 
     vector<string> v;
-    auto& x = v.front();    // bad
+    auto& x = v.front();      // bad
     String& s = v.begin();    // good
 
 ##### Enforcement
@@ -10421,12 +10421,12 @@ To say "`T` is `Sortable`":
 
     template<typename T>        // Correct but verbose: "The parameter is
         requires Sortable<T>    // of type T which is the name of a type
-    void sort(T&);                // that is Sortable"
+    void sort(T&);              // that is Sortable"
 
     template<Sortable T>        // Better: "The parameter is of type T
-    void sort(T&);                // which is Sortable"
+    void sort(T&);              // which is Sortable"
 
-    void sort(Sortable&);        // Best: "The parameter is Sortable"
+    void sort(Sortable&);       // Best: "The parameter is Sortable"
 
 The shorter versions better match the way we speak. Note that many templates don't need to use the `template` keyword.
 
@@ -10460,7 +10460,7 @@ and should be used only as building blocks for meaningful concepts, rather than 
 
     int x = 7;
     int y = 9;
-    auto z = plus(x, y);    // z = 16
+    auto z = plus(x, y);       // z = 16
 
     string xx = "7";
     string yy = "9";
@@ -10490,7 +10490,7 @@ The ability to specify a meaningful semantics is a defining characteristic of a 
 
     int x = 7;
     int y = 9;
-    auto z = plus(x, y);    // z = 18
+    auto z = plus(x, y);       // z = 18
 
     string xx = "7";
     string yy = "9";
@@ -10701,14 +10701,14 @@ In general, passing function objects give better performance than passing pointe
 ##### Example
 
     bool greater(double x, double y) { return x>y; }
-    sort(v, greater);                                // pointer to function: potentially slow
-    sort(v, [](double x, double y) { return x>y; });    // function object
-    sort(v, greater<>);                                // function object
+    sort(v, greater);                                     // pointer to function: potentially slow
+    sort(v, [](double x, double y) { return x>y; });      // function object
+    sort(v, greater<>);                                   // function object
 
     bool greater_than_7(double x) { return x>7; }
-    auto x = find_if(v, greater_than_7);                // pointer to function: inflexible
+    auto x = find_if(v, greater_than_7);                  // pointer to function: inflexible
     auto y = find_if(v, [](double x) { return x>7; });    // function object: carries the needed data
-    auto y = find_if(v, Greater_than<double>(7));        // function object: carries the needed data
+    auto y = find_if(v, Greater_than<double>(7));         // function object: carries the needed data
 
     ??? these lambdas are crying out for auto parameters -- any objection to making the change?
 
@@ -10786,7 +10786,7 @@ Uniformity: `using` is syntactically similar to `auto`.
 
 ##### Example
 
-    typedef int (*PFI)(int);    // OK, but convoluted
+    typedef int (*PFI)(int);      // OK, but convoluted
 
     using PFI2 = int (*)(int);    // OK, preferred
 
@@ -10794,7 +10794,7 @@ Uniformity: `using` is syntactically similar to `auto`.
     typedef int (*PFT)(T);        // error
 
     template<typename T>
-    using PFT2 = int (*)(T);    // OK
+    using PFT2 = int (*)(T);      // OK
 
 ##### Enforcement
 
@@ -11182,7 +11182,7 @@ Assume that `Apple` and `Pear` are two kinds of `Fruit`s.
 
     void maul(Fruit* p)
     {
-        *p = Pear{};    // put a Pear into *p
+        *p = Pear{};      // put a Pear into *p
         p[1] = Pear{};    // put a Pear into p[1]
     }
 
@@ -11276,13 +11276,13 @@ It could be a base class:
         Link* pre;
     };
 
-    template<typename T>    // templated wrapper to add type safety
+    template<typename T>      // templated wrapper to add type safety
     struct Link : Link_base {
         T val;
     };
 
     struct List_base {
-        Link_base* first;    // first element (if any)
+        Link_base* first;      // first element (if any)
         int sz;                // number of elements
         void add_front(Link_base* p);
         // ...
@@ -11292,7 +11292,7 @@ It could be a base class:
     class List : List_base {
     public:
         void put_front(const T& e) { add_front(new Link<T>{e}); }    // implicit cast to Link_base
-        T& front() { static_cast<Link<T>*>(first).val; }            // explicit cast back to Link<T>
+        T& front() { static_cast<Link<T>*>(first).val; }             // explicit cast back to Link<T>
         // ...
     };
 
@@ -11668,7 +11668,7 @@ It provides better support for high-level programming and often generates faster
     char ch = 7;
     void* pv = &ch;
     int* pi = pv;    // not C++
-    *pi = 999;        // overwrite sizeof(int) bytes near &ch
+    *pi = 999;       // overwrite sizeof(int) bytes near &ch
 
 ##### Enforcement
 
@@ -12783,10 +12783,10 @@ References are never owners.
 
 The names are mostly ISO standard-library style (lower case and underscore):
 
-* `T*`            // The `T*` is not an owner, may be null; assumed to be pointing to a single element.
-* `char*`        // A C-style string (a zero-terminated array of characters); may be null.
-* `const char*`     // A C-style string; may be null.
-* `T&`            // The `T&` is not an owner and can never be a "null reference"; references are always bound to objects.
+* `T*`             // The `T*` is not an owner, may be null; assumed to be pointing to a single element.
+* `char*`          // A C-style string (a zero-terminated array of characters); may be null.
+* `const char*`    // A C-style string; may be null.
+* `T&`             // The `T&` is not an owner and can never be a "null reference"; references are always bound to objects.
 
 The "raw-pointer" notation (e.g. `int*`) is assumed to have its most common meaning; that is, a pointer points to an object, but does not own it.
 Owners should be converted to resource handles (e.g., `unique_ptr` or `vector<T>`) or marked `owner<T*>`
@@ -12807,13 +12807,13 @@ An `owner<T>` is assumed to refer to an object on the free store (heap).
 
 If something is not supposed to be `nullptr`, say so:
 
-* `not_null<T>`        // `T` is usually a pointer type (e.g., `not_null<int*>` and `not_null<owner<Foo*>>`) that may not be `nullptr`.
+* `not_null<T>`    // `T` is usually a pointer type (e.g., `not_null<int*>` and `not_null<owner<Foo*>>`) that may not be `nullptr`.
   `T` can be any type for which `==nullptr` is meaningful.
 
-* `span<T>`    // [`p`:`p+n`), constructor from `{p, q}` and `{p, n}`; `T` is the pointer type
-* `span_p<T>`    // `{p, predicate}` [`p`:`q`) where `q` is the first element for which `predicate(*p)` is true
-* `string_span`        // `span<char>`
-* `cstring_span`    // `span<const char>`
+* `span<T>`        // [`p`:`p+n`), constructor from `{p, q}` and `{p, n}`; `T` is the pointer type
+* `span_p<T>`      // `{p, predicate}` [`p`:`q`) where `q` is the first element for which `predicate(*p)` is true
+* `string_span`    // `span<char>`
+* `cstring_span`   // `span<const char>`
 
 A `span<T>` refers to zero or more mutable `T`s unless `T` is a `const` type.
 
@@ -12822,7 +12822,7 @@ A `char*` that points to something that is not a C-style string (e.g., a pointer
 There is no really good way to say "pointer to a single `char`" (`string_span{p, 1}` can do that, and `T*` where `T` is a `char` in a template that has not been specialized for C-style strings).
 
 * `zstring`        // a `char*` supposed to be a C-style string; that is, a zero-terminated sequence of `char` or `null_ptr`
-* `czstring`    // a `const char*` supposed to be a C-style string; that is, a zero-terminated sequence of `const` `char` or `null_ptr`
+* `czstring`       // a `const char*` supposed to be a C-style string; that is, a zero-terminated sequence of `const` `char` or `null_ptr`
 
 Logically, those last two aliases are not needed, but we are not always logical, and they make the distinction between a pointer to one `char` and a pointer to a C-style string explicit.
 A sequence of characters that is not assumed to be zero-terminated should be a `char*`, rather than a `zstring`.
@@ -12849,11 +12849,11 @@ These assertions is currently macros (yuck!) pending standard commission decisio
 
 ## <a name="SS-utilities"></a> GSL.util: Utilities
 
-* `finally`        // `finally(f)` makes a `final_action{f}` with a destructor that invokes `f`
-* `narrow_cast`    // `narrow_cast<T>(x)` is `static_cast<T>(x)`
-* `narrow`        // `narrow<T>(x)` is `static_cast<T>(x)` if `static_cast<T>(x) == x` or it throws `narrowing_error`
+* `finally`         // `finally(f)` makes a `final_action{f}` with a destructor that invokes `f`
+* `narrow_cast`     // `narrow_cast<T>(x)` is `static_cast<T>(x)`
+* `narrow`          // `narrow<T>(x)` is `static_cast<T>(x)` if `static_cast<T>(x) == x` or it throws `narrowing_error`
 * `[[implicit]]`    // "Marker" to put on single-argument constructors to explicitly make them non-explicit.
-* `move_owner`    // `p = move_owner(q)` means `p = q` but ???
+* `move_owner`      // `p = move_owner(q)` means `p = q` but ???
 
 ## <a name="SS-gsl-concepts"></a> GSL.concept: Concepts
 
@@ -13896,7 +13896,7 @@ To avoid extremely hard-to-find errors. Dereferencing such a pointer is undefine
         string* p = bad();
         vector<int> xx = {7, 8, 9};
         string x = *p;        // undefined behavior: x may not be 1
-        *p = "Evil!";        // undefined behavior: we don't know what (if anything) is allocated a location p
+        *p = "Evil!";         // undefined behavior: we don't know what (if anything) is allocated a location p
     }
 
 The `string`s of `v` are destroyed upon exit from `bad()` and so is `v` itself. The returned pointer points to unallocated memory on the free store. This memory (pointed into by `p`) may have been reallocated by the time `*p` is executed. There may be no `string` to read and a write through `p` could easily corrupt objects of unrelated types.
