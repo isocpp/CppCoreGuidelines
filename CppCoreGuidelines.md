@@ -8551,9 +8551,9 @@ A programmer should know and use the basic rules for expressions.
 
 ##### Example
 
-    x=k * y + z;              // OK
+    x = k * y + z;              // OK
 
-    auto t1 = k*y;        // bad: unnecessarily verbose
+    auto t1 = k * y;        // bad: unnecessarily verbose
     x = t1 + z;
 
     if (0 <= x && x < max)     // OK
@@ -8595,7 +8595,7 @@ Note: We recommend that programmers know their precedence table for the arithmet
 
 You should know enough not to need parentheses for:
 
-    if (a<0 || a<=max) {
+    if (a < 0 || a <= max) {
         // ...
     }
 
