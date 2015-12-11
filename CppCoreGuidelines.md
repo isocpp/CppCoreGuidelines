@@ -2342,7 +2342,7 @@ Unique owner types that are move-only and cheap-to-move, such as `unique_ptr`, c
 
 If the object is to be passed onward to other code and not directly used by this function, we want to make this function agnostic to the argument `const`-ness and rvalue-ness.
 
-In that case, and only that case, make the parameter `TP&&` where `TP` is a template type parameter -- it both *ignores* and *preserves* `const`-ness and rvalue-ness. Therefore any code that uses a `T&&` is implicitly declaring that it itself doesn't care about the variable's `const`'-ness and rvalue-ness (because it is ignored), but that intends to pass the value onward to other code that does care about `const`-ness and rvalue-ness (because it is preserved). When used as a parameter `TP&&` is safe because any temporary objects passed from the caller will live for the duration of the function call. A parameter of type `TP&&` should essentially always be passed onward via `std::forward` in the body of the function.
+In that case, and only that case, make the parameter `TP&&` where `TP` is a template type parameter -- it both *ignores* and *preserves* `const`-ness and rvalue-ness. Therefore any code that uses a `T&&` is implicitly declaring that it itself doesn't care about the variable's `const`-ness and rvalue-ness (because it is ignored), but that intends to pass the value onward to other code that does care about `const`-ness and rvalue-ness (because it is preserved). When used as a parameter `TP&&` is safe because any temporary objects passed from the caller will live for the duration of the function call. A parameter of type `TP&&` should essentially always be passed onward via `std::forward` in the body of the function.
 
 ##### Example
 
@@ -14144,7 +14144,7 @@ Alternatively, we will decide that no change is needed and delete the entry.
 * Const member functions should be thread safe "¦ aka, but I don't really change the variable, just assign it a value the first time its called "¦ argh
 * Always initialize variables, use initialization lists for member variables.
 * Anyone writing a public interface which takes or returns void* should have their toes set on fire. That one has been a personal favorite of mine for a number of years. :)
-* Use `const`'ness wherever possible: member functions, variables and (yippee) `const_iterators`
+* Use `const`-ness wherever possible: member functions, variables and (yippee) `const_iterators`
 * Use `auto`
 * `(size)` vs. `{initializers}` vs. `{Extent{size}}`
 * Don't overabstract
