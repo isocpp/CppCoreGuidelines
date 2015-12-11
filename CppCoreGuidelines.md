@@ -35,6 +35,7 @@ You can [read an explanation of the scope and structure of this Guide](#S-abstra
 * [R: Resource management](#S-resource)
 * [ES: Expressions and statements](#S-expr)
 * [E: Error handling](#S-errors)
+* [Con: Constants and immutability](#S-const)
 * [T: Templates and generic programming](#S-templates)
 * [CP: Concurrency](#S-concurrency)
 * [SL: The Standard library](#S-stdlib)
