@@ -964,7 +964,7 @@ Reporting through non-local variables (e.g., `errno`) is easily ignored. For exa
 
     fprintf(connection, "logging: %d %d %d\n", x, y, s); // don't: no test of printf's return value
 
-What if the connection goes down so that no logging output is produced? See Rule I.??.
+What if the connection goes down so that no logging output is produced? See I.??.
 
 **Alternative**: Throw an exception. An exception cannot be ignored.
 
@@ -1432,7 +1432,7 @@ We don't consider "performance" a valid reason not to use exceptions.
 * A good rule for performance critical code is to move checking outside the critical part of the code ([checking](#Rper-checking)).
 * In the longer term, more regular code gets better optimized.
 
-**See also**: Rule I.??? and I.??? for reporting precondition and postcondition violations.
+**See also**: I.??? and I.??? for reporting precondition and postcondition violations.
 
 ##### Enforcement
 
@@ -2202,7 +2202,7 @@ Not possible.
 There are a variety of ways to pass parameters to a function and to return values.
 
 
-### <a name="Rf-conventional"></a> Rule F.15: Prefer simple and conventional ways of passing information
+### <a name="Rf-conventional"></a> F.15: Prefer simple and conventional ways of passing information
 
 ##### Reason
 
@@ -2217,7 +2217,7 @@ The following tables summarize the advice in the following Guidelines, F.16-21.
 
 
 
-### <a name="Rf-in"></a> Rule F.16: For "in" parameters, pass cheaply copied types by value and others by reference to `const`
+### <a name="Rf-in"></a> F.16: For "in" parameters, pass cheaply copied types by value and others by reference to `const`
 
 ##### Reason
 
@@ -2285,7 +2285,7 @@ If you need the notion of an optional value, use a pointer, `std::optional`, or 
 * (Simple) ((Foundation)) Warn when a `const` parameter being passed by reference is `move`d.
 
 
-### <a name="Rf-inout"></a> Rule F.17: For "in-out" parameters, pass by reference to non-`const`
+### <a name="Rf-inout"></a> F.17: For "in-out" parameters, pass by reference to non-`const`
 
 ##### Reason
 
@@ -2320,7 +2320,7 @@ If the writer of `g()` makes an assumption about the size of `buffer` a bad logi
 * (Simple) ((Foundation)) Warn when a non-`const` parameter being passed by reference is `move`d.
 
 
-### <a name="Rf-consume"></a> Rule F.18: For "consume" parameters, pass by `X&&` and `std::move` the parameter
+### <a name="Rf-consume"></a> F.18: For "consume" parameters, pass by `X&&` and `std::move` the parameter
 
 ##### Reason
 
@@ -2336,7 +2336,7 @@ Unique owner types that are move-only and cheap-to-move, such as `unique_ptr`, c
 * Don't conditionally move from objects
 
 
-### <a name="Rf-forward"></a> Rule F.19: For "forward" parameters, pass by `TP&&` and only `std::forward` the parameter
+### <a name="Rf-forward"></a> F.19: For "forward" parameters, pass by `TP&&` and only `std::forward` the parameter
 
 ##### Reason
 
@@ -2356,7 +2356,7 @@ In that case, and only that case, make the parameter `TP&&` where `TP` is a temp
 * Flag a function that takes a `TP&&` parameter (where `TP` is a template type parameter name) and does anything with it other than `std::forward`ing it exactly once on every static path.
 
 
-### <a name="Rf-out"></a> Rule F.20: For "out" output values, prefer return values to output parameters
+### <a name="Rf-out"></a> F.20: For "out" output values, prefer return values to output parameters
 
 ##### Reason
 
@@ -2399,7 +2399,7 @@ A struct of many (individually cheap-to-move) elements may be in aggregate expen
 * Flag reference to non-`const` parameters that are not read before being written to and are a type that could be cheaply returned; they should be "out" return values.
 
 
-### <a name="Rf-out-multi"></a> Rule F.21: To return multiple "out" values, prefer returning a tuple or struct
+### <a name="Rf-out-multi"></a> F.21: To return multiple "out" values, prefer returning a tuple or struct
 
 ##### Reason
 
@@ -6402,7 +6402,7 @@ Here, we ignore such cases.
   * [R.36: Take a `const shared_ptr<widget>&` parameter to express that it might retain a reference count to the object ???](#Rr-sharedptrparam-const)
   * [R.37: Do not pass a pointer or reference obtained from an aliased smart pointer](#Rr-smartptrget)
 
-### <a name="Rr-raii"></a> Rule R.1: Manage resources automatically using resource handles and RAII (Resource Acquisition Is Initialization)
+### <a name="Rr-raii"></a> R.1: Manage resources automatically using resource handles and RAII (Resource Acquisition Is Initialization)
 
 ##### Reason
 
@@ -6847,7 +6847,7 @@ Flag incomplete pairs.
 
 ## <a name="SS-smart"></a> R.smart: Smart pointers
 
-### <a name="Rr-owner"></a> Rule R.20: Use `unique_ptr` or `shared_ptr` to represent ownership
+### <a name="Rr-owner"></a> R.20: Use `unique_ptr` or `shared_ptr` to represent ownership
 
 ##### Reason
 
@@ -6871,7 +6871,7 @@ This will leak the object used to initialize `p1` (only).
 
 (Simple) Warn if the return value of `new` or a function call with return value of pointer type is assigned to a raw pointer.
 
-### <a name="Rr-unique"></a> Rule R.21: Prefer `unique_ptr` over `shared_ptr` unless you need to share ownership
+### <a name="Rr-unique"></a> R.21: Prefer `unique_ptr` over `shared_ptr` unless you need to share ownership
 
 ##### Reason
 
@@ -6920,7 +6920,7 @@ The `make_shared()` version mentions `X` only once, so it is usually shorter (as
 
 (Simple) Warn if a `shared_ptr` is constructed from the result of `new` rather than `make_shared`.
 
-### <a name="Rr-make_unique"></a> Rule R.23: Use `make_unique()` to make `unique_ptr`s
+### <a name="Rr-make_unique"></a> R.23: Use `make_unique()` to make `unique_ptr`s
 
 ##### Reason
 
