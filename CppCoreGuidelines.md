@@ -1,6 +1,6 @@
 # <a name="main"></a> C++ Core Guidelines
 
-December 9, 2015
+December 10, 2015
 
 Editors:
 
@@ -1796,7 +1796,7 @@ Parameter passing expression rules:
 * [F.17: For "in-out" parameters, pass by reference to non-`const`](#Rf-inout)
 * [F.18: For "consume" parameters, pass by `X&&` and `std::move` the parameter](#Rf-consume)
 * [F.19: For "forward" parameters, pass by `TP&&` and only `std::forward` the parameter](#Rf-forward)
-* [F.20: For "out" output values, prefer return values to output parameters](#Rf-out)
+* [F.20: For "out" output values, prefer return by value, otherwise pass by `writeonly`](#Rf-out)
 * [F.21: To return multiple "out" values, prefer returning a tuple or struct](#Rf-out-multi)
 
 Parameter passing semantic rules:
@@ -2356,21 +2356,23 @@ In that case, and only that case, make the parameter `TP&&` where `TP` is a temp
 * Flag a function that takes a `TP&&` parameter (where `TP` is a template type parameter name) and does anything with it other than `std::forward`ing it exactly once on every static path.
 
 
-### <a name="Rf-out"></a> Rule F.20: For "out" output values, prefer return values to output parameters
+### <a name="Rf-out"></a> Rule F.20: For "out" output values, prefer return by value, otherwise pass by `writeonly`
 
 ##### Reason
 
-A return value is self-documenting, whereas a `&` could be either in-out or out-only and is liable to be misused.
+Both are self-documenting. Returning by value expresses "callee-allocated out" which is the most common case; return by value is appropriate even for large objects like standard containers that use implicit move operations for performance and to avoid explicit memory management. A `writeonly` parameter expresses "caller-allocated out" such as to reuse an existing object's capacity, and it can enforce that the input contents are not read; for example, `writeonly<string&>` or `writeonly<span<int>>`.
 
-This includes large objects like standard containers that use implicit move operations for performance and to avoid explicit memory management.
+A naked `&` parameter should only mean in-out.
 
 If you have multiple values to return, [use a tuple](#Rf-out-multi) or similar multi-member type.
 
 ##### Example
 
-    vector<const int*> find_all(const vector<int>&, int x);  // OK: return pointers to elements with the value x
+    vector<const int*> find_all(const vector<int>&, int x);  // OK: preferred default way to return pointers to elements with the value x
 
-    void find_all(const vector<int>&, vector<const int*>& out, int x);  // Bad: place pointers to elements with value x in out
+    void find_all(const vector<int>&, vector<const int*>& out, int x);  // Bad: is "out" an in-out parameter?
+
+    void find_all(const vector<int>&, writeonly<vector<const int*>&> out, int x);  // OK: caller-allocated out parameter, allows reusing the vector's capacity
 
 ##### Note
 
@@ -2379,7 +2381,7 @@ A struct of many (individually cheap-to-move) elements may be in aggregate expen
 ##### Exceptions
 
 * For non-value types, such as types in an inheritance hierarchy, return the object by `unique_ptr` or `shared_ptr`.
-* If a type is expensive to move (e.g., `array<BigPOD>`), consider allocating it on the free store and return a handle (e.g., `unique_ptr`), or passing it in a non-`const` reference to a target object to fill (to be used as an out-parameter).
+* If a type is expensive to move (e.g., `array<BigPOD>`), prefer passing it as a `writeonly` "out" parameter to be filled; but if that is not appropriate for some reason, consider allocating it on the free store and return an owning handle (e.g., `unique_ptr`).
 * In the special case of allowing a caller to reuse an object that carries capacity (e.g., `std::string`, `std::vector`) across multiple calls to the function in an inner loop, treat it as an in/out parameter instead and pass by `&`. This is one use of the more generally named "caller-allocated out" pattern.
 
 ##### Example
@@ -2396,7 +2398,8 @@ A struct of many (individually cheap-to-move) elements may be in aggregate expen
     void val(int&);       // Bad: Is val reading its argument
 
 ##### Enforcement
-* Flag non-`const` reference parameters that are not read before being written to and are a type that could be cheaply returned; they should be "out" return values.
+* Flag non-`const` reference parameters that are not read before being written to and are a type that could be cheaply returned; they should be "out" return values or `writeonly`.
+* For a `writeonly<T&>`, `writeonly<T*>` or smart pointer, or `writeonly<span<T>>`: flag any `const T` operation, and require at least one non-`const T` operation on every static code path.
 
 
 ### <a name="Rf-out-multi"></a> Rule F.21: To return multiple "out" values, prefer returning a tuple or struct
@@ -7734,16 +7737,25 @@ Many such errors are introduced during maintenance years after the initial imple
 It you are declaring an object that is just about to be initialized from input, initializing it would cause a double initialization.
 However, beware that this may leave uninitialized data beyond the input - and that has been a fertile source of errors and security breaches:
 
-    constexpr int max = 8*1024;
-    int buf[max];					// OK, but suspicious: uninitialized
-    f.read(buf, max);
+    void read(int* buf, int len);   // bad
 
-The cost of initializing that array could be significant in some situations.
+    constexpr int max = 8*1024;
+    int buf[max];                   // OK, but suspicious: uninitialized
+    read(buf, max);                 // no static guarantee that the uninitalized values are not read
+
 However, such examples do tend to leave uninitialized variables accessible, so they should be treated with suspicion.
 
     constexpr int max = 8*1024;
     int buf[max] = {0};				// better in some situations
-    f.read(buf, max);
+    read(buf, max);
+
+The cost of initializing that array could be significant in some situations. If so, prefer:
+
+    void read(writeonly<span<int>>); // good, bounds-safe + enforce that it will (only) write to the buffer
+
+    constexpr int max = 8*1024;
+    int buf[max];                   // OK, because it avoids the cost of redundant initialization, and...
+    read(buf);                      // ... writeonly guarantees the uninitialized values will not be read
 
 When feasible use a library function that is known not to overflow. For example:
 
@@ -12854,6 +12866,7 @@ These assertions is currently macros (yuck!) pending standard commission decisio
 * `narrow`		// `narrow<T>(x)` is `static_cast<T>(x)` if `static_cast<T>(x) == x` or it throws `narrowing_error`
 * `[[implicit]]`	// "Marker" to put on single-argument constructors to explicitly make them non-explicit.
 * `move_owner`	// `p = move_owner(q)` means `p = q` but ???
+* `writeonly`   // `writeonly<prs<T>>` where `prs` is a pointer, reference or span; only non-`const` operations on `T`
 
 ## <a name="SS-gsl-concepts"></a> GSL.concept: Concepts
 
