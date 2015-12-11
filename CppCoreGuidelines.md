@@ -1011,7 +1011,7 @@ Global constants are useful.
 
 The rule against global variables applies to namespace scope variables as well.
 
-**Alternative**: If you use global (more generally namespace scope data) to avoid copying, consider passing the data as an object by const reference.
+**Alternative**: If you use global (more generally namespace scope data) to avoid copying, consider passing the data as an object by reference to const.
 Another solution is to define the data as the state of some object and the operations as member functions.
 
 **Warning**: Beware of data races: If one thread can access nonlocal data (or data passed by reference) while another thread executes the callee, we can have a data race.
@@ -2228,7 +2228,7 @@ When copying is cheap, nothing beats the simplicity and safety of copying, and f
 
 ##### Example
 
-    void fct(const string& s);  // OK: pass by const reference; always cheap
+    void fct(const string& s);  // OK: pass by reference to const; always cheap
 
     void fct2(string s);        // bad: potentially expensive
 
@@ -2280,7 +2280,7 @@ If you need the notion of an optional value, use a pointer, `std::optional`, or 
 
 ##### Enforcement
 * (Simple) ((Foundation)) Warn when a parameter being passed by value has a size greater than `4 * sizeof(int)`.
-  Suggest using a `const` reference instead.
+  Suggest using a reference to `const` instead.
 * (Simple) ((Foundation)) Warn when a `const` parameter being passed by reference has a size less than `3 * sizeof(int)`. Suggest passing by value instead.
 * (Simple) ((Foundation)) Warn when a `const` parameter being passed by reference is `move`d.
 
@@ -2316,7 +2316,7 @@ Here, the writer of `g()` is supplying a buffer for `f()` to fill, but `f()` sim
 If the writer of `g()` makes an assumption about the size of `buffer` a bad logic error can happen.
 
 ##### Enforcement
-* (Moderate) ((Foundation)) Warn about functions with non-`const` reference arguments that do *not* write to them.
+* (Moderate) ((Foundation)) Warn about functions with reference to non-`const` parameters that do *not* write to them.
 * (Simple) ((Foundation)) Warn when a non-`const` parameter being passed by reference is `move`d.
 
 
@@ -2379,7 +2379,7 @@ A struct of many (individually cheap-to-move) elements may be in aggregate expen
 ##### Exceptions
 
 * For non-value types, such as types in an inheritance hierarchy, return the object by `unique_ptr` or `shared_ptr`.
-* If a type is expensive to move (e.g., `array<BigPOD>`), consider allocating it on the free store and return a handle (e.g., `unique_ptr`), or passing it in a non-`const` reference to a target object to fill (to be used as an out-parameter).
+* If a type is expensive to move (e.g., `array<BigPOD>`), consider allocating it on the free store and return a handle (e.g., `unique_ptr`), or passing it in a reference to non-`const` target object to fill (to be used as an out-parameter).
 * In the special case of allowing a caller to reuse an object that carries capacity (e.g., `std::string`, `std::vector`) across multiple calls to the function in an inner loop, treat it as an in/out parameter instead and pass by `&`. This is one use of the more generally named "caller-allocated out" pattern.
 
 ##### Example
@@ -2396,7 +2396,7 @@ A struct of many (individually cheap-to-move) elements may be in aggregate expen
     void val(int&);       // Bad: Is val reading its argument
 
 ##### Enforcement
-* Flag non-`const` reference parameters that are not read before being written to and are a type that could be cheaply returned; they should be "out" return values.
+* Flag reference to non-`const` parameters that are not read before being written to and are a type that could be cheaply returned; they should be "out" return values.
 
 
 ### <a name="Rf-out-multi"></a> Rule F.21: To return multiple "out" values, prefer returning a tuple or struct
@@ -7812,7 +7812,7 @@ or maybe:
 * Flag every uninitialized variable.
   Don't flag variables of user-defined types with default constructors.
 * Check that an uninitialized buffer is written into *immediately* after declaration.
-  Passing a uninitialized variable as a non-`const` reference argument can be assumed to be a write into the variable.
+  Passing a uninitialized variable as a reference to non-`const` argument can be assumed to be a write into the variable.
 
 ### <a name="Res-introduce"></a> ES.21: Don't introduce a variable (or constant) before you need to use it
 
