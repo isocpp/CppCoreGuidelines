@@ -464,7 +464,7 @@ Better:
 
     for (const auto& x : v) { /* do something with x */ }
 
-Now, there is no explicit mention of the iteration mechanism, and the loop operates on a copy of elements so that accidental modification cannot happen. If modification is desired, say so:
+Now, there is no explicit mention of the iteration mechanism, and the loop operates on a reference to `const` elements so that accidental modification cannot happen. If modification is desired, say so:
 
     for (auto& x : v) { /* do something with x */ }
 
