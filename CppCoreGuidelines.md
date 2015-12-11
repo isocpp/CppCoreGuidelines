@@ -1726,8 +1726,8 @@ You just knew that `Shape` would turn up somewhere :-)
 
     class Shape {  // bad: interface class loaded with data
     public:
-        Point center() { return c; }
-        virtual void draw();
+        Point center() const { return c; }
+        virtual void draw() const;
         virtual void rotate(int);
         // ...
     private:
@@ -1740,8 +1740,8 @@ This will force every derived class to compute a center -- even if that's non-tr
 
     class Shape {    // better: Shape is a pure interface
     public:
-        virtual Point center() = 0;   // pure virtual function
-        virtual void draw() = 0;
+        virtual Point center() const = 0;   // pure virtual function
+        virtual void draw() const = 0;
         virtual void rotate(int) = 0;
         // ...
         // ... no data members ...
