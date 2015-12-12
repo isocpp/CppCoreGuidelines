@@ -1,0 +1,67 @@
+<head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  <!-- Enable responsiveness on mobile devices-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>C++ Core Guidelines</title>
+
+  <!-- CSS, could be merged and minified for improved loading speed -->
+  <link rel="stylesheet" href="{{ site.baseurl }}public/css/poole.css">
+  <link rel="stylesheet" href="{{ site.baseurl }}public/css/syntax.css">
+  <link rel="stylesheet" href="{{ site.baseurl }}public/css/hyde.css">
+  <link rel="stylesheet" href="{{ site.baseurl }}public/css/custom.css">
+
+  <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=PT+Sans:400,400italic,700|Abril+Fatface|Roboto+Mono">
+
+  <meta name="description" content="{% if page.excerpt %}{{ page.excerpt | strip_html | strip_newlines | truncate: 160 }}{% else %}{{ site.description }}{% endif %}">
+
+  <!-- Include highlight.js 7 (8.8.0 did not work for me) -->
+  <link rel="stylesheet" href="http://yandex.st/highlightjs/7.5/styles/default.min.css">
+  <script src="http://yandex.st/highlightjs/7.5/highlight.min.js"></script>
+
+  <!-- Include jquery.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+
+  <script>hljs.initHighlightingOnLoad();</script>
+
+  <!-- make sure you include the latest version -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/1.3.0/anchor.min.js"></script>
+
+  <!-- No highlight on page load -->
+  <script type="text/javascript">
+    $( document ).ready(function() {
+     $("code").addClass("no-highlight");
+    });
+  </script>
+
+  <!-- AnchoJs links next to headers-->
+  <script type="text/javascript">
+    $( document ).ready(function () {
+      anchors.add("h1, h2, h3");
+    });
+  </script>
+
+  <!-- hack to toggle highlight on or off -->
+  <script type="text/javascript">
+    function stripSpans(i, spanTag) {
+      var text = spanTag.textContent || spanTag.innerText;
+      var node = document.createTextNode(text);
+      spanTag.parentNode.replaceChild(node, spanTag);
+    }
+    $(function() {
+      $("button")
+        .click(function( event ) {
+          $("pre code").toggleClass("cpp");
+          $("pre code").toggleClass("no-highlight");
+          $("pre code").each(function(i, block) {
+            hljs.highlightBlock(block);
+          });
+          $("code.language-text.no-highlight").find("span").each(stripSpans);
+        });
+    });
+  </script>
+</head>
+

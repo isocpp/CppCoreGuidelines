@@ -1,0 +1,57 @@
+<div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <h3>
+        <a href="{{ site.baseurl }}">
+          C++ Core Guidelines
+        </a>
+      </h3>
+      <p class="lead">{{ site.description }}</p>
+    </div>
+
+    <nav class="sidebar-nav">
+      <small>
+        {% if page.name == "CppCoreGuidelines.md" %}
+      <!-- Items have to be added manually until for now -->
+      <a class="sidebar-nav-item active" href="#main">Top</a>
+      <a class="sidebar-nav-item active" href="#S-philosophy">P: Philosophy</a>
+      <a class="sidebar-nav-item active" href="#S-interfaces">I: Interfaces</a>
+      <a class="sidebar-nav-item active" href="#S-functions">F: Functions</a>
+      <a class="sidebar-nav-item active" href="#S-class">C: Classes and class hierarchies</a>
+      <a class="sidebar-nav-item active" href="#S-enum">Enum: Enumerations</a>
+      <a class="sidebar-nav-item active" href="#S-expr">ES: Expressions and statements</a>
+      <a class="sidebar-nav-item active" href="#S-errors">E: Error handling</a>
+      <a class="sidebar-nav-item active" href="#S-resource">R: Resource management</a>
+      <a class="sidebar-nav-item active" href="#S-templates">T: Templates and generic programming</a>
+      <a class="sidebar-nav-item active" href="#S-concurrency">CP: Concurrency</a>
+      <a class="sidebar-nav-item active" href="#S-stdlib">STL: The Standard library</a>
+      <a class="sidebar-nav-item active" href="#S-source">SF: Source files</a>
+      <a class="sidebar-nav-item active" href="#S-cpl">CPL: C-style programming</a>
+      <a class="sidebar-nav-item active" href="#S-profile">PRO: Profiles</a>
+      <a class="sidebar-nav-item active" href="#S-gsl">GSL: Guideline support library</a>
+
+      <a class="sidebar-nav-item active" href="#S-naming">NL: Naming and layout</a>
+      <a class="sidebar-nav-item active" href="#S-performance">PER: Performance</a>
+      <a class="sidebar-nav-item active" href="#S-not">N: Non-Rules and myths</a>
+      <a class="sidebar-nav-item active" href="#S-references">RF: References</a>
+      <a class="sidebar-nav-item active" href="#S-libraries">Appendix A: Libraries</a>
+      <a class="sidebar-nav-item active" href="#S-modernizing">Appendix B: Modernizing code</a>
+      <a class="sidebar-nav-item active" href="#S-discussion">Appendix C: Discussion</a>
+      <a class="sidebar-nav-item active" href="#S-unclassified">To-do: Unclassified proto-rules</a>
+      <button id="button">Highlighting</button>
+
+        {% else %}
+
+      <a class="sidebar-nav-item active" href="CppCoreGuidelines.html">The actual Guidelines</a>
+      <a class="sidebar-nav-item active" href="index.html">README</a>
+      <a class="sidebar-nav-item active" href="CONTRIBUTING.html">Contributing</a>
+      <a class="sidebar-nav-item active" href="LICENSE">License</a>
+        {% endif %}
+
+      </small>
+
+    </nav>
+
+    <!-- <p>Generated {{ site.time | date: '%Y-%m-%d' }}.</p> -->
+  </div>
+</div>

@@ -1,0 +1,107 @@
+.outer {
+  width: 100%;
+}
+
+.inner {
+  position: relative;
+  max-width: 640px;
+  padding: 20px 10px;
+  margin: 0 auto;
+}
+
+
+#header_wrap {
+  background: #212121;
+  background: -moz-linear-gradient(top, #373737, #212121);
+  background: -webkit-linear-gradient(top, #373737, #212121);
+  background: -ms-linear-gradient(top, #373737, #212121);
+  background: -o-linear-gradient(top, #373737, #212121);
+  background: linear-gradient(top, #373737, #212121);
+}
+
+#header_wrap .inner {
+  padding: 50px 10px 30px 10px;
+}
+
+#downloads {
+  position: absolute;
+  width: 210px;
+  z-index: 10;
+  bottom: -40px;
+  right: 0;
+  height: 70px;
+  background: url('../images/icon_download.png') no-repeat 0% 90%;
+}
+
+.zip_download_link {
+  display: block;
+  float: right;
+  width: 90px;
+  height:70px;
+  text-indent: -5000px;
+  overflow: hidden;
+  background: url(../images/sprite_download.png) no-repeat bottom left;
+}
+
+.tar_download_link {
+  display: block;
+  float: right;
+  width: 90px;
+  height:70px;
+  text-indent: -5000px;
+  overflow: hidden;
+  background: url(../images/sprite_download.png) no-repeat bottom right;
+  margin-left: 10px;
+}
+
+.zip_download_link:hover {
+  background: url(../images/sprite_download.png) no-repeat top left;
+}
+
+.tar_download_link:hover {
+  background: url(../images/sprite_download.png) no-repeat top right;
+}
+
+/**
+ * Try to display h5 headers left of paragraphs
+ */
+
+h5 {
+    display: inline;
+}
+
+h5:before {
+    content: '\A'; white-space:pre-line;
+}
+
+p {
+    display: inline;
+}
+
+p:after {
+    content: '\A'; white-space:pre-line;
+}
+
+@media print {
+    .sidebar,.banner, a:after {
+        display: none;
+    }
+    .container {
+        width: 90%;
+        margin: 2em;
+        padding: 0px;
+    }
+    .* {
+        color: #000;
+        background-color: #fff;
+        @include box-shadow(none);
+        @include text-shadow(none);
+    }
+    code,p {
+        page-break-inside:avoid;
+        page-break-before:avoid;
+    }
+    h1,h2,h3,h4,h5,strong {
+        page-break-after:avoid;
+    }
+}
