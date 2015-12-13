@@ -779,7 +779,7 @@ There are cases where checking early is dumb because you may not ever need the v
         float m() const
         {
             // Should I handle the degenerate case here?
-            return sqrt(x*x + y*y + z*z - e*e);
+            return sqrt(fx*fx + fy*fy + fz*fz - fe*fe);
         }
 
         ???
