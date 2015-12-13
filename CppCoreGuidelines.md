@@ -4068,7 +4068,7 @@ A class with members that all have default constructors implicitly gets a defaul
         vector v;
     };
 
-    X x; // means X{{},{}}; that is the empty string and the empty vector
+    X x; // means X{ {}, {} }; that is the empty string and the empty vector
 
 Beware that built-in types are not properly default constructed:
 
