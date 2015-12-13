@@ -765,10 +765,13 @@ There are cases where checking early is dumb because you may not ever need the v
 
     class Jet {    // Physics says: e*e < x*x + y*y + z*z
 
-        float fx, fy, fz, fe;
+        float x;
+        float y;
+        float z;
+        float e;
     public:
         Jet(float x, float y, float z, float e)
-            :fx(x), fy(y), fz(z), fe(e)
+            :x(x), y(y), z(z), e(e)
         {
             // Should I check here that the values are physically meaningful?
         }
