@@ -2626,7 +2626,7 @@ Using `std::shared_ptr` is the standard way to represent shared ownership. That 
     std::thread t2 {shade, args2, bottom_left, im};
     std::thread t3 {shade, args3, bottom_right, im};
 
-    // detach treads
+    // detach threads
     // last thread to finish deletes the image
 
 ##### Note
