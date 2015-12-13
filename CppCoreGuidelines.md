@@ -1660,7 +1660,7 @@ There are functions that are best expressed with four individual arguments, but 
 
 **Alternative**: Group arguments into meaningful objects and pass the objects (by value or by reference).
 
-**Alternative**: Use default arguments or overloads to allow the most common forms of calls to be done with fewer arguments.
+**Alternative**: Use overloads to allow the most common forms of calls to be done with fewer arguments.
 
 ##### Enforcement
 
@@ -1820,7 +1820,7 @@ Value return semantic rules:
 Other function rules:
 
 * [F.50: Use a lambda when a function won't do (to capture local variables, or to write a local function)](#Rf-capture-vs-overload)
-* [F.51: Prefer overloading over default arguments for virtual functions](#Rf-default-args)
+* [F.51: Prefer overloading over default arguments](#Rf-default-args)
 * [F.52: Prefer capturing by reference in lambdas that will be used locally, including passed to algorithms](#Rf-reference-capture)
 * [F.53: Avoid capturing by reference in lambdas that will be used nonlocally, including returned, stored on the heap, or passed to another thread](#Rf-value-capture)
 
@@ -2902,13 +2902,16 @@ Declaring `main` (the one global `main` of a program) `void` limits portability.
 * The compiler should do it
 * If the compiler doesn't do it, let tools flag it
 
-### <a name="Rf-default-args"></a> F.51: Prefer overloading over default arguments for virtual functions
-
-??? possibly other situations?
+### <a name="Rf-default-args"></a> F.51: Prefer overloading over default arguments
 
 ##### Reason
 
 Virtual function overrides do not inherit default arguments, leading to surprises.
+
+Default arguments are not considered in the type signature of a function.
+Changing a function signature by adding a default argument will break anyone
+referring to the type of that function (either by function pointer or by
+assigning to `std::function`, for example).
 
 ##### Example, bad
 
@@ -2930,7 +2933,7 @@ Virtual function overrides do not inherit default arguments, leading to surprise
 
 ##### Enforcement
 
-Flag all uses of default arguments in virtual functions.
+Flag all uses of default arguments.
 
 ### <a name="Rf-reference-capture"></a> F.52: Prefer capturing by reference in lambdas that will be used locally, including passed to algorithms
 
