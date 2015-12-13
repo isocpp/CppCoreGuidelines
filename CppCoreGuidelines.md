@@ -2851,6 +2851,28 @@ Better:
 
 Flag any use of `&&` as a return type, except in `std::move` and `std::forward`.
 
+### <a name="Rf-main"></a> F.46: `int` is the return type for `main()`
+
+##### Reason
+
+It's a language rule, but violated through "language extensions" so often that it is worth mentioning.
+Declaring `main` (the one global `main` of a program) `void` limits portability.
+
+##### Example
+
+        void main() { /* ... */ };  // bad, not C++
+
+        int main()
+        {
+            std::cout << "This is the way to do it\n";
+        }
+
+##### Enforcement
+
+* The compiler should do it
+* If the compiler doesn't do it, let tools flag it
+
+
 ### <a name="Rf-capture-vs-overload"></a> F.50: Use a lambda when a function won't do (to capture local variables, or to write a local function)
 
 ##### Reason
@@ -2883,27 +2905,6 @@ Functions can't capture local variables or be declared at local scope; if you ne
 
 * Warn on use of a named non-generic lambda (e.g., `auto x = [](int i){ /*...*/; };`) that captures nothing and appears at global scope. Write an ordinary function instead.
 
-
-### <a name="Rf-main"></a> F.46: `int` is the return type for `main()`
-
-##### Reason
-
-It's a language rule, but violated through "language extensions" so often that it is worth mentioning.
-Declaring `main` (the one global `main` of a program) `void` limits portability.
-
-##### Example
-
-        void main() { /* ... */ };  // bad, not C++
-
-        int main()
-        {
-            std::cout << "This is the way to do it\n";
-        }
-
-##### Enforcement
-
-* The compiler should do it
-* If the compiler doesn't do it, let tools flag it
 
 ### <a name="Rf-default-args"></a> F.51: Prefer overloading over default arguments for virtual functions
 
