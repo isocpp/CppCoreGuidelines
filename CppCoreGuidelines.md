@@ -2419,7 +2419,7 @@ And yes, C++ does have multiple return values, by convention of using a `tuple`,
     tuple<int, string> f(const string& input) // GOOD: self-documenting
     {
         // ...
-        return make_tuple(something(), status);
+        return make_tuple(status, something());
     }
 
 In fact, C++98's standard library already used this convenient feature, because a `pair` is like a two-element `tuple`.
