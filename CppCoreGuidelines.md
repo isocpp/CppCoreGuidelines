@@ -2239,8 +2239,8 @@ When copying is cheap, nothing beats the simplicity and safety of copying, and f
 
 For advanced uses (only), where you really need to optimize for rvalues passed to "input-only" parameters:
 
-* If the function is going to unconditionally move from the argument, take it by `&&`. See [F.21](#Rf-consume).
-* If the function is going to keep a copy of the argument, in addition to passing by `const&` add an overload that passes the parameter by `&&` and in the body `std::move`s it to its destination. Essentially this overloads a "consume"; see [F.21](#Rf-consume).
+* If the function is going to unconditionally move from the argument, take it by `&&`. See [F.18](#Rf-consume).
+* If the function is going to keep a copy of the argument, in addition to passing by `const&` add an overload that passes the parameter by `&&` and in the body `std::move`s it to its destination. Essentially this overloads a "consume"; see [F.18](#Rf-consume).
 * In special cases, such as multiple "input + copy" parameters, consider using perfect forwarding. See [F.19](#Rf-forward).
 
 ##### Example
