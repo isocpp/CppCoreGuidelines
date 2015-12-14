@@ -1,6 +1,6 @@
 # <a name="main"></a> C++ Core Guidelines
 
-December 13, 2015
+December 14, 2015
 
 Editors:
 
@@ -296,6 +296,7 @@ Recommended information sources can be found in [the references](#S-references).
 * [R: Resource management](#S-resource)
 * [ES: Expressions and statements](#S-expr)
 * [E: Error handling](#S-errors)
+* [Con: Constants and immutability](#S-const)
 * [T: Templates and generic programming](#S-templates)
 * [CP: Concurrency](#S-concurrency)
 * [SL: The Standard library](#S-stdlib)
