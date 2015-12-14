@@ -4,7 +4,7 @@ layout: default
 
 # <a name="main"></a> C++ Core Guidelines
 
-December 13, 2015
+December 14, 2015
 
 Editors:
 
@@ -297,9 +297,10 @@ Recommended information sources can be found in [the references](#S-references).
 * [F: Functions](#S-functions)
 * [C: Classes and class hierarchies](#S-class)
 * [Enum: Enumerations](#S-enum)
+* [R: Resource management](#S-resource)
 * [ES: Expressions and statements](#S-expr)
 * [E: Error handling](#S-errors)
-* [R: Resource management](#S-resource)
+* [Con: Constants and immutability](#S-const)
 * [T: Templates and generic programming](#S-templates)
 * [CP: Concurrency](#S-concurrency)
 * [SL: The Standard library](#S-stdlib)
@@ -4072,7 +4073,7 @@ A class with members that all have default constructors implicitly gets a defaul
         vector v;
     };
 
-    X x; // means X{ {},{} }; that is the empty string and the empty vector
+    X x; // means X{ {}, {} }; that is the empty string and the empty vector
 
 Beware that built-in types are not properly default constructed:
 
@@ -4871,6 +4872,10 @@ To prevent slicing, because the normal copy operations will copy only the base p
 
 It's good to return a smart pointer, but unlike with raw pointers the return type cannot be covariant (for example, `D::clone` can't return a `unique_ptr<D>`. Don't let this tempt you into returning an owning raw pointer; this is a minor drawback compared to the major robustness benefit delivered by the owning smart pointer.
 
+##### Exceptions
+
+If you need covariant return types, return an `owner<derived*>`. See [C.130](#Rh-copy).
+
 ##### Enforcement
 
 A class with any virtual function should not have a copy constructor or copy assignment operator (compiler-generated or handwritten).
@@ -5424,26 +5429,32 @@ Readability. Detection of mistakes. Explicit `override` allows the compiler to c
 
 ##### Reason
 
-Copying a base is usually slicing. If you really need copy semantics, copy deeply: Provide a virtual `clone` function that will copy the actual most-derived type, and in derived classes return the derived type (use a covariant return type).
+Copying a base is usually slicing. If you really need copy semantics, copy deeply: Provide a virtual `clone` function that will copy the actual most-derived type and return an owning pointer to the new object, and then in derived classes return the derived type (use a covariant return type).
 
 ##### Example
 
     class base {
     public:
-        virtual base* clone() = 0;
+        virtual owner<base*> clone() = 0;
+        virtual ~base() = 0;
+
+        base(const base&) = delete;
+        base& operator=(const base&) = delete;
     };
 
     class derived : public base {
     public:
-        derived* clone() override;
+        owner<derived*> clone() override;
+        virtual ~derived() override;
     };
 
-Note that because of language rules, the covariant return type cannot be a smart pointer.
+Note that because of language rules, the covariant return type cannot be a smart pointer. See also [C.67](#Rc-copy-virtual).
 
 ##### Enforcement
 
 * Flag a class with a virtual function and a non-user-defined copy operation.
 * Flag an assignment of base class objects (objects of a class from which another has been derived).
+
 
 ### <a name="Rh-get"></a> C.131: Avoid trivial getters and setters
 
@@ -12346,7 +12357,7 @@ Use of these casts can violate type safety and cause the program to access a var
     base* p = &d1; // ok, implicit conversion to pointer to base is fine
 
     derived2* p2 = static_cast<derived2*>(p); // BAD, tries to treat d1 as a derived2, which it is not
-    cout << p2.get_s(); // tries to access d1's nonexistent string member, instead sees arbitrary bytes near d1
+    cout << p2->get_s(); // tries to access d1's nonexistent string member, instead sees arbitrary bytes near d1
 
 ##### Example, bad
 
@@ -12427,7 +12438,7 @@ Note that a C-style `(T)expression` cast means to perform the first of the follo
     base* p = &d1; // ok, implicit conversion to pointer to base is fine
 
     derived2* p2 = (derived2*)(p); // BAD, tries to treat d1 as a derived2, which it is not
-    cout << p2.get_s(); // tries to access d1's nonexistent string member, instead sees arbitrary bytes near d1
+    cout << p2->get_s(); // tries to access d1's nonexistent string member, instead sees arbitrary bytes near d1
 
     void f(const int& i) {
         (int&)(i) = 42;   // BAD
@@ -13340,7 +13351,7 @@ No. These guidelines are about how to best use Standard C++14 + the Concepts Lit
 
 ### <a name="Faq-markdown"></a> FAQ.10: What version of Markdown do these guidelines use?
 
-These coding standards are written using [Common Markdown](http://commonmark.org), and `<a>` HTML anchors.
+These coding standards are written using [CommonMark](http://commonmark.org), and `<a>` HTML anchors.
 
 We are considering the following extensions from [GitHub Flavored Markdown (GFM)](https://help.github.com/articles/github-flavored-markdown/):
 
