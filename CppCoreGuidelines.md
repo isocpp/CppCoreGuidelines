@@ -12342,7 +12342,7 @@ Use of these casts can violate type safety and cause the program to access a var
     base* p = &d1; // ok, implicit conversion to pointer to base is fine
 
     derived2* p2 = static_cast<derived2*>(p); // BAD, tries to treat d1 as a derived2, which it is not
-    cout << p2.get_s(); // tries to access d1's nonexistent string member, instead sees arbitrary bytes near d1
+    cout << p2->get_s(); // tries to access d1's nonexistent string member, instead sees arbitrary bytes near d1
 
 ##### Example, bad
 
@@ -12423,7 +12423,7 @@ Note that a C-style `(T)expression` cast means to perform the first of the follo
     base* p = &d1; // ok, implicit conversion to pointer to base is fine
 
     derived2* p2 = (derived2*)(p); // BAD, tries to treat d1 as a derived2, which it is not
-    cout << p2.get_s(); // tries to access d1's nonexistent string member, instead sees arbitrary bytes near d1
+    cout << p2->get_s(); // tries to access d1's nonexistent string member, instead sees arbitrary bytes near d1
 
     void f(const int& i) {
         (int&)(i) = 42;   // BAD
