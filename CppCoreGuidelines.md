@@ -2144,9 +2144,24 @@ Unless the program is crafted to survive memory exhaustion, that may be just the
 
 ##### Note
 
-In most programs, most functions can throw
-(e.g., because they use `new`, call functions that do, or use library functions that reports failure by throwing), so don't just sprinkle `noexcept` all over the place.
-`noexcept` is most useful for frequently used, low-level functions.
+You must be aware of the execution environment that your code is running when
+deciding whether to tag a function `noexcept`, especially because of the issue
+of throwing and allocation.  Code that is intended to be perfectly general (like
+the standard library and other utility code of that sort) needs to support
+environments where a `bad_alloc` exception may be handled meaningfully.
+However, the majority of programs and execution environments cannot meaningfully
+handle a failure to allocate, and aborting the program is the cleanest and
+simplest response to an allocation failure in those cases.  If you know that
+your application code cannot respond to an allocation failure, it may be
+appropriate to add `noexcept` even on functions that allocate.
+
+Put another way: In most programs, most functions can throw (e.g., because they
+use `new`, call functions that do, or use library functions that reports failure
+by throwing), so don't just sprinkle `noexcept` all over the place without
+considering whether the possible exceptions can be handled.
+
+`noexcept` is most useful (and most clearly correct) for frequently used,
+low-level functions.
 
 ##### Note
 
