@@ -2081,10 +2081,10 @@ Don't try to make all functions `constexpr`. Most computation is best done at ru
 
 ##### Note
 
-Any API that may eventually become configurable or customizable at runtime
-should not be made `constexpr`. Such customization could not be evaluated by the
-compiler, and any `constexpr` functions that depend upon that API will have to
-be refactored or drop `constexpr`.
+Any API that may eventually depend on high-level runtime configuration or
+business logic should not be made `constexpr`. Such customization can not be
+evaluated by the compiler, and any `constexpr` functions that depend upon that
+API will have to be refactored or drop `constexpr`.
 
 ##### Enforcement
 
