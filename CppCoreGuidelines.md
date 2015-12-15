@@ -12111,7 +12111,7 @@ For writing to a file, there is rarely a need to `flush`.
 ##### Note
 
 Apart from the (occasionally important) issue of performance,
-the choice between `"\\n"` and `endl` is almost completely aestetic.
+the choice between `"\\n"` and `endl` is almost completely aesthetic.
 
 ## SL.regex: Regex
 
@@ -12465,7 +12465,7 @@ Before a variable has been initialized, it does not contain a deterministic vali
     struct X { int i; };
 
     X x;
-    use(x); // BAD, x hs not been initialized
+    use(x); // BAD, x has not been initialized
 
     X x2{}; // GOOD
     use(x2);
