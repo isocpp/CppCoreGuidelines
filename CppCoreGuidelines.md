@@ -1820,6 +1820,7 @@ Value return semantic rules:
 * [F.44: Return a `T&` when "returning no object" isn't an option](#Rf-return-ref)
 * [F.45: Don't return a `T&&`](#Rf-return-ref-ref)
 * [F.46: `int` is the return type for `main()`](#Rf-main)
+* [F.47: Return `T&` from assignment operators.](#Rf-assignment-op)
 
 Other function rules:
 
@@ -2258,7 +2259,7 @@ For advanced uses (only), where you really need to optimize for rvalues passed t
 Avoid "esoteric techniques" such as:
 
 * Passing arguments as `T&&` "for efficiency". Most rumors about performance advantages from passing by `&&` are false or brittle (but see [F.25](#Rf-pass-ref-move).)
-* Returning `const T&` from assignments and similar operations.
+* Returning `const T&` from assignments and similar operations (see [F.47](#Rf-assignment-op).)
 
 ##### Example
 
@@ -2873,6 +2874,38 @@ Declaring `main` (the one global `main` of a program) `void` limits portability.
 * The compiler should do it
 * If the compiler doesn't do it, let tools flag it
 
+### <a name="Rf-assignment-op"></a>F.47: Return `T&` from assignment operators.
+
+##### Reason
+
+The convention for operator overloads (especially on value types) is for
+`operator=(const T&)` to perform the assignment and then return (non-const)
+`*this`.  This ensures consistency with standard library types and follows the
+principle of "do as the ints do."
+
+##### Note
+
+Historically there was some guidance to make the assignment operator return
+`const T&`.  This was primarily to avoid code of the form `(a=b)=c` - such code
+is not common enough to warrant violating consistency with standard types.
+
+##### Example
+
+        class Foo
+        {
+         public:
+            ...
+            Foo& operator=(const Foo& rhs) {
+              // Copy members.
+              ...
+              return *this;
+            }
+        };
+
+##### Enforcement
+
+This should be enforced by tooling by checking the return type (and return
+value) of any assignment operator.
 
 ### <a name="Rf-capture-vs-overload"></a> F.50: Use a lambda when a function won't do (to capture local variables, or to write a local function)
 
