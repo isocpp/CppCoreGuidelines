@@ -3500,7 +3500,7 @@ Only define a non-default destructor if a class needs to execute code that is no
     template<typename A>
     struct final_action {   // slightly simplified
         A act;
-        final_action(F a) :act{a} {}
+        final_action(A a) :act{a} {}
         ~final_action() { act(); }
     };
 
