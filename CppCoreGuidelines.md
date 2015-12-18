@@ -34,23 +34,24 @@ You can [read an explanation of the scope and structure of this Guide](#S-abstra
 * [Enum: Enumerations](#S-enum)
 * [R: Resource management](#S-resource)
 * [ES: Expressions and statements](#S-expr)
+* [PER: Performance](#S-performance)
+* [CP: Concurrency](#S-concurrency)
 * [E: Error handling](#S-errors)
 * [Con: Constants and immutability](#S-const)
 * [T: Templates and generic programming](#S-templates)
-* [CP: Concurrency](#S-concurrency)
-* [SL: The Standard library](#S-stdlib)
-* [SF: Source files](#S-source)
 * [CPL: C-style programming](#S-cpl)
-* [PRO: Profiles](#S-profile)
-* [GSL: Guideline support library](#S-gsl)
-* [FAQ: Answers to frequently asked questions](#S-faq)
+* [SF: Source files](#S-source)
+* [SL: The Standard library](#S-stdlib)
 
 Supporting sections:
 
-* [NL: Naming and layout](#S-naming)
-* [PER: Performance](#S-performance)
+* [A: Architectural Ideas](#S-A)
 * [N: Non-Rules and myths](#S-not)
 * [RF: References](#S-references)
+* [PRO: Profiles](#S-profile)
+* [GSL: Guideline support library](#S-gsl)
+* [NL: Naming and layout](#S-naming)
+* [FAQ: Answers to frequently asked questions](#S-faq)
 * [Appendix A: Libraries](#S-libraries)
 * [Appendix B: Modernizing code](#S-modernizing)
 * [Appendix C: Discussion](#S-discussion)
@@ -7290,7 +7291,7 @@ Declaration rules:
 * [ES.31: Don't use macros for constants or "functions"](#Res-macros2)
 * [ES.32: Use `ALL_CAPS` for all macro names](#Res-ALL_CAPS)
 * [ES.33: If you must use macros, give them unique names](#Res-MACROS)
-* [ES.40: Don't define a (C-style) variadic function](#Res-ellipses)
+* [ES.34: Don't define a (C-style) variadic function](#Res-ellipses)
 
 Expression rules:
 
@@ -8247,7 +8248,7 @@ If you are forced to use macros, use long names and supposedly unique prefixes (
 
 Warn against short macro names.
 
-### <a name="Res-ellipses"></a> ES.40: Don't define a (C-style) variadic function
+### <a name="Res-ellipses"></a> ES.34: Don't define a (C-style) variadic function
 
 ##### Reason
 
@@ -8266,313 +8267,6 @@ There are rare used of variadic functions in SFINAE code, but those don't actual
 ##### Enforcement
 
 Flag definitions of C-style variadic functions.
-
-## ES.stmt: Statements
-
-Statements control the flow of control (except for function calls and exception throws, which are expressions).
-
-### <a name="Res-switch-if"></a> ES.70: Prefer a `switch`-statement to an `if`-statement when there is a choice
-
-##### Reason
-
-* Readability.
-* Efficiency: A `switch` compares against constants and is usually better optimized than a series of tests in an `if`-`then`-`else` chain.
-* a `switch` is enables some heuristic consistency checking. For example, has all values of an `enum` been covered? If not, is there a `default`?
-
-##### Example
-
-    void use(int n)
-    {
-        switch (n) {   // good
-        case 0:   // ...
-        case 7:   // ...
-        }
-    }
-
-rather than:
-
-    void use2(int n)
-    {
-        if (n == 0)   // bad: if-then-else chain comparing against a set of constants
-            // ...
-        else if (n == 7)
-            // ...
-    }
-
-##### Enforcement
-
-Flag if-then-else chains that check against constants (only).
-
-### <a name="Res-for-range"></a> ES.71: Prefer a range-`for`-statement to a `for`-statement when there is a choice
-
-##### Reason
-
-Readability. Error prevention. Efficiency.
-
-##### Example
-
-    for (int i = 0; i < v.size(); ++i)   // bad
-            cout << v[i] << '\n';
-
-    for (auto p = v.begin(); p != v.end(); ++p)   // bad
-        cout << *p << '\n';
-
-    for (auto& x : v)    // OK
-        cout << x << '\n';
-
-    for (int i = 1; i < v.size(); ++i) // touches two elements: can't be a range-for
-        cout << v[i] + v[i-1] << '\n';
-
-    for (int i = 0; i < v.size(); ++i) // possible side-effect: can't be a range-for
-        cout << f(&v[i]) << '\n';
-
-    for (int i = 0; i < v.size(); ++i) { // body messes with loop variable: can't be a range-for
-        if (i % 2)
-            ++i;   // skip even elements
-        else
-            cout << v[i] << '\n';
-    }
-
-A human or a good static analyzer may determine that there really isn't a side effect on `v` in `f(&v[i])` so that the loop can be rewritten.
-
-"Messing with the loop variable" in the body of a loop is typically best avoided.
-
-##### Note
-
-Don't use expensive copies of the loop variable of a range-`for` loop:
-
-    for (string s : vs) // ...
-
-This will copy each elements of `vs` into `s`. Better
-
-    for (string& s : vs) // ...
-
-##### Enforcement
-
-Look at loops, if a traditional loop just looks at each element of a sequence, and there are no side-effects on what it does with the elements, rewrite the loop to a for loop.
-
-### <a name="Res-for-while"></a> ES.72: Prefer a `for`-statement to a `while`-statement when there is an obvious loop variable
-
-##### Reason
-
-Readability: the complete logic of the loop is visible "up front". The scope of the loop variable can be limited.
-
-##### Example
-
-    for (int i = 0; i < vec.size(); i++) {
-     // do work
-    }
-
-##### Example, bad
-
-    int i = 0;
-    while (i < vec.size()) {
-     // do work
-     i++;
-    }
-
-##### Enforcement
-
-???
-
-### <a name="Res-while-for"></a> ES.73: Prefer a `while`-statement to a `for`-statement when there is no obvious loop variable
-
-##### Reason
-
- ???
-
-##### Example
-
-    ???
-
-##### Enforcement
-
-???
-
-### <a name="Res-for-init"></a> ES.74: Prefer to declare a loop variable in the initializer part of as `for`-statement
-
-##### Reason
-
-Limit the loop variable visibility to the scope of the loop.
-Avoid using the loop variable for other purposes after the loop.
-
-##### Example
-
-    for (int i = 0; i < 100; ++i) {   // GOOD: i var is visible only inside the loop
-        // ...
-    }
-
-##### Example, don't
-
-    int j;                            // BAD: j is visible outside the loop
-    for (j = 0; j < 100; ++j) {
-        // ...
-    }
-    // j is still visible here and isn't needed
-
-**See also**: [Don't use a variable for two unrelated purposes](#Res-recycle)
-
-##### Enforcement
-
-Warn when a variable modified inside the `for`-statement is declared outside the loop and not being used outside the loop.
-
-**Discussion**: Scoping the loop variable to the loop body also helps code optimizers greatly. Recognizing that the induction variable
-is only accessible in the loop body unblocks optimizations such as hoisting, strength reduction, loop-invariant code motion, etc.
-
-### <a name="Res-do"></a> ES.75: Avoid `do`-statements
-
-##### Reason
-
-Readability, avoidance of errors.
-The termination conditions is at the end (where it can be overlooked) and the condition is not checked the first time through. ???
-
-##### Example
-
-    int x;
-    do {
-        cin >> x;
-        x
-    } while (x < 0);
-
-##### Enforcement
-
-???
-
-### <a name="Res-goto"></a> ES.76: Avoid `goto`
-
-##### Reason
-
-Readability, avoidance of errors. There are better control structures for humans; `goto` is for machine generated code.
-
-##### Exception
-
-Breaking out of a nested loop. In that case, always jump forwards.
-
-##### Example
-
-    ???
-
-##### Example
-
-There is a fair amount of use of the C goto-exit idiom:
-
-    void f()
-    {
-        // ...
-            goto exit;
-        // ...
-            goto exit;
-        // ...
-    exit:
-        ... common cleanup code ...
-    }
-
-This is an ad-hoc simulation of destructors. Declare your resources with handles with destructors that clean up.
-
-##### Enforcement
-
-* Flag `goto`. Better still flag all `goto`s that do not jump from a nested loop to the statement immediately after a nest of loops.
-
-### <a name="Res-continue"></a> ES.77: ??? `continue`
-
-##### Reason
-
- ???
-
-##### Example
-
-    ???
-
-##### Enforcement
-
-???
-
-### <a name="Res-break"></a> ES.78: Always end a non-empty `case` with a `break`
-
-##### Reason
-
- Accidentally leaving out a `break` is a fairly common bug.
- A deliberate fallthrough is a maintenance hazard.
-
-##### Example
-
-    switch(eventType)
-    {
-    case Information:
-        update_status_bar();
-        break;
-    case Warning:
-        write_event_log();
-    case Error:
-        display_error_window(); // Bad
-        break;
-    }
-
-It is easy to overlook the fallthrough. Be explicit:
-
-    switch(eventType)
-    {
-    case Information:
-        update_status_bar();
-        break;
-    case Warning:
-        write_event_log();
-        // fall through
-    case Error:
-        display_error_window(); // Bad
-        break;
-    }
-
-There is a proposal for a `[[fallthrough]]` annotation.
-
-##### Note
-
-Multiple case labels of a single statement is OK:
-
-    switch (x) {
-    case 'a':
-    case 'b':
-    case 'f':
-        do_something(x);
-        break;
-    }
-
-##### Enforcement
-
-Flag all fall throughs from non-empty `case`s.
-
-### <a name="Res-default"></a> ES.79: ??? `default`
-
-##### Reason
-
- ???
-
-##### Example
-
-    ???
-
-##### Enforcement
-
-???
-
-### <a name="Res-empty"></a> ES.85: Make empty statements visible
-
-##### Reason
-
-Readability.
-
-##### Example
-
-    for (i = 0; i < max; ++i);   // BAD: the empty statement is easily overlooked
-        v[i] = f(v[i]);
-
-    for (auto x : v) {           // better
-        // nothing
-    }
-
-##### Enforcement
-
-Flag empty statements that are not blocks and doesn't "contain" comments.
 
 ## ES.expr: Expressions
 
@@ -8994,6 +8688,313 @@ The result of doing so is undefined.
 This example has many more problems.
 
 ##### Enforcement
+
+## ES.stmt: Statements
+
+Statements control the flow of control (except for function calls and exception throws, which are expressions).
+
+### <a name="Res-switch-if"></a> ES.70: Prefer a `switch`-statement to an `if`-statement when there is a choice
+
+##### Reason
+
+* Readability.
+* Efficiency: A `switch` compares against constants and is usually better optimized than a series of tests in an `if`-`then`-`else` chain.
+* a `switch` is enables some heuristic consistency checking. For example, has all values of an `enum` been covered? If not, is there a `default`?
+
+##### Example
+
+    void use(int n)
+    {
+        switch (n) {   // good
+        case 0:   // ...
+        case 7:   // ...
+        }
+    }
+
+rather than:
+
+    void use2(int n)
+    {
+        if (n == 0)   // bad: if-then-else chain comparing against a set of constants
+            // ...
+        else if (n == 7)
+            // ...
+    }
+
+##### Enforcement
+
+Flag if-then-else chains that check against constants (only).
+
+### <a name="Res-for-range"></a> ES.71: Prefer a range-`for`-statement to a `for`-statement when there is a choice
+
+##### Reason
+
+Readability. Error prevention. Efficiency.
+
+##### Example
+
+    for (int i = 0; i < v.size(); ++i)   // bad
+            cout << v[i] << '\n';
+
+    for (auto p = v.begin(); p != v.end(); ++p)   // bad
+        cout << *p << '\n';
+
+    for (auto& x : v)    // OK
+        cout << x << '\n';
+
+    for (int i = 1; i < v.size(); ++i) // touches two elements: can't be a range-for
+        cout << v[i] + v[i-1] << '\n';
+
+    for (int i = 0; i < v.size(); ++i) // possible side-effect: can't be a range-for
+        cout << f(&v[i]) << '\n';
+
+    for (int i = 0; i < v.size(); ++i) { // body messes with loop variable: can't be a range-for
+        if (i % 2)
+            ++i;   // skip even elements
+        else
+            cout << v[i] << '\n';
+    }
+
+A human or a good static analyzer may determine that there really isn't a side effect on `v` in `f(&v[i])` so that the loop can be rewritten.
+
+"Messing with the loop variable" in the body of a loop is typically best avoided.
+
+##### Note
+
+Don't use expensive copies of the loop variable of a range-`for` loop:
+
+    for (string s : vs) // ...
+
+This will copy each elements of `vs` into `s`. Better
+
+    for (string& s : vs) // ...
+
+##### Enforcement
+
+Look at loops, if a traditional loop just looks at each element of a sequence, and there are no side-effects on what it does with the elements, rewrite the loop to a for loop.
+
+### <a name="Res-for-while"></a> ES.72: Prefer a `for`-statement to a `while`-statement when there is an obvious loop variable
+
+##### Reason
+
+Readability: the complete logic of the loop is visible "up front". The scope of the loop variable can be limited.
+
+##### Example
+
+    for (int i = 0; i < vec.size(); i++) {
+     // do work
+    }
+
+##### Example, bad
+
+    int i = 0;
+    while (i < vec.size()) {
+     // do work
+     i++;
+    }
+
+##### Enforcement
+
+???
+
+### <a name="Res-while-for"></a> ES.73: Prefer a `while`-statement to a `for`-statement when there is no obvious loop variable
+
+##### Reason
+
+ ???
+
+##### Example
+
+    ???
+
+##### Enforcement
+
+???
+
+### <a name="Res-for-init"></a> ES.74: Prefer to declare a loop variable in the initializer part of as `for`-statement
+
+##### Reason
+
+Limit the loop variable visibility to the scope of the loop.
+Avoid using the loop variable for other purposes after the loop.
+
+##### Example
+
+    for (int i = 0; i < 100; ++i) {   // GOOD: i var is visible only inside the loop
+        // ...
+    }
+
+##### Example, don't
+
+    int j;                            // BAD: j is visible outside the loop
+    for (j = 0; j < 100; ++j) {
+        // ...
+    }
+    // j is still visible here and isn't needed
+
+**See also**: [Don't use a variable for two unrelated purposes](#Res-recycle)
+
+##### Enforcement
+
+Warn when a variable modified inside the `for`-statement is declared outside the loop and not being used outside the loop.
+
+**Discussion**: Scoping the loop variable to the loop body also helps code optimizers greatly. Recognizing that the induction variable
+is only accessible in the loop body unblocks optimizations such as hoisting, strength reduction, loop-invariant code motion, etc.
+
+### <a name="Res-do"></a> ES.75: Avoid `do`-statements
+
+##### Reason
+
+Readability, avoidance of errors.
+The termination conditions is at the end (where it can be overlooked) and the condition is not checked the first time through. ???
+
+##### Example
+
+    int x;
+    do {
+        cin >> x;
+        x
+    } while (x < 0);
+
+##### Enforcement
+
+???
+
+### <a name="Res-goto"></a> ES.76: Avoid `goto`
+
+##### Reason
+
+Readability, avoidance of errors. There are better control structures for humans; `goto` is for machine generated code.
+
+##### Exception
+
+Breaking out of a nested loop. In that case, always jump forwards.
+
+##### Example
+
+    ???
+
+##### Example
+
+There is a fair amount of use of the C goto-exit idiom:
+
+    void f()
+    {
+        // ...
+            goto exit;
+        // ...
+            goto exit;
+        // ...
+    exit:
+        ... common cleanup code ...
+    }
+
+This is an ad-hoc simulation of destructors. Declare your resources with handles with destructors that clean up.
+
+##### Enforcement
+
+* Flag `goto`. Better still flag all `goto`s that do not jump from a nested loop to the statement immediately after a nest of loops.
+
+### <a name="Res-continue"></a> ES.77: ??? `continue`
+
+##### Reason
+
+ ???
+
+##### Example
+
+    ???
+
+##### Enforcement
+
+???
+
+### <a name="Res-break"></a> ES.78: Always end a non-empty `case` with a `break`
+
+##### Reason
+
+ Accidentally leaving out a `break` is a fairly common bug.
+ A deliberate fallthrough is a maintenance hazard.
+
+##### Example
+
+    switch(eventType)
+    {
+    case Information:
+        update_status_bar();
+        break;
+    case Warning:
+        write_event_log();
+    case Error:
+        display_error_window(); // Bad
+        break;
+    }
+
+It is easy to overlook the fallthrough. Be explicit:
+
+    switch(eventType)
+    {
+    case Information:
+        update_status_bar();
+        break;
+    case Warning:
+        write_event_log();
+        // fall through
+    case Error:
+        display_error_window(); // Bad
+        break;
+    }
+
+There is a proposal for a `[[fallthrough]]` annotation.
+
+##### Note
+
+Multiple case labels of a single statement is OK:
+
+    switch (x) {
+    case 'a':
+    case 'b':
+    case 'f':
+        do_something(x);
+        break;
+    }
+
+##### Enforcement
+
+Flag all fall throughs from non-empty `case`s.
+
+### <a name="Res-default"></a> ES.79: ??? `default`
+
+##### Reason
+
+ ???
+
+##### Example
+
+    ???
+
+##### Enforcement
+
+???
+
+### <a name="Res-empty"></a> ES.85: Make empty statements visible
+
+##### Reason
+
+Readability.
+
+##### Example
+
+    for (i = 0; i < max; ++i);   // BAD: the empty statement is easily overlooked
+        v[i] = f(v[i]);
+
+    for (auto x : v) {           // better
+        // nothing
+    }
+
+##### Enforcement
+
+Flag empty statements that are not blocks and doesn't "contain" comments.
 
 ## <a name="SS-numbers"></a> Arithmetic
 
@@ -10145,14 +10146,15 @@ Metaprogramming rule summary:
 * [T.125: If you need to go beyond the standard-library TMP facilities, use an existing library](#Rt-lib)
 * [T.??: ????](#Rt-???)
 
-Other template rules summary:
+Subsections:
 
-* [T.140: Name all nontrivial operations](#Rt-name)
-* [T.141: Use an unnamed lambda if you need a simple function object in one place only](#Rt-lambda)
-* [T.142: Use template variables to simplify notation](#Rt-var)
-* [T.143: Don't write unintentionally nongeneric code](#Rt-nongeneric)
-* [T.144: Don't specialize function templates](#Rt-specialize-function)
-* [T.??: ????](#Rt-???)
+* [T.concepts: Concepts](#SS-t-concepts)
+* [T.intf: Template interfaces](#SS-t-intf)
+* [T.def: Template definition](#SS-t-def)
+* [T.hier: Template hierarchy](#SS-t-hier)
+* [T.variadic: Variadic templates](#SS-t-var)
+* [T.meta: Template Metaprogramming](#SS-t-meta)
+* [T.other: Other rules](#SS-t-other)
 
 ## <a name="SS-GP"></a> T.gp: Generic programming
 
@@ -10332,7 +10334,7 @@ In a class template, nonvirtual functions are only instantiated if they're used 
 
 * Flag a class template that declares new (non-inherited) virtual functions.
 
-## <a name="SS-concepts"></a> T.concepts: Concept rules
+## <a name="SS-t-concepts"></a> T.concepts: Concept rules
 
 Concepts is a facility for specifying requirements for template arguments.
 It is an [ISO technical specification](#Ref-conceptsTS), but not yet supported by currently shipping compilers.
@@ -10358,7 +10360,9 @@ Concept definition rule summary:
 * [T.26: Prefer to define concepts in terms of use-patterns rather than simple syntax](#Rt-use)
 * ???
 
-## <a name="SS-concept-use"></a> T.con-use: Concept use
+## <a name="SS-t-concepts-use"></a> T.concepts.use: Concept use
+
+??? subsection introduction ???
 
 ### <a name="Rt-concepts"></a> T.10: Specify concepts for all template arguments
 
@@ -10494,9 +10498,9 @@ The shorter versions better match the way we speak. Note that many templates don
 * Not feasible in the short term when people convert from the `<typename T>` and `<class T`> notation.
 * Later, flag declarations that first introduces a typename and then constrains it with a simple, single-type-argument concept.
 
-## <a name="SS-concepts-def"></a> T.concepts.def: Concept definition rules
+## <a name="SS-t-concepts-def"></a> T.concepts.def: Concept definition rules
 
-???
+??? subsection introduction ???
 
 ### <a name="Rt-low"></a> T.20: Avoid "concepts" without meaningful semantics
 
@@ -10746,9 +10750,22 @@ Conversions are taken into account. You don't have to remember the names of all 
 
 ???
 
-## <a name="SS-temp-interface"></a> Template interfaces
+## <a name="SS-t-intf"></a> T.intf Template interfaces
 
-???
+??? section introduction ???
+
+Template interface rule summary:
+
+* [T.40: Use function objects to pass operations to algorithms](#Rt-fo)
+* [T.41: Require complete sets of operations for a concept](#Rt-operations)
+* [T.42: Use template aliases to simplify notation and hide implementation details](#Rt-alias)
+* [T.43: Prefer `using` over `typedef` for defining aliases](#Rt-using)
+* [T.44: Use function templates to deduce class template argument types (where feasible)](#Rt-deduce)
+* [T.46: Require template arguments to be at least `Regular` or `SemiRegular`](#Rt-regular)
+* [T.47: Avoid highly visible unconstrained templates with common names](#Rt-visible)
+* [T.48: If your compiler does not support concepts, fake them with `enable_if`](#Rt-concept-def)
+* [T.49: Where possible, avoid type-erasure](#Rt-erasure)
+* [T.50: Avoid writing an unconstrained template in the same namespace as a type](#Rt-unconstrained-adl)
 
 ### <a name="Rt-fo"></a> T.40: Use function objects to pass operations to algorithms
 
@@ -10963,9 +10980,21 @@ This rule should not be necessary; the committee cannot agree on how to fix ADL,
 
 ??? unfortunately this will get many false positives; the standard library violates this widely, by putting many unconstrained templates and types into the single namespace `std`
 
-## <a name="SS-temp-def"></a> T.def: Template definitions
+## <a name="SS-t-def"></a> T.def: Template definitions
 
-???
+??? section introduction ???
+
+Template definition rule summary:
+
+* [T.60: Minimize a template's context dependencies](#Rt-depend)
+* [T.61: Do not over-parameterize members (SCARY)](#Rt-scary)
+* [T.62: Place non-dependent template members in a non-templated base class](#Rt-nondependent)
+* [T.64: Use specialization to provide alternative implementations of class templates](#Rt-specialization)
+* [T.65: Use tag dispatch to provide alternative implementations of functions](#Rt-tag-dispatch)
+* [T.66: Use selection using `enable_if` to optionally define a function](#Rt-enable_if)
+* [T.67: Use specialization to provide alternative implementations for irregular types](#Rt-specialization2)
+* [T.68: Use `{}` rather than `()` within templates to avoid ambiguities](#Rt-cast)
+* [T.69: Inside a template, don't make an unqualified nonmember function call unless you intend it to be a customization point](#Rt-customization)
 
 ### <a name="Rt-depend"></a> T.60: Minimize a template's context dependencies
 
@@ -11183,11 +11212,20 @@ There are three major ways to let calling code customize a template.
 
 * In a template, flag an unqualified call to a nonmember function that passes a variable of dependent type when there is a nonmember function of the same name in the template's namespace.
 
-## <a name="SS-temp-hier"></a> T.temp-hier: Template and hierarchy rules:
+## <a name="SS-t-hier"></a> T.hier: Template and hierarchy rules:
 
 Templates are the backbone of C++'s support for generic programming and class hierarchies the backbone of its support
 for object-oriented programming.
 The two language mechanisms can be use effectively in combination, but a few design pitfalls must be avoided.
+
+Template and hierarchy rule summary:
+
+* [T.80: Do not naively templatize a class hierarchy](#Rt-hier)
+* [T.81: Do not mix hierarchies and arrays](#Rt-array) // ??? somewhere in "hierarchies"
+* [T.82: Linearize a hierarchy when virtual functions are undesirable](#Rt-linear)
+* [T.83: Do not declare a member function template virtual](#Rt-virtual)
+* [T.84: Use a non-template core implementation to provide an ABI-stable interface](#Rt-abi)
+* [T.??: ????](#Rt-???)
 
 ### <a name="Rt-hier"></a> T.80: Do not naively templatize a class hierarchy
 
@@ -11369,9 +11407,17 @@ Instead of using a separate "base" type, another common technique is to speciali
 
 ???
 
-## <a name="SS-variadic"></a> T.var: Variadic template rules
+## <a name="SS-t-var"></a> T.var: Variadic template rules
 
-???
+??? section introduction ???
+
+Variadic template rule summary:
+
+* [T.100: Use variadic templates when you need a function that takes a variable number of arguments of a variety of types](#Rt-variadic)
+* [T.101: ??? How to pass arguments to a variadic template ???](#Rt-variadic-pass)
+* [T.102: ??? How to process arguments to a variadic template ???](#Rt-variadic-process)
+* [T.103: Don't use variadic templates for homogeneous argument lists](#Rt-variadic-not)
+* [T.??: ????](#Rt-???)
 
 ### <a name="Rt-variadic"></a> T.100: Use variadic templates when you need a function that takes a variable number of arguments of a variety of types
 
@@ -11429,13 +11475,23 @@ There are more precise ways of specifying a homogeneous sequence, such as an `in
 
 ???
 
-## <a name="SS-meta"></a> T.meta: Template metaprogramming (TMP)
+## <a name="SS-t-meta"></a> T.meta: Template metaprogramming (TMP)
 
 Templates provide a general mechanism for compile-time programming.
 
 Metaprogramming is programming where at least one input or one result is a type.
 Templates offer Turing-complete (modulo memory capacity) duck typing at compile time.
 The syntax and techniques needed are pretty horrendous.
+
+Metaprogramming rule summary:
+
+* [T.120: Use template metaprogramming only when you really need to](#Rt-metameta)
+* [T.121: Use template metaprogramming primarily to emulate concepts](#Rt-emulate)
+* [T.122: Use templates (usually template aliases) to compute types at compile time](#Rt-tmp)
+* [T.123: Use `constexpr` functions to compute values at compile time](#Rt-fct)
+* [T.124: Prefer to use standard-library TMP facilities](#Rt-std)
+* [T.125: If you need to go beyond the standard-library TMP facilities, use an existing library](#Rt-lib)
+* [T.??: ????](#Rt-???)
 
 ### <a name="Rt-metameta"></a> T.120: Use template metaprogramming only when you really need to
 
@@ -11570,7 +11626,18 @@ Write your own "advanced TMP support" only if you really have to.
 
 ???
 
-## <a name="SS-temp-other"></a> Other template rules
+## <a name="SS-t-other"></a> T.other: Other template rules
+
+??? section introduction ???
+
+Other template rules summary:
+
+* [T.140: Name all nontrivial operations](#Rt-name)
+* [T.141: Use an unnamed lambda if you need a simple function object in one place only](#Rt-lambda)
+* [T.142: Use template variables to simplify notation](#Rt-var)
+* [T.143: Don't write unintentionally nongeneric code](#Rt-nongeneric)
+* [T.144: Don't specialize function templates](#Rt-specialize-function)
+* [T.??: ????](#Rt-???)
 
 ### <a name="Rt-name"></a> T.140: Name all nontrivial operations
 
