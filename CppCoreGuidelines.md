@@ -3883,7 +3883,7 @@ A destructor (either user-defined or compiler-generated) is implicitly declared 
 
 ## <a name="SS-ctor"></a> C.ctor: Constructors
 
-A constructor defined how an object is initialized (constructed).
+A constructor defines how an object is initialized (constructed).
 
 ### <a name="Rc-ctor"></a> C.40: Define a constructor if a class has an invariant
 
