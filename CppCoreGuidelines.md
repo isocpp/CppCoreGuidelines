@@ -3873,6 +3873,10 @@ If a destructor uses operations that may fail, it can catch exceptions and in so
 
  [A destructor may not fail](#Rc-dtor-fail). If a destructor tries to exit with an exception, it's a bad design error and the program had better terminate.
 
+##### Note
+
+A destructor (either user-defined or compiler-generated) is implicitly declared `noexcept` (independently of what code is in its body) if all of the members of its class have `noexcept` destructors.
+
 ##### Enforcement
 
 (Simple) A destructor should be declared `noexcept`.
