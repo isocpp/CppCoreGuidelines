@@ -3839,7 +3839,7 @@ The standard library requires that all classes it deals with have destructors th
 
 Many have tried to devise a fool-proof scheme for dealing with failure in destructors.
 None have succeeded to come up with a general scheme.
-This can be be a real practical problem: For example, what about a sockets that won't close?
+This can be a real practical problem: For example, what about a socket that won't close?
 The writer of a destructor does not know why the destructor is called and cannot "refuse to act" by throwing an exception.
 See [discussion](#Sd-dtor).
 To make the problem worse, many "close/release" operations are not retryable.
