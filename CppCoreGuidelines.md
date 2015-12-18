@@ -3905,7 +3905,7 @@ That's what constructors are for.
         int d, m, y;
     };
 
-It is often a good idea to express the invariant as an `Ensure` on the constructor.
+It is often a good idea to express the invariant as an `Ensures` on the constructor.
 
 ##### Note
 
@@ -3941,7 +3941,7 @@ Also, the default for `int` would be better done as a [member initializer](#Rc-i
 
 ##### Enforcement
 
-* Flag classes with user-define copy operations but no constructor (a user-defined copy is a good indicator that the class has an invariant)
+* Flag classes with user-defined copy operations but no constructor (a user-defined copy is a good indicator that the class has an invariant)
 
 ### <a name="Rc-complete"></a> C.41: A constructor should create a fully initialized object
 
