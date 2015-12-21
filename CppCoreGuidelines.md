@@ -1,6 +1,6 @@
 # <a name="main"></a> C++ Core Guidelines
 
-December 14, 2015
+December 21, 2015
 
 Editors:
 
@@ -6018,6 +6018,7 @@ Overload rule summary:
 * [C.163: Overload only for operations that are roughly equivalent](#Ro-equivalent-2)
 * [C.164: Avoid conversion operators](#Ro-conversion)
 * [C.165: Use `using` for customization points](#Ro-custom)
+* [C.166: Overload unary `&` only as part of a system of smart pointers and references](#Ro-address-of)
 * [C.170: If you feel like overloading a lambda, use a generic lambda](#Ro-lambda)
 
 ### <a name="Ro-conventional"></a> C.160: Define operators primarily to mimic conventional usage
@@ -6193,6 +6194,40 @@ This is done by including the general function in the lookup for the function:
 
 Unlikely, except for known customization points, such as `swap`.
 The problem is that the unqualified and qualified lookups both have uses.
+
+### <a name="Ro-address-of"></a> C.166: Overload unary `&` only as part of a system of smart pointers and references
+
+##### Reason
+
+The `&` operator is fundamental in C++.
+Many parts of the C++ semantics assumes its default meaning.
+
+##### Example
+
+    class Ptr { // a somewhat smart pointer
+        Ptr(X* pp) :p(pp) { /* check */ }
+        X* operator->() { /* check */ return p; }
+        X operator[](int i);
+        X operator*();
+    private:
+        T* p;
+    };
+        
+    class X {
+        Ptr operator&() { return Ptr{this}; }
+        // ...
+    };
+
+##### Note
+
+If you "mess with" operator `&` be sure that its definition has matching meanings for `->`, `[]`, `*`, and `.` on the result type.
+Note that operator `.` currently cannot be overloaded so a perfect system is impossible.
+We hope to remedy that: http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2015/n4477.pdf.
+Note that `std::addressof()` always yields a built-in pointer.
+
+##### Enforcement
+
+Tricky. Warn if `&` is user-defined without also defining `->` for the result type.
 
 ### <a name="Ro-lambda"></a> C.170: If you feel like overloading a lambda, use a generic lambda
 
