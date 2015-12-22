@@ -6051,6 +6051,7 @@ Overload rule summary:
 * [C.164: Avoid conversion operators](#Ro-conversion)
 * [C.165: Use `using` for customization points](#Ro-custom)
 * [C.166: Overload unary `&` only as part of a system of smart pointers and references](#Ro-address-of)
+* [C.167: Use an operator for an operation with its conventional meaning](#Ro-overload)
 * [C.170: If you feel like overloading a lambda, use a generic lambda](#Ro-lambda)
 
 ### <a name="Ro-conventional"></a> C.160: Define operators primarily to mimic conventional usage
@@ -6260,6 +6261,47 @@ Note that `std::addressof()` always yields a built-in pointer.
 ##### Enforcement
 
 Tricky. Warn if `&` is user-defined without also defining `->` for the result type.
+
+
+
+### <a name="Ro-overload"></a> C.167: Use an operator for an operation with its conventional meaning
+
+##### Reason
+
+Readability. Convention. Reusability. Support for generic code
+
+##### Example
+
+    void cout_my_class(const my_class& c) // confusing, not conventional,not generic
+    {
+        std::cout << /* class members here */;
+    }
+
+    std::ostream& operator<<(std::ostream& os, const my_class& c) //OK
+    {
+        return os << /* class members here */;
+    }
+
+By itself, `cout_my_class` would be OK, but it is not usable/composabe with code that rely on the `<<` convention for output:
+
+    My_class var { /* ... */ };
+    // ...
+    cout << "var = " << var << '\n';
+    
+###### Note
+
+There are strong and vigorous conventions for the meaning most operators, such as 
+
+* comparisons (`==`, `!=`, '<', `<=`, `>`, and `>=`),
+* arithmetic operations (`+`, `-`, `*`, `/`, and `%`)
+* access operations (`.`, `->`, unary `*`, and `[]`)
+* assignment and initialization (`=`)
+
+Don't define those unconventionally and don't invent yur own names for them.
+
+###### Enforcement
+
+Tricky. Requires semantic insigth.
 
 ### <a name="Ro-lambda"></a> C.170: If you feel like overloading a lambda, use a generic lambda
 
