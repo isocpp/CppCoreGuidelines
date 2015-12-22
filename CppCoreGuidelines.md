@@ -6301,7 +6301,7 @@ Don't define those unconventionally and don't invent yur own names for them.
 
 ###### Enforcement
 
-Tricky. Requires semantic insigth.
+Tricky. Requires semantic insight.
 
 ### <a name="Ro-lambda"></a> C.170: If you feel like overloading a lambda, use a generic lambda
 
@@ -8690,7 +8690,7 @@ Flag empty statements that are not blocks and doesn't "contain" comments.
 
 ##### Reason
 
-The loop control up front should enable correct reasoning about what is happening inside the loop. Modifying loop counters in both the iteration-expression and inside the body of the loop is a perennial psource of suprises and bugs.
+The loop control up front should enable correct reasoning about what is happening inside the loop. Modifying loop counters in both the iteration-expression and inside the body of the loop is a perennial source of suprises and bugs.
 
 ##### Example
 
@@ -9155,7 +9155,7 @@ The first defense against this is to [define the base class `Shape` not to allow
 ##### Alternative
 
 If you mean to slice, define an explicit operations to do so.
-This saves reders from confusion.
+This saves readers from confusion.
 For example:
 
     class Smiley : public Circle {
