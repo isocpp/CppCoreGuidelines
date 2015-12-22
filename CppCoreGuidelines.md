@@ -5791,7 +5791,7 @@ Flag all slicing.
 
 ##### Reason
 
- `dynamic_cast` is checked at run time.
+`dynamic_cast` is checked at run time.
 
 ##### Example
 
@@ -5867,7 +5867,7 @@ This code may work as expected for years, just to fail on a new machine, new com
 
 If you implement your own RTTI, be careful.
 
-##### Exception
+##### Exceptions
 
 If your implementation provided a really slow `dynamic_cast`, you may have to use a workaround.
 However, all workarounds that cannot be statically resolved involve explicit casting (typically `static_cast`) and are error-prone.
@@ -5878,6 +5878,8 @@ and that your use of `dynamic_cast` is really performance critical.
 We are of the opinion that current implementations of `dynamic_cast` are unnecessarily slow.
 For example, under suitable conditions, it is possible to perform a `dynamic_cast` in [fast constant time](http://www.stroustrup.com/fast_dynamic_casting.pdf).
 However, compatibility makes changes difficult even if all agree that an effort to optimize is worthwhile.
+
+In very rare cases, if you have measured that the `dynamic_cast` overhead is material, you have other means to statically guarantee that a downcast will succeed (e.g., you are using CRTP carefully), and there is no virtual inheritance involved, consider tactically resorting `static_cast` with a prominent comment and disclaimer summarizing this paragraph and that human attention is needed under maintenance because the type system can't verify correctness. Even so, in our experience such "I know what I'm doing" situations are still a known bug source.
 
 ##### Enforcement
 
