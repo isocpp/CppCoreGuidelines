@@ -5424,32 +5424,40 @@ There are people who don't follow this rule because they plan to use a class onl
 * Flag a class with a virtual function and no virtual destructor. Note that this rule needs only be enforced for the first (base) class in which it occurs, derived classes inherit what they need. This flags the place where the problem arises, but can give false positives.
 * Flag `delete` of a class with a virtual function but no virtual destructor.
 
-### <a name="Rh-override"></a> C.128: Use `override` to make overriding explicit in large class hierarchies
+### <a name="Rh-override"></a> C.128: Virtual functions should specify exactly one of `virtual`, `override`, or `final`
 
 ##### Reason
 
-Readability. Detection of mistakes. Explicit `override` allows the compiler to catch mismatch of types and/or names between base and derived classes.
+Readability. Detection of mistakes. Writing explicit `virtual`, `override`, or `final` is self-documenting and enables the compiler to catch mismatch of types and/or names between base and derived classes. However, writing more than one of these three is both redundant and a potential source of errors.
+
+Use `virtual` only when declaring a new virtual function. Use `override` only when declaring an overrider. Use `final` only when declaring an final overrider.
 
 ##### Example, bad
 
     struct B {
         void f1(int);
-        virtual void f2(int);
+        virtual void f2(int) const;
         virtual void f3(int);
         // ...
     };
 
     struct D : B {
         void f1(int);      // warn: D::f1() hides B::f1()
-        void f2(int);      // warn: no explicit override
+        void f2(int) const;      // warn: no explicit override
         void f3(double);   // warn: D::f3() hides B::f3()
         // ...
+    };
+    
+    struct D2 : B {
+        virtual void f2(int) final;  // BAD; pitfall, D2::f does not override B::f 
     };
 
 ##### Enforcement
 
 * Compare names in base and derived classes and flag uses of the same name that does not override.
-* Flag overrides without `override`.
+* Flag overrides with neither `override` nor `final`.
+* Flag function declarations that use more than one of `virtual`, `override`, and `final`.
+
 
 ### <a name="Rh-kind"></a> C.129: When designing a class hierarchy, distinguish between implementation inheritance and interface inheritance
 
