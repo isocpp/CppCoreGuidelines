@@ -5316,7 +5316,7 @@ Accessing objects in a hierarchy rule summary:
 * [C.147: Use `dynamic_cast` to a reference type when failure to find the required class is considered an error](#Rh-ptr-cast)
 * [C.148: Use `dynamic_cast` to a pointer type when failure to find the required class is considered a valid alternative](#Rh-ref-cast)
 * [C.149: Use `unique_ptr` or `shared_ptr` to avoid forgetting to `delete` objects created using `new`](#Rh-smart)
-* [C.150: Use `make_unique()` to construct objects owned by `unique_ptr`s or another smart pointer](#Rh-make_unique)
+* [C.150: Use `make_unique()` to construct objects owned by `unique_ptr`s](#Rh-make_unique)
 * [C.151: Use `make_shared()` to construct objects owned by `shared_ptr`s](#Rh-make_shared)
 * [C.152: Never assign a pointer to an array of derived class objects to a pointer to its base](#Rh-array)
 
@@ -5964,7 +5964,7 @@ Avoid resource leaks.
 * Flag initialization of a naked pointer with the result of a `new`
 * Flag `delete` of local variable
 
-### <a name="Rh-make_unique"></a> C.150: Use `make_unique()` to construct objects owned by `unique_ptr`s or other smart pointers
+### <a name="Rh-make_unique"></a> C.150: Use `make_unique()` to construct objects owned by `unique_ptr`s
 
 ##### Reason
 
@@ -7376,6 +7376,7 @@ Expression rules:
 * [ES.60: Avoid `new` and `delete[]` outside resource management functions](#Res-new)
 * [ES.61: delete arrays using `delete[]` and non-arrays using `delete`](#Res-del)
 * [ES.62: Don't compare pointers into different arrays](#Res-arr2)
+* [ES.63: Don't slice](#Res-slice)
 
 Statement rules:
 
@@ -9087,6 +9088,47 @@ The result of doing so is undefined.
 This example has many more problems.
 
 ##### Enforcement
+
+???
+
+### <a name="Res-slice"></a> ES.63: Don't slice
+
+##### Reason
+
+Slicing - that is, copying only part of an object using assingment or initialization - most often leads to errors because
+the object was meant to be considered as a whole.
+In the rare cases where the slicing was deliberate the code can be surprising.
+
+##### Example
+
+    class Shape { /* ... */ };
+    class Circle : public Shape { /* ... */ Point c; int r; };
+    
+    Circle c {{0,0}, 42};
+    Shape s {c};    // copy Shape part of Circle
+    
+The result will be meaningless because the center and radius will not be copied from `c` into `s`.
+The first defense against this is to [define the base class `Shape` not to allow this](#Rc-copy-virtual).
+
+##### Alternative
+
+If you mean to slice, define an explicit operations to do so.
+This saves reders from confusion.
+For example:
+
+    class Smiley : public Circle {
+        public:
+        Circle copy_circle();
+        // ...
+    };
+    
+    Smiley sm { /* ... */ };
+    Circle c1 {sm};  // ideally prevented by the definition of Circle
+    Circle c2 {sm.copy_circle()};
+    
+##### Enforcement
+
+Warn against slicing.
 
 ## <a name="SS-numbers"></a> Arithmetic
 
