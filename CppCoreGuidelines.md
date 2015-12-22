@@ -7360,6 +7360,7 @@ Statement rules:
 * [ES.78: Always end a non-empty `case` with a `break`](#Res-break)
 * [ES.79: ??? `default`](#Res-default)
 * [ES.85: Make empty statements visible](#Res-empty)
+* [ES.86: Avoid modifying loop control variables inside the body of raw for-loops](#Res-loop-counter)
 
 Arithmetic rules:
 
@@ -8610,6 +8611,31 @@ Readability.
 ##### Enforcement
 
 Flag empty statements that are not blocks and doesn't "contain" comments.
+
+
+### <a name="Res-loop-counter"></a> ES.86: Avoid modifying loop control variables inside the body of raw for-loops
+
+##### Reason
+
+The loop control up front should enable correct reasoning about what is happening inside the loop. Modifying loop counters in both the iteration-expression and inside the body of the loop is a perennial psource of suprises and bugs.
+
+##### Example
+
+    for (int i=0; i<10; ++i) {
+        // no updates to i -- ok
+    }
+
+    for (int i=0; i<10; ++i) {
+        //
+        if (/* something */) ++i; // BAD
+        //
+    }
+
+##### Enforcement
+
+Flag variables that are potentially updated (have a non-const use) in both the loop control iteration-expression and the loop body.
+
+
 
 ## ES.expr: Expressions
 
