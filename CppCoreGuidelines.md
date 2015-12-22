@@ -3031,6 +3031,7 @@ Class rule summary:
 * [C.4: Make a function a member only if it needs direct access to the representation of a class](#Rc-member)
 * [C.5: Place helper functions in the same namespace as the class they support](#Rc-helper)
 * [C.6: Declare a member function that does not modify the state of its object `const`](#Rc-const)
+* [C.7: Don't define a class or enum and declare a variable of its type in the same statement](#Rc-standalone)
 
 Subsections:
 
@@ -3198,6 +3199,27 @@ More precise statement of design intent, better readability, more errors caught 
 ##### Enforcement
 
 Flag non-`const` member functions that do not write to their objects
+
+
+### <a name="Rc-standalone"></a> C.7: Don't define a class or enum and declare a variable of its type in the same statement
+
+##### Reason
+
+Mixing a type definition and the definition of another entity in the same declaration is confusing and unnecessary.
+
+##### Example; bad
+
+    struct Data { /*...*/ } data{ /*...*/ };
+
+##### Example; good
+
+    struct Data { /*...*/ };
+    Data data{ /*...*/ };
+
+##### Enforcement
+
+* Flag if the `}` of a class or enumeration definition is not followed by a `;`. The `;` is missing.
+
 
 ## <a name="SS-concrete"></a> C.concrete: Concrete types
 
