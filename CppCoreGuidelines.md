@@ -5388,7 +5388,26 @@ A class is more stable (less brittle) if it does not contain data. Interfaces sh
 
 ##### Example
 
-    ???
+    class A {
+    public:
+    	virtual void Foo() = 0;
+    	virtual void Bar(int i) = 0;
+    	virtual ~A() = default;
+    };
+
+    class B {
+    public:
+    	virtual void Foo() override {
+    		// ...
+    	}
+    	virtual void Bar(int i) override {
+    		// ...
+    	}
+    };
+
+    void Compute(A& obj) {
+    	// ...
+    }
 
 ##### Enforcement
 
