@@ -12662,6 +12662,44 @@ Casting away `const` is a lie. If the variable is actually declared `const`, it'
     f(i); // silent side effect
     f(j); // undefined behavior
 
+##### Example
+
+Sometimes you may be tempted to resort to `const_cast` to avoid code duplication, such as when two accessor functions that differ only in `const`-ness have similar implementations. For example:
+
+    class bar;
+    
+    class foo {
+        bar mybar;
+    public:                         // BAD, duplicates logic
+              bar& get_bar()       { /* complex logic around getting a non-const reference to mybar */ } 
+        const bar& get_bar() const { /* same complex logic around getting a const reference to mybar */ } 
+    };
+
+Instead, prefer to share implementations. Normally, you can just have the non-`const` function call the `const` function. However, when there is complex logic this can lead to the following pattern that still resorts to a `const_cast`:
+
+    class foo {
+        bar mybar;
+    public:                         // not great, non-const calls const version but resorts to const_cast
+              bar& get_bar()       { return const_cast<bar&>(static_cast<const foo&>(*this).get_bar()); } 
+        const bar& get_bar() const { /* the complex logic around getting a const reference to mybar */ } 
+    };
+
+Although this pattern is safe when applied correctly, because the caller must have had a non-`const` object to begin with, it's not ideal because the safety is hard to enforce automatically as a checker rule.
+
+Instead, prefer to put the common code in a common helper function -- and make it a template so that it deduces `const`. This doesn't use any `const_cast` at all:
+
+    class foo {
+        bar mybar;
+
+        template<class T>           // good, deduces whether T is const or non-const
+        static auto get_bar_impl(T& t) -> decltype(t.get_bar())
+            { /* the complex logic around getting a possibly-const reference to mybar */ } 
+
+    public:                         // good
+              bar& get_bar()       { return get_bar_impl(*this); } 
+        const bar& get_bar() const { return get_bar_impl(*this); } 
+    };
+
 **Exception**: You may need to cast away `const` when calling `const`-incorrect functions. Prefer to wrap such functions in inline `const`-correct wrappers to encapsulate the cast in one place.
 
 ##### Enforcement
