@@ -2404,6 +2404,8 @@ If you have multiple values to return, [use a tuple](#Rf-out-multi) or similar m
 
 A struct of many (individually cheap-to-move) elements may be in aggregate expensive to move.
 
+It is not recommended to return a `const` value. Such older advice is now obsolete; it does not add value, and it interferes with move semantics.
+
 ##### Exceptions
 
 * For non-value types, such as types in an inheritance hierarchy, return the object by `unique_ptr` or `shared_ptr`.
@@ -2425,6 +2427,7 @@ A struct of many (individually cheap-to-move) elements may be in aggregate expen
 
 ##### Enforcement
 * Flag reference to non-`const` parameters that are not read before being written to and are a type that could be cheaply returned; they should be "out" return values.
+* Flag returning a `const` value. To fix: Remove `const` to return a non-`const` value instead.
 
 
 ### <a name="Rf-out-multi"></a> F.21: To return multiple "out" values, prefer returning a tuple or struct
