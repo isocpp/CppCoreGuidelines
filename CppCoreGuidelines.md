@@ -13865,7 +13865,7 @@ In general, however, avoid concrete base classes (see Item 35). For example, `un
 
 **References**: [[C++CS]](#C++CS) Item 50, [[Cargill92]](#Cargill92) pp. 77-79, 207¸ [[Cline99]](#Cline99) §21.06, 21.12-13¸ [[Henricson97]](#Henricson97) pp. 110-114¸ [[Koenig97]](#Koenig97) Chapters 4, 11¸ [[Meyers97]](#Meyers97) §14¸ [[Stroustrup00]](#Stroustrup00) §12.4.2¸ [[Sutter02]](#Sutter02) §27¸ [[Sutter04]](#Sutter04) §18
 
-### <a name="Sd-noexcept"></a> Discussion: Usage of noexecpt
+### <a name="Sd-noexcept"></a> Discussion: Usage of noexcept
 
 ???
 
@@ -13927,7 +13927,7 @@ Never allow an error to be reported from a destructor, a resource deallocation f
 5. You can't use `Nefarious` objects in standard containers:
 
 
-        std::vector<nefarious> vec(10);   // this is line can std::terminate()
+        std::vector<nefarious> vec(10);   // this line can std::terminate()
 
     The standard library forbids all destructors used with it from throwing. You can't store `nefarious` objects in standard containers or use them with any other part of the standard library.
 
@@ -14080,7 +14080,7 @@ This class is a resource handle. It manages the lifetime of the `T`s. To do so, 
 
 ##### Enforcement
 
-The basic technique for preventing leaks is to have every resource owned by a resource handle with a suitable destructor. A checker can find "naked `new`s". Given a list of C-style allocation functions (e.g., `fopen()`), a checker can also find uses that are not managed by a resource handle. In general, "naked pointers" can be viewed with suspicion, flagged, and/or analyzed. A a complete list of resources cannot be generated without human input (the definition of "a resource" is necessarily too general), but a tool can be "parameterized" with a resource list.
+The basic technique for preventing leaks is to have every resource owned by a resource handle with a suitable destructor. A checker can find "naked `new`s". Given a list of C-style allocation functions (e.g., `fopen()`), a checker can also find uses that are not managed by a resource handle. In general, "naked pointers" can be viewed with suspicion, flagged, and/or analyzed. A complete list of resources cannot be generated without human input (the definition of "a resource" is necessarily too general), but a tool can be "parameterized" with a resource list.
 
 ### <a name="Cr-never"></a> Never throw while holding a resource not owned by a handle
 
@@ -14155,7 +14155,7 @@ To avoid extremely hard-to-find errors. Dereferencing such a pointer is undefine
     {
         string* p = bad();
         vector<int> xx = {7, 8, 9};
-        string x = *p;   // undefined behavior: x may not be 1
+        string x = *p;   // undefined behavior: x may not be "this"
         *p = "Evil!";    // undefined behavior: we don't know what (if anything) is allocated a location p
     }
 
@@ -14163,7 +14163,7 @@ The `string`s of `v` are destroyed upon exit from `bad()` and so is `v` itself. 
 
 ##### Enforcement
 
-Most compilers already warn about simple cases and has the information to do more. Consider any pointer returned from a function suspect. Use containers, resource handles, and views (e.g., `span` known not to be resource handles) to lower the number of cases to be examined. For starters, consider every class with a destructor a resource handle.
+Most compilers already warn about simple cases and has the information to do more. Consider any pointer returned from a function suspect. Use containers, resource handles, and views (e.g., `span` known not to be resource handles) to lower the number of cases to be examined. For starters, consider every class with a destructor as resource handle.
 
 ### <a name="Cr-templates"></a> Use templates to express containers (and other resource handles)
 
@@ -14226,7 +14226,7 @@ Now `Named` has a default constructor, a destructor, and efficient copy and move
 
 ##### Enforcement
 
-In general, a tool cannot know if a class is a resource handle. However, if a class has some of [the default operations](#SS-ctor), it should have all, and if a class has a member that is a resource handle, it should be considered a resource handle.
+In general, a tool cannot know if a class is a resource handle. However, if a class has some of [the default operations](#SS-ctor), it should have all, and if a class has a member that is a resource handle, it should be considered as resource handle.
 
 ### <a name="Cr-list"></a> If a class is a container, give it an initializer-list constructor
 
