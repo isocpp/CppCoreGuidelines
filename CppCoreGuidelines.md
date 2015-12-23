@@ -12325,7 +12325,6 @@ Don't replicate the work of others.
 Benefit from other people's work when they make improvements.
 Help other people when you make improvements.
 
-**References**: ???
 
 ### <a name="Rsl-sl"></a> SL.2: Prefer the standard library to other libraries
 
@@ -12334,9 +12333,63 @@ Help other people when you make improvements.
 More people know the standard library.
 It is more likely to be stable, well-maintained, and widely available than your own code or most other libraries.
 
+
 ## SL.con: Containers
 
+* [SL.10: Prefer using STL `array` or `vector` instead of a C array](#Rsl-arrays)
+* [SL.11: Prefer using STL `vector` by default unless you have a reason to use a different container](#Rsl-vector)
 ???
+
+### <a name="Rsl-arrays"></a> SL.10: Prefer using STL `array` or `vector` instead of a C array
+
+##### Reason
+
+C arrays are less safe, and have no advantages over `array` and `vector`.
+For a fixed-length array, use `std::array`, which does not degenerate to a pointer when passed to a function and does know its size.
+For a variable-length array, use `std::vector`, which additionally can change its size and handles memory allocation.
+
+##### Example
+
+    int v[SIZE];                        // BAD
+     
+    std::array<int,SIZE> w;             // ok
+
+##### Example
+
+    int* v = new int[initial_size];     // BAD, owning raw pointer
+    delete[] v;                         // BAD, manual delete
+
+    std::vector<int> w(initial_size);   // ok
+
+##### Enforcement
+
+* Flag declaration of a C array inside a function or class that also declares an STL container (to avoid excessive noisy warnings on legacy non-STL code). To fix: At least change the C array to a `std::array`.
+
+
+### <a name="Rsl-vector"></a> SL.11: Prefer using STL `vector` by default unless you have a reason to use a different container
+
+##### Reason
+
+`vector` and `array` are the only standard containers that offer the fastest general-purpose access (random access, including being vectorization-friendly), the fastest default access pattern (begin-to-end or end-to-begin is prefetcher-friendly), and the lowest space overhead (contiguous layout has zero per-element overhead, which is cache-friendly). Usually you need to add and remove elements from the container, so use `vector` by default; if you don't need to modify the container's size, use `array`.
+
+Even when other containers seem more suited, such a `map` for O(log N) lookup performance or a `list` for efficient insertion in the middle, a `vector` will usually still perform better for containers up to a few KB in size.
+
+##### Note
+
+`string` should not be used as a container of individual characters. A `string` is a textual string; if you want a container of characters, use `vector</*char_type*/>` or `array</*char_type*/>` instead. 
+
+##### Exceptions
+
+If you have a good reason to use another container, use that instead. For example:
+
+* If `vector` suits your needs but you don't need the container to be variable size, use `array` instead.
+
+* If you want a dictionary-style lookup container that guarantees O(K) or O(log N) lookups, the container will be larger (more than a few KB) and you perform frequent inserts so that the overhead of maintaining a sorted `vector` is infeasible, go ahead and use an `unordered_map` or `map` instead. 
+
+##### Enforcement
+
+* Flag a `vector` whose size never changes after construction (such as because it's `const` or because no non-`const` functions are called on it). To fix: Use an `array` instead.
+
 
 ## SL.str: String
 
