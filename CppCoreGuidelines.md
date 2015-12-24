@@ -5381,7 +5381,7 @@ not using this (over)general interface in favor of a particular interface found 
 ##### Enforcement
 
 * Look for classes with lots of members that do nothing but throw.
-* Flag every use of a nonpublic base class where the derived class does not override a virtual function or access a protected base member.
+* Flag every use of a nonpublic base class `B` where the derived class `D` does not override a virtual function or access a protected member in `B`, and `B` is not one of the following: empty, a template parameter or parameter pack of `D`, a class template specialized with `D`.
 
 ### <a name="Rh-abstract"></a> C.121: If a base class is used as an interface, make it a pure abstract class
 
