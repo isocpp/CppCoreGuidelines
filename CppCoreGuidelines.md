@@ -370,7 +370,7 @@ The second version leaves the reader guessing and opens more possibilities for u
         string val;
         cin >> val;
         // ...
-        int index = 0;            // bad
+        int index = -1;            // bad
         for (int i = 0; i < v.size(); ++i)
             if (v[i] == val) {
                 index = i;
@@ -387,7 +387,7 @@ A much clearer expression of intent would be:
         string val;
         cin >> val;
         // ...
-        auto p = find(v, val);  // better
+        auto p = find(begin(v), end(v), val);  // better
         // ...
     }
 
