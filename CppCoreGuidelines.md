@@ -1,6 +1,6 @@
 # <a name="main"></a> C++ Core Guidelines
 
-December 21, 2015
+December 28, 2015
 
 Editors:
 
@@ -27,6 +27,7 @@ Problems:
 
 You can [read an explanation of the scope and structure of this Guide](#S-abstract) or just jump straight in:
 
+* [I: Introduction](#S-introduction)
 * [P: Philosophy](#S-philosophy)
 * [I: Interfaces](#S-interfaces)
 * [F: Functions](#S-functions)
@@ -172,7 +173,7 @@ We are uncomfortable with rules that simply state "don't do that!" without offer
 One consequence of that is that some rules can be supported only by heuristics, rather than precise and mechanically verifiable checks.
 Other rules articulate general principles. For these more general rules, more detailed and specific rules provide partial checking.
 
-These guidelines address a core of C++ and its use.
+These guidelines address the core of C++ and its use.
 We expect that most large organizations, specific application areas, and even large projects will need further rules, possibly further restrictions, and further library support.
 For example, hard real-time programmers typically can't use free store (dynamic memory) freely and will be restricted in their choice of libraries.
 We encourage the development of such more specific rules as addenda to these core guidelines.
@@ -242,7 +243,7 @@ Where appropriate, we label a rule (in the **Enforcement** sections) with the na
 A rule can be part of several profiles, or none.
 For a start, we have a few profiles corresponding to common needs (desires, ideals):
 
-* **types**: No type violations (reinterpreting a `T` as a `U` through casts/unions/varargs)
+* **type**: No type violations (reinterpreting a `T` as a `U` through casts/unions/varargs)
 * **bounds**: No bounds violations (accessing beyond the range of an array)
 * **lifetime**: No leaks (failing to `delete` or multiple `delete`) and no access to invalid objects (dereferencing `nullptr`, using a dangling reference).
 
@@ -253,7 +254,8 @@ Tools that implement these rules shall respect the following syntax to explicitl
 
     [[suppress(tag)]]
     
-where "tag" is the anchor name of the item where the Enforcement rule appears (e.g., for C.134 it is "Rh-public"), or the name of a profile group-of-rules ("types", "bounds", or "lifetime").
+where "tag" is the anchor name of the item where the Enforcement rule appears (e.g., for C.134 it is "Rh-public"), the
+name of a profile group-of-rules ("type", "bounds", or "lifetime"), or a specific rule in a profile ("type.4", or "bounds.2").
 
 
 ## <a name="SS-struct"></a> In.struct: The structure of this document
@@ -280,7 +282,8 @@ Also, we assume that the rules will be refined over time to make them more preci
 A rule is aimed at being simple, rather than carefully phrased to mention every alternative and special case.
 Such information is found in the **Alternative** paragraphs and the [Discussion](#S-discussion) sections.
 If you don't understand a rule or disagree with it, please visit its **Discussion**.
-If you feel that a discussion is missing or incomplete, send us an email.
+If you feel that a discussion is missing or incomplete, enter an [Issue](https://github.com/isocpp/CppCoreGuidelines/issues)
+explaining your concerns and possibly a corresponding PR.
 
 This is not a language manual.
 It is meant to be helpful, rather than complete, fully accurate on technical details, or a guide to existing code.
@@ -288,6 +291,7 @@ Recommended information sources can be found in [the references](#S-references).
 
 ## <a name="SS-sec"></a> In.sec: Major sections
 
+* [I: Introduction](#S-introduction)
 * [P: Philosophy](#S-philosophy)
 * [I: Interfaces](#S-interfaces)
 * [F: Functions](#S-functions)
@@ -441,7 +445,7 @@ portability will be impacted.
 ##### Note
 
 There are environments where restrictions on use of standard C++ language or library features are necessary, e.g., to avoid dynamic memory allocation as required by aircraft control software standards.
-In such cases, control their (dis)use with non-core Coding Guidelines.
+In such cases, control their (dis)use with an extension of these Coding Guidelines customized to the specific environment.
 
 ##### Enforcement
 
