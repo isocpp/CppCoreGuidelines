@@ -27,7 +27,7 @@ Problems:
 
 You can [read an explanation of the scope and structure of this Guide](#S-abstract) or just jump straight in:
 
-* [I: Introduction](#S-introduction)
+* [In: Introduction](#S-introduction)
 * [P: Philosophy](#S-philosophy)
 * [I: Interfaces](#S-interfaces)
 * [F: Functions](#S-functions)
@@ -291,7 +291,7 @@ Recommended information sources can be found in [the references](#S-references).
 
 ## <a name="SS-sec"></a> In.sec: Major sections
 
-* [I: Introduction](#S-introduction)
+* [In: Introduction](#S-introduction)
 * [P: Philosophy](#S-philosophy)
 * [I: Interfaces](#S-interfaces)
 * [F: Functions](#S-functions)
