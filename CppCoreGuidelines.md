@@ -6749,12 +6749,13 @@ We can fix that problem by making ownership explicit:
         T* q;         // OK: q is not owning
     };
 
-##### Note
+##### Exceptions
 
+A major class of exception is legacy code, especially code that must remain compilable as C.
 The fact that there are billions of lines of code that violate this rule against owning `T*`s cannot be ignored.
 This code cannot all be rewritten (ever assuming good code transformation software).
-This problem cannot be solved (at scale) by transforming all owning pointer to `unique_ptr`s and `shared_ptr`s, partly because we need/use owning "raw pointers" in the implementation of our fundamental resource handles. For example, most `vector` implementations have one owning pointer and two non-owning pointers.
-Also, many ABIs (and essentially all interfaces to C code) use `T*`s, some of them owning.
+This problem cannot be solved (at scale) by transforming all owning pointers to `unique_ptr`s and `shared_ptr`s, partly because we need/use owning "raw pointers" in the implementation of our fundamental resource handles. For example, common `vector` implementations have one owning pointer and two non-owning pointers.
+Also, many ABIs (and essentially all interfaces to C code) use `T*`s, some of them owning, and these cannot be simply annotated with `owner` because they need to remain compilable as C (although this would be a rare good use for a macro, that expands to `owner` in C++ mode only).
 
 ##### Note
 
