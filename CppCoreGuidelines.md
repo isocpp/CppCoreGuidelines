@@ -6751,13 +6751,6 @@ We can fix that problem by making ownership explicit:
 
 ##### Note
 
-The fact that there are billions of lines of code that violate this rule against owning `T*`s cannot be ignored.
-This code cannot all be rewritten (ever assuming good code transformation software).
-This problem cannot be solved (at scale) by transforming all owning pointer to `unique_ptr`s and `shared_ptr`s, partly because we need/use owning "raw pointers" in the implementation of our fundamental resource handles. For example, most `vector` implementations have one owning pointer and two non-owning pointers.
-Also, many ABIs (and essentially all interfaces to C code) use `T*`s, some of them owning.
-
-##### Note
-
 `owner<T>` has no default semantics beyond `T*`. It can be used without changing any code using it and without affecting ABIs.
 It is simply a indicator to programmers and analysis tools.
 For example, if an `owner<T>` is a member of a class, that class better have a destructor that `delete`s it.
