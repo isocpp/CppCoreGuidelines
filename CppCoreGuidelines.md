@@ -3065,7 +3065,6 @@ Class rule summary:
 * [C.3: Represent the distinction between an interface and an implementation using a class](#Rc-interface)
 * [C.4: Make a function a member only if it needs direct access to the representation of a class](#Rc-member)
 * [C.5: Place helper functions in the same namespace as the class they support](#Rc-helper)
-* [C.6: Declare a member function that does not modify the state of its object `const`](#Rc-const)
 * [C.7: Don't define a class or enum and declare a variable of its type in the same statement](#Rc-standalone)
 
 Subsections:
@@ -3216,24 +3215,6 @@ Placing them in the same namespace as the class makes their relationship to the 
 ##### Enforcement
 
 * Flag global functions taking argument types from a single namespace.
-
-### <a name="Rc-const"></a>C.6: Declare a member function that does not modify the state of its object `const`
-
-##### Reason
-
-More precise statement of design intent, better readability, more errors caught by the compiler, more optimization opportunities.
-
-##### Example
-
-    int Date::day() const { return d; }
-
-##### Note
-
-[Do not cast away `const`](#Res-casts-const).
-
-##### Enforcement
-
-Flag non-`const` member functions that do not write to their objects
 
 
 ### <a name="Rc-standalone"></a>C.7: Don't define a class or enum and declare a variable of its type in the same statement
@@ -10273,6 +10254,7 @@ Immutable objects are easier to reason about, so make object non-`const` only wh
 ##### Reason
 
 A member function should be marked `const` unless it changes the object's observable state.
+This gives a more precise statement of design intent, better readability, more errors caught by the compiler, and sometimes more optimization opportunities.
 
 ##### Example; bad
 
@@ -10287,9 +10269,13 @@ A member function should be marked `const` unless it changes the object's observ
         int x = pt.getx();          // ERROR, doesn't compile because getx was not marked const
     }
     
+##### Note
+
+[Do not cast away `const`](#Res-casts-const).
+
 ##### Enforcement
 
-* Flag a member function that is not marked `const`, but that could be `const` because its definition does not modify any member variable.
+* Flag a member function that is not marked `const`, but that does not perform a non-`const` operation on any member variable.
 
 
 ### <a name="Rconst-ref"></a>Con.3: By default, pass pointers and references to `const`s
