@@ -13952,7 +13952,7 @@ The common case for a base class is that it's intended to have publicly derived 
     class derived : public base { /* ... */ };
 
     {
-        shared_ptr<base> pb = make_shared<derived>();
+        unique_ptr<base> pb = make_unique<derived>();
         // ...
     } // ~pb invokes correct destructor only when ~base is virtual
 
@@ -13973,7 +13973,7 @@ In rarer cases, such as policy classes, the class is used as a base class for co
 
 This simple guideline illustrates a subtle issue and reflects modern uses of inheritance and object-oriented design principles.
 
-For a base class `Base`, calling code might try to destroy derived objects through pointers to `Base`, such as when using a `shared_ptr<Base>`. If `Base`'s destructor is public and nonvirtual (the default), it can be accidentally called on a pointer that actually points to a derived object, in which case the behavior of the attempted deletion is undefined. This state of affairs has led older coding standards to impose a blanket requirement that all base class destructors must be virtual. This is overkill (even if it is the common case); instead, the rule should be to make base class destructors virtual if and only if they are public.
+For a base class `Base`, calling code might try to destroy derived objects through pointers to `Base`, such as when using a `unique_ptr<Base>`. If `Base`'s destructor is public and nonvirtual (the default), it can be accidentally called on a pointer that actually points to a derived object, in which case the behavior of the attempted deletion is undefined. This state of affairs has led older coding standards to impose a blanket requirement that all base class destructors must be virtual. This is overkill (even if it is the common case); instead, the rule should be to make base class destructors virtual if and only if they are public.
 
 To write a base class is to define an abstraction (see Items 35 through 37). Recall that for each member function participating in that abstraction, you need to decide:
 
