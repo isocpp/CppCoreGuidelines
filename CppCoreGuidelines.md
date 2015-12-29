@@ -13794,9 +13794,8 @@ Thus, we need a way of gradually modernizing a code base.
 Upgrading older code to modern style can be a daunting task.
 Often, the old code is both a mess (hard to understand) and working correctly (for the current range of uses).
 Typically, the original programmer is not around and test cases incomplete.
-The fact that the code is a mess dramatically increases to effort needed to make any change and the risk of introducing errors.
-Often messy, old code runs unnecessarily slowly because it requires outdated compilers and cannot take advantage of modern hardware.
-In many cases, programs support would be required for major upgrade efforts.
+The fact that the code is a mess dramatically increases the effort needed to make any change and the risk of introducing errors.
+Often, messy, old code runs unnecessarily slowly because it requires outdated compilers and cannot take advantage of modern hardware.
 
 The purpose of modernizing code is to simplify adding new functionality, to ease maintenance, and to increase performance (throughput or latency), and to better utilize modern hardware.
 Making code "look pretty" or "follow modern style" are not by themselves reasons for change.
