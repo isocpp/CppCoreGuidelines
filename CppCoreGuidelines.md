@@ -10271,11 +10271,19 @@ Immutable objects are easier to reason about, so make object non-`const` only wh
 
 ##### Reason
 
- ???
+Member functions must be `const` in order to not alter any member variables of the class.
 
 ##### Example
 
-    ???
+    class Point {
+        private :
+            int x,
+                y;
+        public :
+            Point(int x, int y);
+            int getX() const;
+            int getY() const;  
+    }
 
 ##### Enforcement
 
