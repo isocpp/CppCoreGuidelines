@@ -2842,6 +2842,10 @@ The language guarantees that a `T&` refers to an object, so that testing for `nu
 
     ???
 
+##### Note
+
+Prefer returning `const T&` over `T&` leaving the latter to the explicit cases where further modifications of the referee are allowed. With that said, returned object should be immutable by default. Good practice is to create seperate methods that return `const` and non-`const` reference to an object with suggestive names (i.e. `get_element` and `get_const_element`).
+
 ##### Enforcement
 
 ???
