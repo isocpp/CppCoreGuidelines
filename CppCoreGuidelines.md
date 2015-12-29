@@ -5391,11 +5391,15 @@ not using this (over)general interface in favor of a particular interface found 
 
 ##### Reason
 
-A class is more stable (less brittle) if it does not contain data. Interfaces should normally be composed entirely of public pure virtual functions.
+A class is more stable (less brittle) if it does not contain data. Interfaces should normally be composed entirely of public pure virtual functions and a default/empty virtual destructor.
 
 ##### Example
 
-    ???
+    class my_interface {
+    public:
+        // ...only pure virtual functions here ...
+        virtual my_interface() {}   // or =default
+    };
 
 ##### Enforcement
 
