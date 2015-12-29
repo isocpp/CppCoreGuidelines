@@ -5295,11 +5295,123 @@ Summary of container rules:
 * [C.102: Give a container move operations](#Rcon-move)
 * [C.103: Give a container an initializer list constructor](#Rcon-init)
 * [C.104: Give a container a default constructor that sets it to empty](#Rcon-empty)
-* [C.105: Give a constructor and `Extent` constructor](#Rcon-val)
+* [C.105: Give a constructor and `Extent` constructor](#Rcon-extent)
 * ???
-* [C.109: If a resource handle has pointer semantics, provide `*` and `->`](#rcon-ptr)
+* [C.109: If a resource handle has pointer semantics, provide `*` and `->`](#Rcon-ptr)
 
 **See also**: [Resources](#S-resource)
+
+### <a name="Rcon-stl"></a> C.100: Follow the STL when defining a container
+
+???
+
+##### Reason
+
+ ???
+
+##### Example
+
+    ???
+
+##### Enforcement
+
+???
+
+### <a name="Rcon-val"></a> C.101: Give a container value semantics
+
+???
+
+##### Reason
+
+ ???
+
+##### Example
+
+    ???
+
+##### Enforcement
+
+???
+
+### <a name="Rcon-move"></a> C.102: Give a container move operation
+
+???
+
+##### Reason
+
+ ???
+
+##### Example
+
+    ???
+
+##### Enforcement
+
+???
+
+### <a name="Rcon-init"></a> C.103: Give a container an initializer list constructor
+
+???
+
+##### Reason
+
+ ???
+
+##### Example
+
+    ???
+
+##### Enforcement
+
+???
+
+### <a name="Rcon-empty"></a> C.104: Give a container a default constructor that sets it to empty
+
+???
+
+##### Reason
+
+ ???
+
+##### Example
+
+    ???
+
+##### Enforcement
+
+???
+
+### <a name="Rcon-extent"></a> C.105: Give a constructor and `Extent` constructor
+
+???
+
+##### Reason
+
+ ???
+
+##### Example
+
+    ???
+
+##### Enforcement
+
+???
+
+### <a name="Rcon-ptr"></a> C.109: If a resource handle has pointer semantics, provide `*` and `->`
+
+???
+
+##### Reason
+
+ ???
+
+##### Example
+
+    ???
+
+##### Enforcement
+
+???
 
 ## <a name="SS-lambdas"></a> C.lambdas: Function objects and lambdas
 
@@ -11408,6 +11520,34 @@ When `concept`s become available such alternatives can be distinguished directly
 ???
 
 ### <a name="Rt-enable_if"></a> T.66: Use selection using `enable_if` to optionally define a function
+
+##### Reason
+
+ ???
+
+##### Example
+
+    ???
+
+##### Enforcement
+
+???
+
+### <a name="Rt-specialization2"></a> T.67: Use specialization to provide alternative implementations for irregular types
+
+##### Reason
+
+ ???
+
+##### Example
+
+    ???
+
+##### Enforcement
+
+???
+
+### <a name="Rt-cast"></a> T.68: Use `{}` rather than `()` within templates to avoid ambiguities
 
 ##### Reason
 
