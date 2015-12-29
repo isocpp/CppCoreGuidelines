@@ -2840,8 +2840,21 @@ The language guarantees that a `T&` refers to an object, so that testing for `nu
 
 ##### Example
 
-    ???
-
+    class car
+    {
+        array<wheel,4> w;
+        // ...
+    public:
+        wheel& get_wheel(size_t i) { Expects(i<4); return w[i]; }
+        // ...
+    };
+     
+    void use()
+    {
+        car c;
+        wheel& w0 = c.get_wheel(0); // w0 has the same lifetime as c
+    }
+ 
 ##### Enforcement
 
 ???
