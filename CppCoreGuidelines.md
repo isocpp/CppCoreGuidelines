@@ -10271,15 +10271,25 @@ Immutable objects are easier to reason about, so make object non-`const` only wh
 
 ##### Reason
 
- ???
+A member function should be marked `const` unless it changes the object's observable state.
 
-##### Example
+##### Example; bad
 
-    ???
-
+    class Point {
+        int x, y;
+    public:
+        int getx() { return x; }    // BAD, should be const as it doesn't modify the object's state
+        // ...
+    };
+    
+    void f(const Point& pt) {
+        int x = pt.getx();          // ERROR, doesn't compile because getx was not marked const
+    }
+    
 ##### Enforcement
 
-???
+* Flag a member function that is not marked `const`, but that could be `const` because its definition does not modify any member variable.
+
 
 ### <a name="Rconst-ref"></a> Con.3: By default, pass pointers and references to `const`s
 
