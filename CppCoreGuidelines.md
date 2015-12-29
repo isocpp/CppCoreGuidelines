@@ -3223,9 +3223,56 @@ Placing them in the same namespace as the class makes their relationship to the 
 
 More precise statement of design intent, better readability, more errors caught by the compiler, more optimization opportunities.
 
-##### Example
+##### Example, bad
 
-    int Date::day() const { return d; }
+    class Shape
+    {
+    public:
+        // ...
+        virtual int get_area() = 0;
+        virtual bool is_visible() = 0;
+    };
+    
+    // ...
+    
+    int calculate_twice_the_area(const Shape& shape)
+    {
+        return 2 * shape.get_area();  // You can't do that - get_area is not `const`!
+    }
+    
+    /* Alternative version of calculate_twice_the_area function */
+    int calculate_twice_the_area(Shape& shape)
+    {
+        return 2 * shape.get_area(); // Now it works but `shape` has become an in/out parameter!
+    }
+
+Besides the above issues, as a user of `Shape` interface not knowing its implementation, it is risky to use both `get_area` and `is_visible` methods because you don't know whether they change its state or not. In a nightmare-case scenario calling `get_area` invokes some rendering-based computations and even if `Shape` is not visible, after `get_area` being called, `is_visible` returns `true`. It can happen because creator of the interface has not guaranteed that `get_area` method cannot change its state. Consider such an example method:
+
+    void mergeShapes(Shape& shape1, Shape& shape2)
+    {
+        if (shape1.get_area() == shape2.get_area() && shape1.is_visible() && shape2.is_visible())
+        {
+            // ... (some fancy merging algorithm)
+            
+            // Notice - if `get_area` had impact on `is_visible`,
+            // it could make this clause to be unneccessarily executed (or the opposite)
+        }
+    }
+
+##### Example, good
+
+    class Shape
+    {
+    public:
+        // ...
+        virtual int get_area() const = 0;
+        virtual bool is_visible() const = 0;
+        // It's guaranteed by the interface that state will not change when above methods are called
+    };
+
+##### Note
+
+Always declare getters and checker methods (e.g. `is_visible`, `are_equal`, etc) as `const`.
 
 ##### Note
 
@@ -3233,7 +3280,8 @@ More precise statement of design intent, better readability, more errors caught 
 
 ##### Enforcement
 
-Flag non-`const` member functions that do not write to their objects
+* (Simple) Flag non-`const` member functions that do not write to their objects
+* (Moderate) Flag non-`const` methods with names beginning with words like `get`, `is`, `are`, `has`, ...
 
 
 ### <a name="Rc-standalone"></a>C.7: Don't define a class or enum and declare a variable of its type in the same statement
