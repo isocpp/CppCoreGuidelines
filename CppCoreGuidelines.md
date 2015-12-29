@@ -9618,7 +9618,7 @@ Unless you do, nothing is guaranteed to work and subtle errors will persist.
 
 ##### Note
 
-If you have any doubts about what this means, go read a book.
+In a nutshell, if two threads can access the same named object concurrently (without synchronization), and at least one is a writer (performing a non-`const` operation), you have a data race. For further information of how to use synchronization well to eliminate data races, please consult a good book about concurrency.
 
 ##### Enforcement
 
@@ -14586,7 +14586,7 @@ Alternatively, we will decide that no change is needed and delete the entry.
 * When using a `condition_variable`, always protect the condition by a mutex (atomic bool whose value is set outside of the mutex is wrong!), and use the same mutex for the condition variable itself.
 * Never use `atomic_compare_exchange_strong` with `std::atomic<user-defined-struct>` (differences in padding matter, while `compare_exchange_weak` in a loop converges to stable padding)
 * individual `shared_future` objects are not thread-safe: two threads cannot wait on the same `shared_future` object (they can wait on copies of a `shared_future` that refer to the same shared state)
-* individual `shared_ptr` objects are not thread-safe: a thread cannot call a non-`const` member function of `shared_ptr` while another thread accesses (but different threads can call non-`const` member functions on copies of a `shared_ptr` that refer to the same shared object)
+* individual `shared_ptr` objects are not thread-safe: different threads can call non-`const` member functions on _different_ `shared_ptr`s that refer to the same shared object, but one thread cannot call a non-`const` member function of a `shared_ptr` object while another thread accesses that same `shared_ptr` object (if you need that, consider `atomic_shared_ptr` instead)
 
 * rules for arithmetic
 
