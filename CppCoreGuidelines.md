@@ -6424,7 +6424,7 @@ Enumeration rule summary:
 
 ##### Reason
 
-Macros do not obey scope and type rules.
+Macros do not obey scope and type rules. Also, macro names are removed during preprocessing and so usually don't appear in tools like debuggers.
 
 ##### Example
 
@@ -9326,17 +9326,31 @@ The result is undefined and probably a crash.
 
 ##### Note
 
-this also applies to `%`.
+This also applies to `%`.
 
-##### Example
+##### Example; bad
 
-    ???
+    double divide(int a, int b) {
+        return a/b;                 // BAD, should be checked (e.g., in a precondition)
+    }
+
+##### Example; good
+
+    double divide(int a, int b) {
+        Expects(b != 0);            // good, address via precondition (and replace with contracts once C++ gets them)
+        return a/b;
+    }
+
+    double divide(int a, int b) {
+        return b ? a/b : quiet_NaN<double>();       // good, address via check
+    }
 
 **Alternative**: For critical applications that can afford some overhead, use a range-checked integer and/or floating-point type.
 
 ##### Enforcement
 
-???
+* Flag division by an integral value that could be zero
+
 
 # <a name="S-performance"></a> PER: Performance
 
