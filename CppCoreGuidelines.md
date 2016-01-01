@@ -12063,7 +12063,7 @@ Use header files to represent interfaces and to emphasize logical structure.
 
 Source file rule summary:
 
-* [SF.1: Use a `.cpp` suffix for code files and `.h` for interface files](#Rs-file-suffix)
+* [SF.1: Use a `.cpp` suffix for code files and `.h` for interface files if your project doesn't already follow another convention](#Rs-file-suffix)
 * [SF.2: A `.h` file may not contain object definitions or non-inline function definitions](#Rs-inline)
 * [SF.3: Use `.h` files for all declarations used in multiple sourcefiles](#Rs-declaration-header)
 * [SF.4: Include `.h` files before other declarations in a file](#Rs-include-order)
@@ -12077,16 +12077,18 @@ Source file rule summary:
 * [SF.21: Don't use an unnamed (anonymous) namespace in a header](#Rs-unnamed)
 * [SF.22: Use an unnamed (anonymous) namespace for all internal/nonexported entities](#Rs-unnamed2)
 
-### <a name="Rs-file-suffix"></a>SF.1: Use a `.cpp` suffix for code files and `.h` for interface files
+### <a name="Rs-file-suffix"></a>SF.1: Use a `.cpp` suffix for code files and `.h` for interface files if your project doesn't already follow another convention
 
 ##### Reason
 
-Convention
+It's a longstanding convention. But consistency is more important, so if your project uses something else, follow that.
 
 ##### Note
 
-The specific names `.h` and `.cpp` are not required (but recommended) and other names are in widespread use.
-Examples are `.hh` and `.cxx`. Use such names equivalently.
+This convention reflects a common use pattern: Headers are more often shared with C to compile as both C++ and C, which typically uses `.h`, and it's easier to name all headers `.h` instead of having different extensions for just those headers that are intended to be shared with C. On the other hand, implementation files are rarely shared with C and so should typically be distinguished from `.c` files, so it's normally best to name all C++ implementation files something else (such as `.cpp`).
+
+The specific names `.h` and `.cpp` are not required (just recommended as a default) and other names are in widespread use.
+Examples are `.hh` and `.cxx`. Use such names equivalently. In this document we refer to `.h` and `.cpp` as a shorthand for header and implementation files, even though the actual extension may be different.
 
 ##### Example
 
