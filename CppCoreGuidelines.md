@@ -6308,18 +6308,18 @@ By itself, `cout_my_class` would be OK, but it is not usable/composabe with code
     // ...
     cout << "var = " << var << '\n';
     
-###### Note
+##### Note
 
 There are strong and vigorous conventions for the meaning most operators, such as 
 
-* comparisons (`==`, `!=`, '<', `<=`, `>`, and `>=`),
+* comparisons (`==`, `!=`, `<`, `<=`, `>`, and `>=`),
 * arithmetic operations (`+`, `-`, `*`, `/`, and `%`)
 * access operations (`.`, `->`, unary `*`, and `[]`)
 * assignment and initialization (`=`)
 
-Don't define those unconventionally and don't invent yur own names for them.
+Don't define those unconventionally and don't invent your own names for them.
 
-###### Enforcement
+##### Enforcement
 
 Tricky. Requires semantic insight.
 
