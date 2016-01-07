@@ -9080,7 +9080,7 @@ Flag `const_cast`s.
 
 ##### Reason
 
-Constructs that cannot overflow, don't, and usually runs faster:
+Constructs that cannot overflow, don't, and usually run faster:
 
 ##### Example
 
