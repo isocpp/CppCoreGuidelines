@@ -7880,9 +7880,10 @@ The *always initialize* rule is a style rule aimed to improve maintainability as
 
 Here is an example that is often considered to demonstrate the need for a more relaxed rule for initialization
 
-    widget i, j; // "widget" a type that's expensive to initialize, possibly a large POD
+    widget i;    // "widget" a type that's expensive to initialize, possibly a large POD
+    widget j;
 
-    if (cond) {     // bad: i and j are initialized "late"
+    if (cond) {  // bad: i and j are initialized "late"
         i = f1();
         j = f2();
     }
