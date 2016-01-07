@@ -7459,8 +7459,8 @@ Statement rules:
 Arithmetic rules:
 
 * [ES.100: Don't mix signed and unsigned arithmetic](#Res-mix)
-* [ES.101: use unsigned types for bit manipulation](#Res-unsigned)
-* [ES.102: Used signed types for arithmetic](#Res-signed)
+* [ES.101: Use unsigned types for bit manipulation](#Res-unsigned)
+* [ES.102: Use signed types for arithmetic](#Res-signed)
 * [ES.103: Don't overflow](#Res-overflow)
 * [ES.104: Don't underflow](#Res-underflow)
 * [ES.105: Don't divide by zero](#Res-zero)
@@ -9229,7 +9229,7 @@ This precludes consistency.
 
 Compilers already know and sometimes warn.
 
-### <a name="Res-unsigned"></a>ES.101: use unsigned types for bit manipulation
+### <a name="Res-unsigned"></a>ES.101: Use unsigned types for bit manipulation
 
 ##### Reason
 
@@ -9239,23 +9239,23 @@ Unsigned types support bit manipulation without surprises from sign bits.
 
     ???
 
-**Exception**: Use unsigned types if you really want modulo arithmetic.
+**Exception**: Use signed types if you really want modulo arithmetic.
 
 ##### Enforcement
 
 ???
 
-### <a name="Res-signed"></a>ES.102: Used signed types for arithmetic
+### <a name="Res-signed"></a>ES.102: Use signed types for arithmetic
 
 ##### Reason
 
-Unsigned types support bit manipulation without surprises from sign bits.
+Signed types support modulo arithmetic without surprises from lack of sign bits.
 
 ##### Example
 
     ???
 
-**Exception**: Use unsigned types if you really want modulo arithmetic.
+**Exception**: Use unsigned types if you really want bit manipulation.
 
 ##### Enforcement
 
