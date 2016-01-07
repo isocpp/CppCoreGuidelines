@@ -8718,7 +8718,7 @@ Readability.
 
 ##### Enforcement
 
-Flag empty statements that are not blocks and doesn't "contain" comments.
+Flag empty statements that are not blocks and don't "contain" comments.
 
 
 ### <a name="Res-loop-counter"></a>ES.86: Avoid modifying loop control variables inside the body of raw for-loops
