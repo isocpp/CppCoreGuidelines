@@ -12638,8 +12638,12 @@ Reference sections:
 
 ## <a name="SS-books"></a>RF.books: Books with coding guidelines
 
-* [Meyers14](#Meyers14) Scott Meyers: Effective Modern C++ (???). Addison-Wesley 2014. Beware of overly technical and overly definite rules.
-* [SuttAlex05](#SuttAlex05) Sutter and Alexandrescu: C++ Coding Standards. Addison-Wesley 2005. More a set of meta-rules than a set of rules. Pre-C++11. Recommended.
+* [Meyers96](#Meyers96) Scott Meyers: *More Effective C++*. Addison-Wesley 1996.
+* [Meyers97](#Meyers97) Scott Meyers: *Effective C++, Second Edition*. Addison-Wesley 1997.
+* [Meyers01](#Meyers01) Scott Meyers: *Effective STL*. Addison-Wesley 2001.
+* [Meyers05](#Meyers05) Scott Meyers: *Effective C++, Third Edition*. Addison-Wesley 2005.
+* [Meyers15](#Meyers15) Scott Meyers: *Effective Modern C++*. O'Reilly 2015.
+* [SuttAlex05](#SuttAlex05) Sutter and Alexandrescu: *C++ Coding Standards*. Addison-Wesley 2005. More a set of meta-rules than a set of rules. Pre-C++11.
 * [Stroustrup05](#Stroustrup05) Bjarne Stroustrup: [A rationale for semantically enhanced library languages](http://www.stroustrup.com/SELLrationale.pdf).
   LCSD05. October 2005.
 * [Stroustrup14](#Stroustrup05) Stroustrup: [A Tour of C++](http://www.stroustrup.com/Tour.html).
@@ -14671,9 +14675,9 @@ Alternatively, we will decide that no change is needed and delete the entry.
 * <a name="Meyers96"></a>
   \[Meyers96\]:        S. Meyers. More Effective C++ (Addison-Wesley, 1996).
 * <a name="Meyers97"></a>
-  \[Meyers97\]:        S. Meyers. Effective C++ (2ndEdition) (Addison-Wesley, 1997).
-* <a name="Meyers14"></a>
-  \[Meyers14\]:        S. Meyers. Effective Modern C++ (Addison-Wesley, 2014).
+  \[Meyers97\]:        S. Meyers. Effective C++ (2nd Edition) (Addison-Wesley, 1997).
+* <a name="Meyers15"></a>
+  \[Meyers15\]:        S. Meyers. Effective Modern C++ (O'Reilly, 2015).
 * <a name="Murray93"></a>
   \[Murray93\]:        R. Murray. C++ Strategies and Tactics (Addison-Wesley, 1993).
 * <a name="Stroustrup00"></a>
