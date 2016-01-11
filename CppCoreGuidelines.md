@@ -1832,6 +1832,7 @@ Other function rules:
 * [F.51: Prefer overloading over default arguments for virtual functions](#Rf-default-args)
 * [F.52: Prefer capturing by reference in lambdas that will be used locally, including passed to algorithms](#Rf-reference-capture)
 * [F.53: Avoid capturing by reference in lambdas that will be used nonlocally, including returned, stored on the heap, or passed to another thread](#Rf-value-capture)
+* [F.54: If you capture `this`, capture all variables explicitly (no default capture)](#Rf-this-capture)
 
 Functions have strong similarities to lambdas and function objects so see also Section ???.
 
@@ -3052,6 +3053,51 @@ Pointers and references to locals shouldn't outlive their scope. Lambdas that ca
 ##### Enforcement
 
 ???
+
+### <a name="Rf-this-capture"></a>F.54: If you capture `this`, capture all variables explicitly (no default capture)
+
+##### Reason
+
+It's confusing. Writing `[=]` in a member function appears to capture by value, but actually captures data members by reference because it actually captures the invisible `this` pointer by value. If you meant to do that, write `this` explicitly.
+
+##### Example
+
+    class myclass {
+        int x = 0;
+        // ...
+
+        void f() {
+            int i = 0;
+            // ...
+
+            auto lambda = [=]{ use(i,x); };   // BAD: "looks like" copy/value capture
+            x = 42;
+            lambda(); // calls use(42);
+            x = 43;
+            lambda(); // calls use(43);
+
+            // ...
+
+            auto lambda2 = [=,this]{ use(i,x); };   // BAD: not much better, and confusing
+            auto lambda3 = [&,this]{ use(i,x); };   // BAD: not much better, and confusing
+            auto lambda4 = [&]{ use(i,x); };   // BAD: if lambda2 leaves the scope, it contains a dangling reference to the this parameter from this function's invocation
+
+            // ...
+
+            auto lambda5 = [i,this]{ use(i,x); }; // ok, most explicit and least confusing
+
+            // ...
+        }
+    };
+
+##### Note
+
+This is under active discussion in standarization, and may be addressed in a future version of the standard by adding a new capture mode or possibly adjusting the meaning of `[=]`. For now, just be explicit.
+
+##### Enforcement
+
+* Flag any lambda capture-list that specifies a default capture and also captures `this` (whether explicitly or via default capture)
+
 
 # <a name="S-class"></a>C: Classes and Class Hierarchies
 
