@@ -3545,7 +3545,7 @@ Only define a non-default destructor if a class needs to execute code that is no
     template<typename A>
     final_action<A> finally(A act)   // deduce action type
     {
-        return final_action<A>{a};
+        return final_action<A>{act};
     }
 
     void test()
