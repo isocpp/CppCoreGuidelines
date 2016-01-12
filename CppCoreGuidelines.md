@@ -3071,6 +3071,8 @@ It's confusing. Writing `[=]` in a member function appears to capture by value, 
             // ...
 
             auto lambda = [=]{ use(i,x); };   // BAD: "looks like" copy/value capture
+                // notes: [&] has identical semantics and copies the this pointer under the current rules
+                //        [=,this] and [&,this] are identical in this case, and still confusing in general
             x = 42;
             lambda(); // calls use(42);
             x = 43;
@@ -3078,13 +3080,7 @@ It's confusing. Writing `[=]` in a member function appears to capture by value, 
 
             // ...
 
-            auto lambda2 = [=,this]{ use(i,x); };   // BAD: not much better, and confusing
-            auto lambda3 = [&,this]{ use(i,x); };   // BAD: not much better, and confusing
-            auto lambda4 = [&]{ use(i,x); };   // BAD: if lambda2 leaves the scope, it contains a dangling reference to the this parameter from this function's invocation
-
-            // ...
-
-            auto lambda5 = [i,this]{ use(i,x); }; // ok, most explicit and least confusing
+            auto lambda2 = [i,this]{ use(i,x); }; // ok, most explicit and least confusing
 
             // ...
         }
