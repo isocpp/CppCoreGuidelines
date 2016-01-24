@@ -1793,7 +1793,7 @@ Function definition rules:
 * [F.2: A function should perform a single logical operation](#Rf-logical)
 * [F.3: Keep functions short and simple](#Rf-single)
 * [F.4: If a function may have to be evaluated at compile time, declare it `constexpr`](#Rf-constexpr)
-* [F.5: If a function is very small and time critical, declare it inline](#Rf-inline)
+* [F.5: If a function is very small and time-critical, declare it inline](#Rf-inline)
 * [F.6: If your function may not throw, declare it `noexcept`](#Rf-noexcept)
 * [F.7: For general use, take `T*` or `T&` arguments rather than smart pointers](#Rf-smart)
 * [F.8: Prefer pure functions](#Rf-pure)
@@ -1801,12 +1801,13 @@ Function definition rules:
 Parameter passing expression rules:
 
 * [F.15: Prefer simple and conventional ways of passing information](#Rf-conventional)
-* [F.16: For "in" parameters, pass cheaply copied types by value and others by reference to `const`](#Rf-in)
+* [F.16: For "in" parameters, pass cheaply-copied types by value and others by reference to `const`](#Rf-in)
 * [F.17: For "in-out" parameters, pass by reference to non-`const`](#Rf-inout)
 * [F.18: For "consume" parameters, pass by `X&&` and `std::move` the parameter](#Rf-consume)
 * [F.19: For "forward" parameters, pass by `TP&&` and only `std::forward` the parameter](#Rf-forward)
 * [F.20: For "out" output values, prefer return values to output parameters](#Rf-out)
 * [F.21: To return multiple "out" values, prefer returning a tuple or struct](#Rf-out-multi)
+* [F.60: Prefer `T*` over `T&` when "no argument" is a valid option](#Rf-ptr-ref)
 
 Parameter passing semantic rules:
 
@@ -1821,7 +1822,7 @@ Value return semantic rules:
 
 * [F.42: Return a `T*` to indicate a position (only)](#Rf-return-ptr)
 * [F.43: Never (directly or indirectly) return a pointer to a local object](#Rf-dangle)
-* [F.44: Return a `T&` when "returning no object" isn't an option](#Rf-return-ref)
+* [F.44: Return a `T&` when copy is undesirable and "returning no object" isn't an option](#Rf-return-ref)
 * [F.45: Don't return a `T&&`](#Rf-return-ref-ref)
 * [F.46: `int` is the return type for `main()`](#Rf-main)
 * [F.47: Return `T&` from assignment operators.](#Rf-assignment-op)
@@ -1932,7 +1933,7 @@ These can now be combined where needed:
         print(cout, x);
     }
 
-If there was a need, we could further templatize `read()` and `print()` on the data type, the I/O mechanism, etc. Example:
+If there was a need, we could further templatize `read()` and `print()` on the data type, the I/O mechanism, the response to errors, etc. Example:
 
     auto read = [](auto& input, auto& value)    // better
     {
@@ -2097,7 +2098,7 @@ API will have to be refactored or drop `constexpr`.
 Impossible and unnecessary.
 The compiler gives an error if a non-`constexpr` function is called where a constant is required.
 
-### <a name="Rf-inline"></a>F.5: If a function is very small and time critical, declare it `inline`
+### <a name="Rf-inline"></a>F.5: If a function is very small and time-critical, declare it `inline`
 
 ##### Reason
 
@@ -2105,6 +2106,10 @@ Some optimizers are good at inlining without hints from the programmer, but don'
 Measure! Over the last 40 years or so, we have been promised compilers that can inline better than humans without hints from humans.
 We are still waiting.
 Specifying `inline` encourages the compiler to do a better job.
+
+##### Example
+
+    ???
 
 **Exception**: Do not put an `inline` function in what is meant to be a stable interface unless you are really sure that it will not change.
 An inline function is part of the ABI.
@@ -2200,16 +2205,20 @@ Passing a shared smart pointer (e.g., `std::shared_ptr`) implies a run-time cost
     void g(shared_ptr<int>);  // can only accept ints for which you are willing to share ownership
 
     void h(const unique_ptr<int>&);  // doesn’t change ownership, but requires a particular ownership of the caller.
+    
+    void h(int&);             // accepts any int
 
 ##### Note
 
 We can catch dangling pointers statically, so we don't need to rely on resource management to avoid violations from dangling pointers.
 
+**See also**: [when to prefer `T*` and when to prefer `T&`](#Rf-ptr-ref).
+
 **See also**: Discussion of [smart pointer use](#Rr-summary-smartptrs).
 
 ##### Enforcement
 
-Flag smart pointer arguments.
+* ??? Difficult: Flag smart pointer arguments where ownership isn't affected.
 
 ### <a name="Rf-pure"></a>F.8: Prefer pure functions
 
@@ -2250,7 +2259,7 @@ The following tables summarize the advice in the following Guidelines, F.16-21.
 
 
 
-### <a name="Rf-in"></a>F.16: For "in" parameters, pass cheaply copied types by value and others by reference to `const`
+### <a name="Rf-in"></a>F.16: For "in" parameters, pass cheaply-copied types by value and others by reference to `const`
 
 ##### Reason
 
@@ -2272,7 +2281,8 @@ When copying is cheap, nothing beats the simplicity and safety of copying, and f
 For advanced uses (only), where you really need to optimize for rvalues passed to "input-only" parameters:
 
 * If the function is going to unconditionally move from the argument, take it by `&&`. See [F.18](#Rf-consume).
-* If the function is going to keep a copy of the argument, in addition to passing by `const&` add an overload that passes the parameter by `&&` and in the body `std::move`s it to its destination. Essentially this overloads a "consume"; see [F.18](#Rf-consume).
+* If the function is going to keep a copy of the argument, in addition to passing by `const&` (for lvalues),
+add an overload that passes the parameter by `&&` (for rvalues) and in the body `std::move`s it to its destination. Essentially this overloads a "consume"; see [F.18](#Rf-consume).
 * In special cases, such as multiple "input + copy" parameters, consider using perfect forwarding. See [F.19](#Rf-forward).
 
 ##### Example
@@ -2285,12 +2295,13 @@ For advanced uses (only), where you really need to optimize for rvalues passed t
 
 Avoid "esoteric techniques" such as:
 
-* Passing arguments as `T&&` "for efficiency". Most rumors about performance advantages from passing by `&&` are false or brittle (but see [F.25](#Rf-pass-ref-move).)
+* Passing arguments as `T&&` "for efficiency".
+Most rumors about performance advantages from passing by `&&` are false or brittle (but see [F.25](#Rf-pass-ref-move).)
 * Returning `const T&` from assignments and similar operations (see [F.47](#Rf-assignment-op).)
 
 ##### Example
 
-Assuming that `Matrix` has move operations (possibly by keeping its elements in a `std::vector`.
+Assuming that `Matrix` has move operations (possibly by keeping its elements in a `std::vector`):
 
     Matrix operator+(const Matrix& a, const Matrix& b)
     {
@@ -2305,7 +2316,7 @@ Assuming that `Matrix` has move operations (possibly by keeping its elements in 
 
 ##### Notes
 
-The return value optimization doesn't handle the assignment case.
+The return value optimization doesn't handle the assignment case, but the move assignment does.
 
 A reference may be assumed to refer to a valid object (language rule).
 There is no (legitimate) "null reference."
@@ -2359,6 +2370,10 @@ If the writer of `g()` makes an assumption about the size of `buffer` a bad logi
 
 It's efficient and eliminates bugs at the call site: `X&&` binds to rvalues, which requires an explicit `std::move` at the call site if passing an lvalue.
 
+##### Example
+
+    ???
+    
 ##### Exception
 
 Unique owner types that are move-only and cheap-to-move, such as `unique_ptr`, can also be passed by value which is simpler to write and achieves the same effect. Passing by value  does generate one extra (cheap) move operation, but prefer simplicity and clarity first.
@@ -2384,6 +2399,7 @@ In that case, and only that case, make the parameter `TP&&` where `TP` is a temp
         return f(forward<Args>(args)...);
     }
 
+    ??? calls ???
 
 ##### Enforcement
 * Flag a function that takes a `TP&&` parameter (where `TP` is a template type parameter name) and does anything with it other than `std::forward`ing it exactly once on every static path.
@@ -2411,6 +2427,8 @@ A struct of many (individually cheap-to-move) elements may be in aggregate expen
 
 It is not recommended to return a `const` value. Such older advice is now obsolete; it does not add value, and it interferes with move semantics.
 
+    ??? example ???
+    
 ##### Exceptions
 
 * For non-value types, such as types in an inheritance hierarchy, return the object by `unique_ptr` or `shared_ptr`.
@@ -2477,7 +2495,11 @@ With C++17 we may be able to write something like this, also declaring the varia
     auto { iter, success } = myset.insert("Hello");
     if (success) do_something_with(iter);
 
-**Exception**: For types like `string` and `vector` that carry additional capacity, it can sometimes be useful to treat it as in/out instead by using the "caller-allocated out" pattern, which is to pass an output-only object by reference to non-`const` so that when the callee writes to it the object can reuse any capacity or other resources that it already contains. This technique can dramatically reduce the number of allocations in a loop that repeatedly calls other functions to get string values, by using a single string object for the entire loop.
+**Exception**: For types like `string` and `vector` that carry additional capacity, it can sometimes be useful to treat it as in/out instead by using the "caller-allocated out" pattern,
+which is to pass an output-only object by reference to non-`const` so that when the callee writes to it the object can reuse any capacity or other resources that it already contains.
+This technique can dramatically reduce the number of allocations in a loop that repeatedly calls other functions to get string values, by using a single string object for the entire loop.
+
+    ??? example ???
 
 ##### Note
 
@@ -2502,28 +2524,18 @@ In traditional C and C++ code, plain `T*` is used for many weakly-related purpos
 * Identify an array with a length specified separately
 * Identify a location in an array
 
-For example, `not_null<T*>` makes it obvious to a reader (human or machine) that a test for `nullptr` is not necessary before dereference.
-Additionally, when debugging, `owner<T*>` and `not_null<T>` can be instrumented to check for correctness.
-
 ##### Example
 
-Consider:
-
-    int length(Record* p);
-
-When I call `length(p)` should I test for `p == nullptr` first? Should the implementation of `length()` test for `p == nullptr`?
-
-    int length(not_null<Record*> p);  // it is the caller's job to make sure p != nullptr
-
-    int length(Record* p);            // the implementor of length() must assume that p == nullptr is possible
+    void use(int* p, char* s, int* q)
+    {
+            *++p = 666;   // Bad: we don't know if p points to two elements; assume it does not or use span<int>
+            cout << s;    // Bad: we don't know if that s points to a zero-terminated array of char; assume it does not or use zstring
+            delete q;     // Bad: we don't know if *q is allocated on the free store; assume it does not or use owner
+    }
 
 ##### Note
 
-A `not_null<T*>` is assumed not to be the `nullptr`; a `T*` may be the `nullptr`; both can be represented in memory as a `T*` (so no run-time overhead is implied).
-
-##### Note
-
-`owner<T*>` represents ownership.
+`owner<T*>` represents ownership, `zstring` represents a C-style string.
 
 **Also**: Assume that a `T*` obtained from a smart pointer to `T` (e.g., `unique_ptr<T>`) points to a single element.
 
@@ -2541,18 +2553,26 @@ Clarity. A function with a `not_null<T>` parameter makes it clear that the calle
 
 ##### Example
 
-    not_null<T*> check(T* p) { if (p) return not_null<T*>{p}; throw Unexpected_nullptr{}; }
+`not_null<T*>` makes it obvious to a reader (human or machine) that a test for `nullptr` is not necessary before dereference.
+Additionally, when debugging, `owner<T*>` and `not_null<T>` can be instrumented to check for correctness.
 
-    void computer(not_null<span<int>> p)
-    {
-        if (0 < p.size()) {  // bad: redundant test
-        // ...
-        }
-    }
+Consider:
+
+    int length(Record* p);
+
+When I call `length(p)` should I test for `p == nullptr` first? Should the implementation of `length()` test for `p == nullptr`?
+
+    int length(not_null<Record*> p);  // it is the caller's job to make sure p != nullptr
+
+    int length(Record* p);            // the implementor of length() must assume that p == nullptr is possible
 
 ##### Note
 
-`not_null` is not just for built-in pointers. It works for `span`, `string_span`, `unique_ptr`, `shared_ptr`, and other pointer-like types.
+A `not_null<T*>` is assumed not to be the `nullptr`; a `T*` may be the `nullptr`; both can be represented in memory as a `T*` (so no run-time overhead is implied).
+
+##### Note
+
+`not_null` is not just for built-in pointers. It works for `unique_ptr`, `shared_ptr`, and other pointer-like types.
 
 ##### Enforcement
 
@@ -2576,13 +2596,26 @@ Informal/non-explicit ranges are a source of errors.
 
 ##### Note
 
-Ranges are extremely common in C++ code. Typically, they are implicit and their correct use is very hard to ensure. In particular, given a pair of arguments `(p, n)` designating an array [`p`:`p+n`), it is in general impossible to know if there really are `n` elements to access following `*p`. `span<T>` and `span_p<T>` are simple helper classes designating a [`p`:`q`) range and a range starting with `p` and ending with the first element for which a predicate is true, respectively.
+Ranges are extremely common in C++ code. Typically, they are implicit and their correct use is very hard to ensure.
+In particular, given a pair of arguments `(p, n)` designating an array [`p`:`p+n`),
+it is in general impossible to know if there really are `n` elements to access following `*p`.
+`span<T>` and `span_p<T>` are simple helper classes designating a [`p`:`q`) range and a range starting with `p` and ending with the first element for which a predicate is true, respectively.
 
+##### Example
+
+A `span` represents a range of elements, but how do we manipulate elements of that range?
+
+    void f(span<int> s)
+    {
+        for (int x : s) cout << x << '\n';  // range traversal (guaranteed correct)
+        for (int i = 0; i<s.size(); ++i) cout << x << '\n';  // C-style traversal (potentially checked)
+        s[7] = 9;                           // random access (potentially checked)
+        std::sort(&s[0],&s[s.size()/2);     // extract pointers (potentially checked)
+    }
+    
 ##### Note
 
 A `span<T>` object does not own its elements and is so small that it can be passed by value.
-
-##### Note
 
 Passing a `span` object as an argument is exactly as efficient as passing a pair of pointer arguments or passing a pointer and an integer count.
 
@@ -2671,12 +2704,47 @@ Prefer a `unique_ptr` over a `shared_ptr` if there is never more than one owner 
 
 Note that pervasive use of `shared_ptr` has a cost (atomic operations on the `shared_ptr`'s reference count have a measurable aggregate cost).
 
-**Alternative**: Have a single object own the shared object (e.g. a scoped object) and destroy that (preferably implicitly) when all users have completed.
+##### Alternative
+
+Have a single object own the shared object (e.g. a scoped object) and destroy that (preferably implicitly) when all users have completed.
 
 ##### Enforcement
 
 (Not enforceable) This is a too complex pattern to reliably detect.
 
+
+### <a name="Rf-ptr-ref"></a>F.60: Prefer `T*` over `T&` when "no argument" is a valid option
+
+##### Reason
+
+A pointer (`T*`) can be a `nullptr` and a reference (`T&`) cannot, there is no valid "null reference".
+Sometimes having `nullptr` as an alternative to indicated "no object" is useful, but if it is not, a reference is notationally simpler and might yield better code.
+
+##### Example
+
+    string zstring_to_string(zstring p) // zstring is a char*; that is a C-style string
+    {
+        if (p==nullptr) return string{};    // p might be nullptr; remember to check
+        return string{p};
+    }
+    
+    void print(const vector<int>& r)
+    {
+        // r refers to a vector<int>; no check needed
+    }
+    
+##### Note
+
+It is possible, but not valid C++ to construct a reference that is essentially a `nullptr` (e.g., `T* p = nullptr; T& r = (T&)*p;`).
+That error is very uncommon.
+
+##### Note
+
+If you prefer the pointer notation (`->` and/or `*` vs. `.`), `not_null<T*>` provides the same guarantee as `T&`.
+
+##### Enforcement
+
+* Flag ???
 
 ### <a name="Rf-return-ptr"></a>F.42: Return a `T*` to indicate a position (only)
 
@@ -2701,6 +2769,7 @@ Importantly, that does not imply a transfer of ownership of the pointed-to objec
 ##### Note
 
 Positions can also be transferred by iterators, indices, and references.
+A reference is often a superior alternative to a pointer [if there is no need to use `nullptr`](#Rf-ptr-ref) or [if the object referred to should not change](???).
 
 ##### Note
 
@@ -2830,7 +2899,7 @@ It can be detected/prevented with similar techniques.
 
 Preventable through static analysis.
 
-### <a name="Rf-return-ref"></a>F.44: Return a `T&` when "returning no object" isn't needed
+### <a name="Rf-return-ref"></a>F.44: Return a `T&` when copy is undesirable and "returning no object" isn't needed
 
 ##### Reason
 
@@ -2858,7 +2927,7 @@ The language guarantees that a `T&` refers to an object, so that testing for `nu
  
 ##### Enforcement
 
-???
+Flag functions where no `return` expression could yield `nullptr`
 
 ### <a name="Rf-return-ref-ref"></a>F.45: Don't return a `T&&`
 
@@ -2912,6 +2981,10 @@ Declaring `main` (the one global `main` of a program) `void` limits portability.
             std::cout << "This is the way to do it\n";
         }
 
+##### Note
+
+We mention this only because of the persistence of this error in the community.
+
 ##### Enforcement
 
 * The compiler should do it
@@ -2928,9 +3001,8 @@ principle of "do as the ints do."
 
 ##### Note
 
-Historically there was some guidance to make the assignment operator return
-`const T&`.  This was primarily to avoid code of the form `(a=b)=c` - such code
-is not common enough to warrant violating consistency with standard types.
+Historically there was some guidance to make the assignment operator return `const T&`.
+This was primarily to avoid code of the form `(a=b)=c` - such code is not common enough to warrant violating consistency with standard types.
 
 ##### Example
 
@@ -9417,7 +9489,7 @@ Performance rule summary:
 * [PER.14: Minimize the number of allocations and deallocations](#Rper-alloc)
 * [PER.15: Do not allocate on a critical branch](#Rper-alloc0)
 * [PER.16: Use compact data structures](#Rper-compact)
-* [PER.17: Declare the most used member of a time critical struct first](#Rper-struct)
+* [PER.17: Declare the most used member of a time-critical struct first](#Rper-struct)
 * [PER.18: Space is time](#Rper-space)
 * [PER.19: Access memory predictably](#Rper-access)
 * [PER.30: Avoid context switches on the critical path](#Rper-context)
@@ -9554,7 +9626,7 @@ Performance is typically dominated by memory access times.
 
 ???
 
-### <a name="Rper-struct"></a>PER.17: Declare the most used member of a time critical struct first
+### <a name="Rper-struct"></a>PER.17: Declare the most used member of a time-critical struct first
 
 ???
 
