@@ -2218,7 +2218,7 @@ We can catch dangling pointers statically, so we don't need to rely on resource 
 
 ##### Enforcement
 
-* ??? Difficult: Flag smart pointer arguments where ownership isn't affected.
+* Difficult: Flag smart pointer parameters (parameters of a type that overloads `operator->` or `operator*`) that are never copied, moved from, or assigned to. That means the ownership semantics are not used.
 
 ### <a name="Rf-pure"></a>F.8: Prefer pure functions
 
