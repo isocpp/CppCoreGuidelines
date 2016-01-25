@@ -2208,6 +2208,18 @@ Passing a shared smart pointer (e.g., `std::shared_ptr`) implies a run-time cost
     
     void h(int&);             // accepts any int
 
+##### Example, bad
+
+    // callee
+    void f(shared_ptr<widget>& w)
+    {
+        // ...
+        use(*w); // only use of w -- the lifetime is not used at all
+        // ...
+    };
+
+See further in [R.30](#Rr-smartptrparam).
+
 ##### Note
 
 We can catch dangling pointers statically, so we don't need to rely on resource management to avoid violations from dangling pointers.
@@ -2218,7 +2230,7 @@ We can catch dangling pointers statically, so we don't need to rely on resource 
 
 ##### Enforcement
 
-* Difficult: Flag smart pointer parameters (parameters of a type that overloads `operator->` or `operator*`) that are never copied, moved from, or assigned to, or passed along to another function that could do so. That means the ownership semantics are not used.
+* Flag a parameter of a smart pointer type (a type that overloads `operator->` or `operator*`) that is copyable but never copied/moved from in the function body or else movable but never moved from in the function body or by being a by-value parameter, and that is never assigned to, and that is not passed along to another function that could do so. That means the ownership semantics are not used.
 
 ### <a name="Rf-pure"></a>F.8: Prefer pure functions
 
@@ -7302,7 +7314,8 @@ A function that does not manipulate lifetime should take raw pointers or referen
 
 ##### Enforcement
 
-* (Simple) Warn if a function takes a parameter of a type that is a `unique_ptr` or `shared_ptr` and the function only calls any of: `operator*`, `operator->` or `get()`.
+* (Simple) Warn if a function takes a parameter of a smart pointer type (that overloads `operator->` or `operator*`) `unique_ptr` or `shared_ptr` and the function only calls any of: `operator*`, `operator->` or `get()`.
+* Flag a parameter of a smart pointer type (a type that overloads `operator->` or `operator*`) that is copyable but never copied/moved from in the function body or else movable but never moved from in the function body or by being a by-value parameter, and that is never assigned to, and that is not passed along to another function that could do so. That means the ownership semantics are not used.
   Suggest using a `T*` or `T&` instead.
 
 ### <a name="Rr-smart"></a>R.31: If you have non-`std` smart pointers, follow the basic pattern from `std`
