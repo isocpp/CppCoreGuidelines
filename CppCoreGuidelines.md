@@ -1830,7 +1830,7 @@ Value return semantic rules:
 Other function rules:
 
 * [F.50: Use a lambda when a function won't do (to capture local variables, or to write a local function)](#Rf-capture-vs-overload)
-* [F.51: Prefer overloading over default arguments for virtual functions](#Rf-default-args)
+* [F.51: Where there is a choice, prefer default arguments over overloading](#Rf-default-args)
 * [F.52: Prefer capturing by reference in lambdas that will be used locally, including passed to algorithms](#Rf-reference-capture)
 * [F.53: Avoid capturing by reference in lambdas that will be used nonlocally, including returned, stored on the heap, or passed to another thread](#Rf-value-capture)
 * [F.54: If you capture `this`, capture all variables explicitly (no default capture)](#Rf-this-capture)
@@ -2561,7 +2561,8 @@ In traditional C and C++ code, plain `T*` is used for many weakly-related purpos
 
 ##### Reason
 
-Clarity. A function with a `not_null<T>` parameter makes it clear that the caller of the function is responsible for any `nullptr` checks that may be necessary. Similarly, a function with a return value of `not_null<T>` makes it clear that the caller of the function does not need to check for `nullptr`.
+Clarity. A function with a `not_null<T>` parameter makes it clear that the caller of the function is responsible for any `nullptr` checks that may be necessary.
+Similarly, a function with a return value of `not_null<T>` makes it clear that the caller of the function does not need to check for `nullptr`.
 
 ##### Example
 
@@ -3002,7 +3003,7 @@ We mention this only because of the persistence of this error in the community.
 * The compiler should do it
 * If the compiler doesn't do it, let tools flag it
 
-### <a name="Rf-assignment-op"></a>F.47: Return `T&` from assignment operators.
+### <a name="Rf-assignment-op"></a>F.47: Return `T&` from assignment operators
 
 ##### Reason
 
@@ -3067,35 +3068,40 @@ Functions can't capture local variables or be declared at local scope; if you ne
 * Warn on use of a named non-generic lambda (e.g., `auto x = [](int i){ /*...*/; };`) that captures nothing and appears at global scope. Write an ordinary function instead.
 
 
-### <a name="Rf-default-args"></a>F.51: Prefer overloading over default arguments for virtual functions
-
-??? possibly other situations?
+### <a name="Rf-default-args"></a>F.51: Where there is a choice, prefer default arguments over overloading
 
 ##### Reason
 
-Virtual function overrides do not inherit default arguments, leading to surprises.
+Default arguments simply provides alternative interfaces to a single implementation.
+There is no guarantee that a set of overloaded functions all implement the same semantics.
+The use of default arguments can avoid code replication.
 
-##### Example, bad
+##### Note
 
-    class base {
-    public:
-        virtual int multiply(int value, int factor = 2) = 0;
-    };
+There is a choice between using default argument and overloading when the alternatives are from a set of arguments of the same types.
+For example:
 
-    class derived : public base {
-    public:
-        int multiply(int value, int factor = 10) override;
-    };
+    void print(const string& s, format f = {});
 
-    derived d;
-    base& b = d;
+as opposed to
 
-    b.multiply(10);  // these two calls will call the same function but
-    d.multiply(10);  // with different arguments and so different results
+    void print(const string& s);  // use default format
+    void print(const string& s, format f);
+    
+There is not a choice when a set of functions are used to do a semantically equivalent operation to a set of types. For example:
 
+    void print(const char&);
+    void print(int);
+    void print(zstring);
+    
+##### See also
+
+    [Default arguments for virtual functions](#Rf-virtual-default-arg}
+    
 ##### Enforcement
 
-Flag all uses of default arguments in virtual functions.
+    ???
+
 
 ### <a name="Rf-reference-capture"></a>F.52: Prefer capturing by reference in lambdas that will be used locally, including passed to algorithms
 
@@ -5450,6 +5456,7 @@ Designing rules for classes in a hierarchy summary:
 * [C.137: Use `virtual` bases to avoid overly general base classes](#Rh-vbase)
 * [C.138: Create an overload set for a derived class and its bases with `using`](#Rh-using)
 * [C.139: Use `final` sparingly](#Rh-final)
+* [C.140: Do not provide different default arguments for a virtual function and an overrider](#Rh-virtual-default-arg)
 
 Accessing objects in a hierarchy rule summary:
 
@@ -5920,6 +5927,34 @@ However, misuses are (or at least has been) far more common.
 ##### Enforcement
 
 Flag uses of `final`.
+   
+## <a name="Rh-virtual-default-arg"></a>C.140: Do not provide different default arguments for a virtual function and an overrider
+
+##### Reason
+
+That can cause confusion: An overrider do not inherit default arguments..
+
+##### Example, bad
+
+    class base {
+    public:
+        virtual int multiply(int value, int factor = 2) = 0;
+    };
+
+    class derived : public base {
+    public:
+        int multiply(int value, int factor = 10) override;
+    };
+
+    derived d;
+    base& b = d;
+
+    b.multiply(10);  // these two calls will call the same function but
+    d.multiply(10);  // with different arguments and so different results
+
+##### Enforcement
+
+Flag default arguments on virtual functions if they differ between base and derived declarations.
 
 ## C.hier-access: Accessing objects in a hierarchy
 
