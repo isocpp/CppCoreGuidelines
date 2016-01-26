@@ -7598,6 +7598,7 @@ Expression rules:
 * [ES.49: If you must use a cast, use a named cast](#Res-casts-named)
 * [ES.50: Don't cast away `const`](#Res-casts-const)
 * [ES.55: Avoid the need for range checking](#Res-range-checking)
+* [ES.56: Avoid `std::move()` in application code](#Res-move)
 * [ES.60: Avoid `new` and `delete[]` outside resource management functions](#Res-new)
 * [ES.61: delete arrays using `delete[]` and non-arrays using `delete`](#Res-del)
 * [ES.62: Don't compare pointers into different arrays](#Res-arr2)
@@ -9280,6 +9281,75 @@ There can be code in the `...` part that causes the `delete` never to happen.
 ##### Enforcement
 
 Flag naked `new`s and naked `delete`s.
+
+
+### <a name="Res-move"></a>ES.56: Avoid `std::move()` in application code
+
+##### Reason
+
+`std::move` is a cast in disguise.
+It does not move; instead, it allows code using its result to leave a useless object behind.
+
+##### Example, bad
+
+    struct Buffer {
+        zstring buf = new char[max];
+        int next = 0;    // next element to be written
+        void put(char ch) { buf[next++] = ch; /* ... */ } // put ch into buffer
+        // ...
+    };
+
+    void maul(Buffer&& b)    // consume b and leave b destructable
+    {
+        mybuf = b.buf;  // "steal" characters from buffer
+        buf = nullptr;  // make sure b is destructable
+        // ...
+    }
+    
+    void test()
+    {
+        S s;
+        maul(std::move(s));
+        s.put('x');     // crash!
+        // ...
+    }
+    
+###### Alternative
+
+Rvalue references are valuable for handling rvalues.
+If you define a function to take an rvalue reference to be able to simply and cheaply handle temporaries,
+also define an overload that takes lvalues.
+
+    void print(string&& s);         // print and consume (temporary) s
+    void print(const string& s);    // print and preserve the value of s
+    
+An rvalue can be assumed not to be accessed after being passed.
+An lvalue must in general be assumed to be used again after being passes, that is after a `std::move`,
+so "careful programming" is essential to avoid disasters -- better not rely on that.
+
+###### Note
+
+Standard library functions leave moved-from objects in a state that allows destruction and assignment.
+
+    void test()
+    {
+        string foo = "xckd";
+        string bar = std::move(foo);
+        foo = "kk";
+        cout << foo << "--" << bar << '\n';
+    }
+    
+This is valid code and prints `kk--xckd`, but for a general type even assignment isn't guaranteed to work.
+Whenever possible, follow the standard-library rule and make operations on rvalue leave the source object in an assignable and destructable state.
+
+##### Note
+
+`std::move` (or equivalent casts) is essential for implementating movesemantics and certain rare optimizations.
+
+##### Enforcement
+
+* Flag functions taking `S&&` arguments unless they have a `T&` overload to take care of lvalues.
+* Flag `std::move`s that are not function arguments passed as rvalue references
 
 ### <a name="Res-del"></a>ES.61: delete arrays using `delete[]` and non-arrays using `delete`
 
