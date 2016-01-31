@@ -1,6 +1,6 @@
 # <a name="main"></a>C++ Core Guidelines
 
-December 28, 2015
+January 31, 2016
 
 Editors:
 
@@ -121,6 +121,7 @@ Please remember that one purpose of a guideline is to help someone who is less e
 Many of the rules are designed to be supported by an analysis tool.
 Violations of rules will be flagged with references (or links) to the relevant rule.
 We do not expect you to memorize all the rules before trying to write code.
+One way of thinking about these guidelines is as a specification for tools that happens to be readable by humans.
 
 The rules are meant for gradual introduction into a code base.
 We plan to build tools for that and hope others will too.
@@ -806,7 +807,8 @@ The physical law for a jet (`e*e < x*x + y*y + z*z`) is not an invariant because
 
 ##### Reason
 
-Even a slow growth in resources will, over time, exhaust the availability of those resources. This is particularly important for long-running programs, but is an essential piece of responsible programming behavior.
+Even a slow growth in resources will, over time, exhaust the availability of those resources.
+This is particularly important for long-running programs, but is an essential piece of responsible programming behavior.
 
 ##### Example, bad
 
@@ -840,6 +842,12 @@ that allocation.  This rule should not be taken as requiring that allocations
 within long-lived objects must be returned during program shutdown.  (Although
 if they can be cleanly and safely de-allocated, they should be.)
 
+##### Note
+
+Enforcing (#In.force)[the lifetime profile] eliminates leaks.
+When combined with resource safety provided by (#Rr-raii)[RAII], it eliminates the need for "garbage collection" (by generating no garbage).
+Combine this with enforcement of (the type and bounds profiles)[In.force] and you get complete type- and resource-safety, guaranteed by tools.
+
 ##### Enforcement
 
 * Look at pointers: Classify them into non-owners (the default) and owners.
@@ -857,10 +865,9 @@ This is C++.
 ##### Note
 
 Time and space that you spend well to achieve a goal (e.g., speed of development, resource safety, or simplification of testing) is not wasted.
+"Another benefit of striving for efficiency is that the process forces you to understand the problem in more depth." - Alex Stepanov
 
-##### Example
-
-??? more and better suggestions for gratuitous waste welcome ???
+##### Example, bad
 
     struct X {
         char ch;
@@ -899,6 +906,16 @@ Note that the layout of `X` guarantees that at least 6 bytes (and most likely mo
 The spurious definition of copy operations disables move semantics so that the return operation is slow.
 The use of `new` and `delete` for `buf` is redundant; if we really needed a local string, we should use a local `string`.
 There are several more performance bugs and gratuitous complication.
+
+##### Example, bad
+
+    void lower(zstring s)
+    {
+        for (int i = 0; i<strlen(s); ++s) s[i] = tolower(s[i]);
+    }
+
+Yes, this is an example from production code.
+We leave it to the reader to figure out what's wasted.
 
 ##### Note
 
@@ -1588,7 +1605,8 @@ Passing `10` as the `n` argument may be a mistake: the most common convention is
 
 This `draw2()` passes the same amount of information to `draw()`, but makes the fact that it is supposed to be a range of `Circle`s explicit. See ???.
 
-**Exception**: Use `zstring` and `czstring` to represent a C-style, zero-terminated strings. But see ???.
+**Exception**: Use `zstring` and `czstring` to represent a C-style, zero-terminated strings.
+But when doing so, use `string_span` from the (GSL)[#GSL] to prefent range errors.
 
 ##### Enforcement
 
@@ -3534,7 +3552,6 @@ Other default operations rules:
 * [C.85: Make `swap` `noexcept`](#Rc-swap-noexcept)
 * [C.86: Make `==` symmetric with respect of operand types and `noexcept`](#Rc-eq)
 * [C.87: Beware of `==` on base classes](#Rc-eq-base)
-* [C.88: Make `<` symmetric with respect of operand types and `noexcept`](#Rc-lt)
 * [C.89: Make a `hash` `noexcept`](#Rc-hash)
 
 ## <a name="SS-defop"></a>C.defop: Default Operations
@@ -5090,9 +5107,11 @@ If you need covariant return types, return an `owner<derived*>`. See [C.130](#Rh
 
 A class with any virtual function should not have a copy constructor or copy assignment operator (compiler-generated or handwritten).
 
-## C.other: Other default operations
+## C.other: Other default operation rules
 
-???
+In addition to the operations for which the language offer default implementations,
+there are a few operations that are so foundational that it rules for their definition are needed:
+comparisons, `swap`, and `hash`.
 
 ### <a name="Rc-default"></a>C.80: Use `=default` if you have to be explicit about using the default semantics
 
@@ -5223,6 +5242,16 @@ Note that calling a specific explicitly qualified function is not a virtual call
 
 **See also** [factory functions](#Rc-factory) for how to achieve the effect of a call to a derived class function without risking undefined behavior.
 
+##### Note
+
+There is nothing inherently wrong with calling virtual functions constructors and destructors.
+The semantics of such calls is type safe.
+However, experience shows that such calls are rarely needed, easily confuse maintainers, and become a source of errors when used by novices.
+
+##### Enforcement
+
+* Flag calls of virtual functions from constructors and destructors.
+
 ### <a name="Rc-swap"></a>C.83: For value-like types, consider providing a `noexcept` swap function
 
 ##### Reason
@@ -5320,9 +5349,14 @@ Asymmetric treatment of operands is surprising and a source of errors where conv
 If a class has a failure state, like `double`'s `NaN`, there is a temptation to make a comparison against the failure state throw.
 The alternative is to make two failure states compare equal and any valid state compare false against the failure state.
 
+#### Note
+
+This rule applies to all the usual comparison operators: `!=', `<, `<=`, `>`, and `>=`.
+
 ##### Enforcement
 
-???
+* Flag an `operator==()` for which the argument types differ; same for other comparison operators: `!=', `<, `<=`, `>`, and `>=`.
+* Flag member `operator==()`s; same for other comparison operators: `!=', `<, `<=`, `>`, and `>=`.
 
 ### <a name="Rc-eq-base"></a>C.87: Beware of `==` on base classes
 
@@ -5364,37 +5398,52 @@ It is really hard to write a foolproof and useful `==` for a hierarchy.
 
 Of course there are ways of making `==` work in a hierarchy, but the naive approaches do not scale
 
-##### Enforcement
+#### Note
 
-???
-
-### <a name="Rc-lt"></a>C.88: Make `<` symmetric with respect to operand types and `noexcept`
-
-##### Reason
-
- ???
-
-##### Example
-
-    ???
+This rule applies to all the usual comparison operators: `!=', `<, `<=`, `>`, and `>=`.
 
 ##### Enforcement
 
-???
+* Flag a virtual `operator==()`; same for other comparison operators: `!=', `<, `<=`, `>`, and `>=`.
+
+
 
 ### <a name="Rc-hash"></a>C.89: Make a `hash` `noexcept`
 
 ##### Reason
 
- ???
+Users of hashed contaiers use hash indirectly and don't expect simple access to throw.
+It's a standard-library requirement.
 
-##### Example
+##### Example, bad
 
-    ???
+    template<>
+    struct hash<My_type> {	// thoroughly bad hash specialization
+	   using result_type = size_t;
+	   using argument_type = My_type;
+
+	   size_t operator() (const My_type & x) const
+	   {
+		  size_t xs = x.s.size();
+		  if (xs < 4) throw Bad_My_type{};    // "Nobody expects the Spanish inquisition!"
+		  return hash<size_t>()(x.s.size()) ^ trim(x.s);
+	   }
+    };
+
+    int main()
+    {
+        unordered_map<My_type,int> m;
+	   My_type mt{ "asdfg" };
+	   m[mt] = 7;
+	   cout << m[My_type{ "asdfg" }] << '\n';
+    }
+    
+If you have to defie a `hash` specialization, try simply to let it combine standard-ibrary `hash` specializations with `^` (xor).
+That tends to work better than "cleverness" for non-specoalists.
 
 ##### Enforcement
 
-???
+* Flag throwing `hash`es.
 
 ## <a name="SS-containers"></a>C.con: Containers and other resource handles
 
