@@ -9383,7 +9383,7 @@ also define an overload that takes lvalues.
     void print(const string& s);    // print and preserve the value of s
     
 An rvalue can be assumed not to be accessed after being passed.
-An lvalue must in general be assumed to be used again after being passes, that is after a `std::move`,
+An lvalue must in general be assumed to be used again after being passed, that is after a `std::move`,
 so "careful programming" is essential to avoid disasters -- better not rely on that.
 
 ###### Note
