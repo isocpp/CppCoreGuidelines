@@ -8102,9 +8102,10 @@ The *always initialize* rule is a style rule aimed to improve maintainability as
 
 Here is an example that is often considered to demonstrate the need for a more relaxed rule for initialization
 
-    widget i, j; // "widget" a type that's expensive to initialize, possibly a large POD
+    widget i;    // "widget" a type that's expensive to initialize, possibly a large POD
+    widget j;
 
-    if (cond) {     // bad: i and j are initialized "late"
+    if (cond) {  // bad: i and j are initialized "late"
         i = f1();
         j = f2();
     }
@@ -8939,7 +8940,7 @@ Readability.
 
 ##### Enforcement
 
-Flag empty statements that are not blocks and doesn't "contain" comments.
+Flag empty statements that are not blocks and don't "contain" comments.
 
 
 ### <a name="Res-loop-counter"></a>ES.86: Avoid modifying loop control variables inside the body of raw for-loops
@@ -9301,7 +9302,7 @@ Flag `const_cast`s.
 
 ##### Reason
 
-Constructs that cannot overflow, don't, and usually runs faster:
+Constructs that cannot overflow, don't, and usually run faster:
 
 ##### Example
 
