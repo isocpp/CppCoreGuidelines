@@ -6522,10 +6522,10 @@ By itself, `cout_my_class` would be OK, but it is not usable/composabe with code
 
 There are strong and vigorous conventions for the meaning most operators, such as 
 
-* comparisons (`==`, `!=`, '<', `<=`, `>`, and `>=`),
+* comparisons (`==`, `!=`, '<', `<=`, `>`, and `>=`)
 * arithmetic operations (`+`, `-`, `*`, `/`, and `%`)
 * access operations (`.`, `->`, unary `*`, and `[]`)
-* assignment and initialization (`=`)
+* assignment (`=`)
 
 Don't define those unconventionally and don't invent yur own names for them.
 
@@ -6942,11 +6942,21 @@ We can fix that problem by making ownership explicit:
 
 ##### Exceptions
 
-A major class of exception is legacy code, especially code that must remain compilable as C.
+A major class of exception is legacy code, especially code that must remain compilable as C or interface with C and C-style C++ through ABIs.
 The fact that there are billions of lines of code that violate this rule against owning `T*`s cannot be ignored.
-This code cannot all be rewritten (ever assuming good code transformation software).
-This problem cannot be solved (at scale) by transforming all owning pointers to `unique_ptr`s and `shared_ptr`s, partly because we need/use owning "raw pointers" in the implementation of our fundamental resource handles. For example, common `vector` implementations have one owning pointer and two non-owning pointers.
-Also, many ABIs (and essentially all interfaces to C code) use `T*`s, some of them owning, and these cannot be simply annotated with `owner` because they need to remain compilable as C (although this would be a rare good use for a macro, that expands to `owner` in C++ mode only).
+We'd love to see program transformation tools turning 20-year-old "legacy" code into shiny modern code,
+we encourage the development, deploymenta and use of such tools,
+we hope the guidelines wil help the development of such tools,
+and we even contributed (and contribute) to the research and developemnt in this area.
+However, it will take time: "legacy code" is generated faster than we can renovate old code, and so it will be for a few years.
+
+This code cannot all be rewritten (ever assuming good code transformation software), especially not soon.
+This problem cannot be solved (at scale) by transforming all owning pointers to `unique_ptr`s and `shared_ptr`s,
+partly because we need/use owning "raw pointers" as well as simple pointers in the implementation of our fundamental resource handles.
+For example, common `vector` implementations have one owning pointer and two non-owning pointers.
+Many ABIs (and essentially all interfaces to C code) use `T*`s, some of them owning.
+Some interfaces cannot be simply annotated with `owner` because they need to remain compilable as C
+(although this would be a rare good use for a macro, that expands to `owner` in C++ mode only).
 
 ##### Note
 
