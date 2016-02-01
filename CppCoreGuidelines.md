@@ -3216,6 +3216,8 @@ Class rule summary:
 * [C.4: Make a function a member only if it needs direct access to the representation of a class](#Rc-member)
 * [C.5: Place helper functions in the same namespace as the class they support](#Rc-helper)
 * [C.7: Don't define a class or enum and declare a variable of its type in the same statement](#Rc-standalone)
+* [C.8: use `class` rather that `struct` if any member is non-public](#Rc-class)
+* [C.9: minimize exposure of members](#Rc-private)
 
 Subsections:
 
@@ -3254,11 +3256,18 @@ Probably impossible. Maybe a heuristic looking for data items used together is p
 
 ##### Reason
 
-Ease of comprehension. The use of `class` alerts the programmer to the need for an invariant.
+Readability.
+Ease of comprehension.
+The use of `class` alerts the programmer to the need for an invariant.
+This is a useful convention.
 
 ##### Note
 
-An invariant is a logical condition for the members of an object that a constructor must establish for the public member functions to assume. After the invariant is established (typically by a constructor) every member function can be called for the object. An invariant can be stated informally (e.g., in a comment) or more formally using `Expects`.
+An invariant is a logical condition for the members of an object that a constructor must establish for the public member functions to assume.
+After the invariant is established (typically by a constructor) every member function can be called for the object.
+An invariant can be stated informally (e.g., in a comment) or more formally using `Expects`.
+
+If all data members can vary independently of each other, no invariant is possible.
 
 ##### Example
 
@@ -3270,14 +3279,25 @@ An invariant is a logical condition for the members of an object that a construc
 but:
 
     class Date {
+    public:
+        Date(int yy, Month mm, char dd);    // validate that {yy, mm, dd} is a valid date and initialize
+        // ...
     private:
         int y;
         Month m;
         char d;    // day
-    public:
-        Date(int yy, Month mm, char dd);    // validate that {yy, mm, dd} is a valid date and initialize
-        // ...
     };
+    
+##### Note
+
+If a class has any `private` data, a user cannot completely initialize an object without the use of a constructor.
+Hence, the class definer will provide a constructor and must specify its meaning.
+This effectivily means the definer need to define an invariant.
+
+* See also [define a class with private data as `class`](#Rc-class).
+* See also [Prefer to place the interface first in a class](#Rl-order).
+* See also [minimize exposure of members](#Rc-private).
+* See also [Avoid `protected` data](#Rh-protected).
 
 ##### Enforcement
 
@@ -3386,6 +3406,63 @@ Mixing a type definition and the definition of another entity in the same declar
 
 * Flag if the `}` of a class or enumeration definition is not followed by a `;`. The `;` is missing.
 
+
+### <a name="Rc-class"></a>C.8: use `class` rather that `struct` if any member is non-public
+
+##### Reason
+
+Readability.
+To make it clear that something is being hidden/abstracted.
+This is a useful convention.
+
+##### Example, bad
+
+    struct Date {
+        int d,m;
+ 
+        Date(int i, Month m);
+        // ... lots of functions ...
+    private:
+        int y;  // year
+    };
+
+There is nothing wrong with this code as far as the C++ language rules are concerned,
+but nearly everything is wrong from a design perspective.
+The private data is hidden far from the public data.
+The data is split in different parts of the class declaration.
+Different parts of the data has difference access.
+All of this decreases readability and complicates maintenance.
+
+
+##### Note
+
+Prefer to place the interface first in a class [see](#Rl-order).
+
+##### Enforcement
+
+Flag classes declarate with `struct` if there is a `private` or `public` member.
+
+
+### <a name="Rc-private"></a>C.9: minimize exposure of members
+
+##### Reason
+
+Encapsulation.
+Information hiding.
+Mimimize the chance of untended access.
+This simplifies maintenance.
+
+##### Example
+
+    ???
+
+##### Note
+
+Prefer the order `public` members before `protected` members before `private` members [see](#Rl-order).
+
+##### Enforcement
+
+???
 
 ## <a name="SS-concrete"></a>C.concrete: Concrete types
 
@@ -5495,7 +5572,6 @@ Designing rules for classes in a hierarchy summary:
 * [C.128: Use `override` to make overriding explicit in large class hierarchies](#Rh-override)
 * [C.129: When designing a class hierarchy, distinguish between implementation inheritance and interface inheritance](#Rh-kind)
 * [C.130: Redefine or prohibit copying for a base class; prefer a virtual `clone` function instead](#Rh-copy)
-
 * [C.131: Avoid trivial getters and setters](#Rh-get)
 * [C.132: Don't make a function `virtual` without reason](#Rh-virtual)
 * [C.133: Avoid `protected` data](#Rh-protected)
@@ -13892,9 +13968,16 @@ Use the `public` before `protected` before `private` order.
 
 Private types and functions can be placed with private data.
 
+Avoid multiple blocks of declarations of one access (e.g., `public`) dispersed among blocks of declarations with different access (e.g. `private`).
+
 ##### Example
 
     ???
+
+##### Note
+
+The use of macros to declare groups of members often violates any ordering rules.
+However, macros obscures what is being expressed anyway.
 
 ##### Enforcement
 
