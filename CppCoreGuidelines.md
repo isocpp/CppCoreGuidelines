@@ -6946,8 +6946,8 @@ A major class of exception is legacy code, especially code that must remain comp
 The fact that there are billions of lines of code that violate this rule against owning `T*`s cannot be ignored.
 We'd love to see program transformation tools turning 20-year-old "legacy" code into shiny modern code,
 we encourage the development, deploymenta and use of such tools,
-we hope the guidelines wil help the development of such tools,
-and we even contributed (and contribute) to the research and developemnt in this area.
+we hope the guidelines will help the development of such tools,
+and we even contributed (and contribute) to the research and development in this area.
 However, it will take time: "legacy code" is generated faster than we can renovate old code, and so it will be for a few years.
 
 This code cannot all be rewritten (ever assuming good code transformation software), especially not soon.
