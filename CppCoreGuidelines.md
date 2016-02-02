@@ -1516,7 +1516,7 @@ That is, its value must be `delete`d or transferred to another owner, as is done
 
 Every object passed as a raw pointer (or iterator) is assumed to be owned by the
 caller, so that its lifetime is handled by the caller. Viewed another way:
-ownership transfering APIs are relatively rare compared to pointer-passing APIs,
+ownership transferring APIs are relatively rare compared to pointer-passing APIs,
 so the default is "no ownership transfer."
 
 **See also**: [Argument passing](#Rf-conventional) and [value return](#Rf-T-return).
@@ -1606,7 +1606,7 @@ Passing `10` as the `n` argument may be a mistake: the most common convention is
 This `draw2()` passes the same amount of information to `draw()`, but makes the fact that it is supposed to be a range of `Circle`s explicit. See ???.
 
 **Exception**: Use `zstring` and `czstring` to represent a C-style, zero-terminated strings.
-But when doing so, use `string_span` from the (GSL)[#GSL] to prefent range errors.
+But when doing so, use `string_span` from the (GSL)[#GSL] to prevent range errors.
 
 ##### Enforcement
 
@@ -3196,7 +3196,7 @@ It's confusing. Writing `[=]` in a member function appears to capture by value, 
 
 ##### Note
 
-This is under active discussion in standarization, and may be addressed in a future version of the standard by adding a new capture mode or possibly adjusting the meaning of `[=]`. For now, just be explicit.
+This is under active discussion in standardization, and may be addressed in a future version of the standard by adding a new capture mode or possibly adjusting the meaning of `[=]`. For now, just be explicit.
 
 ##### Enforcement
 
@@ -3292,7 +3292,7 @@ but:
 
 If a class has any `private` data, a user cannot completely initialize an object without the use of a constructor.
 Hence, the class definer will provide a constructor and must specify its meaning.
-This effectivily means the definer need to define an invariant.
+This effectively means the definer need to define an invariant.
 
 * See also [define a class with private data as `class`](#Rc-class).
 * See also [Prefer to place the interface first in a class](#Rl-order).
@@ -3440,7 +3440,7 @@ Prefer to place the interface first in a class [see](#Rl-order).
 
 ##### Enforcement
 
-Flag classes declarate with `struct` if there is a `private` or `public` member.
+Flag classes declared with `struct` if there is a `private` or `public` member.
 
 
 ### <a name="Rc-private"></a>C.9: minimize exposure of members
@@ -3449,7 +3449,7 @@ Flag classes declarate with `struct` if there is a `private` or `public` member.
 
 Encapsulation.
 Information hiding.
-Mimimize the chance of untended access.
+Minimize the chance of untended access.
 This simplifies maintenance.
 
 ##### Example
@@ -5366,7 +5366,7 @@ Providing a nonmember `swap` function in the same namespace as your type for cal
 
 ##### Reason
 
- `swap` is widely used in ways that are assumed never to fail and programs cannot easily be written to work correctly in the presence of a failing `swap`. The The standard-library containers and algorithms will not work correctly if a swap of an element type fails.
+ `swap` is widely used in ways that are assumed never to fail and programs cannot easily be written to work correctly in the presence of a failing `swap`. The standard-library containers and algorithms will not work correctly if a swap of an element type fails.
 
 ##### Example, bad
 
@@ -5489,7 +5489,7 @@ This rule applies to all the usual comparison operators: `!=', `<, `<=`, `>`, an
 
 ##### Reason
 
-Users of hashed contaiers use hash indirectly and don't expect simple access to throw.
+Users of hashed containers use hash indirectly and don't expect simple access to throw.
 It's a standard-library requirement.
 
 ##### Example, bad
@@ -5515,8 +5515,8 @@ It's a standard-library requirement.
 	   cout << m[My_type{ "asdfg" }] << '\n';
     }
     
-If you have to defie a `hash` specialization, try simply to let it combine standard-ibrary `hash` specializations with `^` (xor).
-That tends to work better than "cleverness" for non-specoalists.
+If you have to define a `hash` specialization, try simply to let it combine standard-library `hash` specializations with `^` (xor).
+That tends to work better than "cleverness" for non-specialists.
 
 ##### Enforcement
 
@@ -6603,7 +6603,7 @@ There are strong and vigorous conventions for the meaning most operators, such a
 * access operations (`.`, `->`, unary `*`, and `[]`)
 * assignment (`=`)
 
-Don't define those unconventionally and don't invent yur own names for them.
+Don't define those unconventionally and don't invent your own names for them.
 
 ###### Enforcement
 
@@ -7021,7 +7021,7 @@ We can fix that problem by making ownership explicit:
 A major class of exception is legacy code, especially code that must remain compilable as C or interface with C and C-style C++ through ABIs.
 The fact that there are billions of lines of code that violate this rule against owning `T*`s cannot be ignored.
 We'd love to see program transformation tools turning 20-year-old "legacy" code into shiny modern code,
-we encourage the development, deploymenta and use of such tools,
+we encourage the development, deployment and use of such tools,
 we hope the guidelines will help the development of such tools,
 and we even contributed (and contribute) to the research and development in this area.
 However, it will take time: "legacy code" is generated faster than we can renovate old code, and so it will be for a few years.
@@ -9023,7 +9023,7 @@ Flag empty statements that are not blocks and don't "contain" comments.
 
 ##### Reason
 
-The loop control up front should enable correct reasoning about what is happening inside the loop. Modifying loop counters in both the iteration-expression and inside the body of the loop is a perennial source of suprises and bugs.
+The loop control up front should enable correct reasoning about what is happening inside the loop. Modifying loop counters in both the iteration-expression and inside the body of the loop is a perennial source of surprises and bugs.
 
 ##### Example
 
@@ -9480,7 +9480,7 @@ Whenever possible, follow the standard-library rule and make operations on rvalu
 
 ##### Note
 
-`std::move` (or equivalent casts) is essential for implementating movesemantics and certain rare optimizations.
+`std::move` (or equivalent casts) is essential for implementing move semantics and certain rare optimizations.
 
 ##### Enforcement
 
@@ -9539,7 +9539,7 @@ This example has many more problems.
 
 ##### Reason
 
-Slicing - that is, copying only part of an object using assingment or initialization - most often leads to errors because
+Slicing - that is, copying only part of an object using assignment or initialization - most often leads to errors because
 the object was meant to be considered as a whole.
 In the rare cases where the slicing was deliberate the code can be surprising.
 
@@ -10835,7 +10835,7 @@ And, in this case, missed an opportunity for a generalization.
 
 Assuming that `Arithmetic` requires both `+` and `+=`, we have constrained the user of `sum` to provide a complete arithmetic type.
 That is not a minimal requirement, but it gives the implementer of algorithms much needed freedom and ensures that any `Arithmetic` type
-can be user for a wide variety of algorithms.
+can be used for a wide variety of algorithms.
 
 For additional generality and reusability, we could also use a more general `Container` or `Range` concept instead of committing to only one container, `vector`.
 
@@ -11829,7 +11829,7 @@ The two language mechanisms can be used effectively in combination, but a few de
 
 ##### Reason
 
-Templatizing a class hierarchy that has many functions, especially many virtual functions, can lead to code bloat.
+Templating a class hierarchy that has many functions, especially many virtual functions, can lead to code bloat.
 
 ##### Example, bad
 
@@ -12438,7 +12438,7 @@ Source file rule summary:
 
 * [SF.1: Use a `.cpp` suffix for code files and `.h` for interface files if your project doesn't already follow another convention](#Rs-file-suffix)
 * [SF.2: A `.h` file may not contain object definitions or non-inline function definitions](#Rs-inline)
-* [SF.3: Use `.h` files for all declarations used in multiple sourcefiles](#Rs-declaration-header)
+* [SF.3: Use `.h` files for all declarations used in multiple source files](#Rs-declaration-header)
 * [SF.4: Include `.h` files before other declarations in a file](#Rs-include-order)
 * [SF.5: A `.cpp` file must include the `.h` file(s) that defines its interface](#Rs-consistency)
 * [SF.6: Use `using`-directives for transition, for foundation libraries (such as `std`), or within a local scope](#Rs-using)
@@ -12515,7 +12515,7 @@ Including entities subject to the one-definition rule leads to linkage errors.
 
 Check the positive list above.
 
-### <a name="Rs-declaration-header"></a>SF.3: Use `.h` files for all declarations used in multiple sourcefiles
+### <a name="Rs-declaration-header"></a>SF.3: Use `.h` files for all declarations used in multiple source files
 
 ##### Reason
 
@@ -13707,7 +13707,7 @@ Naming and layout rules:
 * [NL.25: Don't use `void` as an argument type](#Rl-void)
 
 Most of these rules are aesthetic and programmers hold strong opinions.
-IDEs also tend to have defaults and a range of alternatives.These rules are suggested defaults to follow unless you have reasons not to.
+IDEs also tend to have defaults and a range of alternatives. These rules are suggested defaults to follow unless you have reasons not to.
 
 More specific and detailed rules are easier to enforce.
 
@@ -14941,7 +14941,7 @@ Alternatively, we will decide that no change is needed and delete the entry.
 * How granular should namespaces be? All classes/functions designed to work together and released together (as defined in Sutter/Alexandrescu) or something narrower or wider?
 * Should there be inline namespaces (à la `std::literals::*_literals`)?
 * Avoid implicit conversions
-* Const member functions should be thread safe "¦ aka, but I don't really change the variable, just assign it a value the first time its called "¦ argh
+* Const member functions should be thread safe "¦ aka, but I don't really change the variable, just assign it a value the first time it’s called "¦ argh
 * Always initialize variables, use initialization lists for member variables.
 * Anyone writing a public interface which takes or returns void* should have their toes set on fire. That one has been a personal favorite of mine for a number of years. :)
 * Use `const`-ness wherever possible: member functions, variables and (yippee) `const_iterators`
@@ -14991,7 +14991,7 @@ Alternatively, we will decide that no change is needed and delete the entry.
 * <a name="Alexandrescu01"></a>
   \[Alexandrescu01\]:  A. Alexandrescu. Modern C++ Design (Addison-Wesley, 2001).
 * <a name="Cplusplus03"></a>
-  \[C++03\]:           ISO/IEC 14882:2003(E), Programming LanguagesC++ (updated ISO and ANSI C++ Standard including the contents of (C++98) plus errata corrections).
+  \[C++03\]:           ISO/IEC 14882:2003(E), Programming Languages — C++ (updated ISO and ANSI C++ Standard including the contents of (C++98) plus errata corrections).
 * <a name="CplusplusCS"></a>
   \[C++CS\]:
 * <a name="Cargill92"></a>
