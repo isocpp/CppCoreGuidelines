@@ -1,6 +1,6 @@
 # <a name="main"></a>C++ Core Guidelines
 
-January 31, 2016
+February 2, 2016
 
 Editors:
 
@@ -3381,6 +3381,10 @@ Placing them in the same namespace as the class makes their relationship to the 
         Date next_weekday(Date);
         // ...
     }
+    
+##### Note
+
+This is expecially important for [overloaded operators](#Ro-namespace).
 
 ##### Enforcement
 
@@ -6358,6 +6362,7 @@ Overload rule summary:
 * [C.165: Use `using` for customization points](#Ro-custom)
 * [C.166: Overload unary `&` only as part of a system of smart pointers and references](#Ro-address-of)
 * [C.167: Use an operator for an operation with its conventional meaning](#Ro-overload)
+* [C.168: Define overloaded operators in the namespace of their operands](#Ro-namespace)
 * [C.170: If you feel like overloading a lambda, use a generic lambda](#Ro-lambda)
 
 ### <a name="Ro-conventional"></a>C.160: Define operators primarily to mimic conventional usage
@@ -6568,7 +6573,70 @@ Note that `std::addressof()` always yields a built-in pointer.
 
 Tricky. Warn if `&` is user-defined without also defining `->` for the result type.
 
+### <a name="Ro-namespace"></a>C.168: Define overloaded operators in the namespace of their operands
 
+##### Reason
+
+Readability.
+Ability for find operators using ADL.
+Avoiding inconsistent definition in different namespaces
+
+##### Example
+
+    struct S { };
+    bool operator==(S,S);   // OK: in the same namespace as S, and even next to S
+    S s;
+
+    bool s==s;
+    
+This is what a deafault == would do, if we had such defaults.
+
+##### Example
+
+    namespace N {
+        struct S { };
+        bool operator==(S,S);   // OK: in the same namespace as S, and even next to S
+    }
+    
+    N::S s;
+
+    bool s==s;  // finds N::operator==() by ADL
+
+##### Example, bad
+
+    struct S { };
+    S s;
+
+    namespace N {
+        S::operator!(S a) { return true; }
+        S not_s = !s;
+    }
+    
+    namespace M {
+        S::operator!(S a) { return false; }
+        S not_s = !s;
+    }
+
+Here, the meaning of `!s` differs in `N` and `M`.
+This can be most confusing.
+Remove the definition of `namespace M` and the confusion is replaced by an opportunity to make the mistake.
+
+##### Note
+
+If a binary operator is defined for two types that are defined in different namespaces, you cannot follow this rule.
+For example:
+   
+    Vec::Vector operator*(const Vec::Vector&, const Mat::Matrix&);
+
+This may be something best avoided.
+
+##### See also
+
+This is a special case of the rule that [helper functions should be defined in the same namespace as their class](#Rc-helper).
+
+##### Enforcement
+
+* Flag operator definitions that are not it the namespace of their operands
 
 ### <a name="Ro-overload"></a>C.167: Use an operator for an operation with its conventional meaning
 
@@ -7734,7 +7802,7 @@ Expression rules:
 * [ES.50: Don't cast away `const`](#Res-casts-const)
 * [ES.55: Avoid the need for range checking](#Res-range-checking)
 * [ES.56: Avoid `std::move()` in application code](#Res-move)
-* [ES.60: Avoid `new` and `delete[]` outside resource management functions](#Res-new)
+* [ES.60: Avoid `new` and `delete` outside resource management functions](#Res-new)
 * [ES.61: delete arrays using `delete[]` and non-arrays using `delete`](#Res-del)
 * [ES.62: Don't compare pointers into different arrays](#Res-arr2)
 * [ES.63: Don't slice](#Res-slice)
@@ -9412,7 +9480,7 @@ Constructs that cannot overflow do not overflow (and usually run faster):
 
 Look for explicit range checks and heuristically suggest alternatives.
 
-### <a name="Res-new"></a>ES.60: Avoid `new` and `delete[]` outside resource management functions
+### <a name="Res-new"></a>ES.60: Avoid `new` and `delete` outside resource management functions
 
 ##### Reason
 
