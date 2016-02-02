@@ -2641,7 +2641,7 @@ A `span` represents a range of elements, but how do we manipulate elements of th
         for (int x : s) cout << x << '\n';  // range traversal (guaranteed correct)
         for (int i = 0; i<s.size(); ++i) cout << x << '\n';  // C-style traversal (potentially checked)
         s[7] = 9;                           // random access (potentially checked)
-        std::sort(&s[0],&s[s.size()/2);     // extract pointers (potentially checked)
+        std::sort(&s[0],&s[s.size()/2]);    // extract pointers (potentially checked)
     }
     
 ##### Note
@@ -3216,6 +3216,8 @@ Class rule summary:
 * [C.4: Make a function a member only if it needs direct access to the representation of a class](#Rc-member)
 * [C.5: Place helper functions in the same namespace as the class they support](#Rc-helper)
 * [C.7: Don't define a class or enum and declare a variable of its type in the same statement](#Rc-standalone)
+* [C.8: use `class` rather that `struct` if any member is non-public](#Rc-class)
+* [C.9: minimize exposure of members](#Rc-private)
 
 Subsections:
 
@@ -3254,11 +3256,18 @@ Probably impossible. Maybe a heuristic looking for data items used together is p
 
 ##### Reason
 
-Ease of comprehension. The use of `class` alerts the programmer to the need for an invariant.
+Readability.
+Ease of comprehension.
+The use of `class` alerts the programmer to the need for an invariant.
+This is a useful convention.
 
 ##### Note
 
-An invariant is a logical condition for the members of an object that a constructor must establish for the public member functions to assume. After the invariant is established (typically by a constructor) every member function can be called for the object. An invariant can be stated informally (e.g., in a comment) or more formally using `Expects`.
+An invariant is a logical condition for the members of an object that a constructor must establish for the public member functions to assume.
+After the invariant is established (typically by a constructor) every member function can be called for the object.
+An invariant can be stated informally (e.g., in a comment) or more formally using `Expects`.
+
+If all data members can vary independently of each other, no invariant is possible.
 
 ##### Example
 
@@ -3270,14 +3279,25 @@ An invariant is a logical condition for the members of an object that a construc
 but:
 
     class Date {
+    public:
+        Date(int yy, Month mm, char dd);    // validate that {yy, mm, dd} is a valid date and initialize
+        // ...
     private:
         int y;
         Month m;
         char d;    // day
-    public:
-        Date(int yy, Month mm, char dd);    // validate that {yy, mm, dd} is a valid date and initialize
-        // ...
     };
+    
+##### Note
+
+If a class has any `private` data, a user cannot completely initialize an object without the use of a constructor.
+Hence, the class definer will provide a constructor and must specify its meaning.
+This effectivily means the definer need to define an invariant.
+
+* See also [define a class with private data as `class`](#Rc-class).
+* See also [Prefer to place the interface first in a class](#Rl-order).
+* See also [minimize exposure of members](#Rc-private).
+* See also [Avoid `protected` data](#Rh-protected).
 
 ##### Enforcement
 
@@ -3386,6 +3406,63 @@ Mixing a type definition and the definition of another entity in the same declar
 
 * Flag if the `}` of a class or enumeration definition is not followed by a `;`. The `;` is missing.
 
+
+### <a name="Rc-class"></a>C.8: use `class` rather that `struct` if any member is non-public
+
+##### Reason
+
+Readability.
+To make it clear that something is being hidden/abstracted.
+This is a useful convention.
+
+##### Example, bad
+
+    struct Date {
+        int d,m;
+ 
+        Date(int i, Month m);
+        // ... lots of functions ...
+    private:
+        int y;  // year
+    };
+
+There is nothing wrong with this code as far as the C++ language rules are concerned,
+but nearly everything is wrong from a design perspective.
+The private data is hidden far from the public data.
+The data is split in different parts of the class declaration.
+Different parts of the data has difference access.
+All of this decreases readability and complicates maintenance.
+
+
+##### Note
+
+Prefer to place the interface first in a class [see](#Rl-order).
+
+##### Enforcement
+
+Flag classes declarate with `struct` if there is a `private` or `public` member.
+
+
+### <a name="Rc-private"></a>C.9: minimize exposure of members
+
+##### Reason
+
+Encapsulation.
+Information hiding.
+Mimimize the chance of untended access.
+This simplifies maintenance.
+
+##### Example
+
+    ???
+
+##### Note
+
+Prefer the order `public` members before `protected` members before `private` members [see](#Rl-order).
+
+##### Enforcement
+
+???
 
 ## <a name="SS-concrete"></a>C.concrete: Concrete types
 
@@ -5495,7 +5572,6 @@ Designing rules for classes in a hierarchy summary:
 * [C.128: Use `override` to make overriding explicit in large class hierarchies](#Rh-override)
 * [C.129: When designing a class hierarchy, distinguish between implementation inheritance and interface inheritance](#Rh-kind)
 * [C.130: Redefine or prohibit copying for a base class; prefer a virtual `clone` function instead](#Rh-copy)
-
 * [C.131: Avoid trivial getters and setters](#Rh-get)
 * [C.132: Don't make a function `virtual` without reason](#Rh-virtual)
 * [C.133: Avoid `protected` data](#Rh-protected)
@@ -8102,9 +8178,10 @@ The *always initialize* rule is a style rule aimed to improve maintainability as
 
 Here is an example that is often considered to demonstrate the need for a more relaxed rule for initialization
 
-    widget i, j; // "widget" a type that's expensive to initialize, possibly a large POD
+    widget i;    // "widget" a type that's expensive to initialize, possibly a large POD
+    widget j;
 
-    if (cond) {     // bad: i and j are initialized "late"
+    if (cond) {  // bad: i and j are initialized "late"
         i = f1();
         j = f2();
     }
@@ -8939,7 +9016,7 @@ Readability.
 
 ##### Enforcement
 
-Flag empty statements that are not blocks and doesn't "contain" comments.
+Flag empty statements that are not blocks and don't "contain" comments.
 
 
 ### <a name="Res-loop-counter"></a>ES.86: Avoid modifying loop control variables inside the body of raw for-loops
@@ -9301,7 +9378,7 @@ Flag `const_cast`s.
 
 ##### Reason
 
-Constructs that cannot overflow, don't, and usually runs faster:
+Constructs that cannot overflow, don't, and usually run faster:
 
 ##### Example
 
@@ -9383,7 +9460,7 @@ also define an overload that takes lvalues.
     void print(const string& s);    // print and preserve the value of s
     
 An rvalue can be assumed not to be accessed after being passed.
-An lvalue must in general be assumed to be used again after being passes, that is after a `std::move`,
+An lvalue must in general be assumed to be used again after being passed, that is after a `std::move`,
 so "careful programming" is essential to avoid disasters -- better not rely on that.
 
 ###### Note
@@ -9861,7 +9938,7 @@ See also:
 
 It is hard to be certain that concurrency isn't used now or sometime in the future.
 Code gets re-used.
-Libraries using threads my be used from some other part of the program.
+Libraries using threads may be used from some other part of the program.
 Note that this applies most urgently to library code and least urgently to stand-alone applications.
 
 ##### Example
@@ -9894,7 +9971,7 @@ There are several ways that this example could be made safe for a multi-threaded
 However, there are also many examples where code that was "known" to never run in a multi-threaded program
 was run as part of a multi-threaded program. Often years later.
 Typically, such programs lead to a painful effort to remove data races.
-Therefore, code that is never intended to run in a multi-threaded environment should be clearly labeled as such.
+Therefore, code that is never intended to run in a multi-threaded environment should be clearly labeled as such and ideally come with compile or run-time enforcement mechanisms to catch those usage bugs early.
 
 ### <a name="Rconc-races"></a>CP.2: Avoid data races
 
@@ -9980,7 +10057,7 @@ Error handling involves:
 * Preserve the state of a program in a valid state
 * Avoid resource leaks
 
-It is not possible to recover from all errors. If recovery from an error is not possible, it is important to quickly "get out" in a well-defined way. A strategy for error handling must be simple, or it becomes a source of even worse errors.
+It is not possible to recover from all errors. If recovery from an error is not possible, it is important to quickly "get out" in a well-defined way. A strategy for error handling must be simple, or it becomes a source of even worse errors.  Untested and rarely executed error-handling code is itself the source of many bugs.
 
 The rules are designed to help avoid several kinds of errors:
 
@@ -10106,7 +10183,7 @@ There is nothing exceptional about finding a value in a `vector`.
 
 ##### Reason
 
-To use an objects it must be in a valid state (defined formally or informally by an invariant) and to recover from an error every object not destroyed must be in a valid state.
+To use an object it must be in a valid state (defined formally or informally by an invariant) and to recover from an error every object not destroyed must be in a valid state.
 
 ##### Note
 
@@ -10117,7 +10194,7 @@ An [invariant](#Rc-struct) is logical condition for the members of an object tha
 ##### Reason
 
 Leaving an object without its invariant established is asking for trouble.
-Not all member function can be called.
+Not all member functions can be called.
 
 ##### Example
 
@@ -10162,7 +10239,7 @@ This is verbose. In larger code with multiple possible `throw`s explicit release
 
     void f3(int i)   // OK: resource management done by a handle
     {
-        auto p = make_unique<int[12]>();
+        auto p = make_unique<int[]>(12);
         // ...
         if (i < 17) throw Bad {"in f()", i};
         // ...
@@ -10172,7 +10249,7 @@ Note that this works even when the `throw` is implicit because it happened in a 
 
     void f4(int i)   // OK: resource management done by a handle
     {
-        auto p = make_unique<int[12]>();
+        auto p = make_unique<int[]>(12);
         // ...
         helper(i);   // may throw
         // ...
@@ -10199,12 +10276,12 @@ First challenge that assumption; there are many anti-exceptions myths around.
 We know of only a few good reasons:
 
 * We are on a system so small that the exception support would eat up most of our 2K or memory.
-* We are in a hard-real-time system and we don't have tools that allows us that an exception is handled within the required time.
+* We are in a hard-real-time system and we don't have tools that guarantee us that an exception is handled within the required time.
 * We are in a system with tons of legacy code using lots of pointers in difficult-to-understand ways
   (in particular without a recognizable ownership strategy) so that exceptions could cause leaks.
 * We get fired if we challenge our manager's ancient wisdom.
 
-Only the first of these reasons is fundamental, so whenever possible, use exception to implement RAII.
+Only the first of these reasons is fundamental, so whenever possible, use exceptions to implement RAII, or design your RAII objects to never fail.
 When exceptions cannot be used, simulate RAII.
 That is, systematically check that objects are valid after construction and still release all resources in the destructor.
 One strategy is to add a `valid()` operation to every resource handle:
@@ -10276,7 +10353,7 @@ Many standard library functions are `noexcept` including all the standard librar
         // ... do something ...
     }
 
-The `noexcept` here states that I am not willing or able to handle the situation where I cannot construct the local `vector`. That is, I consider memory exhaustion a serious design error (on line with hardware failures) so that I'm willing to crash the program if it happens.
+The `noexcept` here states that I am not willing or able to handle the situation where I cannot construct the local `vector`. That is, I consider memory exhaustion a serious design error (on par with hardware failures) so that I'm willing to crash the program if it happens.
 
 **See also**: [discussion](#Sd-noexcept).
 
@@ -10409,7 +10486,7 @@ Instead, use:
 
 ##### Enforcement
 
-Flag by-value exceptions if their type are part of a hierarchy (could require whole-program analysis to be perfect).
+Flag by-value exceptions if their types are part of a hierarchy (could require whole-program analysis to be perfect).
 
 ### <a name="Re-never-fail"></a>E.16: Destructors, deallocation, and `swap` must never fail
 
@@ -10431,7 +10508,7 @@ We don't know how to write reliable programs if a destructor, a swap, or a memor
 
 ##### Note
 
-Many have tried to write reliable code violating this rule for examples such as a network connection that "refuses to close". To the best of our knowledge nobody has found a general way of doing this though occasionally, for very specific examples, you can get away with setting some state for future cleanup. Every example, we have seen of this is error-prone, specialized, and usually buggy.
+Many have tried to write reliable code violating this rule for examples such as a network connection that "refuses to close". To the best of our knowledge nobody has found a general way of doing this though occasionally, for very specific examples, you can get away with setting some state for future cleanup. Every example we have seen of this is error-prone, specialized, and usually buggy.
 
 ##### Note
 
@@ -10439,7 +10516,7 @@ The standard library assumes that destructors, deallocation functions (e.g., `op
 
 ##### Note
 
-Deallocation functions, including `operator delete`, must be `noexcept`. `swap` functions must be `noexcept`. Most destructors are implicitly `noexcept` by default. destructors, make them `noexcept`.
+Deallocation functions, including `operator delete`, must be `noexcept`. `swap` functions must be `noexcept`. Most destructors are implicitly `noexcept` by default.
 
 ##### Enforcement
 
@@ -10513,7 +10590,7 @@ Let cleanup actions on the unwinding path be handled by [RAII](#Re-raii).
 # <a name="S-const"></a>Con: Constants and Immutability
 
 You can't have a race condition on a constant.
-it is easier to reason about a program when many of the objects cannot change their values.
+It is easier to reason about a program when many of the objects cannot change their values.
 Interfaces that promises "no change" of objects passed as arguments greatly increase readability.
 
 Constant rule summary:
@@ -10606,6 +10683,10 @@ This gives a more precise statement of design intent, better readability, more e
 ##### Example
 
     ???
+
+##### Note
+
+See F.4.
 
 ##### Enforcement
 
@@ -10994,7 +11075,7 @@ It is better and simpler just to use `Sortable`:
 
 ##### Note
 
-The set of "standard" concepts is evolving as we approaches real (ISO) standardization.
+The set of "standard" concepts is evolving as we approach real (ISO) standardization.
 
 ##### Note
 
@@ -11145,7 +11226,7 @@ Examples of complete sets are
 ##### Reason
 
 A meaningful/useful concept has a semantic meaning.
-Expressing this semantics in a informal, semi-formal, or formal way makes the concept comprehensible to readers and the effort to express it can catch conceptual errors.
+Expressing these semantics in an informal, semi-formal, or formal way makes the concept comprehensible to readers and the effort to express it can catch conceptual errors.
 Specifying semantics is a powerful design tool.
 
 ##### Example
@@ -11310,7 +11391,7 @@ Conversions are taken into account. You don't have to remember the names of all 
 ##### Reason
 
 Function objects can carry more information through an interface than a "plain" pointer to function.
-In general, passing function objects give better performance than passing pointers to functions.
+In general, passing function objects gives better performance than passing pointers to functions.
 
 ##### Example
 
@@ -11381,7 +11462,7 @@ This saves the user of `Matrix` from having to know that its elements are stored
 ##### Example
 
     template<typename T>
-    using Value_type<T> = container_traits<T>::value_type;
+    using Value_type = typename container_traits<T>::value_type;
 
 This saves the user of `Value_type` from having to know the technique used to implement `value_type`s.
 
@@ -11742,7 +11823,7 @@ There are three major ways to let calling code customize a template.
 
 Templates are the backbone of C++'s support for generic programming and class hierarchies the backbone of its support
 for object-oriented programming.
-The two language mechanisms can be use effectively in combination, but a few design pitfalls must be avoided.
+The two language mechanisms can be used effectively in combination, but a few design pitfalls must be avoided.
 
 ### <a name="Rt-hier"></a>T.80: Do not naively templatize a class hierarchy
 
@@ -12162,7 +12243,8 @@ That makes the code concise and gives better locality than alternatives.
 
 ##### Example
 
-    ??? for-loop equivalent
+    auto earlyUsersEnd = std::remove_if(users.begin(), users.end(),
+                                        [](const User &a) { return a.id > 100; });
 
 **Exception**: Naming a lambda can be useful for clarity even if it is used only once
 
@@ -13886,9 +13968,16 @@ Use the `public` before `protected` before `private` order.
 
 Private types and functions can be placed with private data.
 
+Avoid multiple blocks of declarations of one access (e.g., `public`) dispersed among blocks of declarations with different access (e.g. `private`).
+
 ##### Example
 
     ???
+
+##### Note
+
+The use of macros to declare groups of members often violates any ordering rules.
+However, macros obscures what is being expressed anyway.
 
 ##### Enforcement
 
