@@ -6371,11 +6371,27 @@ Overload rule summary:
 
 Minimize surprises.
 
+##### Example
+
+    class X {
+    public:
+        // ...
+        X& operator=(const X&); // member function defining assignment
+        friend bool operator==(const X&, const X&); // == needs access to representation
+                                                    // after a=b we have a==b
+        // ...
+    };
+    
+Here, the conventional semantics is maintained: [Copies compare equal](#SS-copy).
+
 ##### Example, bad
 
     X operator+(X a, X b) { return a.v - b.v; }   // bad: makes + subtract
 
-???. Non-member operators: namespace-level definition (traditional?) vs friend definition (as used by boost.operator, limits lookup to ADL only)
+##### Note
+
+Non-member operators should be either friends or defined in [the same namespace as their operands](#Ro-namespace).
+[Binary operators should treat their operands equivalently](#Ro-symmetric).
 
 ##### Enforcement
 
