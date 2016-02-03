@@ -1,6 +1,6 @@
 # <a name="main"></a>C++ Core Guidelines
 
-January 31, 2016
+February 2, 2016
 
 Editors:
 
@@ -3381,6 +3381,10 @@ Placing them in the same namespace as the class makes their relationship to the 
         Date next_weekday(Date);
         // ...
     }
+    
+##### Note
+
+This is expecially important for [overloaded operators](#Ro-namespace).
 
 ##### Enforcement
 
@@ -6358,6 +6362,7 @@ Overload rule summary:
 * [C.165: Use `using` for customization points](#Ro-custom)
 * [C.166: Overload unary `&` only as part of a system of smart pointers and references](#Ro-address-of)
 * [C.167: Use an operator for an operation with its conventional meaning](#Ro-overload)
+* [C.168: Define overloaded operators in the namespace of their operands](#Ro-namespace)
 * [C.170: If you feel like overloading a lambda, use a generic lambda](#Ro-lambda)
 
 ### <a name="Ro-conventional"></a>C.160: Define operators primarily to mimic conventional usage
@@ -6366,11 +6371,27 @@ Overload rule summary:
 
 Minimize surprises.
 
+##### Example
+
+    class X {
+    public:
+        // ...
+        X& operator=(const X&); // member function defining assignment
+        friend bool operator==(const X&, const X&); // == needs access to representation
+                                                    // after a=b we have a==b
+        // ...
+    };
+    
+Here, the conventional semantics is maintained: [Copies compare equal](#SS-copy).
+
 ##### Example, bad
 
     X operator+(X a, X b) { return a.v - b.v; }   // bad: makes + subtract
 
-???. Non-member operators: namespace-level definition (traditional?) vs friend definition (as used by boost.operator, limits lookup to ADL only)
+##### Note
+
+Non-member operators should be either friends or defined in [the same namespace as their operands](#Ro-namespace).
+[Binary operators should treat their operands equivalently](#Ro-symmetric).
 
 ##### Enforcement
 
@@ -6568,7 +6589,70 @@ Note that `std::addressof()` always yields a built-in pointer.
 
 Tricky. Warn if `&` is user-defined without also defining `->` for the result type.
 
+### <a name="Ro-namespace"></a>C.168: Define overloaded operators in the namespace of their operands
 
+##### Reason
+
+Readability.
+Ability for find operators using ADL.
+Avoiding inconsistent definition in different namespaces
+
+##### Example
+
+    struct S { };
+    bool operator==(S,S);   // OK: in the same namespace as S, and even next to S
+    S s;
+
+    bool s==s;
+    
+This is what a deafault == would do, if we had such defaults.
+
+##### Example
+
+    namespace N {
+        struct S { };
+        bool operator==(S,S);   // OK: in the same namespace as S, and even next to S
+    }
+    
+    N::S s;
+
+    bool s==s;  // finds N::operator==() by ADL
+
+##### Example, bad
+
+    struct S { };
+    S s;
+
+    namespace N {
+        S::operator!(S a) { return true; }
+        S not_s = !s;
+    }
+    
+    namespace M {
+        S::operator!(S a) { return false; }
+        S not_s = !s;
+    }
+
+Here, the meaning of `!s` differs in `N` and `M`.
+This can be most confusing.
+Remove the definition of `namespace M` and the confusion is replaced by an opportunity to make the mistake.
+
+##### Note
+
+If a binary operator is defined for two types that are defined in different namespaces, you cannot follow this rule.
+For example:
+   
+    Vec::Vector operator*(const Vec::Vector&, const Mat::Matrix&);
+
+This may be something best avoided.
+
+##### See also
+
+This is a special case of the rule that [helper functions should be defined in the same namespace as their class](#Rc-helper).
+
+##### Enforcement
+
+* Flag operator definitions that are not it the namespace of their operands
 
 ### <a name="Ro-overload"></a>C.167: Use an operator for an operation with its conventional meaning
 
@@ -6594,18 +6678,18 @@ By itself, `cout_my_class` would be OK, but it is not usable/composabe with code
     // ...
     cout << "var = " << var << '\n';
     
-###### Note
+##### Note
 
 There are strong and vigorous conventions for the meaning most operators, such as 
 
-* comparisons (`==`, `!=`, '<', `<=`, `>`, and `>=`)
+* comparisons (`==`, `!=`, `<`, `<=`, `>`, and `>=`),
 * arithmetic operations (`+`, `-`, `*`, `/`, and `%`)
 * access operations (`.`, `->`, unary `*`, and `[]`)
 * assignment (`=`)
 
 Don't define those unconventionally and don't invent your own names for them.
 
-###### Enforcement
+##### Enforcement
 
 Tricky. Requires semantic insight.
 
@@ -7734,7 +7818,7 @@ Expression rules:
 * [ES.50: Don't cast away `const`](#Res-casts-const)
 * [ES.55: Avoid the need for range checking](#Res-range-checking)
 * [ES.56: Avoid `std::move()` in application code](#Res-move)
-* [ES.60: Avoid `new` and `delete[]` outside resource management functions](#Res-new)
+* [ES.60: Avoid `new` and `delete` outside resource management functions](#Res-new)
 * [ES.61: delete arrays using `delete[]` and non-arrays using `delete`](#Res-del)
 * [ES.62: Don't compare pointers into different arrays](#Res-arr2)
 * [ES.63: Don't slice](#Res-slice)
@@ -7768,7 +7852,7 @@ Arithmetic rules:
 ##### Reason
 
 Code using a library can be much easier to write than code working directly with language features, much shorter, tend to be of a higher level of abstraction, and the library code is presumably already tested.
-The ISO C++ standard library is among the most widely know and best tested libraries.
+The ISO C++ standard library is among the most widely known and best tested libraries.
 It is available as part of all C++ Implementations.
 
 ##### Example
@@ -7869,26 +7953,24 @@ Readability. Minimize resource retention. Avoid accidental misuse of value.
         // ... 200 lines of code without intended use of fn or is ...
     }
 
-This function is by most measure too long anyway, but the point is that the used by `fn` and the file handle held by `is`
+This function is by most measure too long anyway, but the point is that the resources used by `fn` and the file handle held by `is`
 are retained for much longer than needed and that unanticipated use of `is` and `fn` could happen later in the function.
 In this case, it might be a good idea to factor out the read:
 
-    void fill_record(Record& r, const string& name)
+    Record load_record(const string& name)
     {
         string fn = name+".txt";
         ifstream is {fn};
         Record r;
         is >> r;
+        return r;
     }
 
     void use(const string& name)
     {
-        Record r;
-        fill_record(r, name);
+        Record r = load_record(name);
         // ... 200 lines of code ...
     }
-
-I am assuming that `Record` is large and doesn't have a good move operation so that an out-parameter is preferable to returning a `Record`.
 
 ##### Enforcement
 
@@ -7982,7 +8064,7 @@ Here, there is a chance that the reader knows what `trim_tail` means and that th
 
 Argument names of large functions are de facto non-local and should be meaningful:
 
-    void complicated_algorithm(vector<Record>&vr, const vector<int>& vi, map<string, int>& out)
+    void complicated_algorithm(vector<Record>& vr, const vector<int>& vi, map<string, int>& out)
     // read from events in vr (marking used Records) for the indices in vi placing (name, index) pairs into out
     {
         // ... 500 lines of code using vr, vi, and out ...
@@ -8056,7 +8138,9 @@ Flag all uses of ALL CAPS. For older code, accept ALL CAPS for macro names and f
 
 ##### Reason
 
-One-declaration-per line increases readability and avoid mistake related to the C/C++ grammar. It leaves room for a `//`-comment.
+One-declaration-per line increases readability and avoids mistakes related to
+the C/C++ grammar. It also leaves room for a more descriptive end-of-line
+comment.
 
 ##### Example, bad
 
@@ -8107,7 +8191,7 @@ Consider:
     auto p = v.begin();   // vector<int>::iterator
     auto s = v.size();
     auto h = t.future();
-    auto q = new int[s];
+    auto q = make_unique<int[]>(s);
     auto f = [](int x){ return x + 10; };
 
 In each case, we save writing a longish, hard-to-remember type that the compiler already knows but a programmer could get wrong.
@@ -8121,7 +8205,7 @@ In each case, we save writing a longish, hard-to-remember type that the compiler
 
 ##### Example
 
-    auto lst = { 1, 2, 3 };   // lst is an initializer list (obviously)
+    auto lst = { 1, 2, 3 };   // lst is an initializer list
     auto x{1};   // x is an int (after correction of the C++14 standard; initializer_list in C++11)
 
 ##### Note
@@ -8269,7 +8353,8 @@ A good optimizer should know about input operations and eliminate the redundant 
 
 ##### Example
 
-Using an `uninitialized` value is a symptom of a problem and not a solution:
+Using an `uninitialized` or sentinel value is a symptom of a problem and not a
+solution:
 
     widget i = uninit;  // bad
     widget j = uninit;
@@ -8287,7 +8372,7 @@ Using an `uninitialized` value is a symptom of a problem and not a solution:
         j = f4();
     }
 
-Now the compiler cannot even simply detect a used-before-set.
+Now the compiler cannot even simply detect a used-before-set.  Further, we've introduced complexity in the state space for widget: which operations are valid on an `unint` widget and which are not?
 
 ##### Note
 
@@ -8315,7 +8400,7 @@ or maybe:
 * Flag every uninitialized variable.
   Don't flag variables of user-defined types with default constructors.
 * Check that an uninitialized buffer is written into *immediately* after declaration.
-  Passing a uninitialized variable as a reference to non-`const` argument can be assumed to be a write into the variable.
+  Passing an uninitialized variable as a reference to non-`const` argument can be assumed to be a write into the variable.
 
 ### <a name="Res-introduce"></a>ES.21: Don't introduce a variable (or constant) before you need to use it
 
@@ -8331,7 +8416,7 @@ Readability. To limit the scope in which the variable can be used.
 
 ##### Enforcement
 
-Flag declaration that distant from their first use.
+Flag declarations that are distant from their first use.
 
 ### <a name="Res-init"></a>ES.22: Don't declare a variable until you have a value to initialize it with
 
@@ -8452,11 +8537,13 @@ Tricky.
 * Don't flag uses of `=` for simple initializers.
 * Look for `=` after `auto` has been seen.
 
-### <a name="Res-unique"></a>ES.24: Use a `unique_ptr<T>` to hold pointers in code that may throw
+### <a name="Res-unique"></a>ES.24: Use a `unique_ptr<T>` to hold pointers
 
 ##### Reason
 
-Using `std::unique_ptr` is the simplest way to avoid leaks. And it is free compared to alternatives
+Using `std::unique_ptr` is the simplest way to avoid leaks. It is reliable, it
+makes the type system do much of the work to validate ownership safety, it
+increases readability, and it has zero or near zero runtime cost.
 
 ##### Example
 
@@ -8475,7 +8562,7 @@ If `leak == true` the object pointed to by `p2` is leaked and the object pointed
 
 Look for raw pointers that are targets of `new`, `malloc()`, or functions that may return such pointers.
 
-### <a name="Res-const"></a>ES.25: Declare an objects `const` or `constexpr` unless you want to modify its value later on
+### <a name="Res-const"></a>ES.25: Declare objects `const` or `constexpr` unless you want to modify its value later on
 
 ##### Reason
 
@@ -8492,7 +8579,9 @@ That way you can't change the value by mistake. That way may offer the compiler 
 
 ##### Enforcement
 
-Look to see if a variable is actually mutated, and flag it if not. Unfortunately, it may be impossible to detect when a non-`const` was not intended to vary.
+Look to see if a variable is actually mutated, and flag it if
+not. Unfortunately, it may be impossible to detect when a non-`const` was not
+*intended* to vary (vs when it merely did not vary).
 
 ### <a name="Res-recycle"></a>ES.26: Don't use a variable for two unrelated purposes
 
@@ -8721,7 +8810,7 @@ Statements control the flow of control (except for function calls and exception 
 
 * Readability.
 * Efficiency: A `switch` compares against constants and is usually better optimized than a series of tests in an `if`-`then`-`else` chain.
-* a `switch` is enables some heuristic consistency checking. For example, has all values of an `enum` been covered? If not, is there a `default`?
+* a `switch` is enables some heuristic consistency checking. For example, have all values of an `enum` been covered? If not, is there a `default`?
 
 ##### Example
 
@@ -8768,7 +8857,7 @@ Readability. Error prevention. Efficiency.
         cout << v[i] + v[i-1] << '\n';
 
     for (int i = 0; i < v.size(); ++i) // possible side-effect: can't be a range-for
-        cout << f(&v[i]) << '\n';
+        cout << f(v, &v[i]) << '\n';
 
     for (int i = 0; i < v.size(); ++i) { // body messes with loop variable: can't be a range-for
         if (i % 2)
@@ -8777,7 +8866,7 @@ Readability. Error prevention. Efficiency.
             cout << v[i] << '\n';
     }
 
-A human or a good static analyzer may determine that there really isn't a side effect on `v` in `f(&v[i])` so that the loop can be rewritten.
+A human or a good static analyzer may determine that there really isn't a side effect on `v` in `f(v, &v[i])` so that the loop can be rewritten.
 
 "Messing with the loop variable" in the body of a loop is typically best avoided.
 
@@ -8787,13 +8876,17 @@ Don't use expensive copies of the loop variable of a range-`for` loop:
 
     for (string s : vs) // ...
 
-This will copy each elements of `vs` into `s`. Better
+This will copy each elements of `vs` into `s`. Better:
 
     for (string& s : vs) // ...
 
+Better still, if the loop variable isn't modified or copied:
+
+    for (const string& s : vs) // ...
+
 ##### Enforcement
 
-Look at loops, if a traditional loop just looks at each element of a sequence, and there are no side-effects on what it does with the elements, rewrite the loop to a for loop.
+Look at loops, if a traditional loop just looks at each element of a sequence, and there are no side-effects on what it does with the elements, rewrite the loop to a ranged-for loop.
 
 ### <a name="Res-for-while"></a>ES.72: Prefer a `for`-statement to a `while`-statement when there is an obvious loop variable
 
@@ -8868,7 +8961,7 @@ is only accessible in the loop body unblocks optimizations such as hoisting, str
 ##### Reason
 
 Readability, avoidance of errors.
-The termination conditions is at the end (where it can be overlooked) and the condition is not checked the first time through. ???
+The termination condition is at the end (where it can be overlooked) and the condition is not checked the first time through. ???
 
 ##### Example
 
@@ -9008,15 +9101,16 @@ Readability.
 ##### Example
 
     for (i = 0; i < max; ++i);   // BAD: the empty statement is easily overlooked
-        v[i] = f(v[i]);
+    v[i] = f(v[i]);
 
     for (auto x : v) {           // better
         // nothing
     }
-
+    v[i] = f(v[i]);
+    
 ##### Enforcement
 
-Flag empty statements that are not blocks and don't "contain" comments.
+Flag empty statements that are not blocks and don't contain comments.
 
 
 ### <a name="Res-loop-counter"></a>ES.86: Avoid modifying loop control variables inside the body of raw for-loops
@@ -9034,6 +9128,14 @@ The loop control up front should enable correct reasoning about what is happenin
     for (int i=0; i<10; ++i) {
         //
         if (/* something */) ++i; // BAD
+        //
+    }
+
+    bool skip=false;
+    for (int i=0; i<10; ++i) {
+        if (skip) { skip = false; continue; }
+        //
+        if (/* something */) skip = true;  // Better: using two variable for two concepts.
         //
     }
 
@@ -9213,9 +9315,9 @@ Unnamed constants embedded in expressions are easily overlooked and often hard t
 
 No, we don't all know that there are 12 months, numbered 1..12, in a year. Better:
 
-    constexpr int last_month = 12;   // months are numbered 1..12
+    constexpr int month_count = 12;   // months are numbered 1..12
 
-    for (int m = first_month; m <= last_month; ++m)   // better
+    for (int m = first_month; m <= month_count; ++m)   // better
         cout << month[m] << '\n';
 
 Better still, don't expose constants:
@@ -9276,7 +9378,10 @@ A good analyzer can detect all narrowing conversions. However, flagging all narr
 
 ##### Reason
 
-Readability. Minimize surprises: `nullptr` cannot be confused with an `int`.
+Readability. Minimize surprises: `nullptr` cannot be confused with an
+`int`. `nullptr` also has a well-specified (very restrictive) type, and thus
+works in more scenarios where type deduction might do the wrong thing on `NULL`
+or `0`.
 
 ##### Example
 
@@ -9310,9 +9415,9 @@ If there is not, maybe there ought to be, rather than applying a local fix (cast
 
 ##### Note
 
-Casts are necessary in a systems programming language.
-For example, how else would we get the address of a device register into a pointer.
-However, casts are seriously overused as well as a major source of errors.
+Casts are necessary in a systems programming language.  For example, how else
+would we get the address of a device register into a pointer?  However, casts
+are seriously overused as well as a major source of errors.
 
 ##### Note
 
@@ -9363,7 +9468,7 @@ It makes a lie out of `const`.
 ##### Note
 
 Usually the reason to "cast away `const`" is to allow the updating of some transient information of an otherwise immutable object.
-Examples are cashing, memorization, and precomputation.
+Examples are caching, memoization, and precomputation.
 Such examples are often handled as well or better using `mutable` or an indirection than with a `const_cast`.
 
 ##### Example
@@ -9378,7 +9483,7 @@ Flag `const_cast`s.
 
 ##### Reason
 
-Constructs that cannot overflow, don't, and usually run faster:
+Constructs that cannot overflow do not overflow (and usually run faster):
 
 ##### Example
 
@@ -9391,7 +9496,7 @@ Constructs that cannot overflow, don't, and usually run faster:
 
 Look for explicit range checks and heuristically suggest alternatives.
 
-### <a name="Res-new"></a>ES.60: Avoid `new` and `delete[]` outside resource management functions
+### <a name="Res-new"></a>ES.60: Avoid `new` and `delete` outside resource management functions
 
 ##### Reason
 
@@ -9607,7 +9712,9 @@ Unsigned types support bit manipulation without surprises from sign bits.
 
     ???
 
-**Exception**: Use signed types if you really want modulo arithmetic.
+**Exception**: Use unsigned types if you really want modulo arithmetic - add
+comments as necessary noting the reliance on overflow behavior, as such code
+is going to be surprising for many programmers.
 
 ##### Enforcement
 
@@ -9623,7 +9730,9 @@ Signed types support modulo arithmetic without surprises from lack of sign bits.
 
     ???
 
-**Exception**: Use unsigned types if you really want bit manipulation.
+**Exception**: Use unsigned types if you really want modulo arithmetic - add
+comments as necessary noting the reliance on overflow behavior, as such code
+is going to be surprising for many programmers.
 
 ##### Enforcement
 
