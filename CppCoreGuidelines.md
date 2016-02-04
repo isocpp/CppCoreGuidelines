@@ -6697,7 +6697,7 @@ Tricky. Requires semantic insight.
 
 ##### Reason
 
-You can overload by defining two different lambdas with the same name.
+You cannot overload by defining two different lambdas with the same name.
 
 ##### Example
 
