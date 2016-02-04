@@ -3152,18 +3152,20 @@ Pointers and references to locals shouldn't outlive their scope. Lambdas that ca
 ##### Example, bad
 
     {
-        int local_variable = 42;
-        background_thread.queue_work([&]{ process(local_variable); });  // Want a reference to local_variable.
-                                                                        // Note, that after program exists this scope, local_variable does no longer exist,
-                                                                        // therefore process() call will have undefined behavior!
+        int local = 42;
+        thread_pool.queue_work([&]{ process(local); });  // Want a reference to local.
+                                                         // Note, that after program exists this scope,
+                                                         // local does no longer exist,
+                                                         // therefore process() call will have undefined behavior!
     }
 
 ##### Example, good
 
     {
-        int local_variable = 42;
-        background_thread.queue_work([=]{ process(local_variable); });  // Want a copy of local_variable.
-                                                                        // Since a copy of local_variable is made, it will be available at all times for the call.
+        int local = 42;
+        thread_pool.queue_work([=]{ process(local); });  // Want a copy of local.
+                                                         // Since a copy of local is made, it will be
+                                                         // available at all times for the call.
     }
 
 ##### Enforcement
