@@ -3153,10 +3153,10 @@ Pointers and references to locals shouldn't outlive their scope. Lambdas that ca
 
     {
         int local = 42;
-        thread_pool.queue_work([&]{ process(local); });  // Want a reference to local.
-                                                         // Note, that after program exists this scope,
-                                                         // local does no longer exist,
-                                                         // therefore process() call will have undefined behavior!
+        thread_pool.queue_work([&]{ process(local); }); // Want a reference to local.
+                                                        // Note, that after program exists this scope,
+                                                        // local does no longer exist, therefore
+                                                        // process() call will have undefined behavior!
     }
 
 ##### Example, good
