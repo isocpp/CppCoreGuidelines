@@ -5325,7 +5325,7 @@ Note that calling a specific explicitly qualified function is not a virtual call
 
 ##### Note
 
-There is nothing inherently wrong with calling virtual functions constructors and destructors.
+There is nothing inherently wrong with calling virtual functions from constructors and destructors.
 The semantics of such calls is type safe.
 However, experience shows that such calls are rarely needed, easily confuse maintainers, and become a source of errors when used by novices.
 
