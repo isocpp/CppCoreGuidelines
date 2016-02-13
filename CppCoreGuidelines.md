@@ -5661,16 +5661,40 @@ not using this (over)general interface in favor of a particular interface found 
 
 ##### Reason
 
-A class is more stable (less brittle) if it does not contain data. Interfaces should normally be composed entirely of public pure virtual functions and a default/empty virtual destructor.
+A class is more stable (less brittle) if it does not contain data.
+Interfaces should normally be composed entirely of public pure virtual functions and a default/empty virtual destructor.
 
 ##### Example
 
     class my_interface {
     public:
         // ...only pure virtual functions here ...
-        virtual my_interface() {}   // or =default
+        virtual ~my_interface() {}   // or =default
     };
+    
+##### Example, bad
 
+    class Goof {
+    public:
+        // ...only pure virtual functions here ...
+        // no virtual destructor
+    };
+    
+    class Derived : public Goof {
+        string s;
+        // ...
+    };
+    
+    void use()
+    {
+        unique_ptr<Goof> p {new Derived{"here we go"}};
+        f(p.get()); // use Derived through the Goof interface
+        g(p.get()); // use Derived through the Goof interface
+     } // leak
+
+The `Derived` is `delete`d through its `Goof` interface, so its `string` is leaked.
+Give `Goof` a virtual destructor and all is well.
+    
 ##### Enforcement
 
 * Warn on any class that contains data members and also has an overridable (non-`final`) virtual function.
@@ -5683,7 +5707,27 @@ Such as on an ABI (link) boundary.
 
 ##### Example
 
-    ???
+    struct Device {
+        virtual void write(span<const char> outbuf) = 0;
+        virtual void read(span<char> inbuf) = 0;
+    };
+    
+    class D1 : public Device {
+        // ... data ...
+        
+        void write(span<const char> outbuf) override;
+        void read(span<char> inbuf) override;
+    };
+    
+    class D2 : public Device {
+        // ... differnt data ...
+        
+        void write(span<const char> outbuf) override;
+        void read(span<char> inbuf) override;
+    };
+    
+A user can now use `D1`s and `D2`s interrchangeably through the interface provided by `Device`.
+Furthermore, we can update `D1` and `D2` in a ways that are not binarily compatible with older versions as long as all access goes through `Device`.
 
 ##### Enforcement
 
