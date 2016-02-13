@@ -10211,8 +10211,10 @@ Error-handling rule summary:
 * [E.18: Minimize the use of explicit `try`/`catch`](#Re-catch)
 * [E.19: Use a `final_action` object to express cleanup if no suitable resource handle is available](#Re-finally)
 
-* [E.25: ??? What to do in programs where exceptions cannot be thrown](#Re-no-throw)
-* ???
+* [E.25: If you can't throw exceptions, simulate RAII for resource management](Re-no-throw-raii)
+* [E.26: If you can't throw exceptions, consider failing fast](#Re-no-throw-crash)
+* [E.27: If you can't throw exceptions, use error codes systematically](#Re-no-throw-codes)
+* [E.28: Avoid error handling based on global state (e.g. `errno`)](#Re-no-throw)
 
 ### <a name="Re-design"></a>E.1: Develop an error-handling strategy early in a design
 
@@ -10278,6 +10280,10 @@ Don't use a `throw` as simply an alternative way of returning a value from a fun
 **See also**: [RAII](#Re-raii)
 
 **See also**: [discussion](#Sd-noexcept)
+
+##### Note
+
+Before deciding that you cannot afford or don't like exception-based error handling, have a look at the [alternatives](#Re-no-throw-raii).
 
 ### <a name="Re-errors"></a>E.3: Use exceptions for error handling only
 
@@ -10677,20 +10683,48 @@ Let cleanup actions on the unwinding path be handled by [RAII](#Re-raii).
 ##### Reason
 
  `try`/`catch` is verbose and non-trivial uses error-prone.
+ `try`/`catch` can be a sign of unsystematic and/or low-level resource management or error handling.
 
-##### Example
+##### Example, Bad
 
-    ???
+    void f(zstring s)
+    {
+        Gadget* p;
+        try {
+            p = new Gadget(s);
+            // ...
+        }
+        catch (Gadget_construction_failure) {
+            delete p;
+            throw;
+        }
+    }
+    
+This code is messy.
+There could be a leak from the naked pointer in the `try` block.
+Not all exceptiones are handled.
+`deleting` an object that failed to construct is almost certainly a mistake.
+Better:
+
+    void f2(zstring s)
+    {
+        Gadget g {s};
+    }
+    
+##### Alternatives
+
+* proper resource handles and [RAII](#Re-raii)
+* [`finally`](#Re-finally)
 
 ##### Enforcement
 
-???
+??? hard, needs a heuristic
 
 ### <a name="Re-finally"></a>E.19: Use a `final_action` object to express cleanup if no suitable resource handle is available
 
 ##### Reason
 
- `finally` is less verbose and harder to get wrong than `try`/`catch`.
+`finally` is less verbose and harder to get wrong than `try`/`catch`.
 
 ##### Example
 
@@ -10701,14 +10735,289 @@ Let cleanup actions on the unwinding path be handled by [RAII](#Re-raii).
         // ...
     }
 
-**See also** ????
+##### Note
 
-### <a name="Re-no-throw"></a>E.25: ??? What to do in programs where exceptions cannot be thrown
+`finally` is not as messy as `try`/`catch`, but it is still ad-hoc.
+Prefer [proper resource management objects](#Re-raii).
+
+### <a name="Re-no-throw-raii"></a>E.25: If you can't throw exceptions, simulate RAII for resource management
+
+##### Reason
+
+Even without exceptions, [RAII](#Re-raii) is usually the best and most systematic way of dealing with resources.
 
 ##### Note
 
-??? mostly, you can afford exceptions and code gets simpler with exceptions ???
+Error handling using exceptions is the only complete and systematic way of handling non-local errors in C++.
+In particular, non-intrusively signalling failure to construct an object requires an exception.
+Signalling errors in a way that cannot be ignored requires exceptions.
+If you can't use exceptions, simulate their use as best you can.
+
+A lot of fear of exceptions is misguided.
+When used for exceptional circumstances in code that is not littered with pointers and complicated control structures,
+exception handling is almost always affordable (in time and space) and almost always leads to better code.
+This, of course, assumes a good implementation of the exception handling mechanisms, which is not available on all systems.
+There are also cases where the problems above do not apply, but exceptions cannot be used for other reasons.
+Some hard real-time systems are an example: An operation has to be completed within a fixed time with an error or a correct answer.
+In the absence of appropriate time estimation tools, this is hard to guarantee for exceptions.
+Such systems (e.g. flight control software) typically also ban the use of dynamic (heap) memory. 
+
+So, the primary guideline for error handling is "use exceptions and [RAII](#Re-raii)."
+This section deals with the cases where you either do not have an efficient implementation or exceptions
+or have such a rat's nest of old-style code
+(e.g., lots of pointers, ill-defined ownership, and lots of unsystematic error handling based on tests of errors codes)
+that it is infeasible to introduce simple and systematic exception handling.
+
+Before condemning exceptions or complaining too much about their cost, consider examples of the use of [error codes](#Re-no-throw-codes).
+
+##### Example
+
+Assume you wanted to write
+
+    void func(int n)
+    {
+        Gadget g(n);
+        // ...
+    }
+
+If the `gadget` isn't correctly constructed, `func` exits with an exception.
+If we cannot throw an exception, we can simulate this RAII style of resource handling by adding a `valid()` member function to `Gadget`:
+
+    error_indicator func(int n)
+    {
+        Gadget g(n);
+        if (!g.valid()) return gadget_construction_error;
+        // ...
+        return 0;   // zero indicates "good"
+    }
+    
+The problem is of course that the caller now have to remember to test the return value.
+
 **See also**: [Discussion](#Sd-???).
+
+##### Enforcement
+
+Possible (only) for specific versions of this idea: e.g., test for systematic test of `valid()` after resource handle construction
+
+
+## <a name="Re-no-throw-crash"></a>E.26: If you can't throw exceptions, consider failing fast
+
+##### Reason
+
+If you can't do a good job at recovering, at least you can get out before too much consequential damage is done.
+
+See also [Simulating RAII](#Re-no-throw-raii).
+
+##### Note
+
+If you cannot be systematic about error handling, consider "crashing" as a response to any error that cannot be handled locally.
+That is, if you cannot recover from an error in the context of the function that detected it, call `abort()`, `quick_exit()`,
+or a similar function that will trigger some sort of system restart.
+
+In systems where you have lots of processes and/or lots of computers, you need to expect and handle fatal crashes anyway,
+say from hardware failures.
+In such cases, "crashing" is simply leaving error handling to the next level of the system.
+
+##### Example
+
+    void do_something(int n)
+    {
+           // ...
+           p = static_cast<X*>(malloc(n,X));
+           if (p==nullptr) abort();     // abort if memory is exhausted
+           // ...
+     }
+
+Most systems cannot handle memory exhaustion gracefully anyway. This is roughly equivalent to
+
+    void do_something(Int n)
+    {
+           // ...
+           p = new X[n];    // throw if memory is exhausted (by default, terminate)
+           // ...
+     }
+
+Typically, it is a good idea to log the reason for the "crash" before exiting.
+
+##### Enforcement
+
+Awkward
+
+## <a name="Re-no-throw-codes"></a>E.27: If you can't throw exceptions, use error codes systematically
+
+##### Reason
+
+Systematic use of any error-handling strategy minimizes the chance of forgetting to handle an error.
+
+See also [Simulating RAII](#Re-no-throw-raii).
+
+##### Note
+
+There are several issues to be addressed:
+
+* how do you transmit an error indicator from out of a function?
+* how do you release all resources from a function before doing an error exit?
+* What do you use as an error indicator?
+
+In general, returning an error indicator implies returning two values: The result and an error indicator.
+The error indicator can be part of the object, e.g. an object can have a `valid()` indicator
+or a pair of values can be returned.
+
+##### Example
+
+    Gadget make_gadget(int n)
+    {
+        // ...
+    }
+    
+    void user()
+    {
+        Gadget g = make_gadget(17);
+        if (!g.valid()) {
+                // error handling
+        }
+        // ...
+    }
+    
+This approach fits with [simulated RAII resource management](#Re-no-throw-raii).
+The `valid()` function could return an `error_indicator` (e.g. a member of an `error_indicator` enumeration).
+
+##### Example
+
+What if we cannot or do not want to modify the `Gadget` type?
+In that case, we must return a pair of values.
+For example:
+
+    std::pair<Gadget,error_indicator> make_gadget(int n)
+    {
+        // ...
+    }
+    
+    void user()
+    {
+        auto r = make_gadget(17);
+        if (!r.second) {
+                // error handling
+        }
+        Gadget& g = r.first; 
+        // ...
+    }
+
+As shown, `std::pair` is a possible return type.
+Some people prefer a specific type.
+For example:
+
+    Gval make_gadget(int n)
+    {
+        // ...
+    }
+    
+    void user()
+    {
+        auto r = make_gadget(17);
+        if (!r.err) {
+                // error handling
+        }
+        Gadget& g = r.val; 
+        // ...
+    }
+
+One reason to prefer a specific return type is to have names for its members, rather than the somewhat cryptic `first` and `second`
+and to avoid confusion with other uses of `std::pair`.
+
+###### Example
+
+In general, you must clean up before an eror exit.
+This can be messy:
+
+    std::pair<int,error_indicator> user()
+    {
+        Gadget g1 = make_gadget(17);
+        if (!g1.valid()) {
+                return {0,g1_error};
+        }
+        
+        Gadget g2 = make_gadget(17);
+        if (!g2.valid()) {
+                cleanup(g1);
+                return {0,g2_error};
+        }
+        
+        // ...
+        
+        if (all_foobar(g1,g2)) {
+            cleanup(g1);
+            cleanup(g2);
+            return {0,foobar_error};
+        // ...
+        
+        cleanup(g1);
+        cleanup(g2);
+        return {res,0};
+    }
+
+Simulating RAII can be non-trivial, especially in functions with multiple resources and multiple possible errors.
+A not uncommon technique is to gather cleanup at the end of the function to avoid repetittion:
+
+    std::pair<int,error_indicator> user()
+    {
+        error_indicator err = 0;
+        
+        Gadget g1 = make_gadget(17);
+        if (!g1.valid()) {
+                err = g2_error;
+                goto exit;
+        }
+        
+        Gadget g2 = make_gadget(17);
+        if (!g2.valid()) {
+                err = g2_error;
+                goto exit;
+        }
+        
+        if (all_foobar(g1,g2)) {
+            err = foobar_error;
+            goto exit;
+        }
+        // ...
+  exit:      
+        if (g1.valid()) cleanup(g1);
+        if (g1.valid()) cleanup(g2);
+        return {res,err};
+    }
+
+The larger the function, the more tempting this technique becomes.
+Aso, the larger the program becomes the harder it is to apply an error-indicator-based error handling strategy systematically.
+
+We [prefer exception-based error handling](#Re-throw) and recommend [keeping functions short](#Rf-single).
+
+**See also**: [Discussion](#Sd-???).
+
+##### Enforcement
+
+Awkward.
+
+## <a name="Re-no-throw"></a>E.28: Avoid error handling based on global state (e.g. `errno`)
+
+##### Reason
+
+Global state is hard to manage and it is easy to forget to check it.
+When did you last test the return value of `printf()`?
+
+See also [Simulating RAII](#Re-no-throw-raii).
+
+##### Example, bad
+
+    ???
+    
+##### Note
+
+C-stye error handling is based on the global variable `errno`, so it is essentially impossible to avoid this style completely.
+
+##### Enforcement
+
+Awkward.
+
 
 # <a name="S-const"></a>Con: Constants and Immutability
 
