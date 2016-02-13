@@ -343,6 +343,7 @@ Philosophy rules summary:
 * [P.7: Catch run-time errors early](#Rp-early)
 * [P.8: Don't leak any resources](#Rp-leak)
 * [P.9: Don't waste time or space](#Rp-waste)
+* [P.10: Prefer immutable data to mutable data](#Rp-mutable)
 
 Philosophical rules are generally not mechanically checkable.
 However, individual rules reflecting these philosophical themes are.
@@ -927,6 +928,19 @@ After that, we can look at waste related to algorithms and requirements, but tha
 ##### Enforcement
 
 Many more specific rules aim at the overall goals of simplicity and elimination of gratuitous waste.
+
+### <a name="Rp-mutable"></a>P.10: Prefer immutable data to mutable data
+
+##### Reason
+
+It is easier to reason about constants than about variables.
+Sumething immutable cannot change unexpectedly.
+Sometimes immutability enables better optimization.
+You can't have a data race on a constant.
+
+See [Con: Constants and Immutability](#S-const)
+
+
 
 # <a name="S-interfaces"></a>I: Interfaces
 
@@ -10715,16 +10729,29 @@ Constant rule summary:
 ##### Reason
 
 Immutable objects are easier to reason about, so make object non-`const` only when there is a need to change their value.
+Prevents accidental or hard-to-notice change of value.
 
 ##### Example
 
-    for (
-    container
-    ???
+    for (const string& s : c) cout << s << '\n';    // just reading: const
+    
+    for (string& s : c) cout << s << '\n';    // BAD: just reading
+    
+    for (string& s: c) cin>>s;  // needs to write: non-const
+ 
+##### Exception
+
+Function arguments are rarely mutated, but also rarely declared const.
+To avoid confusion and lots of false positives, don't enforce this rule for function arguments.
+
+    void f(const char*const p); // pedantic
+    void g(const int i);        // pedantic
+
+Note that function parameter is a local variable so changes to it are local.
 
 ##### Enforcement
 
-???
+* Flag non-const variables that are not modified (except for parameters to avoid many false positives)
 
 ### <a name="Rconst-fct"></a>Con.2: By default, make member functions `const`
 
@@ -10759,39 +10786,64 @@ This gives a more precise statement of design intent, better readability, more e
 
 ##### Reason
 
- ???
+ To avoid a called function unexpectedly changing the value.
+ It's far easier to reason about programs when called functions don't modify state.
 
 ##### Example
 
-    ???
+    void f(char* p);        // does f modify *p? (assume it does)
+    void g(const char* p);  // g does not modify *p
+
+##### Note
+
+It is not inherently bad to pass a pointer or reference to non-const,
+but that should be done only when the called function is supposed to modify the object.
+
+##### Note
+
+[Do not cast away `const`](#Res-casts-const).
 
 ##### Enforcement
 
-???
+* flag function that does not modify an object passed by  pointer or reference to non-cost
+* flag a function that (using a cast) modifies an object passed by pointer or reference to const
 
 ### <a name="Rconst-const"></a>Con.4: Use `const` to define objects with values that do not change after construction
 
 ##### Reason
 
- ???
+ Prevent surprises from unexpectedly changed object values.
 
 ##### Example
 
-    ???
+    void f()
+    {
+        int x = 7;
+        const int y = 9;
+        
+        for (;;) {
+            // ...
+        }
+        // ...
+    }
+    
+As `x` is not const, we must assume that it is modified somewhere in the loop.
 
 ##### Enforcement
 
-???
+* Flag unmodified non-const variables.
 
 ### <a name="Rconst-constexpr"></a>Con.5: Use `constexpr` for values that can be computed at compile time
 
 ##### Reason
 
- ???
+Better performance, better compile-time checking, guaranteed compile-time evaluation, no possibility of race conditions.
 
 ##### Example
 
-    ???
+    double x = f(2);            // possible run-time evaluation
+    const double x = f(2);      // possible run-time evaluation
+    constexpr double y = f(2);  // error unless f(2) can be evaluated at compile time
 
 ##### Note
 
@@ -10799,7 +10851,7 @@ See F.4.
 
 ##### Enforcement
 
-???
+* Flag `const` definitions with constant expression initializers.
 
 # <a name="S-templates"></a>T: Templates and generic programming
 
