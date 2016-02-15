@@ -5586,7 +5586,7 @@ Class hierarchy rule summary:
 Designing rules for classes in a hierarchy summary:
 
 * [C.126: An abstract class typically doesn't need a constructor](#Rh-abstract-ctor)
-* [C.127: A class with a virtual function should have a virtual destructor](#Rh-dtor)
+* [C.127: A class with a virtual function should have a virtual or protected destructor](#Rh-dtor)
 * [C.128: Use `override` to make overriding explicit in large class hierarchies](#Rh-override)
 * [C.129: When designing a class hierarchy, distinguish between implementation inheritance and interface inheritance](#Rh-kind)
 * [C.130: Redefine or prohibit copying for a base class; prefer a virtual `clone` function instead](#Rh-copy)
@@ -5755,16 +5755,17 @@ An abstract class typically does not have any data for a constructor to initiali
 
 Flag abstract classes with constructors.
 
-### <a name="Rh-dtor"></a>C.127: A class with a virtual function should have a virtual destructor
+### <a name="Rh-dtor"></a>C.127: A class with a virtual function should have a virtual or protected destructor
 
 ##### Reason
 
-A class with a virtual function is usually (and in general) used via a pointer to base, including that the last user has to call delete on a pointer to base, often via a smart pointer to base.
+A class with a virtual function is usually (and in general) used via a pointer to base. Usually, the last user has to call delete on a pointer to base, often via a smart pointer to base, so the destructor should be public and virtual. Less commonly, if deletion through a pointer to base is not intended to be supported, the destructor should be protected and nonvirtual; see [C.35](#Rc-dtor-virtual).
 
 ##### Example, bad
 
     struct B {
-        // ... no destructor ...
+        virtual int f() = 0;
+        // ... no user-written destructor, defaults to public nonvirtual ...
     };
 
     struct D : B {   // bad: class with a resource derived from a class without a virtual destructor
@@ -5773,9 +5774,9 @@ A class with a virtual function is usually (and in general) used via a pointer t
 
     void use()
     {
-        B* p = new D;
-        delete p;   // leak the string
-    }
+        auto p = make_unique<D>();
+        // ...
+    } // calls B::~B only, leaks the string
 
 ##### Note
 
@@ -5783,7 +5784,7 @@ There are people who don't follow this rule because they plan to use a class onl
 
 ##### Enforcement
 
-* Flag a class with a virtual function and no virtual destructor. Note that this rule needs only be enforced for the first (base) class in which it occurs, derived classes inherit what they need. This flags the place where the problem arises, but can give false positives.
+* A class with any virtual functions should have a destructor that is either public and virtual or else protected and nonvirtual.
 * Flag `delete` of a class with a virtual function but no virtual destructor.
 
 ### <a name="Rh-override"></a>C.128: Virtual functions should specify exactly one of `virtual`, `override`, or `final`
