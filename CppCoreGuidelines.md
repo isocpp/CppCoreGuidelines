@@ -1,6 +1,6 @@
 # <a name="main"></a>C++ Core Guidelines
 
-February 2, 2016
+February 15, 2016
 
 Editors:
 
@@ -11918,10 +11918,13 @@ In general, passing function objects gives better performance than passing point
     bool greater_than_7(double x) { return x>7; }
     auto x = find_if(v, greater_than_7);               // pointer to function: inflexible
     auto y = find_if(v, [](double x) { return x>7; }); // function object: carries the needed data
-    auto y = find_if(v, Greater_than<double>(7));      // function object: carries the needed data
+    auto z = find_if(v, Greater_than<double>(7));      // function object: carries the needed data
 
-    ??? these lambdas are crying out for auto parameters -- any objection to making the change?
+You can, of course, gneralize those functions using `auto` or (when and where available) concepts. For example:
 
+    auto y1 = find_if(v, [](Ordered x) { return x>7; }); // reruire an ordered type
+    auto z1 = find_if(v, [](auto x) { return x>7; });    // hope that the type has a >
+    
 ##### Note
 
 Lambdas generate function objects.
@@ -11949,13 +11952,64 @@ The issue here is whether to require the minimal set of operations for a templat
 (e.g., `==` but not `!=` or `+` but not `+=`).
 The rule supports the view that a concept should reflect a (mathematically) coherent set of operations.
 
+##### Example, bad
+
+    class Minimal {
+        // ...
+    };
+    
+    bool operator==(const Minimal&,const Minimal&);
+    bool operator<(const Minimal&,const Minimal&);
+    Minimal operator+(const Minimal&, const Minimal&);
+    // no other operators
+    
+    void f(const Minimal& x, const Minimal& y)
+    {
+        if (!(x==y) { /* ... */ }    // OK
+        if (x!=y) { /* ... */ }      //surprise! error
+        
+        while (!(x<y)) { /* ... */ }    // OK
+        while (x>=y) { /* ... */ }      //surprise! error
+        
+        x = x+y;        // OK
+        x += y;      // surprise! error
+    }
+ 
+This is minimal, but surprising and constraining for users.
+It could even be less efficient.
+
 ##### Example
 
-    ???
+    class Convenient {
+        // ...
+    };
+    
+    bool operator==(const Convenient&,const Convenient&);
+    bool operator<(const Convenient&,const Convenient&);
+    // ... and the other comparison operators ...
+    Minimal operator+(const Convenient&, const Convenient&);
+    // .. and the other arithmetic operators ...
+    
+    void f(const Convenient& x, const Convenient& y)
+    {
+        if (!(x==y) { /* ... */ }    // OK
+        if (x!=y) { /* ... */ }      //OK
+        
+        while (!(x<y)) { /* ... */ }    // OK
+        while (x>=y) { /* ... */ }      //OK
+        
+        x = x+y;     // OK
+        x += y;      // OK
+    }
+ 
+It can be a nuisance to define all operators, but not hard.
+Hopefully, C++17 will give you comparison operators by default.
+
 
 ##### Enforcement
 
-???
+* Flag classes the support "odd" subsets of a set of operators, e.g., `==` but not `!=` or `+` but not `-`.
+Yes, `std::string` is "odd", but it's too late to change that.
 
 ### <a name="Rt-alias"></a>T.42: Use template aliases to simplify notation and hide implementation details
 
@@ -12042,29 +12096,74 @@ Flag uses where an explicitly specialized type exactly matches the types of the 
 
 ##### Reason
 
- ???
+ Readability.
+ Preventing surprises and errors.
+ Most uses support that anyway.
 
 ##### Example
 
-    ???
+    class X {
+            // ...
+    public:
+        explicit X(int);
+        X(const X&);            // copy
+        X operator=(const X&);
+        X(X&&);                 // move
+        X& operator=(X&&);
+        ~X();
+        // ... no moreconstructors ...
+    };
+    
+    X x {1};    // fine
+    X y = x;      // fine
+    std::vector<X> v(10); // error: no default constructor
+
+##### Note
+
+Semiregular requires default constructible.
 
 ##### Enforcement
 
-???
+* Flag types that are not at least `SemiRegular`.
 
 ### <a name="Rt-visible"></a>T.47: Avoid highly visible unconstrained templates with common names
 
 ##### Reason
 
- ???
+ An unconstrained template argument is a perfect match for anything so such a template can be preferred over more specific types that require minor conversions.
+ This is particularly annoying/dangerous when ADL is used.
+ Common names make this problem more likely.
 
 ##### Example
 
-    ???
+    namespace Bad {
+	   struct S { int m; };
+	   template<typename T1, typename T2>
+	   bool operator==(T1, T2) { cout << "Bad\n"; return true; }
+    }
+
+    namespace T0 {
+	   bool operator==(int, Bad::S) { cout << "T0\n"; return true; }  // compate to int
+    
+	   void test()
+	   {
+		  Bad::S bad{ 1 };
+		  vector<int> v(10);
+		  bool b = 1==bad;
+		  bool b2 = v.size()==bad;
+	   }
+    }
+
+This prints `T0` and `Bad`.
+
+Now the `==` in `Bad` was designed to cause trouble, but would you have spotted the problem in real code?
+The problem is that `v.size()` returns an `unsigned` integer so that a conversion is needed to call the local `==`;
+the `==` in `Bad` requires no conversions.
+Realistic types, such as the standard library iterators can be made to exhibit similar anti-social tendencies.
 
 ##### Enforcement
 
-???
+????
 
 ### <a name="Rt-concept-def"></a>T.48: If your compiler does not support concepts, fake them with `enable_if`
 
@@ -12294,6 +12393,35 @@ When `concept`s become available such alternatives can be distinguished directly
 ##### Enforcement
 
 ???
+
+### <a name="Rt-specialization2"></a>T.67: Use specialization to provide alternative implementations for irregular types
+
+##### Reason
+
+ ???
+
+##### Example
+
+    ???
+
+##### Enforcement
+
+???
+
+### <a name="Rt-cast"></a>T.68: Use `{}` rather than `()` within templates to avoid ambiguities
+
+##### Reason
+
+ ???
+
+##### Example
+
+    ???
+
+##### Enforcement
+
+???
+
 
 ### <a name="Rt-customization"></a>T.69: Inside a template, don't make an unqualified nonmember function call unless you intend it to be a customization point
 
