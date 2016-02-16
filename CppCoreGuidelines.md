@@ -9894,7 +9894,7 @@ This also applies to `%`.
 This section contains rules for people who need high performance or low-latency.
 That is, these are rules that relate to how to use as little time and as few resources as possible to achieve a task in a predictably short time.
 The rules in this section are more restrictive and intrusive than what is needed for many (most) applications.
-Do not blindly try to follow them in general, code because achieving the goals of low latency requires extra work.
+Do not blindly try to follow them in general code: achieving the goals of low latency requires extra work.
 
 Performance rule summary:
 
