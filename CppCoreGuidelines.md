@@ -9891,10 +9891,10 @@ This also applies to `%`.
 
 ??? should this section be in the main guide???
 
-This section contains rules for people who needs high performance or low-latency.
-That is, rules that relates to how to use as little time and as few resources as possible to achieve a task in a predictably short time.
+This section contains rules for people who need high performance or low-latency.
+That is, these are rules that relate to how to use as little time and as few resources as possible to achieve a task in a predictably short time.
 The rules in this section are more restrictive and intrusive than what is needed for many (most) applications.
-Do not blindly try to follow them in general code because achieving the goals of low latency requires extra work.
+Do not blindly try to follow them in general, code because achieving the goals of low latency requires extra work.
 
 Performance rule summary:
 
@@ -10086,7 +10086,30 @@ Performance is very sensitive to cache performance and cache algorithms favor si
 
 # <a name="S-concurrency"></a>CP: Concurrency and Parallelism
 
-???
+The core component of concurrent and parallel programming is the thread. Threads
+allow you to run multiple instances of your program independently, while sharing
+the same memory. Concurrent programming is tricky for many reasons, most
+importantly that it is undefined behavior to read data in one thread after it
+was written by another thread, if there is no proper synchronization between
+those threads. Making existing single-threaded code execute concurrently can be
+as trivial as adding `std::async` or `std::thread` strategically, or it can be
+necessitate a full rewrite, depending on whether the original code was written
+in a thread-friendly way.
+
+The concurrency/parallelism rules in this document are designed with three goals
+in mind:
+* To help you write code that is amenable to being used in a threaded
+  environment
+* To show clean, safe ways to use the threading primitives offered by the
+  standard library
+* To offer guidance on what to do when concurrency and parallelism aren't giving
+  you the performance gains you need
+
+It is also important to note that concurrency in C++ is an unfinished
+story. C++11 introduced many core concurrency primitives, C++14 improved on
+them, and it seems that there is much interest in making the writing of
+concurrent programs in C++ even easier. We expect some of the library-related
+guidance here to change significantly over time.
 
 Concurrency and parallelism rule summary:
 
@@ -10151,6 +10174,26 @@ Unless you do, nothing is guaranteed to work and subtle errors will persist.
 
 In a nutshell, if two threads can access the same named object concurrently (without synchronization), and at least one is a writer (performing a non-`const` operation), you have a data race. For further information of how to use synchronization well to eliminate data races, please consult a good book about concurrency.
 
+##### Example
+
+There are many examples of data races that exist, some of which are running in
+production software at this very moment. One very simple example:
+
+    int get_id() {
+      static int id = 1;
+      return i++;
+    }
+    
+The increment here is an example of a data race. This can go wrong in many ways,
+including:
+
+* Thread A loads the value of `id`, the OS context switches A out for some
+  period, during which other threads create hundreds of IDs. Thread A is then
+  allowed to run again, and `id` is written back to that location as A's read of
+  `id` plus one.
+* Thread A and B load `id` and increment it simultaneously.  They both get the
+  same ID.
+
 ##### Enforcement
 
 Some is possible, do at least something.
@@ -10171,7 +10214,14 @@ A lot of people, myself included, like to experiment with `std::memory_order`, b
 Even vendors mess this up: Microsoft had to fix their `shared_ptr` (weak refcount decrement wasn't synchronized-with the destructor, if I recall correctly, although it was only a problem on ARM, not Intel)
 and everyone (gcc, clang, Microsoft, and Intel) had to fix their `compare_exchange_*` this year, after an implementation bug caused losses to some finance company and they were kind enough to let the community know.
 
-It should definitely be mentioned that `volatile` does not provide atomicity, does not synchronize between threads, and does not prevent instruction reordering (neither compiler nor hardware), and simply has nothing to do with concurrency.
+It’s worth noting that `volatile` in C++ is not related to concurrency or
+parallelism in any way. Some languages have chosen to give it threading-related
+semantics, so programmers familiar with such languages tend to think that the
+meaning is similar. Sadly, these programmers are mistaken. The C++ standard
+provides some ordering guarantees on volatile operations, but these guarantees
+are far fewer and weaker than the guarantees on threading primitives. Therefore,
+using `volatile` in place of threading primitives in portable code is both
+unsafe and highly discouraged.
 
     if (source->pool != YARROW_FAST_POOL && source->pool != YARROW_SLOW_POOL) {
         THROW(YARROW_BAD_SOURCE);
@@ -10201,7 +10251,16 @@ SIMD rule summary:
 
 ## <a name="SScp-free"></a>CP.free: Lock-free programming
 
-???
+Lock-free programming is writing concurrent code without the use of
+locks. Because there are no locks, lock-free algorithms tend to be far more
+subtle and error-prone than their locked counterparts. Many operations that are
+trivial with locking (e.g. deleting a link from a shared linked list) are much
+harder without them (following the example, how do you know you’re the *only*
+thread inspecting that particular link, so you can free it?)
+
+Because of the added difficulty, expert-level knowledge of many subsystems,
+including the hardware your program is running on, is generally required in
+order to write an efficient and correct lock-free algorithm.
 
 Lock-free programming rule summary:
 
