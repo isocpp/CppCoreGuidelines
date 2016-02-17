@@ -9394,7 +9394,7 @@ Flag literals in code. Give a pass to `0`, `1`, `nullptr`, `\n`, `""`, and other
 
 A narrowing conversion destroys information, often unexpectedly so.
 
-##### Example
+##### Example, bad
 
 A key example is basic narrowing:
 
@@ -9512,7 +9512,16 @@ The named casts are:
 
 ##### Note
 
-???
+When converting between types with no information loss (e.g. from float to
+double or int64 from int32), brace initialization may be used instead.
+
+    double d{some_float};
+    int64_t i{some_int32};
+
+This makes it clear that the type conversion was intended and also prevents
+conversions between types that might result in loss of precision. (It is a
+compilation error to try to initialize a float from a double in this fashion,
+for example.) 
 
 ##### Enforcement
 
