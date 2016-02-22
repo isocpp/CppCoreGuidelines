@@ -9564,33 +9564,6 @@ Constructs that cannot overflow do not overflow (and usually run faster):
 
 Look for explicit range checks and heuristically suggest alternatives.
 
-### <a name="Res-new"></a>ES.60: Avoid `new` and `delete` outside resource management functions
-
-##### Reason
-
-Direct resource management in application code is error-prone and tedious.
-
-##### Note
-
-also known as "No naked `new`!"
-
-##### Example, bad
-
-    void f(int n)
-    {
-        auto p = new X[n];   // n default constructed Xs
-        // ...
-        delete[] p;
-    }
-
-There can be code in the `...` part that causes the `delete` never to happen.
-
-**See also**: [R: Resource management](#S-resource).
-
-##### Enforcement
-
-Flag naked `new`s and naked `delete`s.
-
 
 ### <a name="Res-move"></a>ES.56: Write `std::move()` only when you need to explicitly move an object to another scope
 
@@ -9698,6 +9671,34 @@ The language already knows that a returned value is a temporary object that can 
 * Flag when `std::forward` is applied to an rvalue reference (`X&&` where `X` is a concrete type). Use `std::move` instead.
 * Flag when `std::forward` is applied to other than a forwarding reference. (More general case of the previous rule to cover the non-moving cases.)
 * Flag when an object is potentially moved from and the next operation is a `const` operation; there should first be an intervening non-`const` operation, ideally assignment, to first reset the object's value.
+
+
+### <a name="Res-new"></a>ES.60: Avoid `new` and `delete` outside resource management functions
+
+##### Reason
+
+Direct resource management in application code is error-prone and tedious.
+
+##### Note
+
+also known as "No naked `new`!"
+
+##### Example, bad
+
+    void f(int n)
+    {
+        auto p = new X[n];   // n default constructed Xs
+        // ...
+        delete[] p;
+    }
+
+There can be code in the `...` part that causes the `delete` never to happen.
+
+**See also**: [R: Resource management](#S-resource).
+
+##### Enforcement
+
+Flag naked `new`s and naked `delete`s.
 
 
 ### <a name="Res-del"></a>ES.61: delete arrays using `delete[]` and non-arrays using `delete`
