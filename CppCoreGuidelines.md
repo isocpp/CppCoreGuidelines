@@ -3154,8 +3154,8 @@ Pointers and references to locals shouldn't outlive their scope. Lambdas that ca
     {
         int local = 42;
         thread_pool.queue_work([&]{ process(local); }); // Want a reference to local.
-                                                        // Note, that after program exists this scope,
-                                                        // local does no longer exist, therefore
+                                                        // Note, that after program exits this scope,
+                                                        // local no longer exists, therefore
                                                         // process() call will have undefined behavior!
     }
 
@@ -3170,8 +3170,8 @@ Pointers and references to locals shouldn't outlive their scope. Lambdas that ca
 
 ##### Enforcement
 
-* **Easy:** Warn, when capture-list contains a reference to a locally declared variable
-* **Medium:** Flag, when capture-list contains a reference to a locally declared variable and the lambda is passed to a non-`const` and non-local context
+* (Simple) Warn when capture-list contains a reference to a locally declared variable
+* (Complex) Flag when capture-list contains a reference to a locally declared variable and the lambda is passed to a non-`const` and non-local context
 
 ### <a name="Rf-this-capture"></a>F.54: If you capture `this`, capture all variables explicitly (no default capture)
 
