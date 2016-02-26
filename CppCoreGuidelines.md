@@ -3398,7 +3398,7 @@ Placing them in the same namespace as the class makes their relationship to the 
     
 ##### Note
 
-This is expecially important for [overloaded operators](#Ro-namespace).
+This is especially important for [overloaded operators](#Ro-namespace).
 
 ##### Enforcement
 
@@ -6664,7 +6664,7 @@ Avoiding inconsistent definition in different namespaces
 
     bool s==s;
     
-This is what a deafault == would do, if we had such defaults.
+This is what a default `==` would do, if we had such defaults.
 
 ##### Example
 
