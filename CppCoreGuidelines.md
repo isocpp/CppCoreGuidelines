@@ -2416,8 +2416,13 @@ It's efficient and eliminates bugs at the call site: `X&&` binds to rvalues, whi
 
 ##### Example
 
-    ???
-    
+    void sink(std::unique_ptr<T> p) {
+        // use p ...
+    }   // p gets destroyed
+
+    std::unique_ptr<T> p = std::make_unique<T>();
+    sink(std::move(p)); // clear intent that p is moved to sink
+
 ##### Exception
 
 Unique owner types that are move-only and cheap-to-move, such as `unique_ptr`, can also be passed by value which is simpler to write and achieves the same effect. Passing by value  does generate one extra (cheap) move operation, but prefer simplicity and clarity first.
