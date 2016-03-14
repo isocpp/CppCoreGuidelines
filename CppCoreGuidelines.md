@@ -13627,10 +13627,7 @@ Reference sections:
 * [GCC Coding Conventions](https://gcc.gnu.org/codingconventions.html).
   C++03 and (reasonably) a bit backwards looking.
 * [Google C++ Style Guide](http://google-styleguide.googlecode.com/svn/trunk/cppguide.html).
-  Too timid and reflects its 1990s origins.
-  [A critique from 2014](https://www.linkedin.com/pulse/20140503193653-3046051-why-google-style-guide-for-c-is-a-deal-breaker).
-  Google are busy updating their code base and we don't know how accurately the posted guideline reflects their actual code.
-  This set of recommendations is evolving.
+  Geared toward C++03 and (also) older code bases. Google experts are now actively collaborating here on helping to improve these Guidelines, and hopefully to merge efforts so these can be a modern common set they could also recommend.
 * [JSF++: JOINT STRIKE FIGHTER AIR VEHICLE C++ CODING STANDARDS](http://www.stroustrup.com/JSF-AV-rules.pdf).
   Document Number 2RDU00001 Rev C. December 2005.
   For flight control software.
