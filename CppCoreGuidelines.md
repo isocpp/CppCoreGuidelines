@@ -4,7 +4,7 @@ layout: default
 
 # <a name="main"></a>C++ Core Guidelines
 
-February 15, 2016
+March 20, 2016
 
 Editors:
 
