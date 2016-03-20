@@ -3163,18 +3163,29 @@ This is a simple three-stage parallel pipeline. Each `stage` object encapsulates
 
 Pointers and references to locals shouldn't outlive their scope. Lambdas that capture by reference are just another place to store a reference to a local object, and shouldn't do so if they (or a copy) outlive the scope.
 
-##### Example
+##### Example, bad
 
     {
-        // ...
+        int local = 42;
+        thread_pool.queue_work([&]{ process(local); }); // Want a reference to local.
+                                                        // Note, that after program exits this scope,
+                                                        // local no longer exists, therefore
+                                                        // process() call will have undefined behavior!
+    }
 
-        // a, b, c are local variables
-        background_thread.queue_work([=]{ process(a, b, c); });  // want copies of a, b, and c
+##### Example, good
+
+    {
+        int local = 42;
+        thread_pool.queue_work([=]{ process(local); });  // Want a copy of local.
+                                                         // Since a copy of local is made, it will be
+                                                         // available at all times for the call.
     }
 
 ##### Enforcement
 
-???
+* (Simple) Warn when capture-list contains a reference to a locally declared variable
+* (Complex) Flag when capture-list contains a reference to a locally declared variable and the lambda is passed to a non-`const` and non-local context
 
 ### <a name="Rf-this-capture"></a>F.54: If you capture `this`, capture all variables explicitly (no default capture)
 
