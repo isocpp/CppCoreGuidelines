@@ -845,9 +845,9 @@ if they can be cleanly and safely de-allocated, they should be.)
 
 ##### Note
 
-Enforcing (#In.force)[the lifetime profile] eliminates leaks.
-When combined with resource safety provided by (#Rr-raii)[RAII], it eliminates the need for "garbage collection" (by generating no garbage).
-Combine this with enforcement of (the type and bounds profiles)[In.force] and you get complete type- and resource-safety, guaranteed by tools.
+Enforcing [the lifetime profile](#In.force) eliminates leaks.
+When combined with resource safety provided by [RAII](#Rr-raii), it eliminates the need for "garbage collection" (by generating no garbage).
+Combine this with enforcement of [the type and bounds profiles](#In.force) and you get complete type- and resource-safety, guaranteed by tools.
 
 ##### Enforcement
 
