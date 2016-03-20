@@ -10207,7 +10207,7 @@ Note that this applies most urgently to library code and least urgently to stand
         static double cached_result = COMPUTATION_OF_ZERO;
         double result;
  
-        if (cached_x = x)
+        if (cached_x == x)
             return cached_result;
         result = computation(x);
         cached_x = x;
