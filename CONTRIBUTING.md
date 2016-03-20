@@ -19,7 +19,7 @@ guidelines and that you provide a link back to the original set of [guidelines](
 your local changes are appropriate to pull back into the original guidelines, please open an 
 [Issue](https://github.com/isocpp/CppCoreGuidelines/issues) which can lead to a pull request.
 - **Maintain the Guidelines** The C++ Core Guidelines were created from a wealth of knowledge spread across a number of organizations
-worldwide. If you or your organization is passionate about helping to create the guidelines consider becoming an editor or maintainer. If
+worldwide. If you or your organization is passionate about helping to create the guidelines, consider becoming an editor or maintainer. If
 you're a C++ expert who is serious about participating, please 
 [email coreguidelines@isocpp.org](mailto:coreguidelines@isocpp.org?subject=Maintain the C++ Code Guidelines).
  
