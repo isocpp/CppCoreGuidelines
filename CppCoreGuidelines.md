@@ -1620,7 +1620,7 @@ Passing `10` as the `n` argument may be a mistake: the most common convention is
 This `draw2()` passes the same amount of information to `draw()`, but makes the fact that it is supposed to be a range of `Circle`s explicit. See ???.
 
 **Exception**: Use `zstring` and `czstring` to represent a C-style, zero-terminated strings.
-But when doing so, use `string_span` from the (GSL)[#GSL] to prevent range errors.
+But when doing so, use `string_span` from the [GSL](#GSL) to prevent range errors.
 
 ##### Enforcement
 
