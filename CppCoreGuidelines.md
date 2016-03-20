@@ -9610,7 +9610,7 @@ Explicit `move` is needed to explicitly move an object to another scope, notably
     {
         X x;
         sink(x);             // error: cannot bind an lvalue to a rvalue reference
-        sink(std::move(x));  // OK: sink takes the contents of r, r must now assumed to be empty
+        sink(std::move(x));  // OK: sink takes the contents of x, x must now be assumed to be empty
         // ...
         use(x);              // probably a mistake
     }
