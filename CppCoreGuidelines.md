@@ -2416,11 +2416,21 @@ It's efficient and eliminates bugs at the call site: `X&&` binds to rvalues, whi
 
 ##### Example
 
-    ???
+    void sink(vector<int>&& v) {   // sink takes ownership of whatever the argument owned
+        // usually there might be const accesses of v here
+        store_somewhere( std::move(v) );
+        // usually no more use of v here; it is moved-from
+    }
     
 ##### Exception
 
-Unique owner types that are move-only and cheap-to-move, such as `unique_ptr`, can also be passed by value which is simpler to write and achieves the same effect. Passing by value  does generate one extra (cheap) move operation, but prefer simplicity and clarity first.
+Unique owner types that are move-only and cheap-to-move, such as `unique_ptr`, can also be passed by value which is simpler to write and achieves the same effect. Passing by value does generate one extra (cheap) move operation, but prefer simplicity and clarity first.
+
+For example:
+
+    void sink(std::unique_ptr<T> p) {
+        // use p ... possibly std::move(p) onward somewhere else
+    }   // p gets destroyed
 
 ##### Enforcement
 * Flag all `X&&` parameters (where `X` is not a template type parameter name) where the function body uses them without `std::move`.
@@ -9594,15 +9604,15 @@ Explicit `move` is needed to explicitly move an object to another scope, notably
 
 ##### Example, bad
 
-    void sink(X&& r);   // sink takes ownership of r
+    void sink(X&& x);   // sink takes ownership of x
     
     void user()
     {
         X x;
-        sink(r);            // error: cannot bind an lvalue to a rvalue reference
-        sink(std::move(r));  // OK: sink takes the contents of r, r must now assumed to be empty
+        sink(x);             // error: cannot bind an lvalue to a rvalue reference
+        sink(std::move(x));  // OK: sink takes the contents of r, r must now assumed to be empty
         // ...
-        use(r);             // probably a mistake
+        use(x);              // probably a mistake
     }
 
 Usually, a `std::move()` is used as an argument to a `&&` parameter.
