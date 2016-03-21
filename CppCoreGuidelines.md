@@ -4420,7 +4420,7 @@ A class with members that all have default constructors implicitly gets a defaul
         vector v;
     };
 
-    X x; // means X{ {}, {} }; that is the empty string and the empty vector
+    X x; // means X{{ "{{" }}}, {}}; that is the empty string and the empty vector
 
 Beware that built-in types are not properly default constructed:
 
@@ -6420,7 +6420,7 @@ Subscripting the resulting base pointer will lead to invalid object access and p
 
     void use(B*);
 
-    D a[] = { {1, 2}, {3, 4}, {5, 6} };
+    D a[] = {{ "{{" }}1, 2}, {3, 4}, {5, 6}};
     B* p = a;     // bad: a decays to &a[0] which is converted to a B*
     p[1].x = 7;   // overwrite D[0].y
 
@@ -10423,7 +10423,7 @@ To make error handling systematic, robust, and non-repetitive.
 
     void use()
     {
-        Foo bar { {Thing{1}, Thing{2}, Thing{monkey}}, {"my_file", "r"}, "Here we go!"};
+        Foo bar {{ "{{" }}Thing{1}, Thing{2}, Thing{monkey}}, {"my_file", "r"}, "Here we go!"};
         // ...
     }
 
