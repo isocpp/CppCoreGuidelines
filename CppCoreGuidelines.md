@@ -9787,7 +9787,7 @@ In the rare cases where the slicing was deliberate the code can be surprising.
     class Shape { /* ... */ };
     class Circle : public Shape { /* ... */ Point c; int r; };
     
-    Circle c {{%raw%}.{{%endraw%}.0,0}, 42};
+    Circle c {{%raw%}}{{{{%endraw%}}.0,0}, 42};
     Shape s {c};    // copy Shape part of Circle
     
 The result will be meaningless because the center and radius will not be copied from `c` into `s`.
