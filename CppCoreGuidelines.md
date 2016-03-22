@@ -10211,15 +10211,13 @@ Note that this applies most urgently to library code and least urgently to stand
 
 ##### Example
 
-    double cached_computation(double x)
+    double cached_computation(int x)
     {
-        static double cached_x = 0.0;
+        static int cached_x = 0;
         static double cached_result = COMPUTATION_OF_ZERO;
-        double result;
- 
         if (cached_x == x)
             return cached_result;
-        result = computation(x);
+        double result = computation(x);
         cached_x = x;
         cached_result = result;
         return result;
