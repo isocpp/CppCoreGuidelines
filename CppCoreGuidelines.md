@@ -7598,7 +7598,7 @@ be able to destroy a cyclic structure.
 
  ??? (HS: A lot of people say "to break cycles", while I think "temporary shared ownership" is more to the point.)
 ???(BS: breaking cycles is what you must do; temporarily sharing ownership is how you do it.
-You could "temporarily share ownership" simply by using another `stared_ptr`.)
+You could "temporarily share ownership" simply by using another `shared_ptr`.)
 
 ##### Enforcement
 
