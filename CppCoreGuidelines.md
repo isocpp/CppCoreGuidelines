@@ -1243,7 +1243,9 @@ We don't need to mention it for each member function.
 
 ##### Enforcement
 
-(Not enforceable)
+* (Partial, hard) Look at the (first) uses of the parameters of `foo`.
+  Focus on uses where they are passed to other `bar` functions, including constructors.
+  Derive constraints on `foo` parameters from constraints of `bar` parameters.
 
 **See also**: The rules for passing pointers. ???
 
