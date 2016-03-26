@@ -11,7 +11,7 @@ they can be freely copied and modified to meet your organization's needs.
 
 The guidelines themselves are found at [CppCoreGuidelines](CppCoreGuidelines.md). There is also [a version formatted for browsing] (http://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines) that is manually integrated and thus slightly older than the version in the master branch.
 
-Many of the guidelines make use of the header only Guideline Support Library. One implementation is available at [GSL: Guideline support library](https://github.com/Microsoft/GSL).
+Many of the guidelines make use of the header only Guideline Support Library. One implementation is available at [GSL: Guideline Support Library](https://github.com/Microsoft/GSL).
 
 ## Background and scope
 
