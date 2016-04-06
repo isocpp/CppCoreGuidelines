@@ -4,7 +4,7 @@ layout: default
 
 # <a name="main"></a>C++ Core Guidelines
 
-March 20, 2016
+April 5, 2016
 
 Editors:
 
@@ -39,23 +39,24 @@ You can [read an explanation of the scope and structure of this Guide](#S-abstra
 * [Enum: Enumerations](#S-enum)
 * [R: Resource management](#S-resource)
 * [ES: Expressions and statements](#S-expr)
+* [PER: Performance](#S-performance)
+* [CP: Concurrency](#S-concurrency)
 * [E: Error handling](#S-errors)
 * [Con: Constants and immutability](#S-const)
 * [T: Templates and generic programming](#S-templates)
-* [CP: Concurrency](#S-concurrency)
-* [SL: The Standard library](#S-stdlib)
-* [SF: Source files](#S-source)
 * [CPL: C-style programming](#S-cpl)
-* [PRO: Profiles](#S-profile)
-* [GSL: Guideline support library](#S-gsl)
-* [FAQ: Answers to frequently asked questions](#S-faq)
+* [SF: Source files](#S-source)
+* [SL: The Standard library](#S-stdlib)
 
 Supporting sections:
 
-* [NL: Naming and layout](#S-naming)
-* [PER: Performance](#S-performance)
+* [A: Architectural Ideas](#S-A)
 * [N: Non-Rules and myths](#S-not)
 * [RF: References](#S-references)
+* [PRO: Profiles](#S-profile)
+* [GSL: Guideline support library](#S-gsl)
+* [NL: Naming and layout](#S-naming)
+* [FAQ: Answers to frequently asked questions](#S-faq)
 * [Appendix A: Libraries](#S-libraries)
 * [Appendix B: Modernizing code](#S-modernizing)
 * [Appendix C: Discussion](#S-discussion)
@@ -938,7 +939,7 @@ Many more specific rules aim at the overall goals of simplicity and elimination 
 ##### Reason
 
 It is easier to reason about constants than about variables.
-Sumething immutable cannot change unexpectedly.
+Something immutable cannot change unexpectedly.
 Sometimes immutability enables better optimization.
 You can't have a data race on a constant.
 
@@ -4420,7 +4421,7 @@ A class with members that all have default constructors implicitly gets a defaul
         vector v;
     };
 
-    X x; // means X{{ "{{" }}}, {}}; that is the empty string and the empty vector
+    X x; // means X{{}, {}}; that is the empty string and the empty vector
 
 Beware that built-in types are not properly default constructed:
 
@@ -6420,7 +6421,7 @@ Subscripting the resulting base pointer will lead to invalid object access and p
 
     void use(B*);
 
-    D a[] = {{ "{{" }}1, 2}, {3, 4}, {5, 6}};
+    D a[] = {{1, 2}, {3, 4}, {5, 6}};
     B* p = a;     // bad: a decays to &a[0] which is converted to a B*
     p[1].x = 7;   // overwrite D[0].y
 
@@ -7602,7 +7603,7 @@ be able to destroy a cyclic structure.
 
  ??? (HS: A lot of people say "to break cycles", while I think "temporary shared ownership" is more to the point.)
 ???(BS: breaking cycles is what you must do; temporarily sharing ownership is how you do it.
-You could "temporarily share ownership" simply by using another `stared_ptr`.)
+You could "temporarily share ownership" simply by using another `shared_ptr`.)
 
 ##### Enforcement
 
@@ -7885,7 +7886,7 @@ Declaration rules:
 * [ES.31: Don't use macros for constants or "functions"](#Res-macros2)
 * [ES.32: Use `ALL_CAPS` for all macro names](#Res-ALL_CAPS)
 * [ES.33: If you must use macros, give them unique names](#Res-MACROS)
-* [ES.40: Don't define a (C-style) variadic function](#Res-ellipses)
+* [ES.34: Don't define a (C-style) variadic function](#Res-ellipses)
 
 Expression rules:
 
@@ -8864,7 +8865,7 @@ If you are forced to use macros, use long names and supposedly unique prefixes (
 
 Warn against short macro names.
 
-### <a name="Res-ellipses"></a>ES.40: Don't define a (C-style) variadic function
+### <a name="Res-ellipses"></a> ES.34: Don't define a (C-style) variadic function
 
 ##### Reason
 
@@ -9787,7 +9788,7 @@ In the rare cases where the slicing was deliberate the code can be surprising.
     class Shape { /* ... */ };
     class Circle : public Shape { /* ... */ Point c; int r; };
     
-    Circle c {{ "{{" }}0.0,0}, 42};
+    Circle c {{0,0}, 42};
     Shape s {c};    // copy Shape part of Circle
     
 The result will be meaningless because the center and radius will not be copied from `c` into `s`.
@@ -10215,15 +10216,13 @@ Note that this applies most urgently to library code and least urgently to stand
 
 ##### Example
 
-    double cached_computation(double x)
+    double cached_computation(int x)
     {
-        static double cached_x = 0.0;
+        static int cached_x = 0;
         static double cached_result = COMPUTATION_OF_ZERO;
-        double result;
- 
         if (cached_x == x)
             return cached_result;
-        result = computation(x);
+        double result = computation(x);
         cached_x = x;
         cached_result = result;
         return result;
@@ -10423,7 +10422,7 @@ To make error handling systematic, robust, and non-repetitive.
 
     void use()
     {
-        Foo bar {{ "{{" }}Thing{1}, Thing{2}, Thing{monkey}}, {"my_file", "r"}, "Here we go!"};
+        Foo bar {{Thing{1}, Thing{2}, Thing{monkey}}, {"my_file", "r"}, "Here we go!"};
         // ...
     }
 
@@ -14341,6 +14340,7 @@ Without these facilities, the guidelines would have to be far more restrictive o
 
 The Core Guidelines support library is defined in namespace `gsl` and the names may be aliases for standard library or other well-known library names. Using the (compile-time) indirection through the `gsl` namespace allows for experimentation and for local variants of the support facilities.
 
+The GSL is header only, and can be found at [GSL: Guideline support library](https://github.com/Microsoft/GSL).
 The support library facilities are designed to be extremely lightweight (zero-overhead) so that they impose no overhead compared to using conventional alternatives.
 Where desirable, they can be "instrumented" with additional functionality (e.g., checks) for tasks such as debugging.
 
