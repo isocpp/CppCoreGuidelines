@@ -35,23 +35,24 @@ You can [read an explanation of the scope and structure of this Guide](#S-abstra
 * [Enum: Enumerations](#S-enum)
 * [R: Resource management](#S-resource)
 * [ES: Expressions and statements](#S-expr)
+* [PER: Performance](#S-performance)
+* [CP: Concurrency](#S-concurrency)
 * [E: Error handling](#S-errors)
 * [Con: Constants and immutability](#S-const)
 * [T: Templates and generic programming](#S-templates)
-* [CP: Concurrency](#S-concurrency)
-* [SL: The Standard library](#S-stdlib)
-* [SF: Source files](#S-source)
 * [CPL: C-style programming](#S-cpl)
-* [PRO: Profiles](#S-profile)
-* [GSL: Guideline support library](#S-gsl)
-* [FAQ: Answers to frequently asked questions](#S-faq)
+* [SF: Source files](#S-source)
+* [SL: The Standard library](#S-stdlib)
 
 Supporting sections:
 
-* [NL: Naming and layout](#S-naming)
-* [PER: Performance](#S-performance)
+* [A: Architectural Ideas](#S-A)
 * [N: Non-Rules and myths](#S-not)
 * [RF: References](#S-references)
+* [PRO: Profiles](#S-profile)
+* [GSL: Guideline support library](#S-gsl)
+* [NL: Naming and layout](#S-naming)
+* [FAQ: Answers to frequently asked questions](#S-faq)
 * [Appendix A: Libraries](#S-libraries)
 * [Appendix B: Modernizing code](#S-modernizing)
 * [Appendix C: Discussion](#S-discussion)
@@ -7881,7 +7882,7 @@ Declaration rules:
 * [ES.31: Don't use macros for constants or "functions"](#Res-macros2)
 * [ES.32: Use `ALL_CAPS` for all macro names](#Res-ALL_CAPS)
 * [ES.33: If you must use macros, give them unique names](#Res-MACROS)
-* [ES.40: Don't define a (C-style) variadic function](#Res-ellipses)
+* [ES.34: Don't define a (C-style) variadic function](#Res-ellipses)
 
 Expression rules:
 
@@ -8860,7 +8861,7 @@ If you are forced to use macros, use long names and supposedly unique prefixes (
 
 Warn against short macro names.
 
-### <a name="Res-ellipses"></a>ES.40: Don't define a (C-style) variadic function
+### <a name="Res-ellipses"></a> ES.34: Don't define a (C-style) variadic function
 
 ##### Reason
 
