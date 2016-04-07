@@ -6795,49 +6795,170 @@ The compiler catches the attempt to overload a lambda.
 
 ## <a name="SS-union"></a>C.union: Unions
 
-???
+Unions share a single memory location for multiple variables. The size of the union is the size of the 
+largest variable type.
+A union is only recommended as a tool for last resort since it completely avoids the type system.
+Use boost variants instead since these are type safe. 
 
 Union rule summary:
 
-* [C.180: Use `union`s to ???](#Ru-union)
+* [C.180: Use `union`s on limited systems](#Ru-union)
 * [C.181: Avoid "naked" `union`s](#Ru-naked)
 * [C.182: Use anonymous `union`s to implement tagged unions](#Ru-anonymous)
 * ???
 
-### <a name="Ru-union"></a>C.180: Use `union`s to ???
+### <a name="Ru-union"></a>C.180: Use `union`s on limited systems
 
 ??? When should unions be used, if at all? What's a good future-proof way to re-interpret object representations of PODs?
-??? variant
 
 ##### Reason
 
- ???
+Only use it when you have a limited system like an embedded chip like an 8bit processor.
+The union is useful since you share a static memory as if they are a separate variable. 
+These variables should be used mutual exclusive to avoid errors. 
+
 
 ##### Example
+a good example is an I/O buffer for an halve duplex communication.
 
-    ???
+    union Buffer{
+        uint8_t tx[128];
+        uint8_t rx[128];
+    }
+    static union Buffer buffer;
+    void receive(){
+        uint8_t i =0;
+        while (i <  128)
+        {
+            //some receive functionality
+            buffer.rx[i]= uart_receive();
+            if (i== packet_length)
+            break;
+        }
+    }
+    void send (){
+        uint8_t i =0;
+        uint8_t send_count = buffer.tx[i];
+        while (i++ < send_count)
+        {
+        //some receive functionality
+        uart_send(buffer.tx[i]);
 
+        }
+    }
 ##### Enforcement
-
-???
+hard,Give a warning when a data member is read before written to.
 
 ### <a name="Ru-naked"></a>C.181: Avoid "naked" `union`s
-
 ##### Reason
+A naked union allows for type punning this avoids the type system completely which causes type errors.
 
-Naked unions are a source of type errors.
+See also #type7-avoid-accessing-members-of-raw-unions-prefer-variant-instead
 
 **Alternative**: Wrap them in a class together with a type field.
 
-**Alternative**: Use `variant`.
+Type punning can sometimes be useful on a limited system. 
+Because it allows you to access an array as if it was a structure or access an primitive type as an array. 
+You could for example avoid a copy from an I/O buffer by type punning it with an packed struct which represents the layout of the message.
+
+Type punning with a union is required since casting between pointer types is undefined behaviour. 
+
+    *((uint16_t*) m.data[1])== My_address //undefined behaviour
+    
+##### See also
+
+[Type.7: Avoid accessing members of raw unions. Prefer `variant` instead](#Pro-type-unions).
 
 ##### Example
 
-    ???
+    union PixelColor{ 
+        uint8_t color_ARGB[4];
+        uint32_t color;
+    };
+    
+    int main(){
+        union PixelColor pixel;
+        pixel.color_ARGB[0]=0x0F;//a direct register load on an 8bit system
+        pixel.color_ARGB[1]=0xBC;
+        pixel.color_ARGB[2]=0xFF;
+        pixel.color_ARGB[3]=0xCB;
+        draw(pixelColor.color);//a direct pass of a 32bit number instead of a pointer to an array
+    }
+##### Example compiler defined
 
+    union PixelColor{
+        uint32_t color;
+        struct __attribute__((__packed__)) byte{
+            uint8_t A;
+            uint8_t R;
+            uint8_t G;
+            uint8_t B;
+        }
+    }
+    int main(){
+        union PixelColor pixel;
+        pixel.byte.A=0x0F;
+        pixel.byte.R=0xBC;
+        pixel.byte.G=0xFF;
+        pixel.byte.B=0xCB;
+        draw(pixelColor.color);
+    }
+    
+##### Example compiler defined and advanced
+    //packed is only gcc and clang
+    struct __attribute__((__packed__)) messageT1{
+        float Temperature;
+    }
+    struct __attribute__((__packed__)) messageT2{
+        double speed_XYZ[3];
+        double acceleration_XYZ[3];
+    }
+    union Message{
+        uint8_t data[128];
+        struct __attribute__((__packed__)) layout{
+            uint8_t type;
+            uint16_t rx_address;
+            uint16_t tx_address;
+            uint8_t length;
+            uint16_t CRC;
+            union {//ananymous union
+                uint8_t data;//a hook for the reference of the raw data
+                messageT1 T1;
+                messageT2 T2;
+                //etc.
+            }
+            
+        }
+    }
+    union Message m;
+    void receive{
+        m.length=4;
+        uint8_t i=0;
+        while(m.layout.length > i){
+            m.data[i++]==rs485_receive();
+        }
+    }
+    int main(){
+        receive();
+        if(m.layout.rx_address == our_adress){
+        
+            switch (m.layout.type){
+                case 1 :
+                //... 
+                break;
+                ///..... all other cases
+                //switch case for each message type
+                default:
+                    uint8_t* data_iter = &m.layout.data;
+                    while(m.layout.length > i){
+               
+                    }
+            }
+        }
+    }
+    
 ##### Enforcement
 
-???
 
 ### <a name="Ru-anonymous"></a>C.182: Use anonymous `union`s to implement tagged unions
 
@@ -6847,7 +6968,7 @@ Naked unions are a source of type errors.
 
 ##### Example
 
-    ???
+???
 
 ##### Enforcement
 
