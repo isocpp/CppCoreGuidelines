@@ -99,7 +99,7 @@ By "modern C++" we mean C++11 and C++14 (and soon C++17).
 In other words, what would you like your code to look like in 5 years' time, given that you can start now? In 10 years' time?
 
 The guidelines are focused on relatively higher-level issues, such as interfaces, resource management, memory management, and concurrency.
-Such rules affect application architecture and library design.
+They affect application architecture and library design.
 Following the rules will lead to code that is statically type safe, has no resource leaks, and catches many more programming logic errors than is common in code today.
 And it will run fast - you can afford to do things right.
 
@@ -121,7 +121,7 @@ Please remember that one purpose of a guideline is to help someone who is less e
 
 Many of the rules are designed to be supported by an analysis tool.
 Violations of rules will be flagged with references (or links) to the relevant rule.
-We do not expect you to memorize all the rules before trying to write code.
+We do not expect programmers to memorize all the rules.
 One way of thinking about these guidelines is as a specification for tools that happens to be readable by humans.
 
 The rules are meant for gradual introduction into a code base.
@@ -153,7 +153,7 @@ All C++ programmers. This includes [programmers who might consider C](#S-cpl).
 The purpose of this document is to help developers to adopt modern C++ (C++11, C++14, and soon C++17) and to achieve a more uniform style across code bases.
 
 We do not suffer the delusion that every one of these rules can be effectively applied to every code base. Upgrading old systems is hard. However, we do believe that a program that uses a rule is less error-prone and more maintainable than one that does not. Often, rules also lead to faster/easier initial development.
-As far as we can tell, these rules lead to code that performs as well or better than older, more conventional techniques; they are meant to follow the zero-overhead principle ("what you don't use, you don't pay for" or "when you use an abstraction mechanism appropriately, you get at least as good performance as if you had handcoded using lower-level language constructs").
+As far as we can tell, these rules lead to code that performs as well or better than older, more conventional techniques; they are meant to follow the zero-overhead principle ("what you don't use, you don't pay for" or "when you use an abstraction mechanism appropriately, you get at least as good performance as if you had hand coded using lower-level language constructs").
 Consider these rules ideals for new code, opportunities to exploit when working on older code, and try to approximate these ideas as closely as feasible.
 Remember:
 
@@ -249,7 +249,7 @@ For a start, we have a few profiles corresponding to common needs (desires, idea
 * **bounds**: No bounds violations (accessing beyond the range of an array)
 * **lifetime**: No leaks (failing to `delete` or multiple `delete`) and no access to invalid objects (dereferencing `nullptr`, using a dangling reference).
 
-The profiles are intended to be used by tools, but also serve as an aid to the human reader.
+The profiles are intended to be used by tools, but also serve as aid to the human reader.
 We do not limit our comment in the **Enforcement** sections to things we know how to enforce; some comments are mere wishes that might inspire some tool builder.
 
 Tools that implement these rules shall respect the following syntax to explicitly suppress a rule:
@@ -281,7 +281,7 @@ Some rules are hard to check mechanically, but they all meet the minimal criteri
 We hope that "mechanical" tools will improve with time to approximate what such an expert programmer notices.
 Also, we assume that the rules will be refined over time to make them more precise and checkable.
 
-A rule is aimed at being simple, rather than carefully phrased to mention every alternative and special case.
+Rules are aimed at being simple, rather than carefully phrased to mention every alternative and special case.
 Such information is found in the **Alternative** paragraphs and the [Discussion](#S-discussion) sections.
 If you don't understand a rule or disagree with it, please visit its **Discussion**.
 If you feel that a discussion is missing or incomplete, enter an [Issue](https://github.com/isocpp/CppCoreGuidelines/issues)
@@ -348,7 +348,7 @@ Philosophy rules summary:
 
 Philosophical rules are generally not mechanically checkable.
 However, individual rules reflecting these philosophical themes are.
-Without a philosophical basis the more concrete/specific/checkable rules lack rationale.
+Philosophical rules serve as a basis and rationale for the concrete/specific/checkable rules.
 
 ### <a name="Rp-direct"></a>P.1: Express ideas directly in code
 
@@ -7578,7 +7578,7 @@ For convenience and consistency with `shared_ptr`.
 
 ##### Note
 
-`make_unique()` is C++14, but widely available (as well as simple to write).
+`make_unique()` is C++14, but widely available.
 
 ##### Enforcement
 
@@ -7681,7 +7681,7 @@ Any type (including primary template or specialization) that overloads unary `*`
         p->foo();
     }
 
-Both cases are an error under the [`sharedptrparam` guideline](#Rr-smartptrparam):
+Both cases are errors under the [`sharedptrparam` guideline](#Rr-smartptrparam):
 `p` is a `Shared_ptr`, but nothing about its sharedness is used here and passing it by value is a silent pessimization;
 these functions should accept a smart pointer only if they need to participate in the widget's lifetime management. Otherwise they should accept a `widget*`, if it can be `nullptr`. Otherwise, and ideally, the function should accept a `widget&`.
 These smart pointers match the `Shared_ptr` concept, so these guideline enforcement rules work on them out of the box and expose this common pessimization.
@@ -7800,14 +7800,14 @@ This makes the function's ??? explicit.
 
 ##### Reason
 
-Violating this rule is the number one cause of losing reference counts and finding yourself with a dangling pointer.
-Functions should prefer to pass raw pointers and references down call chains.
-At the top of the call tree where you obtain the raw pointer or reference from a smart pointer that keeps the object alive.
-You need to be sure that the smart pointer cannot inadvertently be reset or reassigned from within the call tree below.
+The problem arise if a reference or raw pointer is obtained from an aliased smart pointer which is then inadvertently reset or reassigned from down a call chain.
+
+When it comes to smart pointers, violations of this rule are the number one cause of lost reference counts and dangling pointers.
 
 ##### Note
 
 To do this, sometimes you need to take a local copy of a smart pointer, which firmly keeps the object alive for the duration of the function and the call tree.
+It is then safe to pass references or raw pointers obtained from the local copy.
 
 ##### Example
 
@@ -7832,7 +7832,7 @@ The following should not pass code review:
     void my_code()
     {
         f(*g_p);     // BAD: passing pointer or reference obtained from a nonlocal smart pointer
-                     //      that could be inadvertently reset somewhere inside f or it callees
+                     //      that could be inadvertently reset somewhere inside f
         g_p->func(); // BAD: same reason, just passing it as a "this" pointer
     }
 
@@ -8105,7 +8105,7 @@ Conventional short, local names increase readability:
             os << v[i] << '\n';
     }
 
-An index is conventionally called `i` and there is no hint about the meaning of the vector in this generic function, so `v` is as good name as any. Compare
+An index is conventionally called `i` and there is no knowledge about the meaning of the vector in this generic function, so `v` is as good name as any. In such case, more verbose names make the code harder to read:
 
     template<typename Element_type>   // bad: verbose, hard to read
     void print(ostream& target_stream, const vector<Element_type>& current_vector)
@@ -8116,8 +8116,6 @@ An index is conventionally called `i` and there is no hint about the meaning of 
         )
         target_stream << current_vector[i] << '\n';
     }
-
-Yes, it is a caricature, but we have seen worse.
 
 ##### Example
 
@@ -8263,6 +8261,7 @@ Flag non-function arguments with multiple declarators involving declarator opera
 
 * Simple repetition is tedious and error prone.
 * When you use `auto`, the name of the declared entity is in a fixed position in the declaration, increasing readability.
+* It is impossible to forget to initialize variables declared using `auto`. 
 * In a template function declaration the return type can be a member type.
 
 ##### Example
@@ -8282,12 +8281,18 @@ In each case, we save writing a longish, hard-to-remember type that the compiler
     template<class T>
     auto Container<T>::first() -> Iterator;   // Container<T>::Iterator
 
-**Exception**: Avoid `auto` for initializer lists and in cases where you know exactly which type you want and where an initializer might require conversion.
+##### Exception
+
+Avoid `auto` for initializer lists and in cases where you know exactly which type you want and where an initializer might require conversion.
 
 ##### Example
 
     auto lst = { 1, 2, 3 };   // lst is an initializer list
     auto x{1};   // x is an int (after correction of the C++14 standard; initializer_list in C++11)
+
+##### Exception
+
+Be very careful with `auto` in combination with certain expression templates and proxy types (Two examples are the [Eigen](http://eigen.tuxfamily.org) math library and [Boost Spirit](http://www.boost.org/doc/libs/1_60_0/libs/spirit/doc/html/index.html)).
 
 ##### Note
 
@@ -8300,7 +8305,7 @@ When concepts become available, we can (and should) be more specific about the t
 
 Flag redundant repetition of type names in a declaration.
 
-### <a name="Res-always"></a>ES.20: Always initialize an object
+### <a name="Res-always"></a>ES.20: Always initialize objects
 
 ##### Reason
 
@@ -8513,7 +8518,7 @@ Readability. Limit the scope in which a variable can be used. Don't risk used-be
 
 ##### Example, bad
 
-    SomeLargeType var;   // ugly CaMeLcAsEvArIaBlE
+    SomeLargeType var; // Bad: We don't know what to initialize it to yet.
 
     if (cond)   // some non-trivial condition
         Set(&var);
@@ -8645,6 +8650,10 @@ Look for raw pointers that are targets of `new`, `malloc()`, or functions that m
 
 ### <a name="Res-const"></a>ES.25: Declare objects `const` or `constexpr` unless you want to modify its value later on
 
+##### Note
+
+It's often better to not use pointers at all. [Rr-scoped]
+
 ##### Reason
 
 That way you can't change the value by mistake. That way may offer the compiler optimization opportunities.
@@ -8683,7 +8692,7 @@ Readability.
 
 Flag recycled variables.
 
-### <a name="Res-stack"></a>ES.27: Use `std::array` or `stack_array` for arrays on the stack
+### <a name="Res-stack"></a>ES.27: Use `std::array` or `gsl::stack_array` for arrays on the stack
 
 ##### Reason
 
@@ -9070,7 +9079,7 @@ Breaking out of a nested loop. In that case, always jump forwards.
 
     ???
 
-##### Example
+##### Example, Bad
 
 There is a fair amount of use of the C goto-exit idiom:
 
@@ -9085,7 +9094,7 @@ There is a fair amount of use of the C goto-exit idiom:
         ... common cleanup code ...
     }
 
-This is an ad-hoc simulation of destructors. Declare your resources with handles with destructors that clean up.
+This is an ad-hoc simulation of destructors. Instead, declare your resources with handles with destructors that clean up.
 
 ##### Enforcement
 
@@ -9141,7 +9150,7 @@ It is easy to overlook the fallthrough. Be explicit:
         break;
     }
 
-There is a proposal for a `[[fallthrough]]` annotation.
+There is a proposal for a `[[fallthrough]]` attribute, voted into the C++17 draft.
 
 ##### Note
 
@@ -9157,7 +9166,7 @@ Multiple case labels of a single statement is OK:
 
 ##### Enforcement
 
-Flag all fall throughs from non-empty `case`s.
+Flag all fall-throughs from non-empty `case`s.
 
 ### <a name="Res-default"></a>ES.79: ??? `default`
 
@@ -9181,7 +9190,7 @@ Readability.
 
 ##### Example
 
-    for (i = 0; i < max; ++i);   // BAD: the empty statement is easily overlooked
+    for (i = 0; i < max; ++i);   // BAD: the empty statement (the loop body) is easily overlooked
     v[i] = f(v[i]);
 
     for (auto x : v) {           // better
@@ -9223,7 +9232,6 @@ The loop control up front should enable correct reasoning about what is happenin
 ##### Enforcement
 
 Flag variables that are potentially updated (have a non-const use) in both the loop control iteration-expression and the loop body.
-
 
 
 ## ES.expr: Expressions
@@ -9383,6 +9391,10 @@ The call will most likely be `f(0, 1)` or `f(1, 0)`, but you don't know which. T
 
 Can be detected by a good analyzer.
 
+##### Note
+
+A proposal (P0145R0) relating to this is on its way into C++17. `f(++i, ++i);` remains undefined behaviour.
+
 ### <a name="Res-magic"></a>ES.45: Avoid "magic constants"; use symbolic constants
 
 ##### Reason
@@ -9421,14 +9433,14 @@ A narrowing conversion destroys information, often unexpectedly so.
 A key example is basic narrowing:
 
     double d = 7.9;
-    int i = d;    // bad: narrowing: i becomes 7
+    int i = d;    // bad: narrowing conversion: i becomes 7
     i = (int)d;   // bad: we're going to claim this is still not explicit enough
 
     void f(int x, long y, double d)
     {
-        char c1 = x;   // bad: narrowing
-        char c2 = y;   // bad: narrowing
-        char c3 = d;   // bad: narrowing
+        char c1 = x;   // bad: narrowing conversion
+        char c2 = y;   // bad: narrowing conversion
+        char c3 = d;   // bad: narrowing conversion
     }
 
 ##### Note
@@ -9475,13 +9487,13 @@ Consider:
 
 ##### Enforcement
 
-Flag uses of `0` and `NULL` for pointers. The transformation may be helped by simple program transformation.
+Flag uses of `0` and `NULL` for pointers. The transformation may be helped by tools.
 
 ### <a name="Res-casts"></a>ES.48: Avoid casts
 
 ##### Reason
 
-Casts are a well-known source of errors. Makes some optimizations unreliable.
+Casts are a well-known source of errors. It makes some optimizations unreliable.
 
 ##### Example
 
@@ -9492,12 +9504,12 @@ Casts are a well-known source of errors. Makes some optimizations unreliable.
 Programmer who write casts typically assumes that they know what they are doing.
 In fact, they often disable the general rules for using values.
 Overload resolution and template instantiation usually pick the right function if there is a right function to pick.
-If there is not, maybe there ought to be, rather than applying a local fix (cast).
+If there is not, consider adding it, rather than applying a local fix (cast).
 
 ##### Note
 
 Casts are necessary in a systems programming language.  For example, how else
-would we get the address of a device register into a pointer?  However, casts
+would we get the address of a device register into a pointer? However, casts
 are seriously overused as well as a major source of errors.
 
 ##### Note
@@ -9569,6 +9581,10 @@ Such examples are often handled as well or better using `mutable` or an indirect
 
 Flag `const_cast`s.
 
+##### Note
+
+Const methods are expected to be thread safe. This must be considered and handled when modifying `mutable` or cast away `const` variables from const methods.
+
 ### <a name="Res-range-checking"></a>ES.55: Avoid the need for range checking
 
 ##### Reason
@@ -9620,13 +9636,13 @@ Usually, a `std::move()` is used as an argument to a `&&` parameter.
 And after you do that, assume the object has been moved from (see [C.64](#Rc-move-semantic)) and don't read its state again until you first set it to a new value.
 
     void f() {
-        string s1 = "supercalifragilisticexpialidocious";
+        string s1 = "Hello";
  
         string s2 = s1;             // ok, takes a copy
-        assert(s1=="supercalifragilisticexpialidocious");  // ok
+        assert(s1=="Hello");  // ok
         
         string s3 = move(s1);       // bad, if you want to keep using s1's value
-        assert(s1=="supercalifragilisticexpialidocious");  // bad, assert will likely fail, s1 likely changed
+        assert(s1=="Hello");  // bad, assert will likely fail, s1 likely changed
     }
 
 ##### Example
@@ -9714,7 +9730,13 @@ also known as "No naked `new`!"
         delete[] p;
     }
 
-There can be code in the `...` part that causes the `delete` never to happen.
+There can be code in the `...` part that causes the `delete` never to happen. Instead:
+
+    void f(int n)
+    {
+        auto p = make_unique<X[]>(n);
+        // ...
+    }
 
 **See also**: [R: Resource management](#S-resource).
 
