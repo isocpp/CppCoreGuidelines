@@ -1,0 +1,12 @@
+{
+  "name": "CppCoreGuidelinesCheck",
+  "version": "0.0.0",
+  "description": "CppCoreGuidelines Check",
+  "private": true,
+  "dependencies": {
+    "remark": "^4.2.0",
+    "remark-lint": "^3.2.0",
+    "remark-lint-sentence-newline": "^2.0.0",
+    "remark-validate-links": "^3.0.0"
+  }
+}
