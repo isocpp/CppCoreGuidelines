@@ -1602,7 +1602,7 @@ Consider:
     // ...
     draw(arr, 10);
 
-Passing `10` as the `n` argument may be a mistake: the most common convention is to assume [`0`:`n`) but that is nowhere stated. Worse is that the call of `draw()` compiled at all: there was an implicit conversion from array to pointer (array decay) and then another implicit conversion from `Circle` to `Shape`. There is no way that `draw()` can safely iterate through that array: it has no way of knowing the size of the elements.
+Passing `10` as the `n` argument may be a mistake: the most common convention is to assume \[`0`:`n`) but that is nowhere stated. Worse is that the call of `draw()` compiled at all: there was an implicit conversion from array to pointer (array decay) and then another implicit conversion from `Circle` to `Shape`. There is no way that `draw()` can safely iterate through that array: it has no way of knowing the size of the elements.
 
 **Alternative**: Use a support class that ensures that the number of elements is correct and prevents dangerous implicit conversions. For example:
 
@@ -2450,8 +2450,8 @@ In that case, and only that case, make the parameter `TP&&` where `TP` is a temp
     ??? calls ???
 
 ##### Enforcement
-* Flag a function that takes a `TP&&` parameter (where `TP` is a template type parameter name) and does anything with it other than `std::forward`ing it exactly once on every static path.
 
+* Flag a function that takes a `TP&&` parameter (where `TP` is a template type parameter name) and does anything with it other than `std::forward`ing it exactly once on every static path.
 
 ### <a name="Rf-out"></a>F.20: For "out" output values, prefer return values to output parameters
 
@@ -2645,9 +2645,9 @@ Informal/non-explicit ranges are a source of errors.
 ##### Note
 
 Ranges are extremely common in C++ code. Typically, they are implicit and their correct use is very hard to ensure.
-In particular, given a pair of arguments `(p, n)` designating an array [`p`:`p+n`),
+In particular, given a pair of arguments `(p, n)` designating an array \[`p`:`p+n`),
 it is in general impossible to know if there really are `n` elements to access following `*p`.
-`span<T>` and `span_p<T>` are simple helper classes designating a [`p`:`q`) range and a range starting with `p` and ending with the first element for which a predicate is true, respectively.
+`span<T>` and `span_p<T>` are simple helper classes designating a \[`p`:`q`) range and a range starting with `p` and ending with the first element for which a predicate is true, respectively.
 
 ##### Example
 
@@ -5449,12 +5449,12 @@ The alternative is to make two failure states compare equal and any valid state 
 
 #### Note
 
-This rule applies to all the usual comparison operators: `!=', `<, `<=`, `>`, and `>=`.
+This rule applies to all the usual comparison operators: `!=`, `<`, `<=`, `>`, and `>=`.
 
 ##### Enforcement
 
-* Flag an `operator==()` for which the argument types differ; same for other comparison operators: `!=', `<, `<=`, `>`, and `>=`.
-* Flag member `operator==()`s; same for other comparison operators: `!=', `<, `<=`, `>`, and `>=`.
+* Flag an `operator==()` for which the argument types differ; same for other comparison operators: `!=`, `<`, `<=`, `>`, and `>=`.
+* Flag member `operator==()`s; same for other comparison operators: `!=`, `<`, `<=`, `>`, and `>=`.
 
 ### <a name="Rc-eq-base"></a>C.87: Beware of `==` on base classes
 
@@ -5498,11 +5498,11 @@ Of course there are ways of making `==` work in a hierarchy, but the naive appro
 
 #### Note
 
-This rule applies to all the usual comparison operators: `!=', `<, `<=`, `>`, and `>=`.
+This rule applies to all the usual comparison operators: `!=`, `<`, `<=`, `>`, and `>=`.
 
 ##### Enforcement
 
-* Flag a virtual `operator==()`; same for other comparison operators: `!=', `<, `<=`, `>`, and `>=`.
+* Flag a virtual `operator==()`; same for other comparison operators: `!=`, `<`, `<=`, `>`, and `>=`.
 
 
 
@@ -5535,6 +5535,7 @@ It's a standard-library requirement.
         m[mt] = 7;
         cout << m[My_type{ "asdfg" }] << '\n';
     }
+
 If you have to define a `hash` specialization, try simply to let it combine standard-library `hash` specializations with `^` (xor).
 That tends to work better than "cleverness" for non-specialists.
 
@@ -6639,7 +6640,7 @@ Many parts of the C++ semantics assumes its default meaning.
 
 If you "mess with" operator `&` be sure that its definition has matching meanings for `->`, `[]`, `*`, and `.` on the result type.
 Note that operator `.` currently cannot be overloaded so a perfect system is impossible.
-We hope to remedy that: http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2015/n4477.pdf.
+We hope to remedy that: <http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2015/n4477.pdf>.
 Note that `std::addressof()` always yields a built-in pointer.
 
 ##### Enforcement
@@ -9616,7 +9617,7 @@ And after you do that, assume the object has been moved from (see [C.64](#Rc-mov
 ##### Notes
 
 `std::move()` is a cast to `&&` in disguise; it doesn't itself move anything, but marks a named object as a candidate that can be moved from.
-The language already knows the common cases where objects can be moved from, especially when returning values from functions, so don't complicate code with redundant `std::move()'s.
+The language already knows the common cases where objects can be moved from, especially when returning values from functions, so don't complicate code with redundant `std::move()`'s.
 
 Never write `std::move()` just because you've heard "it's more efficient."
 In general, don't believe claims of "efficiency" without data (???).
@@ -14342,8 +14343,8 @@ If something is not supposed to be `nullptr`, say so:
 * `not_null<T>`   // `T` is usually a pointer type (e.g., `not_null<int*>` and `not_null<owner<Foo*>>`) that may not be `nullptr`.
   `T` can be any type for which `==nullptr` is meaningful.
 
-* `span<T>`       // [`p`:`p+n`), constructor from `{p, q}` and `{p, n}`; `T` is the pointer type
-* `span_p<T>`     // `{p, predicate}` [`p`:`q`) where `q` is the first element for which `predicate(*p)` is true
+* `span<T>`       // \[`p`:`p+n`), constructor from `{p, q}` and `{p, n}`; `T` is the pointer type
+* `span_p<T>`     // `{p, predicate}` \[`p`:`q`) where `q` is the first element for which `predicate(*p)` is true
 * `string_span`   // `span<char>`
 * `cstring_span`  // `span<const char>`
 
