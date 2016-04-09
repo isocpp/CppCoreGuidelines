@@ -1,0 +1,39 @@
+# This is the configuration for Travis CI, a free github-integrated service that runs this script for each pull request (if configured)
+
+# Be nice to travis, allow docker builds, must not use sudo below
+sudo: false
+
+# provides gcc, clang, make, scons, cmake
+language: c++
+
+# alternatives: gcc, clang, or both (as yaml list)
+compiler: clang
+
+install:
+ - 'echo {\"name\": \"CppCoreGuidelinesCheck\", \"version\": \"0.0.0\", \"description\": \"CppCoreGuidelines Check\", \"private\": true, \"dependencies\": { \"mdast\": \"~2.0.0\", \"mdast-lint\": \"^1.1.1\", \"mdast-validate-links\": \"^1.1.1\"}} > package.json'
+ - npm install
+
+script:
+# check with mdast + mdast-lint
+ - 'echo {\"settings\": {\"bullet\": \"*\", \"listItemIndent\": \"1\", \"strong\": \"*\", \"emphasis\": \"*\"},   \"plugins\": {\"lint\": {\"unordered-list-marker-style\": \"consistent\", \"list-item-bullet-indent\": false, \"list-item-indent\": false, \"list-item-spacing\": false, \"no-missing-blank-lines\": false, \"no-html\": false, \"maximum-line-length\": false, \"no-file-name-mixed-case\": false, \"heading-increment\": false, \"no-multiple-toplevel-headings\": false, \"no-consecutive-blank-lines\": false, \"maximum-line-length\": 9000, \"maximum-heading-length\": 300, \"no-heading-punctuation\": false, \"no-duplicate-headings\": false, \"emphasis-marker\": \"*\", \"no-tabs\": false, \"blockquote-indentation\": false, \"strong-marker\": \"*\"}}} > .mdastrc'
+# old file still might be around
+ - rm -f CppCoreGuidelines.cpp.fixed
+ - node_modules/.bin/mdast CppCoreGuidelines.md --no-color -q --config-path ./.mdastrc 1> CppCoreGuidelines.cpp.fixed --frail
+
+# Compare mdast fiexd markdown output with original, can help authors understand errors better
+ #- "diff CppCoreGuidelines.md CppCoreGuidelines.cpp.fixed -u3 || (echo \"Error: mdast found bad markdown syntax, see output above\" && false)"
+
+# find lines with tabs
+# old file still might be around
+# - rm -f CppCoreGuidelines.md.tabs
+# - cat CppCoreGuidelines.md | nl -ba | sed -s 's/\(^[^\t]*\)\t/\1--/g' | grep  $'\t'  | sed -s 's/\t/\*\*\*\*/g' > CppCoreGuidelines.md.tabs
+# - if [[ -s CppCoreGuidelines.md.tabs ]]; then echo 'Tabs found'; cat CppCoreGuidelines.md.tabs; false; fi;
+
+# check references unique
+# old file still might be around
+ - rm -f CppCoreGuidelines.md.uniq
+ - grep -oP '(?<=<a name=")[^\"]+' CppCoreGuidelines.md | uniq -d > CppCoreGuidelines.md.uniq
+ - if [[ -s CppCoreGuidelines.md.uniq ]]; then echo 'Found duplicate anchors:'; cat CppCoreGuidelines.md.uniq; false; fi;
+
+notifications:
+  email: false
