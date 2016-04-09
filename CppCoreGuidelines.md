@@ -1059,7 +1059,7 @@ Every pointer or reference to mutable data is a potential data race.
 
 You cannot have a race condition on immutable data.
 
-**Reference**: See the [rules for calling functions](#SS-call).
+**References**: See the [rules for calling functions](#SS-call).
 
 ##### Enforcement
 
@@ -1226,7 +1226,7 @@ Some preconditions can be expressed as assertions. For example:
 
 Ideally, that `Expects(x >= 0)` should be part of the interface of `sqrt()` but that's not easily done. For now, we place it in the definition (function body).
 
-**Reference**: `Expects()` is described in [GSL](#S-gsl).
+**References**: `Expects()` is described in [GSL](#S-gsl).
 
 ##### Note
 
@@ -15002,7 +15002,7 @@ In this example, `email` will be constructed before `first` and `last` because i
 
 If the class definition and the constructor body are in separate files, the long-distance influence that the order of member variable declarations has over the constructor's correctness will be even harder to spot.
 
-**References**
+**References**:
 
 [[Cline99]](#Cline99) §22.03-11, [[Dewhurst03]](Dewhurst03) §52-53, [[Koenig97]](#Koenig97) §4, [[Lakos96]](#Lakos96) §10.3.5, [[Meyers97]](#Meyers97) §13, [[Murray93]](#Murray93) §2.1.3, [[Sutter00]](#Sutter00) §47
 
