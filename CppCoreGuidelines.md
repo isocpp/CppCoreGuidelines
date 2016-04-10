@@ -15763,10 +15763,10 @@ Alternatively, we will decide that no change is needed and delete the entry.
 * <a name="SuttAlex05"></a>
   \[SuttAlex05\]:      H. Sutter and  A. Alexandrescu. C++ Coding Standards. Addison-Wesley 2005.
 * <a name="Sutter00"></a>
-  \[Sutter00\]:        H. Sutter. Exceptional C++ (Addison-Wesley, 2000).
+  [Sutter00]:        H. Sutter. Exceptional C++ (Addison-Wesley, 2000).
 * <a name="Sutter02"></a>
-  \[Sutter02\]:        H. Sutter. More Exceptional C++ (Addison-Wesley, 2002).
+  [Sutter02]:        H. Sutter. More Exceptional C++ (Addison-Wesley, 2002).
 * <a name="Sutter04"></a>
-  \[Sutter04\]:        H. Sutter. Exceptional C++ Style (Addison-Wesley, 2004).
+  [Sutter04]:        H. Sutter. Exceptional C++ Style (Addison-Wesley, 2004).
 * <a name="Taligent94"></a>
-  \[Taligent94\]: Taligent's Guide to Designing Programs (Addison-Wesley, 1994).
+  [Taligent94]: Taligent's Guide to Designing Programs (Addison-Wesley, 1994).
