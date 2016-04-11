@@ -52,7 +52,7 @@ show-diff: nodejs/node_modules/remark nodejs/remark/.remarkrc $(SOURCEPATH) $(BU
 .PHONY: check-references
 check-references: $(SOURCEPATH) $(BUILD_DIR) Makefile
 ## check references unique
-	rm $(BUILD_DIR)/$(SOURCEFILE).uniq
+	rm -f $(BUILD_DIR)/$(SOURCEFILE).uniq
 	grep -oP '(?<=<a name=")[^\"]+' $(SOURCEPATH) | uniq -d > $(BUILD_DIR)/$(SOURCEFILE).uniq
 ## check if output has data
 	if [ -s "build/CppCoreGuidelines.md.uniq" ]; then echo 'Found duplicate anchors:'; cat $(BUILD_DIR)/$(SOURCEFILE).uniq; false; fi
