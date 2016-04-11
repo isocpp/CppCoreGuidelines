@@ -10510,7 +10510,7 @@ We could carefully release the resource before the throw:
         int* p = new int[12];
         // ...
         if (i < 17) {
-            delete p;
+            delete[] p;
             throw Bad {"in f()", i};
         }
         // ...
