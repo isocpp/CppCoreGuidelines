@@ -554,16 +554,16 @@ Code clarity and performance. You don't need to write error handlers for errors 
 
 ##### Example
 
-    void initializer(Int x)
-    // Int is an alias used for integers
+    void initializer(Uint x)
+    // Uint is an alias used for unsigned integers
     {
-        static_assert(sizeof(Int) >= 4);    // do: compile-time check
+        static_assert(sizeof(Uint) >= 4);       // do: compile-time check
 
-        int bits = 0;         // don't: avoidable code
-        for (Int i = 1; i; i <<= 1)
+        int bits = 0;                           // don't: avoidable code
+        for (Uint i = 1; i; i <<= 1)
             ++bits;
         if (bits < 32)
-            cerr << "Int too small\n";
+            cerr << "Uint too small\n";
 
         // ...
     }
