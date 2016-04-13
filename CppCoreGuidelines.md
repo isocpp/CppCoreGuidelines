@@ -10229,7 +10229,7 @@ production software at this very moment. One very simple example:
 
     int get_id() {
       static int id = 1;
-      return i++;
+      return id++;
     }
 
 The increment here is an example of a data race. This can go wrong in many ways,
