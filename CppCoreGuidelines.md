@@ -2972,7 +2972,7 @@ The language guarantees that a `T&` refers to an object, so that testing for `nu
         wheel& get_wheel(size_t i) { Expects(i<4); return w[i]; }
         // ...
     };
-     
+
     void use()
     {
         car c;
@@ -5712,7 +5712,7 @@ Interfaces should normally be composed entirely of public pure virtual functions
 
 The `Derived` is `delete`d through its `Goof` interface, so its `string` is leaked.
 Give `Goof` a virtual destructor and all is well.
-    
+
 
 ##### Enforcement
 
@@ -5733,14 +5733,14 @@ Such as on an ABI (link) boundary.
 
     class D1 : public Device {
         // ... data ...
-        
+
         void write(span<const char> outbuf) override;
         void read(span<char> inbuf) override;
     };
 
     class D2 : public Device {
         // ... differnt data ...
-        
+
         void write(span<const char> outbuf) override;
         void read(span<char> inbuf) override;
     };
@@ -5831,7 +5831,7 @@ Use `virtual` only when declaring a new virtual function. Use `override` only wh
     };
 
     struct D2 : B {
-        virtual void f2(int) final;  // BAD; pitfall, D2::f does not override B::f 
+        virtual void f2(int) final;  // BAD; pitfall, D2::f does not override B::f
     };
 
 ##### Enforcement
@@ -6130,7 +6130,7 @@ However, misuses are (or at least has been) far more common.
 ##### Enforcement
 
 Flag uses of `final`.
-   
+
 
 ## <a name="Rh-virtual-default-arg"></a>C.140: Do not provide different default arguments for a virtual function and an overrider
 
@@ -6645,7 +6645,7 @@ Many parts of the C++ semantics assumes its default meaning.
     private:
         T* p;
     };
-        
+
     class X {
         Ptr operator&() { return Ptr{this}; }
         // ...
@@ -6753,7 +6753,7 @@ By itself, `cout_my_class` would be OK, but it is not usable/composabe with code
 
 ##### Note
 
-There are strong and vigorous conventions for the meaning most operators, such as 
+There are strong and vigorous conventions for the meaning most operators, such as
 
 * comparisons (`==`, `!=`, `<`, `<=`, `>`, and `>=`),
 * arithmetic operations (`+`, `-`, `*`, `/`, and `%`)
@@ -9532,7 +9532,7 @@ double or int64 from int32), brace initialization may be used instead.
 This makes it clear that the type conversion was intended and also prevents
 conversions between types that might result in loss of precision. (It is a
 compilation error to try to initialize a float from a double in this fashion,
-for example.) 
+for example.)
 
 ##### Enforcement
 
@@ -9589,7 +9589,7 @@ Moving is done implicitly when the source is an rvalue (e.g., value in a `return
 
 In general, following the guidelines in this document (including not making variables' scopes needlessly large, writing short functions that return values, returning local variables) help eliminate most need for explicit `std::move`.
 
-Explicit `move` is needed to explicitly move an object to another scope, notably to pass it to a "sink" function and in the implementations of the move operations themselves (move constructor, move assignment operator) and swap operations. 
+Explicit `move` is needed to explicitly move an object to another scope, notably to pass it to a "sink" function and in the implementations of the move operations themselves (move constructor, move assignment operator) and swap operations.
 
 ##### Example, bad
 
@@ -9612,7 +9612,7 @@ And after you do that, assume the object has been moved from (see [C.64](#Rc-mov
 
         string s2 = s1;             // ok, takes a copy
         assert(s1=="supercalifragilisticexpialidocious");  // ok
-        
+
         string s3 = move(s1);       // bad, if you want to keep using s1's value
         assert(s1=="supercalifragilisticexpialidocious");  // bad, assert will likely fail, s1 likely changed
     }
@@ -9624,9 +9624,9 @@ And after you do that, assume the object has been moved from (see [C.64](#Rc-mov
     void f() {
         auto w = make_unique<widget>();
         // ...
-        sink( std::move(w) );               // ok, give to sink() 
+        sink( std::move(w) );               // ok, give to sink()
         // ...
-        sink(w);    // Error: unique_ptr is carefully designed so that you cannot copy it 
+        sink(w);    // Error: unique_ptr is carefully designed so that you cannot copy it
     }
 
 ##### Notes
@@ -9648,7 +9648,7 @@ In general, don't complicate your code without reason (??)
 
 Never write `return move(local_variable);`, because the language already knows the variable is a move candidate.
 Writing `move` in this code won't help, and can actually be detrimental because on some compilers it interferes with RVO (the return value optimization) by creating an additional reference alias to the local variable.
- 
+
 
 ##### Example, bad
 
@@ -9676,7 +9676,7 @@ The language already knows that a returned value is a temporary object that can 
 
 * Flag use of `std::move(x)` where `x` is an rvalue or the language will already treat it as an rvalue, including `return std::move(local_variable);` and `std::move(f())` on a function that returns by value.
 * Flag functions taking an `S&&` parameter if there is no `const S&` overload to take care of lvalues.
-* Flag a `std::move`s argument passed to a parameter, except when the parameter type is one of the following: an `X&&` rvalue reference; a `T&&` forwarding reference where `T` is a template parameter type; or by value and the type is move-only. 
+* Flag a `std::move`s argument passed to a parameter, except when the parameter type is one of the following: an `X&&` rvalue reference; a `T&&` forwarding reference where `T` is a template parameter type; or by value and the type is move-only.
 * Flag when `std::move` is applied to a forwarding reference (`T&&` where `T` is a template parameter type). Use `std::forward` instead.
 * Flag when `std::move` is applied to other than an rvalue reference. (More general case of the previous rule to cover the non-forwarding cases.)
 * Flag when `std::forward` is applied to an rvalue reference (`X&&` where `X` is a concrete type). Use `std::move` instead.
@@ -10927,7 +10927,7 @@ This, of course, assumes a good implementation of the exception handling mechani
 There are also cases where the problems above do not apply, but exceptions cannot be used for other reasons.
 Some hard real-time systems are an example: An operation has to be completed within a fixed time with an error or a correct answer.
 In the absence of appropriate time estimation tools, this is hard to guarantee for exceptions.
-Such systems (e.g. flight control software) typically also ban the use of dynamic (heap) memory. 
+Such systems (e.g. flight control software) typically also ban the use of dynamic (heap) memory.
 
 So, the primary guideline for error handling is "use exceptions and [RAII](#Re-raii)."
 This section deals with the cases where you either do not have an efficient implementation or exceptions
@@ -11065,7 +11065,7 @@ For example:
         if (!r.second) {
                 // error handling
         }
-        Gadget& g = r.first; 
+        Gadget& g = r.first;
         // ...
     }
 
@@ -11084,7 +11084,7 @@ For example:
         if (!r.err) {
                 // error handling
         }
-        Gadget& g = r.val; 
+        Gadget& g = r.val;
         // ...
     }
 
@@ -11102,21 +11102,21 @@ This can be messy:
         if (!g1.valid()) {
                 return {0,g1_error};
         }
-        
+
         Gadget g2 = make_gadget(17);
         if (!g2.valid()) {
                 cleanup(g1);
                 return {0,g2_error};
         }
-        
+
         // ...
-        
+
         if (all_foobar(g1,g2)) {
             cleanup(g1);
             cleanup(g2);
             return {0,foobar_error};
         // ...
-        
+
         cleanup(g1);
         cleanup(g2);
         return {res,0};
@@ -11128,26 +11128,26 @@ A not uncommon technique is to gather cleanup at the end of the function to avoi
     std::pair<int,error_indicator> user()
     {
         error_indicator err = 0;
-        
+
         Gadget g1 = make_gadget(17);
         if (!g1.valid()) {
                 err = g2_error;
                 goto exit;
         }
-        
+
         Gadget g2 = make_gadget(17);
         if (!g2.valid()) {
                 err = g2_error;
                 goto exit;
         }
-        
+
         if (all_foobar(g1,g2)) {
             err = foobar_error;
             goto exit;
         }
         // ...
 
-  exit:  
+  exit:
         if (g1.valid()) cleanup(g1);
         if (g1.valid()) cleanup(g2);
         return {res,err};
@@ -11294,7 +11294,7 @@ but that should be done only when the called function is supposed to modify the 
     {
         int x = 7;
         const int y = 9;
-        
+
         for (;;) {
             // ...
         }
@@ -12087,10 +12087,10 @@ The rule supports the view that a concept should reflect a (mathematically) cohe
     {
         if (!(x==y) { /* ... */ }    // OK
         if (x!=y) { /* ... */ }      //surprise! error
-        
+
         while (!(x<y)) { /* ... */ }    // OK
         while (x>=y) { /* ... */ }      //surprise! error
-        
+
         x = x+y;        // OK
         x += y;      // surprise! error
     }
@@ -12114,10 +12114,10 @@ It could even be less efficient.
     {
         if (!(x==y) { /* ... */ }    // OK
         if (x!=y) { /* ... */ }      //OK
-        
+
         while (!(x<y)) { /* ... */ }    // OK
         while (x>=y) { /* ... */ }      //OK
-        
+
         x = x+y;     // OK
         x += y;      // OK
     }
@@ -13533,7 +13533,7 @@ For a variable-length array, use `std::vector`, which additionally can change it
 ##### Example
 
     int v[SIZE];                        // BAD
-     
+
     std::array<int,SIZE> w;             // ok
 
 ##### Example
@@ -13557,7 +13557,7 @@ Even when other containers seem more suited, such a `map` for O(log N) lookup pe
 
 ##### Note
 
-`string` should not be used as a container of individual characters. A `string` is a textual string; if you want a container of characters, use `vector</*char_type*/>` or `array</*char_type*/>` instead. 
+`string` should not be used as a container of individual characters. A `string` is a textual string; if you want a container of characters, use `vector</*char_type*/>` or `array</*char_type*/>` instead.
 
 ##### Exceptions
 
@@ -13565,7 +13565,7 @@ If you have a good reason to use another container, use that instead. For exampl
 
 * If `vector` suits your needs but you don't need the container to be variable size, use `array` instead.
 
-* If you want a dictionary-style lookup container that guarantees O(K) or O(log N) lookups, the container will be larger (more than a few KB) and you perform frequent inserts so that the overhead of maintaining a sorted `vector` is infeasible, go ahead and use an `unordered_map` or `map` instead. 
+* If you want a dictionary-style lookup container that guarantees O(K) or O(log N) lookups, the container will be larger (more than a few KB) and you perform frequent inserts so that the overhead of maintaining a sorted `vector` is infeasible, go ahead and use an `unordered_map` or `map` instead.
 
 ##### Enforcement
 
@@ -13905,8 +13905,8 @@ Sometimes you may be tempted to resort to `const_cast` to avoid code duplication
     class foo {
         bar mybar;
     public:                         // BAD, duplicates logic
-              bar& get_bar()       { /* complex logic around getting a non-const reference to mybar */ } 
-        const bar& get_bar() const { /* same complex logic around getting a const reference to mybar */ } 
+              bar& get_bar()       { /* complex logic around getting a non-const reference to mybar */ }
+        const bar& get_bar() const { /* same complex logic around getting a const reference to mybar */ }
     };
 
 Instead, prefer to share implementations. Normally, you can just have the non-`const` function call the `const` function. However, when there is complex logic this can lead to the following pattern that still resorts to a `const_cast`:
@@ -13914,8 +13914,8 @@ Instead, prefer to share implementations. Normally, you can just have the non-`c
     class foo {
         bar mybar;
     public:                         // not great, non-const calls const version but resorts to const_cast
-              bar& get_bar()       { return const_cast<bar&>(static_cast<const foo&>(*this).get_bar()); } 
-        const bar& get_bar() const { /* the complex logic around getting a const reference to mybar */ } 
+              bar& get_bar()       { return const_cast<bar&>(static_cast<const foo&>(*this).get_bar()); }
+        const bar& get_bar() const { /* the complex logic around getting a const reference to mybar */ }
     };
 
 Although this pattern is safe when applied correctly, because the caller must have had a non-`const` object to begin with, it's not ideal because the safety is hard to enforce automatically as a checker rule.
@@ -13927,11 +13927,11 @@ Instead, prefer to put the common code in a common helper function -- and make i
 
         template<class T>           // good, deduces whether T is const or non-const
         static auto get_bar_impl(T& t) -> decltype(t.get_bar())
-            { /* the complex logic around getting a possibly-const reference to mybar */ } 
+            { /* the complex logic around getting a possibly-const reference to mybar */ }
 
     public:                         // good
-              bar& get_bar()       { return get_bar_impl(*this); } 
-        const bar& get_bar() const { return get_bar_impl(*this); } 
+              bar& get_bar()       { return get_bar_impl(*this); }
+        const bar& get_bar() const { return get_bar_impl(*this); }
     };
 
 **Exception**: You may need to cast away `const` when calling `const`-incorrect functions. Prefer to wrap such functions in inline `const`-correct wrappers to encapsulate the cast in one place.
@@ -15072,7 +15072,7 @@ Here is an example of the last option:
 
         template<class T>
         friend shared_ptr<T> B::Create();
-    };    
+    };
 
     shared_ptr<D> p = D::Create<D>();    // creating a D object
 
