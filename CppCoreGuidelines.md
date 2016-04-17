@@ -5531,7 +5531,7 @@ It's a standard-library requirement.
 ##### Example, bad
 
     template<>
-    struct hash<My_type> {	// thoroughly bad hash specialization
+    struct hash<My_type> {  // thoroughly bad hash specialization
         using result_type = size_t;
         using argument_type = My_type;
 
@@ -14333,7 +14333,7 @@ The names are mostly ISO standard-library style (lower case and underscore):
 
 * `T*`      // The `T*` is not an owner, may be null; assumed to be pointing to a single element.
 * `char*`   // A C-style string (a zero-terminated array of characters); may be null.
-* `const char*` 	// A C-style string; may be null.
+* `const char*`  // A C-style string; may be null.
 * `T&`      // The `T&` is not an owner and can never be a "null reference"; references are always bound to objects.
 
 The "raw-pointer" notation (e.g. `int*`) is assumed to have its most common meaning; that is, a pointer points to an object, but does not own it.

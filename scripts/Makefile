@@ -15,7 +15,8 @@ default: all
 .PHONY: all
 all: \
 check-markdown \
-check-references
+check-references \
+check-notabs
 
 
 $(BUILD_DIR):
@@ -57,6 +58,14 @@ check-references: $(SOURCEPATH) $(BUILD_DIR) Makefile
 ## check if output has data
 	if [ -s "build/CppCoreGuidelines.md.uniq" ]; then echo 'Found duplicate anchors:'; cat $(BUILD_DIR)/$(SOURCEFILE).uniq; false; fi
 
+.PHONY: check-notabs
+check-notabs: $(SOURCEPATH) $(BUILD_DIR) Makefile
+# find lines with tabs
+# old file still might be around
+	rm -f $(BUILD_DIR)/CppCoreGuidelines.md.tabs
+# print file, add line numbers, remove tabs from nl tool, grep for remaining tabs, replace with stars
+	cat ../CppCoreGuidelines.md | nl -ba | sed -s 's/\(^[^\t]*\)\t/\1--/g' | grep -P '\t' | sed -s 's/\t/\*\*\*\*/g' > $(BUILD_DIR)/CppCoreGuidelines.md.tabs
+	if [ -s $(BUILD_DIR)/CppCoreGuidelines.md.tabs ]; then echo 'Warning: Tabs found:'; cat $(BUILD_DIR)/CppCoreGuidelines.md.tabs; false; fi;
 
 #### install npm modules
 # install/update npm dependencies defined in file package.json
