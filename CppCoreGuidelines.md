@@ -5696,6 +5696,7 @@ Interfaces should normally be composed entirely of public pure virtual functions
 The `Derived` is `delete`d through its `Goof` interface, so its `string` is leaked.
 Give `Goof` a virtual destructor and all is well.
     
+
 ##### Enforcement
 
 * Warn on any class that contains data members and also has an overridable (non-`final`) virtual function.
@@ -6113,6 +6114,7 @@ However, misuses are (or at least has been) far more common.
 
 Flag uses of `final`.
    
+
 ## <a name="Rh-virtual-default-arg"></a>C.140: Do not provide different default arguments for a virtual function and an overrider
 
 ##### Reason
@@ -9630,6 +9632,7 @@ In general, don't complicate your code without reason (??)
 Never write `return move(local_variable);`, because the language already knows the variable is a move candidate.
 Writing `move` in this code won't help, and can actually be detrimental because on some compilers it interferes with RVO (the return value optimization) by creating an additional reference alias to the local variable.
  
+
 ##### Example, bad
 
     vector<int> v = std::move(make_vector());   // bad; the std::move is entirely redundant
