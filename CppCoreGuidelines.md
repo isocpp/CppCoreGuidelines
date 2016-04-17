@@ -7012,7 +7012,7 @@ Here, we ignore such cases.
   * [R.30: Take smart pointers as parameters only to explicitly express lifetime semantics](#Rr-smartptrparam)
   * [R.31: If you have non-`std` smart pointers, follow the basic pattern from `std`](#Rr-smart)
   * [R.32: Take a `unique_ptr<widget>` parameter to express that a function assumes ownership of a `widget`](#Rr-uniqueptrparam)
-  * [R.33: Take a `unique_ptr<widget>&` parameter to express that a function reseats the`widget`](#Rr-reseat)
+  * [R.33: Take a `unique_ptr<widget>&` parameter to express that a function reseats the `widget`](#Rr-reseat)
   * [R.34: Take a `shared_ptr<widget>` parameter to express that a function is part owner](#Rr-sharedptrparam-owner)
   * [R.35: Take a `shared_ptr<widget>&` parameter to express that a function might reseat the shared pointer](#Rr-sharedptrparam)
   * [R.36: Take a `const shared_ptr<widget>&` parameter to express that it might retain a reference count to the object ???](#Rr-sharedptrparam-const)
@@ -8430,7 +8430,7 @@ solution:
         j = f4();
     }
 
-Now the compiler cannot even simply detect a used-before-set.  Further, we've introduced complexity in the state space for widget: which operations are valid on an `unint` widget and which are not?
+Now the compiler cannot even simply detect a used-before-set. Further, we've introduced complexity in the state space for widget: which operations are valid on an `uninit` widget and which are not?
 
 ##### Note
 
@@ -9112,7 +9112,7 @@ It is easy to overlook the fallthrough. Be explicit:
         break;
     case Warning:
         write_event_log();
-        // fall through
+        // fallthrough
     case Error:
         display_error_window(); // Bad
         break;
@@ -9134,7 +9134,7 @@ Multiple case labels of a single statement is OK:
 
 ##### Enforcement
 
-Flag all fall throughs from non-empty `case`s.
+Flag all fallthroughs from non-empty `case`s.
 
 ### <a name="Res-default"></a>ES.79: ??? `default`
 
