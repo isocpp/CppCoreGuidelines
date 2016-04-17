@@ -4692,7 +4692,7 @@ If the state of a base class object must depend on the state of a derived part o
         }
     };
 
-    class D : public B { /* "¦ */ };            // some derived class
+    class D : public B { /* ... */ };            // some derived class
 
     shared_ptr<D> p = D::Create<D>();        // creating a D object
 
@@ -7257,7 +7257,7 @@ The members of a scoped object are themselves scoped and the scoped object's con
 
 ##### Example
 
-The following example is inefficient (because it has unnecessary allocation and deallocation), vulnerable to exception throws and returns in the "¦ part (leading to leaks), and verbose:
+The following example is inefficient (because it has unnecessary allocation and deallocation), vulnerable to exception throws and returns in the `...` part (leading to leaks), and verbose:
 
     void some_function(int n)
     {
@@ -15676,7 +15676,7 @@ Alternatively, we will decide that no change is needed and delete the entry.
 * How granular should namespaces be? All classes/functions designed to work together and released together (as defined in Sutter/Alexandrescu) or something narrower or wider?
 * Should there be inline namespaces (à la `std::literals::*_literals`)?
 * Avoid implicit conversions
-* Const member functions should be thread safe "¦ aka, but I don't really change the variable, just assign it a value the first time it’s called "¦ argh
+* Const member functions should be thread safe ... aka, but I don't really change the variable, just assign it a value the first time it’s called ... argh
 * Always initialize variables, use initialization lists for member variables.
 * Anyone writing a public interface which takes or returns `void*` should have their toes set on fire. That one has been a personal favorite of mine for a number of years. :)
 * Use `const`-ness wherever possible: member functions, variables and (yippee) `const_iterators`
