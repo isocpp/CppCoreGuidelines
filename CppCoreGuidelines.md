@@ -727,7 +727,7 @@ We could check earlier and improve the code:
         const int n = 10;
         int a[n] = {};
         // ...
-        increment2({a, m});    // maybe typo, maybe m<=n is supposed
+        increment2({a, m});    // maybe typo, maybe m <= n is supposed
         // ...
     }
 
@@ -772,7 +772,7 @@ The date is validated twice (by the `Date` constructor) and passed as a characte
 Excess checking can be costly.
 There are cases where checking early is dumb because you may not ever need the value, or may only need part of the value that is more easily checked than the whole.  Similarly, don't add validity checks that change the asymptotic behavior of your interface (e.g., don't add a `O(n)` check to an interface with an average complexity of `O(1)`).
 
-    class Jet {    // Physics says: e*e < x*x + y*y + z*z
+    class Jet {    // Physics says: e * e < x * x + y * y + z * z
 
         float x;
         float y;
@@ -788,7 +788,7 @@ There are cases where checking early is dumb because you may not ever need the v
         float m() const
         {
             // Should I handle the degenerate case here?
-            return sqrt(x*x + y*y + z*z - e*e);
+            return sqrt(x * x + y * y + z * z - e * e);
         }
 
         ???
@@ -914,7 +914,7 @@ There are several more performance bugs and gratuitous complication.
 
     void lower(zstring s)
     {
-        for (int i = 0; i<strlen(s); ++s) s[i] = tolower(s[i]);
+        for (int i = 0; i < strlen(s); ++s) s[i] = tolower(s[i]);
     }
 
 Yes, this is an example from production code.
@@ -2420,7 +2420,7 @@ It's efficient and eliminates bugs at the call site: `X&&` binds to rvalues, whi
 
     void sink(vector<int>&& v) {   // sink takes ownership of whatever the argument owned
         // usually there might be const accesses of v here
-        store_somewhere( std::move(v) );
+        store_somewhere(std::move(v));
         // usually no more use of v here; it is moved-from
     }
 
@@ -2664,9 +2664,9 @@ A `span` represents a range of elements, but how do we manipulate elements of th
     void f(span<int> s)
     {
         for (int x : s) cout << x << '\n';  // range traversal (guaranteed correct)
-        for (int i = 0; i<s.size(); ++i) cout << x << '\n';  // C-style traversal (potentially checked)
+        for (int i = 0; i < s.size(); ++i) cout << x << '\n';  // C-style traversal (potentially checked)
         s[7] = 9;                           // random access (potentially checked)
-        std::sort(&s[0],&s[s.size()/2]);    // extract pointers (potentially checked)
+        std::sort(&s[0], &s[s.size() / 2]);    // extract pointers (potentially checked)
     }
 
 ##### Note
@@ -2778,7 +2778,7 @@ Sometimes having `nullptr` as an alternative to indicated "no object" is useful,
 
     string zstring_to_string(zstring p) // zstring is a char*; that is a C-style string
     {
-        if (p==nullptr) return string{};    // p might be nullptr; remember to check
+        if (p == nullptr) return string{};    // p might be nullptr; remember to check
         return string{p};
     }
 
@@ -2966,10 +2966,10 @@ The language guarantees that a `T&` refers to an object, so that testing for `nu
 
     class car
     {
-        array<wheel,4> w;
+        array<wheel, 4> w;
         // ...
     public:
-        wheel& get_wheel(size_t i) { Expects(i<4); return w[i]; }
+        wheel& get_wheel(size_t i) { Expects(i < 4); return w[i]; }
         // ...
     };
 
@@ -3096,7 +3096,7 @@ Functions can't capture local variables or be declared at local scope; if you ne
         pool.run([=, &v]{
             /*
             ...
-            ... process 1/max-th of v, the tasknum-th chunk
+            ... process 1 / max - th of v, the tasknum - th chunk
             ...
             */
         });
@@ -3155,9 +3155,9 @@ This is a simple three-stage parallel pipeline. Each `stage` object encapsulates
 
     void send_packets(buffers& bufs)
     {
-        stage encryptor  ([] (buffer& b){ encrypt(b); });
-        stage compressor ([&](buffer& b){ compress(b); encryptor.process(b); });
-        stage decorator  ([&](buffer& b){ decorate(b); compressor.process(b); });
+        stage encryptor([] (buffer& b){ encrypt(b); });
+        stage compressor([&](buffer& b){ compress(b); encryptor.process(b); });
+        stage decorator([&](buffer& b){ decorate(b); compressor.process(b); });
         for (auto& b : bufs) { decorator.process(b); }
     }  // automatically blocks waiting for pipeline to finish
 
@@ -3211,7 +3211,7 @@ It's confusing. Writing `[=]` in a member function appears to capture by value, 
             int i = 0;
             // ...
 
-            auto lambda = [=]{ use(i,x); };   // BAD: "looks like" copy/value capture
+            auto lambda = [=]{ use(i, x); };   // BAD: "looks like" copy/value capture
                 // notes: [&] has identical semantics and copies the this pointer under the current rules
                 //        [=,this] and [&,this] are not much better, and confusing
             x = 42;
@@ -3221,7 +3221,7 @@ It's confusing. Writing `[=]` in a member function appears to capture by value, 
 
             // ...
 
-            auto lambda2 = [i,this]{ use(i,x); }; // ok, most explicit and least confusing
+            auto lambda2 = [i, this]{ use(i, x); }; // ok, most explicit and least confusing
 
             // ...
         }
@@ -3455,7 +3455,7 @@ This is a useful convention.
 ##### Example, bad
 
     struct Date {
-        int d,m;
+        int d, m;
 
         Date(int i, Month m);
         // ... lots of functions ...
@@ -5193,8 +5193,8 @@ To prevent slicing, because the normal copy operations will copy only the base p
 ##### Example
 
     class B { // GOOD: base class suppresses copying
-        B(const B&) =delete;
-        B& operator=(const B&) =delete;
+        B(const B&) = delete;
+        B& operator=(const B&) = delete;
         virtual unique_ptr<B> clone() { return /* B object */; }
         // ...
     };
@@ -5545,7 +5545,7 @@ It's a standard-library requirement.
 
     int main()
     {
-        unordered_map<My_type,int> m;
+        unordered_map<My_type, int> m;
         My_type mt{ "asdfg" };
         m[mt] = 7;
         cout << m[My_type{ "asdfg" }] << '\n';
@@ -6524,12 +6524,12 @@ Having the same name for logically different functions is confusing and leads to
 Consider:
 
     void open_gate(Gate& g);   // remove obstacle from garage exit lane
-    void fopen(const char*name, const char* mode);   // open file
+    void fopen(const char* name, const char* mode);   // open file
 
 The two operations are fundamentally different (and unrelated) so it is good that their names differ. Conversely:
 
     void open(Gate& g);   // remove obstacle from garage exit lane
-    void open(const char*name, const char* mode ="r");   // open file
+    void open(const char* name, const char* mode ="r");   // open file
 
 The two operations are still fundamentally different (and unrelated) but the names have been reduced to their (common) minimum, opening opportunities for confusion.
 Fortunately, the type system will catch many such mistakes.
@@ -6610,7 +6610,7 @@ How do we get `N::X` considered?
 
     void f2(N::X& a, N::X& b)
     {
-        swap(a,b);   // calls N::swap
+        swap(a, b);   // calls N::swap
     }
 
 But that may not be what we wanted for generic code.
@@ -6620,7 +6620,7 @@ This is done by including the general function in the lookup for the function:
     void f3(N::X& a, N::X& b)
     {
         using std::swap;  // make std::swap available
-        swap(a,b);        // calls N::swap if it exists, otherwise std::swap
+        swap(a, b);        // calls N::swap if it exists, otherwise std::swap
     }
 
 ##### Enforcement
@@ -6673,10 +6673,10 @@ Avoiding inconsistent definition in different namespaces
 ##### Example
 
     struct S { };
-    bool operator==(S,S);   // OK: in the same namespace as S, and even next to S
+    bool operator==(S, S);   // OK: in the same namespace as S, and even next to S
     S s;
 
-    bool s==s;
+    bool s == s;
 
 This is what a default `==` would do, if we had such defaults.
 
@@ -6684,12 +6684,12 @@ This is what a default `==` would do, if we had such defaults.
 
     namespace N {
         struct S { };
-        bool operator==(S,S);   // OK: in the same namespace as S, and even next to S
+        bool operator==(S, S);   // OK: in the same namespace as S, and even next to S
     }
 
     N::S s;
 
-    bool s==s;  // finds N::operator==() by ADL
+    bool s == s;  // finds N::operator==() by ADL
 
 ##### Example, bad
 
@@ -6921,7 +6921,7 @@ To minimize surprises: traditional enums convert to int too readily.
     void PrintColor(int color);
 
     enum Webcolor { red = 0xFF0000, green = 0x00FF00, blue = 0x0000FF };
-    enum Productinfo { Red=0, Purple=1, Blue=2 };
+    enum Productinfo { Red = 0, Purple = 1, Blue = 2 };
 
     Webcolor webby = Webcolor::blue;
 
@@ -6933,8 +6933,8 @@ Instead use an `enum class`:
 
     void PrintColor(int color);
 
-    enum class Webcolor { red=0xFF0000, green=0x00FF00, blue=0x0000FF };
-    enum class Productinfo { red=0, purple=1, blue=2 };
+    enum class Webcolor { red = 0xFF0000, green = 0x00FF00, blue = 0x0000FF };
+    enum class Productinfo { red = 0, purple = 1, blue = 2 };
 
     Webcolor webby = Webcolor::blue;
     PrintColor(webby);  // Error: cannot convert Webcolor to int.
@@ -8232,18 +8232,18 @@ or better using concepts:
 
 ##### Example
 
-    double scalbn(double x, int n);   // OK: x*pow(FLT_RADIX, n); FLT_RADIX is usually 2
+    double scalbn(double x, int n);   // OK: x * pow(FLT_RADIX, n); FLT_RADIX is usually 2
 
 or:
 
-    double scalbn(    // better: x*pow(FLT_RADIX, n); FLT_RADIX is usually 2
+    double scalbn(    // better: x * pow(FLT_RADIX, n); FLT_RADIX is usually 2
         double x,     // base value
         int n         // exponent
     );
 
 or:
 
-    double scalbn(double base, int exponent);   // better: base*pow(FLT_RADIX, exponent); FLT_RADIX is usually 2
+    double scalbn(double base, int exponent);   // better: base * pow(FLT_RADIX, exponent); FLT_RADIX is usually 2
 
 ##### Enforcement
 
@@ -8358,9 +8358,9 @@ At the cost of repeating `cond` we could write:
 
 Assuming that there is a logical connection between `i` and `j`, that connection should probably be expressed in code:
 
-    pair<widget,widget> make_related_widgets(bool x)
+    pair<widget, widget> make_related_widgets(bool x)
     {
-        return (x) ? {f1(),f2()} : {f3(),f4() };
+        return (x) ? {f1(), f2()} : {f3(), f4() };
     }
 
     auto init = make_related_widgets(cond);
@@ -8369,13 +8369,13 @@ Assuming that there is a logical connection between `i` and `j`, that connection
 
 Obviously, what we really would like is a construct that initialized n variables from a `tuple`. For example:
 
-    auto {i,j} = make_related_widgets(cond);    // Not C++14
+    auto {i, j} = make_related_widgets(cond);    // Not C++14
 
 Today, we might approximate that using `tie()`:
 
     widget i;       // bad: uninitialized variable
     widget j;
-    tie(i,j) = make_related_widgets(cond);
+    tie(i, j) = make_related_widgets(cond);
 
 This may be seen as an example of the *immediately initialize from input* exception below.
 
@@ -8394,14 +8394,14 @@ Many such errors are introduced during maintenance years after the initial imple
 It you are declaring an object that is just about to be initialized from input, initializing it would cause a double initialization.
 However, beware that this may leave uninitialized data beyond the input - and that has been a fertile source of errors and security breaches:
 
-    constexpr int max = 8*1024;
+    constexpr int max = 8 * 1024;
     int buf[max];         // OK, but suspicious: uninitialized
     f.read(buf, max);
 
 The cost of initializing that array could be significant in some situations.
 However, such examples do tend to leave uninitialized variables accessible, so they should be treated with suspicion.
 
-    constexpr int max = 8*1024;
+    constexpr int max = 8 * 1024;
     int buf[max] = {0};   // better in some situations
     f.read(buf, max);
 
@@ -8759,9 +8759,9 @@ If at all possible, reduce the conditions to a simple set of alternatives (e.g.,
 
     owner<istream&> in = [&]{
         switch (source) {
-        case default:       owned=false; return cin;
-        case command_line:  owned=true;  return *new istringstream{argv[2]};
-        case file:          owned=true;  return *new ifstream{argv[2]};
+        case default:       owned = false; return cin;
+        case command_line:  owned = true;  return *new istringstream{argv[2]};
+        case file:          owned = true;  return *new ifstream{argv[2]};
     }();
 
 ##### Enforcement
@@ -8804,12 +8804,12 @@ Macros complicate tool building.
 ##### Example, bad
 
     #define PI 3.14
-    #define SQUARE(a, b) (a*b)
+    #define SQUARE(a, b) (a * b)
 
 Even if we hadn't left a well-known bug in `SQUARE` there are much better behaved alternatives; for example:
 
     constexpr double pi = 3.14;
-    template<typename T> T square(T a, T b) { return a*b; }
+    template<typename T> T square(T a, T b) { return a * b; }
 
 ##### Enforcement
 
@@ -8823,9 +8823,9 @@ Convention. Readability. Distinguishing macros.
 
 ##### Example
 
-    #define forever for(;;)   /* very BAD */
+    #define forever for (;;)   /* very BAD */
 
-    #define FOREVER for(;;)   /* Still evil, but at least visible to humans */
+    #define FOREVER for (;;)   /* Still evil, but at least visible to humans */
 
 ##### Enforcement
 
@@ -8927,7 +8927,7 @@ Readability. Error prevention. Efficiency.
         cout << x << '\n';
 
     for (int i = 1; i < v.size(); ++i) // touches two elements: can't be a range-for
-        cout << v[i] + v[i-1] << '\n';
+        cout << v[i] + v[i - 1] << '\n';
 
     for (int i = 0; i < v.size(); ++i) // possible side-effect: can't be a range-for
         cout << f(v, &v[i]) << '\n';
@@ -9106,7 +9106,7 @@ This is an ad-hoc simulation of destructors. Declare your resources with handles
 
 ##### Example
 
-    switch(eventType)
+    switch (eventType)
     {
     case Information:
         update_status_bar();
@@ -9120,7 +9120,7 @@ This is an ad-hoc simulation of destructors. Declare your resources with handles
 
 It is easy to overlook the fallthrough. Be explicit:
 
-    switch(eventType)
+    switch (eventType)
     {
     case Information:
         update_status_bar();
@@ -9193,18 +9193,18 @@ The loop control up front should enable correct reasoning about what is happenin
 
 ##### Example
 
-    for (int i=0; i<10; ++i) {
+    for (int i = 0; i < 10; ++i) {
         // no updates to i -- ok
     }
 
-    for (int i=0; i<10; ++i) {
+    for (int i = 0; i < 10; ++i) {
         //
         if (/* something */) ++i; // BAD
         //
     }
 
-    bool skip=false;
-    for (int i=0; i<10; ++i) {
+    bool skip = false;
+    for (int i = 0; i < 10; ++i) {
         if (skip) { skip = false; continue; }
         //
         if (/* something */) skip = true;  // Better: using two variable for two concepts.
@@ -9251,9 +9251,9 @@ A programmer should know and use the basic rules for expressions.
 
 ##### Example
 
-    x=k * y + z;             // OK
+    x = k * y + z;             // OK
 
-    auto t1 = k*y;           // bad: unnecessarily verbose
+    auto t1 = k * y;           // bad: unnecessarily verbose
     x = t1 + z;
 
     if (0 <= x && x < max)   // OK
@@ -9611,20 +9611,20 @@ And after you do that, assume the object has been moved from (see [C.64](#Rc-mov
         string s1 = "supercalifragilisticexpialidocious";
 
         string s2 = s1;             // ok, takes a copy
-        assert(s1=="supercalifragilisticexpialidocious");  // ok
+        assert(s1 == "supercalifragilisticexpialidocious");  // ok
 
         string s3 = move(s1);       // bad, if you want to keep using s1's value
-        assert(s1=="supercalifragilisticexpialidocious");  // bad, assert will likely fail, s1 likely changed
+        assert(s1 == "supercalifragilisticexpialidocious");  // bad, assert will likely fail, s1 likely changed
     }
 
 ##### Example
 
-    void sink( unique_ptr<widget> p );  // pass ownership of p to sink()
+    void sink(unique_ptr<widget> p);  // pass ownership of p to sink()
 
     void f() {
         auto w = make_unique<widget>();
         // ...
-        sink( std::move(w) );               // ok, give to sink()
+        sink(std::move(w));               // ok, give to sink()
         // ...
         sink(w);    // Error: unique_ptr is carefully designed so that you cannot copy it
     }
@@ -9660,16 +9660,16 @@ The language already knows that a returned value is a temporary object that can 
 ##### Example
 
     void mover(X&& x) {
-        call_something( std::move(x) );         // ok
-        call_something( std::forward<X>(x) );   // bad, don't std::forward an rvalue reference
-        call_something( x );                    // suspicious, why not std::move?
+        call_something(std::move(x));         // ok
+        call_something(std::forward<X>(x));   // bad, don't std::forward an rvalue reference
+        call_something(x);                    // suspicious, why not std::move?
     }
 
     template<class T>
     void forwarder(T&& t) {
-        call_something( std::move(t) );         // bad, don't std::move a forwarding reference
-        call_something( std::forward<T>(t) );   // ok
-        call_something( t );                    // suspicious, why not std::forward?
+        call_something(std::move(t));         // bad, don't std::move a forwarding reference
+        call_something(std::forward<T>(t));   // ok
+        call_something(t);                    // suspicious, why not std::forward?
     }
 
 ##### Enforcement
@@ -9771,7 +9771,7 @@ In the rare cases where the slicing was deliberate the code can be surprising.
     class Shape { /* ... */ };
     class Circle : public Shape { /* ... */ Point c; int r; };
 
-    Circle c {{0,0}, 42};
+    Circle c {{0, 0}, 42};
     Shape s {c};    // copy Shape part of Circle
 
 The result will be meaningless because the center and radius will not be copied from `c` into `s`.
@@ -9932,7 +9932,7 @@ This also applies to `%`.
 
     double divide(int a, int b) {
         Expects(b != 0);            // good, address via precondition (and replace with contracts once C++ gets them)
-        return a/b;
+        return a / b;
     }
 
     double divide(int a, int b) {
@@ -10022,7 +10022,7 @@ Simple code can be very fast. Optimizers sometimes do marvels with simple code
 
     vector<uint8_t> v(100000);
 
-    for(auto& c : v)
+    for (auto& c : v)
         c = ~c;
 
 ##### Example, bad
@@ -10031,7 +10031,7 @@ Simple code can be very fast. Optimizers sometimes do marvels with simple code
 
     vector<uint8_t> v(100000);
 
-    for(size_t i=0; i<v.size(); i+=sizeof(uint64_t))
+    for (size_t i = 0; i < v.size(); i += sizeof(uint64_t))
     {
         uint64_t& quad_word = *reinterpret_cast<uint64_t*>(&v[i]);
         quad_word = ~quad_word;
@@ -10989,8 +10989,8 @@ In such cases, "crashing" is simply leaving error handling to the next level of 
     void do_something(int n)
     {
            // ...
-           p = static_cast<X*>(malloc(n,X));
-           if (p==nullptr) abort();     // abort if memory is exhausted
+           p = static_cast<X*>(malloc(n, X));
+           if (p == nullptr) abort();     // abort if memory is exhausted
            // ...
      }
 
@@ -11054,7 +11054,7 @@ What if we cannot or do not want to modify the `Gadget` type?
 In that case, we must return a pair of values.
 For example:
 
-    std::pair<Gadget,error_indicator> make_gadget(int n)
+    std::pair<Gadget, error_indicator> make_gadget(int n)
     {
         // ...
     }
@@ -11096,36 +11096,36 @@ and to avoid confusion with other uses of `std::pair`.
 In general, you must clean up before an eror exit.
 This can be messy:
 
-    std::pair<int,error_indicator> user()
+    std::pair<int, error_indicator> user()
     {
         Gadget g1 = make_gadget(17);
         if (!g1.valid()) {
-                return {0,g1_error};
+                return {0, g1_error};
         }
 
         Gadget g2 = make_gadget(17);
         if (!g2.valid()) {
                 cleanup(g1);
-                return {0,g2_error};
+                return {0, g2_error};
         }
 
         // ...
 
-        if (all_foobar(g1,g2)) {
+        if (all_foobar(g1, g2)) {
             cleanup(g1);
             cleanup(g2);
-            return {0,foobar_error};
+            return {0, foobar_error};
         // ...
 
         cleanup(g1);
         cleanup(g2);
-        return {res,0};
+        return {res, 0};
     }
 
 Simulating RAII can be non-trivial, especially in functions with multiple resources and multiple possible errors.
 A not uncommon technique is to gather cleanup at the end of the function to avoid repetittion:
 
-    std::pair<int,error_indicator> user()
+    std::pair<int, error_indicator> user()
     {
         error_indicator err = 0;
 
@@ -11141,7 +11141,7 @@ A not uncommon technique is to gather cleanup at the end of the function to avoi
                 goto exit;
         }
 
-        if (all_foobar(g1,g2)) {
+        if (all_foobar(g1, g2)) {
             err = foobar_error;
             goto exit;
         }
@@ -11150,7 +11150,7 @@ A not uncommon technique is to gather cleanup at the end of the function to avoi
   exit:
         if (g1.valid()) cleanup(g1);
         if (g1.valid()) cleanup(g2);
-        return {res,err};
+        return {res, err};
     }
 
 The larger the function, the more tempting this technique becomes.
@@ -11212,14 +11212,14 @@ Prevents accidental or hard-to-notice change of value.
 
     for (string& s : c) cout << s << '\n';    // BAD: just reading
 
-    for (string& s: c) cin>>s;  // needs to write: non-const
+    for (string& s : c) cin >> s;  // needs to write: non-const
 
 ##### Exception
 
 Function arguments are rarely mutated, but also rarely declared const.
 To avoid confusion and lots of false positives, don't enforce this rule for function arguments.
 
-    void f(const char*const p); // pedantic
+    void f(const char* const p); // pedantic
     void g(const int i);        // pedantic
 
 Note that function parameter is a local variable so changes to it are local.
@@ -11443,7 +11443,7 @@ Conceptually, the following requirements are wrong because what we want of `T` i
         // requires Incrementable<T>
     A sum1(vector<T>& v, A s)
     {
-        for (auto x : v) s+=x;
+        for (auto x : v) s += x;
         return s;
     }
 
@@ -11464,7 +11464,7 @@ And, in this case, missed an opportunity for a generalization.
         // requires Arithmetic<T>
     A sum(vector<T>& v, A s)
     {
-        for (auto x : v) s+=x;
+        for (auto x : v) s += x;
         return s;
     }
 
@@ -12030,20 +12030,20 @@ In general, passing function objects gives better performance than passing point
 
 ##### Example
 
-    bool greater(double x, double y) { return x>y; }
+    bool greater(double x, double y) { return x > y; }
     sort(v, greater);                                  // pointer to function: potentially slow
-    sort(v, [](double x, double y) { return x>y; });   // function object
+    sort(v, [](double x, double y) { return x > y; });   // function object
     sort(v, greater<>);                                // function object
 
-    bool greater_than_7(double x) { return x>7; }
+    bool greater_than_7(double x) { return x > 7; }
     auto x = find_if(v, greater_than_7);               // pointer to function: inflexible
-    auto y = find_if(v, [](double x) { return x>7; }); // function object: carries the needed data
+    auto y = find_if(v, [](double x) { return x > 7; }); // function object: carries the needed data
     auto z = find_if(v, Greater_than<double>(7));      // function object: carries the needed data
 
 You can, of course, gneralize those functions using `auto` or (when and where available) concepts. For example:
 
-    auto y1 = find_if(v, [](Ordered x) { return x>7; }); // reruire an ordered type
-    auto z1 = find_if(v, [](auto x) { return x>7; });    // hope that the type has a >
+    auto y1 = find_if(v, [](Ordered x) { return x > 7; }); // reruire an ordered type
+    auto z1 = find_if(v, [](auto x) { return x > 7; });    // hope that the type has a >
 
 ##### Note
 
@@ -12078,20 +12078,20 @@ The rule supports the view that a concept should reflect a (mathematically) cohe
         // ...
     };
 
-    bool operator==(const Minimal&,const Minimal&);
-    bool operator<(const Minimal&,const Minimal&);
+    bool operator==(const Minimal&, const Minimal&);
+    bool operator<(const Minimal&, const Minimal&);
     Minimal operator+(const Minimal&, const Minimal&);
     // no other operators
 
     void f(const Minimal& x, const Minimal& y)
     {
-        if (!(x==y) { /* ... */ }    // OK
+        if (!(x == y) { /* ... */ }    // OK
         if (x!=y) { /* ... */ }      //surprise! error
 
         while (!(x<y)) { /* ... */ }    // OK
-        while (x>=y) { /* ... */ }      //surprise! error
+        while (x >= y) { /* ... */ }      //surprise! error
 
-        x = x+y;        // OK
+        x = x + y;        // OK
         x += y;      // surprise! error
     }
 
@@ -12104,21 +12104,21 @@ It could even be less efficient.
         // ...
     };
 
-    bool operator==(const Convenient&,const Convenient&);
-    bool operator<(const Convenient&,const Convenient&);
+    bool operator==(const Convenient&, const Convenient&);
+    bool operator<(const Convenient&, const Convenient&);
     // ... and the other comparison operators ...
     Minimal operator+(const Convenient&, const Convenient&);
     // .. and the other arithmetic operators ...
 
     void f(const Convenient& x, const Convenient& y)
     {
-        if (!(x==y) { /* ... */ }    // OK
+        if (!(x == y) { /* ... */ }    // OK
         if (x!=y) { /* ... */ }      //OK
 
         while (!(x<y)) { /* ... */ }    // OK
-        while (x>=y) { /* ... */ }      //OK
+        while (x >= y) { /* ... */ }      //OK
 
-        x = x+y;     // OK
+        x = x + y;     // OK
         x += y;      // OK
     }
 
@@ -12268,8 +12268,8 @@ Semiregular requires default constructible.
         {
             Bad::S bad{ 1 };
             vector<int> v(10);
-            bool b = 1==bad;
-            bool b2 = v.size()==bad;
+            bool b = 1 == bad;
+            bool b2 = v.size() == bad;
        }
     }
 
@@ -13534,7 +13534,7 @@ For a variable-length array, use `std::vector`, which additionally can change it
 
     int v[SIZE];                        // BAD
 
-    std::array<int,SIZE> w;             // ok
+    std::array<int, SIZE> w;             // ok
 
 ##### Example
 
@@ -13856,7 +13856,7 @@ Use of these casts can violate type safety and cause the program to access a var
 
     void use(int i, Foo& x)
     {
-        if (0<i) {
+        if (0 < i) {
             Foobar& x1 = dynamic_cast<Foobar&>(x);  // error: Foo is not polymorphic
             Foobar& x2 = static_cast<Foobar&>(x);   // bad
             // ...
@@ -14042,7 +14042,7 @@ Reading from a vararg assumes that the correct type was actually passed. Passing
 
     int sum(...) {
         // ...
-        while(/*...*/)
+        while (/*...*/)
             result += va_arg(list, int); // BAD, assumes it will be passed ints
         // ...
     }
@@ -14475,7 +14475,7 @@ Comments are not updated as consistently as code.
 
 ##### Example, bad
 
-    auto x = m*v1 + vv;   // multiply m with v1 and add the result to vv
+    auto x = m * v1 + vv;   // multiply m with v1 and add the result to vv
 
 ##### Enforcement
 
