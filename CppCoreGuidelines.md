@@ -5724,13 +5724,13 @@ Such as on an ABI (link) boundary.
     };
 
     class D2 : public Device {
-        // ... differnt data ...
+        // ... different data ...
         
         void write(span<const char> outbuf) override;
         void read(span<char> inbuf) override;
     };
 
-A user can now use `D1`s and `D2`s interrchangeably through the interface provided by `Device`.
+A user can now use `D1`s and `D2`s interchangeably through the interface provided by `Device`.
 Furthermore, we can update `D1` and `D2` in a ways that are not binarily compatible with older versions as long as all access goes through `Device`.
 
 ##### Enforcement
@@ -6730,7 +6730,7 @@ Readability. Convention. Reusability. Support for generic code
         return os << /* class members here */;
     }
 
-By itself, `cout_my_class` would be OK, but it is not usable/composabe with code that rely on the `<<` convention for output:
+By itself, `cout_my_class` would be OK, but it is not usable/composable with code that rely on the `<<` convention for output:
 
     My_class var { /* ... */ };
     // ...
@@ -10854,7 +10854,7 @@ Let cleanup actions on the unwinding path be handled by [RAII](#Re-raii).
 
 This code is messy.
 There could be a leak from the naked pointer in the `try` block.
-Not all exceptiones are handled.
+Not all exceptions are handled.
 `deleting` an object that failed to construct is almost certainly a mistake.
 Better:
 
@@ -10901,8 +10901,8 @@ Even without exceptions, [RAII](#Re-raii) is usually the best and most systemati
 ##### Note
 
 Error handling using exceptions is the only complete and systematic way of handling non-local errors in C++.
-In particular, non-intrusively signalling failure to construct an object requires an exception.
-Signalling errors in a way that cannot be ignored requires exceptions.
+In particular, non-intrusively signaling failure to construct an object requires an exception.
+Signaling errors in a way that cannot be ignored requires exceptions.
 If you can't use exceptions, simulate their use as best you can.
 
 A lot of fear of exceptions is misguided.
@@ -11078,7 +11078,7 @@ and to avoid confusion with other uses of `std::pair`.
 
 ###### Example
 
-In general, you must clean up before an eror exit.
+In general, you must clean up before an error exit.
 This can be messy:
 
     std::pair<int,error_indicator> user()
@@ -11108,7 +11108,7 @@ This can be messy:
     }
 
 Simulating RAII can be non-trivial, especially in functions with multiple resources and multiple possible errors.
-A not uncommon technique is to gather cleanup at the end of the function to avoid repetittion:
+A not uncommon technique is to gather cleanup at the end of the function to avoid repetition:
 
     std::pair<int,error_indicator> user()
     {
@@ -11139,7 +11139,7 @@ A not uncommon technique is to gather cleanup at the end of the function to avoi
     }
 
 The larger the function, the more tempting this technique becomes.
-Aso, the larger the program becomes the harder it is to apply an error-indicator-based error handling strategy systematically.
+Also, the larger the program becomes the harder it is to apply an error-indicator-based error handling strategy systematically.
 
 We [prefer exception-based error handling](#Re-throw) and recommend [keeping functions short](#Rf-single).
 
@@ -11164,7 +11164,7 @@ See also [Simulating RAII](#Re-no-throw-raii).
 
 ##### Note
 
-C-stye error handling is based on the global variable `errno`, so it is essentially impossible to avoid this style completely.
+C-style error handling is based on the global variable `errno`, so it is essentially impossible to avoid this style completely.
 
 ##### Enforcement
 
@@ -12025,9 +12025,9 @@ In general, passing function objects gives better performance than passing point
     auto y = find_if(v, [](double x) { return x>7; }); // function object: carries the needed data
     auto z = find_if(v, Greater_than<double>(7));      // function object: carries the needed data
 
-You can, of course, gneralize those functions using `auto` or (when and where available) concepts. For example:
+You can, of course, generalize those functions using `auto` or (when and where available) concepts. For example:
 
-    auto y1 = find_if(v, [](Ordered x) { return x>7; }); // reruire an ordered type
+    auto y1 = find_if(v, [](Ordered x) { return x>7; }); // require an ordered type
     auto z1 = find_if(v, [](auto x) { return x>7; });    // hope that the type has a >
 
 ##### Note
@@ -12215,7 +12215,7 @@ Flag uses where an explicitly specialized type exactly matches the types of the 
         X(X&&);                 // move
         X& operator=(X&&);
         ~X();
-        // ... no moreconstructors ...
+        // ... no more constructors ...
     };
 
     X x {1};    // fine
@@ -12247,7 +12247,7 @@ Semiregular requires default constructible.
     }
 
     namespace T0 {
-        bool operator==(int, Bad::S) { cout << "T0\n"; return true; }  // compate to int
+        bool operator==(int, Bad::S) { cout << "T0\n"; return true; }  // compare to int
 
         void test()
         {
