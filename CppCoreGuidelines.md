@@ -1,6 +1,6 @@
 # <a name="main"></a>C++ Core Guidelines
 
-April 7, 2016
+April 17, 2016
 
 Editors:
 
@@ -221,6 +221,14 @@ We value expressiveness and uncompromised performance.
 The rules are not value-neutral.
 They are meant to make code simpler and more correct/safer than most existing C++ code, without loss of performance.
 They are meant to inhibit perfectly valid C++ code that correlates with errors, spurious complexity, and poor performance.
+
+The rules are not perfect.
+A rule can do harm by prohibiting something that is useful in a given situation.
+A rule can do harm by failing to prohibit something that enables a serious error in a given situation.
+A rule can do a lot of harm by being vague, ambiguous, unenforcable, or by enabling every solution to a problem.
+It is impossible to completely meet the "do no harm" criteria.
+Instead, our aim is the less ambitious: "Do the most good for most programmers";
+if you cannot live with a rule, object to it, ignore it, but don't water it down until it becomes meaningless.
 
 ## <a name="SS-force"></a>In.force: Enforcement
 
