@@ -371,7 +371,7 @@ The second version leaves the reader guessing and opens more possibilities for u
 
 ##### Example
 
-    void do_something(vector<string>& v)
+    void f(vector<string>& v)
     {
         string val;
         cin >> val;
@@ -388,7 +388,7 @@ The second version leaves the reader guessing and opens more possibilities for u
 That loop is a restricted form of `std::find`.
 A much clearer expression of intent would be:
 
-    void do_something(vector<string>& v)
+    void f(vector<string>& v)
     {
         string val;
         cin >> val;
@@ -2308,13 +2308,13 @@ When copying is cheap, nothing beats the simplicity and safety of copying, and f
 
 ##### Example
 
-    void fct(const string& s);  // OK: pass by reference to const; always cheap
+    void f1(const string& s);  // OK: pass by reference to const; always cheap
 
-    void fct2(string s);        // bad: potentially expensive
+    void f2(string s);         // bad: potentially expensive
 
-    void fct(int x);          // OK: Unbeatable
+    void f3(int x);            // OK: Unbeatable
 
-    void fct2(const int& x);  // bad: overhead on access in fct2()
+    void f4(const int& x);     // bad: overhead on access in f4()
 
 For advanced uses (only), where you really need to optimize for rvalues passed to "input-only" parameters:
 
@@ -7259,7 +7259,7 @@ The members of a scoped object are themselves scoped and the scoped object's con
 
 The following example is inefficient (because it has unnecessary allocation and deallocation), vulnerable to exception throws and returns in the `...` part (leading to leaks), and verbose:
 
-    void some_function(int n)
+    void f(int n)
     {
         auto p = new Gadget{n};
         // ...
@@ -7268,7 +7268,7 @@ The following example is inefficient (because it has unnecessary allocation and 
 
 Instead, use a local variable:
 
-    void some_function(int n)
+    void f(int n)
     {
         Gadget g{n};
         // ...
@@ -10971,7 +10971,7 @@ In such cases, "crashing" is simply leaving error handling to the next level of 
 
 ##### Example
 
-    void do_something(int n)
+    void f(int n)
     {
            // ...
            p = static_cast<X*>(malloc(n,X));
@@ -10981,7 +10981,7 @@ In such cases, "crashing" is simply leaving error handling to the next level of 
 
 Most systems cannot handle memory exhaustion gracefully anyway. This is roughly equivalent to
 
-    void do_something(Int n)
+    void f(Int n)
     {
            // ...
            p = new X[n];    // throw if memory is exhausted (by default, terminate)
