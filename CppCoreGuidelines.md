@@ -2315,13 +2315,13 @@ When copying is cheap, nothing beats the simplicity and safety of copying, and f
 
 ##### Example
 
-    void fct(const string& s);  // OK: pass by reference to const; always cheap
+    void f(const string& s);  // OK: pass by reference to const; always cheap
 
-    void fct2(string s);        // bad: potentially expensive
+    void f2(string s);        // bad: potentially expensive
 
-    void fct(int x);          // OK: Unbeatable
+    void f3(int x);          // OK: Unbeatable
 
-    void fct2(const int& x);  // bad: overhead on access in fct2()
+    void f4(const int& x);  // bad: overhead on access in f4()
 
 For advanced uses (only), where you really need to optimize for rvalues passed to "input-only" parameters:
 
@@ -7274,7 +7274,7 @@ The members of a scoped object are themselves scoped and the scoped object's con
 
 The following example is inefficient (because it has unnecessary allocation and deallocation), vulnerable to exception throws and returns in the "¦ part (leading to leaks), and verbose:
 
-    void some_function(int n)
+    void f(int n)
     {
         auto p = new Gadget{n};
         // ...
@@ -7283,7 +7283,7 @@ The following example is inefficient (because it has unnecessary allocation and 
 
 Instead, use a local variable:
 
-    void some_function(int n)
+    void f(int n)
     {
         Gadget g{n};
         // ...
