@@ -371,7 +371,7 @@ The second version leaves the reader guessing and opens more possibilities for u
 
 ##### Example
 
-    void do_something(vector<string>& v)
+    void f(vector<string>& v)
     {
         string val;
         cin >> val;
@@ -388,7 +388,7 @@ The second version leaves the reader guessing and opens more possibilities for u
 That loop is a restricted form of `std::find`.
 A much clearer expression of intent would be:
 
-    void do_something(vector<string>& v)
+    void f(vector<string>& v)
     {
         string val;
         cin >> val;
@@ -2315,13 +2315,13 @@ When copying is cheap, nothing beats the simplicity and safety of copying, and f
 
 ##### Example
 
-    void f(const string& s);  // OK: pass by reference to const; always cheap
+    void f1(const string& s);  // OK: pass by reference to const; always cheap
 
-    void f2(string s);        // bad: potentially expensive
+    void f2(string s);         // bad: potentially expensive
 
-    void f3(int x);          // OK: Unbeatable
+    void f3(int x);            // OK: Unbeatable
 
-    void f4(const int& x);  // bad: overhead on access in f4()
+    void f4(const int& x);     // bad: overhead on access in f4()
 
 For advanced uses (only), where you really need to optimize for rvalues passed to "input-only" parameters:
 
@@ -4707,7 +4707,7 @@ If the state of a base class object must depend on the state of a derived part o
         }
     };
 
-    class D : public B { /* "¦ */ };   // some derived class
+    class D : public B { /* ... */ };            // some derived class
 
     shared_ptr<D> p = D::Create<D>();  // creating a D object
 
@@ -5739,13 +5739,13 @@ Such as on an ABI (link) boundary.
     };
 
     class D2 : public Device {
-        // ... differnt data ...
-
+        // ... different data ...
+        
         void write(span<const char> outbuf) override;
         void read(span<char> inbuf) override;
     };
 
-A user can now use `D1`s and `D2`s interrchangeably through the interface provided by `Device`.
+A user can now use `D1`s and `D2`s interchangeably through the interface provided by `Device`.
 Furthermore, we can update `D1` and `D2` in a ways that are not binarily compatible with older versions as long as all access goes through `Device`.
 
 ##### Enforcement
@@ -6745,7 +6745,7 @@ Readability. Convention. Reusability. Support for generic code
         return os << /* class members here */;
     }
 
-By itself, `cout_my_class` would be OK, but it is not usable/composabe with code that rely on the `<<` convention for output:
+By itself, `cout_my_class` would be OK, but it is not usable/composable with code that rely on the `<<` convention for output:
 
     My_class var { /* ... */ };
     // ...
@@ -7027,7 +7027,7 @@ Here, we ignore such cases.
   * [R.30: Take smart pointers as parameters only to explicitly express lifetime semantics](#Rr-smartptrparam)
   * [R.31: If you have non-`std` smart pointers, follow the basic pattern from `std`](#Rr-smart)
   * [R.32: Take a `unique_ptr<widget>` parameter to express that a function assumes ownership of a `widget`](#Rr-uniqueptrparam)
-  * [R.33: Take a `unique_ptr<widget>&` parameter to express that a function reseats the`widget`](#Rr-reseat)
+  * [R.33: Take a `unique_ptr<widget>&` parameter to express that a function reseats the `widget`](#Rr-reseat)
   * [R.34: Take a `shared_ptr<widget>` parameter to express that a function is part owner](#Rr-sharedptrparam-owner)
   * [R.35: Take a `shared_ptr<widget>&` parameter to express that a function might reseat the shared pointer](#Rr-sharedptrparam)
   * [R.36: Take a `const shared_ptr<widget>&` parameter to express that it might retain a reference count to the object ???](#Rr-sharedptrparam-const)
@@ -7272,7 +7272,7 @@ The members of a scoped object are themselves scoped and the scoped object's con
 
 ##### Example
 
-The following example is inefficient (because it has unnecessary allocation and deallocation), vulnerable to exception throws and returns in the "¦ part (leading to leaks), and verbose:
+The following example is inefficient (because it has unnecessary allocation and deallocation), vulnerable to exception throws and returns in the `...` part (leading to leaks), and verbose:
 
     void f(int n)
     {
@@ -8445,7 +8445,7 @@ solution:
         j = f4();
     }
 
-Now the compiler cannot even simply detect a used-before-set.  Further, we've introduced complexity in the state space for widget: which operations are valid on an `unint` widget and which are not?
+Now the compiler cannot even simply detect a used-before-set. Further, we've introduced complexity in the state space for widget: which operations are valid on an `uninit` widget and which are not?
 
 ##### Note
 
@@ -9127,7 +9127,7 @@ It is easy to overlook the fallthrough. Be explicit:
         break;
     case Warning:
         write_event_log();
-        // fall through
+        // fallthrough
     case Error:
         display_error_window(); // Bad
         break;
@@ -9149,7 +9149,7 @@ Multiple case labels of a single statement is OK:
 
 ##### Enforcement
 
-Flag all fall throughs from non-empty `case`s.
+Flag all fallthroughs from non-empty `case`s.
 
 ### <a name="Res-default"></a>ES.79: ??? `default`
 
@@ -10869,7 +10869,7 @@ Let cleanup actions on the unwinding path be handled by [RAII](#Re-raii).
 
 This code is messy.
 There could be a leak from the naked pointer in the `try` block.
-Not all exceptiones are handled.
+Not all exceptions are handled.
 `deleting` an object that failed to construct is almost certainly a mistake.
 Better:
 
@@ -10916,8 +10916,8 @@ Even without exceptions, [RAII](#Re-raii) is usually the best and most systemati
 ##### Note
 
 Error handling using exceptions is the only complete and systematic way of handling non-local errors in C++.
-In particular, non-intrusively signalling failure to construct an object requires an exception.
-Signalling errors in a way that cannot be ignored requires exceptions.
+In particular, non-intrusively signaling failure to construct an object requires an exception.
+Signaling errors in a way that cannot be ignored requires exceptions.
 If you can't use exceptions, simulate their use as best you can.
 
 A lot of fear of exceptions is misguided.
@@ -10986,7 +10986,7 @@ In such cases, "crashing" is simply leaving error handling to the next level of 
 
 ##### Example
 
-    void do_something(int n)
+    void f(int n)
     {
            // ...
            p = static_cast<X*>(malloc(n, X));
@@ -10996,7 +10996,7 @@ In such cases, "crashing" is simply leaving error handling to the next level of 
 
 Most systems cannot handle memory exhaustion gracefully anyway. This is roughly equivalent to
 
-    void do_something(Int n)
+    void f(Int n)
     {
            // ...
            p = new X[n];    // throw if memory is exhausted (by default, terminate)
@@ -11093,7 +11093,7 @@ and to avoid confusion with other uses of `std::pair`.
 
 ###### Example
 
-In general, you must clean up before an eror exit.
+In general, you must clean up before an error exit.
 This can be messy:
 
     std::pair<int, error_indicator> user()
@@ -11123,7 +11123,7 @@ This can be messy:
     }
 
 Simulating RAII can be non-trivial, especially in functions with multiple resources and multiple possible errors.
-A not uncommon technique is to gather cleanup at the end of the function to avoid repetittion:
+A not uncommon technique is to gather cleanup at the end of the function to avoid repetition:
 
     std::pair<int, error_indicator> user()
     {
@@ -11154,7 +11154,7 @@ A not uncommon technique is to gather cleanup at the end of the function to avoi
     }
 
 The larger the function, the more tempting this technique becomes.
-Aso, the larger the program becomes the harder it is to apply an error-indicator-based error handling strategy systematically.
+Also, the larger the program becomes the harder it is to apply an error-indicator-based error handling strategy systematically.
 
 We [prefer exception-based error handling](#Re-throw) and recommend [keeping functions short](#Rf-single).
 
@@ -11179,7 +11179,7 @@ See also [Simulating RAII](#Re-no-throw-raii).
 
 ##### Note
 
-C-stye error handling is based on the global variable `errno`, so it is essentially impossible to avoid this style completely.
+C-style error handling is based on the global variable `errno`, so it is essentially impossible to avoid this style completely.
 
 ##### Enforcement
 
@@ -12040,10 +12040,10 @@ In general, passing function objects gives better performance than passing point
     auto y = find_if(v, [](double x) { return x > 7; }); // function object: carries the needed data
     auto z = find_if(v, Greater_than<double>(7));      // function object: carries the needed data
 
-You can, of course, gneralize those functions using `auto` or (when and where available) concepts. For example:
+You can, of course, generalize those functions using `auto` or (when and where available) concepts. For example:
 
-    auto y1 = find_if(v, [](Ordered x) { return x > 7; }); // reruire an ordered type
-    auto z1 = find_if(v, [](auto x) { return x > 7; });    // hope that the type has a >
+    auto y1 = find_if(v, [](Ordered x) { return x>7; }); // require an ordered type
+    auto z1 = find_if(v, [](auto x) { return x>7; });    // hope that the type has a >
 
 ##### Note
 
@@ -12230,7 +12230,7 @@ Flag uses where an explicitly specialized type exactly matches the types of the 
         X(X&&);                 // move
         X& operator=(X&&);
         ~X();
-        // ... no moreconstructors ...
+        // ... no more constructors ...
     };
 
     X x {1};    // fine
@@ -12262,7 +12262,7 @@ Semiregular requires default constructible.
     }
 
     namespace T0 {
-        bool operator==(int, Bad::S) { cout << "T0\n"; return true; }  // compate to int
+        bool operator==(int, Bad::S) { cout << "T0\n"; return true; }  // compare to int
 
         void test()
         {
@@ -15691,7 +15691,7 @@ Alternatively, we will decide that no change is needed and delete the entry.
 * How granular should namespaces be? All classes/functions designed to work together and released together (as defined in Sutter/Alexandrescu) or something narrower or wider?
 * Should there be inline namespaces (à la `std::literals::*_literals`)?
 * Avoid implicit conversions
-* Const member functions should be thread safe "¦ aka, but I don't really change the variable, just assign it a value the first time it’s called "¦ argh
+* Const member functions should be thread safe ... aka, but I don't really change the variable, just assign it a value the first time it’s called ... argh
 * Always initialize variables, use initialization lists for member variables.
 * Anyone writing a public interface which takes or returns `void*` should have their toes set on fire. That one has been a personal favorite of mine for a number of years. :)
 * Use `const`-ness wherever possible: member functions, variables and (yippee) `const_iterators`
