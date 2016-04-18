@@ -16,7 +16,8 @@ default: all
 all: \
 check-markdown \
 check-references \
-check-notabs
+check-notabs \
+check-badchars
 
 
 $(BUILD_DIR):
@@ -66,6 +67,15 @@ check-notabs: $(SOURCEPATH) $(BUILD_DIR) Makefile
 # print file, add line numbers, remove tabs from nl tool, grep for remaining tabs, replace with stars
 	cat ../CppCoreGuidelines.md | nl -ba | sed -s 's/\(^[^\t]*\)\t/\1--/g' | grep -P '\t' | sed -s 's/\t/\*\*\*\*/g' > $(BUILD_DIR)/CppCoreGuidelines.md.tabs
 	if [ -s $(BUILD_DIR)/CppCoreGuidelines.md.tabs ]; then echo 'Warning: Tabs found:'; cat $(BUILD_DIR)/CppCoreGuidelines.md.tabs; false; fi;
+
+.PHONY: check-badchars
+check-badchars: $(SOURCEPATH) $(BUILD_DIR) Makefile
+# find lines with tabs
+# old file still might be around
+	rm -f $(BUILD_DIR)/CppCoreGuidelines.md.badchars
+# print file, add line numbers, grep for bad chars
+	cat ../CppCoreGuidelines.md | nl -ba | grep -P '’|‘|”|“|¸|–|…|¦' > $(BUILD_DIR)/CppCoreGuidelines.md.badchars || true
+	if [ -s $(BUILD_DIR)/CppCoreGuidelines.md.badchars ]; then echo 'Warning: Undesired chars (–’‘“”¸…¦) found:'; cat $(BUILD_DIR)/CppCoreGuidelines.md.badchars; false; fi;
 
 #### install npm modules
 # install/update npm dependencies defined in file package.json
