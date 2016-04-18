@@ -7,7 +7,7 @@ Editors:
 * [Bjarne Stroustrup](http://www.stroustrup.com)
 * [Herb Sutter](http://herbsutter.com/)
 
-This document is a very early draft. It is inkorrekt, incompleat, and pÂµÃ¸oorly formatted.
+This document is a very early draft. It is inkorrekt, incompleat, and pÂµÃoorly formatted.
 Had it been an open source (code) project, this would have been release 0.6.
 Copying, use, modification, and creation of derivative works from this project is licensed under an MIT-style license.
 Contributing to this project requires agreeing to a Contributor License. See the accompanying [LICENSE](LICENSE) file for details.
@@ -10275,7 +10275,7 @@ A lot of people, myself included, like to experiment with `std::memory_order`, b
 Even vendors mess this up: Microsoft had to fix their `shared_ptr` (weak refcount decrement wasn't synchronized-with the destructor, if I recall correctly, although it was only a problem on ARM, not Intel)
 and everyone (gcc, clang, Microsoft, and Intel) had to fix their `compare_exchange_*` this year, after an implementation bug caused losses to some finance company and they were kind enough to let the community know.
 
-It’s worth noting that `volatile` in C++ is not related to concurrency or
+It's worth noting that `volatile` in C++ is not related to concurrency or
 parallelism in any way. Some languages have chosen to give it threading-related
 semantics, so programmers familiar with such languages tend to think that the
 meaning is similar. Sadly, these programmers are mistaken. The C++ standard
@@ -10316,7 +10316,7 @@ Lock-free programming is writing concurrent code without the use of
 locks. Because there are no locks, lock-free algorithms tend to be far more
 subtle and error-prone than their locked counterparts. Many operations that are
 trivial with locking (e.g. deleting a link from a shared linked list) are much
-harder without them (following the example, how do you know you’re the *only*
+harder without them (following the example, how do you know you're the *only*
 thread inspecting that particular link, so you can free it?)
 
 Because of the added difficulty, expert-level knowledge of many subsystems,
@@ -15155,7 +15155,7 @@ In this rare case, you could make the destructor public and nonvirtual but clear
 
 In general, however, avoid concrete base classes (see Item 35). For example, `unary_function` is a bundle-of-typedefs that was never intended to be instantiated standalone. It really makes no sense to give it a public destructor; a better design would be to follow this Item's advice and give it a protected nonvirtual destructor.
 
-**References**: [\[C++CS\]](#C++CS) Item 50, [\[Cargill92\]](#Cargill92) pp. 77-79, 207¸ [\[Cline99\]](#Cline99) §21.06, 21.12-13¸ [\[Henricson97\]](#Henricson97) pp. 110-114¸ [\[Koenig97\]](#Koenig97) Chapters 4, 11¸ [\[Meyers97\]](#Meyers97) §14¸ [\[Stroustrup00\]](#Stroustrup00) §12.4.2¸ [\[Sutter02\]](#Sutter02) §27¸ [\[Sutter04\]](#Sutter04) §18
+**References**: [\[C++CS\]](#C++CS) Item 50, [\[Cargill92\]](#Cargill92) pp. 77-79, 207, [\[Cline99\]](#Cline99) §21.06, 21.12-13, [\[Henricson97\]](#Henricson97) pp. 110-114, [\[Koenig97\]](#Koenig97) Chapters 4, 11, [\[Meyers97\]](#Meyers97) §14, [\[Stroustrup00\]](#Stroustrup00) §12.4.2, [\[Sutter02\]](#Sutter02) §27, [\[Sutter04\]](#Sutter04) §18
 
 ### <a name="Sd-noexcept"></a>Discussion: Usage of noexcept
 
@@ -15247,7 +15247,7 @@ Fortunately, when releasing a resource, the scope for failure is definitely smal
 
 When using exceptions as your error handling mechanism, always document this behavior by declaring these functions `noexcept`. (See Item 75.)
 
-**References**: [\[C++CS\]](#C++CS) Item 51; [\[C++03\]](#C++03) §15.2(3), §17.4.4.8(3)¸ [\[Meyers96\]](#Meyers96) §11¸ [\[Stroustrup00\]](#Stroustrup00) §14.4.7, §E.2-4¸ [\[Sutter00\]](#Sutter00) §8, §16¸ [\[Sutter02\]](#Sutter02) §18-19
+**References**: [\[C++CS\]](#C++CS) Item 51; [\[C++03\]](#C++03) §15.2(3), §17.4.4.8(3), [\[Meyers96\]](#Meyers96) §11, [\[Stroustrup00\]](#Stroustrup00) §14.4.7, §E.2-4, [\[Sutter00\]](#Sutter00) §8, §16, [\[Sutter02\]](#Sutter02) §18-19
 
 ## <a name="Sd-consistent"></a>Define Copy, move, and destroy consistently
 
@@ -15333,7 +15333,7 @@ Prefer compiler-generated (including `=default`) special members; only these can
 In rare cases, classes that have members of strange types (such as reference members) are an exception because they have peculiar copy semantics.
 In a class holding a reference, you likely need to write the copy constructor and the assignment operator, but the default destructor already does the right thing. (Note that using a reference member is almost always wrong.)
 
-**References**: [\[C++CS\]](#C++CS) Item 52; [\[Cline99\]](#Cline99) §30.01-14¸ [\[Koenig97\]](#Koenig97) §4¸ [\[Stroustrup00\]](#Stroustrup00) §5.5, §10.4¸ [\[SuttHysl04b\]](#SuttHysl04b)
+**References**: [\[C++CS\]](#C++CS) Item 52; [\[Cline99\]](#Cline99) §30.01-14, [\[Koenig97\]](#Koenig97) §4, [\[Stroustrup00\]](#Stroustrup00) §5.5, §10.4, [\[SuttHysl04b\]](#SuttHysl04b)
 
 Resource management rule summary:
 
@@ -15592,7 +15592,7 @@ A relatively informal definition of terms used in the guidelines
 * *executable*: a program ready to be run (executed) on a computer.
 * *feature creep*: a tendency to add excess functionality to a program "just in case."
 * *file*: a container of permanent information in a computer.
-* *floating-point number*: a computer's approximation of a real number, such as 7.93 and 10.78e–3.
+* *floating-point number*: a computer's approximation of a real number, such as 7.93 and 10.78e-3.
 * *function*: a named unit of code that can be invoked (called) from different parts of a program; a logical unit of computation.
 * *generic programming*: a style of programming focused on the design and efficient implementation of algorithms.
   A generic algorithm will work for all argument types that meet its requirements. In C++, generic programming typically uses templates.
@@ -15609,7 +15609,7 @@ A relatively informal definition of terms used in the guidelines
 * *information hiding*: the act of separating interface and implementation, thus hiding implementation details not meant for the user's attention and providing an abstraction.
 * *initialize*: giving an object its first (initial) value.
 * *input*: values used by a computation (e.g., function arguments and characters typed on a keyboard).
-* *integer*: a whole number, such as 42 and –99.
+* *integer*: a whole number, such as 42 and -99.
 * *interface*: a declaration or a set of declarations specifying how a piece of code (such as a function or a class) can be called.
 * *invariant*: something that must be always true at a given point (or points) of a program; typically used to describe the state (set of values) of an object or the state of a loop before entry into the repeated statement.
 * *iteration*: the act of repeatedly executing a piece of code; see recursion.
