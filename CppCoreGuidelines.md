@@ -2664,7 +2664,7 @@ A `span` represents a range of elements, but how do we manipulate elements of th
     void f(span<int> s)
     {
         for (int x : s) cout << x << '\n';  // range traversal (guaranteed correct)
-        for (int i = 0; i < s.size(); ++i) cout << x << '\n';  // C-style traversal (potentially checked)
+        for (int i = 0; i < s.size(); ++i) cout << s[i] << '\n';  // C-style traversal (potentially checked)
         s[7] = 9;                           // random access (potentially checked)
         std::sort(&s[0], &s[s.size() / 2]);    // extract pointers (potentially checked)
     }
