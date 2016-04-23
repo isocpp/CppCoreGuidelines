@@ -15316,10 +15316,10 @@ Pointers should not be used as arrays. `span` is a bounds-checked, safe alternat
     void f()
     {
         int a[5];
-        span av = a;
+        span<int> av = a;
 
-        g(a.data(), a.length());   // OK, if you have no choice
-        g1(a);                     // OK - no decay here, instead use implicit span ctor
+        g(av.data(), av.length());   // OK, if you have no choice
+        g1(av);                      // OK - no decay here, instead use implicit span ctor
     }
 
 ##### Enforcement
