@@ -2239,8 +2239,13 @@ Passing a shared smart pointer (e.g., `std::shared_ptr`) implies a run-time cost
 
 ##### Example
 
-    void f(int*);             // accepts any int*
+    // accepts any int*
+    void f(int*);
+
+    // can only accept ints for which you want to transfer ownership
     void g(unique_ptr<int>);  // accepts ints to transfer ownership
+
+    // can only accept ints for which you are willing to share ownership
     void g(shared_ptr<int>);  // accepts ints to share ownership
 
     // doesn’t change ownership, but requires a particular ownership of the caller
@@ -2683,10 +2688,13 @@ A `span` represents a range of elements, but how do we manipulate elements of th
     {
         // range traversal (guaranteed correct)
         for (int x : s) cout << x << '\n';
+
         // C-style traversal (potentially checked)
         for (int i = 0; i < s.size(); ++i) cout << x << '\n';
+
         // random access (potentially checked)
         s[7] = 9;
+
         // extract pointers (potentially checked)
         std::sort(&s[0], &s[s.size() / 2]);
     }
@@ -4064,7 +4072,9 @@ If the `Handle` owns the object referred to by `s` it must have a destructor.
 
 Independently of whether `Handle` owns its `Shape`, we must consider the default copy operations suspect:
 
-    Handle x {*new Circle{p1, 17}};  // causes a leak if the Handle is not a Circle
+    // the Handle had better own the Circle or we have a leak
+    Handle x {*new Circle{p1, 17}};
+
     Handle y {*new Triangle{p1, p2, p3}};
     x = y;     // the default assignment will try *x.s = *y.s
 
@@ -9279,28 +9289,28 @@ Complicated expressions are error-prone.
 ##### Example
 
     // bad: assignment hidden in subexpression
-    while ((c = getc()) != -1)   
+    while ((c = getc()) != -1)
 
     // bad: two non-local variables assigned in a sub-expressions
-    while ((cin >> c1, cin >> c2), c1 == c2) 
+    while ((cin >> c1, cin >> c2), c1 == c2)
 
     // better, but possibly still too complicated
-    for (char c1, c2; cin >> c1 >> c2 && c1 == c2;)   
+    for (char c1, c2; cin >> c1 >> c2 && c1 == c2;)
 
     // OK: iff i and j are not aliased
-    int x = ++i + ++j;    
+    int x = ++i + ++j;
 
     // OK: iff i != j and i != k
-    v[i] = v[j] + v[k];   
+    v[i] = v[j] + v[k];
 
     // bad: multiple assignments "hidden" in subexpressions
-    x = a + (b = f()) + (c = g()) * 7;   
+    x = a + (b = f()) + (c = g()) * 7;
 
     // bad: relies on commonly misunderstood precedence rules
-    x = a & b + c * d && e ^ f == 7;     
+    x = a & b + c * d && e ^ f == 7;
 
     // bad: undefined behavior
-    x = x++ + x++ + ++x;   
+    x = x++ + x++ + ++x;
 
 Some of these expressions are unconditionally bad (e.g., they rely on undefined behavior). Others are simply so complicated and/or unusual that even good programmers could misunderstand them or overlook a problem when in a hurry.
 
@@ -12113,8 +12123,8 @@ In general, passing function objects gives better performance than passing point
 
 You can, of course, generalize those functions using `auto` or (when and where available) concepts. For example:
 
-    auto y1 = find_if(v, [](Ordered x) { return x>7; }); // require an ordered type
-    auto z1 = find_if(v, [](auto x) { return x>7; });    // hope that the type has a >
+    auto y1 = find_if(v, [](Ordered x) { return x > 7; }); // require an ordered type
+    auto z1 = find_if(v, [](auto x) { return x > 7; });    // hope that the type has a >
 
 ##### Note
 
