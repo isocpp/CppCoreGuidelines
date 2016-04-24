@@ -2699,7 +2699,7 @@ A `span` represents a range of elements, but how do we manipulate elements of th
         for (int x : s) cout << x << '\n';
 
         // C-style traversal (potentially checked)
-        for (int i = 0; i < s.size(); ++i) cout << x << '\n';
+        for (int i = 0; i < s.size(); ++i) cout << s[i] << '\n';
 
         // random access (potentially checked)
         s[7] = 9;
