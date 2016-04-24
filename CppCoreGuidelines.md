@@ -5746,7 +5746,7 @@ Such as on an ABI (link) boundary.
 
     class D2 : public Device {
         // ... different data ...
-        
+
         void write(span<const char> outbuf) override;
         void read(span<char> inbuf) override;
     };
@@ -6795,10 +6795,10 @@ The compiler catches the attempt to overload a lambda.
 
 ## <a name="SS-union"></a>C.union: Unions
 
-Unions share a single memory location for multiple variables. The size of the union is the size of the 
+Unions share a single memory location for multiple variables. The size of the union is the size of the
 largest variable type.
 A union is only recommended as a tool for last resort since it completely avoids the type system.
-Use boost variants instead since these are type safe. 
+Use boost variants instead since these are type safe.
 
 Union rule summary:
 
@@ -6814,11 +6814,12 @@ Union rule summary:
 ##### Reason
 
 Only use it when you have a limited system like an embedded chip like an 8bit processor.
-The union is useful since you share a static memory as if they are a separate variable. 
-These variables should be used mutual exclusive to avoid errors. 
+The union is useful since you share a static memory as if they are a separate variable.
+These variables should be used mutual exclusive to avoid errors.
 
 
 ##### Example
+
 a good example is an I/O buffer for an halve duplex communication.
 
     union Buffer{
@@ -6842,40 +6843,43 @@ a good example is an I/O buffer for an halve duplex communication.
         while (i++ < send_count)
         {
         //some receive functionality
-        uart_send(buffer.tx[i]);
-
+            uart_send(buffer.tx[i]);
         }
     }
+
 ##### Enforcement
+
 hard,Give a warning when a data member is read before written to.
 
 ### <a name="Ru-naked"></a>C.181: Avoid "naked" `union`s
+
 ##### Reason
+
 A naked union allows for type punning this avoids the type system completely which causes type errors.
 
 See also #type7-avoid-accessing-members-of-raw-unions-prefer-variant-instead
 
 **Alternative**: Wrap them in a class together with a type field.
 
-Type punning can sometimes be useful on a limited system. 
-Because it allows you to access an array as if it was a structure or access an primitive type as an array. 
+Type punning can sometimes be useful on a limited system.
+Because it allows you to access an array as if it was a structure or access an primitive type as an array.
 You could for example avoid a copy from an I/O buffer by type punning it with an packed struct which represents the layout of the message.
 
-Type punning with a union is required since casting between pointer types is undefined behaviour. 
+Type punning with a union is required since casting between pointer types is undefined behaviour.
 
     *((uint16_t*) m.data[1])== My_address //undefined behaviour
-    
+
 ##### See also
 
 [Type.7: Avoid accessing members of raw unions. Prefer `variant` instead](#Pro-type-unions).
 
 ##### Example
 
-    union PixelColor{ 
+    union PixelColor{
         uint8_t color_ARGB[4];
         uint32_t color;
     };
-    
+
     int main(){
         union PixelColor pixel;
         pixel.color_ARGB[0]=0x0F;//a direct register load on an 8bit system
@@ -6884,6 +6888,7 @@ Type punning with a union is required since casting between pointer types is und
         pixel.color_ARGB[3]=0xCB;
         draw(pixelColor.color);//a direct pass of a 32bit number instead of a pointer to an array
     }
+
 ##### Example compiler defined
 
     union PixelColor{
@@ -6903,8 +6908,9 @@ Type punning with a union is required since casting between pointer types is und
         pixel.byte.B=0xCB;
         draw(pixelColor.color);
     }
-    
+
 ##### Example compiler defined and advanced
+
     //packed is only gcc and clang
     struct __attribute__((__packed__)) messageT1{
         float Temperature;
@@ -6927,7 +6933,7 @@ Type punning with a union is required since casting between pointer types is und
                 messageT2 T2;
                 //etc.
             }
-            
+
         }
     }
     union Message m;
@@ -6941,22 +6947,22 @@ Type punning with a union is required since casting between pointer types is und
     int main(){
         receive();
         if(m.layout.rx_address == our_adress){
-        
+
             switch (m.layout.type){
                 case 1 :
-                //... 
+                //...
                 break;
                 ///..... all other cases
                 //switch case for each message type
                 default:
                     uint8_t* data_iter = &m.layout.data;
                     while(m.layout.length > i){
-               
+
                     }
             }
         }
     }
-    
+
 ##### Enforcement
 
 
@@ -10347,7 +10353,7 @@ However, thanks to the magic of cut-and-paste, code fragments can turn up in une
         static double cached_x = 0.0;
         static double cached_result = COMPUTATION_OF_ZERO;
         double result;
- 
+
         if (cached_x == x)
             return cached_result;
         result = computation(x);
@@ -10403,9 +10409,9 @@ including:
   `id` plus one.
 * Thread A and B load `id` and increment it simultaneously.  They both get the
   same ID.
-  
+
 Local static variables are a common source of data races.
-  
+
 ##### Example, bad:
 
     void f(fstream&  fs, regex pat)
@@ -10419,7 +10425,7 @@ Local static variables are a common source of data races.
         auto h2 = async([&]{ return find_all(buf,sz,pat); });   // span a task to find matches
         // ...
     }
-    
+
 Here, we have a (nasty) data race on the elements of `buf` (`sort` will both read and write).
 All data races are nasty.
 Here, we managed to get a data race on data on the stack.
@@ -10428,7 +10434,7 @@ Not all data races are as easy to spot as this one.
 ##### Example, bad:
 
     // code not controlled by a lock
-    
+
     unsigned val;
 
     if (val < 5) {
@@ -10443,7 +10449,7 @@ Not all data races are as easy to spot as this one.
     }
 
 Now, a compiler that does not know that `val` can change will  most likely implement that `switch` using a jump table with five entries.
-Then, a `val` outside the [0..4] range will cause a jump to an address that could be anywhere in the program, and execution would proceed there.
+Then, a `val` outside the `[0..4]` range will cause a jump to an address that could be anywhere in the program, and execution would proceed there.
 Really, "all bets are off" if you get a data race.
 Actually, it can be worse still: by looking at the generated code you may be able to determine where the stray jump will go for a given value;
 this can be a security risk.
@@ -10475,13 +10481,13 @@ The less sharing you do, the less chance you have to wait on a lock (so performa
     Graph<Temp_node> validate(const vector<Reading>&);
     Image validate(const vector<Reading>&);
     // ...
-    
+
     void process_readings(istream& socket1)
     {
         vector<Reading> surface_readings;
         socket1 >> surface_readings;
         if (!socket1) throw Bad_input{};
-        
+
         auto h1 = async([&] { if (!validate(surface_readings) throw Invalide_data{}; });
         auto h2 = async([&] { return temparature_gradiants(surface_readings); });
         auto h3 = async([&] { return altitude_map(surface_readings); });
@@ -10491,7 +10497,7 @@ The less sharing you do, the less chance you have to wait on a lock (so performa
         auto v3 = h3.get();
         // ...
     }
-    
+
 Without those `const`s, we would have to review every asynchroneously invoked function for potential data races on `surface_readings`.
 
 ##### Note
@@ -10515,7 +10521,7 @@ Application concepts are easier to reason about.
 ##### Example
 
     ???
-    
+
 ###### Note
 
 With the exception of `async()`, the standard-library facilities are low-level, machine-oriented, threads-and-lock level.
@@ -10524,7 +10530,7 @@ This is a potent argument for using higher level, more applications-oriented lib
 
 ##### Enforcement
 
-??? 
+???
 
 ### <a name="Rconc-volatile"></a>CP.8 Don't try to use `volatile` for synchronization
 
@@ -10542,7 +10548,7 @@ It simply has nothing to do with concurrency.
     {
         if (int n = free_slots--) return &pool[n];
     }
-    
+
 Here we have a problem:
 This is perfectly good code in a single-threaded program, but have two treads exectute this and
 there is a race condition on `free_slots` so that two threads might get the same value and `free_slots`.
@@ -10622,20 +10628,20 @@ Avoids nasty errors from unreleased locks.
 ##### Example, bad
 
     mutex mtx;
-    
+
     void do_stuff()
     {
         mtx.lock();
         // ... do stuff ...
         mtx.unlock();
     }
-    
+
 Sooner or later, someone will forget the `mtx.unlock()`, place a `return` in the `... do stuff ...`, throw an exception, or something.
 
 ##### Example
 
      mutex mtx;
-    
+
     void do_stuff()
     {
         unique_lock<mutex> lck {mtx};
@@ -10660,23 +10666,23 @@ This is asking for deadlock:
     // thread 1
     lock_guard<mutex> lck1(m1);
     lock_guard<mutex> lck2(m2);
-    
+
     // thread 2
     lock_guard<mutex> lck2(m2);
     lock_guard<mutex> lck1(m1);
-    
+
 Instead, use `lock()`:
 
     // thread 1
     lock_guard<mutex> lck1(m1,defer_lock);
     lock_guard<mutex> lck2(m2,defer_lock);
     lock(lck1,lck2);
-    
+
     // thread 2
     lock_guard<mutex> lck2(m2,defer_lock);
     lock_guard<mutex> lck1(m1,defer_lock);
     lock(lck2,lck1);
-    
+
 Here, the writers of `thread1` and `thread2` are still not agreeing on the order of the `mutex`es, but order no longer matters.
 
 ##### Note
@@ -10687,7 +10693,7 @@ In real code, `mutex`es are not always conveniently aquired on consequtive lines
 I'm really looking forward to be able to write plain
 
     lock_guard lck1(m1,defer_lock);
-    
+
 and have the `mutex` type deduced.
 
 ##### Enforcement
@@ -10722,7 +10728,7 @@ A common example of the "calling unknown code" problem is a call to a function t
 Such problem cal often be solved by using a `recursive_mutex`. For example:
 
     recursive_mutex my_mutex;
-    
+
     template<typename Action>
     void do_something(Action f)
     {
@@ -10731,9 +10737,9 @@ Such problem cal often be solved by using a `recursive_mutex`. For example:
         f(this);    // f will do something to *this
         // ...
     }
-    
+
 If, as it is likely, `f()` invokes operations on `*this`, we must make sure that the object's invariant holds before the call.   
- 
+
 ##### Enforcement
 
 * Flag calling a virtual function with a non-recursive `mutex` held
@@ -10756,7 +10762,7 @@ If a `thread` joins, we can safely pass pointers to objects in the scope of the 
         // ...
     }
     int glob = 33;
-    
+
     void some_fct(int* p)
     {
         int x = 77;
@@ -10794,16 +10800,16 @@ If a `thread` is detached, we can safely pass pointers to static and free store 
         *p = 99;
         // ...
     }
-    
+
     int glob = 33;
-    
+
     void some_fct(int* p)
     {
         int x = 77;
         std::thread t0(f,&x);           // bad
         std::thread t1(f,p);            // bad
         std::thread t2(f,&glob);        // OK
-        auto q = make_unique<int>(99); 
+        auto q = make_unique<int>(99);
         std::thread t3(f,q.get());      // bad
         // ...
         t0.detach();
@@ -10829,7 +10835,7 @@ After that, the usual lifetime and ownership (for global objects) enforcement ap
 
 ##### Reason
 
-An `raii_thread` is a thread that joins at the end of its scope. 
+An `raii_thread` is a thread that joins at the end of its scope.
 
 Detatched threads are hard to monitor.
 
@@ -10853,7 +10859,7 @@ Documenting that aids comprehension and helps static analysis.
 ##### Example
 
     void heartbeat();
-    
+
     void use()
     {
         gsl::detached_thread t1(heartbeat);    // obviously need not be joined
@@ -10871,7 +10877,7 @@ Flag unconditional `detach` on a plain `thread`
 ##### Reason
 
 `thread`s that are supposed to unconditionally `join` or unconditionally `detach` can be clearly identified as such.
-The plain `thread`s should be assumed to use the full generality of `std::thread`. 
+The plain `thread`s should be assumed to use the full generality of `std::thread`.
 
 ##### Example
 
@@ -10882,7 +10888,7 @@ The plain `thread`s should be assumed to use the full generality of `std::thread
             t->detach();
         // ...
     }
-    
+
     void use(int n)
     {
         thread t { thricky, this, n };
@@ -10899,7 +10905,7 @@ The plain `thread`s should be assumed to use the full generality of `std::thread
 ### <a name="Rconc-join"></a>CP.28: Remember to join scoped `thread`s that are not `detach()`ed
 
 ##### Reason
- 
+
 A `thread` that has not been `detach()`ed when it is destroyed terminates the program.
 
 ##### Example, bad
@@ -10910,7 +10916,7 @@ A `thread` that has not been `detach()`ed when it is destroyed terminates the pr
         void operator()() { std::cout << "parallel world "; }
     };
 
-    int main() 
+    int main()
     {
         std::thread t1{f};    // f() executes in separate thread
         std::thread t2{F()};    // F()() executes in separate thread
@@ -10924,15 +10930,15 @@ A `thread` that has not been `detach()`ed when it is destroyed terminates the pr
         void operator()() { std::cout << "parallel world "; }
     };
 
-    int main() 
+    int main()
     {
         std::thread t1{f};    // f() executes in separate thread
         std::thread t2{F()};    // F()() executes in separate thread
-        
+
         t1.join();
         t2.join();
     }  // one bad bug left
-    
+
 ??? Is `cout` synchronized?
 
 ##### Enforcement
@@ -10956,7 +10962,7 @@ In general, you cannot know whether a non-`raii_thread` will outlife your thread
         // ...
         t0.detach();
     }
-    
+
 The detach` may not be so easy to spot.
 Use a `raii_thread` or don't pass the pointer.
 
@@ -10984,13 +10990,13 @@ Defining "small amount" precisely and is impossible.
 
     string modify1(string);
     void modify2(shared_ptr<string);
-    
+
     void fct(string& s)
     {
         auto res = async(modify1,string);
         async(modify2,&s);
     }
-    
+
 The call of `modify1` involves copying two `string` values; the call of `modify2` does not.
 On the other hand, the implementation of `modify1` is exactly as we would have written in for single-threaded code,
 wheread the implementation of `modify2` will need some form of locking to avoid data races.
@@ -11016,7 +11022,7 @@ safe way to ensure proper deletion.
 
 ##### Example
 
-    ??? 
+    ???
 
 ##### Note
 
@@ -11068,20 +11074,20 @@ This spawns a `thread` per message, and the `run_list` is presumably managed to 
 Instead, we could have a set of pre-created worker threads processing the messages
 
     Sync_queue<Message> work;
-    
+
     void master(istream& is)
     {
        for (Message m; is>>m; )
             work.put(n);
     }
-    
+
     void worker()
     {
         for (Message m; m=work.get(); ) {
                // process
         }
     }
-    
+
     void workers()  // set up worker threads (specifically 4 worker threads)
     {
         raii_thread w1 {worker};
@@ -11089,7 +11095,7 @@ Instead, we could have a set of pre-created worker threads processing the messag
         raii_thread w3 {worker};
         raii_thread w4 {worker};
     }
-    
+
 ###### Note
 
 If you system has a good thread pool, use it.
@@ -11111,11 +11117,11 @@ A `wait` without a condition can miss a wakeup or wake up simply to find that th
     std::condition_variable cv;
     std::mutex mx;
 
-    void thread1() 
+    void thread1()
     {
         while (true) {
             // do some work ...
-            std::unique_lock<std::mutex> lock(mx); 
+            std::unique_lock<std::mutex> lock(mx);
             cv.notify_one();    // wake other thread
         }
     }
@@ -11123,11 +11129,11 @@ A `wait` without a condition can miss a wakeup or wake up simply to find that th
     void thread2()
     {
         while (true) {
-            std::unique_lock<std::mutex> lock(mx); 
+            std::unique_lock<std::mutex> lock(mx);
             cv.wait(lock);    // might block forever
             // do work ...
         }
-    } 
+    }
 
 Here, if some other `thread` consumes `thread1`'s notification, `thread2` can wait forever.
 
@@ -11186,7 +11192,7 @@ and `thread` suspection and resumption are expensive.
         do1();  // transaction: needs locking
         do2();  // cleanup: does not need locking
     }
-    
+
 Here, we are holding the lock for longer than necessary:
 We should not have taken the lock before we needed it and should have released it again before starting the cleanup.
 We could rewrite this to
@@ -11199,7 +11205,7 @@ We could rewrite this to
         my_lock.unluck();
         do2();  // cleanup: does not need locking
     }
-    
+
 But that compromises safety and violates the [use RAII](#Rconc-raii) rule.
 Instead, add a block for the critical section:
 
@@ -11212,7 +11218,7 @@ Instead, add a block for the critical section:
         }
         do2();  // cleanup: does not need locking
     }
-    
+
 ##### Enforcement
 
 Impossible in general.
@@ -11230,7 +11236,7 @@ An unnamed local objects is a temporary that immediately goes out of scope.
     unique_lock<mutex>(m1);
     lock_guard<mutex> {m2};
     lock(m1,m2);
-    
+
 This looks innocent enough, but it isn't.
 
 ##### Enforcement
@@ -11251,7 +11257,7 @@ It should be obvious to a reader that the data is to be guarded and how.
         std::mutex m;   // take this mutex before accessing other members
         // ...
     };
-    
+
 ##### Enforcement
 
 ??? Possible?
@@ -11376,12 +11382,12 @@ It's error-prone and requires expert level knowledge of language features, machi
 
     Link* nh = new Link(data,nullptr);    // make a link ready for insertion
     Link* h = head.load();                // read the shared head of the list
-    
+
     do {
         if (h->data<=data) break;        // if so, insert elsewhere
         nh->next = h;                    // next element is the previous head
     } while (!head.compare_exchange_weak(h,nh));    // write nh to head or to h
-    
+
 Spot the bug.
 It would be really hard to find through testing.
 Read up on the ABA problem.
@@ -11432,7 +11438,7 @@ Become an expert before shipping lock-free code for others to use.
 * Mark Batty, Scott Owens, Susmit Sarkar, Peter Sewell, and Tjark Weber, “Mathematizing C++ Concurrency”, POPL 2011.
 * Damian Dechev, Peter Pirkelbauer, and Bjarne Stroustrup: Understanding and Effectively Preventing the ABA Problem in Descriptor-based Lock-free Designs. 13th IEEE Computer Society ISORC 2010 Symposium. May 2010.
 * Damian Dechev and Bjarne Stroustrup: Scalable Non-blocking Concurrent Objects for Mission Critical Code. ACM OOPSLA'09. October 2009
-* Damian Dechev, Peter Pirkelbauer, Nicolas Rouquette, and Bjarne Stroustrup: Semantically Enhanced Containers for Concurrent Real-Time Systems. Proc. 16th Annual IEEE International Conference and Workshop on the Engineering of Computer Based Systems (IEEE ECBS). April 2009. 
+* Damian Dechev, Peter Pirkelbauer, Nicolas Rouquette, and Bjarne Stroustrup: Semantically Enhanced Containers for Concurrent Real-Time Systems. Proc. 16th Annual IEEE International Conference and Workshop on the Engineering of Computer Based Systems (IEEE ECBS). April 2009.
 
 
 ### <a name="Rconc-double"></a>CP.110: Use a conventional pattern for double-checked locking
@@ -11452,7 +11458,7 @@ Double-checked locking is easy to mess up.
             x_init.store(true, memory_order_release);
         }
     }
-    
+
     // ... use x ...
 
 
@@ -11477,7 +11483,7 @@ These rules defy simple catagorization:
 ##### Example
 
     const volatile long clock;
-    
+
 This describes a register constantly updated by a clock circuit.
 `clock` is `volatile` because its value will change without any action from the C++ program that uses it.
 For example, reading `clock` twice will often yield two different values, so the optimizer had better not optimize away the second read in this code:
@@ -11485,7 +11491,7 @@ For example, reading `clock` twice will often yield two different values, so the
     long t1 = clock;
     // ... no use of clock here ...
     long t2 = clock;
-    
+
 `clock` is `const` because the program should not try to write to `clock`.
 
 ###### Note
