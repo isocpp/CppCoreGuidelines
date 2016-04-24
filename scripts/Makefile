@@ -17,8 +17,8 @@ all: \
 check-markdown \
 check-references \
 check-notabs \
+cpplint-all \
 check-badchars
-
 
 $(BUILD_DIR):
 	mkdir -p $(BUILD_DIR)
@@ -76,6 +76,29 @@ check-badchars: $(SOURCEPATH) $(BUILD_DIR) Makefile
 # print file, add line numbers, grep for bad chars
 	cat ../CppCoreGuidelines.md | nl -ba | grep -P '’|‘|”|“|¸|–|…|¦' > $(BUILD_DIR)/CppCoreGuidelines.md.badchars || true
 	if [ -s $(BUILD_DIR)/CppCoreGuidelines.md.badchars ]; then echo 'Warning: Undesired chars (–’‘“”¸…¦) found:'; cat $(BUILD_DIR)/CppCoreGuidelines.md.badchars; false; fi;
+
+
+
+#### Cpplint
+
+.PHONY: cpplint-all
+cpplint-all: $(BUILD_DIR)/codeblocks $(BUILD_DIR)/Makefile python/Makefile.in
+	cd $(BUILD_DIR)/codeblocks; $(MAKE) cpplint-all -k
+
+#### generic makefile for sourceblocks (need to be evaluated after c++ file generation)
+
+$(BUILD_DIR)/Makefile: python/Makefile.in
+	cp python/Makefile.in $(BUILD_DIR)/codeblocks/Makefile
+
+#### split md file into plain text and code
+
+$(BUILD_DIR)/codeblocks: splitfile
+
+$(BUILD_DIR)/plain.txt: splitfile
+
+.PHONY: splitfile
+splitfile: $(SOURCEPATH) ./python/md-split.py
+	python ./python/md-split.py $(SOURCEPATH) $(BUILD_DIR)/plain.txt $(BUILD_DIR)/codeblocks
 
 #### install npm modules
 # install/update npm dependencies defined in file package.json

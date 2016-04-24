@@ -1,0 +1,18 @@
+.PHONY: default
+default: all
+
+.PHONY: all
+all: \
+cpplint-all
+
+CXX_SRCS := $(wildcard *.cpp)
+
+#### cpplint, check extracted sources using cpplint tool
+CXX_LINT := ${CXX_SRCS:.cpp=.lint}
+
+.PHONY: cpplint-all
+cpplint-all: $(CXX_LINT)
+
+%.lint: %.cpp
+	@python ../../python/cpplint.py --verbose=0 --linelength=100 --filter=-legal/copyright,-build/include_order,-build/c++11,-build/namespaces,-readability/inheritance,-readability/function,-readability/casting,-readability/namespace,-readability/alt_tokens,-readability/braces,-readability/fn_size,-whitespace/comments,-whitespace/braces,-whitespace/empty_loop_body,-whitespace/indent,-whitespace/newline,-runtime/explicit,-runtime/arrays,-runtime/int,-runtime/references,-runtime/string,-runtime/operator $< || (cat $< | nl -ba | grep -v 'md-split' && false)
+
