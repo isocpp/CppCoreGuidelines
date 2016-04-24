@@ -7,7 +7,7 @@ Editors:
 * [Bjarne Stroustrup](http://www.stroustrup.com)
 * [Herb Sutter](http://herbsutter.com/)
 
-This document is a very early draft. It is inkorrekt, incompleat, and pÂµÃ¸oorly formatted.
+This document is a very early draft. It is inkorrekt, incompleat, and pÂµÃoorly formatted.
 Had it been an open source (code) project, this would have been release 0.6.
 Copying, use, modification, and creation of derivative works from this project is licensed under an MIT-style license.
 Contributing to this project requires agreeing to a Contributor License. See the accompanying [LICENSE](LICENSE) file for details.
@@ -101,7 +101,7 @@ In other words, what would you like your code to look like in 5 years' time, giv
 The guidelines are focused on relatively higher-level issues, such as interfaces, resource management, memory management, and concurrency.
 Such rules affect application architecture and library design.
 Following the rules will lead to code that is statically type safe, has no resource leaks, and catches many more programming logic errors than is common in code today.
-And it will run fast - you can afford to do things right.
+And it will run fast -- you can afford to do things right.
 
 We are less concerned with low-level issues, such as naming conventions and indentation style.
 However, no topic that can help a programmer is out of bounds.
@@ -271,18 +271,18 @@ name of a profile group-of-rules ("type", "bounds", or "lifetime"), or a specifi
 
 Each rule (guideline, suggestion) can have several parts:
 
-* The rule itself - e.g., **no naked `new`**
-* A rule reference number - e.g., **C.7** (the 7th rule related to classes).
+* The rule itself -- e.g., **no naked `new`**
+* A rule reference number -- e.g., **C.7** (the 7th rule related to classes).
   Since the major sections are not inherently ordered, we use a letter as the first part of a rule reference "number".
   We leave gaps in the numbering to minimize "disruption" when we add or remove rules.
-* **Reason**s (rationales) - because programmers find it hard to follow rules they don't understand
-* **Example**s - because rules are hard to understand in the abstract; can be positive or negative
-* **Alternative**s - for "don't do this" rules
-* **Exception**s - we prefer simple general rules. However, many rules apply widely, but not universally, so exceptions must be listed
-* **Enforcement** - ideas about how the rule might be checked "mechanically"
-* **See also**s - references to related rules and/or further discussion (in this document or elsewhere)
-* **Note**s (comments) - something that needs saying that doesn't fit the other classifications
-* **Discussion** - references to more extensive rationale and/or examples placed outside the main lists of rules
+* **Reason**s (rationales) -- because programmers find it hard to follow rules they don't understand
+* **Example**s -- because rules are hard to understand in the abstract; can be positive or negative
+* **Alternative**s -- for "don't do this" rules
+* **Exception**s -- we prefer simple general rules. However, many rules apply widely, but not universally, so exceptions must be listed
+* **Enforcement** -- ideas about how the rule might be checked "mechanically"
+* **See also**s -- references to related rules and/or further discussion (in this document or elsewhere)
+* **Note**s (comments) -- something that needs saying that doesn't fit the other classifications
+* **Discussion** -- references to more extensive rationale and/or examples placed outside the main lists of rules
 
 Some rules are hard to check mechanically, but they all meet the minimal criteria that an expert programmer can spot many violations without too much trouble.
 We hope that "mechanical" tools will improve with time to approximate what such an expert programmer notices.
@@ -548,11 +548,11 @@ We can ban, restrain, or detect the individual problem categories separately, as
 Always suggest an alternative.
 For example:
 
-* unions - use `variant`
-* casts - minimize their use; templates can help
-* array decay - use `span`
-* range errors - use `span`
-* narrowing conversions - minimize their use and use `narrow` or `narrow_cast` where they are necessary
+* unions -- use `variant`
+* casts -- minimize their use; templates can help
+* array decay -- use `span`
+* range errors -- use `span`
+* narrowing conversions -- minimize their use and use `narrow` or `narrow_cast` where they are necessary
 
 ### <a name="Rp-compile-time"></a>P.5: Prefer compile-time checking to run-time checking
 
@@ -846,8 +846,8 @@ Prefer [RAII](#Rr-raii):
 
 ##### Note
 
-A leak is colloquially “anything that isn’t cleaned up.”  The more important
-classification is “anything that can no longer be cleaned up.”  For example,
+A leak is colloquially "anything that isn't cleaned up."  The more important
+classification is "anything that can no longer be cleaned up."  For example,
 allocating an object on the heap and then losing the last pointer that points to
 that allocation.  This rule should not be taken as requiring that allocations
 within long-lived objects must be returned during program shutdown.  (Although
@@ -1164,7 +1164,7 @@ Obviously, we cannot catch all errors through the static type system
 
 In the following example, it is not clear from the interface what `time_to_blink` means: Seconds? Milliseconds?
 
-    void blink_led(int time_to_blink) // bad - the unit is ambiguous
+    void blink_led(int time_to_blink) // bad -- the unit is ambiguous
     {
         // ...
         // do something with time_to_blink
@@ -1180,7 +1180,7 @@ In the following example, it is not clear from the interface what `time_to_blink
 
 `std::chrono::duration` types introduced in C++11 helps making the unit of time duration explicit.
 
-    void blink_led(milliseconds time_to_blink) // good - the unit is explicit
+    void blink_led(milliseconds time_to_blink) // good -- the unit is explicit
     {
         // ...
         // do something with time_to_blink
@@ -1195,7 +1195,7 @@ In the following example, it is not clear from the interface what `time_to_blink
 The function can also be written in such a way that it will accept any time duration unit.
 
     template<class rep, class period>
-    void blink_led(duration<rep, period> time_to_blink) // good - accepts any unit
+    void blink_led(duration<rep, period> time_to_blink) // good -- accepts any unit
     {
         // assuming that millisecond is the smallest relevant unit
         auto milliseconds_to_blink = duration_cast<milliseconds>(time_to_blink);
@@ -2248,7 +2248,7 @@ Passing a shared smart pointer (e.g., `std::shared_ptr`) implies a run-time cost
     void g(unique_ptr<int>);  // can only accept ints for which you want to transfer ownership
     void g(shared_ptr<int>);  // can only accept ints for which you are willing to share ownership
 
-    void h(const unique_ptr<int>&);  // doesn’t change ownership, but requires a particular ownership of the caller.
+    void h(const unique_ptr<int>&);  // doesn't change ownership, but requires a particular ownership of the caller.
 
     void h(int&);             // accepts any int
 
@@ -3064,7 +3064,7 @@ principle of "do as the ints do."
 ##### Note
 
 Historically there was some guidance to make the assignment operator return `const T&`.
-This was primarily to avoid code of the form `(a=b)=c` - such code is not common enough to warrant violating consistency with standard types.
+This was primarily to avoid code of the form `(a=b)=c` -- such code is not common enough to warrant violating consistency with standard types.
 
 ##### Example
 
@@ -5986,10 +5986,10 @@ The core question is: What code is responsible for maintaining a meaningful/corr
 
 There are exactly two kinds of data members:
 
-* A: Ones that don’t participate in the object’s invariant. Any combination of values for these members is valid.
-* B: Ones that do participate in the object’s invariant. Not every combination of values is meaningful (else there’d be no invariant). Therefore all code that has write access to these variables must know about the invariant, know the semantics, and know (and actively implement and enforce) the rules for keeping the values correct.
+* A: Ones that don't participate in the object's invariant. Any combination of values for these members is valid.
+* B: Ones that do participate in the object's invariant. Not every combination of values is meaningful (else there'd be no invariant). Therefore all code that has write access to these variables must know about the invariant, know the semantics, and know (and actively implement and enforce) the rules for keeping the values correct.
 
-Data members in category A should just be `public` (or, more rarely, `protected` if you only want derived classes to see them). They don’t need encapsulation. All code in the system might as well see and manipulate them.
+Data members in category A should just be `public` (or, more rarely, `protected` if you only want derived classes to see them). They don't need encapsulation. All code in the system might as well see and manipulate them.
 
 Data members in category B should be `private` or `const`. This is because encapsulation is important. To make them non-`private` and non-`const` would mean that the object can't control its own state: An unbounded amount of code beyond the class would need to know about the invariant and participate in maintaining it accurately -- if these data members were `public`, that would be all calling code that uses the object; if they were `protected`, it would be all the code in current and future derived classes. This leads to brittle and tightly coupled code that quickly becomes a nightmare to maintain. Any code that inadvertently sets the data members to an invalid or unexpected combination of values would corrupt the object and all subsequent uses of the object.
 
@@ -5997,11 +5997,11 @@ Most classes are either all A or all B:
 
 * *All public*: If you're writing an aggregate bundle-of-variables without an invariant across those variables, then all the variables should be `public`.
   [By convention, declare such classes `struct` rather than `class`](#Rc-struct)
-* *All private*: If you’re writing a type that maintains an invariant, then all the non-`const` variables should be private -- it should be encapsulated.
+* *All private*: If you're writing a type that maintains an invariant, then all the non-`const` variables should be private -- it should be encapsulated.
 
 ##### Exceptions
 
-Occasionally classes will mix A and B, usually for debug reasons. An encapsulated object may contain something like non-`const` debug instrumentation that isn’t part of the invariant and so falls into category A -- it isn’t really part of the object’s value or meaningful observable state either. In that case, the A parts should be treated as A's (made `public`, or in rarer cases `protected` if they should be visible only to derived classes) and the B parts should still be treated like B’s (`private` or `const`).
+Occasionally classes will mix A and B, usually for debug reasons. An encapsulated object may contain something like non-`const` debug instrumentation that isn't part of the invariant and so falls into category A -- it isn't really part of the object's value or meaningful observable state either. In that case, the A parts should be treated as A's (made `public`, or in rarer cases `protected` if they should be visible only to derived classes) and the B parts should still be treated like B's (`private` or `const`).
 
 ##### Enforcement
 
@@ -6249,7 +6249,7 @@ Some people use `dynamic_cast` where a `typeid` would have been more appropriate
 `dynamic_cast` is a general "is kind of" operation for discovering the best interface to an object,
 whereas `typeid` is a "give me the exact type of this object" operation to discover the actual type of an object.
 The latter is an inherently simpler operation that ought to be faster.
-The latter (`typeid`) is easily hand-crafted if necessary (e.g., if working on a system where RTTI is - for some reason - prohibited),
+The latter (`typeid`) is easily hand-crafted if necessary (e.g., if working on a system where RTTI is -- for some reason -- prohibited),
 the former (`dynamic_cast`) is far harder to implement correctly in general.
 
 Consider:
@@ -7738,7 +7738,7 @@ This makes the function's ownership sharing explicit.
 
 ##### Example, good
 
-    void share(shared_ptr<widget>);            // share – "will" retain refcount
+    void share(shared_ptr<widget>);            // share -- "will" retain refcount
 
     void reseat(shared_ptr<widget>&);          // "might" reseat ptr
 
@@ -7762,7 +7762,7 @@ This makes the function's reseating explicit.
 
 ##### Example, good
 
-    void share(shared_ptr<widget>);            // share – "will" retain refcount
+    void share(shared_ptr<widget>);            // share -- "will" retain refcount
 
     void reseat(shared_ptr<widget>&);          // "might" reseat ptr
 
@@ -7782,7 +7782,7 @@ This makes the function's ??? explicit.
 
 ##### Example, good
 
-    void share(shared_ptr<widget>);            // share – "will" retain refcount
+    void share(shared_ptr<widget>);            // share -- "will" retain refcount
 
     void reseat(shared_ptr<widget>&);          // "might" reseat ptr
 
@@ -8398,7 +8398,7 @@ Many such errors are introduced during maintenance years after the initial imple
 ##### Exception
 
 It you are declaring an object that is just about to be initialized from input, initializing it would cause a double initialization.
-However, beware that this may leave uninitialized data beyond the input - and that has been a fertile source of errors and security breaches:
+However, beware that this may leave uninitialized data beyond the input -- and that has been a fertile source of errors and security breaches:
 
     constexpr int max = 8 * 1024;
     int buf[max];         // OK, but suspicious: uninitialized
@@ -8737,7 +8737,7 @@ It nicely encapsulates local initialization, including cleaning up scratch varia
     for (auto i = 2; i <= N; ++i) {             // this could be some
         x += some_obj.do_something_with(i);  // arbitrarily long code
     }                                        // needed to initialize x
-    // from here, x should be const, but we can’t say so in code in this style
+    // from here, x should be const, but we can't say so in code in this style
 
 ##### Example, good
 
@@ -9768,7 +9768,7 @@ This example has many more problems.
 
 ##### Reason
 
-Slicing - that is, copying only part of an object using assignment or initialization - most often leads to errors because
+Slicing -- that is, copying only part of an object using assignment or initialization -- most often leads to errors because
 the object was meant to be considered as a whole.
 In the rare cases where the slicing was deliberate the code can be surprising.
 
@@ -10511,8 +10511,6 @@ Avoids nasty errors from unreleased locks.
     
 Sooner or later, someone will forget the `mtx.unlock()`, place a `return` in the `... do stuff ...`, throw an exception, or something.
 
-##### Example
-
      mutex mtx;
     
     void do_stuff()
@@ -10739,8 +10737,6 @@ Documenting that aids comprehension and helps static analysis.
         std::thread t2(heartbeat);             // do we need to join? (read the code for heartbeat())
         // ...
     }
-
-##### Enforcement
 
 Flag unconditional `detach` on a plain `thread`
 
@@ -12668,7 +12664,7 @@ Static helps dynamic: Use static polymorphism to implement dynamically polymorph
 
 ##### Example
 
-Dynamic helps static: Offer a generic, comfortable, statically bound interface, but internally dispatch dynamically, so you offer a uniform object layout. Examples include type erasure as with `std::shared_ptr`’s deleter. (But [don't overuse type erasure](#Rt-erasure).)
+Dynamic helps static: Offer a generic, comfortable, statically bound interface, but internally dispatch dynamically, so you offer a uniform object layout. Examples include type erasure as with `std::shared_ptr`'s deleter. (But [don't overuse type erasure](#Rt-erasure).)
 
 ##### Note
 
@@ -15133,7 +15129,7 @@ Reading from a vararg assumes that the correct type was actually passed. Passing
     sum(3, 2); // ok: 5
     sum(3.14159, 2.71828); // ok: ~5.85987
 
-Note: Declaring a `...` parameter is sometimes useful for techniques that don't involve actual argument passing, notably to declare “take-anything” functions so as to disable "everything else" in an overload set or express a catchall case in a template metaprogram.
+Note: Declaring a `...` parameter is sometimes useful for techniques that don't involve actual argument passing, notably to declare "take-anything" functions so as to disable "everything else" in an overload set or express a catchall case in a template metaprogram.
 
 ##### Enforcement
 
@@ -15217,8 +15213,8 @@ Dynamic accesses into arrays are difficult for both tools and humans to validate
     {
         a[pos / 2] = 1; // BAD
         a[pos - 1] = 2; // BAD
-        a[-1] = 3;    // BAD - no replacement, just don't do this
-        a[10] = 4;    // BAD - no replacement, just don't do this
+        a[-1] = 3;    // BAD -- no replacement, just don't do this
+        a[10] = 4;    // BAD -- no replacement, just don't do this
     }
 
 ##### Example, good
@@ -15288,7 +15284,7 @@ Issue a diagnostic for any indexing expression on an expression or variable of a
     void f(int i, int j)
     {
         a[i + j] = 12;      // BAD, could be rewritten as ...
-        at(a, i + j) = 12;  // OK - bounds-checked
+        at(a, i + j) = 12;  // OK -- bounds-checked
     }
 
 ### <a name="Pro-bounds-decay"></a>Bounds.3: No array-to-pointer decay.
@@ -15319,7 +15315,7 @@ Pointers should not be used as arrays. `span` is a bounds-checked, safe alternat
         span av = a;
 
         g(a.data(), a.length());   // OK, if you have no choice
-        g1(a);                     // OK - no decay here, instead use implicit span ctor
+        g1(a);                     // OK -- no decay here, instead use implicit span ctor
     }
 
 ##### Enforcement
@@ -15929,7 +15925,7 @@ See the <a href="#S-abstract">top of this page</a>. This is an open source proje
 
 ### <a name="Faq-announced"></a>FAQ.2: When and where was this work first announced?
 
-It was announced by [Bjarne Stroustrup in his CppCon 2015 opening keynote, “Writing Good C++14”](https://isocpp.org/blog/2015/09/stroustrup-cppcon15-keynote). See also the [accompanying isocpp.org blog post](https://isocpp.org/blog/2015/09/bjarne-stroustrup-announces-cpp-core-guidelines), and for the rationale of the type and memory safety guidelines see [Herb Sutter’s follow-up CppCon 2015 talk, “Writing Good C++14 ... By Default”](https://isocpp.org/blog/2015/09/sutter-cppcon15-day2plenary).
+It was announced by [Bjarne Stroustrup in his CppCon 2015 opening keynote, "Writing Good C++14"](https://isocpp.org/blog/2015/09/stroustrup-cppcon15-keynote). See also the [accompanying isocpp.org blog post](https://isocpp.org/blog/2015/09/bjarne-stroustrup-announces-cpp-core-guidelines), and for the rationale of the type and memory safety guidelines see [Herb Sutter's follow-up CppCon 2015 talk, "Writing Good C++14 ... By Default"](https://isocpp.org/blog/2015/09/sutter-cppcon15-day2plenary).
 
 ### <a name="Faq-maintainers"></a>FAQ.3: Who are the authors and maintainers of these guidelines?
 
@@ -15949,7 +15945,7 @@ No. These guidelines are outside the standard. They are intended to serve the st
 
 ### <a name="Faq-isocpp"></a>FAQ.7: If these guidelines are not approved by the committee, why are they under `github.com/isocpp`?
 
-Because `isocpp` is the Standard C++ Foundation; the committee’s repositories are under [github.com/*cplusplus*](https://github.com/cplusplus). Some neutral organization has to own the copyright and license to make it clear this is not being dominated by any one person or vendor. The natural entity is the Foundation, which exists to promote the use and up-to-date understanding of modern Standard C++ and the work of the committee. This follows the same pattern that isocpp.org did for the [C++ FAQ](https://isocpp.org/faq), which was initially the work of Bjarne Stroustrup, Marshall Cline, and Herb Sutter and contributed to the open project in the same way.
+Because `isocpp` is the Standard C++ Foundation; the committee's repositories are under [github.com/*cplusplus*](https://github.com/cplusplus). Some neutral organization has to own the copyright and license to make it clear this is not being dominated by any one person or vendor. The natural entity is the Foundation, which exists to promote the use and up-to-date understanding of modern Standard C++ and the work of the committee. This follows the same pattern that isocpp.org did for the [C++ FAQ](https://isocpp.org/faq), which was initially the work of Bjarne Stroustrup, Marshall Cline, and Herb Sutter and contributed to the open project in the same way.
 
 ### <a name="Faq-cpp98"></a>FAQ.8: Will there be a C++98 version of these Guidelines? a C++11 version?
 
@@ -15984,7 +15980,7 @@ No. That is just a first implementation contributed by Microsoft. Other implemen
 
 We are reluctant to bless one particular implementation because we do not want to make people think there is only one, and inadvertently stifle parallel implementations. And if these guidelines included an actual implementation, then whoever contributed it could be mistakenly seen as too influential. We prefer to follow the long-standing approach of the committee, namely to specify interfaces, not implementations. But at the same time we want at least one implementation available; we hope for many.
 
-### <a name="Faq-boost"></a>FAQ.53: Why weren’t the GSL types proposed through Boost?
+### <a name="Faq-boost"></a>FAQ.53: Why weren't the GSL types proposed through Boost?
 
 Because we want to use them immediately, and because they are temporary in that we want to retire them as soon as types that fill the same needs exist in the standard library.
 
@@ -15992,7 +15988,7 @@ Because we want to use them immediately, and because they are temporary in that 
 
 No. The GSL exists only to supply a few types and aliases that are not currently in the standard library. If the committee decides on standardized versions (of these or other types that fill the same need) then they can be removed from the GSL.
 
-### <a name="Faq-gsl-string-view"></a>FAQ.55: If you’re using the standard types where available, why is the GSL `string_span` different from the `string_view` in the Library Fundamentals 1 Technical Specification? Why not just use the committee-approved `string_view`?
+### <a name="Faq-gsl-string-view"></a>FAQ.55: If you're using the standard types where available, why is the GSL `string_span` different from the `string_view` in the Library Fundamentals 1 Technical Specification? Why not just use the committee-approved `string_view`?
 
 Because `string_view` is still undergoing standardization, and is in a state for public review input to improve it. Types that appear in Technical Specifications (TSes) are not yet part of the International Standard (IS), and one reason they are put in TSes first is to gain experience with the feature before they are cast in a final form to become part of the standard. Some of the GSL authors are contributing what we have learned about `string_span` in the process of developing these guidelines, and a discussion of the differences between `string_view` and `string_span`, as a paper for the next ISO meeting for consideration along with all the other similar papers for the committee to consider as it decides on the final form of this feature.
 
@@ -16232,7 +16228,7 @@ In this rare case, you could make the destructor public and nonvirtual but clear
 
 In general, however, avoid concrete base classes (see Item 35). For example, `unary_function` is a bundle-of-typedefs that was never intended to be instantiated standalone. It really makes no sense to give it a public destructor; a better design would be to follow this Item's advice and give it a protected nonvirtual destructor.
 
-**References**: [\[C++CS\]](#C++CS) Item 50, [\[Cargill92\]](#Cargill92) pp. 77-79, 207¸ [\[Cline99\]](#Cline99) §21.06, 21.12-13¸ [\[Henricson97\]](#Henricson97) pp. 110-114¸ [\[Koenig97\]](#Koenig97) Chapters 4, 11¸ [\[Meyers97\]](#Meyers97) §14¸ [\[Stroustrup00\]](#Stroustrup00) §12.4.2¸ [\[Sutter02\]](#Sutter02) §27¸ [\[Sutter04\]](#Sutter04) §18
+**References**: [\[C++CS\]](#C++CS) Item 50, [\[Cargill92\]](#Cargill92) pp. 77-79, 207, [\[Cline99\]](#Cline99) §21.06, 21.12-13, [\[Henricson97\]](#Henricson97) pp. 110-114, [\[Koenig97\]](#Koenig97) Chapters 4, 11, [\[Meyers97\]](#Meyers97) §14, [\[Stroustrup00\]](#Stroustrup00) §12.4.2, [\[Sutter02\]](#Sutter02) §27, [\[Sutter04\]](#Sutter04) §18
 
 ### <a name="Sd-noexcept"></a>Discussion: Usage of noexcept
 
@@ -16311,7 +16307,7 @@ Consider the following advice and requirements found in the C++ Standard:
 > No destructor operation defined in the C++ Standard Library (including the destructor of any type that is used to instantiate a standard library template) will throw an exception. --[\[C++03\]](#C++03) §17.4.4.8(3)
 
 Deallocation functions, including specifically overloaded `operator delete` and `operator delete[]`, fall into the same category, because they too are used during cleanup in general, and during exception handling in particular, to back out of partial work that needs to be undone.
-Besides destructors and deallocation functions, common error-safety techniques rely also on `swap` operations never failing--in this case, not because they are used to implement a guaranteed rollback, but because they are used to implement a guaranteed commit. For example, here is an idiomatic implementation of `operator=` for a type `T` that performs copy construction followed by a call to a no-fail `swap`:
+Besides destructors and deallocation functions, common error-safety techniques rely also on `swap` operations never failing -- in this case, not because they are used to implement a guaranteed rollback, but because they are used to implement a guaranteed commit. For example, here is an idiomatic implementation of `operator=` for a type `T` that performs copy construction followed by a call to a no-fail `swap`:
 
     T& T::operator=(const T& other) {
         auto temp = other;
@@ -16324,7 +16320,7 @@ Fortunately, when releasing a resource, the scope for failure is definitely smal
 
 When using exceptions as your error handling mechanism, always document this behavior by declaring these functions `noexcept`. (See Item 75.)
 
-**References**: [\[C++CS\]](#C++CS) Item 51; [\[C++03\]](#C++03) §15.2(3), §17.4.4.8(3)¸ [\[Meyers96\]](#Meyers96) §11¸ [\[Stroustrup00\]](#Stroustrup00) §14.4.7, §E.2-4¸ [\[Sutter00\]](#Sutter00) §8, §16¸ [\[Sutter02\]](#Sutter02) §18-19
+**References**: [\[C++CS\]](#C++CS) Item 51; [\[C++03\]](#C++03) §15.2(3), §17.4.4.8(3), [\[Meyers96\]](#Meyers96) §11, [\[Stroustrup00\]](#Stroustrup00) §14.4.7, §E.2-4, [\[Sutter00\]](#Sutter00) §8, §16, [\[Sutter02\]](#Sutter02) §18-19
 
 ## <a name="Sd-consistent"></a>Define Copy, move, and destroy consistently
 
@@ -16396,7 +16392,7 @@ If you define any of the copy constructor, copy assignment operator, or destruct
 
 ##### Note
 
-If you need to define any of these five functions, it means you need it to do more than its default behavior--and the five are asymmetrically interrelated. Here's how:
+If you need to define any of these five functions, it means you need it to do more than its default behavior -- and the five are asymmetrically interrelated. Here's how:
 
 * If you write/disable either of the copy constructor or the copy assignment operator, you probably need to do the same for the other: If one does "special" work, probably so should the other because the two functions should have similar effects. (See Item 53, which expands on this point in isolation.)
 * If you explicitly write the copying functions, you probably need to write the destructor: If the "special" work in the copy constructor is to allocate or duplicate some resource (e.g., memory, file, socket), you need to deallocate it in the destructor.
@@ -16410,7 +16406,7 @@ Prefer compiler-generated (including `=default`) special members; only these can
 In rare cases, classes that have members of strange types (such as reference members) are an exception because they have peculiar copy semantics.
 In a class holding a reference, you likely need to write the copy constructor and the assignment operator, but the default destructor already does the right thing. (Note that using a reference member is almost always wrong.)
 
-**References**: [\[C++CS\]](#C++CS) Item 52; [\[Cline99\]](#Cline99) §30.01-14¸ [\[Koenig97\]](#Koenig97) §4¸ [\[Stroustrup00\]](#Stroustrup00) §5.5, §10.4¸ [\[SuttHysl04b\]](#SuttHysl04b)
+**References**: [\[C++CS\]](#C++CS) Item 52; [\[Cline99\]](#Cline99) §30.01-14, [\[Koenig97\]](#Koenig97) §4, [\[Stroustrup00\]](#Stroustrup00) §5.5, §10.4, [\[SuttHysl04b\]](#SuttHysl04b)
 
 Resource management rule summary:
 
@@ -16624,7 +16620,7 @@ A relatively informal definition of terms used in the guidelines
 * *abstract class*: a class that cannot be directly used to create objects; often used to define an interface to derived classes.
   A class is made abstract by having a pure virtual function or a protected constructor.
 * *abstraction*: a description of something that selectively and deliberately ignores (hides) details (e.g., implementation details); selective ignorance.
-* *address*: a value that allows us to find an object in a computer’s memory.
+* *address*: a value that allows us to find an object in a computer's memory.
 * *algorithm*: a procedure or formula for solving a problem; a finite series of computational steps to produce a result.
 * *alias*: an alternative way of referring to an object; often a name, pointer, or reference.
 * *application*: a program or a collection of programs that is considered an entity by its users.
@@ -16646,12 +16642,12 @@ A relatively informal definition of terms used in the guidelines
 * *concept*: (1) a notion, and idea; (2) a set of requirements, usually for a template argument.
 * *concrete class*: class for which objects can be created.
 * *constant*: a value that cannot be changed (in a given scope); not mutable.
-* *constructor*: an operation that initializes (“constructs”) an object.
+* *constructor*: an operation that initializes ("constructs") an object.
   Typically a constructor establishes an invariant and often acquires resources needed for an object to be used (which are then typically released by a destructor).
 * *container*: an object that holds elements (other objects).
 * *copy*: an operation that makes two object have values that compare equal. See also move.
 * *correctness*: a program or a piece of a program is correct if it meets its specification.
-  Unfortunately, a specification can be incomplete or inconsistent, or can fail to meet users’ reasonable expectations.
+  Unfortunately, a specification can be incomplete or inconsistent, or can fail to meet users' reasonable expectations.
   Thus, to produce acceptable code, we sometimes have to do more than just follow the formal specification.
 * *cost*: the expense (e.g., in programmer time, run time, or space) of producing a program or of executing it.
   Ideally, cost should be a function of complexity.
@@ -16665,11 +16661,11 @@ A relatively informal definition of terms used in the guidelines
 * *design*: an overall description of how a piece of software should operate to meet its specification.
 * *destructor*: an operation that is implicitly invoked (called) when an object is destroyed (e.g., at the end of a scope). Often, it releases resources.
 * *encapsulation*: protecting something meant to be private (e.g., implementation details) from unauthorized access.
-* *error*: a mismatch between reasonable expectations of program behavior (often expressed as a requirement or a users’ guide) and what a program actually does.
+* *error*: a mismatch between reasonable expectations of program behavior (often expressed as a requirement or a users' guide) and what a program actually does.
 * *executable*: a program ready to be run (executed) on a computer.
-* *feature creep*: a tendency to add excess functionality to a program “just in case.”
+* *feature creep*: a tendency to add excess functionality to a program "just in case."
 * *file*: a container of permanent information in a computer.
-* *floating-point number*: a computer’s approximation of a real number, such as 7.93 and 10.78e–3.
+* *floating-point number*: a computer's approximation of a real number, such as 7.93 and 10.78e-3.
 * *function*: a named unit of code that can be invoked (called) from different parts of a program; a logical unit of computation.
 * *generic programming*: a style of programming focused on the design and efficient implementation of algorithms.
   A generic algorithm will work for all argument types that meet its requirements. In C++, generic programming typically uses templates.
@@ -16681,12 +16677,12 @@ A relatively informal definition of terms used in the guidelines
 * *ideal*: the perfect version of something we are striving for. Usually we have to make trade-offs and settle for an approximation.
 * *implementation*: (1) the act of writing and testing code; (2) the code that implements a program.
 * *infinite loop*: a loop where the termination condition never becomes true. See iteration.
-* *infinite recursion*: a recursion that doesn’t end until the machine runs out of memory to hold the calls.
+* *infinite recursion*: a recursion that doesn't end until the machine runs out of memory to hold the calls.
   In reality, such recursion is never infinite but is terminated by some hardware error.
-* *information hiding*: the act of separating interface and implementation, thus hiding implementation details not meant for the user’s attention and providing an abstraction.
+* *information hiding*: the act of separating interface and implementation, thus hiding implementation details not meant for the user's attention and providing an abstraction.
 * *initialize*: giving an object its first (initial) value.
 * *input*: values used by a computation (e.g., function arguments and characters typed on a keyboard).
-* *integer*: a whole number, such as 42 and –99.
+* *integer*: a whole number, such as 42 and -99.
 * *interface*: a declaration or a set of declarations specifying how a piece of code (such as a function or a class) can be called.
 * *invariant*: something that must be always true at a given point (or points) of a program; typically used to describe the state (set of values) of an object or the state of a loop before entry into the repeated statement.
 * *iteration*: the act of repeatedly executing a piece of code; see recursion.
@@ -16694,9 +16690,9 @@ A relatively informal definition of terms used in the guidelines
 * *library*: a collection of types, functions, classes, etc. implementing a set of facilities (abstractions) meant to be potentially used as part of more that one program.
 * *lifetime*: the time from the initialization of an object until it becomes unusable (goes out of scope, is deleted, or the program terminates).
 * *linker*: a program that combines object code files and libraries into an executable program.
-* *literal*: a notation that directly specifies a value, such as 12 specifying the integer value “twelve.”
+* *literal*: a notation that directly specifies a value, such as 12 specifying the integer value "twelve."
 * *loop*: a piece of code executed repeatedly; in C++, typically a for-statement or a while-statement.
-* *move*: an operation that transfers a value from one object to another leaving behind a value representing “empty.” See also copy.
+* *move*: an operation that transfers a value from one object to another leaving behind a value representing "empty." See also copy.
 * *mutable*: changeable; the opposite of immutable, constant, and variable.
 * *object*: (1) an initialized region of memory of a known type which holds a value of that type; (2) a region of memory.
 * *object code*: output from a compiler intended as input for a linker (for the linker to produce executable code).
@@ -16718,7 +16714,7 @@ A relatively informal definition of terms used in the guidelines
 * *programming language*: a language for expressing programs.
 * *pseudo code*: a description of a computation written in an informal notation rather than a programming language.
 * *pure virtual function*: a virtual function that must be overridden in a derived class.
-* *RAII*: (“Resource Acquisition Is Initialization”) a basic technique for resource management based on scopes.
+* *RAII*: ("Resource Acquisition Is Initialization") a basic technique for resource management based on scopes.
 * *range*: a sequence of values that can be described by a start point and an end point. For example, \[0:5) means the values 0, 1, 2, 3, and 4.
 * *regular expression*: a notation for patterns in character strings.
 * *recursion*: the act of a function calling itself; see also iteration.
@@ -16740,7 +16736,7 @@ A relatively informal definition of terms used in the guidelines
 * *style*: a set of techniques for programming leading to a consistent use of language features; sometimes used in a very restricted sense to refer just to low-level rules for naming and appearance of code.
 * *subtype*: derived type; a type that has all the properties of a type and possibly more.
 * *supertype*: base type; a type that has a subset of the properties of a type.
-* *system*: (1) a program or a set of programs for performing a task on a computer; (2) a shorthand for “operating system”, that is, the fundamental execution environment and tools for a computer.
+* *system*: (1) a program or a set of programs for performing a task on a computer; (2) a shorthand for "operating system", that is, the fundamental execution environment and tools for a computer.
 * *template*: a class or a function parameterized by one or more types or (compile-time) values; the basic C++ language construct supporting generic programming.
 * *testing*: a systematic search for errors in a program.
 * *trade-off*: the result of balancing several design and implementation criteria.
@@ -16766,7 +16762,7 @@ Alternatively, we will decide that no change is needed and delete the entry.
 * How granular should namespaces be? All classes/functions designed to work together and released together (as defined in Sutter/Alexandrescu) or something narrower or wider?
 * Should there be inline namespaces (à la `std::literals::*_literals`)?
 * Avoid implicit conversions
-* Const member functions should be thread safe ... aka, but I don't really change the variable, just assign it a value the first time it’s called ... argh
+* Const member functions should be thread safe ... aka, but I don't really change the variable, just assign it a value the first time it's called ... argh
 * Always initialize variables, use initialization lists for member variables.
 * Anyone writing a public interface which takes or returns `void*` should have their toes set on fire. That one has been a personal favorite of mine for a number of years. :)
 * Use `const`-ness wherever possible: member functions, variables and (yippee) `const_iterators`
