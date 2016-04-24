@@ -75,7 +75,7 @@ check-badchars: $(SOURCEPATH) $(BUILD_DIR) Makefile
 	rm -f $(BUILD_DIR)/CppCoreGuidelines.md.badchars
 # print file, add line numbers, grep for bad chars
 	cat ../CppCoreGuidelines.md | nl -ba | grep -P '’|‘|”|“|¸|–|…|¦' > $(BUILD_DIR)/CppCoreGuidelines.md.badchars || true
-	if [ -s $(BUILD_DIR)/CppCoreGuidelines.md.badchars ]; then echo 'Warning: Undesired chars (–’‘“”¸…¦) found:'; cat $(BUILD_DIR)/CppCoreGuidelines.md.badchars; false; fi;
+	if [ -s $(BUILD_DIR)/CppCoreGuidelines.md.badchars ]; then echo 'Warning: Undesired chars (–’‘“”¸…¦) found, use straight quotes instead:'; cat $(BUILD_DIR)/CppCoreGuidelines.md.badchars; false; fi;
 
 #### install npm modules
 # install/update npm dependencies defined in file package.json

@@ -2256,7 +2256,7 @@ Passing a shared smart pointer (e.g., `std::shared_ptr`) implies a run-time cost
     // can only accept ints for which you are willing to share ownership
     void g(shared_ptr<int>); 
 
-    // doesn’t change ownership, but requires a particular ownership of the caller
+    // doesn't change ownership, but requires a particular ownership of the caller
     void h(const unique_ptr<int>&);
 
     // accepts any int
@@ -11370,7 +11370,7 @@ If you are doing lock-free programming for performance, you need to check for re
 Instruction reordering (static and dynamic) makes it hard for us to think effectively at this level (especially if you use relaxed memory models).
 Experience, (semi)formal models and model checking can be useful.
 Testing - often to an extreme extent - is essential.
-“Don’t fly too close to the wind.”
+"Don't fly too close to the wind."
 
 ##### Enforcement
 
@@ -11388,10 +11388,10 @@ Become an expert before shipping lock-free code for others to use.
 
 * Anthony Williams: C++ concurrency in action. Manning Publications.
 * Boehm, Adve, You Don't Know Jack About Shared Variables or Memory Models , Communications of the ACM, Feb 2012.
-* Boehm, “Threads Basics”, HPL TR 2009-259.
-* Adve, Boehm, “Memory Models: A Case for Rethinking Parallel Languages and Hardware, Communications of the ACM, August 2010.
-* Boehm, Adve, “Foundations of the C++ Concurrency Memory Model”, PLDI 08.
-* Mark Batty, Scott Owens, Susmit Sarkar, Peter Sewell, and Tjark Weber, “Mathematizing C++ Concurrency”, POPL 2011.
+* Boehm, "Threads Basics", HPL TR 2009-259.
+* Adve, Boehm, "Memory Models: A Case for Rethinking Parallel Languages and Hardware", Communications of the ACM, August 2010.
+* Boehm, Adve, "Foundations of the C++ Concurrency Memory Model", PLDI 08.
+* Mark Batty, Scott Owens, Susmit Sarkar, Peter Sewell, and Tjark Weber, "Mathematizing C++ Concurrency", POPL 2011.
 * Damian Dechev, Peter Pirkelbauer, and Bjarne Stroustrup: Understanding and Effectively Preventing the ABA Problem in Descriptor-based Lock-free Designs. 13th IEEE Computer Society ISORC 2010 Symposium. May 2010.
 * Damian Dechev and Bjarne Stroustrup: Scalable Non-blocking Concurrent Objects for Mission Critical Code. ACM OOPSLA'09. October 2009
 * Damian Dechev, Peter Pirkelbauer, Nicolas Rouquette, and Bjarne Stroustrup: Semantically Enhanced Containers for Concurrent Real-Time Systems. Proc. 16th Annual IEEE International Conference and Workshop on the Engineering of Computer Based Systems (IEEE ECBS). April 2009.
