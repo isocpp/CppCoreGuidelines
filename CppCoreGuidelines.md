@@ -10376,13 +10376,13 @@ Local static variables are a common source of data races.
 
     void f(fstream&  fs, regex pat)
     {
-        array<double,max> buf;
-        int sz = read_vec(fs,buf,max);            // read from fs into buf
-        gsl::span<double> s {buf,max};
+        array<double, max> buf;
+        int sz = read_vec(fs, buf, max);            // read from fs into buf
+        gsl::span<double> s {buf, max};
         // ...
-        auto h1 = async([&]{ sort(par,s); });     // spawn a task to sort
+        auto h1 = async([&]{ sort(par, s); });     // spawn a task to sort
         // ...
-        auto h2 = async([&]{ return find_all(buf,sz,pat); });   // span a task to find matches
+        auto h2 = async([&]{ return find_all(buf, sz, pat); });   // span a task to find matches
         // ...
     }
 
@@ -10399,7 +10399,7 @@ Not all data races are as easy to spot as this one.
 
     if (val < 5) {
         // ... other thread can change val here ...
-        switch(val) {
+        switch (val) {
         case 0: // ...
         case 1: // ...
         case 2: // ...
@@ -10764,11 +10764,11 @@ If a `thread` is detached, we can safely pass pointers to static and free store 
     void some_fct(int* p)
     {
         int x = 77;
-        std::thread t0(f,&x);           // bad
-        std::thread t1(f,p);            // bad
-        std::thread t2(f,&glob);        // OK
+        std::thread t0(f, &x);           // bad
+        std::thread t1(f, p);            // bad
+        std::thread t2(f, &glob);        // OK
         auto q = make_unique<int>(99);
-        std::thread t3(f,q.get());      // bad
+        std::thread t3(f, q.get());      // bad
         // ...
         t0.detach();
         t1.detach();
@@ -11033,7 +11033,7 @@ Instead, we could have a set of pre-created worker threads processing the messag
 
     void master(istream& is)
     {
-       for (Message m; is>>m; )
+       for (Message m; is >> m; )
             work.put(n);
     }
 
@@ -11119,8 +11119,8 @@ Here, if some other `thread` consumes `thread1`'s notification, `thread2` can wa
     void Sync_queue<T>::get(T& val)
     {
         unique_lock<mutex> lck(mtx);
-        cond.wait(lck,[this]{ return !q.empty(); });    // prevent spurious wakeup
-        val=q.front();
+        cond.wait(lck, [this]{ return !q.empty(); });    // prevent spurious wakeup
+        val = q.front();
         q.pop_front();
     }
 
@@ -11336,13 +11336,13 @@ It's error-prone and requires expert level knowledge of language features, machi
 
     extern atomic<Link*> head;        // the shared head of a linked list
 
-    Link* nh = new Link(data,nullptr);    // make a link ready for insertion
-    Link* h = head.load();                // read the shared head of the list
+    Link* nh = new Link(data, nullptr);    // make a link ready for insertion
+    Link* h = head.load();                 // read the shared head of the list
 
     do {
-        if (h->data<=data) break;        // if so, insert elsewhere
-        nh->next = h;                    // next element is the previous head
-    } while (!head.compare_exchange_weak(h,nh));    // write nh to head or to h
+        if (h->data <= data) break;        // if so, insert elsewhere
+        nh->next = h;                      // next element is the previous head
+    } while (!head.compare_exchange_weak(h, nh));    // write nh to head or to h
 
 Spot the bug.
 It would be really hard to find through testing.
