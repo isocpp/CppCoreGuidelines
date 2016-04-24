@@ -10907,13 +10907,13 @@ A `thread` that has not been `detach()`ed when it is destroyed terminates the pr
     void f() { std::cout << "Hello "; }
 
     struct F {
-	    void operator()() { std::cout << "parallel world "; }
+        void operator()() { std::cout << "parallel world "; }
     };
 
     int main() 
     {
-    	std::thread t1{f};	// f() executes in separate thread
-    	std::thread t2{F()};	// F()() executes in separate thread
+        std::thread t1{f};    // f() executes in separate thread
+        std::thread t2{F()};    // F()() executes in separate thread
     }  // spot the bugs
 
 ##### Example
@@ -10921,13 +10921,13 @@ A `thread` that has not been `detach()`ed when it is destroyed terminates the pr
     void f() { std::cout << "Hello "; }
 
     struct F {
-	    void operator()() { std::cout << "parallel world "; }
+        void operator()() { std::cout << "parallel world "; }
     };
 
     int main() 
     {
-    	std::thread t1{f};	// f() executes in separate thread
-    	std::thread t2{F()};	// F()() executes in separate thread
+        std::thread t1{f};    // f() executes in separate thread
+        std::thread t2{F()};    // F()() executes in separate thread
         
         t1.join();
         t2.join();
@@ -11113,20 +11113,20 @@ A `wait` without a condition can miss a wakeup or wake up simply to find that th
 
     void thread1() 
     {
-	    while (true) {
-	    	// do some work ...
-		    std::unique_lock<std::mutex> lock(mx); 
-		    cv.notify_one();	// wake other thread
-	    }
+        while (true) {
+            // do some work ...
+            std::unique_lock<std::mutex> lock(mx); 
+            cv.notify_one();    // wake other thread
+        }
     }
 
     void thread2()
     {
-	    while (true) {
-		    std::unique_lock<std::mutex> lock(mx); 
-		    cv.wait(lock);	// might block forever
-		    // do work ...
-	    }
+        while (true) {
+            std::unique_lock<std::mutex> lock(mx); 
+            cv.wait(lock);    // might block forever
+            // do work ...
+        }
     } 
 
 Here, if some other `thread` consumes `thread1`'s notification, `thread2` can wait forever.
@@ -11136,30 +11136,30 @@ Here, if some other `thread` consumes `thread1`'s notification, `thread2` can wa
     template<typename T>
     class Sync_queue {
     public:
-    	void put(const T& val);
-    	void put(T&& val);
-    	void get(T& val);
+        void put(const T& val);
+        void put(T&& val);
+        void get(T& val);
     private:
-    	mutex mtx;
-    	condition_variable cond;	// this controls access
-    	list<T> q;
+        mutex mtx;
+        condition_variable cond;    // this controls access
+        list<T> q;
     };
 
     template<typename T>
     void Sync_queue<T>::put(const T& val)
     {
-	    lock_guard<mutex> lck(mtx);
-	    q.push_back(val);
-	    cond.notify_one();
+        lock_guard<mutex> lck(mtx);
+        q.push_back(val);
+        cond.notify_one();
     }
 
     template<typename T>
     void Sync_queue<T>::get(T& val)
     {
-	    unique_lock<mutex> lck(mtx);
-	    cond.wait(lck,[this]{ return !q.empty(); });    // prevent spurious wakeup
-	    val=q.front();
-	    q.pop_front();
+        unique_lock<mutex> lck(mtx);
+        cond.wait(lck,[this]{ return !q.empty(); });    // prevent spurious wakeup
+        val=q.front();
+        q.pop_front();
     }
 
 Now if the queue is empty when a thread executing `get()` wakes up (e.g., because another thread has gotton to `get()` before it),
@@ -11372,15 +11372,15 @@ It's error-prone and requires expert level knowledge of language features, machi
 
 ##### Example, bad
 
-    extern atomic<Link*> head;		// the shared head of a linked list
+    extern atomic<Link*> head;        // the shared head of a linked list
 
-    Link* nh = new Link(data,nullptr);	// make a link ready for insertion
-    Link* h = head.load();			    // read the shared head of the list
+    Link* nh = new Link(data,nullptr);    // make a link ready for insertion
+    Link* h = head.load();                // read the shared head of the list
     
     do {
-    	if (h->data<=data) break;		// if so, insert elsewhere
-    	nh->next = h;			        // next element is the previous head
-    } while (!head.compare_exchange_weak(h,nh));	// write nh to head or to h
+        if (h->data<=data) break;        // if so, insert elsewhere
+        nh->next = h;                    // next element is the previous head
+    } while (!head.compare_exchange_weak(h,nh));    // write nh to head or to h
     
 Spot the bug.
 It would be really hard to find through testing.
