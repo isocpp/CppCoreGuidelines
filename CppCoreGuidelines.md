@@ -608,7 +608,8 @@ Ideally we catch all errors (that are not errors in the programmer's logic) at e
 
     void g(int n)
     {
-        f(new int[n]);  // bad: the number of elements is not passed to f()
+        // bad: the number of elements is not passed to f()
+        f(new int[n]);
     }
 
 Here, a crucial bit of information (the number of elements) has been so thoroughly "obscured" that static analysis is probably rendered infeasible and dynamic checking can be very difficult when `f()` is part of an ABI so that we cannot "instrument" that pointer. We could embed helpful information into the free store, but that requires global changes to a system and maybe to the compiler. What we have here is a design that makes error detection very hard.
@@ -633,9 +634,10 @@ Also, it is implicit that `f2()` is supposed to `delete` its argument (or did th
 
 The standard library resource management pointers fail to pass the size when they point to an object:
 
-    extern void f3(unique_ptr<int[]>, int n);    // separately compiled, possibly dynamically loaded
-                                                 // NB: this assumes the calling code is ABI-compatible, using a
-                                                 // compatible C++ compiler and the same stdlib implementation
+    // separately compiled, possibly dynamically loaded
+    // NB: this assumes the calling code is A BI-compatible, using a
+    // compatible C++ compiler and the same stdlib implementation
+    extern void f3(unique_ptr<int[]>, int n);
 
     void g3(int n)
     {
@@ -646,16 +648,16 @@ The standard library resource management pointers fail to pass the size when the
 
 We need to pass the pointer and the number of elements as an integral object:
 
-    extern void f4(vector<int>&);       // separately compiled, possibly dynamically loaded
-    extern void f4(span<int>);          // separately compiled, possibly dynamically loaded
-                                                 // NB: this assumes the calling code is ABI-compatible, using a
-                                                 // compatible C++ compiler and the same stdlib implementation
+    extern void f4(vector<int>&);   // separately compiled, possibly dynamically loaded
+    extern void f4(span<int>);      // separately compiled, possibly dynamically loaded
+                                    // NB: this assumes the calling code is ABI-compatible, using a
+                                    // compatible C++ compiler and the same stdlib implementation
 
     void g3(int n)
     {
         vector<int> v(n);
         f4(v);                     // pass a reference, retain ownership
-        f4(span<int>{v});    // pass a view, retain ownership
+        f4(span<int>{v});          // pass a view, retain ownership
     }
 
 This design carries the number of elements along as an integral part of an object, so that errors are unlikely and dynamic (run-time) checking is always feasible, if not always affordable.
@@ -1573,8 +1575,9 @@ By stating the intent in source, implementers and tools can provide better diagn
 
 The assumption that the pointer to `char` pointed to a C-style string (a zero-terminated string of characters) was still implicit, and a potential source of confusion and errors. Use `zstring` in preference to `const char*`.
 
-    int length(not_null<zstring> p);   // we can assume that p cannot be nullptr
-                                       // we can assume that p points to a zero-terminated array of characters
+    // we can assume that p cannot be nullptr
+    // we can assume that p points to a zero-terminated array of characters
+    int length(not_null<zstring> p);
 
 Note: `length()` is, of course, `std::strlen()` in disguise.
 
@@ -2244,13 +2247,20 @@ Passing a shared smart pointer (e.g., `std::shared_ptr`) implies a run-time cost
 
 ##### Example
 
-    void f(int*);             // accepts any int*
-    void g(unique_ptr<int>);  // can only accept ints for which you want to transfer ownership
-    void g(shared_ptr<int>);  // can only accept ints for which you are willing to share ownership
+    // accepts any int*
+    void f(int*);
 
-    void h(const unique_ptr<int>&);  // doesn't change ownership, but requires a particular ownership of the caller.
+    // can only accept ints for which you want to transfer ownership
+    void g(unique_ptr<int>);
 
-    void h(int&);             // accepts any int
+    // can only accept ints for which you are willing to share ownership
+    void g(shared_ptr<int>); 
+
+    // doesn’t change ownership, but requires a particular ownership of the caller
+    void h(const unique_ptr<int>&);
+
+    // accepts any int
+    void h(int&);             
 
 ##### Example, bad
 
@@ -2481,9 +2491,11 @@ If you have multiple values to return, [use a tuple](#Rf-out-multi) or similar m
 
 ##### Example
 
-    vector<const int*> find_all(const vector<int>&, int x);  // OK: return pointers to elements with the value x
+    // OK: return pointers to elements with the value x
+    vector<const int*> find_all(const vector<int>&, int x);
 
-    void find_all(const vector<int>&, vector<const int*>& out, int x);  // Bad: place pointers to elements with value x in out
+    // Bad: place pointers to elements with value x in out
+    void find_all(const vector<int>&, vector<const int*>& out, int x);
 
 ##### Note
 
@@ -2526,14 +2538,16 @@ And yes, C++ does have multiple return values, by convention of using a `tuple`,
 
 ##### Example
 
-    int f(const string& input, /*output only*/ string& output_data) // BAD: output-only parameter documented in a comment
+    // BAD: output-only parameter documented in a comment
+    int f(const string& input, /*output only*/ string& output_data)
     {
         // ...
         output_data = something();
         return status;
     }
 
-    tuple<int, string> f(const string& input) // GOOD: self-documenting
+    // GOOD: self-documenting
+    tuple<int, string> f(const string& input)
     {
         // ...
         return make_tuple(status, something());
@@ -2548,10 +2562,10 @@ For example, given a `set<string> myset`, consider:
 
 With C++11 we can write this, putting the results directly in existing local variables:
 
-    Sometype iter;                                          // default initialize if we haven't already
-    Someothertype success;                                  // used these variables for some other purpose
+    Sometype iter;                                // default initialize if we haven't already
+    Someothertype success;                        // used these variables for some other purpose
 
-    tie(iter, success) = myset.insert("Hello");         // normal return value
+    tie(iter, success) = myset.insert("Hello");   // normal return value
     if (success) do_something_with(iter);
 
 With C++17 we may be able to write something like this, also declaring the variables:
@@ -2591,9 +2605,17 @@ In traditional C and C++ code, plain `T*` is used for many weakly-related purpos
 
     void use(int* p, char* s, int* q)
     {
-            *++p = 666;   // Bad: we don't know if p points to two elements; assume it does not or use span<int>
-            cout << s;    // Bad: we don't know if that s points to a zero-terminated array of char; assume it does not or use zstring
-            delete q;     // Bad: we don't know if *q is allocated on the free store; assume it does not or use owner
+            // Bad: we don't know if p points to two elements; assume it does not or
+            // use span<int>
+            *++p = 666;
+
+            // Bad: we don't know if that s points to a zero-terminated array of char;
+            // assume it does not or use zstring
+            cout << s;
+
+            // Bad: we don't know if *q is allocated on the free store; assume it does
+            // not or use owner
+            delete q;
     }
 
 ##### Note
@@ -2626,9 +2648,11 @@ Consider:
 
 When I call `length(p)` should I test for `p == nullptr` first? Should the implementation of `length()` test for `p == nullptr`?
 
-    int length(not_null<Record*> p);  // it is the caller's job to make sure p != nullptr
+    // it is the caller's job to make sure p != nullptr
+    int length(not_null<Record*> p);
 
-    int length(Record* p);            // the implementor of length() must assume that p == nullptr is possible
+    // the implementor of length() must assume that p == nullptr is possible
+    int length(Record* p);
 
 ##### Note
 
@@ -2671,10 +2695,17 @@ A `span` represents a range of elements, but how do we manipulate elements of th
 
     void f(span<int> s)
     {
-        for (int x : s) cout << x << '\n';  // range traversal (guaranteed correct)
-        for (int i = 0; i < s.size(); ++i) cout << x << '\n';  // C-style traversal (potentially checked)
-        s[7] = 9;                           // random access (potentially checked)
-        std::sort(&s[0], &s[s.size() / 2]);    // extract pointers (potentially checked)
+        // range traversal (guaranteed correct)
+        for (int x : s) cout << x << '\n';
+
+        // C-style traversal (potentially checked)
+        for (int i = 0; i < s.size(); ++i) cout << x << '\n';
+
+        // random access (potentially checked)
+        s[7] = 9;
+
+        // extract pointers (potentially checked)
+        std::sort(&s[0], &s[s.size() / 2]);
     }
 
 ##### Note
@@ -2704,9 +2735,11 @@ Consider:
 
 When I call `length(s)` should I test for `s == nullptr` first? Should the implementation of `length()` test for `p == nullptr`?
 
-    int length(zstring p);            // the implementor of length() must assume that p == nullptr is possible
+    // the implementor of length() must assume that p == nullptr is possible
+    int length(zstring p);
 
-    int length(not_null<zstring> p);  // it is the caller's job to make sure p != nullptr
+    // it is the caller's job to make sure p != nullptr
+    int length(not_null<zstring> p);
 
 ##### Note
 
@@ -3183,19 +3216,22 @@ Pointers and references to locals shouldn't outlive their scope. Lambdas that ca
 
     {
         int local = 42;
-        thread_pool.queue_work([&]{ process(local); }); // Want a reference to local.
-                                                        // Note, that after program exits this scope,
-                                                        // local no longer exists, therefore
-                                                        // process() call will have undefined behavior!
+
+        // Want a reference to local.
+        // Note, that after program exits this scope,
+        // local no longer exists, therefore
+        // process() call will have undefined behavior!
+        thread_pool.queue_work([&]{ process(local); });
     }
 
 ##### Example, good
 
     {
         int local = 42;
-        thread_pool.queue_work([=]{ process(local); });  // Want a copy of local.
-                                                         // Since a copy of local is made, it will be
-                                                         // available at all times for the call.
+        // Want a copy of local.
+        // Since a copy of local is made, it will be
+        // available at all times for the call.
+        thread_pool.queue_work([=]{ process(local); });
     }
 
 ##### Enforcement
@@ -3220,8 +3256,9 @@ It's confusing. Writing `[=]` in a member function appears to capture by value, 
             // ...
 
             auto lambda = [=]{ use(i, x); };   // BAD: "looks like" copy/value capture
-                // notes: [&] has identical semantics and copies the this pointer under the current rules
-                //        [=,this] and [&,this] are not much better, and confusing
+            // [&] has identical semantics and copies the this pointer under the current rules
+            // [=,this] and [&,this] are not much better, and confusing
+
             x = 42;
             lambda(); // calls use(42);
             x = 43;
@@ -3957,7 +3994,8 @@ Consider a `T*` a possible owner and therefore suspect.
 
     void use(Smart_ptr<int> p1)
     {
-        auto p2 = p1;   // error: p2.p leaked (if not nullptr and not owned by some other code)
+        // error: p2.p leaked (if not nullptr and not owned by some other code)
+        auto p2 = p1;
     }
 
 Note that if you define a destructor, you must define or delete [all default operations](#Rc-five):
@@ -4043,7 +4081,9 @@ If the `Handle` owns the object referred to by `s` it must have a destructor.
 
 Independently of whether `Handle` owns its `Shape`, we must consider the default copy operations suspect:
 
-    Handle x {*new Circle{p1, 17}};  // the Handle had better own the Circle or we have a leak
+    // the Handle had better own the Circle or we have a leak
+    Handle x {*new Circle{p1, 17}};
+
     Handle y {*new Triangle{p1, p2, p3}};
     x = y;     // the default assignment will try *x.s = *y.s
 
@@ -4462,7 +4502,8 @@ Being able to set a value to "the default" without operations that might fail si
 ##### Example, problematic
 
     template<typename T>
-    class Vector0 {   // elem points to space-elem element allocated using new
+    // elem points to space-elem element allocated using new
+    class Vector0 {
     public:
         Vector0() :Vector0{0} {}
         Vector0(int n) :elem{new T[n]}, space{elem + n}, last{elem} {}
@@ -4480,9 +4521,11 @@ For example, `Vector0 v(100)` costs 100 allocations.
 ##### Example
 
     template<typename T>
-    class Vector1 {   // elem is nullptr or elem points to space-elem element allocated using new
+    // elem is nullptr or elem points to space-elem element allocated using new
+    class Vector1 {
     public:
-        Vector1() noexcept {}   // sets the representation to {nullptr, nullptr, nullptr}; doesn't throw
+        // sets the representation to {nullptr, nullptr, nullptr}; doesn't throw
+        Vector1() noexcept {}
         Vector1(int n) :elem{new T[n]}, space{elem + n}, last{elem} {}
         // ...
     private:
@@ -4827,7 +4870,8 @@ It is simple and efficient. If you want to optimize for rvalues, provide an over
     public:
         Foo& operator=(const Foo& x)
         {
-            auto tmp = x;   // GOOD: no need to check for self-assignment (other than performance)
+            // GOOD: no need to check for self-assignment (other than performance)
+            auto tmp = x;
             std::swap(*this, tmp);
             return *this;
         }
@@ -5196,7 +5240,9 @@ To prevent slicing, because the normal copy operations will copy only the base p
     };
 
     auto d = make_unique<D>();
-    auto b = make_unique<B>(d); // oops, slices the object; gets only d.data but drops d.moredata
+
+    // oops, slices the object; gets only d.data but drops d.moredata
+    auto b = make_unique<B>(d);
 
 ##### Example
 
@@ -5345,17 +5391,22 @@ Worse, a direct or indirect call to an unimplemented pure virtual function from 
 
     class derived : public base {
     public:
-        void g() override;      // provide derived implementation
-        void h() final;         // provide derived implementation
+        void g() override;   // provide derived implementation
+        void h() final;      // provide derived implementation
 
         derived()
         {
-            f();                // BAD: attempt to call an unimplemented virtual function
+            // BAD: attempt to call an unimplemented virtual function
+            f();
 
-            g();                // BAD: will call derived::g, not dispatch further virtually
-            derived::g();       // GOOD: explicitly state intent to call only the visible version
+            // BAD: will call derived::g, not dispatch further virtually
+            g();
 
-            h();                // ok, no qualification needed, h is final
+            // GOOD: explicitly state intent to call only the visible version
+            derived::g();
+
+            // ok, no qualification needed, h is final
+            h();
         }
     };
 
@@ -5746,7 +5797,7 @@ Such as on an ABI (link) boundary.
 
     class D2 : public Device {
         // ... different data ...
-        
+
         void write(span<const char> outbuf) override;
         void read(span<char> inbuf) override;
     };
@@ -5793,7 +5844,8 @@ A class with a virtual function is usually (and in general) used via a pointer t
         // ... no user-written destructor, defaults to public nonvirtual ...
     };
 
-    struct D : B {   // bad: class with a resource derived from a class without a virtual destructor
+    // bad: class with a resource derived from a class without a virtual destructor
+    struct D : B {
         string s {"default"};
     };
 
@@ -6395,7 +6447,8 @@ It also gives an opportunity to eliminate a separate allocation for the referenc
 
 ##### Example
 
-    shared_ptr<Foo> p {new<Foo>{7}};   // OK: but repetitive; and separate allocations for the Foo and shared_ptr's use count
+    // OK: but repetitive; and separate allocations for the Foo and shared_ptr's use count
+    shared_ptr<Foo> p {new<Foo>{7}};
 
     auto q = make_shared<Foo>(7);   // Better: no repetition of Foo; one object
 
@@ -7337,9 +7390,10 @@ Note that it is possible to get undefined initialization order even for `const` 
 
     void use()
     {
-        Record* p1 = static_cast<Record*>(malloc(sizeof(Record)));
         // p1 may be nullptr
-        // *p1 is not initialized; in particular, that string isn't a string, but a string-sized bag of bits
+        // *p1 is not initialized; in particular,
+        // that string isn't a string, but a string-sized bag of bits
+        Record* p1 = static_cast<Record*>(malloc(sizeof(Record)));
 
         auto p2 = new Record;
 
@@ -7430,7 +7484,8 @@ If you perform two explicit resource allocations in one statement, you could lea
 
 This `fun` can be called like this:
 
-    fun(shared_ptr<Widget>(new Widget(a, b)), shared_ptr<Widget>(new Widget(c, d)));   // BAD: potential leak
+    // BAD: potential leak
+    fun(shared_ptr<Widget>(new Widget(a, b)), shared_ptr<Widget>(new Widget(c, d)));
 
 This is exception-unsafe because the compiler may reorder the two expressions building the function's two arguments.
 In particular, the compiler can interleave execution of the two expressions:
@@ -7829,18 +7884,26 @@ The following should not pass code review:
 
     void my_code()
     {
-        f(*g_p);     // BAD: passing pointer or reference obtained from a nonlocal smart pointer
-                     //      that could be inadvertently reset somewhere inside f or it callees
-        g_p->func(); // BAD: same reason, just passing it as a "this" pointer
+        // BAD: passing pointer or reference obtained from a nonlocal smart pointer
+        //      that could be inadvertently reset somewhere inside f or it callees
+        f(*g_p);
+
+        // BAD: same reason, just passing it as a "this" pointer
+         g_p->func();
     }
 
 The fix is simple -- take a local copy of the pointer to "keep a ref count" for your call tree:
 
     void my_code()
     {
-        auto pin = g_p; // cheap: 1 increment covers this entire function and all the call trees below us
-        f(*pin);        // GOOD: passing pointer or reference obtained from a local unaliased smart pointer
-        pin->func();    // GOOD: same reason
+        // cheap: 1 increment covers this entire function and all the call trees below us
+        auto pin = g_p;
+
+        // GOOD: passing pointer or reference obtained from a local unaliased smart pointer
+        f(*pin);
+
+        // GOOD: same reason
+        pin->func();
     }
 
 ##### Enforcement
@@ -8025,7 +8088,7 @@ Readability. Minimize resource retention. Avoid accidental misuse of value.
 
     void use(const string& name)
     {
-        string fn = name+".txt";
+        string fn = name + ".txt";
         ifstream is {fn};
         Record r;
         is >> r;
@@ -8038,7 +8101,7 @@ In this case, it might be a good idea to factor out the read:
 
     Record load_record(const string& name)
     {
-        string fn = name+".txt";
+        string fn = name + ".txt";
         ifstream is {fn};
         Record r;
         is >> r;
@@ -8249,7 +8312,8 @@ or:
 
 or:
 
-    double scalbn(double base, int exponent);   // better: base * pow(FLT_RADIX, exponent); FLT_RADIX is usually 2
+    // better: base * pow(FLT_RADIX, exponent); FLT_RADIX is usually 2
+    double scalbn(double base, int exponent);
 
 ##### Enforcement
 
@@ -9233,21 +9297,29 @@ Complicated expressions are error-prone.
 
 ##### Example
 
-    while ((c = getc()) != -1)   // bad: assignment hidden in subexpression
+    // bad: assignment hidden in subexpression
+    while ((c = getc()) != -1)
 
-    while ((cin >> c1, cin >> c2), c1 == c2) // bad: two non-local variables assigned in a sub-expressions
+    // bad: two non-local variables assigned in a sub-expressions
+    while ((cin >> c1, cin >> c2), c1 == c2)
 
-    for (char c1, c2; cin >> c1 >> c2 && c1 == c2;)   // better, but possibly still too complicated
+    // better, but possibly still too complicated
+    for (char c1, c2; cin >> c1 >> c2 && c1 == c2;)
 
-    int x = ++i + ++j;    // OK: iff i and j are not aliased
+    // OK: iff i and j are not aliased
+    int x = ++i + ++j;
 
-    v[i] = v[j] + v[k];   // OK: iff i != j and i != k
+    // OK: iff i != j and i != k
+    v[i] = v[j] + v[k];
 
-    x = a + (b = f()) + (c = g()) * 7;   // bad: multiple assignments "hidden" in subexpressions
+    // bad: multiple assignments "hidden" in subexpressions
+    x = a + (b = f()) + (c = g()) * 7;
 
-    x = a & b + c * d && e ^ f == 7;     // bad: relies on commonly misunderstood precedence rules
+    // bad: relies on commonly misunderstood precedence rules
+    x = a & b + c * d && e ^ f == 7;
 
-    x = x++ + x++ + ++x;   // bad: undefined behavior
+    // bad: undefined behavior
+    x = x++ + x++ + ++x;
 
 Some of these expressions are unconditionally bad (e.g., they rely on undefined behavior). Others are simply so complicated and/or unusual that even good programmers could misunderstand them or overlook a problem when in a hurry.
 
@@ -9604,10 +9676,15 @@ Explicit `move` is needed to explicitly move an object to another scope, notably
     void user()
     {
         X x;
-        sink(x);             // error: cannot bind an lvalue to a rvalue reference
-        sink(std::move(x));  // OK: sink takes the contents of x, x must now be assumed to be empty
+        // error: cannot bind an lvalue to a rvalue reference
+        sink(x);
+        // OK: sink takes the contents of x, x must now be assumed to be empty
+        sink(std::move(x));
+
         // ...
-        use(x);              // probably a mistake
+
+        // probably a mistake
+        use(x);
     }
 
 Usually, a `std::move()` is used as an argument to a `&&` parameter.
@@ -9619,8 +9696,11 @@ And after you do that, assume the object has been moved from (see [C.64](#Rc-mov
         string s2 = s1;             // ok, takes a copy
         assert(s1 == "supercalifragilisticexpialidocious");  // ok
 
-        string s3 = move(s1);       // bad, if you want to keep using s1's value
-        assert(s1 == "supercalifragilisticexpialidocious");  // bad, assert will likely fail, s1 likely changed
+        // bad, if you want to keep using s1's value
+        string s3 = move(s1);
+
+        // bad, assert will likely fail, s1 likely changed
+        assert(s1 == "supercalifragilisticexpialidocious");
     }
 
 ##### Example
@@ -9931,18 +10011,21 @@ This also applies to `%`.
 ##### Example; bad
 
     double divide(int a, int b) {
-        return a/b;                 // BAD, should be checked (e.g., in a precondition)
+        // BAD, should be checked (e.g., in a precondition)
+        return a / b;
     }
 
 ##### Example; good
 
     double divide(int a, int b) {
-        Expects(b != 0);            // good, address via precondition (and replace with contracts once C++ gets them)
+        // good, address via precondition (and replace with contracts once C++ gets them)
+        Expects(b != 0);
         return a / b;
     }
 
     double divide(int a, int b) {
-        return b ? a/b : quiet_NaN<double>();       // good, address via check
+        // good, address via check
+        return b ? a / b : quiet_NaN<double>();
     }
 
 **Alternative**: For critical applications that can afford some overhead, use a range-checked integer and/or floating-point type.
@@ -11532,7 +11615,8 @@ C++ implementations tend to be optimized based on the assumption that exceptions
 
 ##### Example, don't
 
-    int find_index(vector<string>& vec, const string& x)   // don't: exception not used for error handling
+      // don't: exception not used for error handling
+    int find_index(vector<string>& vec, const string& x)
     {
         try {
             for (int i =0; i < vec.size(); ++i)
@@ -13113,8 +13197,8 @@ In general, passing function objects gives better performance than passing point
 
 You can, of course, generalize those functions using `auto` or (when and where available) concepts. For example:
 
-    auto y1 = find_if(v, [](Ordered x) { return x>7; }); // require an ordered type
-    auto z1 = find_if(v, [](auto x) { return x>7; });    // hope that the type has a >
+    auto y1 = find_if(v, [](Ordered x) { return x > 7; }); // require an ordered type
+    auto z1 = find_if(v, [](auto x) { return x > 7; });    // hope that the type has a >
 
 ##### Note
 
@@ -13635,7 +13719,8 @@ There are three major ways to let calling code customize a template.
         template<class T>
         void test(T t)
         {
-            f(t);     // require f(/*T*/) be available in caller's scope or in T's namespace
+            // require f(/*T*/) be available in caller's scope or in T's namespace
+            f(t);
         }
 
 * Invoke a "trait" -- usually a type alias to compute a type, or a `constexpr` function to compute a value, or in rarer cases a traditional traits template to be specialized on the user's type.
@@ -13643,7 +13728,8 @@ There are three major ways to let calling code customize a template.
         template<class T>
         void test(T t)
         {
-            test_traits<T>::f(t);    // require customizing test_traits<> to get non-default functions/types
+            // require customizing test_traits<> to get non-default functions/types
+            test_traits<T>::f(t);
             test_traits<T>::value_type x;
         }
 
@@ -14138,13 +14224,15 @@ Use the least-derived class that has the functionality you need.
         void j();
     };
 
-    void myfunc(derived1& param)  // bad, unless there is a specific reason for limiting to derived1 objects only
+    // bad, unless there is a specific reason for limiting to derived1 objects only
+    void myfunc(derived1& param)
     {
         use(param.f());
         use(param.g());
     }
 
-    void myfunc(base& param)   // good, uses only base interface so only commit to that
+    // good, uses only base interface so only commit to that
+    void myfunc(base& param)
     {
         use(param.f());
         use(param.g());
@@ -14917,8 +15005,10 @@ Use of these casts can violate type safety and cause the program to access a var
     derived1 d1;
     base* p = &d1; // ok, implicit conversion to pointer to base is fine
 
-    derived2* p2 = static_cast<derived2*>(p); // BAD, tries to treat d1 as a derived2, which it is not
-    cout << p2->get_s(); // tries to access d1's nonexistent string member, instead sees arbitrary bytes near d1
+    // BAD, tries to treat d1 as a derived2, which it is not
+    derived2* p2 = static_cast<derived2*>(p);
+    // tries to access d1's nonexistent string member, instead sees arbitrary bytes near d1
+    cout << p2->get_s();
 
 ##### Example, bad
 
@@ -14975,18 +15065,29 @@ Sometimes you may be tempted to resort to `const_cast` to avoid code duplication
 
     class foo {
         bar mybar;
-    public:                         // BAD, duplicates logic
-              bar& get_bar()       { /* complex logic around getting a non-const reference to mybar */ }
-        const bar& get_bar() const { /* same complex logic around getting a const reference to mybar */ }
+    public:
+        // BAD, duplicates logic
+        bar& get_bar() {
+            /* complex logic around getting a non-const reference to mybar */
+        }
+
+        const bar& get_bar() const {
+            /* same complex logic around getting a const reference to mybar */
+        }
     };
 
 Instead, prefer to share implementations. Normally, you can just have the non-`const` function call the `const` function. However, when there is complex logic this can lead to the following pattern that still resorts to a `const_cast`:
 
     class foo {
         bar mybar;
-    public:                         // not great, non-const calls const version but resorts to const_cast
-              bar& get_bar()       { return const_cast<bar&>(static_cast<const foo&>(*this).get_bar()); }
-        const bar& get_bar() const { /* the complex logic around getting a const reference to mybar */ }
+    public:
+        // not great, non-const calls const version but resorts to const_cast
+        bar& get_bar() {
+            return const_cast<bar&>(static_cast<const foo&>(*this).get_bar());
+        }
+        const bar& get_bar() const {
+            /* the complex logic around getting a const reference to mybar */
+        }
     };
 
 Although this pattern is safe when applied correctly, because the caller must have had a non-`const` object to begin with, it's not ideal because the safety is hard to enforce automatically as a checker rule.
@@ -15036,8 +15137,10 @@ Note that a C-style `(T)expression` cast means to perform the first of the follo
     derived1 d1;
     base* p = &d1; // ok, implicit conversion to pointer to base is fine
 
-    derived2* p2 = (derived2*)(p); // BAD, tries to treat d1 as a derived2, which it is not
-    cout << p2->get_s(); // tries to access d1's nonexistent string member, instead sees arbitrary bytes near d1
+    // BAD, tries to treat d1 as a derived2, which it is not
+    derived2* p2 = (derived2*)(p);
+    // tries to access d1's nonexistent string member, instead sees arbitrary bytes near d1
+    cout << p2->get_s();
 
     void f(const int& i) {
         (int&)(i) = 42;   // BAD
@@ -16513,15 +16616,18 @@ To avoid extremely hard-to-find errors. Dereferencing such a pointer is undefine
     string* bad()   // really bad
     {
         vector<string> v = { "this", "will", "cause" "trouble" };
-        return &v[0];   // leaking a pointer into a destroyed member of a destroyed object (v)
+        // leaking a pointer into a destroyed member of a destroyed object (v)
+        return &v[0];
     }
 
     void use()
     {
         string* p = bad();
         vector<int> xx = {7, 8, 9};
-        string x = *p;   // undefined behavior: x may not be "this"
-        *p = "Evil!";    // undefined behavior: we don't know what (if anything) is allocated a location p
+        // undefined behavior: x may not be "this"
+        string x = *p;
+        // undefined behavior: we don't know what (if anything) is allocated a location p
+        *p = "Evil!";
     }
 
 The `string`s of `v` are destroyed upon exit from `bad()` and so is `v` itself. The returned pointer points to unallocated memory on the free store. This memory (pointed into by `p`) may have been reallocated by the time `*p` is executed. There may be no `string` to read and a write through `p` could easily corrupt objects of unrelated types.
