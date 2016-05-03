@@ -8166,7 +8166,7 @@ Conventional short, local names increase readability:
     template<typename T>    // good
     void print(ostream& os, const vector<T>& v)
     {
-        for (int i = 0; i < v.end(); ++i)
+        for (int i = 0; i < v.size(); ++i)
             os << v[i] << '\n';
     }
 
@@ -8176,7 +8176,7 @@ An index is conventionally called `i` and there is no hint about the meaning of 
     void print(ostream& target_stream, const vector<Element_type>& current_vector)
     {
         for (int current_element_index = 0;
-                current_element_index < current_vector.end();
+                current_element_index < current_vector.size();
                 ++current_element_index
         )
         target_stream << current_vector[i] << '\n';
