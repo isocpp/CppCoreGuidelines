@@ -1,6 +1,6 @@
 # <a name="main"></a>C++ Core Guidelines
 
-April 23, 2016
+May 6, 2016
 
 Editors:
 
@@ -2592,6 +2592,11 @@ In some cases it may be useful to return a specific, user-defined `Value_or_erro
 
 ##### Reason
 
+Readability: it makes the meaning of a plain pointer clear.
+Enables significant tool support.
+
+##### Note
+
 In traditional C and C++ code, plain `T*` is used for many weakly-related purposes, such as:
 
 * Identify a (single) object (not to be deleted by this function)
@@ -2601,21 +2606,29 @@ In traditional C and C++ code, plain `T*` is used for many weakly-related purpos
 * Identify an array with a length specified separately
 * Identify a location in an array
 
+The makes it hard to understand what code does and is supposed to do.
+It complicates checking and tool support.
+
 ##### Example
 
-    void use(int* p, char* s, int* q)
+    void use(int* p, int nchar* s, int* q)
     {
-            // Bad: we don't know if p points to two elements; assume it does not or
-            // use span<int>
-            *++p = 666;
+            p[n-1] = 666; // Bad: we don't know if p points to n elements; assume it does not or use span<int>
+            
+            cout << s; // Bad: we don't know if that s points to a zero-terminated array of char; // assume it does not or use zstring
 
-            // Bad: we don't know if that s points to a zero-terminated array of char;
-            // assume it does not or use zstring
-            cout << s;
+            delete q; // Bad: we don't know if *q is allocated on the free store; assume it does not or use owner
+    }
 
-            // Bad: we don't know if *q is allocated on the free store; assume it does
-            // not or use owner
-            delete q;
+better
+
+    void use2(span<int> p, zstring s, owner<int*> q)
+    {
+            p[p.size()-1] = 666; // OK, a range error can be caught
+            
+            cout << s; // OK
+
+            delete q; // OK
     }
 
 ##### Note
