@@ -10253,7 +10253,7 @@ the same memory. Concurrent programming is tricky for many reasons, most
 importantly that it is undefined behavior to read data in one thread after it
 was written by another thread, if there is no proper synchronization between
 those threads. Making existing single-threaded code execute concurrently can be
-as trivial as adding `std::async` or `std::thread` strategically, or it can be
+as trivial as adding `std::async` or `std::thread` strategically, or it can 
 necessitate a full rewrite, depending on whether the original code was written
 in a thread-friendly way.
 
@@ -10432,7 +10432,7 @@ Help the tools:
 ##### Reason
 
 If you don't share writable data, you can't have a data race.
-The less sharing you do, the less chance you have to forget to synchanize access (and get data races).
+The less sharing you do, the less chance you have to forget to synchronize access (and get data races).
 The less sharing you do, the less chance you have to wait on a lock (so performance can improve).
 
 ##### Example
@@ -10458,7 +10458,7 @@ The less sharing you do, the less chance you have to wait on a lock (so performa
         // ...
     }
 
-Without those `const`s, we would have to review every asynchroneously invoked function for potential data races on `surface_readings`.
+Without those `const`s, we would have to review every asynchronously invoked function for potential data races on `surface_readings`.
 
 ##### Note
 
@@ -10474,7 +10474,7 @@ No locking is needed: You can't have a data race on a constant.
 
 ##### Reason
 
-A `thread` is a implementation concept, a way of thinking about the machine.
+A `thread` is an implementation concept, a way of thinking about the machine.
 A task is an application notion, something you'd like to do, preferably concurrently with other tasks.
 Application concepts are easier to reason about.
 
@@ -10565,7 +10565,7 @@ Concurrency rule summary:
 * [CP.27: Use plain `std::thread` for `thread`s that detach based on a run-time condition (only)](#Rconc-thread)
 * [CP.28: Remember to join scoped `thread`s that are not `detach()`ed](#Rconc-join)
 * [CP.30: Do not pass pointers to local variables to non-`raii_thread's](#Rconc-pass)
-* [CP.31: Pass small amounts of data between threads by value, reather by reference or pointer](#Rconc-data)
+* [CP.31: Pass small amounts of data between threads by value, rather than by reference or pointer](#Rconc-data)
 * [CP.32: To share ownership beween unrelated `thread`s use `shared_ptr`](#Rconc-shared)
 * [CP.40: Minimize context switching](#Rconc-switch)
 * [CP.41: Minimize thread creation and destruction](#Rconc-create)
@@ -10708,7 +10708,7 @@ If, as it is likely, `f()` invokes operations on `*this`, we must make sure that
 
 ##### Reason
 
-To maintain pointer safety and avoid leaks, we need to consider what pointers a used by a `thread`.
+To maintain pointer safety and avoid leaks, we need to consider what pointers are used by a `thread`.
 If a `thread` joins, we can safely pass pointers to objects in the scope of the `thread` and its enclosing scopes.
 
 ##### Example
@@ -10747,7 +10747,7 @@ After that, the usual lifetime and ownership (for local objects) enforcement app
 
 ##### Reason
 
-To maintain pointer safety and avoid leaks, we need to consider what pointers a used by a `thread`.
+To maintain pointer safety and avoid leaks, we need to consider what pointers are used by a `thread`.
 If a `thread` is detached, we can safely pass pointers to static and free store objects (only).
 
 ##### Example
@@ -10907,7 +10907,7 @@ A `thread` that has not been `detach()`ed when it is destroyed terminates the pr
 
 ###### Reason
 
-In general, you cannot know whether a non-`raii_thread` will outlife your thread (so that those pointers will become invalid.
+In general, you cannot know whether a non-`raii_thread` will outlive the scope of the variables, so that those pointers will become invalid.
 
 ##### Example, bad
 
@@ -10919,7 +10919,7 @@ In general, you cannot know whether a non-`raii_thread` will outlife your thread
         t0.detach();
     }
 
-The detach` may not be so easy to spot.
+The `detach` may not be so easy to spot.
 Use a `raii_thread` or don't pass the pointer.
 
 ##### Example, bad
@@ -10928,10 +10928,10 @@ Use a `raii_thread` or don't pass the pointer.
 
 ##### Enforcement
 
-Flage pointers to locals passed in the constructor of a plain `thread`.
+Flag pointers to locals passed in the constructor of a plain `thread`.
 
 
-### <a name="Rconc-switch"></a>CP.31: Pass small amounts of data between threads by value, reather by reference or pointer
+### <a name="Rconc-switch"></a>CP.31: Pass small amounts of data between threads by value, rather by reference or pointer
 
 ##### Reason
 
@@ -10940,7 +10940,7 @@ Copying naturally gives unique ownership (simplifies code) and eliminates the po
 
 ##### Note
 
-Defining "small amount" precisely and is impossible.
+Defining "small amount" precisely is impossible.
 
 ##### Example
 
@@ -10955,7 +10955,7 @@ Defining "small amount" precisely and is impossible.
 
 The call of `modify1` involves copying two `string` values; the call of `modify2` does not.
 On the other hand, the implementation of `modify1` is exactly as we would have written in for single-threaded code,
-wheread the implementation of `modify2` will need some form of locking to avoid data races.
+whereas the implementation of `modify2` will need some form of locking to avoid data races.
 If the string is short (say 10 characters), the call of `modify1` can be surprisingly fast;
 essentially all the cost is in the `thread` switch. If the string is long (say 1,000,000 characters), copying it twice
 is probably not a good idea.
@@ -10972,7 +10972,7 @@ message passing or shared memory.
 
 ##### Reason
 
-If treads are unrelated (that is, not known to be in the same scope or one within the lifetime of the other)
+If threads are unrelated (that is, not known to be in the same scope or one within the lifetime of the other)
 and they need to share free store memory that needs to be deleted, a `shared_ptr` (or equivalent) is the only
 safe way to ensure proper deletion.
 
@@ -10982,7 +10982,7 @@ safe way to ensure proper deletion.
 
 ##### Note
 
-* A static object (e.g. a global) can be shard because it is not owned in the sense that some thread is responsible for it's deletion.
+* A static object (e.g. a global) can be shared because it is not owned in the sense that some thread is responsible for it's deletion.
 * An object on free store that is never to be deleted can be shared.
 * An object owned by one thread can be safely shared with another as long as that second thread doesn't outlive the owner.
 
@@ -10995,7 +10995,7 @@ safe way to ensure proper deletion.
 
 ##### Reason
 
-Context swtiches are expesive.
+Context swtiches are expensive.
 
 ##### Example
 
@@ -11054,7 +11054,7 @@ Instead, we could have a set of pre-created worker threads processing the messag
 
 ###### Note
 
-If you system has a good thread pool, use it.
+If your system has a good thread pool, use it.
 If your system has a good message queue, use it.
 
 ##### Enforcement
@@ -11129,7 +11129,7 @@ it will immediately go back to sleep, waiting.
 
 ##### Enforcement
 
-Flag all `waits` without conditions.
+Flag all `wait`s without conditions.
 
 
 ### <a name="Rconc-time"></a>CP.43: Minimize time spent in a critical section
