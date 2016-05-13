@@ -63,7 +63,7 @@ def main():
                     code_block_index += 1
                 # reach here either line was not code, or was code
                 # and we dealt with n code lines
-                if not is_code(line, indent_depth):
+                if indent_depth < 4 or not is_code(line, indent_depth):
                     # store header id for codeblock
                     section_id = get_marker(line)
                     if section_id is not None:
@@ -80,7 +80,7 @@ def process_code(read_filehandle, text_filehandle, line, linenum, sourcefile, co
         try:
             line = read_filehandle.next()
             linenum += 1
-            text_filehandle.write('')
+            text_filehandle.write('\n')
         except StopIteration:
             return ('', linenum)
     start_linenum = linenum
@@ -97,14 +97,13 @@ def process_code(read_filehandle, text_filehandle, line, linenum, sourcefile, co
             if (not has_actual_code
                     and not line.strip().startswith('//')
                     and not line.strip().startswith('???')
-                    and not line.strip() ==''):
+                    and not line.strip() == ''):
                 has_actual_code = True
         else:
             # write empty line so line numbers stay stable
-            text_filehandle.write('')
+            text_filehandle.write('\n')
 
         if (not line.strip() == '```'):
-
             if ('???' in no_comment_line or '...' in no_comment_line):
                 has_question_marks = True
             linebuffer.append(dedent(line) if not fenced else line)
@@ -115,9 +114,8 @@ def process_code(read_filehandle, text_filehandle, line, linenum, sourcefile, co
             line = ''
             break
     codefile = os.path.join(codedir, '%s%s.cpp' % (name, index))
-
     if fenced:
-        text_filehandle.write('')
+        text_filehandle.write('\n')
 
     if (has_actual_code and not has_question_marks):
         # add commonly used headers, so that lines can compile
@@ -139,8 +137,8 @@ using namespace std;   // by md-split
 // %s : %s
 ''' % (sourcefile, start_linenum))
             # TODO: if not toplevel code, wrap inside class
-            for line in linebuffer:
-                code_filehandle.write(line)
+            for codeline in linebuffer:
+                code_filehandle.write(codeline)
     return (line, linenum)
 
 

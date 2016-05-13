@@ -17,6 +17,7 @@ all: \
 check-markdown \
 check-references \
 check-notabs \
+hunspell-check \
 cpplint-all \
 check-badchars
 
@@ -78,6 +79,17 @@ check-badchars: $(SOURCEPATH) $(BUILD_DIR) Makefile
 	if [ -s $(BUILD_DIR)/CppCoreGuidelines.md.badchars ]; then echo 'Warning: Undesired chars (–’‘“”¸…¦) found, use straight quotes instead:'; cat $(BUILD_DIR)/CppCoreGuidelines.md.badchars; false; fi;
 
 
+.PHONY: hunspell-check
+hunspell-check: $(BUILD_DIR)/plain-nohtml.txt
+	hunspell -p hunspell/isocpp.dic -u < build/plain-nohtml.txt > $(BUILD_DIR)/hunspell-report.txt
+	if [ -s $(BUILD_DIR)/hunspell-report.txt ]; then echo 'Warning: Spellcheck failed, fix words or add to dictionary:'; cat $(BUILD_DIR)/hunspell-report.txt; false; fi;
+
+# only list words that are not in dict
+# to include all add them to bottom of hunspell/isocpp.dict, and run
+# cat hunspell/isocpp.dic | sort | uniq > hunspell/isocpp.dic2; mv hunspell/isocpp.dic2 hunspell/isocpp.dic
+.PHONY: hunspell-list
+hunspell-list: $(BUILD_DIR)/plain.txt
+	hunspell -p hunspell/isocpp.dic -l < build/plain-nohtml.txt
 
 #### Cpplint
 
@@ -95,6 +107,9 @@ $(BUILD_DIR)/Makefile: python/Makefile.in
 $(BUILD_DIR)/codeblocks: splitfile
 
 $(BUILD_DIR)/plain.txt: splitfile
+
+$(BUILD_DIR)/plain-nohtml.txt: $(BUILD_DIR)/plain.txt
+	sed 's;<a \(name\|href\)=".*</a>;;g' $(BUILD_DIR)/plain.txt > $(BUILD_DIR)/plain-nohtml.txt
 
 .PHONY: splitfile
 splitfile: $(SOURCEPATH) ./python/md-split.py

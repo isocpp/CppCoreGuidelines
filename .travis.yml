@@ -9,6 +9,11 @@ language: c++
 # alternatives: gcc, clang, or both (as yaml list)
 compiler: clang
 
+addons:
+  apt:
+    packages:
+    - hunspell
+
 install:
  -
 
