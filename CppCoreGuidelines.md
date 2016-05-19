@@ -7232,7 +7232,7 @@ We can fix that problem by making ownership explicit:
     class X2 {
         // ...
     public:
-        owner<T> p;   // OK: p is owning
+        owner<T*> p;  // OK: p is owning
         T* q;         // OK: q is not owning
     };
 
@@ -7256,9 +7256,9 @@ Some interfaces cannot be simply annotated with `owner` because they need to rem
 
 ##### Note
 
-`owner<T>` has no default semantics beyond `T*`. It can be used without changing any code using it and without affecting ABIs.
+`owner<T*>` has no default semantics beyond `T*`. It can be used without changing any code using it and without affecting ABIs.
 It is simply a indicator to programmers and analysis tools.
-For example, if an `owner<T>` is a member of a class, that class better have a destructor that `delete`s it.
+For example, if an `owner<T*>` is a member of a class, that class better have a destructor that `delete`s it.
 
 ##### Example, bad
 
