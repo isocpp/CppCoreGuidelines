@@ -10378,7 +10378,7 @@ Local static variables are a common source of data races.
     {
         array<double, max> buf;
         int sz = read_vec(fs, buf, max);            // read from fs into buf
-        gsl::span<double> s {buf, max};
+        gsl::span<double> s {buf};
         // ...
         auto h1 = async([&]{ sort(par, s); });     // spawn a task to sort
         // ...
