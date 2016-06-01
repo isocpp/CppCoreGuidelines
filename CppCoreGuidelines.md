@@ -10691,7 +10691,7 @@ Maybe it will lock on a different mutex and not return in a reasonable time, cau
             lock_guard<mutex> lck {my_mutex};
             pi = calculate_pi();
         }
-        
+
         // update derived classes - outside the lock
         notify(pi);  // notify is a virtual function
     }
