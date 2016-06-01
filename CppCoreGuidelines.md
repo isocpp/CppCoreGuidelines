@@ -10682,6 +10682,20 @@ If you don't know what `Foo::act` does (maybe it is a virtual function invoking 
 it may call `do_this` (recursively) and cause a deadlock on `my_mutex`.
 Maybe it will lock on a different mutex and not return in a reasonable time, causing delays to any code calling `do_this`.  Maybe it will lock on a different mutex, which in turn is held by another thread that is trying to call do_this(),... causing a deadlock. Often, a hard-to-find and rarely-but-at-the-worst-time deadlock.  This can become more common (if you are not careful) once you make your application more threaded and more tasked based.
 
+##### Example
+
+    void Foo::calculate()
+    {
+        // update our internal value of pi
+        {
+            lock_guard<mutex> lck {my_mutex};
+            pi = calculate_pi();
+        }
+        
+        // update derived classes - outside the lock
+        notify(pi);  // notify is a virtual function
+    }
+
 
 ##### Enforcement
 
