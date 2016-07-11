@@ -14909,7 +14909,7 @@ Reference sections:
 
 ## <a name="SS-web"></a>RF.web: Websites
 
-* [isocpp.org](http://www.isocpp.com)
+* [isocpp.org](https://isocpp.org)
 * [Bjarne Stroustrup's home pages](http://www.stroustrup.com)
 * [WG21](http://www.open-std.org/jtc1/sc22/wg21/)
 * [Boost](http://www.boost.org)<a name="Boost"></a>
