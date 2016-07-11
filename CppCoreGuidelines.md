@@ -5608,6 +5608,7 @@ One particular way of making it work can be seen below, by implementing a functi
         {
             return equals(other);
         }
+    };
 
 #### Note
 
