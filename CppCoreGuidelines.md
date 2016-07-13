@@ -2570,8 +2570,7 @@ With C++11 we can write this, putting the results directly in existing local var
 
 With C++17 we may be able to write something like this, also declaring the variables:
 
-    auto { iter, success } = myset.insert("Hello");
-    if (success) do_something_with(iter);
+    if (auto [ iter, success ] = myset.insert("Hello"); success) do_something_with(iter);
 
 **Exception**: For types like `string` and `vector` that carry additional capacity, it can sometimes be useful to treat it as in/out instead by using the "caller-allocated out" pattern,
 which is to pass an output-only object by reference to non-`const` so that when the callee writes to it the object can reuse any capacity or other resources that it already contains.
