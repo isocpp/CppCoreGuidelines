@@ -14750,7 +14750,7 @@ If you have a good reason to use another container, use that instead. For exampl
 
 ### Reason
 
-The `endl` manipulator is mostly equivalent to `'\\n'` and `"\\n"`;
+The `endl` manipulator is mostly equivalent to `'\n'` and `"\n"`;
 as most commonly used it simply slows down output by doing redundant `flush()`s.
 This slowdown can be significant compared to `printf`-style output.
 
