@@ -1,6 +1,6 @@
 # <a name="main"></a>C++ Core Guidelines
 
-May 6, 2016
+july 16, 2016
 
 Editors:
 
@@ -161,7 +161,7 @@ Remember:
 
 Take the time to understand the implications of a guideline rule on your program.
 
-These guidelines are designed according to the "subset of a superset" principle ([Stroustrup05](#Stroustrup05)).
+These guidelines are designed according to the "subset of superset" principle ([Stroustrup05](#Stroustrup05)).
 They do not simply define a subset of C++ to be used (for reliability, safety, performance, or whatever).
 Instead, they strongly recommend the use of a few simple "extensions" ([library components](#S-gsl))
 that make the use of the most error-prone features of C++ redundant, so that they can be banned (in our set of rules).
@@ -229,17 +229,23 @@ A rule can do a lot of harm by being vague, ambiguous, unenforcable, or by enabl
 It is impossible to completely meet the "do no harm" criteria.
 Instead, our aim is the less ambitious: "Do the most good for most programmers";
 if you cannot live with a rule, object to it, ignore it, but don't water it down until it becomes meaningless.
+Also, suggest an improvement.
 
 ## <a name="SS-force"></a>In.force: Enforcement
 
 Rules with no enforcement are unmanageable for large code bases.
 Enforcement of all rules is possible only for a small weak set of rules or for a specific user community.
-But we want lots of rules, and we want rules that everybody can use.
-But different people have different needs.
-But people don't like to read lots of rules.
-But people can't remember many rules.
+
+* But we want lots of rules, and we want rules that everybody can use.
+* But different people have different needs.
+* But people don't like to read lots of rules.
+* But people can't remember many rules.
+
 So, we need subsetting to meet a variety of needs.
-But arbitrary subsetting leads to chaos: We want guidelines that help a lot of people, make code more uniform, and strongly encourage people to modernize their code.
+
+* But arbitrary subsetting leads to chaos.
+
+We want guidelines that help a lot of people, make code more uniform, and strongly encourage people to modernize their code.
 We want to encourage best practices, rather than leave all to individual choices and management pressures.
 The ideal is to use all rules; that gives the greatest benefits.
 
@@ -253,7 +259,7 @@ Where appropriate, we label a rule (in the **Enforcement** sections) with the na
 A rule can be part of several profiles, or none.
 For a start, we have a few profiles corresponding to common needs (desires, ideals):
 
-* **type**: No type violations (reinterpreting a `T` as a `U` through casts/unions/varargs)
+* **type**: No type violations (reinterpreting a `T` as a `U` through casts, unions, or varargs)
 * **bounds**: No bounds violations (accessing beyond the range of an array)
 * **lifetime**: No leaks (failing to `delete` or multiple `delete`) and no access to invalid objects (dereferencing `nullptr`, using a dangling reference).
 
@@ -264,8 +270,9 @@ Tools that implement these rules shall respect the following syntax to explicitl
 
     [[suppress(tag)]]
 
-where "tag" is the anchor name of the item where the Enforcement rule appears (e.g., for C.134 it is "Rh-public"), the
-name of a profile group-of-rules ("type", "bounds", or "lifetime"), or a specific rule in a profile ("type.4", or "bounds.2").
+where "tag" is the anchor name of the item where the Enforcement rule appears (e.g., for [C.134](#Rh-public) it is "Rh-public"), the
+name of a profile group-of-rules ("type", "bounds", or "lifetime"),
+or a specific rule in a profile ([type.4](#Pro-type-cstylecast), or [bounds.2](#Pro-bounds-arrayindex)).
 
 ## <a name="SS-struct"></a>In.struct: The structure of this document
 
@@ -352,6 +359,7 @@ Philosophy rules summary:
 * [P.8: Don't leak any resources](#Rp-leak)
 * [P.9: Don't waste time or space](#Rp-waste)
 * [P.10: Prefer immutable data to mutable data](#Rp-mutable)
+* [P.11: Encapsulate messy costructs, rather than spreading through the code](#Rp-library)
 
 Philosophical rules are generally not mechanically checkable.
 However, individual rules reflecting these philosophical themes are.
@@ -384,7 +392,7 @@ The second version leaves the reader guessing and opens more possibilities for u
         string val;
         cin >> val;
         // ...
-        int index = -1;            // bad
+        int index = -1;                    // bad
         for (int i = 0; i < v.size(); ++i)
             if (v[i] == val) {
                 index = i;
@@ -452,6 +460,12 @@ behaviors and edge case behavior as a direct result of *not* having a rigorous
 standard definition.  With sufficient use of any such extension, expected
 portability will be impacted.
 
+##### Note
+
+Using valid ISO C++ does not guarantee portability (let alone correctness).
+Avoid dependence on undefined behavior (e.g., [undefined order of evaluation](#Res-order))
+and be aware of constructs with implementation defined meaning (e.g., `sizeof(int)`).
+ 
 ##### Note
 
 There are environments where restrictions on use of standard C++ language or library features are necessary, e.g., to avoid dynamic memory allocation as required by aircraft control software standards.
@@ -548,41 +562,46 @@ We can ban, restrain, or detect the individual problem categories separately, as
 Always suggest an alternative.
 For example:
 
-* unions -- use `variant`
+* unions -- use `variant` (in C++17)
 * casts -- minimize their use; templates can help
-* array decay -- use `span`
+* array decay -- use `span` (from the GSL)
 * range errors -- use `span`
-* narrowing conversions -- minimize their use and use `narrow` or `narrow_cast` where they are necessary
+* narrowing conversions -- minimize their use and use `narrow` or `narrow_cast` (from the GSL) where they are necessary
 
 ### <a name="Rp-compile-time"></a>P.5: Prefer compile-time checking to run-time checking
 
 ##### Reason
 
-Code clarity and performance. You don't need to write error handlers for errors caught at compile time.
+Code clarity and performance.
+You don't need to write error handlers for errors caught at compile time.
 
 ##### Example
 
-    void initializer(Int x)
     // Int is an alias used for integers
-    {
-        static_assert(sizeof(Int) >= 4);    // do: compile-time check
+    int bits = 0;         // don't: avoidable code
+    for (int i = 1; i; i <<= 1)
+        ++bits;
+    if (bits < 32)
+        cerr << "Int too small\n"
 
-        int bits = 0;         // don't: avoidable code
-        for (int i = 1; i; i <<= 1)
-            ++bits;
-        if (bits < 32)
-            cerr << "Int too small\n";
+This example is easily simplified
+    
+    // Int is an alias used for integers
+    static_assert(sizeof(Int) >= 4);    // do: compile-time check
 
-        // ...
-    }
-
-##### Example don't
+##### Example
 
     void read(int* p, int n);   // read max n integers into *p
+    
+    int a[100];
+    read(a,1000);    // bad
 
-##### Example
+better
 
     void read(span<int> r); // read into the range of integers r
+   
+    int a[100];
+    read(a);        // better: let the compiler figure out the number of elements
 
 **Alternative formulation**: Don't postpone to run time what can be done well at compile time.
 
@@ -810,7 +829,7 @@ The physical law for a jet (`e*e < x*x + y*y + z*z`) is not an invariant because
 
 ##### Enforcement
 
-* Look at pointers and arrays: Do range-checking early
+* Look at pointers and arrays: Do range-checking early and not repeatedly
 * Look at conversions: Eliminate or mark narrowing conversions
 * Look for unchecked values coming from input
 * Look for structured data (objects of classes with invariants) being converted into strings
@@ -848,12 +867,12 @@ Prefer [RAII](#Rr-raii):
 
 ##### Note
 
-A leak is colloquially "anything that isn't cleaned up."  The more important
-classification is "anything that can no longer be cleaned up."  For example,
-allocating an object on the heap and then losing the last pointer that points to
-that allocation.  This rule should not be taken as requiring that allocations
-within long-lived objects must be returned during program shutdown.  (Although
-if they can be cleanly and safely de-allocated, they should be.)
+A leak is colloquially "anything that isn't cleaned up."
+The more important classification is "anything that can no longer be cleaned up."
+For example, allocating an object on the heap and then losing the last pointer that points to that allocation.
+This rule should not be taken as requiring that allocations within long-lived objects must be returned during program shutdown.
+For example, relying on system guaranteed cleanup such as file closing and memory deallocation upon process shutdown can simplify code.
+However, relying on abstractions that implicitely clean up can as simple, and often safer.
 
 ##### Note
 
@@ -951,6 +970,45 @@ Sometimes immutability enables better optimization.
 You can't have a data race on a constant.
 
 See [Con: Constants and Immutability](#S-const)
+
+### <a name="Rp-library"></a>P.11: Encapsulate messy costructs, rather than spreading through the code
+
+##### Reason
+
+Messy code is more likely to hide bugs and harder to write.
+A good interface is easier and safer to use.
+Messy, low-level code breads more such code.
+
+##### Example
+
+    int sz = 100;
+    int* p = (int*) malloc(sizeof(int)*sz);
+    // ...
+    if (count==sz)
+        p = (int*) realloc(p,sizeof(int)*sz*2);
+    // ...
+    
+This is low-level, verbose, and error-prone.
+Insted, we could use `vector`:
+
+    vecor<int> v(100);
+    
+    v.push_back(yet_another)int);
+
+##### Note
+
+The standards library and the GSL are examples of this philosophy.
+For example, instead of messing with the arrays, unions, cast, tricky lifetime issues, `GSL::owner`, etc.
+that is needed to implement key abstractions, such as `vector`, `span`, `lock_guard, and `future`, we use the libraries
+designed and implemented by people with more time and expertice than we usually have.
+Similarly, we can and should design and implement more specialized libraries, rather than leaving the users (often ourselves)
+with the challenge of repeatedly getting low-level code well.
+This is a variant of the [subset of superset principle](#R0) that underlies these guidelines.
+
+##### Enforcement
+
+* Look for "messy code" such as complex pointer manipulation and casting outside the implementation of abstratcions.
+
 
 # <a name="S-interfaces"></a>I: Interfaces
 
@@ -1137,9 +1195,10 @@ Consider:
 
 Now the callee has to cast the data pointer (back) to a correct type to use it. That is error-prone and often verbose.
 Avoid `void*`, especially in interfaces.
-Consider using a `variant` or a pointer to base instead. (Future note: Consider a pointer to concept.)
+Consider using a `variant` or a pointer to base instead.
 
 **Alternative**: Often, a template parameter can eliminate the `void*` turning it into a `T*` or `T&`.
+For generic code these `T`s can be general or concept constrained template paramenters.
 
 ##### Example, bad
 
@@ -1180,7 +1239,7 @@ In the following example, it is not clear from the interface what `time_to_blink
 
 ##### Example, good
 
-`std::chrono::duration` types introduced in C++11 helps making the unit of time duration explicit.
+`std::chrono::duration` types (C++11) helps making the unit of time duration explicit.
 
     void blink_led(milliseconds time_to_blink) // good -- the unit is explicit
     {
@@ -1243,8 +1302,8 @@ Ideally, that `Expects(x >= 0)` should be part of the interface of `sqrt()` but 
 
 ##### Note
 
-Prefer a formal specification of requirements, such as `Expects(p != nullptr);`. If that is infeasible, use English text in comments, such as
-`// the sequence [p:q) is ordered using <`.
+Prefer a formal specification of requirements, such as `Expects(p != nullptr);`.
+If that is infeasible, use English text in comments, such as `// the sequence [p:q) is ordered using <`.
 
 ##### Note
 
@@ -1275,11 +1334,14 @@ To make it clear that the condition is a precondition and to enable tool use.
 
 ##### Note
 
-Preconditions can be stated in many ways, including comments, `if`-statements, and `assert()`. This can make them hard to distinguish from ordinary code, hard to update, hard to manipulate by tools, and may have the wrong semantics (do you always want to abort in debug mode and check nothing in productions runs?).
+Preconditions can be stated in many ways, including comments, `if`-statements, and `assert()`.
+This can make them hard to distinguish from ordinary code, hard to update, hard to manipulate by tools, and may have the wrong semantics (do you always want to abort in debug mode and check nothing in productions runs?).
 
 ##### Note
 
-Preconditions should be part of the interface rather than part of the implementation, but we don't yet have the language facilities to do that.
+Preconditions should be part of the interface rather than part of the implementation,
+but we don't yet have the language facilities to do that.
+Once language support becomes avaliable (e.g., see the [contract proposal](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/p0380r1.pdf)) we will adopt the standaversion of preconditions, postconditoions, and assertions.
 
 ##### Note
 
@@ -1403,11 +1465,16 @@ To make it clear that the condition is a postcondition and to enable tool use.
 
 ##### Note
 
-Postconditions can be stated in many ways, including comments, `if`-statements, and `assert()`. This can make them hard to distinguish from ordinary code, hard to update, hard to manipulate by tools, and may have the wrong semantics.
+Postconditions can be stated in many ways, including comments, `if`-statements, and `assert()`.
+This can make them hard to distinguish from ordinary code, hard to update, hard to manipulate by tools, and may have the wrong semantics.
 
 **Alternative**: Postconditions of the form "this resource must be released" are best expressed by [RAII](#Rr-raii).
 
-Ideally, that `Ensures` should be part of the interface, but that's not easily done. For now, we place it in the definition (function body).
+##### Note
+
+Ideally, that `Ensures` should be part of the interface, but that's not easily done.
+For now, we place it in the definition (function body).
+Once language support becomes avaliable (e.g., see the [contract proposal](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/p0380r1.pdf)) we will adopt the standaversion of preconditions, postconditoions, and assertions.
 
 ##### Enforcement
 
@@ -1432,13 +1499,14 @@ Use the ISO Concepts TS style of requirements specification. For example:
 
 ##### Note
 
-Soon (maybe in 2016), most compilers will be able to check `requires` clauses once the `//` is removed.
+Soon (maybe in 2017), most compilers will be able to check `requires` clauses once the `//` is removed.
+For now, the concept TS is supported only in GCC 6.1.
 
 **See also**: See [generic programming](#SS-GP) and [concepts](#SS-t-concepts).
 
 ##### Enforcement
 
-(Not enforceable yet) A language facility is under specification. When the language facility is available, warn if any non-variadic template parameter is not constrained by a concept (in its declaration or mentioned in a `requires` clause).
+(Not yet enforceable) A language facility is under specification. When the language facility is available, warn if any non-variadic template parameter is not constrained by a concept (in its declaration or mentioned in a `requires` clause).
 
 ### <a name="Ri-except"></a>I.10: Use exceptions to signal a failure to perform a required task
 
@@ -1465,7 +1533,9 @@ However, if failing to make a connection is considered an error, then a failure 
 
 **Exception**: Many traditional interface functions (e.g., UNIX signal handlers) use error codes (e.g., `errno`) to report what are really status codes, rather than errors. You don't have a good alternative to using such, so calling these does not violate the rule.
 
-**Alternative**: If you can't use exceptions (e.g. because your code is full of old-style raw-pointer use or because there are hard-real-time constraints), consider using a style that returns a pair of values:
+##### Alternative
+
+If you can't use exceptions (e.g. because your code is full of old-style raw-pointer use or because there are hard-real-time constraints), consider using a style that returns a pair of values:
 
     int val;
     int error_code;
@@ -1475,6 +1545,16 @@ However, if failing to make a connection is considered an error, then a failure 
     }
     // ... use val ...
 
+This style unfortunately leads to uninitialized variable.
+A facility [structured bindings](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/p0144r1.pdf) to deal with that will become available in C++17.
+
+    [val, error_code] = do_something();
+    if (error_code == 0) {
+        // ... handle the error or exit ...
+    }
+    // ... use val ...
+    
+
 ##### Note
 
 We don't consider "performance" a valid reason not to use exceptions.
@@ -1483,6 +1563,7 @@ We don't consider "performance" a valid reason not to use exceptions.
 * Often, cleaner code yields better performance with exceptions (simplifying the tracing of paths through the program and their optimization).
 * A good rule for performance critical code is to move checking outside the critical part of the code ([checking](#Rper-checking)).
 * In the longer term, more regular code gets better optimized.
+* Always carefully [measure](#Rper-measure) before making performance claims.
 
 **See also**: [I.5](#Ri-pre) and [I.7](#Ri-post) for reporting precondition and postcondition violations.
 
@@ -1522,7 +1603,7 @@ Consider returning the result by value (use move semantics if the result is larg
 However that is less elegant and less efficient unless reference semantics are needed.
 
 **Alternative**: Sometimes older code can't be modified because of ABI compatibility requirements or lack of resources.
-In that case, mark owning pointers using `owner`:
+In that case, mark owning pointers using `owner` from [guideline support library](#S-gsl):
 
     owner<X*> compute(args)    // It is now clear that ownership is transferred
     {
@@ -1535,8 +1616,6 @@ This tells analysis tools that `res` is an owner.
 That is, its value must be `delete`d or transferred to another owner, as is done here by the `return`.
 
 `owner` is used similarly in the implementation of resource handles.
-
-`owner` is defined in the [guideline support library](#S-gsl).
 
 ##### Note
 
@@ -1557,7 +1636,8 @@ so the default is "no ownership transfer."
 
 ##### Reason
 
-To help avoid dereferencing `nullptr` errors. To improve performance by avoiding redundant checks for `nullptr`.
+To help avoid dereferencing `nullptr` errors.
+To improve performance by avoiding redundant checks for `nullptr`.
 
 ##### Example
 
@@ -1570,6 +1650,10 @@ To help avoid dereferencing `nullptr` errors. To improve performance by avoiding
     int length(const char* p);            // we must assume that p can be nullptr
 
 By stating the intent in source, implementers and tools can provide better diagnostics, such as finding some classes of errors through static analysis, and perform optimizations, such as removing branches and null tests.
+
+##### Note
+
+`not_null` is defined in the [guideline support library](#S-gsl)
 
 ##### Note
 
@@ -1705,6 +1789,11 @@ To really reduce the number of arguments, we need to bundle the arguments into h
 
 Grouping arguments into "bundles" is a general technique to reduce the number of arguments and to increase the opportunities for checking.
 
+Alternatively, we could use concepts (as defined by the ISO TS) to define the notion of three types that must be usable for merging:
+ 
+    Mergeable{In1 In2, Out}
+    OutputIterator merge(In1 r1, In2 r2, Out result);
+
 ##### Note
 
 How many arguments are too many? Four arguments is a lot.
@@ -1737,7 +1826,7 @@ Use `const` for the "from" argument:
 
     void copy_n(const T* p, T* q, int n);  // copy from [p:p+n) to [q:q+n)
 
-##### Example
+##### Exception
 
 If the order of the parameters is not important, there is no problem:
 
