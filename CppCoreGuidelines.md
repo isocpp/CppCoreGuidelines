@@ -14495,12 +14495,21 @@ C++ provides better type checking and more notational support.
 It provides better support for high-level programming and often generates faster code.
 
 ##### Example
-
-    char ch = 7;
-    void* pv = &ch;
-    int* pi = pv;   // not C++
-    *pi = 999;      // overwrite sizeof(int) bytes near &ch
-
+    struct dataX{
+        char temperature;
+        char windspeed;
+    }
+    struct dataY{
+        int id;
+        double weight;
+    }
+    int main(){
+        struct dataX x;
+        void* ptrX = &x;
+        struct dataY* = ptrX; // not C++
+        dataY.temperature=20;// overwrite sizeof(int) bytes near &temperature, 
+        //thus corrupting "windspeed" and other data or structure padding
+    }
 ##### Enforcement
 
 Use a C++ compiler.
