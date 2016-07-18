@@ -1,6 +1,6 @@
 # <a name="main"></a>C++ Core Guidelines
 
-July 16, 2016
+July 17, 2016
 
 Editors:
 
@@ -5187,7 +5187,8 @@ Equivalent to what is done for [copy-assignment](#Rc-copy-assignment).
 
 ##### Reason
 
-That is the generally assumed semantics. After `x=std::move(y)` the value of `x` should be the value `y` had and `y` should be in a valid state.
+That is the generally assumed semantics.
+After `y=std::move(x)` the value of `y` should be the value `x` had and `x` should be in a valid state.
 
 ##### Example
 
@@ -7187,7 +7188,7 @@ If you can't name an enumeration, the values are not related
 
 ##### Example, bad
 
-    enum { red = 0x,FF0000, scale = 4, signed = 1 };
+    enum { red = 0xFF0000, scale = 4, signed = 1 };
 
 Such code is not uncommon in code written before there were convenient alternative ways of specifying integer constants.
 
@@ -7214,7 +7215,7 @@ The default is the easiest to read and write.
 
 ##### Example
 
-    enum class Direction : char { n,s,e,w, ne, nw, se, sw };    // underlying type saves space
+    enum class Direction : char { n, s, e, w, ne, nw, se, sw };    // underlying type saves space
     
     enum class Webcolor : int { red = 0xFF0000, green = 0x00FF00, blue = 0x0000FF };  // underlying type is redundant
 
@@ -12726,7 +12727,7 @@ Concept use rule summary:
 Concept definition rule summary:
 
 * [T.20: Avoid "concepts" without meaningful semantics](#Rt-low)
-* [T.21: Define concepts to define complete sets of operations](#Rt-complete)
+* [T.21: Require a complete set of operations for a concept](#Rt-complete)
 * [T.22: Specify axioms for concepts](#Rt-axiom)
 * [T.23: Differentiate a refined concept from its more general case by adding new use patterns](#Rt-refine)
 * [T.24: Use tag classes or traits to differentiate concepts that differ only in semantics](#Rt-tag)
@@ -12737,7 +12738,7 @@ Concept definition rule summary:
 Template interface rule summary:
 
 * [T.40: Use function objects to pass operations to algorithms](#Rt-fo)
-* [T.41: Require complete sets of operations for a concept](#Rt-operations)
+* [T.41: Require only essential properties in a template's concepts](#Rt-essential)
 * [T.42: Use template aliases to simplify notation and hide implementation details](#Rt-alias)
 * [T.43: Prefer `using` over `typedef` for defining aliases](#Rt-using)
 * [T.44: Use function templates to deduce class template argument types (where feasible)](#Rt-deduce)
@@ -12745,7 +12746,6 @@ Template interface rule summary:
 * [T.47: Avoid highly visible unconstrained templates with common names](#Rt-visible)
 * [T.48: If your compiler does not support concepts, fake them with `enable_if`](#Rt-concept-def)
 * [T.49: Where possible, avoid type-erasure](#Rt-erasure)
-* [T.50: Avoid writing an unconstrained template in the same namespace as a type](#Rt-unconstrained-adl)
 
 Template definition rule summary:
 
@@ -12754,10 +12754,10 @@ Template definition rule summary:
 * [T.62: Place non-dependent template members in a non-templated base class](#Rt-nondependent)
 * [T.64: Use specialization to provide alternative implementations of class templates](#Rt-specialization)
 * [T.65: Use tag dispatch to provide alternative implementations of functions](#Rt-tag-dispatch)
-* [T.66: Use selection using `enable_if` to optionally define a function](#Rt-enable_if)
 * [T.67: Use specialization to provide alternative implementations for irregular types](#Rt-specialization2)
 * [T.68: Use `{}` rather than `()` within templates to avoid ambiguities](#Rt-cast)
 * [T.69: Inside a template, don't make an unqualified nonmember function call unless you intend it to be a customization point](#Rt-customization)
+* [T.75: Wrap traits in concepts](#Rt-traits)
 
 Template and hierarchy rule summary:
 
@@ -12793,6 +12793,7 @@ Other template rules summary:
 * [T.142: Use template variables to simplify notation](#Rt-var)
 * [T.143: Don't write unintentionally nongeneric code](#Rt-nongeneric)
 * [T.144: Don't specialize function templates](#Rt-specialize-function)
+* [T.150: Check that a class matches a concept using static_assert](#Rt-check-class)
 * [T.??: ????](#Rt-???)
 
 ## <a name="SS-GP"></a>T.gp: Generic programming
@@ -12967,7 +12968,9 @@ Dynamic helps static: Offer a generic, comfortable, statically bound interface, 
 
 ##### Note
 
-In a class template, nonvirtual functions are only instantiated if they're used -- but virtual functions are instantiated every time. This can bloat code size, and may overconstrain a generic type by instantiating functionality that is never needed. Avoid this, even though the standard facets made this mistake.
+In a class template, nonvirtual functions are only instantiated if they're used -- but virtual functions are instantiated every time.
+This can bloat code size, and may overconstrain a generic type by instantiating functionality that is never needed.
+Avoid this, even though the standard-library facets made this mistake.
 
 ##### Enforcement
 
@@ -12976,7 +12979,7 @@ In a class template, nonvirtual functions are only instantiated if they're used 
 ## <a name="SS-concepts"></a>T.concepts: Concept rules
 
 Concepts is a facility for specifying requirements for template arguments.
-It is an [ISO technical specification](#Ref-conceptsTS), but not yet supported by currently shipping compilers.
+It is an [ISO technical specification](#Ref-conceptsTS), but currently supported only by GCC.
 Concepts are, however, crucial in the thinking about generic programming and the basis of much work on future C++ libraries
 (standard and other).
 
@@ -12991,7 +12994,7 @@ Concept use rule summary:
 Concept definition rule summary:
 
 * [T.20: Avoid "concepts" without meaningful semantics](#Rt-low)
-* [T.21: Define concepts to define complete sets of operations](#Rt-complete)
+* [T.21: Require a complete set of operations for a concept](#Rt-complete)
 * [T.22: Specify axioms for concepts](#Rt-axiom)
 * [T.23: Differentiate a refined concept from its more general case by adding new use patterns](#Rt-refine)
 * [T.24: Use tag classes or traits to differentiate concepts that differ only in semantics](#Rt-tag)
@@ -13057,14 +13060,14 @@ Flag template type arguments without concepts
 
 ##### Reason
 
- "Standard" concepts (as provided by the GSL, the ISO concepts TS, and hopefully soon the ISO standard itself)
+ "Standard" concepts (as provided by the GSL, the ISO concepts TS, Ranges TS, and hopefully soon the ISO standard itself)
 saves us the work of thinking up our own concepts, are better thought out than we can manage to do in a hurry, and improves interoperability.
 
 ##### Note
 
 Unless you are creating a new generic library, most of the concepts you need will already be defined by the standard library.
 
-##### Example
+##### Example, bad
 
     concept<typename T>
     // don't define this: Sortable is in the GSL
@@ -13137,7 +13140,13 @@ The shorter versions better match the way we speak. Note that many templates don
 
 ## <a name="SS-concepts-def"></a>T.concepts.def: Concept definition rules
 
-???
+Defining good concepts is non-trivial.
+Concepts are meant to represent fundamental concepts in an application domain (hence the name "concepts").
+Simily throwing together a set of syntactic constraints to be used for a the arguments for a single class or algorithm is not what concepts were designed for
+and will not give the full benefits of the mechanism.
+
+Obviously, defining concepts will be most useful for code that can use an implementation (e.g., GCC 6.1),
+but defining concepts is in itself a useful design technique and help catch conceptual errors and clean up the concepts (sic!) of an implementation.
 
 ### <a name="Rt-low"></a>T.20: Avoid "concepts" without meaningful semantics
 
@@ -13167,7 +13176,7 @@ and should be used only as building blocks for meaningful concepts, rather than 
     auto zz = plus(xx, yy);   // zz = "79"
 
 Maybe the concatenation was expected. More likely, it was an accident. Defining minus equivalently would give dramatically different sets of accepted types.
-This `Addable` violates the mathematical rule that addition is supposed to be commutative: `a + b == b + a`.
+This `Addable` violates the mathematical rule that addition is supposed to be commutative: `a+b == b+a`.
 
 ##### Note
 
@@ -13205,26 +13214,96 @@ Concepts with multiple operations have far lower chance of accidentally matching
 * Flag single-operation `concepts` when used outside the definition of other `concepts`.
 * Flag uses of `enable_if` that appears to simulate single-operation `concepts`.
 
-### <a name="Rt-complete"></a>T.21: Define concepts to define complete sets of operations
+
+### <a name="ations"></a>T.21: Require a complete set of operations for a concept
 
 ##### Reason
 
-Improves interoperability. Helps implementers and maintainers.
+Ease of comprehension.
+Improved interoperability.
+Helps implementers and maintainers.
+
+##### Note
+
+This is a specific variant of the gerenral rule that [a concept mist make semantic sense](#Rt-low).
 
 ##### Example, bad
 
-    template<typename T> Subtractable = requires(T a, T, b) { a-b; }   // correct syntax?
+    template<typename T> Subtractable = requires(T a, T, b) { a-b; };
 
-This makes no semantic sense. You need at least `+` to make `-` meaningful and useful.
+This makes no semantic sense.
+You need at least `+` to make `-` meaningful and useful.
 
 Examples of complete sets are
 
 * `Arithmetic`: `+`, `-`, `*`, `/`, `+=`, `-=`, `*=`, `/=`
 * `Comparable`: `<`, `>`, `<=`, `>=`, `==`, `!=`
 
+##### Note
+
+This rule applies whether we use direct language support for concepts or not.
+It is a genreal design rule that even applies to non-templates:
+
+    class Minimal {
+        // ...
+    };
+
+    bool operator==(const Minimal&, const Minimal&);
+    bool operator<(const Minimal&, const Minimal&);
+
+    Minimal operator+(const Minimal&, const Minimal&);
+    // no other operators
+
+    void f(const Minimal& x, const Minimal& y)
+    {
+        if (!(x == y) { /* ... */ }    // OK
+        if (x!=y) { /* ... */ }      //surprise! error
+
+        while (!(x<y)) { /* ... */ }    // OK
+        while (x >= y) { /* ... */ }      //surprise! error
+
+        x = x + y;        // OK
+        x += y;             // surprise! error
+    }
+
+This is minimal, but surprising and constraining for users.
+It could even be less efficient.
+
+The rule supports the view that a concept should reflect a (mathematically) coherent set of operations.
+
+##### Example
+
+    class Convenient {
+        // ...
+    };
+
+    bool operator==(const Convenient&, const Convenient&);
+    bool operator<(const Convenient&, const Convenient&);
+    // ... and the other comparison operators ...
+
+    Minimal operator+(const Convenient&, const Convenient&);
+    // .. and the other arithmetic operators ...
+
+    void f(const Convenient& x, const Convenient& y)
+    {
+        if (!(x == y) { /* ... */ }    // OK
+        if (x!=y) { /* ... */ }      //OK
+
+        while (!(x<y)) { /* ... */ }    // OK
+        while (x >= y) { /* ... */ }      //OK
+
+        x = x + y;     // OK
+        x += y;      // OK
+    }
+
+It can be a nuisance to define all operators, but not hard.
+Ideally, that rule should be language supported by giving you comparison operators by default.
+
 ##### Enforcement
 
-???
+* Flag classes the support "odd" subsets of a set of operators, e.g., `==` but not `!=` or `+` but not `-`.
+  Yes, `std::string` is "odd", but it's too late to change that.
+
 
 ### <a name="Rt-axiom"></a>T.22: Specify axioms for concepts
 
@@ -13269,10 +13348,21 @@ Early versions of a new "concept" still under development will often just define
 Finding good semantics can take effort and time.
 An incomplete set of constraints can still be very useful:
 
-    ??? binary tree: rotate(), ...
+    // balancer for a generic binary tree
+    template<typename Node> concept bool Balancer = requires(Node* p) {
+	    add_fixup(p);
+	    touch(p);
+	    detach(p);
+    }
+
+So a `Balancer` must supply at least thee operations on a tree `Node`,
+but we are not yet ready to specify detailed semantics because a new kind of balanced tree might requre more operations
+and the precise general semantics for all nodes is hard to pin down in the early stages of design.
 
 A "concept" that is incomplete or without a well-specified semantics can still be useful.
-However, it should not be assumed to be stable. Each new use case may require such an incomplete concepts to be improved.
+For example, it allows for some checking during initial experimentation.
+However, it should not be assumed to be stable.
+Each new use case may require such an incomplete concepts to be improved.
 
 ##### Enforcement
 
@@ -13293,10 +13383,9 @@ Otherwise they cannot be distinguished automatically by the compiler.
     concept bool Fwd_iter = Input_iter<I> && requires (I iter) { iter++; }
 
 The compiler can determine refinement based on the sets of required operations.
-If two concepts have exactly the same requirements, they are logically equivalent (there is no refinement).
-
-This also decreases the burden on implementers of these types since
+This decreases the burden on implementers of these types since
 they do not need any special declarations to "hook into the concept".
+If two concepts have exactly the same requirements, they are logically equivalent (there is no refinement).
 
 ##### Enforcement
 
@@ -13315,7 +13404,16 @@ Two concepts requiring the same syntax but having different semantics leads to a
 
     template<typename I>    // iterator providing random access to contiguous data
     concept bool Contiguous_iter =
-        RA_iter<I> && is_contiguous<I>::value;  // ??? why not is_contiguous<I>() or is_contiguous_v<I>?
+        RA_iter<I> && is_contiguous<I>::value;  // using is_contiguous trait
+        
+The programmer (in a library) must define `is_contiguous` (a trait) appropriately.
+
+Wrapping a tag class into a concept leads to a simpler expression of this idea:
+
+    concept<typename I> Contiguous = is_contiguous<I>::value;
+    
+    template<typename I>
+    concept bool Contiguous_iter = RA_iter<I> && Contiguous<I>;
 
 The programmer (in a library) must define `is_contiguous` (a trait) appropriately.
 
@@ -13379,9 +13477,20 @@ The compiler will select the overload and emit an appropriate error.
 The definition is more readable and corresponds directly to what a user has to write.
 Conversions are taken into account. You don't have to remember the names of all the type traits.
 
-##### Example
+##### Example, bad
 
-    ???
+You might be tempted to define a concept `Equality` like this:
+
+    template<typename T> concept Equality = has_equal<T> && has_not_equal<T>;
+
+Obviously, it would be better and easier just to use the standard `EqualityComparable`,
+ but - just as an example - if you had to define such a concept, prefer:
+
+    template<typename T> concept Equality = requires(T a, T b) {
+        bool == { a==b }
+        bool == { a!=b }
+        // axiom { !(a==b)==(a!=b) }
+    }
 
 ##### Enforcement
 
@@ -13389,7 +13498,10 @@ Conversions are taken into account. You don't have to remember the names of all 
 
 ## <a name="SS-temp-interface"></a>Template interfaces
 
-???
+Over the years, programmming with templates have suffered from a weak distinction between the interface of a template
+and its implementation.
+Before concepts, that distiction had no direct language support.
+However, the interface to a template is a critical concept - a contract between a user and an implementer - and should be carefully designed.
 
 ### <a name="Rt-fo"></a>T.40: Use function objects to pass operations to algorithms
 
@@ -13428,77 +13540,59 @@ The performance argument depends on compiler and optimizer technology.
 * Flag pointer to function template arguments.
 * Flag pointers to functions passed as arguments to a template (risk of false positives).
 
-### <a name="Rt-operations"></a>T.41: Require complete sets of operations for a concept
+
+### <a name="Rt-essential"></a>T.41: Require only essential properties in a template's concepts
 
 ##### Reason
 
-Ease of comprehension.
-Improved interoperability.
-Flexibility for template implementers.
-
-##### Note
-
-The issue here is whether to require the minimal set of operations for a template argument
-(e.g., `==` but not `!=` or `+` but not `+=`).
-The rule supports the view that a concept should reflect a (mathematically) coherent set of operations.
-
-##### Example, bad
-
-    class Minimal {
-        // ...
-    };
-
-    bool operator==(const Minimal&, const Minimal&);
-    bool operator<(const Minimal&, const Minimal&);
-    Minimal operator+(const Minimal&, const Minimal&);
-    // no other operators
-
-    void f(const Minimal& x, const Minimal& y)
-    {
-        if (!(x == y) { /* ... */ }    // OK
-        if (x!=y) { /* ... */ }      //surprise! error
-
-        while (!(x<y)) { /* ... */ }    // OK
-        while (x >= y) { /* ... */ }      //surprise! error
-
-        x = x + y;        // OK
-        x += y;      // surprise! error
-    }
-
-This is minimal, but surprising and constraining for users.
-It could even be less efficient.
+Keep interfaces simple and stable.
 
 ##### Example
 
-    class Convenient {
-        // ...
-    };
+Consider, a `sort` instrumented with (oversimplified) simple debug support:
 
-    bool operator==(const Convenient&, const Convenient&);
-    bool operator<(const Convenient&, const Convenient&);
-    // ... and the other comparison operators ...
-    Minimal operator+(const Convenient&, const Convenient&);
-    // .. and the other arithmetic operators ...
-
-    void f(const Convenient& x, const Convenient& y)
+    void sort(Sortable& s)  // sort sequence s
     {
-        if (!(x == y) { /* ... */ }    // OK
-        if (x!=y) { /* ... */ }      //OK
-
-        while (!(x<y)) { /* ... */ }    // OK
-        while (x >= y) { /* ... */ }      //OK
-
-        x = x + y;     // OK
-        x += y;      // OK
+        if (debug) cerr << "enter sort()\n";
+        // ...
+        if (debug) cerr << "exit sort()\n";
     }
 
-It can be a nuisance to define all operators, but not hard.
-Hopefully, C++17 will give you comparison operators by default.
+Should this be rewritten to:
+
+    template<Sortable S>
+        requires Streamable<S>
+    void sort(S& s)  // sort sequence s
+    {
+        if (debug) cerr << "enter sort()\n";
+        // ...
+        if (debug) cerr << "exit sort()\n";
+    }
+
+After all, there is nothing in `Sortable` that requires `iostream` support.
+On the other hand, there is nothing in the fundamental idea of sorting that says anything about debugging.
+
+###### Note
+
+If we require every operation used to be listed among the requirements, the interface becomes unstable:
+every time we change the debug facilities, the usage data gathering, testing support, error reporting, etc.
+The definition of the template would need change and every use of he template would have to be recompiled.
+This is cumbersome, and in some environments infeasible.
+
+Conversely, if we use an operation in the impmelementation that is not guaranteed by concept checking,
+we may get a late compile-time error.
+
+By not using concept checking for properties of a template argument that is not considered essential,
+we delay checking until instantiation time.
+We consider this a worthwhile tradeoff.
+ 
+##### Note
+
+It can be hard to decide which properties of a type is essential and which are not.
 
 ##### Enforcement
 
-* Flag classes the support "odd" subsets of a set of operators, e.g., `==` but not `!=` or `+` but not `-`.
-  Yes, `std::string` is "odd", but it's too late to change that.
+???
 
 ### <a name="Rt-alias"></a>T.42: Use template aliases to simplify notation and hide implementation details
 
@@ -13577,6 +13671,14 @@ Sometimes there isn't a good way of getting the template arguments deduced and s
     vector<double> v = { 1, 2, 3, 7.9, 15.99 };
     list<Record*> lst;
 
+##### Note
+
+Note that C++17 will make this rule redundant by allowing the template arguments to be deduced directly from constructor arguments:
+[Template parameter deduction for constructors (Rev. 3)](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/p0091r1.html).
+For example:
+
+    tuple t1 = {1, "Hamlet", 3.14}; // deduced: tuple<int, string, double>
+
 ##### Enforcement
 
 Flag uses where an explicitly specialized type exactly matches the types of the arguments used.
@@ -13650,19 +13752,39 @@ The problem is that `v.size()` returns an `unsigned` integer so that a conversio
 the `==` in `Bad` requires no conversions.
 Realistic types, such as the standard library iterators can be made to exhibit similar anti-social tendencies.
 
+##### Note
+
+If an unconstrained template is defined in the same namespace as a type,
+that unconstrained template can be found by ADL (as happened in the example).
+That is, it is highly visible.
+
+##### Note
+
+This rule should not be necessary, but the committee cannot agree to exclude unconstrained templated from ADL. 
+
+Unfortunately this will get many false positives; the standard library violates this widely, by putting many unconstrained templates and types into the single namespace `std`.
+
+
 ##### Enforcement
 
-????
+Flag templates defined in a namesapace where concrete types are also defined (maybe not feasible until we have concepts).
+
 
 ### <a name="Rt-concept-def"></a>T.48: If your compiler does not support concepts, fake them with `enable_if`
 
 ##### Reason
 
- ???
+Because that's the best we can do without direct concept support.
+`enable_if` can be used to conditionally define functions and to select among a set of functions.
 
 ##### Example
 
-    ???
+    enable_if<???>
+
+##### Note
+
+Beware of [negating constraints](# T.25).
+Faking concept overloading using `enable_if` sometimes forces us to use that error-prone designs.
 
 ##### Enforcement
 
@@ -13684,23 +13806,9 @@ Type erasure incurs an extra level of indirection by hiding type information beh
 
 ???
 
-### <a name="Rt-unconstrained-adl"></a>T.50: Avoid writing an unconstrained template in the same namespace as a type
-
-##### Reason
-
-ADL will find the template even when you think it shouldn't.
-
-##### Example
-
-    ???
 
 ##### Note
 
-This rule should not be necessary; the committee cannot agree on how to fix ADL, but at least making it not consider unconstrained templates would solve many of the actual problems and remove the need for this rule.
-
-##### Enforcement
-
-??? unfortunately this will get many false positives; the standard library violates this widely, by putting many unconstrained templates and types into the single namespace `std`
 
 ## <a name="SS-temp-def"></a>T.def: Template definitions
 
@@ -13822,7 +13930,7 @@ This looks innocent enough, but ???
 
 A more general version of this rule would be
 "If a template class member depends on only N template parameters out of M, place it in a base class with only N parameters."
-For N == 1, we have a choice of a base class of a class in the surrounding scope as in [T.41](#Rt-scary).
+For N == 1, we have a choice of a base class of a class in the surrounding scope as in [T.61](#Rt-scary).
 
 ??? What about constants? class statics?
 
@@ -13869,19 +13977,6 @@ When `concept`s become available such alternatives can be distinguished directly
 
 ???
 
-### <a name="Rt-enable_if"></a>T.66: Use selection using `enable_if` to optionally define a function
-
-##### Reason
-
- ???
-
-##### Example
-
-    ???
-
-##### Enforcement
-
-???
 
 ### <a name="Rt-specialization2"></a>T.67: Use specialization to provide alternative implementations for irregular types
 
@@ -14500,6 +14595,9 @@ It provides better support for high-level programming and often generates faster
     void* pv = &ch;
     int* pi = pv;   // not C++
     *pi = 999;      // overwrite sizeof(int) bytes near &ch
+
+The rules for implicit casting to and from `void*` in C are suble and unenforced.
+In particular, this example violates a rule against converting to a type with stricter alignment.
 
 ##### Enforcement
 
