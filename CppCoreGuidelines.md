@@ -1,6 +1,6 @@
 # <a name="main"></a>C++ Core Guidelines
 
-July 17, 2016
+July 18, 2016
 
 Editors:
 
@@ -12708,6 +12708,13 @@ In C++, these requirements are expressed by compile-time predicates called conce
 
 Templates can also be used for meta-programming; that is, programs that compose code at compile time.
 
+A central notion in generic programming is "concepts"; that is, requirements on template arguments presented as compile-time predicates.
+"Concepts" are defined in an ISO Technical specification: [concepts](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2015/n4553.pdf).
+A draft of a set of standard-library concepts can be found in another ISO TS: [ranges](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/n4569.pdf)
+Currently (July 2016), concepts are supported only in GCC 6.1.
+Consequently, we comment out uses of concepts in examples; that is, we use them as formalized comments only.
+If you use GCC 6.1, you can uncomment them.
+
 Template use rule summary:
 
 * [T.1: Use templates to raise the level of abstraction of code](#Rt-raise)
@@ -12856,6 +12863,14 @@ We aim to minimize requirements on template arguments, but the absolutely minima
 Templates can be used to express essentially everything (they are Turing complete), but the aim of generic programming (as expressed using templates)
 is to efficiently generalize operations/algorithms over a set of types with similar semantic properties.
 
+##### Note
+
+The `requires` in the comments are uses of `concepts`.
+"Concepts" are defined in an ISO Technical specification: [concepts](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2015/n4553.pdf).
+Currently (July 2016), concepts are supported only in GCC 6.1.
+Consequently, we comment out uses of concepts in examples; that is, we use them as formalized comments only.
+If you use GCC 6.1, you can uncomment them.
+
 ##### Enforcement
 
 * Flag algorithms with "overly simple" requirements, such as direct use of specific operators without a concept.
@@ -12983,6 +12998,8 @@ It is an [ISO technical specification](#Ref-conceptsTS), but currently supported
 Concepts are, however, crucial in the thinking about generic programming and the basis of much work on future C++ libraries
 (standard and other).
 
+This section assumes concept support
+
 Concept use rule summary:
 
 * [T.10: Specify concepts for all template arguments](#Rt-concepts)
@@ -13016,8 +13033,8 @@ Specifying concepts for template arguments is a powerful design tool.
 ##### Example
 
     template<typename Iter, typename Val>
-        requires Input_iterator<Iter>
-                 && Equality_comparable<Value_type<Iter>, Val>
+    //    requires Input_iterator<Iter>
+    //             && Equality_comparable<Value_type<Iter>, Val>
     Iter find(Iter b, Iter e, Val v)
     {
         // ...
@@ -13026,7 +13043,7 @@ Specifying concepts for template arguments is a powerful design tool.
 or equivalently and more succinctly:
 
     template<Input_iterator Iter, typename Val>
-        requires Equality_comparable<Value_type<Iter>, Val>
+    //    requires Equality_comparable<Value_type<Iter>, Val>
     Iter find(Iter b, Iter e, Val v)
     {
         // ...
@@ -13034,11 +13051,15 @@ or equivalently and more succinctly:
 
 ##### Note
 
-Until your compilers support the concepts language feature, leave the concepts in comments:
+"Concepts" are defined in an ISO Technical specification: [concepts](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2015/n4553.pdf).
+A draft of a set of standard-library concepts can be found in another ISO TS: [ranges](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/n4569.pdf)
+Currently (July 2016), concepts are supported only in GCC 6.1.
+Consequently, we comment out uses of concepts in examples; that is, we use them as formalized comments only.
+If you use GCC 6.1, you can uncomment them:
 
     template<typename Iter, typename Val>
-        // requires Input_iterator<Iter>
-        //       && Equality_comparable<Value_type<Iter>, Val>
+        requires Input_iterator<Iter>
+               && Equality_comparable<Value_type<Iter>, Val>
     Iter find(Iter b, Iter e, Val v)
     {
         // ...
@@ -13060,7 +13081,7 @@ Flag template type arguments without concepts
 
 ##### Reason
 
- "Standard" concepts (as provided by the GSL, the ISO concepts TS, Ranges TS, and hopefully soon the ISO standard itself)
+ "Standard" concepts (as provided by the [GSL]#S-GSL), the ISO concepts TS, [Ranges TS](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/n4569.pdf), and hopefully soon the ISO standard itself)
 saves us the work of thinking up our own concepts, are better thought out than we can manage to do in a hurry, and improves interoperability.
 
 ##### Note
@@ -13123,15 +13144,23 @@ Readability. Direct expression of an idea.
 To say "`T` is `Sortable`":
 
     template<typename T>       // Correct but verbose: "The parameter is
-        requires Sortable<T>   // of type T which is the name of a type
+    //    requires Sortable<T>   // of type T which is the name of a type
     void sort(T&);             // that is Sortable"
 
-    template<Sortable T>       // Better: "The parameter is of type T
+    template<Sortable T>       // Better (assuming language support for concepts): "The parameter is of type T
     void sort(T&);             // which is Sortable"
 
-    void sort(Sortable&);      // Best: "The parameter is Sortable"
+    void sort(Sortable&);      // Best (assuming language support for concepts): "The parameter is Sortable"
 
 The shorter versions better match the way we speak. Note that many templates don't need to use the `template` keyword.
+
+##### Note
+
+"Concepts" are defined in an ISO Technical specification: [concepts](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2015/n4553.pdf).
+A draft of a set of standard-library concepts can be found in another ISO TS: [ranges](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/n4569.pdf)
+Currently (July 2016), concepts are supported only in GCC 6.1.
+Consequently, we comment out uses of concepts in examples; that is, we use them as formalized comments only.
+If you use a compiler that supports concepts (e.g., GCC 6.1), you can remove the `//`.
 
 ##### Enforcement
 
@@ -13812,21 +13841,32 @@ Type erasure incurs an extra level of indirection by hiding type information beh
 
 ## <a name="SS-temp-def"></a>T.def: Template definitions
 
-???
+A template definition (class or function) can contain arbitrary code, so only acomprehensive review of C++ programming techniques wouldcover this topic.
+However, this section focuses on what is specific to template implementation.
+In particular, it focuses on a template definition's dependence on its context.
 
 ### <a name="Rt-depend"></a>T.60: Minimize a template's context dependencies
 
 ##### Reason
 
-Eases understanding. Minimizes errors from unexpected dependencies. Eases tool creation.
+Eases understanding.
+Minimizes errors from unexpected dependencies.
+Eases tool creation.
 
 ##### Example
 
-    ???
+    template<typename C>
+    void sort(C& c)
+    {
+        std::sort(begin(c),end(c)); // necessary and useful dependency
+    }
+
+    ??? // potentially surprising dependency
 
 ##### Note
 
 Having a template operate only on its arguments would be one way of reducing the number of dependencies to a minimum, but that would generally be unmanageable. For example, an algorithm usually uses other algorithms.
+See also [T69](#???)
 
 ##### Enforcement
 
@@ -15098,9 +15138,31 @@ This section contains ideas about ???
 
 ### <a name="Ra-reuse"></a>A.2 Express potentially reusable parts as a library
 
-???
+##### Reason
 
-### <a name="Ra-lib"></a>A.3 Express potentially separately maintained parts as a library
+##### Note
+
+A library is a collection of declarations and definitions maintained, documented, and shipped together.
+A library could be a set of headers (a "header only library") or a set of headers plus a set of object files.
+A library can be statically or dynamically linked into a program, or it may be `#included`
+
+### <a name="Ra-lib"></a>A.4 There should be no cycles among libraries
+
+##### Reason
+
+A cycle implies complication of the build process.
+Cycles are hard to understand and may introcude indeterminism (unspecified behavior).
+
+##### Note
+
+A library can contain cyclic references in the definition of its components. For example:
+
+    ???
+
+However, a library should not depend on another that depends on it.
+
+
+### <a name="Ra-dag"></a>A.3 Express potentially separately maintained parts as a library
 
 ???
 
@@ -15892,9 +15954,13 @@ These assertions is currently macros (yuck!) pending standard commission decisio
 
 ## <a name="SS-gsl-concepts"></a>GSL.concept: Concepts
 
-These concepts (type predicates) are borrowed from Andrew Sutton's Origin library, the Range proposal, and the ISO WG21 Palo Alto TR.
+These concepts (type predicates) are borrowed from
+Andrew Sutton's Origin library,
+the Range proposal,
+and the ISO WG21 Palo Alto TR.
 They are likely to be very similar to what will become part of the ISO C++ standard.
-The notation is that of the ISO WG21 Concepts TS (???ref???).
+The notation is that of the ISO WG21 [Concepts TS](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2015/n4553.pdf).
+Most of the concepts below are defined in [the Ranges TS](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/n4569.pdf).
 
 * `Range`
 * `String`   // ???
