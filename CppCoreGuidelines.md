@@ -1,6 +1,6 @@
 # <a name="main"></a>C++ Core Guidelines
 
-July 18, 2016
+July 19, 2016
 
 Editors:
 
@@ -12795,7 +12795,7 @@ Metaprogramming rule summary:
 
 Other template rules summary:
 
-* [T.140: Name all nontrivial operations](#Rt-name)
+* [T.140: Name all operations with potential for reuse](#Rt-name)
 * [T.141: Use an unnamed lambda if you need a simple function object in one place only](#Rt-lambda)
 * [T.142: Use template variables to simplify notation](#Rt-var)
 * [T.143: Don't write unintentionally nongeneric code](#Rt-nongeneric)
@@ -14568,7 +14568,7 @@ Write your own "advanced TMP support" only if you really have to.
 
 ## <a name="SS-temp-other"></a>Other template rules
 
-### <a name="Rt-name"></a>T.140: Name all nontrivial operations
+### <a name="Rt-name"></a>T.140: Name all operations with potential for reuse
 
 ##### Reason
 
@@ -14576,17 +14576,53 @@ Documentation, readability, opportunity for reuse.
 
 ##### Example
 
-    ???
+    struct Rec {
+        string name;
+        string addr;
+        int id;         // unique identifier
+    };
 
-##### Example, good
+    bool same(const Rec& a, const Rec& b)
+    {
+        return a.id==b.id;
+    }
 
-    ???
+    vector<Rec*> find_id(const string& name);    // find all records for "name"
+
+    auto x = find_if(vr.begin(),vr.end(),
+        [&](Rec& r) {
+            int (r.name.size()!=n.size()) return false; // name to compare to is in n
+            for (int i=0; i<r.name.size(); ++i) if (tolower(r.name[i])!=tolower(n[i])) return false;
+            return true;
+        }
+    );
+
+There is a useful function lurking here (case insensitive string comparison), as there often is when lambda arguments get large.
+
+    bool compare_insensitive(const string& a, const string& b)
+    {
+        int (a.size()!=b.size()) return false;
+        for (int i=0; i<a.size(); ++i) if (tolower(a[i])!=tolower(b[i])) return false;
+        return true;
+    }
+
+    auto x = find_if(vr.begin(),vr.end(),
+        [&](Rec& r) { compare_insensitive(r.name, n); }
+    );
+
+Or maybe (if you prefer to avoid the implicit name binding to n):
+
+    auto cmp_to_n = [&n](const string& a) { return compare_insensitive(a, n); };
+    
+    auto x = find_if(vr.begin(),vr.end(),
+        [](const Rec& r) { return cmp_to_n(r.name); }
+    );
 
 ##### Note
 
 whether functions, lambdas, or operators.
 
-##### Exceptions
+##### Exception
 
 * Lambdas logically used only locally, such as an argument to `for_each` and similar control flow algorithms.
 * Lambdas as [initializers](#???)
@@ -14605,8 +14641,11 @@ That makes the code concise and gives better locality than alternatives.
 
     auto earlyUsersEnd = std::remove_if(users.begin(), users.end(),
                                         [](const User &a) { return a.id > 100; });
+    
 
-**Exception**: Naming a lambda can be useful for clarity even if it is used only once
+##### Exception
+
+Naming a lambda can be useful for clarity even if it is used only once.
 
 ##### Enforcement
 
