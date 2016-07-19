@@ -10694,7 +10694,7 @@ Application concepts are easier to reason about.
 
     ???
 
-###### Note
+##### Note
 
 With the exception of `async()`, the standard-library facilities are low-level, machine-oriented, threads-and-lock level.
 This is a necessary foundation, but we have to try to raise the level of abstrcation: for productivity, for reliability, and for performance.
@@ -11117,7 +11117,7 @@ A `thread` that has not been `detach()`ed when it is destroyed terminates the pr
 
 ### <a name="RRconc-pass"></a>CP.30: Do not pass pointers to local variables to non-`raii_thread's
 
-###### Reason
+##### Reason
 
 In general, you cannot know whether a non-`raii_thread` will outlife your thread (so that those pointers will become invalid.
 
@@ -11264,7 +11264,7 @@ Instead, we could have a set of pre-created worker threads processing the messag
         raii_thread w4 {worker};
     }
 
-###### Note
+##### Note
 
 If you system has a good thread pool, use it.
 If your system has a good message queue, use it.
@@ -11662,11 +11662,11 @@ For example, reading `clock` twice will often yield two different values, so the
 
 `clock` is `const` because the program should not try to write to `clock`.
 
-###### Note
+##### Note
 
 Unless you are writing the lowest level code manipulating hardware directly, consider `volatile` an esoteric feature that is best avoided.
 
-###### Example
+##### Example
 
 Usually C++ code receives `volatile` memory that is owned Elsewhere (hardware or another language):
 
@@ -12462,7 +12462,7 @@ For example:
 One reason to prefer a specific return type is to have names for its members, rather than the somewhat cryptic `first` and `second`
 and to avoid confusion with other uses of `std::pair`.
 
-###### Example
+##### Example
 
 In general, you must clean up before an error exit.
 This can be messy:
@@ -13081,18 +13081,18 @@ Flag template type arguments without concepts
 
 ##### Reason
 
- "Standard" concepts (as provided by the [GSL]#S-GSL), the ISO concepts TS, [Ranges TS](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/n4569.pdf), and hopefully soon the ISO standard itself)
+ "Standard" concepts (as provided by the [GSL](#S-GSL) and the [Ranges TS](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/n4569.pdf), and hopefully soon the ISO standard itself)
 saves us the work of thinking up our own concepts, are better thought out than we can manage to do in a hurry, and improves interoperability.
 
 ##### Note
 
 Unless you are creating a new generic library, most of the concepts you need will already be defined by the standard library.
 
-##### Example, bad
+##### Example (using TS concepts)
 
-    concept<typename T>
-    // don't define this: Sortable is in the GSL
-    Ordered_container = Sequence<T> && Random_access<Iterator<T>> && Ordered<Value_type<T>>;
+    template<typename T>
+        // don't define this: Sortable is in the GSL
+    concept Ordered_container = Sequence<T> && Random_access<Iterator<T>> && Ordered<Value_type<T>>;
 
     void sort(Ordered_container& s);
 
@@ -13104,7 +13104,7 @@ It is better and simpler just to use `Sortable`:
 
 ##### Note
 
-The set of "standard" concepts is evolving as we approach real (ISO) standardization.
+The set of "standard" concepts is evolving as we approach an ISO standard including concepts.
 
 ##### Note
 
@@ -13123,11 +13123,11 @@ Hard.
 
  `auto` is the weakest concept. Concept names convey more meaning than just `auto`.
 
-##### Example
+##### Example (using TS concepts)
 
     vector<string> v;
     auto& x = v.front();     // bad
-    String& s = v.begin();   // good
+    String& s = v.begin();   // good (String is a GSL concept)
 
 ##### Enforcement
 
@@ -13139,7 +13139,7 @@ Hard.
 
 Readability. Direct expression of an idea.
 
-##### Example
+##### Example (using TS concepts)
 
 To say "`T` is `Sortable`":
 
@@ -13185,7 +13185,7 @@ Concepts are meant to express semantic notions, such as "a number", "a range" of
 Simple constraints, such as "has a `+` operator" and "has a `>` operator" cannot be meaningfully specified in isolation
 and should be used only as building blocks for meaningful concepts, rather than in user code.
 
-##### Example, bad
+##### Example, bad (using TS concepts)
 
     template<typename T>
     concept Addable = has_plus<T>;    // bad; insufficient
@@ -13256,9 +13256,9 @@ Helps implementers and maintainers.
 
 This is a specific variant of the gerenral rule that [a concept mist make semantic sense](#Rt-low).
 
-##### Example, bad
+##### Example, bad (using TS concepts)
 
-    template<typename T> Subtractable = requires(T a, T, b) { a-b; };
+    template<typename T> concept Subtractable = requires(T a, T, b) { a-b; };
 
 This makes no semantic sense.
 You need at least `+` to make `-` meaningful and useful.
@@ -13342,7 +13342,7 @@ A meaningful/useful concept has a semantic meaning.
 Expressing these semantics in an informal, semi-formal, or formal way makes the concept comprehensible to readers and the effort to express it can catch conceptual errors.
 Specifying semantics is a powerful design tool.
 
-##### Example
+##### Example (using TS concepts)
 
     template<typename T>
         // The operators +, -, *, and / for a number are assumed to follow the usual mathematical rules
@@ -13371,7 +13371,7 @@ Once language support is available, the `//` in front of the axiom can be remove
 
 The GSL concepts have well defined semantics; see the Palo Alto TR and the Ranges TS.
 
-##### Exception
+##### Exception (using TS concepts)
 
 Early versions of a new "concept" still under development will often just define simple sets of constraints without a well-specified semantics.
 Finding good semantics can take effort and time.
@@ -13403,7 +13403,7 @@ Each new use case may require such an incomplete concepts to be improved.
 
 Otherwise they cannot be distinguished automatically by the compiler.
 
-##### Example
+##### Example (using TS concepts)
 
     template<typename I>
     concept bool Input_iter = requires (I iter) { ++iter; };
@@ -13426,7 +13426,7 @@ If two concepts have exactly the same requirements, they are logically equivalen
 
 Two concepts requiring the same syntax but having different semantics leads to ambiguity unless the programmer differentiates them.
 
-##### Example
+##### Example (using TS concepts)
 
     template<typename I>    // iterator providing random access
     concept bool RA_iter = ...;
@@ -13439,7 +13439,7 @@ The programmer (in a library) must define `is_contiguous` (a trait) appropriatel
 
 Wrapping a tag class into a concept leads to a simpler expression of this idea:
 
-    concept<typename I> Contiguous = is_contiguous<I>::value;
+    template<typename I> concept Contiguous = is_contiguous<I>::value;
     
     template<typename I>
     concept bool Contiguous_iter = RA_iter<I> && Contiguous<I>;
@@ -13464,7 +13464,7 @@ Prefer the standard-library ones.
 Clarity. Maintainability.
 Functions with complementary requirements expressed using negation are brittle.
 
-##### Example
+##### Example (using TS concepts)
 
 Initially, people will try to define functions with complementary requirements:
 
@@ -13506,7 +13506,7 @@ The compiler will select the overload and emit an appropriate error.
 The definition is more readable and corresponds directly to what a user has to write.
 Conversions are taken into account. You don't have to remember the names of all the type traits.
 
-##### Example, bad
+##### Example (using TS concepts)
 
 You might be tempted to define a concept `Equality` like this:
 
@@ -13539,7 +13539,7 @@ However, the interface to a template is a critical concept - a contract between 
 Function objects can carry more information through an interface than a "plain" pointer to function.
 In general, passing function objects gives better performance than passing pointers to functions.
 
-##### Example
+##### Example (using TS concepts)
 
     bool greater(double x, double y) { return x > y; }
     sort(v, greater);                                  // pointer to function: potentially slow
@@ -13576,7 +13576,7 @@ The performance argument depends on compiler and optimizer technology.
 
 Keep interfaces simple and stable.
 
-##### Example
+##### Example (using TS concepts)
 
 Consider, a `sort` instrumented with (oversimplified) simple debug support:
 
@@ -13601,7 +13601,7 @@ Should this be rewritten to:
 After all, there is nothing in `Sortable` that requires `iostream` support.
 On the other hand, there is nothing in the fundamental idea of sorting that says anything about debugging.
 
-###### Note
+##### Note
 
 If we require every operation used to be listed among the requirements, the interface becomes unstable:
 every time we change the debug facilities, the usage data gathering, testing support, error reporting, etc.
@@ -16387,7 +16387,7 @@ It's verbose and only needed where C compatibility matters.
 
     void g();       // better
 
-###### Note
+##### Note
 
 Even Dennis Ritchie deemed `void f(void)` an abomination.
 You can make an argument for that abomination in C when function prototypes were rare so that banning:
