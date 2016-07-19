@@ -998,7 +998,7 @@ Insted, we could use `vector`:
 ##### Note
 
 The standards library and the GSL are examples of this philosophy.
-For example, instead of messing with the arrays, unions, cast, tricky lifetime issues, `GSL::owner`, etc.
+For example, instead of messing with the arrays, unions, cast, tricky lifetime issues, `gsl::owner`, etc.
 that is needed to implement key abstractions, such as `vector`, `span`, `lock_guard, and `future`, we use the libraries
 designed and implemented by people with more time and expertice than we usually have.
 Similarly, we can and should design and implement more specialized libraries, rather than leaving the users (often ourselves)
@@ -12738,7 +12738,7 @@ Concept definition rule summary:
 * [T.22: Specify axioms for concepts](#Rt-axiom)
 * [T.23: Differentiate a refined concept from its more general case by adding new use patterns](#Rt-refine)
 * [T.24: Use tag classes or traits to differentiate concepts that differ only in semantics](#Rt-tag)
-* [T.25: Avoid negating constraints](#Rt-not)
+* [T.25: Avoid complementary constraints](#Rt-not)
 * [T.26: Prefer to define concepts in terms of use-patterns rather than simple syntax](#Rt-use)
 * ???
 
@@ -12758,7 +12758,7 @@ Template definition rule summary:
 
 * [T.60: Minimize a template's context dependencies](#Rt-depend)
 * [T.61: Do not over-parameterize members (SCARY)](#Rt-scary)
-* [T.62: Place non-dependent template members in a non-templated base class](#Rt-nondependent)
+* [T.62: Place non-dependent class template members in a non-templated base class](#Rt-nondependent)
 * [T.64: Use specialization to provide alternative implementations of class templates](#Rt-specialization)
 * [T.65: Use tag dispatch to provide alternative implementations of functions](#Rt-tag-dispatch)
 * [T.67: Use specialization to provide alternative implementations for irregular types](#Rt-specialization2)
@@ -13015,7 +13015,7 @@ Concept definition rule summary:
 * [T.22: Specify axioms for concepts](#Rt-axiom)
 * [T.23: Differentiate a refined concept from its more general case by adding new use patterns](#Rt-refine)
 * [T.24: Use tag classes or traits to differentiate concepts that differ only in semantics](#Rt-tag)
-* [T.25: Avoid negating constraints](#Rt-not)
+* [T.25: Avoid complimentary constraints](#Rt-not)
 * [T.26: Prefer to define concepts in terms of use-patterns rather than simple syntax](#Rt-use)
 * ???
 
@@ -13457,7 +13457,7 @@ Prefer the standard-library ones.
 * The compiler flags ambiguous use of identical concepts.
 * Flag the definition of identical concepts.
 
-### <a name="Rt-not"></a>T.25: Avoid negating constraints.
+### <a name="Rt-not"></a>T.25: Avoid complementary constraints
 
 ##### Reason
 
@@ -13494,10 +13494,22 @@ version of `f()`, then delete it.
 
 The compiler will select the overload and emit an appropriate error.
 
+##### Note
+
+Complementary constraints are unfortunately common in `enable_if` code:
+
+    template<typename T>
+    enable_if<!C<T>,void>   // bad
+    f();
+
+    template<typename T>
+    enable_if<C<T>,void>
+    f();
+
+
 ##### Enforcement
 
 * Flag pairs of functions with `C<T>` and `!C<T>` constraints
-* Flag all constraint negation
 
 ### <a name="Rt-use"></a>T.26: Prefer to define concepts in terms of use-patterns rather than simple syntax
 
@@ -13542,14 +13554,14 @@ In general, passing function objects gives better performance than passing point
 ##### Example (using TS concepts)
 
     bool greater(double x, double y) { return x > y; }
-    sort(v, greater);                                  // pointer to function: potentially slow
+    sort(v, greater);                                    // pointer to function: potentially slow
     sort(v, [](double x, double y) { return x > y; });   // function object
-    sort(v, greater<>);                                // function object
+    sort(v, std::greater<>);                             // function object
 
     bool greater_than_7(double x) { return x > 7; }
-    auto x = find_if(v, greater_than_7);               // pointer to function: inflexible
+    auto x = find_if(v, greater_than_7);                 // pointer to function: inflexible
     auto y = find_if(v, [](double x) { return x > 7; }); // function object: carries the needed data
-    auto z = find_if(v, Greater_than<double>(7));      // function object: carries the needed data
+    auto z = find_if(v, Greater_than<double>(7));        // function object: carries the needed data
 
 You can, of course, generalize those functions using `auto` or (when and where available) concepts. For example:
 
@@ -13812,8 +13824,8 @@ Because that's the best we can do without direct concept support.
 
 ##### Note
 
-Beware of [negating constraints](# T.25).
-Faking concept overloading using `enable_if` sometimes forces us to use that error-prone designs.
+Beware of [complementary constraints](# T.25).
+Faking concept overloading using `enable_if` sometimes forces us to use that error-prone design technique.
 
 ##### Enforcement
 
@@ -13861,11 +13873,24 @@ Eases tool creation.
         std::sort(begin(c),end(c)); // necessary and useful dependency
     }
 
-    ??? // potentially surprising dependency
+    template<typename Iter>
+    Iter algo(Iter first, Iter last) {
+        for (; first!=last; ++first) {
+            auto x = sqrt(*first); // potentially surprising dependency: which sqrt()?
+            helper(first,x);       // potentially surprising dependency: heper is chosen based on first and x
+            TT var = 7;            // potentially surprising dependency: which TT?
+        }
+    } 
 
 ##### Note
 
-Having a template operate only on its arguments would be one way of reducing the number of dependencies to a minimum, but that would generally be unmanageable. For example, an algorithm usually uses other algorithms.
+Templates typically appear in header files so their context dependencies are more vulnerable to `#include` order dependencies than functions in `.cpp` files.
+
+##### Note
+
+Having a template operate only on its arguments would be one way of reducing the number of dependencies to a minimum, but that would generally be unmanageable.
+For example, an algorithm usually uses other algorithms and invoke operations that does not exclusively operate on arguments.
+And don't get us started on macros!
 See also [T69](#???)
 
 ##### Enforcement
@@ -13938,11 +13963,11 @@ This looks innocent enough, but ???
 * Flag member types that do not depend on every template argument
 * Flag member functions that do not depend on every template argument
 
-### <a name="Rt-nondependent"></a>T.62: Place non-dependent template members in a non-templated base class
+### <a name="Rt-nondependent"></a>T.62: Place non-dependent class template members in a non-templated base class
 
 ##### Reason
 
- ???
+ Allow the base class members to be used without specifying template arguments and without template instantiation.
 
 ##### Example
 
@@ -14003,15 +14028,63 @@ Specialization offers a powerful mechanism for providing alternative implementat
 
 ##### Reason
 
-A template defines a general interface. ???
+A template defines a general interface.
+Tag dispatch allows us to select implmentations based on specific properties of an argument type.
+Performance.
 
 ##### Example
 
-    ??? that's how we get algorithms like `std::copy` which compiles into a `memmove` call if appropriate for the arguments.
+This is a simplified version of `std::copy` (ignoring the possibility of non-contiguous sequences)
+
+    struct pod_tag {};
+    struct non_pod_tag;
+    
+    template<class T> struct copy_trait { using tag = non_pod_tag; };   // T is not "plain old data"
+
+    template<> struct copy_trait<int> { using tab = pod_tag; };         // int is "plain old data" 
+
+    template<class Iter>
+    Out copy_helper(Iter first, Iter last, Iter out, pog_tag)
+    {
+        // use memmove
+    }
+
+    template<class Iter>
+    Out copy_helper(Iter first, Iter last, Iter out, non_pod_tag)
+    {
+        // use loop calling copy constructors
+    }
+
+    template<class Itert>
+    Out copy(Iter first, Iter last, Iter out)
+    {
+        return copy_helper(first,last,out, typename copy_trait<Iter>::tag{})
+    }
+
+    void use(vector<int>& vi, vector<int>& vi2, vector<string>& vs, vector<string>& vs2)
+    {
+        copy(vi.begin(),vi.end(), vi2.begin()); // uses memmove
+        copy(vs.begin(),vs.end(), vs2.begin()); // uses a loop calling copy constructors
+    }
+
+This is a general and powerful technique for compile-time algorithm selection.
 
 ##### Note
 
-When `concept`s become available such alternatives can be distinguished directly.
+When `concept`s become widely available such alternatives can be distinguished directly:
+
+    template<class Iter>
+        requires Pod<Value_type_iter>
+    Out copy_helper(In, first, In last, Out out)
+    {
+        // use memmove
+    }
+
+    template<class Iter>
+    Out copy_helper(In, first, In last, Out out)
+    {
+        // use loop calling copy constructors
+    }
 
 ##### Enforcement
 
@@ -14036,56 +14109,75 @@ When `concept`s become available such alternatives can be distinguished directly
 
 ##### Reason
 
- ???
+ `()` is vulnerable to grammar ambiguities.
 
 ##### Example
 
-    ???
+    template<typename T, typename U>
+    void f(T t, U u)
+    {
+        T v1(x);    // is v1 a function of a variable?
+        T v2 {x};   // variable
+        auto x = T(u);  // construction or cast?
+    }
+
+    f(1,"asdf); // bad: cast from const char* to int
 
 ##### Enforcement
 
-???
+* flag `()` initializers
+* flag function-style casts
+
 
 ### <a name="Rt-customization"></a>T.69: Inside a template, don't make an unqualified nonmember function call unless you intend it to be a customization point
 
 ##### Reason
 
-To provide only intended flexibility, and avoid accidental environmental changes.
+Provide only intended flexibility.
+Avoid vulnarability to accidental environmental changes.
 
-If you intend to call your own helper function `helper(t)` with a value `t` that depends on a template type parameter, put it in a `::detail` namespace and qualify the call as `detail::helper(t);`. Otherwise the call becomes a customization point where any function `helper` in the namespace of `t`'s type can be invoked instead -- falling into the second option below, and resulting in problems like [unintentionally invoking unconstrained function templates of that name that happen to be in the same namespace as `t`'s type](#Rt-unconstrained-adl).
+##### Example
 
 There are three major ways to let calling code customize a template.
 
-* Call a member function. Callers can provide any type with such a named member function.
-
         template<class T>
-        void test(T t)
+            // Call a member function
+        void test1(T t)
         {
             t.f();    // require T to provide f()
         }
 
-* Call a nonmember function without qualification. Callers can provide any type for which there is such a function available in the caller's context or in the namespace of the type.
-
         template<class T>
-        void test(T t)
+        void test2(T t)
+            // Call a nonmember function without qualification
         {
-            // require f(/*T*/) be available in caller's scope or in T's namespace
-            f(t);
+            f(t);  // require f(/*T*/) be available in caller's scope or in T's namespace
         }
 
-* Invoke a "trait" -- usually a type alias to compute a type, or a `constexpr` function to compute a value, or in rarer cases a traditional traits template to be specialized on the user's type.
-
         template<class T>
-        void test(T t)
-        {
-            // require customizing test_traits<> to get non-default functions/types
-            test_traits<T>::f(t);
-            test_traits<T>::value_type x;
+        void test3(T t)
+            // Invoke a "trait" 
+            
+        {     
+            test_traits<T>::f(t); // require customizing test_traits<> to get non-default functions/types
         }
+
+A trait is usually a type alias to compute a type,
+a `constexpr` function to compute a value,
+or a traditional traits template to be specialized on the user's type.
+
+##### Note
+
+If you intend to call your own helper function `helper(t)` with a value `t` that depends on a template type parameter,
+put it in a `::detail` namespace and qualify the call as `detail::helper(t);`.
+An unqualified call becomes a customization point where any function `helper` in the namespace of `t`'s type can be invoked;
+this can cause problems like [unintentionally invoking unconstrained function templates](#Rt-unconstrained-adl).
+
 
 ##### Enforcement
 
 * In a template, flag an unqualified call to a nonmember function that passes a variable of dependent type when there is a nonmember function of the same name in the template's namespace.
+
 
 ## <a name="SS-temp-hier"></a>T.temp-hier: Template and hierarchy rules:
 
@@ -14162,7 +14254,7 @@ Never write such code.
 
 Note that `maul()` violates the a `T*` points to an individual object [Rule](#???).
 
-**Alternative**: Use a proper container:
+**Alternative**: Use a proper (templatized) container:
 
     void maul2(Fruit* p)
     {
