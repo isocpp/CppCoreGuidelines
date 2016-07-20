@@ -14591,7 +14591,7 @@ Documentation, readability, opportunity for reuse.
 
     auto x = find_if(vr.begin(),vr.end(),
         [&](Rec& r) {
-            int (r.name.size()!=n.size()) return false; // name to compare to is in n
+            if (r.name.size()!=n.size()) return false; // name to compare to is in n
             for (int i=0; i<r.name.size(); ++i) if (tolower(r.name[i])!=tolower(n[i])) return false;
             return true;
         }
@@ -14601,7 +14601,7 @@ There is a useful function lurking here (case insensitive string comparison), as
 
     bool compare_insensitive(const string& a, const string& b)
     {
-        int (a.size()!=b.size()) return false;
+        if (a.size()!=b.size()) return false;
         for (int i=0; i<a.size(); ++i) if (tolower(a[i])!=tolower(b[i])) return false;
         return true;
     }
