@@ -5757,7 +5757,7 @@ There are two major uses for hierarchies, often named implementation inheritance
 
 Class hierarchy rule summary:
 
-* [C.120: Use class hierarchies to represent concepts with inherent hierarchical structure](#Rh-domain)
+* [C.120: Use class hierarchies to represent concepts with inherent hierarchical structure (only)](#Rh-domain)
 * [C.121: If a base class is used as an interface, make it a pure abstract class](#Rh-abstract)
 * [C.122: Use abstract classes as interfaces when complete separation of interface and implementation is needed](#Rh-separation)
 
@@ -15371,6 +15371,7 @@ It is more likely to be stable, well-maintained, and widely available than your 
 
 C arrays are less safe, and have no advantages over `array` and `vector`.
 For a fixed-length array, use `std::array`, which does not degenerate to a pointer when passed to a function and does know its size.
+Also, like a built-in array, a stack-allocated `std::array` keeps its elements on the stack.
 For a variable-length array, use `std::vector`, which additionally can change its size and handles memory allocation.
 
 ##### Example
@@ -15497,19 +15498,33 @@ However, a library should not depend on another that depends on it.
 
 ???
 
-# <a name="S-not"></a>Non-Rules and myths
+# <a name="S-not"></a>NR: Non-Rules and myths
 
 This section contains rules and guidelines that are popular somewhere, but that we deliberately don't recommend.
 In the context of the styles of programming we recommend and support with the guidelines, these "non-rules" would do harm.
 
 Non-rule summary:
 
-* all declarations on top of function
+* [NR.1: All declarations shuld be at the of a function](#Rnr-top)
 * single-return rule
 * no exceptions
 * one class per source file
 * two-phase initialization
 * goto exit
+* make all data members `protected`
+* ???
+
+### <a name="Rnr-top"></a>NR.1: All declarations shuld be at the of a function
+
+##### Reason
+
+This rule is a legacy of old programming languages that didn't allow initialization of variables and constants after a statement.
+This leads to longer programs and more errors caused by uninitialized and wrongly initialized variables.
+
+##### Alternative
+
+Instead, [Always initialize an object](#Res-always)
+and [ES.21: Don't introduce a variable (or constant) before you need to use it](#Res-introduce).
 
 # <a name="S-references"></a>RF: References
 
@@ -15605,9 +15620,12 @@ Reference sections:
 
 ## <a name="SS-Cplusplus"></a>RF.C++: C++ Programming (C++11/C++14)
 
-* TC++PL4
-* Tour++
-* Programming: Principles and Practice using C++
+* [TC++PL4](http://www.stroustrup.com/4th.html):
+A thorough description of the C++ language and standard libraries for experienced programmers.
+* [Tour++](http://www.stroustrup.com/Tour.html):
+An overview of the C++ language and standard libraries for experienced programmers.
+* [Programming: Principles and Practice using C++](http://www.stroustrup.com/programming.html):
+A textbook for beginners and relative novices.
 
 ## <a name="SS-web"></a>RF.web: Websites
 
@@ -15617,6 +15635,8 @@ Reference sections:
 * [Boost](http://www.boost.org)<a name="Boost"></a>
 * [Adobe open source](http://www.adobe.com/open-source.html)
 * [Poco libraries](http://pocoproject.org/)
+* Sutter's Mill?
+* ???
 
 ## <a name="SS-vid"></a>RS.video: Videos about "modern C++"
 
@@ -15647,7 +15667,9 @@ Thanks to the many people who contributed rules, suggestions, supporting informa
 * Zhuang, Jiangang (Jeff)
 * Sergey Zubkov
 
-# <a name="S-profile"></a>Profiles
+and see the contributor list on the github.
+
+# <a name="S-profile"></a>PRO: Profiles
 
 A "profile" is a set of deterministic and portably enforceable subset rules (i.e., restrictions) that are designed to achieve a specific guarantee. "Deterministic" means they require only local analysis and could be implemented in a compiler (though they don't need to be). "Portably enforceable" means they are like language rules, so programmers can count on enforcement tools giving the same answer for the same code.
 
@@ -15659,21 +15681,45 @@ Profiles summary:
 * [Pro.bounds: Bounds safety](#SS-bounds)
 * [Pro.lifetime: Lifetime safety](#SS-lifetime)
 
-## <a name="SS-type"></a>Type safety profile
-
-This profile makes it easier to construct code that uses types correctly and avoids inadvertent type punning. It does so by focusing on removing the primary sources of type violations, including unsafe uses of casts and unions.
-
-For the purposes of this section, type-safety is defined to be the property that a program does not use a variable as a type it is not. Memory accessed as a type `T` should not be valid memory that actually contains an object of an unrelated type `U`. (Note that the safety is intended to be complete when combined also with [Bounds safety](#SS-bounds) and [Lifetime safety](#SS-lifetime).)
-
-The following are under consideration but not yet in the rules below, and may be better in other profiles:
+In the future, we expect to define many more profiles and add morechecks to existing profiles.
+Candidates include:
 
 * narrowing arithmetic promotions/conversions (likely part of a separate safe-arithmetic profile)
 * arithmetic cast from negative floating point to unsigned integral type (ditto)
-* selected undefined behavior: ??? this is a big bucket, start with Gaby's UB list
-* selected unspecified behavior: ??? would this really be about safety, or more a portability concern?
-* constness violations? if we rely on it for safety
+* selected undefined behavior: ??? start with Gaby's UB list
+* selected unspecified behavior: ??? a portability concern?
+* `const` violations
+
+To suppress enforcement of a profile check, place a `suppress` annotation on a language contract. For example:
+
+     [[suppress(bounds)]] char* raw_find(char* p, int n, char x)    // find x in p[0]..p[n-1]
+     {
+         // ...
+     }
+
+Now `raw_find()` can scramble memory to its heart's content.
+Obviously, suppression should be very rare.
+
+## <a name="SS-type"></a>PRO.safety: Type safety profile
+
+This profile makes it easier to construct code that uses types correctly and avoids inadvertent type punning.
+It does so by focusing on removing the primary sources of type violations, including unsafe uses of casts and unions.
+
+For the purposes of this section,
+type-safety is defined to be the property that a variable is not used in a way that doesn't obey the rules for the type of its definition.
+Memory accessed as a type `T` should not be valid memory that actually contains an object of an unrelated type `U`.
+Note that the safety is intended to be complete when combined also with [Bounds safety](#SS-bounds) and [Lifetime safety](#SS-lifetime).
 
 An implementation of this profile shall recognize the following patterns in source code as non-conforming and issue a diagnostic.
+
+Type safety profile summary:
+
+* [Type.1: Don't use `reinterpret_cast`](#Pro-type-reinterpretcast)
+* [Type.2: Don't use `static_cast` downcasts. Use `dynamic_cast` instead](#Pro-type-downcast)
+* [Type.3: Don't use `const_cast` to cast away `const` (i.e., at all)](#Pro-type-constcast)
+* [Type.4: Don't use C-style `(T)expression` casts that would perform a `static_cast` downcast, `const_cast`, or `reinterpret_cast`](#Pro-type-cstylecast)
+* [Type.5: Don't use a variable before it has been initialized](#Pro-type-init)
+* [Type.6: Always initialize a member variable](#Pro-type-memberinit)
 
 ### <a name="Pro-type-reinterpretcast"></a>Type.1: Don't use `reinterpret_cast`.
 
@@ -16188,6 +16234,8 @@ If code is using an unmodified standard library, then there are still workaround
 
 ## <a name="SS-lifetime"></a>Lifetime safety profile
 
+???
+
 # <a name="S-gsl"></a>GSL: Guideline support library
 
 The GSL is a small library of facilities designed to support this set of guidelines.
@@ -16199,7 +16247,20 @@ The GSL is header only, and can be found at [GSL: Guideline support library](htt
 The support library facilities are designed to be extremely lightweight (zero-overhead) so that they impose no overhead compared to using conventional alternatives.
 Where desirable, they can be "instrumented" with additional functionality (e.g., checks) for tasks such as debugging.
 
-These Guidelines assume a `variant` type, but this is not currently in GSL because the design is being actively refined in the standards committee.
+These Guidelines assume a `variant` type, but this is not currently in GSL.
+Eventually, use [the one voted into C++17](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/p0088r3.html).
+
+Summary of GSL components:
+
+* [GSL.view: Views](#SS-views)
+* [GSL.owner](#Ownership pointers)
+* [GSL.assert: Assertions](#SS-assertions)
+* [GSL.util: Utilities](#SS-utilities)
+* [GSL.concept: Concepts](#SS-gsl-concepts)
+
+We plan for a "ISO C++ standard style" semi-formal specification of the GSL.
+
+We rely on the ISO C++ standard library and hope for parts of the GSL to be absorbed into the standard library.
 
 ## <a name="SS-views"></a>GSL.view: Views
 
@@ -16238,7 +16299,7 @@ If something is not supposed to be `nullptr`, say so:
 * `not_null<T>`   // `T` is usually a pointer type (e.g., `not_null<int*>` and `not_null<owner<Foo*>>`) that may not be `nullptr`.
   `T` can be any type for which `==nullptr` is meaningful.
 
-* `span<T>`       // \[`p`:`p+n`), constructor from `{p, q}` and `{p, n}`; `T` is the pointer type
+* `span<T>`       // `[`p`:`p+n`), constructor from `{p, q}` and `{p, n}`; `T` is the pointer type
 * `span_p<T>`     // `{p, predicate}` \[`p`:`q`) where `q` is the first element for which `predicate(*p)` is true
 * `string_span`   // `span<char>`
 * `cstring_span`  // `span<const char>`
@@ -16273,7 +16334,10 @@ Use `not_null<zstring>` for C-style strings that cannot be `nullptr`. ??? Do we 
                 // `Expect` in under control of some options (enforcement, error message, alternatives to terminate)
 * `Ensures`     // postcondition assertion. Currently placed in function bodies. Later, should be moved to declarations.
 
-These assertions is currently macros (yuck!) pending standard commission decisions on contracts and assertion syntax.
+These assertions is currently macros (yuck!) and must appear in function definitions (only)
+pending standard commission decisions on contracts and assertion syntax.
+See [the contract proposal](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/p0380r1.pdf) uses the attribute syntax,
+for example, `Expects(p!=nullptr)` will become`[[expects: p!=nullptr]]`.
 
 ## <a name="SS-utilities"></a>GSL.util: Utilities
 
@@ -16297,16 +16361,16 @@ Most of the concepts below are defined in [the Ranges TS](http://www.open-std.or
 * `String`   // ???
 * `Number`   // ???
 * `Sortable`
-* `Pointer`  // A type with `*`, `->`, `==`, and default construction (default construction is assumed to set the singular "null" value) [see smartptrconcepts](#Rr-smartptrconcepts)
-* `Unique_ptr`  // A type that matches `Pointer`, has move (not copy), and matches the Lifetime profile criteria for a `unique` owner type [see smartptrconcepts](#Rr-smartptrconcepts)
-* `Shared_ptr`   // A type that matches `Pointer`, has copy, and matches the Lifetime profile criteria for a `shared` owner type [see smartptrconcepts](#Rr-smartptrconcepts)
+* `Pointer`  // A type with `*`, `->`, `==`, and default construction (default construction is assumed to set the singular "null" value); see [smart pointers](#Rr-smartptrconcepts)
+* `Unique_ptr`  // A type that matches `Pointer`, has move (not copy), and matches the Lifetime profile criteria for a `unique` owner type; see [smart pointers](#Rr-smartptrconcepts)
+* `Shared_ptr`   // A type that matches `Pointer`, has copy, and matches the Lifetime profile criteria for a `shared` owner type; see [smart pointers](#Rr-smartptrconcepts)
 * `EqualityComparable`   // ???Must we suffer CaMelcAse???
 * `Convertible`
 * `Common`
 * `Boolean`
 * `Integral`
 * `SignedIntegral`
-* `SemiRegular`
+* `SemiRegular` // ??? Copyable?
 * `Regular`
 * `TotallyOrdered`
 * `Function`
@@ -16345,7 +16409,12 @@ Naming and layout rules:
 * [NL.25: Don't use `void` as an argument type](#Rl-void)
 
 Most of these rules are aesthetic and programmers hold strong opinions.
-IDEs also tend to have defaults and a range of alternatives. These rules are suggested defaults to follow unless you have reasons not to.
+IDEs also tend to have defaults and a range of alternatives.
+These rules are suggested defaults to follow unless you have reasons not to.
+
+We have had comments to the effect that naming and layout are so personal and/or arbitrary that we should not try to "legislate" them.
+We are not "legislating" (see the previous paragraph).
+However, we have had many requests for a set of naming and layout conventions to use when there are no external constraints.
 
 More specific and detailed rules are easier to enforce.
 
