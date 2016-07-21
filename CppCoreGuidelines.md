@@ -1,6 +1,6 @@
 # <a name="main"></a>C++ Core Guidelines
 
-July 20, 2016
+July 21, 2016
 
 Editors:
 
@@ -12940,6 +12940,8 @@ Concept definition rule summary:
 * [T.24: Use tag classes or traits to differentiate concepts that differ only in semantics](#Rt-tag)
 * [T.25: Avoid complementary constraints](#Rt-not)
 * [T.26: Prefer to define concepts in terms of use-patterns rather than simple syntax](#Rt-use)
+* [T.30: Use concept negation (`!C<T>`) sparingly to express a minor difference](#Rt-not)
+* [T.31: Use concept disjunction (`C1<T> || C2<T>`) sparingly to express alternatives](#Rt-or)
 * ???
 
 Template interface rule summary:
@@ -12964,7 +12966,6 @@ Template definition rule summary:
 * [T.67: Use specialization to provide alternative implementations for irregular types](#Rt-specialization2)
 * [T.68: Use `{}` rather than `()` within templates to avoid ambiguities](#Rt-cast)
 * [T.69: Inside a template, don't make an unqualified nonmember function call unless you intend it to be a customization point](#Rt-customization)
-* [T.75: Wrap traits in concepts](#Rt-traits)
 
 Template and hierarchy rule summary:
 
@@ -13000,7 +13001,7 @@ Other template rules summary:
 * [T.142: Use template variables to simplify notation](#Rt-var)
 * [T.143: Don't write unintentionally nongeneric code](#Rt-nongeneric)
 * [T.144: Don't specialize function templates](#Rt-specialize-function)
-* [T.150: Check that a class matches a concept using static_assert](#Rt-check-class)
+* [T.150: Check that a class matches a concept using `static_assert`](#Rt-check-class)
 * [T.??: ????](#Rt-???)
 
 ## <a name="SS-GP"></a>T.gp: Generic programming
@@ -13179,7 +13180,8 @@ Static helps dynamic: Use static polymorphism to implement dynamically polymorph
 
 ##### Example
 
-Dynamic helps static: Offer a generic, comfortable, statically bound interface, but internally dispatch dynamically, so you offer a uniform object layout. Examples include type erasure as with `std::shared_ptr`'s deleter. (But [don't overuse type erasure](#Rt-erasure).)
+Dynamic helps static: Offer a generic, comfortable, statically bound interface, but internally dispatch dynamically, so you offer a uniform object layout.
+Examples include type erasure as with `std::shared_ptr`'s deleter (but [don't overuse type erasure](#Rt-erasure)).
 
 ##### Note
 
@@ -13187,9 +13189,15 @@ In a class template, nonvirtual functions are only instantiated if they're used 
 This can bloat code size, and may overconstrain a generic type by instantiating functionality that is never needed.
 Avoid this, even though the standard-library facets made this mistake.
 
+##### See also
+
+* ref ???
+* ref ???
+* ref ???
+
 ##### Enforcement
 
-* Flag a class template that declares new (non-inherited) virtual functions.
+See the reference to more specific rules.
 
 ## <a name="SS-concepts"></a>T.concepts: Concept rules
 
@@ -13611,14 +13619,15 @@ Otherwise they cannot be distinguished automatically by the compiler.
     template<typename I>
     concept bool Fwd_iter = Input_iter<I> && requires (I iter) { iter++; }
 
-The compiler can determine refinement based on the sets of required operations.
+The compiler can determine refinement based on the sets of required operations (here, suffix `++`).
 This decreases the burden on implementers of these types since
 they do not need any special declarations to "hook into the concept".
 If two concepts have exactly the same requirements, they are logically equivalent (there is no refinement).
 
 ##### Enforcement
 
-* Flag a concept that has exactly the same requirements as another already-seen concept (neither is more refined). To disambiguate them, see [T.24](#Rt-tag).
+* Flag a concept that has exactly the same requirements as another already-seen concept (neither is more refined).
+To disambiguate them, see [T.24](#Rt-tag).
 
 ### <a name="Rt-tag"></a>T.24: Use tag classes or traits to differentiate concepts that differ only in semantics.
 
@@ -13707,6 +13716,18 @@ Complementary constraints are unfortunately common in `enable_if` code:
     f();
 
 
+##### Note
+
+Complementary requirements on one requirements is sometimes (wrongly) considered manageable.
+However, for two or more requirements the number of definitions needs can go up exponentially (2,4,9,16,...):
+
+    C1<T> && C2<T>
+    !C1<T> && C2<T>
+    C1<T> && !C2<T>
+    !C1<T> && !C2<T>
+
+Now the opportunities for errors multiply.
+
 ##### Enforcement
 
 * Flag pairs of functions with `C<T>` and `!C<T>` constraints
@@ -13725,13 +13746,17 @@ You might be tempted to define a concept `Equality` like this:
     template<typename T> concept Equality = has_equal<T> && has_not_equal<T>;
 
 Obviously, it would be better and easier just to use the standard `EqualityComparable`,
- but - just as an example - if you had to define such a concept, prefer:
+but - just as an example - if you had to define such a concept, prefer:
 
     template<typename T> concept Equality = requires(T a, T b) {
         bool == { a==b }
         bool == { a!=b }
         // axiom { !(a==b)==(a!=b) }
+        // axiom { a=b; => a==b }  // => means "implies"
     }
+
+as oposed to defining two meaningless concepts `has_equal` and `has_not_equal` just as helpers in the definition of `Equality`.
+By "meaningless" we mean that we cannot specify the semantics of `has_equal` in isolation.
 
 ##### Enforcement
 
@@ -13794,9 +13819,9 @@ Consider, a `sort` instrumented with (oversimplified) simple debug support:
 
     void sort(Sortable& s)  // sort sequence s
     {
-        if (debug) cerr << "enter sort()\n";
+        if (debug) cerr << "enter sort( " << s <<  ")\n";
         // ...
-        if (debug) cerr << "exit sort()\n";
+        if (debug) cerr << "exit sort( " << s <<  ")\n";
     }
 
 Should this be rewritten to:
@@ -13805,9 +13830,9 @@ Should this be rewritten to:
         requires Streamable<S>
     void sort(S& s)  // sort sequence s
     {
-        if (debug) cerr << "enter sort()\n";
+        if (debug) cerr << "enter sort( " << s <<  ")\n";
         // ...
-        if (debug) cerr << "exit sort()\n";
+        if (debug) cerr << "exit sort( " << s <<  ")\n";
     }
 
 After all, there is nothing in `Sortable` that requires `iostream` support.
@@ -13826,6 +13851,8 @@ we may get a late compile-time error.
 By not using concept checking for properties of a template argument that is not considered essential,
 we delay checking until instantiation time.
 We consider this a worthwhile tradeoff.
+
+Note that using non-local, non-dependent names (such as `debug` and `cerr`) also introduce context dependencies that may lead to "mysterious" errors.
  
 ##### Note
 
@@ -13839,7 +13866,10 @@ It can be hard to decide which properties of a type is essential and which are n
 
 ##### Reason
 
-Improved readability. Implementation hiding. Note that template aliases replace many uses of traits to compute a type. They can also be used to wrap a trait.
+Improved readability.
+Implementation hiding.
+Note that template aliases replace many uses of traits to compute a type.
+They can also be used to wrap a trait.
 
 ##### Example
 
@@ -13855,9 +13885,30 @@ This saves the user of `Matrix` from having to know that its elements are stored
 ##### Example
 
     template<typename T>
+    void user(T& c)
+    {
+        // ...
+        typename container_traits<T>::value_type x; // bad, verbose
+        // ...
+    }
+
+    template<typename T>
     using Value_type = typename container_traits<T>::value_type;
 
+
 This saves the user of `Value_type` from having to know the technique used to implement `value_type`s.
+
+    template<typename T>
+    void user2(T& c)
+    {
+        // ...
+        Value_type<T> x;
+        // ...
+    }
+
+##### Note
+
+A simple, common use could be expressed: "Wrap traits!"
 
 ##### Enforcement
 
@@ -14419,7 +14470,8 @@ Imagine what this would do to a class hierarchy with dozens of member functions 
 
 ##### Note
 
-In many cases you can provide a stable interface by not parameterizing a base; see [Rule](#Rt-abi).
+In many cases you can provide a stable interface by not parameterizing a base;
+see ["stable base"](#Rt-abi) and [OO and GP](#Rt-generic-oo)
 
 ##### Enforcement
 
@@ -14520,7 +14572,8 @@ The compiler handles that.
 
 ##### Reason
 
-Improve stability of code. Avoids code bloat.
+Improve stability of code.
+Avoid code bloat.
 
 ##### Example
 
@@ -14829,7 +14882,8 @@ whether functions, lambdas, or operators.
 
 ##### Enforcement
 
-???
+* (hard) flag similar lambdas
+* ???
 
 ### <a name="Rt-lambda"></a>T.141: Use an unnamed lambda if you need a simple function object in one place only
 
@@ -14940,6 +14994,33 @@ You can't partially specialize a function template per language rules. You can f
 ##### Enforcement
 
 * Flag all specializations of a function template. Overload instead.
+
+
+### <a name="Rt-check-class"></a>T.150: Check that a class matches a concept using `static_assert`
+
+##### Reason
+
+If you intend for a class to match a concept, verifying that early saves users pain.
+
+###### Example
+
+    class X {
+        X() = delete;
+        X(const X&) = default;
+        X(X&&) = default;
+        X& operator=(const X&) = default;
+        // ...
+    };
+
+Somewhere, possibly in an implementation file, let the compiler check the desired properties of `X`:
+
+    static_assert(Default_constructible<X>);    // error: X has no default constructor
+    static_assert(Copyable<X>);                 // error: we forgot to define X's move constructor
+
+
+###### Enforcement
+
+Not feasible.
 
 # <a name="S-cpl"></a>CPL: C-style programming
 
