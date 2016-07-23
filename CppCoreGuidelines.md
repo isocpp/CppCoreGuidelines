@@ -465,7 +465,7 @@ portability will be impacted.
 Using valid ISO C++ does not guarantee portability (let alone correctness).
 Avoid dependence on undefined behavior (e.g., [undefined order of evaluation](#Res-order))
 and be aware of constructs with implementation defined meaning (e.g., `sizeof(int)`).
- 
+
 ##### Note
 
 There are environments where restrictions on use of standard C++ language or library features are necessary, e.g., to avoid dynamic memory allocation as required by aircraft control software standards.
@@ -585,7 +585,7 @@ You don't need to write error handlers for errors caught at compile time.
         cerr << "Int too small\n"
 
 This example is easily simplified
-    
+
     // Int is an alias used for integers
     static_assert(sizeof(Int) >= 4);    // do: compile-time check
 
@@ -594,12 +594,12 @@ This example is easily simplified
     void read(int* p, int n);   // read max n integers into *p
     
     int a[100];
-    read(a,1000);    // bad
+    read(a, 1000);    // bad
 
 better
 
     void read(span<int> r); // read into the range of integers r
-   
+
     int a[100];
     read(a);        // better: let the compiler figure out the number of elements
 
@@ -988,7 +988,7 @@ Messy, low-level code breads more such code.
     if (count==sz)
         p = (int*) realloc(p,sizeof(int)*sz*2);
     // ...
-    
+
 This is low-level, verbose, and error-prone.
 Insted, we could use `vector`:
 
@@ -2687,7 +2687,7 @@ With C++11 we can write this, putting the results directly in existing local var
 
 With C++17 we should be able to use "structured bindinds" to declare and initialize the multiple variables:
 
-    auto [iter,success] = myset.insert("Hello"); // C++17 structured binding
+    auto [iter, success] = myset.insert("Hello"); // C++17 structured binding
     if (success) do_something_with(iter);
 
 ##### Exception
@@ -2699,7 +2699,7 @@ For example:
 
     istream& operator>>(istream& is, string& s);    // much like std::operator>>()
     
-    for (string s; cin>>s; ) {
+    for (string s; cin >> s; ) {
         // do something with line
     }
 
@@ -2712,11 +2712,11 @@ such as `string` and `vector`, that needs to do free store allocations.
 
 To compare, if we passed out all values as return values, we would something like this:
 
-    pair<istream&,string> get_string(istream& is);  // not recommended
+    pair<istream&, string> get_string(istream& is);  // not recommended
     {
         string s;
-        cin>>s;
-        return {is,s};
+        cin >> s;
+        return {is, s};
     }
 
     for (auto p = get_string(cin); p.first; ) {
@@ -2768,24 +2768,23 @@ It complicates checking and tool support.
 
 ##### Example
 
-    void use(int* p, int nchar* s, int* q)
+    void use(int* p, int n, char* s, int* q)
     {
-            p[n-1] = 666; // Bad: we don't know if p points to n elements; assume it does not or use span<int>
-            
-            cout << s; // Bad: we don't know if that s points to a zero-terminated array of char; // assume it does not or use zstring
-
-            delete q; // Bad: we don't know if *q is allocated on the free store; assume it does not or use owner
+        p[n-1] = 666; // Bad: we don't know if p points to n elements;
+                      // assume it does not or use span<int>
+        cout << s;    // Bad: we don't know if that s points to a zero-terminated array of char;
+                      // assume it does not or use zstring
+        delete q;     // Bad: we don't know if *q is allocated on the free store;
+                      //assume it does not or use owner
     }
 
 better
 
     void use2(span<int> p, zstring s, owner<int*> q)
     {
-            p[p.size()-1] = 666; // OK, a range error can be caught
-            
-            cout << s; // OK
-
-            delete q; // OK
+        p[p.size()-1] = 666; // OK, a range error can be caught
+        cout << s; // OK
+        delete q; // OK
     }
 
 ##### Note
@@ -6150,16 +6149,16 @@ This Shape hierarchy can be rewritten using interface inheritance:
 
      class Shape {  // pure interface
      public:
-        virtual Point center() const =0;
-        virtual Color color() const =0;
+        virtual Point center() const = 0;
+        virtual Color color() const = 0;
 
-        virtual void rotate(int) =0;
-        virtual void move(Point p) =0;
+        virtual void rotate(int) = 0;
+        virtual void move(Point p) = 0;
 
-        virtual void redraw() =0;
+        virtual void redraw() = 0;
 
         // ...
-    };
+     };
 
 Note that a pure interface rarely have constructors: there is nothing to construct.
 
@@ -6190,13 +6189,13 @@ First we devise a hierarchy of interface classes:
 
     class Shape {   // pure interface
     public:
-        virtual Point center() const =0;
-        virtual Color color() const =0;
+        virtual Point center() const = 0;
+        virtual Color color() const = 0;
 
-        virtual void rotate(int) =0;
-        virtual void move(Point p) =0;
+        virtual void rotate(int) = 0;
+        virtual void move(Point p) = 0;
 
-        virtual void redraw() =0;
+        virtual void redraw() = 0;
 
         // ...
     };
@@ -6258,7 +6257,7 @@ Since each implementation derived from its inteface as well as its implementatio
     Smiley     ->         Circle     ->  Shape
       ^                     ^               ^
       |                     |               |
-	Impl::Smiley -> Impl::Circle -> Impl::Shape
+    Impl::Smiley -> Impl::Circle -> Impl::Shape
 
 As mentioned, this is just one way to construct a dual hierarchy.
 
@@ -7479,9 +7478,12 @@ The default is the easiest to read and write.
 
 ##### Example
 
-    enum class Direction : char { n, s, e, w, ne, nw, se, sw };    // underlying type saves space
+    enum class Direction : char { n, s, e, w,
+                                  ne, nw, se, sw };  // underlying type saves space
     
-    enum class Webcolor : int { red = 0xFF0000, green = 0x00FF00, blue = 0x0000FF };  // underlying type is redundant
+    enum class Webcolor : int { red = 0xFF0000,
+                                green = 0x00FF00,
+                                blue = 0x0000FF };  // underlying type is redundant
 
 ##### Note
 
@@ -7512,9 +7514,10 @@ The default gives a consequtive set of values that is good for `switch`-statemen
 ##### Example
 
     enum class Col1 { red, yellow, blue };
-    enum class Col2 { red=1, red=2, blue=2 }; // typo
-    enum class Month { jan=1, feb, mar, apr, mar, jun, jul, august, sep, oct, nov, dec }; // starting with 1 is conventional
-    enum class Base_flag { dec=1, oct=dec<<1, hex=dec<<2 }; // set of bits
+    enum class Col2 { red = 1, red = 2, blue = 2 }; // typo
+    enum class Month { jan = 1, feb, mar, apr, mar, jun,
+                       jul, august, sep, oct, nov, dec }; // starting with 1 is conventional
+    enum class Base_flag { dec = 1, oct = dec << 1, hex = dec << 2 }; // set of bits
 
 Specifying values are neccessary to match conventional values (e.g., `Month`)
 and where consecutive values are undesirable (e.g., to get separate bits as in `Base_flag`).
@@ -9416,29 +9419,29 @@ Requires messy cast-and-macro-laden code to get working right.
 
     void error(int severity ...) // ``severity'' followed by a zero-terminated list of char*s; write the C-style strings to cerr
     {
-	    va_list ap;             // a magic type for holding arguments
-	    va_start(ap,severity);	// arg startup: "severity" is the first argument of error()
+        va_list ap;             // a magic type for holding arguments
+        va_start(ap, severity); // arg startup: "severity" is the first argument of error()
 
-	    for (;;) {
-	    	char* p = va_arg(ap,char*); // treat the next var as a char*; no checking: a cast in disguise
-	    	if (p == nullptr) break;
-	    	cerr << p << ' ';
-	    }
+        for (;;) {
+            char* p = va_arg(ap, char*); // treat the next var as a char*; no checking: a cast in disguise
+            if (p == nullptr) break;
+            cerr << p << ' ';
+        }
 
-	    va_end(ap);			// arg cleanup (don't forget this)
+        va_end(ap);             // arg cleanup (don't forget this)
 
-	    cerr << '\en';
-	    if (severity) exit(severity);
+        cerr << '\n';
+        if (severity) exit(severity);
     }
 
     void use()
     {
-        error(7,"this","is","an","error", nullptr);
+        error(7, "this", "is", "an", "error", nullptr);
         error(7); // crash
-        error(7,"this","is","an","error");  // crash
+        error(7, "this", "is", "an", "error");  // crash
         const char* is = "is";
         string an = "an";
-        error(7,"this","is,an,"error"); // crash
+        error(7, "this", "is", an, "error"); // crash
     }
 
 **Alternative**: Overloading. Templates. Variadic templates.
@@ -13448,10 +13451,10 @@ To say "`T` is `Sortable`":
     //    requires Sortable<T>   // of type T which is the name of a type
     void sort(T&);             // that is Sortable"
 
-    template<Sortable T>       // Better (assuming language support for concepts): "The parameter is of type T
+    template<Sortable T>       // Better (assuming support for concepts): "The parameter is of type T
     void sort(T&);             // which is Sortable"
 
-    void sort(Sortable&);      // Best (assuming language support for concepts): "The parameter is Sortable"
+    void sort(Sortable&);      // Best (assuming support for concepts): "The parameter is Sortable"
 
 The shorter versions better match the way we speak. Note that many templates don't need to use the `template` keyword.
 
@@ -13680,9 +13683,9 @@ An incomplete set of constraints can still be very useful:
 
     // balancer for a generic binary tree
     template<typename Node> concept bool Balancer = requires(Node* p) {
-	    add_fixup(p);
-	    touch(p);
-	    detach(p);
+        add_fixup(p);
+        touch(p);
+        detach(p);
     }
 
 So a `Balancer` must supply at least thee operations on a tree `Node`,
@@ -13736,7 +13739,7 @@ Two concepts requiring the same syntax but having different semantics leads to a
     template<typename I>    // iterator providing random access to contiguous data
     concept bool Contiguous_iter =
         RA_iter<I> && is_contiguous<I>::value;  // using is_contiguous trait
-        
+
 The programmer (in a library) must define `is_contiguous` (a trait) appropriately.
 
 Wrapping a tag class into a concept leads to a simpler expression of this idea:
@@ -13801,11 +13804,11 @@ The compiler will select the overload and emit an appropriate error.
 Complementary constraints are unfortunately common in `enable_if` code:
 
     template<typename T>
-    enable_if<!C<T>,void>   // bad
+    enable_if<!C<T>, void>   // bad
     f();
 
     template<typename T>
-    enable_if<C<T>,void>
+    enable_if<C<T>, void>
     f();
 
 
@@ -13946,7 +13949,7 @@ we delay checking until instantiation time.
 We consider this a worthwhile tradeoff.
 
 Note that using non-local, non-dependent names (such as `debug` and `cerr`) also introduce context dependencies that may lead to "mysterious" errors.
- 
+
 ##### Note
 
 It can be hard to decide which properties of a type is essential and which are not.
@@ -14214,17 +14217,18 @@ Eases tool creation.
     template<typename C>
     void sort(C& c)
     {
-        std::sort(begin(c),end(c)); // necessary and useful dependency
+        std::sort(begin(c), end(c)); // necessary and useful dependency
     }
 
     template<typename Iter>
     Iter algo(Iter first, Iter last) {
-        for (; first!=last; ++first) {
+        for (; first != last; ++first) {
             auto x = sqrt(*first); // potentially surprising dependency: which sqrt()?
-            helper(first,x);       // potentially surprising dependency: heper is chosen based on first and x
+            helper(first, x);      // potentially surprising dependency:
+                                   // helper is chosen based on first and x
             TT var = 7;            // potentially surprising dependency: which TT?
         }
-    } 
+    }
 
 ##### Note
 
@@ -14385,10 +14389,10 @@ This is a simplified version of `std::copy` (ignoring the possibility of non-con
     
     template<class T> struct copy_trait { using tag = non_pod_tag; };   // T is not "plain old data"
 
-    template<> struct copy_trait<int> { using tab = pod_tag; };         // int is "plain old data" 
+    template<> struct copy_trait<int> { using tab = pod_tag; };         // int is "plain old data"
 
     template<class Iter>
-    Out copy_helper(Iter first, Iter last, Iter out, pog_tag)
+    Out copy_helper(Iter first, Iter last, Iter out, pod_tag)
     {
         // use memmove
     }
@@ -14402,13 +14406,13 @@ This is a simplified version of `std::copy` (ignoring the possibility of non-con
     template<class Itert>
     Out copy(Iter first, Iter last, Iter out)
     {
-        return copy_helper(first,last,out, typename copy_trait<Iter>::tag{})
+        return copy_helper(first, last, out, typename copy_trait<Iter>::tag{})
     }
 
     void use(vector<int>& vi, vector<int>& vi2, vector<string>& vs, vector<string>& vs2)
     {
-        copy(vi.begin(),vi.end(), vi2.begin()); // uses memmove
-        copy(vs.begin(),vs.end(), vs2.begin()); // uses a loop calling copy constructors
+        copy(vi.begin(), vi.end(), vi2.begin()); // uses memmove
+        copy(vs.begin(), vs.end(), vs2.begin()); // uses a loop calling copy constructors
     }
 
 This is a general and powerful technique for compile-time algorithm selection.
@@ -14465,7 +14469,7 @@ When `concept`s become widely available such alternatives can be distinguished d
         auto x = T(u);  // construction or cast?
     }
 
-    f(1,"asdf); // bad: cast from const char* to int
+    f(1, "asdf"); // bad: cast from const char* to int
 
 ##### Enforcement
 
@@ -14500,10 +14504,10 @@ There are three major ways to let calling code customize a template.
 
         template<class T>
         void test3(T t)
-            // Invoke a "trait" 
-            
-        {     
-            test_traits<T>::f(t); // require customizing test_traits<> to get non-default functions/types
+            // Invoke a "trait"
+        {
+            test_traits<T>::f(t); // require customizing test_traits<>
+                                  // to get non-default functions/types
         }
 
 A trait is usually a type alias to compute a type,
@@ -14930,15 +14934,16 @@ Documentation, readability, opportunity for reuse.
 
     bool same(const Rec& a, const Rec& b)
     {
-        return a.id==b.id;
+        return a.id == b.id;
     }
 
     vector<Rec*> find_id(const string& name);    // find all records for "name"
 
-    auto x = find_if(vr.begin(),vr.end(),
+    auto x = find_if(vr.begin(), vr.end(),
         [&](Rec& r) {
-            if (r.name.size()!=n.size()) return false; // name to compare to is in n
-            for (int i=0; i<r.name.size(); ++i) if (tolower(r.name[i])!=tolower(n[i])) return false;
+            if (r.name.size() != n.size()) return false; // name to compare to is in n
+            for (int i=0; i < r.name.size(); ++i)
+                if (tolower(r.name[i]) != tolower(n[i])) return false;
             return true;
         }
     );
