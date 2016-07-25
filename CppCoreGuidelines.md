@@ -6161,7 +6161,7 @@ To make this interface useful, we must provide its implementation classes (here,
     };
 
 Now `Shape` is a poor example of a class with an implementation,
-but bare with us because this is just a simple example of a technique aimed at more complex hierrchies.
+but bear with us because this is just a simple example of a technique aimed at more complex hierarchies.
 
      class Impl::Circle : public Circle, public Impl::Shape {   // implementation
      publc:
@@ -6189,7 +6189,7 @@ There are now two hierarchies:
 * interface: Smiley -> Circle -> Shape
 * implementation: Impl::Smiley -> Impl::Circle -> Impl::Shape
 
-Since each implementation derived from its inteface as well as its implementation base class we get a latice (DAG):
+Since each implementation derived from its interface as well as its implementation base class we get a lattice (DAG):
 
     Smiley     ->         Circle     ->  Shape
       ^                     ^               ^
@@ -6202,7 +6202,7 @@ Another (related) technique for separating interface and implementation is [PIMP
 
 ##### Note
 
-There is often a choice between offering common functionality as (implemented) base class funcetions and free-standing functions
+There is often a choice between offering common functionality as (implemented) base class functions and free-standing functions
 (in an implementation namespace).
 Base classes gives a shorter notation and easier access to shared data (in the base)
 at the cost of the functionality being available only to users of the hierarchy.
@@ -6210,7 +6210,7 @@ at the cost of the functionality being available only to users of the hierarchy.
 ##### Enforcement
 
 * Flag a derived to base conversion to a base with both data and virtual functions
-(except for calls from a derived class memvber to a base class member)
+(except for calls from a derived class member to a base class member)
 * ???
 
 
