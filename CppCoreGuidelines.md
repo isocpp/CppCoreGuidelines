@@ -7458,7 +7458,7 @@ Such code is not uncommon in code written before there were convenient alternati
 
 Use `constexpr` values instead. For example:
 
-    constexpr int red = 0x,FF0000;
+    constexpr int red = 0xFF0000;
     constexpr short scale = 4;
     constexpr bool signed = true;
 
