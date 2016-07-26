@@ -15586,7 +15586,7 @@ In the context of the styles of programming we recommend and support with the gu
 
 Non-rule summary:
 
-* [NR.1: All declarations shuld be at the of a function](#Rnr-top)
+* [NR.1: All declarations should be at the top of a function](#Rnr-top)
 * single-return rule
 * no exceptions
 * one class per source file
@@ -15595,7 +15595,7 @@ Non-rule summary:
 * make all data members `protected`
 * ???
 
-### <a name="Rnr-top"></a>NR.1: All declarations shuld be at the of a function
+### <a name="Rnr-top"></a>NR.1: All declarations should be at the top of a function
 
 ##### Reason
 
