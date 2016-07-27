@@ -1,6 +1,6 @@
 # <a name="main"></a>C++ Core Guidelines
 
-July 21, 2016
+July 25, 2016
 
 Editors:
 
@@ -935,7 +935,8 @@ Time and space that you spend well to achieve a goal (e.g., speed of development
 
 Yes, this is a caricature, but we have seen every individual mistake in production code, and worse.
 Note that the layout of `X` guarantees that at least 6 bytes (and most likely more) bytes are wasted.
-The spurious definition of copy operations disables move semantics so that the return operation is slow.
+The spurious definition of copy operations disables move semantics so that the return operation is slow
+(please note that the Return Value Optimization, RVO, is not guaranteed here).
 The use of `new` and `delete` for `buf` is redundant; if we really needed a local string, we should use a local `string`.
 There are several more performance bugs and gratuitous complication.
 
@@ -1954,7 +1955,7 @@ Parameter passing semantic rules:
 Value return semantic rules:
 
 * [F.42: Return a `T*` to indicate a position (only)](#Rf-return-ptr)
-* [F.43: Never (directly or indirectly) return a pointer to a local object](#Rf-dangle)
+* [F.43: Never (directly or indirectly) return a pointer or a reference to a local object](#Rf-dangle)
 * [F.44: Return a `T&` when copy is undesirable and "returning no object" isn't an option](#Rf-return-ref)
 * [F.45: Don't return a `T&&`](#Rf-return-ref-ref)
 * [F.46: `int` is the return type for `main()`](#Rf-main)
@@ -2181,7 +2182,7 @@ The (in)famous factorial:
 
     constexpr int fac(int n)
     {
-        constexpr int max_exp = 17;      // constexpr enables this to be used in Expects
+        constexpr int max_exp = 17;      // constexpr enables max_exp to be used in Expects
         Expects(0 <= n && n < max_exp);  // prevent silliness and overflow
         int x = 1;
         for (int i = 2; i <= n; ++i) x *= i;
@@ -2220,7 +2221,8 @@ This is usually a very good thing.
 
 ##### Note
 
-Don't try to make all functions `constexpr`. Most computation is best done at run time.
+Don't try to make all functions `constexpr`.
+Most computation is best done at run time.
 
 ##### Note
 
@@ -2245,7 +2247,7 @@ Specifying `inline` encourages the compiler to do a better job.
 
 ##### Example
 
-    ???
+    inline string cat(const string& s, const string& s2) { return s+s2; }
 
 **Exception**: Do not put an `inline` function in what is meant to be a stable interface unless you are really sure that it will not change.
 An inline function is part of the ABI.
@@ -2263,7 +2265,6 @@ Member functions defined in-class are `inline` by default.
 ##### Enforcement
 
 Flag `inline` functions that are more than three statements and could have been declared out of line (such as class member functions).
-To fix: Declare the function out of line. (NM: Certainly possible, but size-based metrics can be very annoying.)
 
 ### <a name="Rf-noexcept"></a>F.6: If your function may not throw, declare it `noexcept`
 
@@ -2373,7 +2374,11 @@ We can catch dangling pointers statically, so we don't need to rely on resource 
 
 ##### Enforcement
 
-* Flag a parameter of a smart pointer type (a type that overloads `operator->` or `operator*`) that is copyable but never copied/moved from in the function body or else movable but never moved from in the function body or by being a by-value parameter, and that is never modified, and that is not passed along to another function that could do so. That means the ownership semantics are not used.
+Flag a parameter of a smart pointer type (a type that overloads `operator->` or `operator*`) for which the ownership semantics are not used;
+that is
+
+    * copyable but never copied/moved from or movable but never moved
+    * and that is never modified or passed along to another function that could do so.
 
 ### <a name="Rf-pure"></a>F.8: Prefer pure functions
 
@@ -2407,9 +2412,15 @@ If you really feel the need for an optimization beyond the common techniques, me
 
 The following tables summarize the advice in the following Guidelines, F.16-21.
 
+Normal parameter passing:
+
 ![Normal parameter passing table](./param-passing-normal.png "Normal parameter passing")
 
+Advanced parameter passing:
+
 ![Advanced parameter passing table](./param-passing-advanced.png "Advanced parameter passing")
+
+Use the advanced techniques only after demonstrating need, and document that need in a comment.
 
 ### <a name="Rf-in"></a>F.16: For "in" parameters, pass cheaply-copied types by value and others by reference to `const`
 
@@ -2418,7 +2429,7 @@ The following tables summarize the advice in the following Guidelines, F.16-21.
 Both let the caller know that a function will not modify the argument, and both allow initialization by rvalues.
 
 What is "cheap to copy" depends on the machine architecture, but two or three words (doubles, pointers, references) are usually best passed by value.
-When copying is cheap, nothing beats the simplicity and safety of copying, and for small objects (up to two or three words) it is also faster than passing by reference because it does not require an extra reference to access from the function.
+When copying is cheap, nothing beats the simplicity and safety of copying, and for small objects (up to two or three words) it is also faster than passing by reference because it does not require an extra indirection to access from the function.
 
 ##### Example
 
@@ -2531,6 +2542,10 @@ It's efficient and eliminates bugs at the call site: `X&&` binds to rvalues, whi
         // usually no more use of v here; it is moved-from
     }
 
+Note that the `std::move(v)` makes it possible for `store_somewhere()` to leave `v` in a moved-from state.
+[That could be dangerous](#Rc-move-semantic).
+
+
 ##### Exception
 
 Unique owner types that are move-only and cheap-to-move, such as `unique_ptr`, can also be passed by value which is simpler to write and achieves the same effect. Passing by value does generate one extra (cheap) move operation, but prefer simplicity and clarity first.
@@ -2590,15 +2605,27 @@ If you have multiple values to return, [use a tuple](#Rf-out-multi) or similar m
 
 A struct of many (individually cheap-to-move) elements may be in aggregate expensive to move.
 
-It is not recommended to return a `const` value. Such older advice is now obsolete; it does not add value, and it interferes with move semantics.
+It is not recommended to return a `const` value.
+Such older advice is now obsolete; it does not add value, and it interferes with move semantics.
 
-    ??? example ???
+    const vector<int> fct();    // bad: that "const" is more trouble than it is worth
+
+    vector<int> g(const vector<int>& vx)
+    {
+        // ...
+        f() = vx;   // prevented by the "const"
+        // ...
+        return f(); // expensive copy: move semantics suppressed by the "const"
+    }
+
+The argument for adding `const` to a return value is that it prevents (very rare) accidental access to a temporary.
+The argument against is prevents (very frequent) use of move semantics.
 
 ##### Exceptions
 
 * For non-value types, such as types in an inheritance hierarchy, return the object by `unique_ptr` or `shared_ptr`.
 * If a type is expensive to move (e.g., `array<BigPOD>`), consider allocating it on the free store and return a handle (e.g., `unique_ptr`), or passing it in a reference to non-`const` target object to fill (to be used as an out-parameter).
-* In the special case of allowing a caller to reuse an object that carries capacity (e.g., `std::string`, `std::vector`) across multiple calls to the function in an inner loop, treat it as an in/out parameter instead and pass by `&`. This is one use of the more generally named "caller-allocated out" pattern.
+* To reuse an object that carries capacity (e.g., `std::string`, `std::vector`) across multiple calls to the function in an inner loop: [treat it as an in/out parameter and pass by reference](#Rf-out-multi).
 
 ##### Example
 
@@ -2623,7 +2650,8 @@ It is not recommended to return a `const` value. Such older advice is now obsole
 ##### Reason
 
 A return value is self-documenting as an "output-only" value.
-And yes, C++ does have multiple return values, by convention of using a `tuple`, with the extra convenience of `tie` at the call site.
+Note that C++ does have multiple return values, by convention of using a `tuple`,
+possibly with the extra convenience of `tie` at the call site.
 
 ##### Example
 
@@ -2642,7 +2670,7 @@ And yes, C++ does have multiple return values, by convention of using a `tuple`,
         return make_tuple(status, something());
     }
 
-In fact, C++98's standard library already used this convenient feature, because a `pair` is like a two-element `tuple`.
+C++98's standard library already used this style, because a `pair` is like a two-element `tuple`.
 For example, given a `set<string> myset`, consider:
 
     // C++98
@@ -2657,20 +2685,60 @@ With C++11 we can write this, putting the results directly in existing local var
     tie(iter, success) = myset.insert("Hello");   // normal return value
     if (success) do_something_with(iter);
 
-With C++17 we may be able to write something like this, also declaring the variables:
+With C++17 we should be able to use "structured bindinds" to declare and initialize the multiple variables:
 
-    auto { iter, success } = myset.insert("Hello");
+    auto [iter,success] = myset.insert("Hello"); // C++17 structured binding
     if (success) do_something_with(iter);
 
-**Exception**: For types like `string` and `vector` that carry additional capacity, it can sometimes be useful to treat it as in/out instead by using the "caller-allocated out" pattern,
-which is to pass an output-only object by reference to non-`const` so that when the callee writes to it the object can reuse any capacity or other resources that it already contains.
-This technique can dramatically reduce the number of allocations in a loop that repeatedly calls other functions to get string values, by using a single string object for the entire loop.
+##### Exception
 
-    ??? example ???
+Sometimes, we need to pass an object to a function to manipulate its state.
+In such cases, passing the object by reference [`T&`](#Rf-inout) is usually the right technique.
+Explicitly passing an in-out parameter back out again as a return value is often not necessary.
+For example:
+
+    istream& operator>>(istream& is, string& s);    // much like std::operator>>()
+    
+    for (string s; cin>>s; ) {
+        // do something with line
+    }
+
+Here, both `s` and `cin` are used as in-out paramenters.
+We pass `cin` by (non-`const`) reference to be able to manipulate its state.
+We pass `s` to avoid repeated allocations.
+By reusing `s` (passed by reference), we allocate new memory only when we need to expand `s`'s capacity.
+This technique is sometimes called the "caller-allocated out" pattern and is particularly useful for types,
+such as `string` and `vector`, that needs to do free store allocations.
+
+To compare, if we passed out all values as return values, we would something like this:
+
+    pair<istream&,string> get_string(istream& is);  // not recommended
+    {
+        string s;
+        cin>>s;
+        return {is,s};
+    }
+
+    for (auto p = get_string(cin); p.first; ) {
+        // do something with p.second
+    }
+
+We consider that significantly less elegant and definitely significantly slower.
+
+For a really strict reading this rule (F.21), the exceptions isn't really an exception because it relies on in-out paramenters,
+rather than the plain out parameters mentioned in the rule.
+However, we prefer to be explicit, rather than subtle.
 
 ##### Note
 
-In some cases it may be useful to return a specific, user-defined `Value_or_error` type along the lines of `variant<T, error_code>`, rather than using the generic `tuple`.
+In many cases it may be useful to return a specific, user-defined "Value or error" type.
+For example:
+
+    struct 
+
+The overly-generic `pair` and `tuple` should be used only when the value returned represents to indepent entities rathen than an abstraction.
+
+type along the lines of `variant<T, error_code>`, rather than using the generic `tuple`.
 
 ##### Enforcement
 
@@ -2972,34 +3040,16 @@ A reference is often a superior alternative to a pointer [if there is no need to
 
 Do not return a pointer to something that is not in the caller's scope; see [F.43](#Rf-dangle).
 
-##### Example, bad
-
-    int* f()
-    {
-        int x = 7;
-        // ...
-        return &x;  // Bad: returns pointer to object that is about to be destroyed
-    }
-
-This applies to references as well:
-
-    int& f()
-    {
-        int x = 7;
-        // ...
-        return x;  // Bad: returns reference to object that is about to be destroyed
-    }
-
 **See also**: [discussion of dangling pointer prevention](#???).
 
 ##### Enforcement
 
-A slightly different variant of the problem is placing pointers in a container that outlives the objects pointed to.
+* Flag `delete`, `std::free()`, etc. applied to a plain `T*`.
+Only owners should be deleted.
+* Flag `new`, `malloc()`, etc. assigned to a plain `T*`.
+Only owners should be responsible for deletion.
 
-* Compilers tend to catch return of reference to locals and could in many cases catch return of pointers to locals.
-* Static analysis can catch many common patterns of the use of pointers indicating positions (thus eliminating dangling pointers)
-
-### <a name="Rf-dangle"></a>F.43: Never (directly or indirectly) return a pointer to a local object
+### <a name="Rf-dangle"></a>F.43: Never (directly or indirectly) return a pointer or a reference to a local object
 
 ##### Reason
 
@@ -3046,7 +3096,14 @@ Fortunately, most (all?) modern compilers catch and warn against this simple cas
 
 ##### Note
 
-You can construct similar examples using references.
+This applies to references as well:
+
+    int& f()
+    {
+        int x = 7;
+        // ...
+        return x;  // Bad: returns reference to object that is about to be destroyed
+    }
 
 ##### Note
 
@@ -3089,12 +3146,15 @@ The address of a local variable can be "returned"/leaked by a return statement, 
 Similar examples can be constructed "leaking" a pointer from an inner scope to an outer one;
 such examples are handled equivalently to leaks of pointers out of a function.
 
+A slightly different variant of the problem is placing pointers in a container that outlives the objects pointed to.
+
 **See also**: Another way of getting dangling pointers is [pointer invalidation](#???).
 It can be detected/prevented with similar techniques.
 
 ##### Enforcement
 
-Preventable through static analysis.
+* Compilers tend to catch return of reference to locals and could in many cases catch return of pointers to locals.
+* Static analysis can catch many common patterns of the use of pointers indicating positions (thus eliminating dangling pointers)
 
 ### <a name="Rf-return-ref"></a>F.44: Return a `T&` when copy is undesirable and "returning no object" isn't needed
 
@@ -5183,7 +5243,7 @@ Equivalent to what is done for [copy-assignment](#Rc-copy-assignment).
 * (Simple) An assignment operator should return `T&` to enable chaining, not alternatives like `const T&` which interfere with composability and putting objects in containers.
 * (Moderate) A move assignment operator should (implicitly or explicitly) invoke all base and member move assignment operators.
 
-### <a name="Rc-move-semantic"></a>C.64: A move operation should move and leave its source in valid state
+### <a name="Rc-move-semantic"></a>C.64: A move operation should move and leave its source in a valid state
 
 ##### Reason
 
@@ -5223,8 +5283,12 @@ After `y=std::move(x)` the value of `y` should be the value `x` had and `x` shou
 
 ##### Note
 
-Ideally, that moved-from should be the default value of the type. Ensure that unless there is an exceptionally good reason not to. However, not all types have a default value and for some types establishing the default value can be expensive. The standard requires only that the moved-from object can be destroyed.
-Often, we can easily and cheaply do better: The standard library assumes that it it possible to assign to a moved-from object. Always leave the moved-from object in some (necessarily specified) valid state.
+Ideally, that moved-from should be the default value of the type.
+Ensure that unless there is an exceptionally good reason not to.
+However, not all types have a default value and for some types establishing the default value can be expensive.
+The standard requires only that the moved-from object can be destroyed.
+Often, we can easily and cheaply do better: The standard library assumes that it it possible to assign to a moved-from object.
+Always leave the moved-from object in some (necessarily specified) valid state.
 
 ##### Note
 
@@ -9343,21 +9407,50 @@ Warn against short macro names.
 
 ##### Reason
 
-Not type safe. Requires messy cast-and-macro-laden code to get working right.
+Not type safe.
+Requires messy cast-and-macro-laden code to get working right.
 
 ##### Example
 
-    ??? <vararg>
+    #include <cstdarg>
+
+    void error(int severity ...) // ``severity'' followed by a zero-terminated list of char*s; write the C-style strings to cerr
+    {
+	    va_list ap;             // a magic type for holding arguments
+	    va_start(ap,severity);	// arg startup: "severity" is the first argument of error()
+
+	    for (;;) {
+	    	char* p = va_arg(ap,char*); // treat the next var as a char*; no checking: a cast in disguise
+	    	if (p == nullptr) break;
+	    	cerr << p << ' ';
+	    }
+
+	    va_end(ap);			// arg cleanup (don't forget this)
+
+	    cerr << '\en';
+	    if (severity) exit(severity);
+    }
+
+    void use()
+    {
+        error(7,"this","is","an","error", nullptr);
+        error(7); // crash
+        error(7,"this","is","an","error");  // crash
+        const char* is = "is";
+        string an = "an";
+        error(7,"this","is,an,"error"); // crash
+    }
 
 **Alternative**: Overloading. Templates. Variadic templates.
 
 ##### Note
 
-There are rare used of variadic functions in SFINAE code, but those don't actually run and don't need the `<vararg>` implementation mess.
+This is basically the way `printf` is implemented.
 
 ##### Enforcement
 
-Flag definitions of C-style variadic functions.
+* Flag definitions of C-style variadic functions.
+* Flag `#include<cstdarg>` and `#include<stdarg.h>`
 
 ## ES.stmt: Statements
 
@@ -15249,7 +15342,17 @@ Minimize context dependencies and increase readability.
 
 This applies to both `.h` and `.cpp` files.
 
-**Exception**: Are there any in good code?
+##### Note
+
+There is an argument for insulating code from declarations and macros in header files by `#including` headers *after* the code we want to protect
+(as in the example labeled "bad").
+However
+
+* that only works for one file (at one level): Use that technique in a header included with other headers and the vulnerability reappears.
+* a namespace (an "implementation namespace") can protect against many context dependencies.
+* full protection and flexibility require [modules](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/n4592.pdf).
+[See also](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/p0141r0.pdf).
+
 
 ##### Enforcement
 
@@ -16354,8 +16457,6 @@ References are never owners.
 The names are mostly ISO standard-library style (lower case and underscore):
 
 * `T*`      // The `T*` is not an owner, may be null; assumed to be pointing to a single element.
-* `char*`   // A C-style string (a zero-terminated array of characters); may be null.
-* `const char*`  // A C-style string; may be null.
 * `T&`      // The `T&` is not an owner and can never be a "null reference"; references are always bound to objects.
 
 The "raw-pointer" notation (e.g. `int*`) is assumed to have its most common meaning; that is, a pointer points to an object, but does not own it.
@@ -16388,8 +16489,7 @@ If something is not supposed to be `nullptr`, say so:
 A `span<T>` refers to zero or more mutable `T`s unless `T` is a `const` type.
 
 "Pointer arithmetic" is best done within `span`s.
-A `char*` that points to something that is not a C-style string (e.g., a pointer into an input buffer) should be represented by a `span`.
-There is no really good way to say "pointer to a single `char`" (`string_span{p, 1}` can do that, and `T*` where `T` is a `char` in a template that has not been specialized for C-style strings).
+A `char*` that points to more than one `char` but is not a C-style string (e.g., a pointer into an input buffer) should be represented by a `span`.
 
 * `zstring`    // a `char*` supposed to be a C-style string; that is, a zero-terminated sequence of `char` or `null_ptr`
 * `czstring`   // a `const char*` supposed to be a C-style string; that is, a zero-terminated sequence of `const` `char` or `null_ptr`
@@ -16488,6 +16588,7 @@ Naming and layout rules:
 * [NL.17: Use K&R-derived layout](#Rl-knr)
 * [NL.18: Use C++-style declarator layout](#Rl-ptr)
 * [NL.25: Don't use `void` as an argument type](#Rl-void)
+* [NL.26: Use conventional `const` notation](Rl-const)
 
 Most of these rules are aesthetic and programmers hold strong opinions.
 IDEs also tend to have defaults and a range of alternatives.
@@ -16877,6 +16978,32 @@ You can make an argument for that abomination in C when function prototypes were
     f(1, 2, "weird but valid C89");   // hope that f() is defined int f(a, b, c) char* c; { /* ... */ }
 
 would have caused major problems, but not in the 21st century and in C++.
+
+### <a name="Rl-const"></a>NL.26: Use conventional `const` notation
+
+##### Reason
+
+Conventional notation is more familiar to more programmers.
+Consistency in large code bases.
+
+##### Example
+
+    const int x = 7;    // OK
+    int const y = 9;    // bad
+
+    const int *const p = nullptr;   // OK, constant pointer to constant int
+    int const *const p = nullptr;   // bad, constant pointer to constant int
+
+##### Note
+
+We are well aware that you could claim the "bad" examples more logical than the ones marked "OK",
+but they also confuse more people, especially novices relying on teaching material using the far more common, conventional OK style.
+
+As ever, remember that the aim of these naming and layout rules are consistency and that aestetics vary immensely.
+
+##### Enforcement
+
+Flag `const` used as a suffix for a type.
 
 # <a name="S-faq"></a>FAQ: Answers to frequently asked questions
 
