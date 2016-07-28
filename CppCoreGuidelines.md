@@ -3236,6 +3236,7 @@ Declaring `main` (the one global `main` of a program) `void` limits portability.
         int main()
         {
             std::cout << "This is the way to do it\n";
+            return 0;
         }
 
 ##### Note
