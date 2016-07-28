@@ -12175,7 +12175,7 @@ Not all member functions can be called.
         // if elem!=nullptr then elem points to sz doubles
     public:
         vector() : elem{nullptr}, sz{0}{}
-        vctor(int s) : elem{new double},sz{s} { /* initialize elements */ }
+        vector(int s) : elem{new double}, sz{s} { /* initialize elements */ }
         ~vector() { delete elem; }
 
         double& operator[](int s) { return elem[s]; }
@@ -12874,9 +12874,9 @@ A not uncommon technique is to gather cleanup at the end of the function to avoi
         // ...
 
     exit:
-	    if (g1.valid()) cleanup(g1);
-	    if (g1.valid()) cleanup(g2);
-	    return {res, err};
+      if (g1.valid()) cleanup(g1);
+      if (g1.valid()) cleanup(g2);
+      return {res, err};
     }
 
 The larger the function, the more tempting this technique becomes.
@@ -16511,6 +16511,7 @@ Also, `std::array<>::fill()` or `std::fill()` or even an empty initializer are b
         fill(b, 0);                     // std::fill() + Ranges TS
 
         if ( a == b ) {
+          // ...
         }
     }
 
