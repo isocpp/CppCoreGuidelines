@@ -12041,7 +12041,7 @@ Error-handling rule summary:
 * [E.18: Minimize the use of explicit `try`/`catch`](#Re-catch)
 * [E.19: Use a `final_action` object to express cleanup if no suitable resource handle is available](#Re-finally)
 
-* [E.25: If you can't throw exceptions, simulate RAII for resource management](Re-no-throw-raii)
+* [E.25: If you can't throw exceptions, simulate RAII for resource management](#Re-no-throw-raii)
 * [E.26: If you can't throw exceptions, consider failing fast](#Re-no-throw-crash)
 * [E.27: If you can't throw exceptions, use error codes systematically](#Re-no-throw-codes)
 * [E.28: Avoid error handling based on global state (e.g. `errno`)](#Re-no-throw)
@@ -12113,7 +12113,9 @@ Don't use a `throw` as simply an alternative way of returning a value from a fun
 
 ##### Note
 
-Before deciding that you cannot afford or don't like exception-based error handling, have a look at the [alternatives](#Re-no-throw-raii).
+Before deciding that you cannot afford or don't like exception-based error handling, have a look at the [alternatives](#Re-no-throw-raii);
+they have their own complexities and problems.
+Also, as far as possible, measure before making claims about efficiency.
 
 ### <a name="Re-errors"></a>E.3: Use exceptions for error handling only
 
@@ -12139,6 +12141,11 @@ C++ implementations tend to be optimized based on the assumption that exceptions
 This is more complicated and most likely runs much slower than the obvious alternative.
 There is nothing exceptional about finding a value in a `vector`.
 
+##### Enforcement
+
+Would need to be heuristic.
+Look for exception values "leaked" out of `catch` clauses.
+
 ### <a name="Re-design-invariants"></a>E.4: Design your error-handling strategy around invariants
 
 ##### Reason
@@ -12149,6 +12156,10 @@ To use an object it must be in a valid state (defined formally or informally by 
 
 An [invariant](#Rc-struct) is logical condition for the members of an object that a constructor must establish for the public member functions to assume.
 
+##### Enforcement
+
+???
+
 ### <a name="Re-invariant"></a>E.5: Let a constructor establish an invariant, and throw if it cannot
 
 ##### Reason
@@ -12158,13 +12169,29 @@ Not all member functions can be called.
 
 ##### Example
 
-    ???
+    class vector {  // very simplified vector of doubles
+        // if elem!=nullptr then elem points to sz doubles
+    public:
+        vector() : elem{nullptr}, sz{0}{}
+        vctor(int s) : elem{new double},sz{s} { /* initialize elements */ }
+        ~vector() { delete elem; }
+
+        double& operator[](int s) { return elem[s]; }
+        // ...
+    private:
+        owner<double*> elem;
+        int sz;
+    }
+
+The class invariant - here stated as a comment - is established by the constructors.
+`new` throws if it cannot allocate the required memory.
+The operators, notably the subscript operator, relies on the invariant.
 
 **See also**: [If a constructor cannot construct a valid object, throw an exception](#Rc-throw)
 
 ##### Enforcement
 
-???
+Flag classes with `private` state witout a constructor (public, protected, or private).
 
 ### <a name="Re-raii"></a>E.6: Use RAII to prevent leaks
 
@@ -12239,6 +12266,9 @@ We know of only a few good reasons:
 * We are in a hard-real-time system and we don't have tools that guarantee us that an exception is handled within the required time.
 * We are in a system with tons of legacy code using lots of pointers in difficult-to-understand ways
   (in particular without a recognizable ownership strategy) so that exceptions could cause leaks.
+* Our implemention of the C++ exeption mechanisms is unreasonably poor
+(slow, memory consuming, failing to work correctly for dynamically linked libraries, etc.).
+Complain to your implementation purveyer; if no user complains, no improvement will happen.
 * We get fired if we challenge our manager's ancient wisdom.
 
 Only the first of these reasons is fundamental, so whenever possible, use exceptions to implement RAII, or design your RAII objects to never fail.
@@ -12264,7 +12294,7 @@ One strategy is to add a `valid()` operation to every resource handle:
 Obviously, this increases the size of the code, doesn't allow for implicit propagation of "exceptions" (`valid()` checks), and `valid()` checks can be forgotten.
 Prefer to use exceptions.
 
-**See also**: [discussion](#Sd-noexcept).
+**See also**: [Use of `noexcept`](#Se-noexcept).
 
 ##### Enforcement
 
@@ -12299,7 +12329,8 @@ To make error handling systematic, robust, and efficient.
         return log(sqrt(d <= 0 ? 1 : d));
     }
 
-Here, I know that `compute` will not throw because it is composed out of operations that don't throw. By declaring `compute` to be `noexcept` I give the compiler and human readers information that can make it easier for them to understand and manipulate `compute`.
+Here, we know that `compute` will not throw because it is composed out of operations that don't throw.
+By declaring `compute` to be `noexcept`, we give the compiler and human readers information that can make it easier for them to understand and manipulate `compute`.
 
 ##### Note
 
@@ -12341,6 +12372,14 @@ One way of avoiding such problems is to use resource handles consistently:
         if (x < 0) throw Get_me_out_of_here{};  // will delete *p if necessary
         // ...
         // no need for delete p
+    }
+
+Another solution (often better) would be to use a local variable to eliminate explicit use of pointers:
+
+    void no_leak(_simplified(int x)
+    {
+        vector<int> v(7);
+        // ...
     }
 
 **See also**: ???resource rule ???
@@ -12468,7 +12507,12 @@ We don't know how to write reliable programs if a destructor, a swap, or a memor
 
 ##### Note
 
-Many have tried to write reliable code violating this rule for examples such as a network connection that "refuses to close". To the best of our knowledge nobody has found a general way of doing this though occasionally, for very specific examples, you can get away with setting some state for future cleanup. Every example we have seen of this is error-prone, specialized, and usually buggy.
+Many have tried to write reliable code violating this rule for examples, such as a network connection that "refuses to close".
+To the best of our knowledge nobody has found a general way of doing this.
+Occasionally, for very specific examples, you can get away with setting some state for future cleanup.
+For example, we might put a socket that does not want to close on a "bad socket" list,
+to be examined by a regular sweep of the system state.
+Every example we have seen of this is error-prone, specialized, and often buggy.
 
 ##### Note
 
@@ -12476,11 +12520,14 @@ The standard library assumes that destructors, deallocation functions (e.g., `op
 
 ##### Note
 
-Deallocation functions, including `operator delete`, must be `noexcept`. `swap` functions must be `noexcept`. Most destructors are implicitly `noexcept` by default.
+Deallocation functions, including `operator delete`, must be `noexcept`. `swap` functions must be `noexcept`.
+Most destructors are implicitly `noexcept` by default.
+Also, [make move operations `noexcept`](##Rc-move-noexcept).
 
 ##### Enforcement
 
-Catch destructors, deallocation operations, and `swap`s that `throw`. Catch such operations that are not `noexcept`.
+Catch destructors, deallocation operations, and `swap`s that `throw`.
+Catch such operations that are not `noexcept`.
 
 **See also**: [discussion](#Sd-never-fail)
 
@@ -12500,6 +12547,7 @@ Let cleanup actions on the unwinding path be handled by [RAII](#Re-raii).
             // ...
         }
         catch (...) {
+            // no action
             throw;   // propagate exception
         }
     }
@@ -12524,6 +12572,7 @@ Let cleanup actions on the unwinding path be handled by [RAII](#Re-raii).
         try {
             p = new Gadget(s);
             // ...
+            delete p;
         }
         catch (Gadget_construction_failure) {
             delete p;
@@ -12571,6 +12620,15 @@ Better:
 `finally` is not as messy as `try`/`catch`, but it is still ad-hoc.
 Prefer [proper resource management objects](#Re-raii).
 
+###### Note
+
+Use of `finally` is a systematic and reasonably clean alternative to the old [`goto exit;` technique](##Re-no-throw-codes)
+for dealing with cleanup where resource management is not systematic.
+
+###### Enforcement
+
+Heuristic: Detect `goto exit;`
+
 ### <a name="Re-no-throw-raii"></a>E.25: If you can't throw exceptions, simulate RAII for resource management
 
 ##### Reason
@@ -12600,23 +12658,25 @@ or have such a rat's nest of old-style code
 that it is infeasible to introduce simple and systematic exception handling.
 
 Before condemning exceptions or complaining too much about their cost, consider examples of the use of [error codes](#Re-no-throw-codes).
+Consider the cost and complexity of the use of error codes.
+If performence is your worry, measure.
 
 ##### Example
 
 Assume you wanted to write
 
-    void func(int n)
+    void func(zstring arg)
     {
-        Gadget g(n);
+        Gadget g {arg};
         // ...
     }
 
 If the `gadget` isn't correctly constructed, `func` exits with an exception.
 If we cannot throw an exception, we can simulate this RAII style of resource handling by adding a `valid()` member function to `Gadget`:
 
-    error_indicator func(int n)
+    error_indicator func(zstring arg)
     {
-        Gadget g(n);
+        Gadget g {arg};
         if (!g.valid()) return gadget_construction_error;
         // ...
         return 0;   // zero indicates "good"
@@ -12658,7 +12718,7 @@ In such cases, "crashing" is simply leaving error handling to the next level of 
            // ...
      }
 
-Most systems cannot handle memory exhaustion gracefully anyway. This is roughly equivalent to
+Most programs cannot handle memory exhaustion gracefully anyway. This is roughly equivalent to
 
     void f(Int n)
     {
@@ -12811,18 +12871,21 @@ A not uncommon technique is to gather cleanup at the end of the function to avoi
         }
         // ...
 
-  exit:
-        if (g1.valid()) cleanup(g1);
-        if (g1.valid()) cleanup(g2);
-        return {res, err};
+    exit:
+	    if (g1.valid()) cleanup(g1);
+	    if (g1.valid()) cleanup(g2);
+	    return {res, err};
     }
 
 The larger the function, the more tempting this technique becomes.
+`finally` can [ease the pain a bit](#Re-finally).
 Also, the larger the program becomes the harder it is to apply an error-indicator-based error handling strategy systematically.
 
 We [prefer exception-based error handling](#Re-throw) and recommend [keeping functions short](#Rf-single).
 
 **See also**: [Discussion](#Sd-???).
+
+**See also**: [Returning multiple values](#Rf-out-multi).
 
 ##### Enforcement
 
