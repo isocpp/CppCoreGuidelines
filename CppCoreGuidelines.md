@@ -15589,6 +15589,21 @@ An API class and its members can't live in an unnamed namespace; but any "helper
 Using only the bare language, every task is tedious (in any language).
 Using a suitable library any task can be reasonably simple.
 
+The standard library has steadily grown over the years.
+Its description in the standard is now larger than that of the language features.
+So, it is likely that this library section of the guidelines will eventually grow in size to equal or exceed all the rest.
+
+<< ??? We need another level of rule numbering ??? >>
+
+C++ Standard library component summary:
+
+* [SL.con: Containers](#SS-con)
+* [SL.str: String](#SS-string)
+* [SL.io: Iostream](#SS-io)
+* [SL.regex: Regex](#SS-regex)
+* [SL.chrono: Time](#SS-chrono)
+* [SL.C: The C standard library](#SS-clib)
+
 Standard-library rule summary:
 
 * [SL.1: Use libraries wherever possible](#Rsl-lib)
@@ -15611,13 +15626,17 @@ Help other people when you make improvements.
 More people know the standard library.
 It is more likely to be stable, well-maintained, and widely available than your own code or most other libraries.
 
-## SL.con: Containers
+## <a name="SS-con"></a>SL.con: Containers
 
-* [SL.10: Prefer using STL `array` or `vector` instead of a C array](#Rsl-arrays)
-* [SL.11: Prefer using STL `vector` by default unless you have a reason to use a different container](#Rsl-vector)
-  ???
+???
 
-### <a name="Rsl-arrays"></a>SL.10: Prefer using STL `array` or `vector` instead of a C array
+Container rule summary:
+
+* [SL.con.1: Prefer using STL `array` or `vector` instead of a C array](#Rsl-arrays)
+* [SL.con.2: Prefer using STL `vector` by default unless you have a reason to use a different container](#Rsl-vector)
+*  ???
+
+### <a name="Rsl-arrays"></a>SL.con.1: Prefer using STL `array` or `vector` instead of a C array
 
 ##### Reason
 
@@ -15643,11 +15662,12 @@ For a variable-length array, use `std::vector`, which additionally can change it
 
 * Flag declaration of a C array inside a function or class that also declares an STL container (to avoid excessive noisy warnings on legacy non-STL code). To fix: At least change the C array to a `std::array`.
 
-### <a name="Rsl-vector"></a>SL.11: Prefer using STL `vector` by default unless you have a reason to use a different container
+### <a name="Rsl-vector"></a>SL.con.2: Prefer using STL `vector` by default unless you have a reason to use a different container
 
 ##### Reason
 
-`vector` and `array` are the only standard containers that offer the fastest general-purpose access (random access, including being vectorization-friendly), the fastest default access pattern (begin-to-end or end-to-begin is prefetcher-friendly), and the lowest space overhead (contiguous layout has zero per-element overhead, which is cache-friendly). Usually you need to add and remove elements from the container, so use `vector` by default; if you don't need to modify the container's size, use `array`.
+`vector` and `array` are the only standard containers that offer the fastest general-purpose access (random access, including being vectorization-friendly), the fastest default access pattern (begin-to-end or end-to-begin is prefetcher-friendly), and the lowest space overhead (contiguous layout has zero per-element overhead, which is cache-friendly).
+Usually you need to add and remove elements from the container, so use `vector` by default; if you don't need to modify the container's size, use `array`.
 
 Even when other containers seem more suited, such a `map` for O(log N) lookup performance or a `list` for efficient insertion in the middle, a `vector` will usually still perform better for containers up to a few KB in size.
 
@@ -15667,19 +15687,31 @@ If you have a good reason to use another container, use that instead. For exampl
 
 * Flag a `vector` whose size never changes after construction (such as because it's `const` or because no non-`const` functions are called on it). To fix: Use an `array` instead.
 
-## SL.str: String
+## <a name="SS-string"></a>SL.str: String
 
 ???
 
-## SL.io: Iostream
+## <a name="SS-io"></a>SL.io: Iostream
 
 ???
 
-### SL.???: Use character-level input only when you have to; *expr.low*.
+Iostream rule summary:
 
-### SL.???: When reading, always consider ill-formed input; *expr.low*.
+* [SL.io.1: Use character-level input only when you have to](#Rio-low)
+* [SL.io.2: When reading, always consider ill-formed input](#Rio-validate)
+* [???](#???)
+* [SL.io.50: Avoid `endl`](#Rio-endl)
+* [???](#???)
 
-### <a name="Rio-endl"></a>SL.50: Avoid `endl`
+### <a name="Rio-low"></a>SL.io.1: Use character-level input only when you have to
+
+???
+
+### <a name="Rio-validate"></a>SL.io.2: When reading, always consider ill-formed input
+
+???
+
+### <a name="Rio-endl"></a>SL.io.50: Avoid `endl`
 
 ### Reason
 
@@ -15700,27 +15732,48 @@ For writing to a file, there is rarely a need to `flush`.
 ##### Note
 
 Apart from the (occasionally important) issue of performance,
-the choice between `"\\n"` and `endl` is almost completely aesthetic.
+the choice between `'\n'` and `endl` is almost completely aesthetic.
 
-## SL.regex: Regex
+## <a name="SS-regex"></a>SL.regex: Regex
 
 ???
 
-## SL:c: The C standard library
+## <a name="SS-chrono"></a>SL.chrono: Time
 
-### SL.???: C-style strings
+???
 
-### SL.???: printf/scanf
+## <a name="SS-clib"></a>SL.C: The C standard library
+
+???
+
+C standard library rule summary:
+
+* [???](#???)
+* [???](#???)
+* [???](#???)
+
 
 # <a name="S-A"></a>A: Architectural Ideas
 
-This section contains ideas about ???
+This section contains ideas about higher-level architactural ideas and libraries.
+
+Architectural rule summary:
+
+* [A.1 Separate stable from less stable part of code](#Ra-stable)
+* [A.2 Express potentially reusable parts as a library](#Ra-lib)
+* [A.4 There should be no cycles among libraries](#?Ra-dag)
+* [???](#???)
+* [???](#???)
+* [???](#???)
+* [???](#???)
+* [???](#???)
+* [???](#???)
 
 ### <a name="Ra-stable"></a>A.1 Separate stable from less stable part of code
 
 ???
 
-### <a name="Ra-reuse"></a>A.2 Express potentially reusable parts as a library
+### <a name="Ra-lib"></a>A.2 Express potentially reusable parts as a library
 
 ##### Reason
 
@@ -15730,7 +15783,8 @@ A library is a collection of declarations and definitions maintained, documented
 A library could be a set of headers (a "header only library") or a set of headers plus a set of object files.
 A library can be statically or dynamically linked into a program, or it may be `#included`
 
-### <a name="Ra-lib"></a>A.4 There should be no cycles among libraries
+
+### <a name="Ra-dag"></a>A.4 There should be no cycles among libraries
 
 ##### Reason
 
@@ -15745,10 +15799,6 @@ A library can contain cyclic references in the definition of its components. For
 
 However, a library should not depend on another that depends on it.
 
-
-### <a name="Ra-dag"></a>A.3 Express potentially separately maintained parts as a library
-
-???
 
 # <a name="S-not"></a>NR: Non-Rules and myths
 
@@ -15775,8 +15825,10 @@ This leads to longer programs and more errors caused by uninitialized and wrongl
 
 ##### Alternative
 
-Instead, [Always initialize an object](#Res-always)
-and [ES.21: Don't introduce a variable (or constant) before you need to use it](#Res-introduce).
+Instead:
+
+* [Always initialize an object](#Res-always)
+* [ES.21: Don't introduce a variable (or constant) before you need to use it](#Res-introduce)
 
 # <a name="S-references"></a>RF: References
 
@@ -15897,15 +15949,19 @@ A textbook for beginners and relative novices.
 * All the talks from [CppCon '14](https://isocpp.org/blog/2014/11/cppcon-videos-c9)
 * Bjarne Stroustrup: [The essence of C++](https://www.youtube.com/watch?v=86xWVb4XIyE) at the University of Edinburgh. 2014.
 * Sutter: ???
+* CppCon 15
+* ??? C++ Next
+* ??? Meting C++
 * ??? more ???
 
 ## <a name="SS-man"></a>RF.man: Manuals
 
-* ISO C++ Standard C++11
-* ISO C++ Standard C++14
-* Palo Alto "Concepts" TR
-* ISO C++ Concepts TS
-* WG21 Ranges report
+* ISO C++ Standard C++11.
+* ISO C++ Standard C++14.
+* [ISO C++ Standard C++17 CD](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/n4606.pdf). Committe Draft.
+* [Palo Alto "Concepts" TR](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2012/n3351.pdf).
+* [ISO C++ Concepts TS](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2015/n4553.pdf).
+* [WG21 Ranges report](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/n4569.pdf). Draft.
 
 ## <a name="SS-ack"></a>Acknowledgements
 
@@ -16243,7 +16299,7 @@ Note: Declaring a `...` parameter is sometimes useful for techniques that don't 
 * Issue a diagnostic for using `va_list`, `va_start`, or `va_arg`. To fix: Use a variadic template parameter list instead.
 * Issue a diagnostic for passing an argument to a vararg parameter of a function that does not offer an overload for a more specific type in the position of the vararg. To fix: Use a different function, or `[[suppress(types)]]`.
 
-## <a name="SS-bounds"></a>Bounds safety profile
+## <a name="SS-bounds"></a>Pro.bounds: Bounds safety profile
 
 This profile makes it easier to construct code that operates within the bounds of allocated blocks of memory. It does so by focusing on removing the primary sources of bounds violations: pointer arithmetic and array indexing. One of the core features of this profile is to restrict pointers to only refer to single objects, not arrays.
 
@@ -16484,7 +16540,7 @@ If code is using an unmodified standard library, then there are still workaround
 * We are considering specifying bounds-safe overloads for stdlib (especially C stdlib) functions like `memcmp` and shipping them in the GSL.
 * For existing stdlib functions and types like `vector` that are not fully bounds-checked, the goal is for these features to be bounds-checked when called from code with the bounds profile on, and unchecked when called from legacy code, possibly using contracts (concurrently being proposed by several WG21 members).
 
-## <a name="SS-lifetime"></a>Lifetime safety profile
+## <a name="SS-lifetime"></a>Pro.lifetime: Lifetime safety profile
 
 ???
 
@@ -16634,7 +16690,8 @@ Described in [Lifetimes paper](https://github.com/isocpp/CppCoreGuidelines/blob/
 
 # <a name="S-naming"></a>NL: Naming and layout rules
 
-Consistent naming and layout are helpful. If for no other reason because it minimizes "my style is better than your style" arguments.
+Consistent naming and layout are helpful.
+If for no other reason because it minimizes "my style is better than your style" arguments.
 However, there are many, many, different styles around and people are passionate about them (pro and con).
 Also, most real-world projects includes code from many sources, so standardizing on a single style for all code is often impossible.
 We present a set of rules that you might use if you have no better ideas, but the real aim is consistency, rather than any particular rule set.
@@ -16655,6 +16712,9 @@ Naming and layout rules:
 * [NL.16: Use a conventional class member declaration order](#Rl-order)
 * [NL.17: Use K&R-derived layout](#Rl-knr)
 * [NL.18: Use C++-style declarator layout](#Rl-ptr)
+* [NL.19: Avoid names that are easily misread](#Rl-misread)
+* [NL.20: Don't place two statements on the same line](#Rl-stmt)
+* [NL.21: Declare one name (only) per declaration](#Rl-dcl)
 * [NL.25: Don't use `void` as an argument type](#Rl-void)
 * [NL.26: Use conventional `const` notation](Rl-const)
 
@@ -16667,6 +16727,9 @@ We are not "legislating" (see the previous paragraph).
 However, we have had many requests for a set of naming and layout conventions to use when there are no external constraints.
 
 More specific and detailed rules are easier to enforce.
+
+These rules bear a strong resemblance to the recommendations in the [PPP Style Guide](http://www.stroustrup.com/Programming/PPP-style.pdf)
+written in support of Stroustrup's [Programming: Principles and Practice using C++](http://www.stroustrup.com/programming.html).
 
 ### <a name="Rl-comments"></a>NL.1: Don't say in comments what can be clearly stated in code
 
@@ -16708,6 +16771,13 @@ If the comment and the code disagrees, both are likely to be wrong.
 
 Verbosity slows down understanding and makes the code harder to read by spreading it around in the source file.
 
+##### Note
+
+Use intelliglble English.
+I may be fluent in Danish, but most programmers are not; the maintainers of my code may not be.
+Avoid SMS lingo and watch your grammer, punctuation, and capitalization.
+Aim for professionalism, not "cool."
+
 ##### Enforcement
 
 not possible.
@@ -16725,19 +16795,44 @@ Readability. Avoidance of "silly mistakes."
     if (i == j)
         return i;
 
+##### Note
+
+Always indenting the statement after `if (...)`, `for (...)`, and `while (...)` is usually a good idea:
+
+    if (i<0) error("negative argument");
+
+    if (i<0)
+        error("negative argument");
+
 ##### Enforcement
 
 Use a tool.
 
 ### <a name="Rl-name-type"></a>NL.5 Don't encode type information in names
 
-**Rationale**: If names reflects type rather than functionality, it becomes hard to change the types used to provide that functionality.
+##### Rationale
+
+If names reflects type rather than functionality, it becomes hard to change the types used to provide that functionality.
+Also, if the type of a variable is changed, code using it will have to be modified.
+Minimize unintential conversions.
+
+##### Example, bad
+
+    void print_int(int i);
+    void print_string(const char*);
+
+    print_int(1);   // OK
+    print_int(x);   // conversion to int if x is a double
+
+##### Note
+
 Names with types encoded are either verbose or cryptic.
-Hungarian notation is evil (at least in a strongly statically-typed language).
 
-##### Example
-
-    ???
+    printS  // print a std::string 
+    prints  // print a C-style string
+    printi  // print an int
+    
+PS. Hungarian notation is evil (at least in a strongly statically-typed language).
 
 ##### Note
 
@@ -16752,7 +16847,8 @@ This is not evil.
 
 ##### Note
 
-Some styles distinguishes types from non-types.
+Like C++, some styles distinguishes types from non-types.
+For example, by capitalizing type names, but not the names of functions and variables.
 
     typename<typename T>
     class Hash_tbl {   // maps string to T
@@ -16765,11 +16861,21 @@ This is not evil.
 
 ### <a name="Rl-name-length"></a>NL.7: Make the length of a name roughly proportional to the length of its scope
 
-**Rationale**: ???
+**Rationale**: The larger the scope the greaterthe chance of confusion and of an unintended name clash.
 
 ##### Example
 
-    ???
+    sqrt double(doube x);   // return the square root of x; x must be non-negative
+
+    int length(const char* p);  // return the number of characters in a zero-terminated C-style string
+
+    int length_of_string(const char zero_terminated_array of_char[])    // bad: verbose
+
+    int g;      // bad: global variable with a cryptic name
+
+    int open;   // bad: global variable with a short, popular name
+
+The use of `p` for pointer and `x` for a floating-point variable is conventional and non-confusing in a restricted scope.
 
 ##### Enforcement
 
@@ -16929,7 +17035,14 @@ Avoid multiple blocks of declarations of one access (e.g., `public`) dispersed a
 
 ##### Example
 
-    ???
+    class X {
+    public:
+        // interface
+    protected:
+        // unchecked function for use by derived class implementations
+    private:
+        // implementation details
+    };
 
 ##### Note
 
@@ -17024,6 +17137,54 @@ The use in expressions argument doesn't hold for references.
 ##### Enforcement
 
 Impossible in the face of history.
+
+
+### <a name="Rl-misread"></a>NL.19: Avoid names that are easily misread
+
+##### Reason
+
+Readability.
+Not everyone has screens and pronters that makes it easy to distinguish all characters.
+We easily confuse similarly spelled and slightly misspelled words.
+
+##### Example
+
+    int oO01lL = 6; // bad
+
+    int splunk = 7;
+    int splonk = 8; // bad: splunk and splonk are easily confused
+
+##### Enforcement
+
+???
+
+### <a name="Rl-stmt"></a>NL.20: Don't place two statements on the same line
+
+##### Reason
+
+Readability.
+It is really easy to overlook a statement when there is more on a line.
+
+##### Example
+
+    int x = 7; char* p = 29;    // don’t
+    int x = 7; f(x);  ++x;      // don’t
+
+##### Enforcement
+
+Easy.
+
+### <a name="Rl-dcl"></a>NL.21: Declare one name (only) per declaration
+
+##### Reason
+
+Readability.
+Minimizing confusion with the declarator syntax.
+
+##### Note
+
+For details, see [ES.10](#Res-name-one).
+
 
 ### <a name="Rl-void"></a>NL.25: Don't use `void` as an argument type
 
@@ -17183,6 +17344,7 @@ Realistically, we have to deal with a lot of old code:
 
 * application code written before the guidelines were formulated or known
 * libraries written to older/different standards
+* code written under "unusual" constraints
 * code that we just haven't gotten around to modernizing
 
 If we have a million lines of new code, the idea of "just changing it all at once" is typically unrealistic.
@@ -17190,7 +17352,7 @@ Thus, we need a way of gradually modernizing a code base.
 
 Upgrading older code to modern style can be a daunting task.
 Often, the old code is both a mess (hard to understand) and working correctly (for the current range of uses).
-Typically, the original programmer is not around and test cases incomplete.
+Typically, the original programmer is not around and the test cases incomplete.
 The fact that the code is a mess dramatically increases the effort needed to make any change and the risk of introducing errors.
 Often, messy old code runs unnecessarily slowly because it requires outdated compilers and cannot take advantage of modern hardware.
 In many cases, automated "modernizer"-style tool support would be required for major upgrade efforts.
@@ -17212,6 +17374,7 @@ Here are some (very general) ideas:
 * We could convert code "bottom up" starting with the rules we estimate will give the greatest benefits and/or the least trouble in a given code base.
 * We could start by focusing on the interfaces, e.g., make sure that no resources are lost and no pointer is misused.
   This would be a set of changes across the whole code base, but would most likely have huge benefits.
+  Afterwards, code hidden behind those interfaces can be gradually modernized without affecting other code.
 
 Whichever way you choose, please note that the most advantages come with the highest conformance to the guidelines.
 The guidelines are not a random set of unrelated rules where you can randomly pick and choose with an expectation of success.
