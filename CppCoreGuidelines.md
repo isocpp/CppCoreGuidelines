@@ -359,7 +359,7 @@ Philosophy rules summary:
 * [P.8: Don't leak any resources](#Rp-leak)
 * [P.9: Don't waste time or space](#Rp-waste)
 * [P.10: Prefer immutable data to mutable data](#Rp-mutable)
-* [P.11: Encapsulate messy costructs, rather than spreading through the code](#Rp-library)
+* [P.11: Encapsulate messy constructs, rather than spreading through the code](#Rp-library)
 
 Philosophical rules are generally not mechanically checkable.
 However, individual rules reflecting these philosophical themes are.
