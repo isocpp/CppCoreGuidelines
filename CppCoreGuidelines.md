@@ -3596,7 +3596,7 @@ The "helper functions" have no need for direct access to the representation of a
 
 ##### Note
 
-This rule becomes even better if C++ gets ["]uniform function call](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/p0251r0.pdf).
+This rule becomes even better if C++ gets ["uniform function call"](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/p0251r0.pdf).
 
 ##### Enforcement
 
