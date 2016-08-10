@@ -7099,7 +7099,7 @@ Avoiding inconsistent definition in different namespaces
     bool operator==(S, S);   // OK: in the same namespace as S, and even next to S
     S s;
 
-    bool s == s;
+    bool x = (s == s);
 
 This is what a default `==` would do, if we had such defaults.
 
@@ -7112,7 +7112,7 @@ This is what a default `==` would do, if we had such defaults.
 
     N::S s;
 
-    bool s == s;  // finds N::operator==() by ADL
+    bool x = (s == s);  // finds N::operator==() by ADL
 
 ##### Example, bad
 
