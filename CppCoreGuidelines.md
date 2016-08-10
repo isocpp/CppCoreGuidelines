@@ -4532,7 +4532,7 @@ Leaving behind an invalid object is asking for trouble.
             // ...
         }
 
-        void is_valid() { return valid; }
+        bool is_valid() { return valid; }
         void read();   // read from f
         // ...
     };
