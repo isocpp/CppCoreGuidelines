@@ -3864,7 +3864,7 @@ Copy and move rules:
 
 Other default operations rules:
 
-* [C.80: Use `=default` if you have to be explicit about using the default semantics](#Rc-default)
+* [C.80: Use `=default` if you have to be explicit about using the default semantics](#Rc-eqdefault)
 * [C.81: Use `=delete` when you want to disable default behavior (without wanting an alternative)](#Rc-delete)
 * [C.82: Don't call virtual functions in constructors and destructors](#Rc-ctor-virtual)
 * [C.83: For value-like types, consider providing a `noexcept` swap function](#Rc-swap)
@@ -5445,7 +5445,7 @@ In addition to the operations for which the language offer default implementatio
 there are a few operations that are so foundational that it rules for their definition are needed:
 comparisons, `swap`, and `hash`.
 
-### <a name="Rc-default"></a>C.80: Use `=default` if you have to be explicit about using the default semantics
+### <a name="Rc-eqdefault"></a>C.80: Use `=default` if you have to be explicit about using the default semantics
 
 ##### Reason
 
@@ -11070,9 +11070,9 @@ Concurrency rule summary:
 * [CP.25: Prefer `gsl::raii_thread` over `std::thread` unless you plan to `detach()`](#Rconc-raii_thread)
 * [CP.26: Prefer `gsl::detached_thread` over `std::thread` if you plan to `detach()`](#Rconc-detached_thread)
 * [CP.27: Use plain `std::thread` for `thread`s that detach based on a run-time condition (only)](#Rconc-thread)
-* [CP.28: Remember to join scoped `thread`s that are not `detach()`ed](#Rconc-join)
+* [CP.28: Remember to join scoped `thread`s that are not `detach()`ed](#Rconc-join-undetached)
 * [CP.30: Do not pass pointers to local variables to non-`raii_thread's](#Rconc-pass)
-* [CP.31: Pass small amounts of data between threads by value, rather than by reference or pointer](#Rconc-data)
+* [CP.31: Pass small amounts of data between threads by value, rather than by reference or pointer](#Rconc-data-by-value)
 * [CP.32: To share ownership between unrelated `thread`s use `shared_ptr`](#Rconc-shared)
 * [CP.40: Minimize context switching](#Rconc-switch)
 * [CP.41: Minimize thread creation and destruction](#Rconc-create)
@@ -11365,7 +11365,7 @@ The plain `thread`s should be assumed to use the full generality of `std::thread
 
 
 
-### <a name="Rconc-join"></a>CP.28: Remember to join scoped `thread`s that are not `detach()`ed
+### <a name="Rconc-join-undetached"></a>CP.28: Remember to join scoped `thread`s that are not `detach()`ed
 
 ##### Reason
 
@@ -11438,7 +11438,7 @@ Use a `raii_thread` or don't pass the pointer.
 Flag pointers to locals passed in the constructor of a plain `thread`.
 
 
-### <a name="Rconc-switch"></a>CP.31: Pass small amounts of data between threads by value, rather than by reference or pointer
+### <a name="Rconc-data-by-value"></a>CP.31: Pass small amounts of data between threads by value, rather than by reference or pointer
 
 ##### Reason
 
