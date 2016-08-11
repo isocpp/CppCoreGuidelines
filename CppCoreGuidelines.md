@@ -12284,7 +12284,7 @@ One strategy is to add a `valid()` operation to every resource handle:
             // handle error or exit
         }
 
-        Ifstream fs("foo");   // not std::ifstream: valid() added
+        ifstream fs("foo");   // not std::ifstream: valid() added
         if (!fs.valid()) {
             // handle error or exit
         }
@@ -12721,7 +12721,7 @@ In such cases, "crashing" is simply leaving error handling to the next level of 
 
 Most programs cannot handle memory exhaustion gracefully anyway. This is roughly equivalent to
 
-    void f(Int n)
+    void f(int n)
     {
            // ...
            p = new X[n];    // throw if memory is exhausted (by default, terminate)
