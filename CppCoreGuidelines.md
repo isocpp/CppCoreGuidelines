@@ -4169,7 +4169,7 @@ Note that if you define a destructor, you must define or delete [all default ope
         ~Smart_ptr2() { delete p; }  // p is an owner!
     };
 
-    void use(Smart_ptr<int> p1)
+    void use(Smart_ptr2<int> p1)
     {
         auto p2 = p1;   // error: double deletion
     }
@@ -4440,8 +4440,8 @@ The C++11 initializer list rule eliminates the need for many constructors. For e
         Rec2(const string& ss, int ii = 0) :s{ss}, i{ii} {}   // redundant
     };
 
-    Rec r1 {"Foo", 7};
-    Rec r2 {"Bar"};
+    Rec2 r1 {"Foo", 7};
+    Rec2 r2 {"Bar"};
 
 The `Rec2` constructor is redundant.
 Also, the default for `int` would be better done as a [member initializer](#Rc-in-class-initializer).
