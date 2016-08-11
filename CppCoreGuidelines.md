@@ -4279,7 +4279,7 @@ See [this in the Discussion section](#Sd-dtor).
 ##### Example, bad
 
     struct Base {  // BAD: no virtual destructor
-        virtual f();
+        virtual void f();
     };
 
     struct D : Base {
