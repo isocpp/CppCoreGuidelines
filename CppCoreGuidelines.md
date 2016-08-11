@@ -11353,7 +11353,7 @@ The plain `thread`s should be assumed to use the full generality of `std::thread
 
     void use(int n)
     {
-        thread t { thricky, this, n };
+        thread t { tricky, this, n };
         // ...
         // ... should I join here? ...
     }
