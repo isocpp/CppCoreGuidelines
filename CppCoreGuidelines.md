@@ -11104,7 +11104,7 @@ Avoids nasty errors from unreleased locks.
 
 Sooner or later, someone will forget the `mtx.unlock()`, place a `return` in the `... do stuff ...`, throw an exception, or something.
 
-     mutex mtx;
+    mutex mtx;
 
     void do_stuff()
     {
@@ -12127,7 +12127,7 @@ C++ implementations tend to be optimized based on the assumption that exceptions
 
 ##### Example, don't
 
-      // don't: exception not used for error handling
+    // don't: exception not used for error handling
     int find_index(vector<string>& vec, const string& x)
     {
         try {
