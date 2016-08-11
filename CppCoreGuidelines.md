@@ -4619,7 +4619,7 @@ A class with members that all have default constructors implicitly gets a defaul
 
     struct X {
         string s;
-        vector v;
+        vector<int> v;
     };
 
     X x; // means X{{}, {}}; that is the empty string and the empty vector
