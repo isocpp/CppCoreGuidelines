@@ -11452,12 +11452,12 @@ Defining "small amount" precisely is impossible.
 ##### Example
 
     string modify1(string);
-    void modify2(shared_ptr<string);
+    void modify2(shared_ptr<string>);
 
     void fct(string& s)
     {
-        auto res = async(modify1,string);
-        async(modify2,&s);
+        auto res = async(modify1, s);
+        async(modify2, &s);
     }
 
 The call of `modify1` involves copying two `string` values; the call of `modify2` does not.
