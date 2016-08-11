@@ -12171,7 +12171,7 @@ Not all member functions can be called.
 ##### Example
 
     class vector {  // very simplified vector of doubles
-        // if elem!=nullptr then elem points to sz doubles
+        // if elem != nullptr then elem points to sz doubles
     public:
         vector() : elem{nullptr}, sz{0}{}
         vctor(int s) : elem{new double},sz{s} { /* initialize elements */ }
@@ -12182,7 +12182,7 @@ Not all member functions can be called.
     private:
         owner<double*> elem;
         int sz;
-    }
+    };
 
 The class invariant - here stated as a comment - is established by the constructors.
 `new` throws if it cannot allocate the required memory.
@@ -12360,7 +12360,7 @@ That would be a leak.
     void leak(int x)   // don't: may leak
     {
         auto p = new int{7};
-        if (x < 0) throw Get_me_out_of_here{}  // may leak *p
+        if (x < 0) throw Get_me_out_of_here{};  // may leak *p
         // ...
         delete p;   // we may never get here
     }
