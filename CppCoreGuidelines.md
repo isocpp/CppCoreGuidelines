@@ -11527,8 +11527,8 @@ Thread creation is expensive.
 
     void master(istream& is)
     {
-       for (Message m; is>>m; )
-            run_list.push_back(new thread(worker,m);}
+       for (Message m; is >> m; )
+            run_list.push_back(new thread(worker, m));
     }
 
 This spawns a `thread` per message, and the `run_list` is presumably managed to destroy those tasks once they are finished.
@@ -11913,9 +11913,9 @@ Double-checked locking is easy to mess up.
 
     atomic<bool> x_init;
 
-    if (!x_init.load(memory_order_acquire) {
+    if (!x_init.load(memory_order_acquire)) {
         lock_guard<mutex> lck(x_mutex);
-        if (!x_init.load(memory_order_relaxed) {
+        if (!x_init.load(memory_order_relaxed)) {
             // ... initialize x ...
             x_init.store(true, memory_order_release);
         }
