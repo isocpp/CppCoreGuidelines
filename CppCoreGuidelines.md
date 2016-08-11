@@ -5476,9 +5476,9 @@ Because we defined the destructor, we must define the copy and move operations. 
         ~Tracer2() { cerr << "exiting " << message << '\n'; }
 
         Tracer2(const Tracer2& a) : message{a.message} {}
-        Tracer2& operator=(const Tracer2& a) { message = a.message; }
+        Tracer2& operator=(const Tracer2& a) { message = a.message; return *this; }
         Tracer2(Tracer2&& a) :message{a.message} {}
-        Tracer2& operator=(Tracer2&& a) { message = a.message; }
+        Tracer2& operator=(Tracer2&& a) { message = a.message; return *this; }
     };
 
 Writing out the bodies of the copy and move operations is verbose, tedious, and error-prone. A compiler does it better.
