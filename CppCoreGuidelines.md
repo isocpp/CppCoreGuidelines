@@ -12377,7 +12377,7 @@ One way of avoiding such problems is to use resource handles consistently:
 
 Another solution (often better) would be to use a local variable to eliminate explicit use of pointers:
 
-    void no_leak(_simplified(int x)
+    void no_leak_simplified(int x)
     {
         vector<int> v(7);
         // ...
