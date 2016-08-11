@@ -16181,7 +16181,7 @@ Note that a C-style `(T)expression` cast means to perform the first of the follo
 ##### Example, bad
 
     std::string s = "hello world";
-    double* p = (double*)(&s); // BAD
+    double* p0 = (double*)(&s); // BAD
 
     class base { public: virtual ~base() = 0; };
 
@@ -16194,7 +16194,7 @@ Note that a C-style `(T)expression` cast means to perform the first of the follo
     };
 
     derived1 d1;
-    base* p = &d1; // ok, implicit conversion to pointer to base is fine
+    base* p1 = &d1; // ok, implicit conversion to pointer to base is fine
 
     // BAD, tries to treat d1 as a derived2, which it is not
     derived2* p2 = (derived2*)(p);
