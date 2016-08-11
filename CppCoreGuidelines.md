@@ -3524,7 +3524,6 @@ but:
         int y;
         Month m;
         char d;    // day
-        Date(int yy, Month mm, char dd);
     };
 
 ##### Note
