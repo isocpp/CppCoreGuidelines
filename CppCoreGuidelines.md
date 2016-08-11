@@ -7449,7 +7449,7 @@ If you can't name an enumeration, the values are not related
 
 ##### Example, bad
 
-    enum { red = 0xFF0000, scale = 4, signed = 1 };
+    enum { red = 0xFF0000, scale = 4, is_signed = 1 };
 
 Such code is not uncommon in code written before there were convenient alternative ways of specifying integer constants.
 
@@ -7459,7 +7459,7 @@ Use `constexpr` values instead. For example:
 
     constexpr int red = 0x,FF0000;
     constexpr short scale = 4;
-    constexpr bool signed = true;
+    constexpr bool is_signed = true;
 
 ##### Enforcement
 
