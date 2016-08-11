@@ -6225,7 +6225,7 @@ Now `Shape` is a poor example of a class with an implementation,
 but bare with us because this is just a simple example of a technique aimed at more complex hierarchies.
 
      class Impl::Circle : public Circle, public Impl::Shape {   // implementation
-     publc:
+     public:
         // constructors, destructor
 
         int radius() { /* ... */ }
@@ -6240,7 +6240,7 @@ And we could extend the hierarchies by adding a Smiley class (:-)):
     };
 
     class Impl::Smiley : Public Smiley, public Impl::Circle {   // implementation
-    publc:
+    public:
         // constructors, destructor
         // ...
     }
