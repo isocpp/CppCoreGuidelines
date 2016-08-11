@@ -16200,7 +16200,7 @@ Note that a C-style `(T)expression` cast means to perform the first of the follo
     };
 
     Derived1 d1;
-    Base* p = &d1; // ok, implicit conversion to pointer to Base is fine
+    Base* p1 = &d1; // ok, implicit conversion to pointer to Base is fine
 
     // BAD, tries to treat d1 as a Derived2, which it is not
     Derived2* p2 = (Derived2*)(p);
