@@ -4541,7 +4541,7 @@ Leaving behind an invalid object is asking for trouble.
         X3 file {"Heraclides"};
         file.read();   // crash or bad read!
         // ...
-        if (is_valid()) {
+        if (file.is_valid()) {
             file.read();
             // ...
         }
