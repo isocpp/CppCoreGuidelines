@@ -5464,7 +5464,7 @@ The compiler is more likely to get the default semantics right and you cannot im
         Tracer& operator=(Tracer&&) = default;
     };
 
-Because we defined the destructor, we must define the copy and move operations. The `=default` is the best and simplest way of doing that.
+Because we defined the destructor, we must define the copy and move operations. The `= default` is the best and simplest way of doing that.
 
 ##### Example, bad
 
@@ -7484,7 +7484,7 @@ The default is the easiest to read and write.
 
     enum class Direction : char { n, s, e, w,
                                   ne, nw, se, sw };  // underlying type saves space
- 
+
     enum class Web_color : int { red = 0xFF0000,
                                 green = 0x00FF00,
                                 blue = 0x0000FF };  // underlying type is redundant
@@ -12180,10 +12180,10 @@ Not all member functions can be called.
 ##### Example
 
     class Vector {  // very simplified vector of doubles
-        // if elem!=nullptr then elem points to sz doubles
+        // if elem != nullptr then elem points to sz doubles
     public:
         Vector() : elem{nullptr}, sz{0}{}
-        vector(int s) : elem{new double},sz{s} { /* initialize elements */ }
+        vector(int s) : elem{new double}, sz{s} { /* initialize elements */ }
         ~Vector() { delete elem; }
         double& operator[](int s) { return elem[s]; }
         // ...
