@@ -2685,10 +2685,9 @@ With C++11 we can write this, putting the results directly in existing local var
     tie(iter, success) = myset.insert("Hello");   // normal return value
     if (success) do_something_with(iter);
 
-With C++17 we should be able to use "structured bindinds" to declare and initialize the multiple variables:
+With C++17 we should be able to use "structured bindings" to declare and initialize the multiple variables:
 
-    auto [iter, success] = myset.insert("Hello"); // C++17 structured binding
-    if (success) do_something_with(iter);
+    if (auto [ iter, success ] = myset.insert("Hello"); success) do_something_with(iter);
 
 ##### Exception
 
