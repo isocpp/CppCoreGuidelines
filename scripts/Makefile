@@ -36,16 +36,16 @@ distclean:
 
 #### check markdown
 
-## run remark markdown checker based on configuration in .remarkrc
+## run remark markdown checker based on configuration in package.json
 .PHONY: check-markdown
-check-markdown: nodejs/node_modules/remark nodejs/remark/.remarkrc $(SOURCEPATH) $(BUILD_DIR) Makefile
+check-markdown: nodejs/node_modules/remark nodejs/package.json $(SOURCEPATH) $(BUILD_DIR) Makefile
 ## run remark, paste output to temporary file
-	cd nodejs; ./node_modules/.bin/remark ../$(SOURCEPATH) --no-color -q --config-path ./remark/.remarkrc 1> ../$(BUILD_DIR)/$(SOURCEFILE).fixed --frail
+	cd nodejs; ./node_modules/.bin/remark ../$(SOURCEPATH) --no-color -q 1> ../$(BUILD_DIR)/$(SOURCEFILE).fixed --frail
 
 ## show a diff with changes remark suggests
 .PHONY: show-diff
-show-diff: nodejs/node_modules/remark nodejs/remark/.remarkrc $(SOURCEPATH) $(BUILD_DIR) Makefile
-	cd nodejs; ./node_modules/.bin/remark ../$(SOURCEPATH) --no-color -q --config-path ./remark/.remarkrc 1> ../$(BUILD_DIR)/$(SOURCEFILE).fixed
+show-diff: nodejs/node_modules/remark nodejs/package.json $(SOURCEPATH) $(BUILD_DIR) Makefile
+	cd nodejs; ./node_modules/.bin/remark ../$(SOURCEPATH) --no-color -q 1> ../$(BUILD_DIR)/$(SOURCEFILE).fixed
 ## compare temporary file to original, error and fail with message if differences exist
 	diff $(SOURCEPATH) $(BUILD_DIR)/$(SOURCEFILE).fixed -u3 || \
 	(echo "Error: remark found bad markdown syntax, see output above" && false)
