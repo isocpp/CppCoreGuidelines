@@ -11169,6 +11169,8 @@ This is undecidable in general, but catching common simple examples (like the on
 
 ### <a name="Rconc-unknown"></a>CP.22: Never call unknown code while holding a lock (e.g., a callback)
 
+Alternatively: whenever possible, held locks should be "leaf-node" locks.  Avoid layers of locks on your call stack.
+
 ##### Reason
 
 If you don't know what a piece of code does, you are risking deadlock.
@@ -11185,30 +11187,27 @@ If you don't know what a piece of code does, you are risking deadlock.
 
 If you don't know what `Foo::act` does (maybe it is a virtual function invoking a derived class member of a class not yet written),
 it may call `do_this` (recursively) and cause a deadlock on `my_mutex`.
-Maybe it will lock on a different mutex and not return in a reasonable time, causing delays to any code calling `do_this`.
+Maybe it will lock on a different mutex and not return in a reasonable time, causing delays to any code calling `do_this`.  Maybe it will lock on a different mutex, which in turn is held by another thread that is trying to call do_this(),... causing a deadlock. Often, a hard-to-find and rarely-but-at-the-worst-time deadlock.  This can become more common (if you are not careful) once you make your application more threaded and more tasked based.
 
 ##### Example
 
-A common example of the "calling unknown code" problem is a call to a function that tries to gain locked access to the same object.
-Such problem cal often be solved by using a `recursive_mutex`. For example:
-
-    recursive_mutex my_mutex;
-
-    template<typename Action>
-    void do_something(Action f)
+    void Foo::calculate()
     {
-        unique_lock<recursive_mutex> lck {my_mutex};
-        // ... do something ...
-        f(this);    // f will do something to *this
-        // ...
+        // update our internal value of pi
+        {
+            lock_guard<mutex> lck {my_mutex};
+            pi = calculate_pi();
+        }
+
+        // update derived classes - outside the lock
+        notify(pi);  // notify is a virtual function
     }
 
-If, as it is likely, `f()` invokes operations on `*this`, we must make sure that the object's invariant holds before the call.   
 
 ##### Enforcement
 
-* Flag calling a virtual function with a non-recursive `mutex` held
-* Flag calling a callback with a non-recursive `mutex` held
+* Flag calling a virtual function with a `mutex` held
+* Flag calling a function pointer or function object with a `mutex` held
 
 
 ### <a name="Rconc-join"></a>CP.23: Think of a joining `thread` as a scoped container
