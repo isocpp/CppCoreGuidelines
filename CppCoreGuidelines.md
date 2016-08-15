@@ -10404,9 +10404,13 @@ Avoid wrong results.
 
 ##### Example
 
-    unsigned x = 100;
-    unsigned y = 102;
-    cout << abs(x-y) << '\n'; // wrong result
+    while(file.read(reinterpret_cast<char*>(&obj), sizeof obj))
+        if (obj.val == bad_value)  {
+            obj.val = good_value;
+            int pos = -1 * sizeof obj; // pos == 18446744073709551612 or similar
+            file.seekp(pos, ios::cur);
+            file.write(reinterpret_cast<char*>(&obj), sizeof obj);
+        }
 
 ##### Note
 
@@ -10439,11 +10443,21 @@ is going to be surprising for many programmers.
 
 ##### Reason
 
-Signed types support modulo arithmetic without surprises from lack of sign bits.
+Even when the values are known to be nonnegative, arithmetic expressions
+involving unsigned integer types may produce unexpected results, see also ES.100
 
 ##### Example
 
-    ???
+    unsigned x = 100;
+    unsigned y = 102;
+    cout << x-y << '\n'; // large value, such as 4294967294
+    cout << abs(x-y) << '\n'; // compile-time error,
+    // old implementations may produce a large floating-point(!) value
+
+    int x = 100;
+    int y = 102;
+    cout << x-y << '\n'; // prints -2
+    cout << abs(x-y) << '\n'; // prints 2
 
 **Exception**: Use unsigned types if you really want modulo arithmetic - add
 comments as necessary noting the reliance on overflow behavior, as such code
