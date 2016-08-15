@@ -16861,7 +16861,7 @@ This is not evil.
 
 ### <a name="Rl-name-length"></a>NL.7: Make the length of a name roughly proportional to the length of its scope
 
-**Rationale**: The larger the scope the greaterthe chance of confusion and of an unintended name clash.
+**Rationale**: The larger the scope the greater the chance of confusion and of an unintended name clash.
 
 ##### Example
 
