@@ -16772,7 +16772,7 @@ Verbosity slows down understanding and makes the code harder to read by spreadin
 
 ##### Note
 
-Use intelliglble English.
+Use intelligible English.
 I may be fluent in Danish, but most programmers are not; the maintainers of my code may not be.
 Avoid SMS lingo and watch your grammer, punctuation, and capitalization.
 Aim for professionalism, not "cool."
