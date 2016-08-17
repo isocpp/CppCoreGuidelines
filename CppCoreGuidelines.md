@@ -7315,11 +7315,11 @@ First some bad old code:
 
 Instead use an `enum`:
 
-    enum class Webcolor { red = 0xFF0000, green = 0x00FF00, blue = 0x0000FF };
-    enum class Productinfo { red = 0, purple = 1, blue = 2 };
+    enum class Web_color { red = 0xFF0000, green = 0x00FF00, blue = 0x0000FF };
+    enum class Product_info { red = 0, purple = 1, blue = 2 };
 
     int webby = blue;   // error: be specific
-    Webcolor webby = Webcolor::blue;
+    Web_color webby = Web_color::blue;
 
 We used an `enum class` to avoid name clashes.
 
@@ -7338,20 +7338,20 @@ An enumeration shows the enumerators to be related and can be a named type.
 
 ##### Example
 
-    enum class Webcolor { red = 0xFF0000, green = 0x00FF00, blue = 0x0000FF };
+    enum class Web_color { red = 0xFF0000, green = 0x00FF00, blue = 0x0000FF };
 
 
 ##### Note
 
 Switching on an enumeration is common and the compiler can warn against unusual patterns of case labels. For example:
 
-    enum class Productinfo { red = 0, purple = 1, blue = 2 };
+    enum class Product_info { red = 0, purple = 1, blue = 2 };
 
-    void print(Productinfo inf)
+    void print(Product_info inf)
     {
         switch (inf) {
-        case Productinfo::red: cout << "red"; break;
-        case Productinfo::purple: cout << "purple"; break;
+        case Product_info::red: cout << "red"; break;
+        case Product_info::purple: cout << "purple"; break;
         }
     }
 
@@ -7371,27 +7371,27 @@ To minimize surprises: traditional enums convert to int too readily.
 
 ##### Example
 
-    void PrintColor(int color);
+    void Print_color(int color);
 
-    enum Webcolor { red = 0xFF0000, green = 0x00FF00, blue = 0x0000FF };
-    enum Productinfo { Red = 0, Purple = 1, Blue = 2 };
+    enum Web_color { red = 0xFF0000, green = 0x00FF00, blue = 0x0000FF };
+    enum Product_info { Red = 0, Purple = 1, Blue = 2 };
 
-    Webcolor webby = Webcolor::blue;
+    Web_color webby = Web_color::blue;
 
     // Clearly at least one of these calls is buggy.
-    PrintColor(webby);
-    PrintColor(Productinfo::Blue);
+    Print_color(webby);
+    Print_color(Product_info::Blue);
 
 Instead use an `enum class`:
 
-    void PrintColor(int color);
+    void Print_color(int color);
 
-    enum class Webcolor { red = 0xFF0000, green = 0x00FF00, blue = 0x0000FF };
-    enum class Productinfo { red = 0, purple = 1, blue = 2 };
+    enum class Web_color { red = 0xFF0000, green = 0x00FF00, blue = 0x0000FF };
+    enum class Product_info { red = 0, purple = 1, blue = 2 };
 
-    Webcolor webby = Webcolor::blue;
-    PrintColor(webby);  // Error: cannot convert Webcolor to int.
-    PrintColor(Productinfo::Red);  // Error: cannot convert Productinfo to int.
+    Web_color webby = Web_color::blue;
+    Print_color(webby);  // Error: cannot convert Web_color to int.
+    Print_color(Product_info::Red);  // Error: cannot convert Product_info to int.
 
 ##### Enforcement
 
@@ -7436,7 +7436,7 @@ Avoid clashes with macros.
     // productinfo.h
     // The following define product subtypes based on color
     
-    enum class Productinfo { RED, PURPLE, BLUE };   // syntax error
+    enum class Product_info { RED, PURPLE, BLUE };   // syntax error
 
 ##### Enforcement
 
@@ -7480,7 +7480,7 @@ The default is the easiest to read and write.
     enum class Direction : char { n, s, e, w,
                                   ne, nw, se, sw };  // underlying type saves space
     
-    enum class Webcolor : int { red = 0xFF0000,
+    enum class Web_color : int { red = 0xFF0000,
                                 green = 0x00FF00,
                                 blue = 0x0000FF };  // underlying type is redundant
 
