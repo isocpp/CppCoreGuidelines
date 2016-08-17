@@ -16864,11 +16864,11 @@ This is not evil.
 
 ##### Example
 
-    sqrt double(doube x);   // return the square root of x; x must be non-negative
+    sqrt double(double x);   // return the square root of x; x must be non-negative
 
     int length(const char* p);  // return the number of characters in a zero-terminated C-style string
 
-    int length_of_string(const char zero_terminated_array of_char[])    // bad: verbose
+    int length_of_string(const char zero_terminated_array_of_char[])    // bad: verbose
 
     int g;      // bad: global variable with a cryptic name
 
