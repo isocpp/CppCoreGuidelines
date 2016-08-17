@@ -523,8 +523,8 @@ Some language constructs express intent better than others.
 
 If two `int`s are meant to be the coordinates of a 2D point, say so:
 
-      drawline(int, int, int, int);  // obscure
-      drawline(Point, Point);        // clearer
+      draw_line(int, int, int, int);  // obscure
+      draw_line(Point, Point);        // clearer
 
 ##### Enforcement
 
@@ -2671,10 +2671,10 @@ possibly with the extra convenience of `tie` at the call site.
     }
 
 C++98's standard library already used this style, because a `pair` is like a two-element `tuple`.
-For example, given a `set<string> myset`, consider:
+For example, given a `set<string> my_set`, consider:
 
     // C++98
-    result = myset.insert("Hello");
+    result = my_set.insert("Hello");
     if (result.second) do_something_with(result.first);    // workaround
 
 With C++11 we can write this, putting the results directly in existing local variables:
@@ -2682,12 +2682,12 @@ With C++11 we can write this, putting the results directly in existing local var
     Sometype iter;                                // default initialize if we haven't already
     Someothertype success;                        // used these variables for some other purpose
 
-    tie(iter, success) = myset.insert("Hello");   // normal return value
+    tie(iter, success) = my_set.insert("Hello");   // normal return value
     if (success) do_something_with(iter);
 
 With C++17 we should be able to use "structured bindings" to declare and initialize the multiple variables:
 
-    if (auto [ iter, success ] = myset.insert("Hello"); success) do_something_with(iter);
+    if (auto [ iter, success ] = my_set.insert("Hello"); success) do_something_with(iter);
 
 ##### Exception
 
@@ -5400,13 +5400,13 @@ To prevent slicing, because the normal copy operations will copy only the base p
     };
 
     class D : public B {
-        string moredata; // add a data member
+        string more_data; // add a data member
         // ...
     };
 
     auto d = make_unique<D>();
 
-    // oops, slices the object; gets only d.data but drops d.moredata
+    // oops, slices the object; gets only d.data but drops d.more_data
     auto b = make_unique<B>(d);
 
 ##### Example
@@ -5419,7 +5419,7 @@ To prevent slicing, because the normal copy operations will copy only the base p
     };
 
     class D : public B {
-        string moredata; // add a data member
+        string more_data; // add a data member
         unique_ptr<B> clone() override { return /* D object */; }
         // ...
     };
@@ -15120,14 +15120,14 @@ Use the least-derived class that has the functionality you need.
     };
 
     // bad, unless there is a specific reason for limiting to Derived1 objects only
-    void myfunc(Derived1& param)
+    void my_func(Derived1& param)
     {
         use(param.f());
         use(param.g());
     }
 
     // good, uses only Base interface so only commit to that
-    void myfunc(Base& param)
+    void my_func(Base& param)
     {
         use(param.f());
         use(param.g());
@@ -16123,29 +16123,29 @@ Sometimes you may be tempted to resort to `const_cast` to avoid code duplication
     class Bar;
 
     class Foo {
-        Bar mybar;
+        Bar my_bar;
     public:
         // BAD, duplicates logic
         Bar& get_bar() {
-            /* complex logic around getting a non-const reference to mybar */
+            /* complex logic around getting a non-const reference to my_bar */
         }
 
         const Bar& get_bar() const {
-            /* same complex logic around getting a const reference to mybar */
+            /* same complex logic around getting a const reference to my_bar */
         }
     };
 
 Instead, prefer to share implementations. Normally, you can just have the non-`const` function call the `const` function. However, when there is complex logic this can lead to the following pattern that still resorts to a `const_cast`:
 
     class Foo {
-        Bar mybar;
+        Bar my_bar;
     public:
         // not great, non-const calls const version but resorts to const_cast
         Bar& get_bar() {
             return const_cast<Bar&>(static_cast<const Foo&>(*this).get_bar());
         }
         const Bar& get_bar() const {
-            /* the complex logic around getting a const reference to mybar */
+            /* the complex logic around getting a const reference to my_bar */
         }
     };
 
@@ -16154,11 +16154,11 @@ Although this pattern is safe when applied correctly, because the caller must ha
 Instead, prefer to put the common code in a common helper function -- and make it a template so that it deduces `const`. This doesn't use any `const_cast` at all:
 
     class Foo {
-        Bar mybar;
+        Bar my_bar;
 
         template<class T>           // good, deduces whether T is const or non-const
         static auto get_bar_impl(T& t) -> decltype(t.get_bar())
-            { /* the complex logic around getting a possibly-const reference to mybar */ }
+            { /* the complex logic around getting a possibly-const reference to my_bar */ }
 
     public:                         // good
               Bar& get_bar()       { return get_bar_impl(*this); }
