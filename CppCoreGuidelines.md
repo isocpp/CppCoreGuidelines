@@ -7588,17 +7588,17 @@ Consider:
 
     void send(X* x, cstring_span destination)
     {
-        auto port = OpenPort(destination);
+        auto port = open_port(destination);
         my_mutex.lock();
         // ...
-        Send(port, x);
+        send(port, x);
         // ...
         my_mutex.unlock();
-        ClosePort(port);
+        close_port(port);
         delete x;
     }
 
-In this code, you have to remember to `unlock`, `ClosePort`, and `delete` on all paths, and do each exactly once.
+In this code, you have to remember to `unlock`, `close_port`, and `delete` on all paths, and do each exactly once.
 Further, if any of the code marked `...` throws an exception, then `x` is leaked and `my_mutex` remains locked.
 
 ##### Example
@@ -7610,7 +7610,7 @@ Consider:
         Port port{destination};            // port owns the PortHandle
         lock_guard<mutex> guard{my_mutex}; // guard owns the lock
         // ...
-        Send(port, x);
+        send(port, x);
         // ...
     } // automatically unlocks my_mutex and deletes the pointer in x
 
@@ -7621,8 +7621,8 @@ What is `Port`? A handy wrapper that encapsulates the resource:
     class Port {
         PortHandle port;
     public:
-        Port(cstring_span destination) : port{OpenPort(destination)} { }
-        ~Port() { ClosePort(port); }
+        Port(cstring_span destination) : port{open_port(destination)} { }
+        ~Port() { close_port(port); }
         operator PortHandle() { return port; }
 
         // port handles can't usually be cloned, so disable copying and assignment if necessary
