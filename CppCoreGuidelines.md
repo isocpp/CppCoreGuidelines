@@ -15807,7 +15807,7 @@ In the context of the styles of programming we recommend and support with the gu
 Non-rule summary:
 
 * [NR.1: All declarations should be at the of a function](#Rnr-top)
-* single-return rule
+* [NR.2: Functions should contain only a single return statement](#Rnr-single)
 * no exceptions
 * one class per source file
 * two-phase initialization
@@ -15828,6 +15828,22 @@ Instead:
 
 * [Always initialize an object](#Res-always)
 * [ES.21: Don't introduce a variable (or constant) before you need to use it](#Res-introduce)
+
+### <a name="Rnr-single"></a>NR.2: Functions should contain only a single return statement
+
+##### Reason
+
+In C, this rule is used to ensure that all code paths end at the same point to prevent resource leakage.
+Another rule, "Single Entry, Single Exit", is a rule often found in other languages like Assembly and FORTRAN.
+Use of this rule in C++ leads to highly-nested conditional statements and hard to understand code.
+Returning early from a function can make it clear to the reader what conditions are considered errors and how to handle them at the top of the function.
+
+##### Alternative
+
+Instead:
+
+* [R.1: RAII](#Rr-raii)
+* [E.6: Use RAII to prevent leaks](#Re-raii)
 
 # <a name="S-references"></a>RF: References
 
