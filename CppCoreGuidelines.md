@@ -225,7 +225,7 @@ They are meant to inhibit perfectly valid C++ code that correlates with errors, 
 The rules are not perfect.
 A rule can do harm by prohibiting something that is useful in a given situation.
 A rule can do harm by failing to prohibit something that enables a serious error in a given situation.
-A rule can do a lot of harm by being vague, ambiguous, unenforcable, or by enabling every solution to a problem.
+A rule can do a lot of harm by being vague, ambiguous, unenforceable, or by enabling every solution to a problem.
 It is impossible to completely meet the "do no harm" criteria.
 Instead, our aim is the less ambitious: "Do the most good for most programmers";
 if you cannot live with a rule, object to it, ignore it, but don't water it down until it becomes meaningless.
@@ -11292,7 +11292,7 @@ these `thread`s can be seen as just a function object called from `some_fct`.
 ##### Enforcement
 
 In general, it is undecidable whether a `detach()` is executed for a `thread`, but simple common cases are easily detected.
-If we cannot prove that a `thread` does not `detatch()`, we must assume that it does and that it outlives the scope in which it was constructed;
+If we cannot prove that a `thread` does not `detach()`, we must assume that it does and that it outlives the scope in which it was constructed;
 After that, the usual lifetime and ownership (for global objects) enforcement applies.
 
 
@@ -11665,7 +11665,7 @@ We could rewrite this to
         do0();  // preparation: does not need lock
         my_lock.lock();
         do1();  // transaction: needs locking
-        my_lock.unluck();
+        my_lock.unlock();
         do2();  // cleanup: does not need locking
     }
 
