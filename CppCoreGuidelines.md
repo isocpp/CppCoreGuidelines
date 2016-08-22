@@ -592,7 +592,7 @@ This example is easily simplified
 ##### Example
 
     void read(int* p, int n);   // read max n integers into *p
-    
+
     int a[100];
     read(a, 1000);    // bad
 
@@ -802,7 +802,6 @@ Excess checking can be costly.
 There are cases where checking early is dumb because you may not ever need the value, or may only need part of the value that is more easily checked than the whole.  Similarly, don't add validity checks that change the asymptotic behavior of your interface (e.g., don't add a `O(n)` check to an interface with an average complexity of `O(1)`).
 
     class Jet {    // Physics says: e * e < x * x + y * y + z * z
-
         float x;
         float y;
         float z;
@@ -823,7 +822,7 @@ There are cases where checking early is dumb because you may not ever need the v
         ???
     };
 
-The physical law for a jet (`e*e < x*x + y*y + z*z`) is not an invariant because of the possibility for measurement errors.
+The physical law for a jet (`e * e < x * x + y * y + z * z`) is not an invariant because of the possibility for measurement errors.
 
 ???
 
@@ -983,17 +982,17 @@ Messy, low-level code breads more such code.
 ##### Example
 
     int sz = 100;
-    int* p = (int*) malloc(sizeof(int)*sz);
+    int* p = (int*) malloc(sizeof(int) * sz);
     // ...
-    if (count==sz)
-        p = (int*) realloc(p,sizeof(int)*sz*2);
+    if (count == sz)
+        p = (int*) realloc(p, sizeof(int) * sz * 2);
     // ...
 
 This is low-level, verbose, and error-prone.
 Instead, we could use `vector`:
 
     vector<int> v(100);
-    
+
     v.push_back(yet_another)int);
 
 ##### Note
@@ -1554,7 +1553,7 @@ A facility [structured bindings](http://www.open-std.org/jtc1/sc22/wg21/docs/pap
         // ... handle the error or exit ...
     }
     // ... use val ...
-    
+
 
 ##### Note
 
@@ -1791,7 +1790,7 @@ To really reduce the number of arguments, we need to bundle the arguments into h
 Grouping arguments into "bundles" is a general technique to reduce the number of arguments and to increase the opportunities for checking.
 
 Alternatively, we could use concepts (as defined by the ISO TS) to define the notion of three types that must be usable for merging:
- 
+
     Mergeable{In1 In2, Out}
     OutputIterator merge(In1 r1, In2 r2, Out result);
 
@@ -2101,7 +2100,6 @@ Consider:
         // simpleFunc: takes a value and calculates the expected ASIC output,
         // given the two mode flags.
     {
-
         double intermediate;
         if (flag1 > 0) {
             intermediate = func1(val);
@@ -2118,9 +2116,10 @@ Consider:
             intermediate = func2(intermediate);
         }
         switch (flag2 / 10) {
-            case 1: if (flag1 == -1) return finalize(intermediate, 1.171); break;
+            case 1: if (flag1 == -1) return finalize(intermediate, 1.171);
+                    break;
             case 2: return finalize(intermediate, 13.1);
-            default: ;
+            default: break;
         }
         return finalize(intermediate, 0.);
     }
@@ -2247,7 +2246,7 @@ Specifying `inline` encourages the compiler to do a better job.
 
 ##### Example
 
-    inline string cat(const string& s, const string& s2) { return s+s2; }
+    inline string cat(const string& s, const string& s2) { return s + s2; }
 
 **Exception**: Do not put an `inline` function in what is meant to be a stable interface unless you are really sure that it will not change.
 An inline function is part of the ABI.
@@ -2344,13 +2343,13 @@ Passing a shared smart pointer (e.g., `std::shared_ptr`) implies a run-time cost
     void g(unique_ptr<int>);
 
     // can only accept ints for which you are willing to share ownership
-    void g(shared_ptr<int>); 
+    void g(shared_ptr<int>);
 
     // doesn't change ownership, but requires a particular ownership of the caller
     void h(const unique_ptr<int>&);
 
     // accepts any int
-    void h(int&);             
+    void h(int&);
 
 ##### Example, bad
 
@@ -2697,7 +2696,7 @@ Explicitly passing an in-out parameter back out again as a return value is often
 For example:
 
     istream& operator>>(istream& is, string& s);    // much like std::operator>>()
-    
+
     for (string s; cin >> s; ) {
         // do something with line
     }
@@ -2733,7 +2732,7 @@ However, we prefer to be explicit, rather than subtle.
 In many cases it may be useful to return a specific, user-defined "Value or error" type.
 For example:
 
-    struct 
+    struct
 
 The overly-generic `pair` and `tuple` should be used only when the value returned represents to independent entities rather than an abstraction.
 
@@ -2769,21 +2768,21 @@ It complicates checking and tool support.
 
     void use(int* p, int n, char* s, int* q)
     {
-        p[n-1] = 666; // Bad: we don't know if p points to n elements;
-                      // assume it does not or use span<int>
-        cout << s;    // Bad: we don't know if that s points to a zero-terminated array of char;
-                      // assume it does not or use zstring
-        delete q;     // Bad: we don't know if *q is allocated on the free store;
-                      // assume it does not or use owner
+        p[n - 1] = 666; // Bad: we don't know if p points to n elements;
+                        // assume it does not or use span<int>
+        cout << s;      // Bad: we don't know if that s points to a zero-terminated array of char;
+                        // assume it does not or use zstring
+        delete q;       // Bad: we don't know if *q is allocated on the free store;
+                        // assume it does not or use owner
     }
 
 better
 
     void use2(span<int> p, zstring s, owner<int*> q)
     {
-        p[p.size()-1] = 666; // OK, a range error can be caught
+        p[p.size() - 1] = 666; // OK, a range error can be caught
         cout << s; // OK
-        delete q; // OK
+        delete q;  // OK
     }
 
 ##### Note
@@ -3257,7 +3256,7 @@ principle of "do as the ints do."
 ##### Note
 
 Historically there was some guidance to make the assignment operator return `const T&`.
-This was primarily to avoid code of the form `(a=b)=c` -- such code is not common enough to warrant violating consistency with standard types.
+This was primarily to avoid code of the form `(a = b) = c` -- such code is not common enough to warrant violating consistency with standard types.
 
 ##### Example
 
@@ -3338,7 +3337,7 @@ There is not a choice when a set of functions are used to do a semantically equi
 
 ##### See also
 
-    [Default arguments for virtual functions](#Rf-virtual-default-arg}
+[Default arguments for virtual functions](#Rh-virtual-default-arg)
 
 ##### Enforcement
 
@@ -3709,7 +3708,7 @@ Flag protected data.
 One ideal for a class is to be a regular type.
 That means roughly "behaves like an `int`." A concrete type is the simplest kind of class.
 A value of regular type can be copied and the result of a copy is an independent object with the same value as the original.
-If a concrete type has both `=` and `==`, `a=b` should result in `a == b` being `true`.
+If a concrete type has both `=` and `==`, `a = b` should result in `a == b` being `true`.
 Concrete classes without assignment and equality can be defined, but they are (and should be) rare.
 The C++ built-in types are regular, and so are standard-library classes, such as `string`, `vector`, and `map`.
 Concrete types are also often referred to as value types to distinguish them from types uses as part of a hierarchy.
@@ -3793,7 +3792,7 @@ Regular types are easier to understand and reason about than types that are not 
     b2.name = "the other bundle";
     if (b1 == b2) error("No!");
 
-In particular, if a concrete type has an assignment also give it an equals operator so that `a=b` implies `a == b`.
+In particular, if a concrete type has an assignment also give it an equals operator so that `a = b` implies `a == b`.
 
 ##### Enforcement
 
@@ -4247,7 +4246,7 @@ Independently of whether `Handle` owns its `Shape`, we must consider the default
     Handle y {*new Triangle{p1, p2, p3}};
     x = y;     // the default assignment will try *x.s = *y.s
 
-That `x=y` is highly suspect.
+That `x = y` is highly suspect.
 Assigning a `Triangle` to a `Circle`?
 Unless `Shape` has its [copy assignment `=deleted`](#Rc-copy-virtual), only the `Shape` part of `Triangle` is copied into the `Circle`.
 
@@ -5092,7 +5091,7 @@ See [copy constructor vs. `clone()`](#Rc-copy-virtual).
 
 ##### Reason
 
-That is the generally assumed semantics. After `x=y`, we should have `x == y`.
+That is the generally assumed semantics. After `x = y`, we should have `x == y`.
 After a copy `x` and `y` can be independent objects (value semantics, the way non-pointer built-in types and the standard-library types work) or refer to a shared object (pointer semantics, the way pointers work).
 
 ##### Example
@@ -5163,7 +5162,7 @@ Prefer copy semantics unless you are building a "smart pointer". Value semantics
 
 ##### Reason
 
-If `x=x` changes the value of `x`, people will be surprised and bad errors will occur (often including leaks).
+If `x = x` changes the value of `x`, people will be surprised and bad errors will occur (often including leaks).
 
 ##### Example
 
@@ -5246,7 +5245,7 @@ Equivalent to what is done for [copy-assignment](#Rc-copy-assignment).
 ##### Reason
 
 That is the generally assumed semantics.
-After `y=std::move(x)` the value of `y` should be the value `x` had and `x` should be in a valid state.
+After `y = std::move(x)` the value of `y` should be the value `x` had and `x` should be in a valid state.
 
 ##### Example
 
@@ -5324,7 +5323,7 @@ The one-in-a-million argument against `if (this == &a) return *this;` tests from
 
 ##### Note
 
-There is no know general way of avoiding a `if (this == &a) return *this;` test for a move assignment and still get a correct answer (i.e., after `x=x` the value of `x` is unchanged).
+There is no know general way of avoiding a `if (this == &a) return *this;` test for a move assignment and still get a correct answer (i.e., after `x = x` the value of `x` is unchanged).
 
 ##### Note
 
@@ -5668,14 +5667,18 @@ Asymmetric treatment of operands is surprising and a source of errors where conv
         int number;
     };
 
-    bool operator==(const X& a, const X& b) noexcept { return a.name == b.name && a.number == b.number; }
+    bool operator==(const X& a, const X& b) noexcept {
+        return a.name == b.name && a.number == b.number;
+    }
 
 ##### Example, bad
 
     class B {
         string name;
         int number;
-        bool operator==(const B& a) const { return name == a.name && number == a.number; }
+        bool operator==(const B& a) const {
+            return name == a.name && number == a.number;
+        }
         // ...
     };
 
@@ -6082,7 +6085,7 @@ by making useful operations available for implementers of related new operations
 
 A pure interface class is simply a set of pure virtual functions; see [I.25](#Ri-abstract).
 
-In early OOP (e.g., in the 1980s and 1990s), implementation inheritance and interface inheritance were often mixed 
+In early OOP (e.g., in the 1980s and 1990s), implementation inheritance and interface inheritance were often mixed
 and bad habits die hard.
 Even now, mixtures are not uncommon in old code bases and in old-style teaching material.
 
@@ -6099,7 +6102,7 @@ The importance of keeping the two kinds of inheritance increases
     class Shape {   // BAD, mixed interface and implementation
     public:
         Shape();
-        Shape(Point ce = {0,0}, Color co = none): cent{ce}, col {co} { /* ... */}
+        Shape(Point ce = {0, 0}, Color co = none): cent{ce}, col {co} { /* ... */}
 
         Point center() const { return cent; }
         Color color() const { return col; }
@@ -6164,7 +6167,7 @@ Note that a pure interface rarely have constructors: there is nothing to constru
     class Circle : public Shape {
     public:
         Circle(Point c, int r, Color c) :cent{c}, rad{r}, col{c} { /* ... */ }
-     
+
         Point center() const override { return cent; }
         Color color() const override { return col; }
 
@@ -6503,7 +6506,8 @@ Capping an individual virtual function with `final` is error-prone as that `fina
 
     class Widget { /* ... */ };
 
-    class My_widget final : public Widget { /* ... */ };    // nobody will ever want to improve My_widget (or so you thought)
+    // nobody will ever want to improve My_widget (or so you thought)
+    class My_widget final : public Widget { /* ... */ };
 
     class My_improved_widget : public My_widget { /* ... */ };  // error: can't do that
 
@@ -6876,7 +6880,7 @@ Minimize surprises.
         // ...
         X& operator=(const X&); // member function defining assignment
         friend bool operator==(const X&, const X&); // == needs access to representation
-                                                    // after a=b we have a==b
+                                                    // after a = b we have a == b
         // ...
     };
 
@@ -7409,7 +7413,7 @@ Convenience of use and avoidance of errors.
 
     Day operator++(Day& d)
     {
-        return d==sun?mon:Day{++d};
+        return d == sun ? mon : Day{++d};
     }
 
     Day today = sat;
@@ -7435,7 +7439,7 @@ Avoid clashes with macros.
 
     // productinfo.h
     // The following define product subtypes based on color
-    
+
     enum class Productinfo { RED, PURPLE, BLUE };   // syntax error
 
 ##### Enforcement
@@ -7458,7 +7462,7 @@ Such code is not uncommon in code written before there were convenient alternati
 
 Use `constexpr` values instead. For example:
 
-    constexpr int red = 0x,FF0000;
+    constexpr int red = 0xFF0000;
     constexpr short scale = 4;
     constexpr bool signed = true;
 
@@ -7479,7 +7483,7 @@ The default is the easiest to read and write.
 
     enum class Direction : char { n, s, e, w,
                                   ne, nw, se, sw };  // underlying type saves space
-    
+
     enum class Webcolor : int { red = 0xFF0000,
                                 green = 0x00FF00,
                                 blue = 0x0000FF };  // underlying type is redundant
@@ -7491,7 +7495,7 @@ Specifying the underlying type is necessary in forward declarations of enumerati
     enum Flags : char;
 
     void f(Flags);
-    
+
     // ....
 
     enum flags : char { /* ... */ };
@@ -7626,8 +7630,8 @@ What is `Port`? A handy wrapper that encapsulates the resource:
         operator PortHandle() { return port; }
 
         // port handles can't usually be cloned, so disable copying and assignment if necessary
-        Port(const Port&) =delete;
-        Port& operator=(const Port&) =delete;
+        Port(const Port&) = delete;
+        Port& operator=(const Port&) = delete;
     };
 
 ##### Note
@@ -8689,7 +8693,8 @@ Here, there is a chance that the reader knows what `trim_tail` means and that th
 Argument names of large functions are de facto non-local and should be meaningful:
 
     void complicated_algorithm(vector<Record>& vr, const vector<int>& vi, map<string, int>& out)
-    // read from events in vr (marking used Records) for the indices in vi placing (name, index) pairs into out
+    // read from events in vr (marking used Records) for the indices in
+    // vi placing (name, index) pairs into out
     {
         // ... 500 lines of code using vr, vi, and out ...
     }
@@ -9416,13 +9421,15 @@ Requires messy cast-and-macro-laden code to get working right.
 
     #include <cstdarg>
 
-    void error(int severity ...) // "severity" followed by a zero-terminated list of char*s; write the C-style strings to cerr
+    // "severity" followed by a zero-terminated list of char*s; write the C-style strings to cerr
+    void error(int severity ...)
     {
         va_list ap;             // a magic type for holding arguments
         va_start(ap, severity); // arg startup: "severity" is the first argument of error()
 
         for (;;) {
-            char* p = va_arg(ap, char*); // treat the next var as a char*; no checking: a cast in disguise
+            // treat the next var as a char*; no checking: a cast in disguise
+            char* p = va_arg(ap, char*);
             if (p == nullptr) break;
             cerr << p << ' ';
         }
@@ -11139,14 +11146,14 @@ This is asking for deadlock:
 Instead, use `lock()`:
 
     // thread 1
-    lock_guard<mutex> lck1(m1,defer_lock);
-    lock_guard<mutex> lck2(m2,defer_lock);
-    lock(lck1,lck2);
+    lock_guard<mutex> lck1(m1, defer_lock);
+    lock_guard<mutex> lck2(m2, defer_lock);
+    lock(lck1, lck2);
 
     // thread 2
-    lock_guard<mutex> lck2(m2,defer_lock);
-    lock_guard<mutex> lck1(m1,defer_lock);
-    lock(lck2,lck1);
+    lock_guard<mutex> lck2(m2, defer_lock);
+    lock_guard<mutex> lck1(m1, defer_lock);
+    lock(lck2, lck1);
 
 Here, the writers of `thread1` and `thread2` are still not agreeing on the order of the `mutex`es, but order no longer matters.
 
@@ -11157,7 +11164,7 @@ In real code, `mutex`es are not always conveniently acquired on consecutive line
 
 I'm really looking forward to be able to write plain
 
-    lock_guard lck1(m1,defer_lock);
+    lock_guard lck1(m1, defer_lock);
 
 and have the `mutex` type deduced.
 
@@ -11203,7 +11210,7 @@ Such problem cal often be solved by using a `recursive_mutex`. For example:
         // ...
     }
 
-If, as it is likely, `f()` invokes operations on `*this`, we must make sure that the object's invariant holds before the call.   
+If, as it is likely, `f()` invokes operations on `*this`, we must make sure that the object's invariant holds before the call.
 
 ##### Enforcement
 
@@ -11231,11 +11238,11 @@ If a `thread` joins, we can safely pass pointers to objects in the scope of the 
     void some_fct(int* p)
     {
         int x = 77;
-        raii_thread t0(f,&x);           // OK
-        raii_thread t1(f,p);            // OK
-        raii_thread t2(f,&glob);        // OK
+        raii_thread t0(f, &x);           // OK
+        raii_thread t1(f, p);            // OK
+        raii_thread t2(f, &glob);        // OK
         auto q = make_unique<int>(99);
-        raii_thread t3(f,q.get());      // OK
+        raii_thread t3(f, q.get());      // OK
         // ...
      }
 
@@ -11452,12 +11459,12 @@ Defining "small amount" precisely is impossible.
 ##### Example
 
     string modify1(string);
-    void modify2(shared_ptr<string);
+    void modify2(shared_ptr<string>);
 
     void fct(string& s)
     {
-        auto res = async(modify1,string);
-        async(modify2,&s);
+        auto res = async(modify1, s);
+        async(modify2, &s);
     }
 
 The call of `modify1` involves copying two `string` values; the call of `modify2` does not.
@@ -11528,8 +11535,8 @@ Thread creation is expensive.
 
     void master(istream& is)
     {
-       for (Message m; is>>m; )
-            run_list.push_back(new thread(worker,m);}
+       for (Message m; is >> m; )
+            run_list.push_back(new thread(worker, m));
     }
 
 This spawns a `thread` per message, and the `run_list` is presumably managed to destroy those tasks once they are finished.
@@ -11546,7 +11553,7 @@ Instead, we could have a set of pre-created worker threads processing the messag
 
     void worker()
     {
-        for (Message m; m=work.get(); ) {
+        for (Message m; m = work.get(); ) {
                // process
         }
     }
@@ -11698,7 +11705,7 @@ An unnamed local objects is a temporary that immediately goes out of scope.
 
     unique_lock<mutex>(m1);
     lock_guard<mutex> {m2};
-    lock(m1,m2);
+    lock(m1, m2);
 
 This looks innocent enough, but it isn't.
 
@@ -12086,7 +12093,7 @@ The `File_handle` constructor might defined like this:
         :f{fopen(name.c_str(), mode.c_str())}
     {
         if (!f)
-            throw runtime_error{"File_handle: could not open "S-+ name + " as " + mode"}
+            throw runtime_error{"File_handle: could not open " + name + " as " + mode};
     }
 
 ##### Note
@@ -12097,7 +12104,7 @@ Examples:
 
 * A precondition that cannot be met
 * A constructor that cannot construct an object (failure to establish its class's [invariant](#Rc-struct))
-* An out-of-range error (e.g., `v[v.size()] =7`)
+* An out-of-range error (e.g., `v[v.size()] = 7`)
 * Inability to acquire a resource (e.g., the network is down)
 
 In contrast, termination of an ordinary loop is not exceptional.
@@ -12132,7 +12139,7 @@ C++ implementations tend to be optimized based on the assumption that exceptions
     int find_index(vector<string>& vec, const string& x)
     {
         try {
-            for (int i =0; i < vec.size(); ++i)
+            for (int i = 0; i < vec.size(); ++i)
                 if (vec[i] == x) throw i;  // found x
         } catch (int i) {
             return i;
@@ -12175,7 +12182,7 @@ Not all member functions can be called.
         // if elem!=nullptr then elem points to sz doubles
     public:
         vector() : elem{nullptr}, sz{0}{}
-        vctor(int s) : elem{new double},sz{s} { /* initialize elements */ }
+        vector(int s) : elem{new double}, sz{s} { /* initialize elements */ }
         ~vector() { delete elem; }
 
         double& operator[](int s) { return elem[s]; }
@@ -12874,9 +12881,9 @@ A not uncommon technique is to gather cleanup at the end of the function to avoi
         // ...
 
     exit:
-	    if (g1.valid()) cleanup(g1);
-	    if (g1.valid()) cleanup(g2);
-	    return {res, err};
+      if (g1.valid()) cleanup(g1);
+      if (g1.valid()) cleanup(g2);
+      return {res, err};
     }
 
 The larger the function, the more tempting this technique becomes.
@@ -13772,10 +13779,10 @@ Otherwise they cannot be distinguished automatically by the compiler.
 ##### Example (using TS concepts)
 
     template<typename I>
-    concept bool Input_iter = requires (I iter) { ++iter; };
+    concept bool Input_iter = requires(I iter) { ++iter; };
 
     template<typename I>
-    concept bool Fwd_iter = Input_iter<I> && requires (I iter) { iter++; }
+    concept bool Fwd_iter = Input_iter<I> && requires(I iter) { iter++; }
 
 The compiler can determine refinement based on the sets of required operations (here, suffix `++`).
 This decreases the burden on implementers of these types since
@@ -13807,7 +13814,7 @@ The programmer (in a library) must define `is_contiguous` (a trait) appropriatel
 Wrapping a tag class into a concept leads to a simpler expression of this idea:
 
     template<typename I> concept Contiguous = is_contiguous<I>::value;
-    
+
     template<typename I>
     concept bool Contiguous_iter = RA_iter<I> && Contiguous<I>;
 
@@ -13907,10 +13914,10 @@ Obviously, it would be better and easier just to use the standard `EqualityCompa
 but - just as an example - if you had to define such a concept, prefer:
 
     template<typename T> concept Equality = requires(T a, T b) {
-        bool == { a==b }
-        bool == { a!=b }
-        // axiom { !(a==b)==(a!=b) }
-        // axiom { a=b; => a==b }  // => means "implies"
+        bool == { a == b }
+        bool == { a != b }
+        // axiom { !(a == b) == (a != b) }
+        // axiom { a = b; => a == b }  // => means "implies"
     }
 
 as opposed to defining two meaningless concepts `has_equal` and `has_not_equal` just as helpers in the definition of `Equality`.
@@ -14210,7 +14217,7 @@ That is, it is highly visible.
 
 ##### Note
 
-This rule should not be necessary, but the committee cannot agree to exclude unconstrained templated from ADL. 
+This rule should not be necessary, but the committee cannot agree to exclude unconstrained templated from ADL.
 
 Unfortunately this will get many false positives; the standard library violates this widely, by putting many unconstrained templates and types into the single namespace `std`.
 
@@ -14353,7 +14360,6 @@ This looks innocent enough, but ???
         // requires Regular<T> && Allocator<A>
     class List2 {
     public:
-
         using iterator = Link<T>*;
 
         iterator first() const { return head; }
@@ -14448,7 +14454,7 @@ This is a simplified version of `std::copy` (ignoring the possibility of non-con
 
     struct pod_tag {};
     struct non_pod_tag;
-    
+
     template<class T> struct copy_trait { using tag = non_pod_tag; };   // T is not "plain old data"
 
     template<> struct copy_trait<int> { using tab = pod_tag; };         // int is "plain old data"
@@ -15004,7 +15010,7 @@ Documentation, readability, opportunity for reuse.
     auto x = find_if(vr.begin(), vr.end(),
         [&](Rec& r) {
             if (r.name.size() != n.size()) return false; // name to compare to is in n
-            for (int i=0; i < r.name.size(); ++i)
+            for (int i = 0; i < r.name.size(); ++i)
                 if (tolower(r.name[i]) != tolower(n[i])) return false;
             return true;
         }
@@ -15014,20 +15020,20 @@ There is a useful function lurking here (case insensitive string comparison), as
 
     bool compare_insensitive(const string& a, const string& b)
     {
-        if (a.size()!=b.size()) return false;
-        for (int i=0; i<a.size(); ++i) if (tolower(a[i])!=tolower(b[i])) return false;
+        if (a.size() != b.size()) return false;
+        for (int i = 0; i < a.size(); ++i) if (tolower(a[i]) != tolower(b[i])) return false;
         return true;
     }
 
-    auto x = find_if(vr.begin(),vr.end(),
+    auto x = find_if(vr.begin(), vr.end(),
         [&](Rec& r) { compare_insensitive(r.name, n); }
     );
 
 Or maybe (if you prefer to avoid the implicit name binding to n):
 
     auto cmp_to_n = [&n](const string& a) { return compare_insensitive(a, n); };
-    
-    auto x = find_if(vr.begin(),vr.end(),
+
+    auto x = find_if(vr.begin(), vr.end(),
         [](const Rec& r) { return cmp_to_n(r.name); }
     );
 
@@ -15055,7 +15061,7 @@ That makes the code concise and gives better locality than alternatives.
 
     auto earlyUsersEnd = std::remove_if(users.begin(), users.end(),
                                         [](const User &a) { return a.id > 100; });
-    
+
 
 ##### Exception
 
@@ -16511,6 +16517,7 @@ Also, `std::array<>::fill()` or `std::fill()` or even an empty initializer are b
         fill(b, 0);                     // std::fill() + Ranges TS
 
         if ( a == b ) {
+          // ...
         }
     }
 
@@ -16755,7 +16762,8 @@ Code says what is done, not what is supposed to be done. Often intent can be sta
 ##### Example
 
     void stable_sort(Sortable& c)
-        // sort c in the order determined by <, keep equal elements (as defined by ==) in their original relative order
+        // sort c in the order determined by <, keep equal elements (as defined by ==) in
+        // their original relative order
     {
         // ... quite a few lines of non-trivial code ...
     }
@@ -16798,9 +16806,9 @@ Readability. Avoidance of "silly mistakes."
 
 Always indenting the statement after `if (...)`, `for (...)`, and `while (...)` is usually a good idea:
 
-    if (i<0) error("negative argument");
+    if (i < 0) error("negative argument");
 
-    if (i<0)
+    if (i < 0)
         error("negative argument");
 
 ##### Enforcement
@@ -16827,10 +16835,10 @@ Minimize unintentional conversions.
 
 Names with types encoded are either verbose or cryptic.
 
-    printS  // print a std::string 
+    printS  // print a std::string
     prints  // print a C-style string
     printi  // print an int
-    
+
 PS. Hungarian notation is evil (at least in a strongly statically-typed language).
 
 ##### Note
@@ -16991,7 +16999,7 @@ Too much space makes the text larger and distracts.
 
     #include < map >
 
-    int main (int argc, char * argv [ ])
+    int main(int argc, char * argv [ ])
     {
         // ...
     }
@@ -17166,8 +17174,8 @@ It is really easy to overlook a statement when there is more on a line.
 
 ##### Example
 
-    int x = 7; char* p = 29;    // don’t
-    int x = 7; f(x);  ++x;      // don’t
+    int x = 7; char* p = 29;    // don't
+    int x = 7; f(x);  ++x;      // don't
 
 ##### Enforcement
 
