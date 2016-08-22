@@ -74,7 +74,6 @@ def main():
 
 
 def process_code(read_filehandle, text_filehandle, line, linenum, sourcefile, codedir, name, index, indent_depth):
-
     fenced = (line.strip() == '```')
     if fenced:
         try:
@@ -94,18 +93,18 @@ def process_code(read_filehandle, text_filehandle, line, linenum, sourcefile, co
         if comment_idx >= 0:
             no_comment_line = line[:comment_idx]
             text_filehandle.write(line[comment_idx + 2:])
-            if (not has_actual_code
-                    and not line.strip().startswith('//')
-                    and not line.strip().startswith('???')
-                    and not line.strip() ==''):
-                has_actual_code = True
+
+        if (not has_actual_code
+            and not line.strip().startswith('//')
+            and not line.strip().startswith('???')
+            and not line.strip() ==''):
+            has_actual_code = True
         else:
             # write empty line so line numbers stay stable
             text_filehandle.write('')
 
         if (not line.strip() == '```'):
-
-            if ('???' in no_comment_line or '...' in no_comment_line):
+            if ('???' == no_comment_line or '...' == no_comment_line):
                 has_question_marks = True
             linebuffer.append(dedent(line) if not fenced else line)
         try:
@@ -115,10 +114,8 @@ def process_code(read_filehandle, text_filehandle, line, linenum, sourcefile, co
             line = ''
             break
     codefile = os.path.join(codedir, '%s%s.cpp' % (name, index))
-
     if fenced:
         text_filehandle.write('')
-
     if (has_actual_code and not has_question_marks):
         # add commonly used headers, so that lines can compile
         with io.open(codefile, 'w') as code_filehandle:
@@ -145,6 +142,7 @@ using namespace std;   // by md-split
 
 
 def is_code(line, indent_depth = 4):
+    '''returns the indent depth, 0 means not code in markup'''
     if line.startswith(' ' * indent_depth):
         return len(line) - len(line.lstrip(' '))
     return 0
@@ -171,6 +169,7 @@ def get_marker(line):
         namematch = NAMED_A_TAG_REGEX.match(line)
         if namematch:
             return namematch.group(1) # group 0 is full match
+
     return None
 
 if __name__ == '__main__':
