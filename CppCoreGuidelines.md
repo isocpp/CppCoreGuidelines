@@ -15879,7 +15879,7 @@ Reference sections:
 * Facebook: ???
 * [GCC Coding Conventions](https://gcc.gnu.org/codingconventions.html).
   C++03 and (reasonably) a bit backwards looking.
-* [Google C++ Style Guide](http://google-styleguide.googlecode.com/svn/trunk/cppguide.html).
+* [Google C++ Style Guide](https://google.github.io/styleguide/cppguide.html).
   Geared toward C++03 and (also) older code bases. Google experts are now actively collaborating here on helping to improve these Guidelines, and hopefully to merge efforts so these can be a modern common set they could also recommend.
 * [JSF++: JOINT STRIKE FIGHTER AIR VEHICLE C++ CODING STANDARDS](http://www.stroustrup.com/JSF-AV-rules.pdf).
   Document Number 2RDU00001 Rev C. December 2005.
