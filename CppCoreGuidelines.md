@@ -654,7 +654,7 @@ Also, it is implicit that `f2()` is supposed to `delete` its argument (or did th
 The standard library resource management pointers fail to pass the size when they point to an object:
 
     // separately compiled, possibly dynamically loaded
-    // NB: this assumes the calling code is A BI-compatible, using a
+    // NB: this assumes the calling code is ABI-compatible, using a
     // compatible C++ compiler and the same stdlib implementation
     extern void f3(unique_ptr<int[]>, int n);
 
