@@ -523,8 +523,8 @@ Some language constructs express intent better than others.
 
 If two `int`s are meant to be the coordinates of a 2D point, say so:
 
-      drawline(int, int, int, int);  // obscure
-      drawline(Point, Point);        // clearer
+      draw_line(int, int, int, int);  // obscure
+      draw_line(Point, Point);        // clearer
 
 ##### Enforcement
 
@@ -2670,10 +2670,10 @@ possibly with the extra convenience of `tie` at the call site.
     }
 
 C++98's standard library already used this style, because a `pair` is like a two-element `tuple`.
-For example, given a `set<string> myset`, consider:
+For example, given a `set<string> my_set`, consider:
 
     // C++98
-    result = myset.insert("Hello");
+    result = my_set.insert("Hello");
     if (result.second) do_something_with(result.first);    // workaround
 
 With C++11 we can write this, putting the results directly in existing local variables:
@@ -2681,12 +2681,12 @@ With C++11 we can write this, putting the results directly in existing local var
     Sometype iter;                                // default initialize if we haven't already
     Someothertype success;                        // used these variables for some other purpose
 
-    tie(iter, success) = myset.insert("Hello");   // normal return value
+    tie(iter, success) = my_set.insert("Hello");   // normal return value
     if (success) do_something_with(iter);
 
 With C++17 we should be able to use "structured bindings" to declare and initialize the multiple variables:
 
-    if (auto [ iter, success ] = myset.insert("Hello"); success) do_something_with(iter);
+    if (auto [ iter, success ] = my_set.insert("Hello"); success) do_something_with(iter);
 
 ##### Exception
 
@@ -3164,7 +3164,7 @@ The language guarantees that a `T&` refers to an object, so that testing for `nu
 
 ##### Example
 
-    class car
+    class Car
     {
         array<wheel, 4> w;
         // ...
@@ -3175,7 +3175,7 @@ The language guarantees that a `T&` refers to an object, so that testing for `nu
 
     void use()
     {
-        car c;
+        Car c;
         wheel& w0 = c.get_wheel(0); // w0 has the same lifetime as c
     }
 
@@ -3407,7 +3407,7 @@ It's confusing. Writing `[=]` in a member function appears to capture by value, 
 
 ##### Example
 
-    class myclass {
+    class My_class {
         int x = 0;
         // ...
 
@@ -5399,13 +5399,13 @@ To prevent slicing, because the normal copy operations will copy only the base p
     };
 
     class D : public B {
-        string moredata; // add a data member
+        string more_data; // add a data member
         // ...
     };
 
     auto d = make_unique<D>();
 
-    // oops, slices the object; gets only d.data but drops d.moredata
+    // oops, slices the object; gets only d.data but drops d.more_data
     auto b = make_unique<B>(d);
 
 ##### Example
@@ -5418,7 +5418,7 @@ To prevent slicing, because the normal copy operations will copy only the base p
     };
 
     class D : public B {
-        string moredata; // add a data member
+        string more_data; // add a data member
         unique_ptr<B> clone() override { return /* D object */; }
         // ...
     };
@@ -5546,28 +5546,28 @@ Worse, a direct or indirect call to an unimplemented pure virtual function from 
 
 ##### Example, bad
 
-    class base {
+    class Base {
     public:
         virtual void f() = 0;   // not implemented
-        virtual void g();       // implemented with base version
-        virtual void h();       // implemented with base version
+        virtual void g();       // implemented with Base version
+        virtual void h();       // implemented with Base version
     };
 
-    class derived : public base {
+    class Derived : public Base {
     public:
-        void g() override;   // provide derived implementation
-        void h() final;      // provide derived implementation
+        void g() override;   // provide Derived implementation
+        void h() final;      // provide Derived implementation
 
-        derived()
+        Derived()
         {
             // BAD: attempt to call an unimplemented virtual function
             f();
 
-            // BAD: will call derived::g, not dispatch further virtually
+            // BAD: will call Derived::g, not dispatch further virtually
             g();
 
             // GOOD: explicitly state intent to call only the visible version
-            derived::g();
+            Derived::g();
 
             // ok, no qualification needed, h is final
             h();
@@ -5909,10 +5909,10 @@ Interfaces should normally be composed entirely of public pure virtual functions
 
 ##### Example
 
-    class my_interface {
+    class My_interface {
     public:
         // ...only pure virtual functions here ...
-        virtual ~my_interface() {}   // or =default
+        virtual ~My_interface() {}   // or =default
     };
 
 ##### Example, bad
@@ -6288,19 +6288,19 @@ Copying a base is usually slicing. If you really need copy semantics, copy deepl
 
 ##### Example
 
-    class base {
+    class Base {
     public:
-        virtual owner<base*> clone() = 0;
-        virtual ~base() = 0;
+        virtual owner<Base*> clone() = 0;
+        virtual ~Base() = 0;
 
-        base(const base&) = delete;
-        base& operator=(const base&) = delete;
+        Base(const Base&) = delete;
+        Base& operator=(const Base&) = delete;
     };
 
-    class derived : public base {
+    class Derived : public Base {
     public:
-        owner<derived*> clone() override;
-        virtual ~derived() override;
+        owner<Derived*> clone() override;
+        virtual ~Derived() override;
     };
 
 Note that because of language rules, the covariant return type cannot be a smart pointer. See also [C.67](#Rc-copy-virtual).
@@ -6318,11 +6318,11 @@ A trivial getter or setter adds no semantic value; the data item could just as w
 
 ##### Example
 
-    class point {
+    class Point {
         int x;
         int y;
     public:
-        point(int xx, int yy) : x{xx}, y{yy} { }
+        Point(int xx, int yy) : x{xx}, y{yy} { }
         int get_x() { return x; }
         void set_x(int xx) { x = xx; }
         int get_y() { return y; }
@@ -6332,7 +6332,7 @@ A trivial getter or setter adds no semantic value; the data item could just as w
 
 Consider making such a class a `struct` -- that is, a behaviorless bunch of variables, all public data and no member functions.
 
-    struct point {
+    struct Point {
         int x = 0;
         int y = 0;
     };
@@ -6567,18 +6567,18 @@ That can cause confusion: An overrider do not inherit default arguments.
 
 ##### Example, bad
 
-    class base {
+    class Base {
     public:
         virtual int multiply(int value, int factor = 2) = 0;
     };
 
-    class derived : public base {
+    class Derived : public Base {
     public:
         int multiply(int value, int factor = 10) override;
     };
 
-    derived d;
-    base& b = d;
+    Derived d;
+    Base& b = d;
 
     b.multiply(10);  // these two calls will call the same function but
     d.multiply(10);  // with different arguments and so different results
@@ -7320,11 +7320,11 @@ First some bad old code:
 
 Instead use an `enum`:
 
-    enum class Webcolor { red = 0xFF0000, green = 0x00FF00, blue = 0x0000FF };
-    enum class Productinfo { red = 0, purple = 1, blue = 2 };
+    enum class Web_color { red = 0xFF0000, green = 0x00FF00, blue = 0x0000FF };
+    enum class Product_info { red = 0, purple = 1, blue = 2 };
 
     int webby = blue;   // error: be specific
-    Webcolor webby = Webcolor::blue;
+    Web_color webby = Web_color::blue;
 
 We used an `enum class` to avoid name clashes.
 
@@ -7343,20 +7343,20 @@ An enumeration shows the enumerators to be related and can be a named type.
 
 ##### Example
 
-    enum class Webcolor { red = 0xFF0000, green = 0x00FF00, blue = 0x0000FF };
+    enum class Web_color { red = 0xFF0000, green = 0x00FF00, blue = 0x0000FF };
 
 
 ##### Note
 
 Switching on an enumeration is common and the compiler can warn against unusual patterns of case labels. For example:
 
-    enum class Productinfo { red = 0, purple = 1, blue = 2 };
+    enum class Product_info { red = 0, purple = 1, blue = 2 };
 
-    void print(Productinfo inf)
+    void print(Product_info inf)
     {
         switch (inf) {
-        case Productinfo::red: cout << "red"; break;
-        case Productinfo::purple: cout << "purple"; break;
+        case Product_info::red: cout << "red"; break;
+        case Product_info::purple: cout << "purple"; break;
         }
     }
 
@@ -7376,27 +7376,27 @@ To minimize surprises: traditional enums convert to int too readily.
 
 ##### Example
 
-    void PrintColor(int color);
+    void Print_color(int color);
 
-    enum Webcolor { red = 0xFF0000, green = 0x00FF00, blue = 0x0000FF };
-    enum Productinfo { Red = 0, Purple = 1, Blue = 2 };
+    enum Web_color { red = 0xFF0000, green = 0x00FF00, blue = 0x0000FF };
+    enum Product_info { Red = 0, Purple = 1, Blue = 2 };
 
-    Webcolor webby = Webcolor::blue;
+    Web_color webby = Web_color::blue;
 
     // Clearly at least one of these calls is buggy.
-    PrintColor(webby);
-    PrintColor(Productinfo::Blue);
+    Print_color(webby);
+    Print_color(Product_info::Blue);
 
 Instead use an `enum class`:
 
-    void PrintColor(int color);
+    void Print_color(int color);
 
-    enum class Webcolor { red = 0xFF0000, green = 0x00FF00, blue = 0x0000FF };
-    enum class Productinfo { red = 0, purple = 1, blue = 2 };
+    enum class Web_color { red = 0xFF0000, green = 0x00FF00, blue = 0x0000FF };
+    enum class Product_info { red = 0, purple = 1, blue = 2 };
 
-    Webcolor webby = Webcolor::blue;
-    PrintColor(webby);  // Error: cannot convert Webcolor to int.
-    PrintColor(Productinfo::Red);  // Error: cannot convert Productinfo to int.
+    Web_color webby = Web_color::blue;
+    Print_color(webby);  // Error: cannot convert Web_color to int.
+    Print_color(Product_info::Red);  // Error: cannot convert Product_info to int.
 
 ##### Enforcement
 
@@ -7441,7 +7441,7 @@ Avoid clashes with macros.
     // productinfo.h
     // The following define product subtypes based on color
 
-    enum class Productinfo { RED, PURPLE, BLUE };   // syntax error
+    enum class Product_info { RED, PURPLE, BLUE };   // syntax error
 
 ##### Enforcement
 
@@ -7484,8 +7484,8 @@ The default is the easiest to read and write.
 
     enum class Direction : char { n, s, e, w,
                                   ne, nw, se, sw };  // underlying type saves space
-
-    enum class Webcolor : int { red = 0xFF0000,
+ 
+    enum class Web_color : int { red = 0xFF0000,
                                 green = 0x00FF00,
                                 blue = 0x0000FF };  // underlying type is redundant
 
@@ -7593,17 +7593,17 @@ Consider:
 
     void send(X* x, cstring_span destination)
     {
-        auto port = OpenPort(destination);
+        auto port = open_port(destination);
         my_mutex.lock();
         // ...
-        Send(port, x);
+        send(port, x);
         // ...
         my_mutex.unlock();
-        ClosePort(port);
+        close_port(port);
         delete x;
     }
 
-In this code, you have to remember to `unlock`, `ClosePort`, and `delete` on all paths, and do each exactly once.
+In this code, you have to remember to `unlock`, `close_port`, and `delete` on all paths, and do each exactly once.
 Further, if any of the code marked `...` throws an exception, then `x` is leaked and `my_mutex` remains locked.
 
 ##### Example
@@ -7615,7 +7615,7 @@ Consider:
         Port port{destination};            // port owns the PortHandle
         lock_guard<mutex> guard{my_mutex}; // guard owns the lock
         // ...
-        Send(port, x);
+        send(port, x);
         // ...
     } // automatically unlocks my_mutex and deletes the pointer in x
 
@@ -7626,8 +7626,8 @@ What is `Port`? A handy wrapper that encapsulates the resource:
     class Port {
         PortHandle port;
     public:
-        Port(cstring_span destination) : port{OpenPort(destination)} { }
-        ~Port() { ClosePort(port); }
+        Port(cstring_span destination) : port{open_port(destination)} { }
+        ~Port() { close_port(port); }
         operator PortHandle() { return port; }
 
         // port handles can't usually be cloned, so disable copying and assignment if necessary
@@ -11992,7 +11992,7 @@ The same applies almost as strongly to member variables, for the same reason.
         // etc.
     }
 
-    class mytype {
+    class My_type {
         volatile int i = 0; // suspicious, volatile member variable
         // etc.
     };
@@ -12179,13 +12179,12 @@ Not all member functions can be called.
 
 ##### Example
 
-    class vector {  // very simplified vector of doubles
-        // if elem != nullptr then elem points to sz doubles
+    class Vector {  // very simplified vector of doubles
+        // if elem!=nullptr then elem points to sz doubles
     public:
-        vector() : elem{nullptr}, sz{0}{}
-        vector(int s) : elem{new double}, sz{s} { /* initialize elements */ }
-        ~vector() { delete elem; }
-
+        Vector() : elem{nullptr}, sz{0}{}
+        vector(int s) : elem{new double},sz{s} { /* initialize elements */ }
+        ~Vector() { delete elem; }
         double& operator[](int s) { return elem[s]; }
         // ...
     private:
@@ -13287,7 +13286,7 @@ It also avoids brittle or inefficient workarounds. Convention: That's the way th
         int sz;
     };
 
-    vector<double> v(10);
+    Vector<double> v(10);
     v[7] = 9.9;
 
 ##### Example, bad
@@ -14040,7 +14039,7 @@ They can also be used to wrap a trait.
 ##### Example
 
     template<typename T, size_t N>
-    class matrix {
+    class Matrix {
         // ...
         using Iterator = typename std::vector<T>::iterator;
         // ...
@@ -15110,31 +15109,31 @@ Of course, range-for is better still where it does what you want.
 
 Use the least-derived class that has the functionality you need.
 
-    class base {
+    class Base {
     public:
         void f();
         void g();
     };
 
-    class derived1 : public base {
+    class Derived1 : public Base {
     public:
         void h();
     };
 
-    class derived2 : public base {
+    class Derived2 : public Base {
     public:
         void j();
     };
 
-    // bad, unless there is a specific reason for limiting to derived1 objects only
-    void myfunc(derived1& param)
+    // bad, unless there is a specific reason for limiting to Derived1 objects only
+    void my_func(Derived1& param)
     {
         use(param.f());
         use(param.g());
     }
 
-    // good, uses only base interface so only commit to that
-    void myfunc(base& param)
+    // good, uses only Base interface so only commit to that
+    void my_func(Base& param)
     {
         use(param.f());
         use(param.g());
@@ -16058,21 +16057,21 @@ Use of these casts can violate type safety and cause the program to access a var
 
 ##### Example, bad
 
-    class base { public: virtual ~base() = 0; };
+    class Base { public: virtual ~Base() = 0; };
 
-    class derived1 : public base { };
+    class Derived1 : public Base { };
 
-    class derived2 : public base {
+    class Derived2 : public Base {
         std::string s;
     public:
         std::string get_s() { return s; }
     };
 
-    derived1 d1;
-    base* p = &d1; // ok, implicit conversion to pointer to base is fine
+    Derived1 d1;
+    Base* p = &d1; // ok, implicit conversion to pointer to Base is fine
 
-    // BAD, tries to treat d1 as a derived2, which it is not
-    derived2* p2 = static_cast<derived2*>(p);
+    // BAD, tries to treat d1 as a Derived2, which it is not
+    Derived2* p2 = static_cast<Derived2*>(p);
     // tries to access d1's nonexistent string member, instead sees arbitrary bytes near d1
     cout << p2->get_s();
 
@@ -16127,32 +16126,32 @@ Casting away `const` is a lie. If the variable is actually declared `const`, it'
 
 Sometimes you may be tempted to resort to `const_cast` to avoid code duplication, such as when two accessor functions that differ only in `const`-ness have similar implementations. For example:
 
-    class bar;
+    class Bar;
 
-    class foo {
-        bar mybar;
+    class Foo {
+        Bar my_bar;
     public:
         // BAD, duplicates logic
-        bar& get_bar() {
-            /* complex logic around getting a non-const reference to mybar */
+        Bar& get_bar() {
+            /* complex logic around getting a non-const reference to my_bar */
         }
 
-        const bar& get_bar() const {
-            /* same complex logic around getting a const reference to mybar */
+        const Bar& get_bar() const {
+            /* same complex logic around getting a const reference to my_bar */
         }
     };
 
 Instead, prefer to share implementations. Normally, you can just have the non-`const` function call the `const` function. However, when there is complex logic this can lead to the following pattern that still resorts to a `const_cast`:
 
-    class foo {
-        bar mybar;
+    class Foo {
+        Bar my_bar;
     public:
         // not great, non-const calls const version but resorts to const_cast
-        bar& get_bar() {
-            return const_cast<bar&>(static_cast<const foo&>(*this).get_bar());
+        Bar& get_bar() {
+            return const_cast<Bar&>(static_cast<const Foo&>(*this).get_bar());
         }
-        const bar& get_bar() const {
-            /* the complex logic around getting a const reference to mybar */
+        const Bar& get_bar() const {
+            /* the complex logic around getting a const reference to my_bar */
         }
     };
 
@@ -16160,16 +16159,16 @@ Although this pattern is safe when applied correctly, because the caller must ha
 
 Instead, prefer to put the common code in a common helper function -- and make it a template so that it deduces `const`. This doesn't use any `const_cast` at all:
 
-    class foo {
-        bar mybar;
+    class Foo {
+        Bar my_bar;
 
         template<class T>           // good, deduces whether T is const or non-const
         static auto get_bar_impl(T& t) -> decltype(t.get_bar())
-            { /* the complex logic around getting a possibly-const reference to mybar */ }
+            { /* the complex logic around getting a possibly-const reference to my_bar */ }
 
     public:                         // good
-              bar& get_bar()       { return get_bar_impl(*this); }
-        const bar& get_bar() const { return get_bar_impl(*this); }
+              Bar& get_bar()       { return get_bar_impl(*this); }
+        const Bar& get_bar() const { return get_bar_impl(*this); }
     };
 
 **Exception**: You may need to cast away `const` when calling `const`-incorrect functions. Prefer to wrap such functions in inline `const`-correct wrappers to encapsulate the cast in one place.
@@ -16190,21 +16189,21 @@ Note that a C-style `(T)expression` cast means to perform the first of the follo
     std::string s = "hello world";
     double* p0 = (double*)(&s); // BAD
 
-    class base { public: virtual ~base() = 0; };
+    class Base { public: virtual ~Base() = 0; };
 
-    class derived1 : public base { };
+    class Derived1 : public Base { };
 
-    class derived2 : public base {
+    class Derived2 : public Base {
         std::string s;
     public:
         std::string get_s() { return s; }
     };
 
-    derived1 d1;
-    base* p1 = &d1; // ok, implicit conversion to pointer to base is fine
+    Derived1 d1;
+    Base* p = &d1; // ok, implicit conversion to pointer to Base is fine
 
-    // BAD, tries to treat d1 as a derived2, which it is not
-    derived2* p2 = (derived2*)(p);
+    // BAD, tries to treat d1 as a Derived2, which it is not
+    Derived2* p2 = (Derived2*)(p);
     // tries to access d1's nonexistent string member, instead sees arbitrary bytes near d1
     cout << p2->get_s();
 
@@ -17496,27 +17495,27 @@ Should destruction behave virtually? That is, should destruction through a point
 
 The common case for a base class is that it's intended to have publicly derived classes, and so calling code is just about sure to use something like a `shared_ptr<base>`:
 
-    class base {
+    class Base {
     public:
-        ~base();                   // BAD, not virtual
-        virtual ~base();           // GOOD
+        ~Base();                   // BAD, not virtual
+        virtual ~Base();           // GOOD
         // ...
     };
 
-    class derived : public base { /* ... */ };
+    class Derived : public Base { /* ... */ };
 
     {
-        unique_ptr<base> pb = make_unique<derived>();
+        unique_ptr<Base> pb = make_unique<Derived>();
         // ...
-    } // ~pb invokes correct destructor only when ~base is virtual
+    } // ~pb invokes correct destructor only when ~Base is virtual
 
 In rarer cases, such as policy classes, the class is used as a base class for convenience, not for polymorphic behavior. It is recommended to make those destructors protected and nonvirtual:
 
-    class my_policy {
+    class My_policy {
     public:
-        virtual ~my_policy();      // BAD, public and virtual
+        virtual ~My_policy();      // BAD, public and virtual
     protected:
-        ~my_policy();              // GOOD
+        ~My_policy();              // GOOD
         // ...
     };
 
@@ -17532,7 +17531,7 @@ For a base class `Base`, calling code might try to destroy derived objects throu
 To write a base class is to define an abstraction (see Items 35 through 37). Recall that for each member function participating in that abstraction, you need to decide:
 
 * Whether it should behave virtually or not.
-* Whether it should be publicly available to all callers using a pointer to Base or else be a hidden internal implementation detail.
+* Whether it should be publicly available to all callers using a pointer to `Base` or else be a hidden internal implementation detail.
 
 As described in Item 39, for a normal member function, the choice is between allowing it to be called via a pointer to `Base` nonvirtually (but possibly with virtual behavior if it invokes virtual functions, such as in the NVI or Template Method patterns), virtually, or not at all. The NVI pattern is a technique to avoid public virtual functions.
 
@@ -17569,51 +17568,51 @@ Never allow an error to be reported from a destructor, a resource deallocation f
 
 ##### Example
 
-    class nefarious {
+    class Nefarious {
     public:
-        nefarious()  { /* code that could throw */ }   // ok
-        ~nefarious() { /* code that could throw */ }   // BAD, should not throw
+        Nefarious()  { /* code that could throw */ }   // ok
+        ~Nefarious() { /* code that could throw */ }   // BAD, should not throw
         // ...
     };
 
-1. `nefarious` objects are hard to use safely even as local variables:
+1. `Nefarious` objects are hard to use safely even as local variables:
 
 
         void test(string& s)
         {
-            nefarious n;          // trouble brewing
+            Nefarious n;          // trouble brewing
             string copy = s;      // copy the string
         } // destroy copy and then n
 
     Here, copying `s` could throw, and if that throws and if `n`'s destructor then also throws, the program will exit via `std::terminate` because two exceptions can't be propagated simultaneously.
 
-2. Classes with `nefarious` members or bases are also hard to use safely, because their destructors must invoke `nefarious`' destructor, and are similarly poisoned by its poor behavior:
+2. Classes with `Nefarious` members or bases are also hard to use safely, because their destructors must invoke `Nefarious`' destructor, and are similarly poisoned by its poor behavior:
 
 
-        class innocent_bystander {
-            nefarious member;     // oops, poisons the enclosing class's destructor
+        class Innocent_bystander {
+            Nefarious member;     // oops, poisons the enclosing class's destructor
             // ...
         };
 
         void test(string& s)
         {
-            innocent_bystander i; // more trouble brewing
+            Innocent_bystander i; // more trouble brewing
             string copy2 = s;      // copy the string
         } // destroy copy and then i
 
     Here, if constructing `copy2` throws, we have the same problem because `i`'s destructor now also can throw, and if so we'll invoke `std::terminate`.
 
-3. You can't reliably create global or static `nefarious` objects either:
+3. You can't reliably create global or static `Nefarious` objects either:
 
 
-        static nefarious n;       // oops, any destructor exception can't be caught
+        static Nefarious n;       // oops, any destructor exception can't be caught
 
-4. You can't reliably create arrays of `nefarious`:
+4. You can't reliably create arrays of `Nefarious`:
 
 
         void test()
         {
-            std::array<nefarious, 10> arr; // this line can std::terminate(!)
+            std::array<Nefarious, 10> arr; // this line can std::terminate(!)
         }
 
     The behavior of arrays is undefined in the presence of destructors that throw because there is no reasonable rollback behavior that could ever be devised. Just think: What code can the compiler generate for constructing an `arr` where, if the fourth object's constructor throws, the code has to give up and in its cleanup mode tries to call the destructors of the already-constructed objects ... and one or more of those destructors throws? There is no satisfactory answer.
@@ -17621,9 +17620,9 @@ Never allow an error to be reported from a destructor, a resource deallocation f
 5. You can't use `Nefarious` objects in standard containers:
 
 
-        std::vector<nefarious> vec(10);   // this line can std::terminate()
+        std::vector<Nefarious> vec(10);   // this line can std::terminate()
 
-    The standard library forbids all destructors used with it from throwing. You can't store `nefarious` objects in standard containers or use them with any other part of the standard library.
+    The standard library forbids all destructors used with it from throwing. You can't store `Nefarious` objects in standard containers or use them with any other part of the standard library.
 
 ##### Note
 
@@ -17667,20 +17666,20 @@ If you define a move constructor, you must also define a move assignment operato
 
 ##### Example
 
-    class x {
+    class X {
         // ...
     public:
-        x(const x&) { /* stuff */ }
+        X(const X&) { /* stuff */ }
 
         // BAD: failed to also define a copy assignment operator
 
-        x(x&&) { /* stuff */ }
+        X(x&&) { /* stuff */ }
 
         // BAD: failed to also define a move assignment operator
     };
 
-    x x1;
-    x x2 = x1; // ok
+    X x1;
+    X x2 = x1; // ok
     x2 = x1;   // pitfall: either fails to compile, or does something suspicious
 
 If you define a destructor, you should not use the compiler-generated copy or move operation; you probably need to define or suppress copy and/or move.
@@ -17699,20 +17698,20 @@ If you define a destructor, you should not use the compiler-generated copy or mo
 
 If you define copying, and any base or member has a type that defines a move operation, you should also define a move operation.
 
-    class x {
+    class X {
         string s; // defines more efficient move operations
         // ... other data members ...
     public:
-        x(const x&) { /* stuff */ }
-        x& operator=(const x&) { /* stuff */ }
+        X(const X&) { /* stuff */ }
+        X& operator=(const X&) { /* stuff */ }
 
-        //    BAD: failed to also define a move construction and move assignment
-        //   (why wasn't the custom "stuff" repeated here?)
+        // BAD: failed to also define a move construction and move assignment
+        // (why wasn't the custom "stuff" repeated here?)
     };
 
-    x test()
+    X test()
     {
-        x local;
+        X local;
         // ...
         return local;  // pitfall: will be inefficient and/or do the wrong thing
     }
