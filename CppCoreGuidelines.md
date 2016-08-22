@@ -3524,7 +3524,6 @@ but:
         int y;
         Month m;
         char d;    // day
-        Date(int yy, Month mm, char dd);
     };
 
 ##### Note
@@ -4169,7 +4168,7 @@ Note that if you define a destructor, you must define or delete [all default ope
         ~Smart_ptr2() { delete p; }  // p is an owner!
     };
 
-    void use(Smart_ptr<int> p1)
+    void use(Smart_ptr2<int> p1)
     {
         auto p2 = p1;   // error: double deletion
     }
@@ -4279,7 +4278,7 @@ See [this in the Discussion section](#Sd-dtor).
 ##### Example, bad
 
     struct Base {  // BAD: no virtual destructor
-        virtual f();
+        virtual void f();
     };
 
     struct D : Base {
@@ -4440,8 +4439,8 @@ The C++11 initializer list rule eliminates the need for many constructors. For e
         Rec2(const string& ss, int ii = 0) :s{ss}, i{ii} {}   // redundant
     };
 
-    Rec r1 {"Foo", 7};
-    Rec r2 {"Bar"};
+    Rec2 r1 {"Foo", 7};
+    Rec2 r2 {"Bar"};
 
 The `Rec2` constructor is redundant.
 Also, the default for `int` would be better done as a [member initializer](#Rc-in-class-initializer).
@@ -4532,7 +4531,7 @@ Leaving behind an invalid object is asking for trouble.
             // ...
         }
 
-        void is_valid() { return valid; }
+        bool is_valid() { return valid; }
         void read();   // read from f
         // ...
     };
@@ -4542,7 +4541,7 @@ Leaving behind an invalid object is asking for trouble.
         X3 file {"Heraclides"};
         file.read();   // crash or bad read!
         // ...
-        if (is_valid()) {
+        if (file.is_valid()) {
             file.read();
             // ...
         }
@@ -4619,7 +4618,7 @@ A class with members that all have default constructors implicitly gets a defaul
 
     struct X {
         string s;
-        vector v;
+        vector<int> v;
     };
 
     X x; // means X{{}, {}}; that is the empty string and the empty vector
@@ -4945,7 +4944,7 @@ To avoid repetition and accidental differences.
         int y;
     public:
         Date(int ii, Month mm, year yy)
-            :i{ii}, m{mm} y{yy}
+            :i{ii}, m{mm}, y{yy}
             { if (!valid(i, m, y)) throw Bad_date{}; }
 
         Date(int ii, Month mm)
@@ -4964,7 +4963,7 @@ The common action gets tedious to write and may accidentally not be common.
         int y;
     public:
         Date2(int ii, Month mm, year yy)
-            :i{ii}, m{mm} y{yy}
+            :i{ii}, m{mm}, y{yy}
             { if (!valid(i, m, y)) throw Bad_date{}; }
 
         Date2(int ii, Month mm)
@@ -5476,9 +5475,9 @@ Because we defined the destructor, we must define the copy and move operations. 
         ~Tracer2() { cerr << "exiting " << message << '\n'; }
 
         Tracer2(const Tracer2& a) : message{a.message} {}
-        Tracer2& operator=(const Tracer2& a) { message = a.message; }
+        Tracer2& operator=(const Tracer2& a) { message = a.message; return *this; }
         Tracer2(Tracer2&& a) :message{a.message} {}
-        Tracer2& operator=(Tracer2&& a) { message = a.message; }
+        Tracer2& operator=(Tracer2&& a) { message = a.message; return *this; }
     };
 
 Writing out the bodies of the copy and move operations is verbose, tedious, and error-prone. A compiler does it better.
@@ -6231,7 +6230,7 @@ but bear with us because this is just a simple example of a technique aimed at m
 
 
      class Impl::Circle : public Circle, public Impl::Shape {   // implementation
-     publc:
+     public:
         // constructors, destructor
 
         int radius() { /* ... */ }
@@ -6246,7 +6245,7 @@ And we could extend the hierarchies by adding a Smiley class (:-)):
     };
 
     class Impl::Smiley : Public Smiley, public Impl::Circle {   // implementation
-    publc:
+    public:
         // constructors, destructor
         // ...
     }
@@ -7105,7 +7104,7 @@ Avoiding inconsistent definition in different namespaces
     bool operator==(S, S);   // OK: in the same namespace as S, and even next to S
     S s;
 
-    bool s == s;
+    bool x = (s == s);
 
 This is what a default `==` would do, if we had such defaults.
 
@@ -7118,7 +7117,7 @@ This is what a default `==` would do, if we had such defaults.
 
     N::S s;
 
-    bool s == s;  // finds N::operator==() by ADL
+    bool x = (s == s);  // finds N::operator==() by ADL
 
 ##### Example, bad
 
@@ -7456,7 +7455,7 @@ If you can't name an enumeration, the values are not related
 
 ##### Example, bad
 
-    enum { red = 0xFF0000, scale = 4, signed = 1 };
+    enum { red = 0xFF0000, scale = 4, is_signed = 1 };
 
 Such code is not uncommon in code written before there were convenient alternative ways of specifying integer constants.
 
@@ -7466,7 +7465,7 @@ Use `constexpr` values instead. For example:
 
     constexpr int red = 0xFF0000;
     constexpr short scale = 4;
-    constexpr bool signed = true;
+    constexpr bool is_signed = true;
 
 ##### Enforcement
 
@@ -7519,8 +7518,8 @@ The default gives a consecutive set of values that is good for `switch`-statemen
 ##### Example
 
     enum class Col1 { red, yellow, blue };
-    enum class Col2 { red = 1, red = 2, blue = 2 }; // typo
-    enum class Month { jan = 1, feb, mar, apr, mar, jun,
+    enum class Col2 { red = 1, yellow = 2, blue = 2 }; // typo
+    enum class Month { jan = 1, feb, mar, apr, may, jun,
                        jul, august, sep, oct, nov, dec }; // starting with 1 is conventional
     enum class Base_flag { dec = 1, oct = dec << 1, hex = dec << 2 }; // set of bits
 
@@ -8533,7 +8532,7 @@ The more traditional and lower-level near-equivalent is longer, messier, harder 
             is.read(s, maxstring);
             res[elemcount++] = s;
         }
-        nread = elemcount;
+        nread = &elemcount;
         return res;
     }
 
@@ -11114,7 +11113,7 @@ Avoids nasty errors from unreleased locks.
 
 Sooner or later, someone will forget the `mtx.unlock()`, place a `return` in the `... do stuff ...`, throw an exception, or something.
 
-     mutex mtx;
+    mutex mtx;
 
     void do_stuff()
     {
@@ -11363,7 +11362,7 @@ The plain `thread`s should be assumed to use the full generality of `std::thread
 
     void use(int n)
     {
-        thread t { thricky, this, n };
+        thread t { tricky, this, n };
         // ...
         // ... should I join here? ...
     }
@@ -11923,9 +11922,9 @@ Double-checked locking is easy to mess up.
 
     atomic<bool> x_init;
 
-    if (!x_init.load(memory_order_acquire) {
+    if (!x_init.load(memory_order_acquire)) {
         lock_guard<mutex> lck(x_mutex);
-        if (!x_init.load(memory_order_relaxed) {
+        if (!x_init.load(memory_order_relaxed)) {
             // ... initialize x ...
             x_init.store(true, memory_order_release);
         }
@@ -12137,7 +12136,7 @@ C++ implementations tend to be optimized based on the assumption that exceptions
 
 ##### Example, don't
 
-      // don't: exception not used for error handling
+    // don't: exception not used for error handling
     int find_index(vector<string>& vec, const string& x)
     {
         try {
@@ -12181,7 +12180,7 @@ Not all member functions can be called.
 ##### Example
 
     class vector {  // very simplified vector of doubles
-        // if elem!=nullptr then elem points to sz doubles
+        // if elem != nullptr then elem points to sz doubles
     public:
         vector() : elem{nullptr}, sz{0}{}
         vector(int s) : elem{new double}, sz{s} { /* initialize elements */ }
@@ -12192,7 +12191,7 @@ Not all member functions can be called.
     private:
         owner<double*> elem;
         int sz;
-    }
+    };
 
 The class invariant - here stated as a comment - is established by the constructors.
 `new` throws if it cannot allocate the required memory.
@@ -12294,7 +12293,7 @@ One strategy is to add a `valid()` operation to every resource handle:
             // handle error or exit
         }
 
-        Ifstream fs("foo");   // not std::ifstream: valid() added
+        ifstream fs("foo");   // not std::ifstream: valid() added
         if (!fs.valid()) {
             // handle error or exit
         }
@@ -12370,7 +12369,7 @@ That would be a leak.
     void leak(int x)   // don't: may leak
     {
         auto p = new int{7};
-        if (x < 0) throw Get_me_out_of_here{}  // may leak *p
+        if (x < 0) throw Get_me_out_of_here{};  // may leak *p
         // ...
         delete p;   // we may never get here
     }
@@ -12387,7 +12386,7 @@ One way of avoiding such problems is to use resource handles consistently:
 
 Another solution (often better) would be to use a local variable to eliminate explicit use of pointers:
 
-    void no_leak(_simplified(int x)
+    void no_leak_simplified(int x)
     {
         vector<int> v(7);
         // ...
@@ -12731,7 +12730,7 @@ In such cases, "crashing" is simply leaving error handling to the next level of 
 
 Most programs cannot handle memory exhaustion gracefully anyway. This is roughly equivalent to
 
-    void f(Int n)
+    void f(int n)
     {
            // ...
            p = new X[n];    // throw if memory is exhausted (by default, terminate)
@@ -13054,8 +13053,8 @@ Better performance, better compile-time checking, guaranteed compile-time evalua
 ##### Example
 
     double x = f(2);            // possible run-time evaluation
-    const double x = f(2);      // possible run-time evaluation
-    constexpr double y = f(2);  // error unless f(2) can be evaluated at compile time
+    const double y = f(2);      // possible run-time evaluation
+    constexpr double z = f(2);  // error unless f(2) can be evaluated at compile time
 
 ##### Note
 
@@ -16189,7 +16188,7 @@ Note that a C-style `(T)expression` cast means to perform the first of the follo
 ##### Example, bad
 
     std::string s = "hello world";
-    double* p = (double*)(&s); // BAD
+    double* p0 = (double*)(&s); // BAD
 
     class base { public: virtual ~base() = 0; };
 
@@ -16202,7 +16201,7 @@ Note that a C-style `(T)expression` cast means to perform the first of the follo
     };
 
     derived1 d1;
-    base* p = &d1; // ok, implicit conversion to pointer to base is fine
+    base* p1 = &d1; // ok, implicit conversion to pointer to base is fine
 
     // BAD, tries to treat d1 as a derived2, which it is not
     derived2* p2 = (derived2*)(p);
