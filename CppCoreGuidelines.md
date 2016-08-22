@@ -6227,7 +6227,8 @@ To make this interface useful, we must provide its implementation classes (here,
     };
 
 Now `Shape` is a poor example of a class with an implementation,
-but bare with us because this is just a simple example of a technique aimed at more complex hierarchies.
+but bear with us because this is just a simple example of a technique aimed at more complex hierarchies.
+
 
      class Impl::Circle : public Circle, public Impl::Shape {   // implementation
      publc:
