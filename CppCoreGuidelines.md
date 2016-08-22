@@ -4177,7 +4177,7 @@ The default copy operation will just copy the `p1.p` into `p2.p` leading to a do
 
     template<typename T>
     class Smart_ptr3 {
-        owner<T>* p;   // OK: explicit about ownership of *p
+        owner<T*> p;   // OK: explicit about ownership of *p
         // ...
     public:
         // ...
