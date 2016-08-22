@@ -93,30 +93,17 @@ def process_code(read_filehandle, text_filehandle, line, linenum, sourcefile, co
         if comment_idx >= 0:
             no_comment_line = line[:comment_idx]
             text_filehandle.write(line[comment_idx + 2:])
-<<<<<<< HEAD
-
         if (not has_actual_code
             and not line.strip().startswith('//')
             and not line.strip().startswith('???')
-            and not line.strip() ==''):
+            and not line.strip() == ''):
             has_actual_code = True
-=======
-            if (not has_actual_code
-                    and not line.strip().startswith('//')
-                    and not line.strip().startswith('???')
-                    and not line.strip() == ''):
-                has_actual_code = True
->>>>>>> 180cd89a1f3105a20e79b81964b4d388dca94040
         else:
             # write empty line so line numbers stay stable
             text_filehandle.write('\n')
 
         if (not line.strip() == '```'):
-<<<<<<< HEAD
             if ('???' == no_comment_line or '...' == no_comment_line):
-=======
-            if ('???' in no_comment_line or '...' in no_comment_line):
->>>>>>> 180cd89a1f3105a20e79b81964b4d388dca94040
                 has_question_marks = True
             linebuffer.append(dedent(line) if not fenced else line)
         try:
@@ -127,12 +114,7 @@ def process_code(read_filehandle, text_filehandle, line, linenum, sourcefile, co
             break
     codefile = os.path.join(codedir, '%s%s.cpp' % (name, index))
     if fenced:
-<<<<<<< HEAD
-        text_filehandle.write('')
-=======
         text_filehandle.write('\n')
-
->>>>>>> 180cd89a1f3105a20e79b81964b4d388dca94040
     if (has_actual_code and not has_question_marks):
         # add commonly used headers, so that lines can compile
         with io.open(codefile, 'w') as code_filehandle:
