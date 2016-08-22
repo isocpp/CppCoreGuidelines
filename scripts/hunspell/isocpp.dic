@@ -120,7 +120,7 @@ derived1
 derived2
 destructors
 Destructors
-detatch
+detach
 Dewhurst
 Dewhurst03
 disambiguator
@@ -135,6 +135,7 @@ enum
 Enum
 enums
 eq
+eqdefault
 EqualityComparable
 errno
 expr
@@ -491,7 +492,8 @@ typesafe
 UB
 unaliased
 uncompromised
-unenforcable
+undetached
+unenforceable
 uninit
 uniqueptrparam
 unnamed2
