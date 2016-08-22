@@ -9,23 +9,17 @@ language: c++
 # alternatives: gcc, clang, or both (as yaml list)
 compiler: clang
 
+addons:
+  apt:
+    packages:
+    - hunspell
+
 install:
  -
 
 script:
  - cd scripts; make -k
  - cd ..
-
-## find lines with tabs
-# - rm -f CppCoreGuidelines.md.tabs
-# - cat CppCoreGuidelines.md | nl -ba | sed -s 's/\(^[^\t]*\)\t/\1--/g' | grep  $'\t'  | sed -s 's/\t/\*\*\*\*/g' > CppCoreGuidelines.md.tabs
-# - if [[ -s CppCoreGuidelines.md.tabs ]]; then echo 'Tabs found'; cat CppCoreGuidelines.md.tabs; false; fi;
-
-## check references unique
- - rm -f CppCoreGuidelines.md.uniq
- - grep -oP '(?<=<a name=")[^\"]+' CppCoreGuidelines.md | uniq -d > CppCoreGuidelines.md.uniq
- - if [[ -s CppCoreGuidelines.md.uniq ]]; then echo 'Found duplicate anchors:'; cat CppCoreGuidelines.md.uniq; false; fi;
-
 
 notifications:
   email: false
