@@ -523,8 +523,8 @@ Some language constructs express intent better than others.
 
 If two `int`s are meant to be the coordinates of a 2D point, say so:
 
-      draw_line(int, int, int, int);  // obscure
-      draw_line(Point, Point);        // clearer
+    draw_line(int, int, int, int);  // obscure
+    draw_line(Point, Point);        // clearer
 
 ##### Enforcement
 
@@ -3287,16 +3287,16 @@ This was primarily to avoid code of the form `(a = b) = c` -- such code is not c
 
 ##### Example
 
-        class Foo
-        {
-         public:
-            ...
-            Foo& operator=(const Foo& rhs) {
-              // Copy members.
-              ...
-              return *this;
-            }
-        };
+    class Foo
+    {
+     public:
+        ...
+        Foo& operator=(const Foo& rhs) {
+          // Copy members.
+          ...
+          return *this;
+        }
+    };
 
 ##### Enforcement
 
@@ -4653,16 +4653,16 @@ A class with members that all have default constructors implicitly gets a defaul
 Beware that built-in types are not properly default constructed:
 
     struct X {
-       string s;
-       int i;
+        string s;
+        int i;
     };
 
     void f()
     {
-       X x;    // x.s is initialized to the empty string; x.i is uninitialized
+        X x;    // x.s is initialized to the empty string; x.i is uninitialized
 
-       cout << x.s << ' ' << x.i << '\n';
-       ++x.i;
+        cout << x.s << ' ' << x.i << '\n';
+        ++x.i;
     }
 
 Statically allocated objects of built-in types are by default initialized to `0`, but local built-in variables are not.
@@ -4671,8 +4671,8 @@ Thus, code like the example above may appear to work, but it relies on undefined
 Assuming that you want initialization, an explicit default initialization can help:
 
     struct X {
-       string s;
-       int i {};   // default initialize (to 0)
+        string s;
+        int i {};   // default initialize (to 0)
     };
 
 ##### Enforcement
@@ -5960,7 +5960,7 @@ Interfaces should normally be composed entirely of public pure virtual functions
         unique_ptr<Goof> p {new Derived{"here we go"}};
         f(p.get()); // use Derived through the Goof interface
         g(p.get()); // use Derived through the Goof interface
-     } // leak
+    } // leak
 
 The `Derived` is `delete`d through its `Goof` interface, so its `string` is leaked.
 Give `Goof` a virtual destructor and all is well.
@@ -6176,8 +6176,8 @@ the more benefits we gain - and the less stable the hierarchy is.
 
 This Shape hierarchy can be rewritten using interface inheritance:
 
-     class Shape {  // pure interface
-     public:
+    class Shape {  // pure interface
+    public:
         virtual Point center() const = 0;
         virtual Color color() const = 0;
 
@@ -6187,7 +6187,7 @@ This Shape hierarchy can be rewritten using interface inheritance:
         virtual void redraw() = 0;
 
         // ...
-     };
+    };
 
 Note that a pure interface rarely have constructors: there is nothing to construct.
 
@@ -6256,8 +6256,8 @@ Now `Shape` is a poor example of a class with an implementation,
 but bear with us because this is just a simple example of a technique aimed at more complex hierarchies.
 
 
-     class Impl::Circle : public Circle, public Impl::Shape {   // implementation
-     public:
+    class Impl::Circle : public Circle, public Impl::Shape {   // implementation
+    public:
         // constructors, destructor
 
         int radius() { /* ... */ }
@@ -8801,7 +8801,7 @@ comment.
 
 ##### Example, bad
 
-       char *p, c, a[7], *pp[7], **aa[10];   // yuck!
+    char *p, c, a[7], *pp[7], **aa[10];   // yuck!
 
 **Exception**: a function declaration can contain several function argument declarations.
 
@@ -9124,8 +9124,8 @@ The rules for `{}` initialization are simpler, more general, less ambiguous, and
 
 ##### Example
 
-       int x {f(99)};
-       vector<int> v = {1, 2, 3, 4, 5, 6};
+    int x {f(99)};
+    vector<int> v = {1, 2, 3, 4, 5, 6};
 
 ##### Exception
 
@@ -9590,15 +9590,15 @@ Readability: the complete logic of the loop is visible "up front". The scope of 
 ##### Example
 
     for (int i = 0; i < vec.size(); i++) {
-     // do work
+        // do work
     }
 
 ##### Example, bad
 
     int i = 0;
     while (i < vec.size()) {
-     // do work
-     i++;
+        // do work
+        i++;
     }
 
 ##### Enforcement
@@ -10799,7 +10799,7 @@ the same memory. Concurrent programming is tricky for many reasons, most
 importantly that it is undefined behavior to read data in one thread after it
 was written by another thread, if there is no proper synchronization between
 those threads. Making existing single-threaded code execute concurrently can be
-as trivial as adding `std::async` or `std::thread` strategically, or it can 
+as trivial as adding `std::async` or `std::thread` strategically, or it can
 necessitate a full rewrite, depending on whether the original code was written
 in a thread-friendly way.
 
@@ -11276,7 +11276,7 @@ If a `thread` joins, we can safely pass pointers to objects in the scope of the 
         auto q = make_unique<int>(99);
         raii_thread t3(f, q.get());      // OK
         // ...
-     }
+    }
 
 An `raii_thread` is a `std::thread` with a destructor that joined and cannot be `detached()`.
 By "OK" we mean that the object will be in scope ("live") for as long as a `thread` can use the pointer to it.
@@ -11321,7 +11321,7 @@ If a `thread` is detached, we can safely pass pointers to static and free store 
         t2.detach();
         t3.detach();
         // ...
-     }
+    }
 
 By "OK" we mean that the object will be in scope ("live") for as long as a `thread` can use the pointers to it.
 By "bad" we mean that a `thread` may use a pointer after the pointed-to object is destroyed.
@@ -11567,7 +11567,7 @@ Thread creation is expensive.
 
     void master(istream& is)
     {
-       for (Message m; is >> m; )
+        for (Message m; is >> m; )
             run_list.push_back(new thread(worker, m));
     }
 
@@ -11579,14 +11579,14 @@ Instead, we could have a set of pre-created worker threads processing the messag
 
     void master(istream& is)
     {
-       for (Message m; is >> m; )
+        for (Message m; is >> m; )
             work.put(n);
     }
 
     void worker()
     {
         for (Message m; m = work.get(); ) {
-               // process
+            // process
         }
     }
 
@@ -12752,20 +12752,20 @@ In such cases, "crashing" is simply leaving error handling to the next level of 
 
     void f(int n)
     {
-           // ...
-           p = static_cast<X*>(malloc(n, X));
-           if (p == nullptr) abort();     // abort if memory is exhausted
-           // ...
-     }
+        // ...
+        p = static_cast<X*>(malloc(n, X));
+        if (p == nullptr) abort();     // abort if memory is exhausted
+        // ...
+    }
 
 Most programs cannot handle memory exhaustion gracefully anyway. This is roughly equivalent to
 
     void f(int n)
     {
-           // ...
-           p = new X[n];    // throw if memory is exhausted (by default, terminate)
-           // ...
-     }
+        // ...
+        p = new X[n];    // throw if memory is exhausted (by default, terminate)
+        // ...
+    }
 
 Typically, it is a good idea to log the reason for the "crash" before exiting.
 
@@ -14230,7 +14230,7 @@ Semiregular requires default constructible.
             vector<int> v(10);
             bool b = 1 == bad;
             bool b2 = v.size() == bad;
-       }
+        }
     }
 
 This prints `T0` and `Bad`.
@@ -14587,27 +14587,27 @@ When `concept`s become widely available such alternatives can be distinguished d
 
 There are three major ways to let calling code customize a template.
 
-        template<class T>
-            // Call a member function
-        void test1(T t)
-        {
-            t.f();    // require T to provide f()
-        }
+    template<class T>
+        // Call a member function
+    void test1(T t)
+    {
+        t.f();    // require T to provide f()
+    }
 
-        template<class T>
-        void test2(T t)
-            // Call a nonmember function without qualification
-        {
-            f(t);  // require f(/*T*/) be available in caller's scope or in T's namespace
-        }
+    template<class T>
+    void test2(T t)
+        // Call a nonmember function without qualification
+    {
+        f(t);  // require f(/*T*/) be available in caller's scope or in T's namespace
+    }
 
-        template<class T>
-        void test3(T t)
-            // Invoke a "trait"
-        {
-            test_traits<T>::f(t); // require customizing test_traits<>
-                                  // to get non-default functions/types
-        }
+    template<class T>
+    void test3(T t)
+        // Invoke a "trait"
+    {
+        test_traits<T>::f(t); // require customizing test_traits<>
+                              // to get non-default functions/types
+    }
 
 A trait is usually a type alias to compute a type,
 a `constexpr` function to compute a value,
@@ -16291,10 +16291,10 @@ Candidates include:
 
 To suppress enforcement of a profile check, place a `suppress` annotation on a language contract. For example:
 
-     [[suppress(bounds)]] char* raw_find(char* p, int n, char x)    // find x in p[0]..p[n-1]
-     {
-         // ...
-     }
+    [[suppress(bounds)]] char* raw_find(char* p, int n, char x)    // find x in p[0]..p[n-1]
+    {
+        // ...
+    }
 
 Now `raw_find()` can scramble memory to its heart's content.
 Obviously, suppression should be very rare.
