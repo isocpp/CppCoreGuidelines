@@ -37,16 +37,17 @@ distclean:
 
 #### check markdown
 
-## run remark markdown checker based on configuration in package.json
+## run remark markdown checker based on configuration in .remarkrc
 .PHONY: check-markdown
-check-markdown: nodejs/node_modules/remark nodejs/package.json $(SOURCEPATH) $(BUILD_DIR) Makefile
+check-markdown: nodejs/node_modules/remark nodejs/remark/.remarkrc $(SOURCEPATH) $(BUILD_DIR) Makefile
+	echo '##################### Markdown check ##################'
 ## run remark, paste output to temporary file
-	cd nodejs; ./node_modules/.bin/remark ../$(SOURCEPATH) --no-color -q 1> ../$(BUILD_DIR)/$(SOURCEFILE).fixed --frail
+	cd nodejs; ./node_modules/.bin/remark ../$(SOURCEPATH) --no-color -q --config-path ./remark/.remarkrc 1> ../$(BUILD_DIR)/$(SOURCEFILE).fixed --frail
 
 ## show a diff with changes remark suggests
 .PHONY: show-diff
-show-diff: nodejs/node_modules/remark nodejs/package.json $(SOURCEPATH) $(BUILD_DIR) Makefile
-	cd nodejs; ./node_modules/.bin/remark ../$(SOURCEPATH) --no-color -q 1> ../$(BUILD_DIR)/$(SOURCEFILE).fixed
+show-diff: nodejs/node_modules/remark nodejs/remark/.remarkrc $(SOURCEPATH) $(BUILD_DIR) Makefile
+	cd nodejs; ./node_modules/.bin/remark ../$(SOURCEPATH) --no-color -q --config-path ./remark/.remarkrc 1> ../$(BUILD_DIR)/$(SOURCEFILE).fixed
 ## compare temporary file to original, error and fail with message if differences exist
 	diff $(SOURCEPATH) $(BUILD_DIR)/$(SOURCEFILE).fixed -u3 || \
 	(echo "Error: remark found bad markdown syntax, see output above" && false)
@@ -54,6 +55,7 @@ show-diff: nodejs/node_modules/remark nodejs/package.json $(SOURCEPATH) $(BUILD_
 
 .PHONY: check-references
 check-references: $(SOURCEPATH) $(BUILD_DIR) Makefile
+	@echo '##################### References check ##################'
 ## check references unique
 	@rm -f $(BUILD_DIR)/$(SOURCEFILE).uniq
 	@grep -oP '(?<=<a name=")[^\"]+' $(SOURCEPATH) | sort | uniq -d > $(BUILD_DIR)/$(SOURCEFILE).uniq
@@ -62,6 +64,7 @@ check-references: $(SOURCEPATH) $(BUILD_DIR) Makefile
 
 .PHONY: check-notabs
 check-notabs: $(SOURCEPATH) $(BUILD_DIR) Makefile
+	@echo '##################### Tabs check ##################'
 # find lines with tabs
 # old file still might be around
 	@rm -f $(BUILD_DIR)/CppCoreGuidelines.md.tabs
@@ -71,6 +74,7 @@ check-notabs: $(SOURCEPATH) $(BUILD_DIR) Makefile
 
 .PHONY: check-badchars
 check-badchars: $(SOURCEPATH) $(BUILD_DIR) Makefile
+	@echo '##################### Bad chars check ##################'
 # find lines with tabs
 # old file still might be around
 	@rm -f $(BUILD_DIR)/CppCoreGuidelines.md.badchars
@@ -81,8 +85,9 @@ check-badchars: $(SOURCEPATH) $(BUILD_DIR) Makefile
 
 .PHONY: hunspell-check
 hunspell-check: $(BUILD_DIR)/plain-nohtml.txt
+	@echo '##################### Spell check ##################'
 	hunspell -p hunspell/isocpp.dic -u < build/plain-nohtml.txt > $(BUILD_DIR)/hunspell-report.txt
-	if [ -s $(BUILD_DIR)/hunspell-report.txt ]; then echo 'Warning: Spellcheck failed, fix words or add to dictionary:'; cat $(BUILD_DIR)/hunspell-report.txt; false; fi;
+	@if [ -s $(BUILD_DIR)/hunspell-report.txt ]; then echo 'Warning: Spellcheck failed, fix words or add to dictionary:'; cat $(BUILD_DIR)/hunspell-report.txt; false; fi;
 
 # only list words that are not in dict
 # to include all add them to bottom of hunspell/isocpp.dict, and run
@@ -95,6 +100,7 @@ hunspell-list: $(BUILD_DIR)/plain.txt
 
 .PHONY: cpplint-all
 cpplint-all: $(BUILD_DIR)/codeblocks $(BUILD_DIR)/Makefile python/Makefile.in
+	@echo '##################### C++ Style check ##################'
 	cd $(BUILD_DIR)/codeblocks; $(MAKE) cpplint-all -k
 
 #### generic makefile for sourceblocks (need to be evaluated after c++ file generation)
