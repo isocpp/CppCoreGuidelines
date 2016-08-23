@@ -16138,7 +16138,7 @@ This enables the compiler to do an early consistency check.
 
     // foo.h:
     void foo(int);
-    int bar(long double);
+    int bar(long);
     int foobar(int);
 
     // foo.cpp:
@@ -16152,7 +16152,7 @@ The errors will not be caught until link time for a program calling `bar` or `fo
 
     // foo.h:
     void foo(int);
-    int bar(long double);
+    int bar(long);
     int foobar(int);
 
     // foo.cpp:
