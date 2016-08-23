@@ -3142,10 +3142,10 @@ Here on one popular implementation I got the output:
 
 I expected that because the call of `g()` reuses the stack space abandoned by the call of `f()` so `*p` refers to the space now occupied by `gx`.
 
-Imagine what would happen if `fx` and `gx` were of different types.
-Imagine what would happen if `fx` or `gx` was a type with an invariant.
-Imagine what would happen if more that dangling pointer was passed around among a larger set of functions.
-Imagine what a cracker could do with that dangling pointer.
+* Imagine what would happen if `fx` and `gx` were of different types.
+* Imagine what would happen if `fx` or `gx` was a type with an invariant.
+* Imagine what would happen if more that dangling pointer was passed around among a larger set of functions.
+* Imagine what a cracker could do with that dangling pointer.
 
 Fortunately, most (all?) modern compilers catch and warn against this simple case.
 
@@ -7731,9 +7731,9 @@ The default is the easiest to read and write.
     enum class Direction : char { n, s, e, w,
                                   ne, nw, se, sw };  // underlying type saves space
 
-    enum class Web_color : int { red = 0xFF0000,
-                                green = 0x00FF00,
-                                blue = 0x0000FF };  // underlying type is redundant
+    enum class Web_color : int { red   = 0xFF0000,
+                                 green = 0x00FF00,
+                                 blue  = 0x0000FF };  // underlying type is redundant
 
 ##### Note
 
@@ -8460,14 +8460,14 @@ Any type (including primary template or specialization) that overloads unary `*`
 ##### Example
 
     // use Boost's intrusive_ptr
-    #include <boost/intrusive_ptr.hpp>
+    #include<boost/intrusive_ptr.hpp>
     void f(boost::intrusive_ptr<widget> p)  // error under rule 'sharedptrparam'
     {
         p->foo();
     }
 
     // use Microsoft's CComPtr
-    #include <atlbase.h>
+    #include<atlbase.h>
     void f(CComPtr<widget> p)               // error under rule 'sharedptrparam'
     {
         p->foo();
@@ -9776,7 +9776,7 @@ Requires messy cast-and-macro-laden code to get working right.
 
 ##### Example
 
-    #include <cstdarg>
+    #include<cstdarg>
 
     // "severity" followed by a zero-terminated list of char*s; write the C-style strings to cerr
     void error(int severity ...)
@@ -10364,7 +10364,7 @@ A key example is basic narrowing:
 
     double d = 7.9;
     int i = d;    // bad: narrowing: i becomes 7
-    i = (int)d;   // bad: we're going to claim this is still not explicit enough
+    i = (int) d;  // bad: we're going to claim this is still not explicit enough
 
     void f(int x, long y, double d)
     {
@@ -12069,7 +12069,7 @@ A `thread` that has not been `detach()`ed when it is destroyed terminates the pr
 
 ##### Enforcement
 
-* Flag `join's for `raii_thread`s ???
+* Flag `join`s for `raii_thread`s ???
 * Flag `detach`s for `detached_thread`s
 
 
@@ -13957,7 +13957,7 @@ It also avoids brittle or inefficient workarounds. Convention: That's the way th
     };
 
     Container c(10, sizeof(double));
-    ((double*)c.elem)[] = 9.9;
+    ((double*) c.elem)[] = 9.9;
 
 This doesn't directly express the intent of the programmer and hides the structure of the program from the type system and optimizer.
 
@@ -15458,7 +15458,7 @@ Variadic templates is the most general mechanism for that, and is both efficient
 
 ##### Enforcement
 
-    * Flag uses of `va_arg` in user code.
+* Flag uses of `va_arg` in user code.
 
 ### <a name="Rt-variadic-pass"></a>T.101: ??? How to pass arguments to a variadic template ???
 
@@ -15612,7 +15612,7 @@ Often a `constexpr` function implies less compile-time overhead than alternative
 
 ##### Enforcement
 
-    * Flag template metaprograms yielding a value. These should be replaced with `constexpr` functions.
+* Flag template metaprograms yielding a value. These should be replaced with `constexpr` functions.
 
 ### <a name="Rt-std-tmp"></a>T.124: Prefer to use standard-library TMP facilities
 
@@ -15762,7 +15762,7 @@ Use `!=` instead of `<` to compare iterators; `!=` works for more objects becaus
         // ...
     }
 
-Of course, range-for is better still where it does what you want.
+Of course, range-`for` is better still where it does what you want.
 
 ##### Example
 
@@ -15891,7 +15891,7 @@ That subset can be compiled with both C and C++ compilers, and when compiled as 
     int* p1 = malloc(10 * sizeof(int));                      // not C++
     int* p2 = static_cast<int*>(malloc(10 * sizeof(int)));   // not C, C-style C++
     int* p3 = new int[10];                                   // not C
-    int* p4 = (int*)malloc(10 * sizeof(int));                // both C and C++
+    int* p4 = (int*) malloc(10 * sizeof(int));               // both C and C++
 
 ##### Enforcement
 
@@ -16409,7 +16409,7 @@ This slowdown can be significant compared to `printf`-style output.
 ##### Example
 
     cout << "Hello, World!" << endl;    // two output operations and a flush
-    cout << "hello, World!\n";          // one output operation and no flush
+    cout << "Hello, World!\n";          // one output operation and no flush
 
 ##### Note
 
