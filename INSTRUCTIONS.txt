@@ -1,11 +1,10 @@
 How to update the gh-pages at http://isocpp.github.io/CppCoreGuidelines/
 
 1. git checkout master
-2. Update date in CppCoreGuidelines.md file
-3. Copy CppCoreGuidelines.md to a temporary location
-4. git checkout gh-pages
-5. Copy the temporary copy of CppCoreGuidelines.md back
-6. Add the following three lines to the top of CppCoreGuidelines.md:
+2. Update date in CppCoreGuidelines.md (and commit & push if updated)
+3. git checkout gh-pages
+4. git checkout master -- CppCoreGuidelines.md
+5. Add the following three lines to the top of CppCoreGuidelines.md:
 
 ---
 layout: default
