@@ -17323,14 +17323,14 @@ Dynamic accesses into arrays are difficult for both tools and humans to validate
     // ALTERNATIVE A: Use a span
 
     // A1: Change parameter type to use span
-    void f(span<int, 10> a, int pos)
+    void f1(span<int, 10> a, int pos)
     {
         a[pos / 2] = 1; // OK
         a[pos - 1] = 2; // OK
     }
 
     // A2: Add local span and use that
-    void f(array<int, 10> arr, int pos)
+    void f2(array<int, 10> arr, int pos)
     {
         span<int> a = {arr, pos}
         a[pos / 2] = 1; // OK
@@ -17338,7 +17338,7 @@ Dynamic accesses into arrays are difficult for both tools and humans to validate
     }
 
     // ALTERNATIVE B: Use at() for access
-    void f(array<int, 10> a, int pos)
+    void f3(array<int, 10> a, int pos)
     {
         at(a, pos / 2) = 1; // OK
         at(a, pos - 1) = 2; // OK
