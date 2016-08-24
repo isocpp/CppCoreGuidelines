@@ -15785,18 +15785,18 @@ Use the least-derived class that has the functionality you need.
 
     class Base {
     public:
-        void f();
-        void g();
+        Bar f();
+        Bar g();
     };
 
     class Derived1 : public Base {
     public:
-        void h();
+        Bar h();
     };
 
     class Derived2 : public Base {
     public:
-        void j();
+        Bar j();
     };
 
     // bad, unless there is a specific reason for limiting to Derived1 objects only
