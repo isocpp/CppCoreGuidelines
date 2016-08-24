@@ -16997,10 +16997,10 @@ Use of these casts can violate type safety and cause the program to access a var
     };
 
     Derived1 d1;
-    Base* p = &d1; // ok, implicit conversion to pointer to Base is fine
+    Base* p1 = &d1; // ok, implicit conversion to pointer to Base is fine
 
     // BAD, tries to treat d1 as a Derived2, which it is not
-    Derived2* p2 = static_cast<Derived2*>(p);
+    Derived2* p2 = static_cast<Derived2*>(p1);
     // tries to access d1's nonexistent string member, instead sees arbitrary bytes near d1
     cout << p2->get_s();
 
@@ -17136,7 +17136,7 @@ Note that a C-style `(T)expression` cast means to perform the first of the follo
     Base* p1 = &d1; // ok, implicit conversion to pointer to Base is fine
 
     // BAD, tries to treat d1 as a Derived2, which it is not
-    Derived2* p2 = (Derived2*)(p);
+    Derived2* p2 = (Derived2*)(p1);
     // tries to access d1's nonexistent string member, instead sees arbitrary bytes near d1
     cout << p2->get_s();
 
