@@ -1,6 +1,6 @@
 # <a name="main"></a>C++ Core Guidelines
 
-August 24, 2016
+August 25, 2016
 
 Editors:
 
@@ -983,17 +983,27 @@ Messy, low-level code breeds more such code.
 
     int sz = 100;
     int* p = (int*) malloc(sizeof(int) * sz);
+    int count = 0;
     // ...
-    if (count == sz)
-        p = (int*) realloc(p, sizeof(int) * sz * 2);
-    // ...
+    for (;;) {
+        // ... read an int into x, exit loop if end of file is reached ...
+        // ... check that x is valid ... 
+        if (count == sz)
+            p = (int*) realloc(p, sizeof(int) * sz * 2);
+        p[count++] = x;
+        // ...
+    }
 
 This is low-level, verbose, and error-prone.
+Fo example, we "forgot" to test for mememory exhaustion.
 Instead, we could use `vector`:
 
     vector<int> v(100);
-
-    v.push_back(yet_another)int);
+    // ...
+    for (int x; cin>>x; ) {
+        // ... check that x is valid ...
+        v.push_back(x);
+    }
 
 ##### Note
 
@@ -1169,6 +1179,23 @@ You can use the simplest "singleton" (so simple that it is often not considered 
 This is one of the most effective solutions to problems related to initialization order.
 In a multi-threaded environment the initialization of the static object does not introduce a race condition
 (unless you carelessly access a shared object from within its constructor).
+
+Note that the initialization of a local `static` does not imply a race condition.
+However, if the destruction of `X` involves an operation that needs to be synchronized we must use a less imple solution.
+For example:
+
+    X& myX()
+    {
+        static auto p = new X {3};
+        return *p;  // potential leak
+    }
+
+Now someone has to `delete` that object in some suitably thread-safe way.
+That's error-prone, so we don't use that technique unless
+
+* `myX` is in multithreaded code,
+* that `X` object needs to be destroyed (e.g., because it releases a resource), and
+* `X`'s destructor's code needs to be synchronized.
 
 If you, as many do, define a singleton as a class for which only one object is created, functions like `myX` are not singletons, and this useful technique is not an exception to the no-singleton rule.
 
@@ -9135,7 +9162,7 @@ For containers, there is a tradition for using `{...}` for a list of elements an
 Initialization of a variable declared using `auto` with a single value, e.g., `{v}`, had surprising results until recently:
 
     auto x1 {7};        // x1 is an int with the value 7
-    auto x2 = {7};      // x2 is an initializer_list<int> with an element 7
+    auto x2 = {7};      // x2 is an initializer_list<int> with an element 7 (this will will change to "element 7" in C++17)
 
     auto x11 {7, 8};    // error: two initializers
     auto x22 = {7, 8};  // x2 is an initializer_list<int> with elements 7 and 8
@@ -9145,6 +9172,10 @@ Initialization of a variable declared using `auto` with a single value, e.g., `{
 Use `={...}` if you really want an `initializer_list<T>`
 
     auto fib10 = {0, 1, 2, 3, 5, 8, 13, 25, 38, 63};   // fib10 is a list
+
+##### Note
+
+Old habits die hard, so this rule is hard to apply consistently, especially as there are so many cases where `=` is innocent.
 
 ##### Example
 
@@ -13183,17 +13214,17 @@ Generality. Re-use. Efficiency. Encourages consistent definition of user types.
 
 Conceptually, the following requirements are wrong because what we want of `T` is more than just the very low-level concepts of "can be incremented" or "can be added":
 
-    template<typename T, typename A>
+    template<typename T>
         // requires Incrementable<T>
-    A sum1(vector<T>& v, A s)
+    T sum1(vector<T>& v, T s)
     {
         for (auto x : v) s += x;
         return s;
     }
 
-    template<typename T, typename A>
+    template<typename T>
         // requires Simple_number<T>
-    A sum2(vector<T>& v, A s)
+    T sum2(vector<T>& v, T s)
     {
         for (auto x : v) s = s + x;
         return s;
@@ -13204,9 +13235,9 @@ And, in this case, missed an opportunity for a generalization.
 
 ##### Example
 
-    template<typename T, typename A>
+    template<typename T>
         // requires Arithmetic<T>
-    A sum(vector<T>& v, A s)
+    T sum(vector<T>& v, T s)
     {
         for (auto x : v) s += x;
         return s;
@@ -15305,14 +15336,23 @@ Source file rule summary:
 
 ##### Reason
 
-It's a longstanding convention. But consistency is more important, so if your project uses something else, follow that.
+It's a longstanding convention.
+But consistency is more important, so if your project uses something else, follow that.
 
 ##### Note
 
-This convention reflects a common use pattern: Headers are more often shared with C to compile as both C++ and C, which typically uses `.h`, and it's easier to name all headers `.h` instead of having different extensions for just those headers that are intended to be shared with C. On the other hand, implementation files are rarely shared with C and so should typically be distinguished from `.c` files, so it's normally best to name all C++ implementation files something else (such as `.cpp`).
+This convention reflects a common use pattern:
+Headers are more often shared with C to compile as both C++ and C, which typically uses `.h`,
+and it's easier to name all headers `.h` instead of having different extensions for just those headers that are intended to be shared with C.
+On the other hand, implementation files are rarely shared with C and so should typically be distinguished from `.c` files,
+so it's normally best to name all C++ implementation files something else (such as `.cpp`).
 
 The specific names `.h` and `.cpp` are not required (just recommended as a default) and other names are in widespread use.
-Examples are `.hh` and `.cxx`. Use such names equivalently. In this document we refer to `.h` and `.cpp` as a shorthand for header and implementation files, even though the actual extension may be different.
+Examples are `.hh`, `.C`, and `.cxx`. Use such names equivalently.
+In this document, we refer to `.h` and `.cpp` as a shorthand for header and implementation files,
+even though the actual extension may be different.
+
+Your IDE (if you use one) may have strong opinions about suffices.
 
 ##### Example
 
@@ -15347,7 +15387,21 @@ Including entities subject to the one-definition rule leads to linkage errors.
 
 ##### Example
 
-    ???
+    // file.h:
+    namespace Foo {
+        int x = 7;
+        int xx() { return x+x; }
+    }
+
+    // file1.cpp:
+    #include<file.h>
+    // ... more ...
+
+     // file2.cpp:
+    #include<file.h>
+    // ... more ...
+
+Linking `file1.cpp` and `file2.cpp` will give two linker errors.
 
 **Alternative formulation**: A `.h` file must contain only:
 
@@ -15798,7 +15852,8 @@ A library can be statically or dynamically linked into a program, or it may be `
 
 ##### Note
 
-A library can contain cyclic references in the definition of its components. For example:
+A library can contain cyclic references in the definition of its components.
+For example:
 
     ???
 
@@ -15808,32 +15863,263 @@ However, a library should not depend on another that depends on it.
 # <a name="S-not"></a>NR: Non-Rules and myths
 
 This section contains rules and guidelines that are popular somewhere, but that we deliberately don't recommend.
-In the context of the styles of programming we recommend and support with the guidelines, these "non-rules" would do harm.
+We know full well that there have been times and places where these rules made sense, and we have used them ourselves at times.
+However, in the context of the styles of programming we recommend and support with the guidelines, these "non-rules" would do harm.
+
+Even today, there can be contexts where the rules make sense.
+For example, lack of suitable tool support can make exceptions unsuitable in hard-real-time systems,
+but please don't blindly trust "common wisdom" (e.g., unsupported statements about "efficiency");
+such "wisdom" may be based on decades-old information or experienced from languages with very different properties than C++
+(e.g., C or Java).
+
+The positive arguments for alternatives to these non-rules are listed in the rules offered as "Alternatives".
 
 Non-rule summary:
 
-* [NR.1: All declarations should be at the top of a function](#Rnr-top)
-* single-return rule
-* no exceptions
-* one class per source file
-* two-phase initialization
-* goto exit
-* make all data members `protected`
+* [NR.1: Don't: All declarations should be at the top of a function](#Rnr-top)
+* [NR.2: Don't: Have only a single single `return`-statement in a function](#Rnr-single-return)
+* [NR.3: Don't: Don't use exceptions](#Rnr-no-exceptions)
+* [NR.4: Don't: Place each class declaration in its own source file](#Rnr-lots-of-files)
+* [NR.5: Don't: Don't do substantive work in a constructor; instead use two-phase initialization](#Rnr-two-phase-init)
+* [NR.6: Don't: Place all cleanup actions at the end of a fucntion and `goto exit`](#Rnr-goto-exit)
+* [NR.7: Don't: Make all data members `protected`](#Rnr-protected-data)
 * ???
 
-### <a name="Rnr-top"></a>NR.1: All declarations should be at the top of a function
+### <a name="Rnr-top"></a>NR.1: Don't: All declarations should be at the top of a function
 
-##### Reason
+##### Reason (not to follow this rule)
 
 This rule is a legacy of old programming languages that didn't allow initialization of variables and constants after a statement.
 This leads to longer programs and more errors caused by uninitialized and wrongly initialized variables.
 
-##### Alternative
+##### Example, bad
 
-Instead:
+    ???
+
+The larger the distance between the uninitialized variable and its use, the larger the chance of a bug.
+Fortunately, compilers catch many "used before set" errors.
+
+
+##### Alternative
 
 * [Always initialize an object](#Res-always)
 * [ES.21: Don't introduce a variable (or constant) before you need to use it](#Res-introduce)
+
+### <a name="Rnr-single-return"></a>NR.2: Don't: Have only a single single `return`-statement in a function
+
+##### Reason (not to follow this rule)
+
+The single-return rule can lead to unnecessarily convoluted code and the introduction of extra state variables.
+In particular, the single-return rule makes it harder to concentrate error checking at the top of a function.
+
+##### Example
+
+    template<class T>
+    //  requires Number<T>
+    string sign(T x)
+    {
+        if (x<0)
+            return "negative";
+        else if (x>0)
+            return "positive";
+        return "zero";
+    }
+
+to use a single return only we would have to do something like
+
+    template<class T>   
+    //  requires Number<T>
+    string sign(T x)        // bad
+    {
+        string res;
+        if (x<0)
+            res = "negative";
+        else if (x>0)
+            res = "positive";
+        else
+            res ="zero";
+        return res;
+    }
+
+This is both longer and likely to be less efficient.
+The larger and more compliciated the function is, the more painful the workarounds get.
+Of course many simple functions will natually have just one `return` because of their simpler inherent logic.
+
+##### Example
+
+    int index(const char* p)
+    {
+        if (p==nullptr) return -1;  // error indicator: alternatively `throw nullptr_error{}`
+        // ... do a lookup to find the index for p
+        return i;
+    }
+
+If we applied the rule, we'd get something like
+
+    int index2(const char* p)
+    {
+        int i;
+        if (p==nullptr)
+            i = -1;  // error indicator
+        else {
+            // ... do a lookup to find the index for p
+        }
+        return i;
+    }
+
+Note that we (deliberately) violated the rule against uninitialized variables because this style commonly leads to that.
+Also, this style is a temptation to use the [goto exit](#Rnr-goto-exit) non-rule.
+
+##### Alternative
+
+* Keep functions short and simple
+* Feel free to use multiple `return` statements (and to throw exceptions).
+
+### <a name="Rnr-no-exceptions"></a>NR.3: Don't: Don't use exceptions
+
+##### Reason (not to follow this rule)
+
+There seem to be three main reasons given for this non-rule:
+
+* exceptions are inefficient
+* exceptions lead to leaks and errors
+* exception performance is not predictable
+
+There is no way we can settle this issue to the satisfaction of everybody.
+After all, the discussions about exceptions have been going on for 40+ years.
+Some languages cannot be used without exceptions, but others do not support them.
+This leads to strong traditions for the use and non-use of exceptions, and to heated debates.
+
+However, we can briefly outline why we consider exceptions the best alternative for general-purpose programming
+and in the context of these guidelines.
+Simple arguments for and against are often inconclusive.
+There are specialized applications where exceptions indeed can be inappropriate
+(e.g., hard-real time systems without support for reliable estimates of the cost of handling an exception).
+
+Consider the major objections to exceptions in turn
+
+* Exceptions are inefficient:
+Compared to what?
+When comparing make sure that the same set of errors are handled and that they are handled equivalently.
+In particular, do not compare a program that immediately terminate on seeing an error with a program
+that carefully cleans up resources before loging an error.
+Yes, some systems have poor exception handling implementations; sometimes, such implementations force us to use
+other error-handling approaches, but that's not a fundamental problem with exceptions.
+When using an efficiency argument - in any context - be careful that you have good data that actually provides
+insight into the problem under discussion.
+* Exceptions lead to leaks and errors.
+They do not.
+If your program is a rat's nest of pointers without an overall strategy for resource management,
+you have a problem whatever you do.
+If your system consists of a million lines of such code,
+you probably will not be able to use exceptions,
+but that's a problem with excessive and undisciplined pointer use, rather than with exceptions.
+In our opinion, you need RAII to make exception-based error handling simple and safe -- simpler and safer than alternatives.
+* Exception performance is not predictable
+If you are in a hard-real-time system where you must guarantee completion of a task in a given time,
+you need tools to back up such guarantees.
+As far as we know such tools are not available (at least not to most programmers).
+
+Many, possibly most, problems with exceptions stem from historical needs to interact with messy old code.
+
+The fundamental arguments for the use of exceptions are
+
+* They clearly separates error return from ordinary return
+* They cannot be forgotten or ignored
+* They can be used systematically
+
+Remember
+
+* Exceptions are for reporting errors (in C++; other languages can have different uses for exceptions).
+* Exceptions are not for errors that can be handled locally.
+* Don't try to catch every exception in every function (that's tedious, clumsy, and leads to slow code).
+* Exceptions are not for errors that require instant termination of a module/system after a non-recoverable error.
+
+##### Example
+
+    ???
+
+##### Alternative
+
+* [RAII](#Re-raii)
+* Contracts/assertions: Use GSL's `Expects` and `Ensures` (until we get language support for contracts)
+
+### <a name="Rnr-lots-of-files"></a>NR.4: Don't: Place each class declaration in its own source file
+
+##### Reason (not to follow this rule)
+
+The resulting number of files are hard to manage and can slow down compilation.
+Individual classes are rarely a good logical unit of maintenance and distribution.
+
+##### Example
+
+    ???
+
+##### Alternative
+
+* Use namespaces containing logically cohesive sets of classes and functions.
+
+### <a name="Rnr-two-phase-init"></a>NR.5: Don't: Don't do substantive work in a constructor; instead use two-phase initialization
+
+##### Reason (not to follow this rule)
+
+Folloing this rule leads to weaker invariants,
+more complicated code (having to deal with semi-constructed objects),
+and errors (when we didn't deal correctly with semi-constructed objects consistently).
+
+##### Example
+
+    ???
+
+##### Alternative
+
+* Always establish a class invariant in a constructor.
+* Don't define an object before it is needed.
+
+### <a name="Rnr-goto-exit"></a>NR.6: Don't: Place all cleanup actions at the end of a fucntion and `goto exit`
+
+##### Reason (not to follow this rule)
+
+`goto` is error-prone.
+This technique is a pre-exception technique for RAII-like resource and error handling.
+
+##### Example, bad
+
+    void do_something(int n)
+    {
+        if (n<100) goto exit;
+        // ...
+        int* p = (int*)malloc(n);
+        // ...
+        if (some_ error) goto_exit;
+        // ...
+    exit:
+        free(p);
+    }
+
+and spot the bug.
+
+##### Alternative
+
+* Use exceptions and [RAII](#Re-raii)
+* for non-RAII resources, use [`finally`](#Re-finally).
+
+### <a name="Rnr-protected-data"></a>NR.7: Don't: Make all data members `protected`
+
+##### Reason (not to follow this rule)
+
+`protected` data is a source of errors.
+`protected` data can be manipulated from an unbounded amount of code in various places.
+`protected` data is the class hierarchy equivalent to global data.
+
+##### Example
+
+    ???
+
+##### Alternative
+
+* [M]ake member data `public` or (preferably) `private`](#Rh-protected)
+
 
 # <a name="S-references"></a>RF: References
 
