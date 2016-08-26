@@ -108,4 +108,10 @@ p:after {
     h1,h2,h3,h4,h5,strong {
         page-break-after:avoid;
     }
+    h1,h2 {
+        page-break-before:always;
+    }
+    a:link, a:visited {
+        color: #000;
+    }
 }
