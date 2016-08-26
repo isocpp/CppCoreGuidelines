@@ -8444,6 +8444,7 @@ Declaration rules:
 * [ES.9: Avoid `ALL_CAPS` names](#Res-not-CAPS)
 * [ES.10: Declare one name (only) per declaration](#Res-name-one)
 * [ES.11: Use `auto` to avoid redundant repetition of type names](#Res-auto)
+* [ES.12: Do not reuse names in nested scopes](#Res-reuse)
 * [ES.20: Always initialize an object](#Res-always)
 * [ES.21: Don't introduce a variable (or constant) before you need to use it](#Res-introduce)
 * [ES.22: Don't declare a variable until you have a value to initialize it with](#Res-init)
@@ -8877,6 +8878,99 @@ When concepts become available, we can (and should) be more specific about the t
 
 Flag redundant repetition of type names in a declaration.
 
+### <a name="Res-reuse"></a>ES.12: Do not reuse names in nested scopes
+
+##### Reason
+
+It is easy to get confused about which variable is used.
+Can cause maintenance problems.
+
+##### Example, bad
+
+    int d = 0;
+    // ...
+    if (cond) {
+        // ...
+        d = 9;
+        // ...
+    }
+    else {
+        // ...
+        int d = 7;
+        // ...
+        d = value_to_be_rerurned;
+        // ...
+    }
+
+    return d;
+
+If this is a large `if`-statement, it is easy to overlook that a new `d` has been introduced in the inner scope.
+This is a known source of bugs.
+Sometimes suce reuse of a name in an inner scope is called "shadowing".
+
+##### Note
+
+Shadowing is primarily a problem when functions are too large and too complex.
+
+##### Example
+
+Shadowing of function arguments in the outermost block is disallowed by the language:
+
+    void f(int x)
+    {
+        int x = 4;  // error: reuse of function argument name
+
+        if (x) {
+            int x = 7;  // allowed, but bad
+            // ...
+        }
+    }
+
+##### Example, bad
+
+Reuse of a member name as a local variable can also be a problem:
+
+    struct S {
+        int m;
+        void f(int x);
+    };
+
+    void S::f(int x)
+    {
+        m=7;    // assign to member
+        if (x) {
+            int m = 9;
+            // ...
+            m = 99; // assign to member
+            // ...
+        }
+    }
+
+##### Exception
+
+We often reuse function names from a base class in a derived class:
+
+    struct B {
+        void f(int);
+    };
+
+    struct D : B {
+        void f(double);
+        using B::f;
+    };
+
+This is error-prone.
+For example, had we forgotten the using declaration, a call `d.f(1)` would not have found the `int` version of `f`.
+
+??? Do we need a specific rule about shadowing/hiding in class hierarchies?
+
+##### Enforcement
+
+* Flag reuse of a name in nested local scopes
+* Flag reuse of a member name as a local variable in a member function
+* Flag reuse of a global name as a local variable or a member name
+* Flag reuse of a base class member name in a derived class (except for function names)
+
 ### <a name="Res-always"></a>ES.20: Always initialize an object
 
 ##### Reason
@@ -8987,7 +9081,7 @@ The cost of initializing that array could be significant in some situations.
 However, such examples do tend to leave uninitialized variables accessible, so they should be treated with suspicion.
 
     constexpr int max = 8 * 1024;
-    int buf[max] = {0};   // better in some situations
+    int buf[max] = {};   // zero all elements; better in some situations
     f.read(buf, max);
 
 When feasible use a library function that is known not to overflow. For example:
@@ -10180,7 +10274,74 @@ Such examples are often handled as well or better using `mutable` or an indirect
 
 ##### Example
 
-    ???
+Consider keeping previously computed results around for a costly operation:
+
+    class X {
+    public:
+        int get_val(int x)
+        {
+            if (auto p = cache.find(x)) return ->second;
+            int val = compute(val);
+            cache[x] = val;
+            return val;
+        }
+        // ...
+    private:
+        map<int,int> cache;
+    }
+
+Here, `get_val()` is logically constant, so we would like to make it a `const` member.
+To do this we still need to mutate `cache`, so people sometimes resort to a `const_cast`:
+
+    class X {   // Suspicious solution based on casting
+    public:
+        int get_val(int x) const
+        {
+            if (auto p = cache.find(x)) return ->second;
+            int val = compute(val);
+            const_cast<map<int,int>>(cache)[x] = val;
+            return val;
+        }
+        // ...
+    private:
+        map<int,int> cache;
+    }
+
+Fortunately, there is a better solution:
+State that `cache` is mutable even for a `const` object:
+
+    class X {   // better solution
+    public:
+        int get_val(int x)
+        {
+            if (auto p = cache.find(x)) return ->second;
+            int val = compute(val);
+            cache[x] = val;
+            return val;
+        }
+        // ...
+    private:
+        mutable map<int,int> cache;
+    }
+
+An alternative solution would to store a pointer to the `cache`:
+
+    class X {   // OK, but slightly messier solution
+    public:
+        int get_val(int x)
+        {
+            if (auto p = cache.find(x)) return ->second;
+            int val = compute(val);
+            (*cache)[x] = val;
+            return val;
+        }
+        // ...
+    private:
+        mutable map<int,int>* cache;
+    }
+
+That solution is the most flexible, but requires explicit construction and destruction of `*cache`
+(most likely in the constructor and destructor of `X`). 
 
 ##### Enforcement
 
