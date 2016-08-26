@@ -1,6 +1,6 @@
 # <a name="main"></a>C++ Core Guidelines
 
-August 25, 2016
+August 26, 2016
 
 Editors:
 
@@ -10625,33 +10625,79 @@ Unsigned types support bit manipulation without surprises from sign bits.
 
 ##### Example
 
-    ???
+    unsigned char x = 0b1010'1010;
+    unsigned char y = ~x;   // y == 0b0101'0101;
 
-**Exception**: Use unsigned types if you really want modulo arithmetic - add
-comments as necessary noting the reliance on overflow behavior, as such code
-is going to be surprising for many programmers.
+##### Note
+
+Unsigned types can also be useful for modulo arithmetic.
+However, if you want modulo arithmetic add
+comments as necessary noting the reliance on wraparound behavior, as such code
+can be surprising for many programmers.
 
 ##### Enforcement
 
-???
+* Just about impossible in general because of the use of unsigned subscripts in the standard library
+* ???
 
 ### <a name="Res-signed"></a>ES.102: Use signed types for arithmetic
 
 ##### Reason
 
-Signed types support modulo arithmetic without surprises from lack of sign bits.
+Because most arithmetic is assumed to be signed;
+`x-y` yields a negative number when `y>x` except in the rare cases wrhere you really want modulo arithmetic.
 
 ##### Example
 
-    ???
+Unsigned arithmetic can yield surprising results if you are not expecting it.
+This is even more true for mixed signed and unsigned arithmetic.
 
-**Exception**: Use unsigned types if you really want modulo arithmetic - add
+    template<typename T, typename T2>
+	T subtract(T x, T2 y)
+	{
+		return x-y;
+	}
+
+	void test()
+	{
+		int s = 5;
+		unsigned int us = 5;
+		cout << subtract(s, 7) << '\n';     // -2
+		cout << subtract(us, 7u) << '\n';   // 4294967294
+		cout << subtract(s, 7u) << '\n';    // -2
+		cout << subtract(us, 7) << '\n';    // 4294967294
+		cout << subtract(s, us+2) << '\n';  // -2
+		cout << subtract(us, s+2) << '\n';  // 4294967294
+	}
+
+Here we have been very explicit about what's happening,
+but if you had see `us-(s+2)` or `s+=2; ... us-s` would you reliably have suspected that the result would print as `4294967294`?
+
+##### Exception
+
+Use unsigned types if you really want modulo arithmetic - add
 comments as necessary noting the reliance on overflow behavior, as such code
 is going to be surprising for many programmers.
 
+##### Example
+
+The standard library uses unsigned types for subscripts.
+The build-in array uses signed types for subscripts.
+This makes surprises (and bugs) inevitable.
+
+    int a[10];
+    for (int i=0; i<10; ++i) a[i]=i;
+    vector<int> v(10);
+    for (int i=0; v.size()<10; ++i) v[i]=i; // compares signed to unsigned; some compilers warn
+
+    int a2[-2];         // error: negative size
+    vector<int> v2(-2); // OK, but the number of ints (4294967294) is so large that we should get an exception
+
 ##### Enforcement
 
-???
+* Flag mixed signed and unsigned arithmetic
+* Flag results of unsigned arithmetic assigned to or printed as signed.
+* Flag unsigned literals (e.g. `-2`) used as container subscripts.
 
 ### <a name="Res-overflow"></a>ES.103: Don't overflow
 
