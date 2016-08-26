@@ -145,7 +145,7 @@ abbr[title] {
 /* Code */
 code,
 pre {
-  font-family: "Roboto", monospace;
+  font-family: "Roboto Mono", monospace;
 }
 code {
   padding: .2em .2em;
