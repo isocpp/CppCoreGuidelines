@@ -53,6 +53,7 @@
       $("button")
         .click(function( event ) {
           $("pre code").toggleClass("cpp");
+          $("pre code").toggleClass("hljs");
           $("pre code").toggleClass("no-highlight");
           $("pre code").each(function(i, block) {
             hljs.highlightBlock(block);

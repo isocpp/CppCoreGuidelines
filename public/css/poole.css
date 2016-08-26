@@ -150,10 +150,10 @@ pre {
 code {
   padding: .2em .2em;
   font-size: 90%;
-  color: #bf616a;
   background-color: #f9f9f9;
   border-radius: 3px;
 }
+
 @media (max-width: 70em) {
   code {
       white-space: pre-wrap;
@@ -184,7 +184,7 @@ pre {
 pre code {
   padding: 0;
   font-size: 100%;
-  color: inherit;
+  color: black;
   background-color: transparent;
 }
 
