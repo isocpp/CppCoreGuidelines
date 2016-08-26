@@ -587,7 +587,7 @@ You don't need to write error handlers for errors caught at compile time.
 This example is easily simplified
 
     // Int is an alias used for integers
-    static_assert(sizeof(Int) >= 4);    // do: compile-time check
+    static_assert(sizeof(int) >= 4);    // do: compile-time check
 
 ##### Example
 
@@ -2609,6 +2609,7 @@ Unique owner types that are move-only and cheap-to-move, such as `unique_ptr`, c
 
 For example:
 
+    template <class T>
     void sink(std::unique_ptr<T> p) {
         // use p ... possibly std::move(p) onward somewhere else
     }   // p gets destroyed
@@ -6610,7 +6611,7 @@ Capping an individual virtual function with `final` is error-prone as that `fina
 
     // ...
 
-    use(new Better_interface{});
+    use(new Better_implementation{});
 
 The problem is easy to see in a small example, but in a large hierarchy with many virtual functions, tools are required for reliably spotting such problems.
 Consistent use of `override` would catch this.
@@ -7234,7 +7235,7 @@ Readability. Convention. Reusability. Support for generic code
 
 ##### Example
 
-    void cout_my_class(const my_class& c) // confusing, not conventional,not generic
+    void cout_my_class(const My_class& c) // confusing, not conventional,not generic
     {
         std::cout << /* class members here */;
     }
@@ -15016,7 +15017,7 @@ This limits use and typically increases code size.
     };
 
     List<int> lst1;
-    List<int, my_allocator> lst2;
+    List<int, My_allocator> lst2;
 
     ???
 
@@ -15043,7 +15044,7 @@ This looks innocent enough, but ???
     };
 
     List<int> lst1;
-    List<int, my_allocator> lst2;
+    List<int, My_allocator> lst2;
 
     ???
 
@@ -17464,7 +17465,7 @@ If code is using an unmodified standard library, then there are still workaround
         at(v, 0) = a[0];    // OK (alternative 2)
 
         v.at(0) = a[i];     // BAD
-        v.at(0) = a.at(i)   // OK (alternative 1)
+        v.at(0) = a.at(i);  // OK (alternative 1)
         v.at(0) = at(a, i); // OK (alternative 2)
     }
 
