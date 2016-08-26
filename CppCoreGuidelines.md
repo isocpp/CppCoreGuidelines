@@ -3436,25 +3436,21 @@ Pointers and references to locals shouldn't outlive their scope. Lambdas that ca
 
 ##### Example, bad
 
-    {
-        int local = 42;
+    int local = 42;
 
-        // Want a reference to local.
-        // Note, that after program exits this scope,
-        // local no longer exists, therefore
-        // process() call will have undefined behavior!
-        thread_pool.queue_work([&]{ process(local); });
-    }
+    // Want a reference to local.
+    // Note, that after program exits this scope,
+    // local no longer exists, therefore
+    // process() call will have undefined behavior!
+    thread_pool.queue_work([&]{ process(local); });
 
 ##### Example, good
 
-    {
-        int local = 42;
-        // Want a copy of local.
-        // Since a copy of local is made, it will be
-        // available at all times for the call.
-        thread_pool.queue_work([=]{ process(local); });
-    }
+    int local = 42;
+    // Want a copy of local.
+    // Since a copy of local is made, it will be
+    // available at all times for the call.
+    thread_pool.queue_work([=]{ process(local); });
 
 ##### Enforcement
 
