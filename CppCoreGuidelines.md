@@ -995,12 +995,12 @@ Messy, low-level code breeds more such code.
     }
 
 This is low-level, verbose, and error-prone.
-Fo example, we "forgot" to test for mememory exhaustion.
+For example, we "forgot" to test for memory exhaustion.
 Instead, we could use `vector`:
 
     vector<int> v(100);
     // ...
-    for (int x; cin>>x; ) {
+    for (int x; cin >> x; ) {
         // ... check that x is valid ...
         v.push_back(x);
     }
@@ -1181,7 +1181,7 @@ In a multi-threaded environment the initialization of the static object does not
 (unless you carelessly access a shared object from within its constructor).
 
 Note that the initialization of a local `static` does not imply a race condition.
-However, if the destruction of `X` involves an operation that needs to be synchronized we must use a less imple solution.
+However, if the destruction of `X` involves an operation that needs to be synchronized we must use a less simple solution.
 For example:
 
     X& myX()
@@ -15881,7 +15881,7 @@ Non-rule summary:
 * [NR.3: Don't: Don't use exceptions](#Rnr-no-exceptions)
 * [NR.4: Don't: Place each class declaration in its own source file](#Rnr-lots-of-files)
 * [NR.5: Don't: Don't do substantive work in a constructor; instead use two-phase initialization](#Rnr-two-phase-init)
-* [NR.6: Don't: Place all cleanup actions at the end of a fucntion and `goto exit`](#Rnr-goto-exit)
+* [NR.6: Don't: Place all cleanup actions at the end of a function and `goto exit`](#Rnr-goto-exit)
 * [NR.7: Don't: Make all data members `protected`](#Rnr-protected-data)
 * ???
 
@@ -15942,8 +15942,8 @@ to use a single return only we would have to do something like
     }
 
 This is both longer and likely to be less efficient.
-The larger and more compliciated the function is, the more painful the workarounds get.
-Of course many simple functions will natually have just one `return` because of their simpler inherent logic.
+The larger and more complicated the function is, the more painful the workarounds get.
+Of course many simple functions will naturally have just one `return` because of their simpler inherent logic.
 
 ##### Example
 
@@ -16002,7 +16002,7 @@ Consider the major objections to exceptions in turn
 Compared to what?
 When comparing make sure that the same set of errors are handled and that they are handled equivalently.
 In particular, do not compare a program that immediately terminate on seeing an error with a program
-that carefully cleans up resources before loging an error.
+that carefully cleans up resources before logging an error.
 Yes, some systems have poor exception handling implementations; sometimes, such implementations force us to use
 other error-handling approaches, but that's not a fundamental problem with exceptions.
 When using an efficiency argument - in any context - be careful that you have good data that actually provides
@@ -16063,7 +16063,7 @@ Individual classes are rarely a good logical unit of maintenance and distributio
 
 ##### Reason (not to follow this rule)
 
-Folloing this rule leads to weaker invariants,
+Following this rule leads to weaker invariants,
 more complicated code (having to deal with semi-constructed objects),
 and errors (when we didn't deal correctly with semi-constructed objects consistently).
 
