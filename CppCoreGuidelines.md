@@ -18865,11 +18865,11 @@ It is common to need an initial set of elements.
 
     template<typename T> class Vector {
     public:
-        vector<std::initializer_list<T>>;
+        Vector(std::initializer_list<T>);
         // ...
     };
 
-    Vector<string> vs = { "Nygaard", "Ritchie" };
+    Vector<string> vs { "Nygaard", "Ritchie" };
 
 ##### Enforcement
 
