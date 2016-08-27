@@ -1,6 +1,6 @@
 # <a name="main"></a>C++ Core Guidelines
 
-August 26, 2016
+August 27, 2016
 
 Editors:
 
@@ -7244,28 +7244,44 @@ The compiler catches the attempt to overload a lambda.
 
 ## <a name="SS-union"></a>C.union: Unions
 
-???
+A `union` is a `struct` where all members start at the same address so that it can hold only one member at a time.
+A `union` does not keep track of which member is stored so the programmer has to get it right;
+this is inherently error-prone, but there are ways to compensate.
+
+A type that is a `union` plus an indicator of which member is currently held is called a *tagged union*, a *discriminated union*, or a *variant*.
 
 Union rule summary:
 
-* [C.180: Use `union`s to ???](#Ru-union)
+* [C.180: Use `union`s to save Memory](#Ru-union)
 * [C.181: Avoid "naked" `union`s](#Ru-naked)
 * [C.182: Use anonymous `union`s to implement tagged unions](#Ru-anonymous)
+* [C183: Don't use a `union` for type punning](#Ru-pun)
 * ???
 
-### <a name="Ru-union"></a>C.180: Use `union`s to ???
-
-??? When should unions be used, if at all? What's a good future-proof way to re-interpret object representations of PODs?
-??? variant
+### <a name="Ru-union"></a>C.180: Use `union`s to save memory
 
 ##### Reason
 
- ???
+A `union` allows a single piece of memory to be used for different types of objects at different times.
+Consequently, it can be used to save memory when we have several objects that are never used at the same time.
 
 ##### Example
 
+    union Value {
+        int x;
+        double d;
+    };
 
-    ???
+    Value v = { 123 };  // now v holds an int
+    cout << v.x << '\n';    // write 123
+    v.d = 987.654;  // now v holds a double
+    cout << v.d << '\n';    // write 987.654
+
+But heed the warning: [Avoid "naked" `union`s](#Ru-naked)
+
+##### Example
+
+    ??? short-string optimization; safe union without dscriminant ???
 
 ##### Enforcement
 
@@ -7275,18 +7291,44 @@ Union rule summary:
 
 ##### Reason
 
-
+A *naked union* is a union without an associated indicator which member (if any) it holds,
+so that the programmer has to keep track.
 Naked unions are a source of type errors.
 
-**Alternative**: Wrap them in a class together with a type field.
+###### Example, bad
 
-**Alternative**: Use `variant`.
+    union Value {
+        int x;
+        double d;
+    };
 
-##### Example
+    Value v;
+    v.d = 987.654;  // v holds a double
 
-    ???
+So far, so good, but we can easily misuse the `union`:
 
+    cout << v.x << '\n';    // BAD, undefined behavior: v holds a double, but we read it as an int
 
+Note that the type error happened without any explicit cast.
+When we tested that program the last value printed was `1683627180` which it the integer value for the bit pattern for `987.654`.
+What we have here is an "invisible" type error that happens to give a result that could easily look innocent.
+
+And, talking about "invisible", this code produced no output:
+
+    v.x = 123;
+	cout << v.d << '\n';    // BAD: undefined behavior
+
+###### Alternative
+
+Wrap a `union` in a class together with a type field.
+
+The soon-to-be-standard `variant` type (to be found in `<variant>`) does that for you:
+
+    variant<int,double> v;
+    v = 123;        // v holds an int
+    int x = get<int>(v);
+    v = 123.456;    // v holds a double
+    w = get<double>(v);
 
 ##### Enforcement
 
@@ -7296,15 +7338,148 @@ Naked unions are a source of type errors.
 
 ##### Reason
 
-???
+A well-designed tagged usin is type safe.
+An *anonymous* union simplifies the definition of a class with a (tag,union) pair.
 
 ##### Example
 
-    ???
+This example is mostly borrowed from TC++PL4 pp216-218.
+You can look there for an explanation.
+
+The code is somewhat elaborate.
+Handling a type with user-defined assignment and destructor is tricky.
+Saving programmers from haing to write such code is one reason for including `variant` in the standard.
+
+    class Value {	// two alternative representations represented as a union
+    private:
+	    enum class Tag { number, text };
+	    Tag type;	// discriminant
+
+	    union {	// representation (note: anonymous union)
+		    int i;
+		    string s;	// string has default constructor, copy operations, and destructor
+	    };
+    public:
+	    struct Bad_entry { };	// used for exceptions
+	
+	    ~Value();
+	    Value& operator=(const Value&); 	// necessary because of the string variant
+	    Value(const Value&);
+	    // ...
+	    int number() const;
+	    string text() const;
+
+	    void set_number(int n);
+	    void set_text(const string&);
+	    // ...
+    };
+
+    int Value::number() const
+    {
+	    if (type!=Tag::number) throw Bad_entry{};
+	    return i;
+    }
+
+    string Value::text() const
+    {
+	    if (type!=Tag::text) throw Bad_entry{};
+	    return s;
+    }
+
+    void Value::set_number(int n)
+    {
+    	if (type==Tag::text) {
+	    	s.~string();			// explicitly destroy string
+	    	type = Tag::number;
+    	}
+    	i = n;
+    }
+
+    void Value::set_text(const string& ss)
+    {
+    	if (type==Tag::text)
+    		s = ss;
+    	else {
+    		new(&s) string{ss};		// placement new: explicitly construct string
+    		type = Tag::text;
+    	}
+    }
+
+    Value& Value::operator=(const Value& e) 	// necessary because of  the string variant
+    {
+    	if (type==Tag::text && e.type==Tag::text) {
+    		s = e.s;		// usual string assignment
+    		return *this;
+    	}
+
+    	if (type==Tag::text) s.~string();	// explicit destroy
+
+    	switch (e.type) {
+    	case Tag::number:
+	    	i = e.i;
+	    	break;
+    	case Tag::text:
+    		new(&s)(e.s); 	// placement new: explicit construct
+    		type = e.type;
+    	}
+
+    	return *this;
+    }
+
+    Value::~Value()
+    {
+    	if (type==Tag::text) s.~string();	// explicit destroy
+    }
 
 ##### Enforcement
 
 ???
+
+### <a name="Ru-pun"></a>C.183: Don't use a `union` for type punning
+
+##### Reason
+
+It is undefined behavior to read a `union` member with a different type from the one with which it was written.
+Such punning is invisible, or at least harder to spot than using a named cast.
+Type punning using a `union` is a source of errors.
+
+##### Example, bad
+
+    union Pun {
+        int x;
+        unsigned char c[sizeof(int)];
+    };
+
+The idea of `Pun` is to be able to look at the characte representation of an `int`.
+
+    void bad(Pun& u)
+    {
+        u.x = 'x';
+        cout << u.c[0] << '\n';     // undefined behavior
+    }
+
+If you wanted to see the bytes of an `int`, use a (named) cast:
+
+   void if_you_must_pun(int& x)
+   {
+       auto p = reinterpret_cast<unsigned char*>(&x);
+    cout << p[0] << '\n';     // undefined behavior
+       // ...
+   }
+
+Accessing the result of an `reinterpret_cast` to a different type from the objects declared type is still undefined behavior,
+but at least we can see that something tricky is going on.
+
+##### Note
+
+Unfortunately, `union`s are commonly used for type punning.
+We don't consider "sometimes, it works as expected" a strong argument.
+
+##### Enforcement
+
+???
+
+
 
 # <a name="S-enum"></a>Enum: Enumerations
 
