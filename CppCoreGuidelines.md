@@ -987,7 +987,7 @@ Messy, low-level code breeds more such code.
     // ...
     for (;;) {
         // ... read an int into x, exit loop if end of file is reached ...
-        // ... check that x is valid ... 
+        // ... check that x is valid ...
         if (count == sz)
             p = (int*) realloc(p, sizeof(int) * sz * 2);
         p[count++] = x;
@@ -7360,7 +7360,7 @@ What we have here is an "invisible" type error that happens to give a result tha
 And, talking about "invisible", this code produced no output:
 
     v.x = 123;
-	cout << v.d << '\n';    // BAD: undefined behavior
+    cout << v.d << '\n';    // BAD: undefined behavior
 
 ###### Alternative
 
@@ -7394,85 +7394,85 @@ The code is somewhat elaborate.
 Handling a type with user-defined assignment and destructor is tricky.
 Saving programmers from having to write such code is one reason for including `variant` in the standard.
 
-    class Value {	// two alternative representations represented as a union
+    class Value { // two alternative representations represented as a union
     private:
-	    enum class Tag { number, text };
-	    Tag type;	// discriminant
+        enum class Tag { number, text };
+        Tag type; // discriminant
 
-	    union {	// representation (note: anonymous union)
-		    int i;
-		    string s;	// string has default constructor, copy operations, and destructor
-	    };
+        union { // representation (note: anonymous union)
+            int i;
+            string s; // string has default constructor, copy operations, and destructor
+        };
     public:
-	    struct Bad_entry { };	// used for exceptions
-	
-	    ~Value();
-	    Value& operator=(const Value&); 	// necessary because of the string variant
-	    Value(const Value&);
-	    // ...
-	    int number() const;
-	    string text() const;
+        struct Bad_entry { }; // used for exceptions
 
-	    void set_number(int n);
-	    void set_text(const string&);
-	    // ...
+        ~Value();
+        Value& operator=(const Value&);   // necessary because of the string variant
+        Value(const Value&);
+        // ...
+        int number() const;
+        string text() const;
+
+        void set_number(int n);
+        void set_text(const string&);
+        // ...
     };
 
     int Value::number() const
     {
-	    if (type!=Tag::number) throw Bad_entry{};
-	    return i;
+        if (type!=Tag::number) throw Bad_entry{};
+        return i;
     }
 
     string Value::text() const
     {
-	    if (type!=Tag::text) throw Bad_entry{};
-	    return s;
+        if (type!=Tag::text) throw Bad_entry{};
+        return s;
     }
 
     void Value::set_number(int n)
     {
-    	if (type==Tag::text) {
-	    	s.~string();			// explicitly destroy string
-	    	type = Tag::number;
-    	}
-    	i = n;
+        if (type==Tag::text) {
+            s.~string();      // explicitly destroy string
+            type = Tag::number;
+        }
+        i = n;
     }
 
     void Value::set_text(const string& ss)
     {
-    	if (type==Tag::text)
-    		s = ss;
-    	else {
-    		new(&s) string{ss};		// placement new: explicitly construct string
-    		type = Tag::text;
-    	}
+        if (type==Tag::text)
+            s = ss;
+        else {
+            new(&s) string{ss};   // placement new: explicitly construct string
+            type = Tag::text;
+        }
     }
 
-    Value& Value::operator=(const Value& e) 	// necessary because of  the string variant
+    Value& Value::operator=(const Value& e)   // necessary because of the string variant
     {
-    	if (type==Tag::text && e.type==Tag::text) {
-    		s = e.s;		// usual string assignment
-    		return *this;
-    	}
+        if (type==Tag::text && e.type==Tag::text) {
+            s = e.s;    // usual string assignment
+            return *this;
+        }
 
-    	if (type==Tag::text) s.~string();	// explicit destroy
+        if (type==Tag::text) s.~string(); // explicit destroy
 
-    	switch (e.type) {
-    	case Tag::number:
-	    	i = e.i;
-	    	break;
-    	case Tag::text:
-    		new(&s)(e.s); 	// placement new: explicit construct
-    		type = e.type;
-    	}
+        switch (e.type) {
+        case Tag::number:
+            i = e.i;
+            break;
+        case Tag::text:
+            new(&s)(e.s);   // placement new: explicit construct
+            type = e.type;
+        }
 
-    	return *this;
+        return *this;
     }
 
     Value::~Value()
     {
-    	if (type==Tag::text) s.~string();	// explicit destroy
+        if (type==Tag::text) s.~string(); // explicit destroy
     }
 
 ##### Enforcement
@@ -7504,12 +7504,12 @@ The idea of `Pun` is to be able to look at the character representation of an `i
 
 If you wanted to see the bytes of an `int`, use a (named) cast:
 
-   void if_you_must_pun(int& x)
-   {
-       auto p = reinterpret_cast<unsigned char*>(&x);
-    cout << p[0] << '\n';     // undefined behavior
-       // ...
-   }
+    void if_you_must_pun(int& x)
+    {
+        auto p = reinterpret_cast<unsigned char*>(&x);
+        cout << p[0] << '\n';     // undefined behavior
+        // ...
+    }
 
 Accessing the result of an `reinterpret_cast` to a different type from the objects declared type is still undefined behavior,
 but at least we can see that something tricky is going on.
@@ -10507,9 +10507,9 @@ Such examples are often handled as well or better using `mutable` or an indirect
 
 Consider keeping previously computed results around for a costly operation:
 
-    int compute(int x);	// compute a value for x; assume this to be costly
+    int compute(int x); // compute a value for x; assume this to be costly
 
-    class Cache {   // some type implementing a cache for an int->int operation 
+    class Cache {   // some type implementing a cache for an int->int operation
     public:
         pair<bool,int> find(int x) const;   // is there a value for x?
         void set(int x, int v);             // make y the value for x
@@ -10523,7 +10523,7 @@ Consider keeping previously computed results around for a costly operation:
         int get_val(int x) 
         {
             auto p = cache.find(x);
-			if (p.first) return p.second;
+            if (p.first) return p.second;
             int val = compute(x);
             cache.set(x,val); // insert value for x
             return val;
@@ -10559,10 +10559,10 @@ State that `cache` is mutable even for a `const` object:
         int get_val(int x) const
         {
             auto p = cache.find(x);
-			if (p.first) return p.second;
-			int val = compute(x);
-			cache.set(x,val);
-			return val;
+            if (p.first) return p.second;
+            int val = compute(x);
+            cache.set(x,val);
+            return val;
         }
         // ...
     private:
@@ -10576,10 +10576,10 @@ An alternative solution would to store a pointer to the `cache`:
         int get_val(int x) const
         {
             auto p = cache->find(x);
-			if (p.first) return p.second;
-			int val = compute(x);
-			cache->set(x, val);
-			return val;
+            if (p.first) return p.second;
+            int val = compute(x);
+            cache->set(x, val);
+            return val;
         }
         // ...
     private:
@@ -10587,7 +10587,7 @@ An alternative solution would to store a pointer to the `cache`:
     };
 
 That solution is the most flexible, but requires explicit construction and destruction of `*cache`
-(most likely in the constructor and destructor of `X`). 
+(most likely in the constructor and destructor of `X`).
 
 In any variant, we must guard against data races on the `cache` in multithreaded code, possibly using a `std::mutex`.
 
@@ -10855,8 +10855,8 @@ Avoid wrong results.
     int x = -3;
     unsigned int y = 7;
 
-    cout << x - y << '\n';  // unsigned result, possibly 4294967286 
-    cout << x + y << '\n';  // unsigned result: 4
+    cout << x - y << '\n';  // unsigned result, possibly 4294967286
+    cout << x + y << '\n';  // unsiged result: 4
     cout << x * y << '\n';  // unsigned result, possibly 4294967275
 
 It is harder to spot the problem in more realistic examples.
@@ -10906,22 +10906,22 @@ Unsigned arithmetic can yield surprising results if you are not expecting it.
 This is even more true for mixed signed and unsigned arithmetic.
 
     template<typename T, typename T2>
-	T subtract(T x, T2 y)
-	{
-		return x-y;
-	}
+    T subtract(T x, T2 y)
+    {
+        return x-y;
+    }
 
-	void test()
-	{
-		int s = 5;
-		unsigned int us = 5;
-		cout << subtract(s, 7) << '\n';     // -2
-		cout << subtract(us, 7u) << '\n';   // 4294967294
-		cout << subtract(s, 7u) << '\n';    // -2
-		cout << subtract(us, 7) << '\n';    // 4294967294
-		cout << subtract(s, us+2) << '\n';  // -2
-		cout << subtract(us, s+2) << '\n';  // 4294967294
-	}
+    void test()
+    {
+        int s = 5;
+        unsigned int us = 5;
+        cout << subtract(s, 7) << '\n';     // -2
+        cout << subtract(us, 7u) << '\n';   // 4294967294
+        cout << subtract(s, 7u) << '\n';    // -2
+        cout << subtract(us, 7) << '\n';    // 4294967294
+        cout << subtract(s, us+2) << '\n';  // -2
+        cout << subtract(us, s+2) << '\n';  // 4294967294
+    }
 
 Here we have been very explicit about what's happening,
 but if you had see `us-(s+2)` or `s+=2; ... us-s` would you reliably have suspected that the result would print as `4294967294`?
@@ -16555,7 +16555,7 @@ In particular, the single-return rule makes it harder to concentrate error check
 
 to use a single return only we would have to do something like
 
-    template<class T>   
+    template<class T>
     //  requires Number<T>
     string sign(T x)        // bad
     {
