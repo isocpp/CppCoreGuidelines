@@ -7255,7 +7255,7 @@ Union rule summary:
 * [C.180: Use `union`s to save Memory](#Ru-union)
 * [C.181: Avoid "naked" `union`s](#Ru-naked)
 * [C.182: Use anonymous `union`s to implement tagged unions](#Ru-anonymous)
-* [C183: Don't use a `union` for type punning](#Ru-pun)
+* [C.183: Don't use a `union` for type punning](#Ru-pun)
 * ???
 
 ### <a name="Ru-union"></a>C.180: Use `union`s to save memory
@@ -7338,8 +7338,8 @@ The soon-to-be-standard `variant` type (to be found in `<variant>`) does that fo
 
 ##### Reason
 
-A well-designed tagged usin is type safe.
-An *anonymous* union simplifies the definition of a class with a (tag,union) pair.
+A well-designed tagged union is type safe.
+An *anonymous* union simplifies the definition of a class with a (tag, union) pair.
 
 ##### Example
 
@@ -7348,7 +7348,7 @@ You can look there for an explanation.
 
 The code is somewhat elaborate.
 Handling a type with user-defined assignment and destructor is tricky.
-Saving programmers from haing to write such code is one reason for including `variant` in the standard.
+Saving programmers from having to write such code is one reason for including `variant` in the standard.
 
     class Value {	// two alternative representations represented as a union
     private:
@@ -7450,7 +7450,7 @@ Type punning using a `union` is a source of errors.
         unsigned char c[sizeof(int)];
     };
 
-The idea of `Pun` is to be able to look at the characte representation of an `int`.
+The idea of `Pun` is to be able to look at the character representation of an `int`.
 
     void bad(Pun& u)
     {
@@ -9081,7 +9081,7 @@ Can cause maintenance problems.
 
 If this is a large `if`-statement, it is easy to overlook that a new `d` has been introduced in the inner scope.
 This is a known source of bugs.
-Sometimes suce reuse of a name in an inner scope is called "shadowing".
+Sometimes such reuse of a name in an inner scope is called "shadowing".
 
 ##### Note
 
@@ -10780,11 +10780,11 @@ Avoid wrong results.
 ##### Example
 
     int x = -3;
-	unsigned int y = 7;
-	
-    cout << x-y << '\n';	// unsigned result, possibly 4294967286 
-	cout << x+y << '\n';    // unsiged result: 4
-	cout << x*y << '\n';    // unsigned result, possibly 4294967275
+    unsigned int y = 7;
+
+    cout << x - y << '\n';  // unsigned result, possibly 4294967286 
+    cout << x + y << '\n';  // unsigned result: 4
+    cout << x * y << '\n';  // unsigned result, possibly 4294967275
 
 It is harder to spot the problem in more realistic examples.
 
@@ -10825,7 +10825,7 @@ can be surprising for many programmers.
 ##### Reason
 
 Because most arithmetic is assumed to be signed;
-`x-y` yields a negative number when `y>x` except in the rare cases wrhere you really want modulo arithmetic.
+`x-y` yields a negative number when `y>x` except in the rare cases where you really want modulo arithmetic.
 
 ##### Example
 
@@ -16463,7 +16463,7 @@ and errors (when we didn't deal correctly with semi-constructed objects consiste
 * Always establish a class invariant in a constructor.
 * Don't define an object before it is needed.
 
-### <a name="Rnr-goto-exit"></a>NR.6: Don't: Place all cleanup actions at the end of a fucntion and `goto exit`
+### <a name="Rnr-goto-exit"></a>NR.6: Don't: Place all cleanup actions at the end of a function and `goto exit`
 
 ##### Reason (not to follow this rule)
 
@@ -16505,7 +16505,7 @@ and spot the bug.
 
 ##### Alternative
 
-* [M]ake member data `public` or (preferably) `private`](#Rh-protected)
+* [Make member data `public` or (preferably) `private`](#Rh-protected)
 
 
 # <a name="S-references"></a>RF: References
