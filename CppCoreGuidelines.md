@@ -2229,7 +2229,8 @@ The (in)famous factorial:
         return x;
     }
 
-This is C++14. For C++11, use a recursive formulation of `fac()`.
+This is C++14.
+For C++11, use a recursive formulation of `fac()`.
 
 ##### Note
 
@@ -2258,6 +2259,12 @@ it just guarantees that the function can be evaluated at compile time for consta
     }
 
 This is usually a very good thing.
+
+When given a non-constant argument, a `constexpr` function can throw.
+If you consider exiting by throwing a side-effect, a `constexpr` function isn't completely pure;
+if not, this is not an issue.
+??? A question for the committe: can a constructor for an exception thrown by a `constexpr` function modify state?
+"No" would be a nice answer that matches most practice.
 
 ##### Note
 
@@ -2438,6 +2445,12 @@ Pure functions are easier to reason about, sometimes easier to optimize (and eve
 ##### Note
 
 `constexpr` functions are pure.
+
+When given a non-constant argument, a `constexpr` function can throw.
+If you consider exiting by throwing a side-effect, a `constexpr` function isn't completely pure;
+if not, this is not an issue.
+??? A question for the committe: can a constructor for an exception thrown by a `constexpr` function modify state?
+"No" would be a nice answer that matches most practice.
 
 ##### Enforcement
 
