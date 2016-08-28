@@ -10435,7 +10435,7 @@ for example.)
 
 Flag C-style and functional casts.
 
-## <a name="Res-casts-const"></a>ES.50: Don't cast away `const`
+### <a name="Res-casts-const"></a>ES.50: Don't cast away `const`
 
 ##### Reason
 
@@ -10451,19 +10451,31 @@ Such examples are often handled as well or better using `mutable` or an indirect
 
 Consider keeping previously computed results around for a costly operation:
 
+    int compute(int x);	// compute a value for x; assume this to be costly
+
+    class Cache {   // some type implementing a cache for an int->int operation 
+    public:
+        pair<bool,int> find(int x) const;   // is there a value for x?
+        void set(int x, int v);             // make y the value for x
+        // ...
+    private:
+        // ...
+    };
+
     class X {
     public:
-        int get_val(int x)
+        int get_val(int x) 
         {
-            if (auto p = cache.find(x)) return ->second;
-            int val = compute(val);
-            cache[x] = val;
+            auto p = cache.find(x);
+			if (p.first) return p.second;
+            int val = compute(x);
+            cache.set(x,val); // insert value for x
             return val;
         }
         // ...
     private:
-        map<int,int> cache;
-    }
+        Cache cache;
+    };
 
 Here, `get_val()` is logically constant, so we would like to make it a `const` member.
 To do this we still need to mutate `cache`, so people sometimes resort to a `const_cast`:
@@ -10472,51 +10484,56 @@ To do this we still need to mutate `cache`, so people sometimes resort to a `con
     public:
         int get_val(int x) const
         {
-            if (auto p = cache.find(x)) return ->second;
-            int val = compute(val);
-            const_cast<map<int,int>>(cache)[x] = val;
-            return val;
+            auto p = cache.find(x);
+			if (p.first) return p.second;
+			int val = compute(x);
+			const_cast<Cache&>(cache).set(x,val);   // ugly
+			return val;
         }
         // ...
     private:
-        map<int,int> cache;
-    }
+        Cache cache;
+    };
 
 Fortunately, there is a better solution:
 State that `cache` is mutable even for a `const` object:
 
     class X {   // better solution
     public:
-        int get_val(int x)
+        int get_val(int x) const
         {
-            if (auto p = cache.find(x)) return ->second;
-            int val = compute(val);
-            cache[x] = val;
-            return val;
+            auto p = cache.find(x);
+			if (p.first) return p.second;
+			int val = compute(x);
+			cache.set(x,val);
+			return val;
         }
         // ...
     private:
-        mutable map<int,int> cache;
-    }
+        mutable Cache cache;
+    };
 
 An alternative solution would to store a pointer to the `cache`:
 
     class X {   // OK, but slightly messier solution
     public:
-        int get_val(int x)
+        int get_val(int x) const
         {
-            if (auto p = cache.find(x)) return ->second;
-            int val = compute(val);
-            (*cache)[x] = val;
-            return val;
+            auto p = cache->find(x);
+			if (p.first) return p.second;
+			int val = compute(x);
+			cache->set(x, val);
+			return val;
         }
         // ...
     private:
-        mutable map<int,int>* cache;
-    }
+        Cache* cache;
+    };
 
 That solution is the most flexible, but requires explicit construction and destruction of `*cache`
 (most likely in the constructor and destructor of `X`). 
+
+In any variant, we must guard against data races on the `cache` in multithreaded code, possibly using a `std::mutex`.
 
 ##### Enforcement
 
@@ -13117,7 +13134,7 @@ The problem is of course that the caller now have to remember to test the return
 
 Possible (only) for specific versions of this idea: e.g., test for systematic test of `valid()` after resource handle construction
 
-## <a name="Re-no-throw-crash"></a>E.26: If you can't throw exceptions, consider failing fast
+### <a name="Re-no-throw-crash"></a>E.26: If you can't throw exceptions, consider failing fast
 
 ##### Reason
 
@@ -13160,7 +13177,7 @@ Typically, it is a good idea to log the reason for the "crash" before exiting.
 
 Awkward
 
-## <a name="Re-no-throw-codes"></a>E.27: If you can't throw exceptions, use error codes systematically
+### <a name="Re-no-throw-codes"></a>E.27: If you can't throw exceptions, use error codes systematically
 
 ##### Reason
 
@@ -13318,7 +13335,7 @@ We [prefer exception-based error handling](#Re-throw) and recommend [keeping fun
 
 Awkward.
 
-## <a name="Re-no-throw"></a>E.28: Avoid error handling based on global state (e.g. `errno`)
+### <a name="Re-no-throw"></a>E.28: Avoid error handling based on global state (e.g. `errno`)
 
 ##### Reason
 
