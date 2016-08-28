@@ -1,5 +1,6 @@
 '
 0xFF0000
+0b0101'0101
 '14
 2D
 2K
@@ -47,6 +48,7 @@ BDE
 behaviorless
 BigPOD
 Bjarne
+blog
 Bloomberg
 Boehm
 bool
@@ -181,6 +183,7 @@ gp
 GPLv3
 gsl
 GSL
+GSL's
 gx
 handcoded
 Henricson
@@ -261,6 +264,7 @@ memoized
 memset
 metameta
 metaprogram
+metaprograms
 metaprogramming
 Metaprogramming
 Meyers01
@@ -272,6 +276,7 @@ microbenchmarks
 modify1
 modify2
 moredata
+multithreaded
 msgsl
 mtx
 Murray93
@@ -342,6 +347,7 @@ polymorphically
 POPL
 PortHandle
 PostInitialize
+pp216
 PPP
 pre
 Pre
