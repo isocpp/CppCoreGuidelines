@@ -10779,9 +10779,14 @@ Avoid wrong results.
 
 ##### Example
 
-    unsigned x = 100;
-    unsigned y = 102;
-    cout << abs(x-y) << '\n'; // wrong result
+    int x = -3;
+	unsigned int y = 7;
+	
+    cout << x-y << '\n';	// unsigned result, possibly 4294967286 
+	cout << x+y << '\n';    // unsiged result: 4
+	cout << x*y << '\n';    // unsigned result, possibly 4294967275
+
+It is harder to spot the problem in more realistic examples.
 
 ##### Note
 
