@@ -1,6 +1,6 @@
 # <a name="main"></a>C++ Core Guidelines
 
-August 27, 2016
+August 28, 2016
 
 Editors:
 
@@ -1073,7 +1073,9 @@ Controlling the behavior of a function through a global (namespace scope) variab
 
 It will not be obvious to a caller that the meaning of two calls of `rnd(7.2)` might give different results.
 
-**Exception**: Sometimes we control the details of a set of operations by an environment variable, e.g., normal vs. verbose output or debug vs. optimized.
+##### Exception
+
+Sometimes we control the details of a set of operations by an environment variable, e.g., normal vs. verbose output or debug vs. optimized.
 The use of a non-local control is potentially confusing, but controls only implementation details of otherwise fixed semantics.
 
 ##### Example, bad
@@ -1550,7 +1552,9 @@ This is a major source of errors.
     // good: throw system_error if unable to start the new thread
     explicit thread(F&& f, Args&&... args);
 
-##### Note: What is an error?
+##### Note
+
+What is an error?
 
 An error means that the function cannot achieve its advertised purpose (including establishing postconditions).
 Calling code that ignores the error could lead to wrong results or undefined systems state.
@@ -1558,7 +1562,9 @@ For example, not being able to connect to a remote server is not by itself an er
 the server can refuse a connection for all kinds of reasons, so the natural thing is to return a result that the caller always has to check.
 However, if failing to make a connection is considered an error, then a failure should throw an exception.
 
-**Exception**: Many traditional interface functions (e.g., UNIX signal handlers) use error codes (e.g., `errno`) to report what are really status codes, rather than errors. You don't have a good alternative to using such, so calling these does not violate the rule.
+##### Exception
+
+Many traditional interface functions (e.g., UNIX signal handlers) use error codes (e.g., `errno`) to report what are really status codes, rather than errors. You don't have a good alternative to using such, so calling these does not violate the rule.
 
 ##### Alternative
 
@@ -1743,7 +1749,9 @@ Passing `10` as the `n` argument may be a mistake: the most common convention is
 
 This `draw2()` passes the same amount of information to `draw()`, but makes the fact that it is supposed to be a range of `Circle`s explicit. See ???.
 
-**Exception**: Use `zstring` and `czstring` to represent a C-style, zero-terminated strings.
+##### Exception
+
+Use `zstring` and `czstring` to represent a C-style, zero-terminated strings.
 But when doing so, use `string_span` from the [GSL](#GSL) to prevent range errors.
 
 ##### Enforcement
@@ -1926,9 +1934,13 @@ This will force every derived class to compute a center -- even if that's non-tr
 
 Different compilers implement different binary layouts for classes, exception handling, function names, and other implementation details.
 
-**Exception**: You can carefully craft an interface using a few carefully selected higher-level C++ types. See ???.
+##### Exception
 
-**Exception**: Common ABIs are emerging on some platforms freeing you from the more draconian restrictions.
+You can carefully craft an interface using a few carefully selected higher-level C++ types. See ???.
+
+##### Exception
+
+Common ABIs are emerging on some platforms freeing you from the more draconian restrictions.
 
 ##### Note
 
@@ -2042,7 +2054,9 @@ Naming that lambda breaks up the expression into its logical parts and provides 
 
 The shortest code is not always the best for performance or maintainability.
 
-**Exception**: Loop bodies, including lambdas used as loop bodies, rarely need to be named.
+##### Exception
+
+Loop bodies, including lambdas used as loop bodies, rarely need to be named.
 However, large loop bodies (e.g., dozens of lines or dozens of pages) can be a problem.
 The rule [Keep functions short](#Rf-single) implies "Keep loop bodies short."
 Similarly, lambdas used as callback arguments are sometimes non-trivial, yet unlikely to be re-usable.
@@ -2275,7 +2289,9 @@ Specifying `inline` encourages the compiler to do a better job.
 
     inline string cat(const string& s, const string& s2) { return s + s2; }
 
-**Exception**: Do not put an `inline` function in what is meant to be a stable interface unless you are really sure that it will not change.
+##### Exception
+
+Do not put an `inline` function in what is meant to be a stable interface unless you are really sure that it will not change.
 An inline function is part of the ABI.
 
 ##### Note
@@ -2286,7 +2302,9 @@ An inline function is part of the ABI.
 
 Member functions defined in-class are `inline` by default.
 
-**Exception**: Template functions (incl. template member functions) must be in headers and therefore inline.
+##### Exception
+
+Template functions (incl. template member functions) must be in headers and therefore inline.
 
 ##### Enforcement
 
@@ -3240,7 +3258,9 @@ Better:
         return f();
     }
 
-**Exception**: `std::move` and `std::forward` do return `&&`, but they are just casts -- used by convention only in expression contexts where a reference to a temporary object is passed along within the same expression before the temporary is destroyed. We don't know of any other good examples of returning `&&`.
+##### Exception
+
+`std::move` and `std::forward` do return `&&`, but they are just casts -- used by convention only in expression contexts where a reference to a temporary object is passed along within the same expression before the temporary is destroyed. We don't know of any other good examples of returning `&&`.
 
 ##### Enforcement
 
@@ -3330,7 +3350,9 @@ Functions can't capture local variables or be declared at local scope; if you ne
     }
     pool.join();
 
-**Exception**: Generic lambdas offer a concise way to write function templates and so can be useful even when a normal function template would do equally well with a little more syntax. This advantage will probably disappear in the future once all functions gain the ability to have Concept parameters.
+##### Exception
+
+Generic lambdas offer a concise way to write function templates and so can be useful even when a normal function template would do equally well with a little more syntax. This advantage will probably disappear in the future once all functions gain the ability to have Concept parameters.
 
 ##### Enforcement
 
@@ -4507,7 +4529,9 @@ A constructor establishes the invariant for a class. A user of a class should be
 
 Compilers do not read comments.
 
-**Exception**: If a valid object cannot conveniently be constructed by a constructor [use a factory function](#Rc-factory).
+##### Exception
+
+If a valid object cannot conveniently be constructed by a constructor [use a factory function](#Rc-factory).
 
 ##### Note
 
@@ -4583,7 +4607,9 @@ Leaving behind an invalid object is asking for trouble.
 For a variable definition (e.g., on the stack or as a member of another object) there is no explicit function call from which an error code could be returned.
 Leaving behind an invalid object and relying on users to consistently check an `is_valid()` function before use is tedious, error-prone, and inefficient.
 
-**Exception**: There are domains, such as some hard-real-time systems (think airplane controls) where (without additional tool support) exception handling is not sufficiently predictable from a timing perspective.
+##### Exception
+
+There are domains, such as some hard-real-time systems (think airplane controls) where (without additional tool support) exception handling is not sufficiently predictable from a timing perspective.
 There the `is_valid()` technique must be used. In such cases, check `is_valid()` consistently and immediately to simulate [RAII](#Rr-raii).
 
 **Alternative**: If you feel tempted to use some "post-constructor initialization" or "two-stage initialization" idiom, try not to do that.
@@ -5457,7 +5483,7 @@ To prevent slicing, because the normal copy operations will copy only the base p
 
 It's good to return a smart pointer, but unlike with raw pointers the return type cannot be covariant (for example, `D::clone` can't return a `unique_ptr<D>`. Don't let this tempt you into returning an owning raw pointer; this is a minor drawback compared to the major robustness benefit delivered by the owning smart pointer.
 
-##### Exceptions
+##### Exception
 
 If you need covariant return types, return an `owner<derived*>`. See [C.130](#Rh-copy).
 
@@ -6016,7 +6042,7 @@ An abstract class typically does not have any data for a constructor to initiali
 
     ???
 
-##### Exceptions
+##### Exception
 
 * A base class constructor that does work, such as registering an object somewhere, may need a constructor.
 * In extremely rare cases, you might find it reasonable for an abstract class to have a bit of data shared by all derived classes
@@ -6063,7 +6089,9 @@ There are people who don't follow this rule because they plan to use a class onl
 
 ##### Reason
 
-Readability. Detection of mistakes. Writing explicit `virtual`, `override`, or `final` is self-documenting and enables the compiler to catch mismatch of types and/or names between base and derived classes. However, writing more than one of these three is both redundant and a potential source of errors.
+Readability.
+Detection of mistakes.
+Writing explicit `virtual`, `override`, or `final` is self-documenting and enables the compiler to catch mismatch of types and/or names between base and derived classes. However, writing more than one of these three is both redundant and a potential source of errors.
 
 Use `virtual` only when declaring a new virtual function. Use `override` only when declaring an overrider. Use `final` only when declaring an final overrider.
 
@@ -6077,14 +6105,17 @@ Use `virtual` only when declaring a new virtual function. Use `override` only wh
     };
 
     struct D : B {
-        void f1(int);        // warn: D::f1() hides B::f1()
-        void f2(int) const;  // warn: no explicit override
-        void f3(double);     // warn: D::f3() hides B::f3()
+        void f1(int);        // bad (hope for a warning): D::f1() hides B::f1()
+        void f2(int) const;  // bad (but conventional and valid): no explicit override
+        void f3(double);     // bad (hope for a warning): D::f3() hides B::f3()
         // ...
     };
 
-    struct D2 : B {
-        virtual void f2(int) final;  // BAD; pitfall, D2::f does not override B::f
+    struct Better : B {
+        void f1(int) override;        // error (caught): D::f1() hides B::f1()
+        void f2(int) const override;
+        void f3(double) override;     // error (caught): D::f3() hides B::f3()
+        // ...
     };
 
 ##### Enforcement
@@ -6446,7 +6477,7 @@ Most classes are either all A or all B:
   [By convention, declare such classes `struct` rather than `class`](#Rc-struct)
 * *All private*: If you're writing a type that maintains an invariant, then all the non-`const` variables should be private -- it should be encapsulated.
 
-##### Exceptions
+##### Exception
 
 Occasionally classes will mix A and B, usually for debug reasons. An encapsulated object may contain something like non-`const` debug instrumentation that isn't part of the invariant and so falls into category A -- it isn't really part of the object's value or meaningful observable state either. In that case, the A parts should be treated as A's (made `public`, or in rarer cases `protected` if they should be visible only to derived classes) and the B parts should still be treated like B's (`private` or `const`).
 
@@ -6736,7 +6767,7 @@ This code may work as expected for years, just to fail on a new machine, new com
 
 If you implement your own RTTI, be careful.
 
-##### Exceptions
+##### Exception
 
 If your implementation provided a really slow `dynamic_cast`, you may have to use a workaround.
 However, all workarounds that cannot be statically resolved involve explicit casting (typically `static_cast`) and are error-prone.
@@ -7869,7 +7900,9 @@ Use a `span` instead.
         // ... uses *p and p[0] only ...
     }
 
-**Exception**: C-style strings are passed as single pointers to a zero-terminated sequence of characters.
+##### Exception
+
+C-style strings are passed as single pointers to a zero-terminated sequence of characters.
 Use `zstring` rather than `char*` to indicate that you rely on that convention.
 
 ##### Note
@@ -7921,7 +7954,7 @@ We can fix that problem by making ownership explicit:
         T* q;         // OK: q is not owning
     };
 
-##### Exceptions
+##### Exception
 
 A major class of exception is legacy code, especially code that must remain compilable as C or interface with C and C-style C++ through ABIs.
 The fact that there are billions of lines of code that violate this rule against owning `T*`s cannot be ignored.
@@ -8053,9 +8086,13 @@ They are a notable source of errors.
 If you use a global object initialize it with a constant.
 Note that it is possible to get undefined initialization order even for `const` objects.
 
-**Exception**: A global object is often better than a singleton.
+##### Exception
 
-**Exception**: An immutable (`const`) global does not introduce the problems we try to avoid by banning global objects.
+A global object is often better than a singleton.
+
+##### Exception
+
+An immutable (`const`) global does not introduce the problems we try to avoid by banning global objects.
 
 ##### Enforcement
 
@@ -8702,7 +8739,9 @@ but don't hand-code a well-known algorithm:
     for (int i = 0; i < max; ++i)
         sum = sum + v[i];
 
-**Exception**: Large parts of the standard library rely on dynamic allocation (free store). These parts, notably the containers but not the algorithms, are unsuitable for some hard-real time and embedded applications. In such cases, consider providing/using similar facilities, e.g.,  a standard-library-style container implemented using a pool allocator.
+##### Exception
+
+Large parts of the standard library rely on dynamic allocation (free store). These parts, notably the containers but not the algorithms, are unsuitable for some hard-real time and embedded applications. In such cases, consider providing/using similar facilities, e.g.,  a standard-library-style container implemented using a pool allocator.
 
 ##### Enforcement
 
@@ -8979,7 +9018,9 @@ comment.
 
     char *p, c, a[7], *pp[7], **aa[10];   // yuck!
 
-**Exception**: a function declaration can contain several function argument declarations.
+##### Exception
+
+A function declaration can contain several function argument declarations.
 
 ##### Example
 
@@ -9035,7 +9076,9 @@ In each case, we save writing a longish, hard-to-remember type that the compiler
     template<class T>
     auto Container<T>::first() -> Iterator;   // Container<T>::Iterator
 
-**Exception**: Avoid `auto` for initializer lists and in cases where you know exactly which type you want and where an initializer might require conversion.
+##### Exception
+
+Avoid `auto` for initializer lists and in cases where you know exactly which type you want and where an initializer might require conversion.
 
 ##### Example
 
@@ -10527,7 +10570,7 @@ An alternative solution would to store a pointer to the `cache`:
         }
         // ...
     private:
-        Cache* cache;
+        unique_ptr<Cache> cache;
     };
 
 That solution is the most flexible, but requires explicit construction and destruction of `*cache`
@@ -10923,7 +10966,9 @@ Incrementing a value beyond a maximum value can lead to memory corruption and un
 
     auto a = area(10'000'000, 100'000'000);   // bad
 
-**Exception**: Use unsigned types if you really want modulo arithmetic.
+##### Exception
+
+Use unsigned types if you really want modulo arithmetic.
 
 **Alternative**: For critical applications that can afford some overhead, use a range-checked integer and/or floating-point type.
 
@@ -10946,7 +10991,9 @@ Decrementing a value beyond a minimum value can lead to memory corruption and un
     while (n--)
         a[n - 1] = 9;   // bad (twice)
 
-**Exception**: Use unsigned types if you really want modulo arithmetic.
+##### Exception
+
+Use unsigned types if you really want modulo arithmetic.
 
 ##### Enforcement
 
@@ -11283,7 +11330,7 @@ There are several ways that this example could be made safe for a multi-threaded
 * Refuse to build and/or run in a multi-threaded environment.
 * Provide two implementations, one which is used in single-threaded environments and another which is used in multi-threaded environments.
 
-**Exception**: Code that is never run in a multi-threaded environment.
+ Code that is never run in a multi-threaded environment.
 Be careful: there are many examples where code that was "known" to never run in a multi-threaded program
 was run as part of a multi-threaded program. Often years later.
 Typically, such programs lead to a painful effort to remove data races.
@@ -12298,7 +12345,9 @@ Spot the bug.
 It would be really hard to find through testing.
 Read up on the ABA problem.
 
-**Exception**: [Atomic variables](#???) can be used simply and safely.
+##### Exception
+
+[Atomic variables](#???) can be used simply and safely.
 
 ##### Note
 
@@ -12550,7 +12599,9 @@ Unless the loop was meant to be infinite, termination is normal and expected.
 
 Don't use a `throw` as simply an alternative way of returning a value from a function.
 
-**Exception**: Some systems, such as hard-real time systems require a guarantee that an action is taken in a (typically short) constant maximum time known before execution starts. Such systems can use exceptions only if there is tool support for accurately predicting the maximum time to recover from a `throw`.
+##### Exception
+
+Some systems, such as hard-real time systems require a guarantee that an action is taken in a (typically short) constant maximum time known before execution starts. Such systems can use exceptions only if there is tool support for accurately predicting the maximum time to recover from a `throw`.
 
 **See also**: [RAII](#Re-raii)
 
@@ -13064,12 +13115,12 @@ Better:
 `finally` is not as messy as `try`/`catch`, but it is still ad-hoc.
 Prefer [proper resource management objects](#Re-raii).
 
-###### Note
+##### Note
 
 Use of `finally` is a systematic and reasonably clean alternative to the old [`goto exit;` technique](##Re-no-throw-codes)
 for dealing with cleanup where resource management is not systematic.
 
-###### Enforcement
+##### Enforcement
 
 Heuristic: Detect `goto exit;`
 
@@ -16861,7 +16912,9 @@ Instead, prefer to put the common code in a common helper function -- and make i
         const Bar& get_bar() const { return get_bar_impl(*this); }
     };
 
-**Exception**: You may need to cast away `const` when calling `const`-incorrect functions. Prefer to wrap such functions in inline `const`-correct wrappers to encapsulate the cast in one place.
+##### Exception
+
+You may need to cast away `const` when calling `const`-incorrect functions. Prefer to wrap such functions in inline `const`-correct wrappers to encapsulate the cast in one place.
 
 ##### Enforcement
 
@@ -17796,7 +17849,7 @@ In the context of C++, this style is often called "Stroustrup".
         return some_value;
     }
 
-**Note** a space between `if` and `(`
+Note the space between `if` and `(`
 
 ##### Note
 
@@ -18580,7 +18633,7 @@ To simplify code and eliminate a need for explicit memory management. To bring a
 
     auto v = get_large_vector(); //  return by value is ok, most modern compilers will do copy elision
 
-##### Exceptions
+##### Exception
 
 See the Exceptions in [F.20](#Rf-out).
 
