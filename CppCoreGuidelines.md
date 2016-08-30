@@ -16883,7 +16883,6 @@ Sometimes you may be tempted to resort to `const_cast` to avoid code duplication
     class Bar;
 
     class Foo {
-        Bar my_bar;
     public:
         // BAD, duplicates logic
         Bar& get_bar() {
@@ -16893,12 +16892,13 @@ Sometimes you may be tempted to resort to `const_cast` to avoid code duplication
         const Bar& get_bar() const {
             /* same complex logic around getting a const reference to my_bar */
         }
+    private:
+        Bar my_bar;
     };
 
 Instead, prefer to share implementations. Normally, you can just have the non-`const` function call the `const` function. However, when there is complex logic this can lead to the following pattern that still resorts to a `const_cast`:
 
     class Foo {
-        Bar my_bar;
     public:
         // not great, non-const calls const version but resorts to const_cast
         Bar& get_bar() {
@@ -16907,6 +16907,8 @@ Instead, prefer to share implementations. Normally, you can just have the non-`c
         const Bar& get_bar() const {
             /* the complex logic around getting a const reference to my_bar */
         }
+    private:
+        Bar my_bar;
     };
 
 Although this pattern is safe when applied correctly, because the caller must have had a non-`const` object to begin with, it's not ideal because the safety is hard to enforce automatically as a checker rule.
@@ -16914,15 +16916,15 @@ Although this pattern is safe when applied correctly, because the caller must ha
 Instead, prefer to put the common code in a common helper function -- and make it a template so that it deduces `const`. This doesn't use any `const_cast` at all:
 
     class Foo {
+    public:                         // good
+              Bar& get_bar()       { return get_bar_impl(*this); }
+        const Bar& get_bar() const { return get_bar_impl(*this); }
+    private:
         Bar my_bar;
 
         template<class T>           // good, deduces whether T is const or non-const
         static auto get_bar_impl(T& t) -> decltype(t.get_bar())
             { /* the complex logic around getting a possibly-const reference to my_bar */ }
-
-    public:                         // good
-              Bar& get_bar()       { return get_bar_impl(*this); }
-        const Bar& get_bar() const { return get_bar_impl(*this); }
     };
 
 ##### Exception
