@@ -17480,7 +17480,7 @@ Naming and layout rules:
 * [NL.20: Don't place two statements on the same line](#Rl-stmt)
 * [NL.21: Declare one name (only) per declaration](#Rl-dcl)
 * [NL.25: Don't use `void` as an argument type](#Rl-void)
-* [NL.26: Use conventional `const` notation](Rl-const)
+* [NL.26: Use conventional `const` notation](#Rl-const)
 
 Most of these rules are aesthetic and programmers hold strong opinions.
 IDEs also tend to have defaults and a range of alternatives.
