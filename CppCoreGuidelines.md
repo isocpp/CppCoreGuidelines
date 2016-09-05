@@ -7368,7 +7368,7 @@ Wrap a `union` in a class together with a type field.
 
 The soon-to-be-standard `variant` type (to be found in `<variant>`) does that for you:
 
-    variant<int,double> v;
+    variant<int, double> v;
     v = 123;        // v holds an int
     int x = get<int>(v);
     v = 123.456;    // v holds a double
@@ -7420,19 +7420,19 @@ Saving programmers from having to write such code is one reason for including `v
 
     int Value::number() const
     {
-        if (type!=Tag::number) throw Bad_entry{};
+        if (type != Tag::number) throw Bad_entry{};
         return i;
     }
 
     string Value::text() const
     {
-        if (type!=Tag::text) throw Bad_entry{};
+        if (type != Tag::text) throw Bad_entry{};
         return s;
     }
 
     void Value::set_number(int n)
     {
-        if (type==Tag::text) {
+        if (type == Tag::text) {
             s.~string();      // explicitly destroy string
             type = Tag::number;
         }
@@ -7441,7 +7441,7 @@ Saving programmers from having to write such code is one reason for including `v
 
     void Value::set_text(const string& ss)
     {
-        if (type==Tag::text)
+        if (type == Tag::text)
             s = ss;
         else {
             new(&s) string{ss};   // placement new: explicitly construct string
@@ -7451,12 +7451,12 @@ Saving programmers from having to write such code is one reason for including `v
 
     Value& Value::operator=(const Value& e)   // necessary because of the string variant
     {
-        if (type==Tag::text && e.type==Tag::text) {
+        if (type == Tag::text && e.type == Tag::text) {
             s = e.s;    // usual string assignment
             return *this;
         }
 
-        if (type==Tag::text) s.~string(); // explicit destroy
+        if (type == Tag::text) s.~string(); // explicit destroy
 
         switch (e.type) {
         case Tag::number:
@@ -7472,7 +7472,7 @@ Saving programmers from having to write such code is one reason for including `v
 
     Value::~Value()
     {
-        if (type==Tag::text) s.~string(); // explicit destroy
+        if (type == Tag::text) s.~string(); // explicit destroy
     }
 
 ##### Enforcement
@@ -9168,7 +9168,7 @@ Reuse of a member name as a local variable can also be a problem:
 
     void S::f(int x)
     {
-        m=7;    // assign to member
+        m = 7;    // assign to member
         if (x) {
             int m = 9;
             // ...
@@ -9487,7 +9487,9 @@ For containers, there is a tradition for using `{...}` for a list of elements an
 Initialization of a variable declared using `auto` with a single value, e.g., `{v}`, had surprising results until recently:
 
     auto x1 {7};        // x1 is an int with the value 7
-    auto x2 = {7};      // x2 is an initializer_list<int> with an element 7 (this will will change to "element 7" in C++17)
+    // x2 is an initializer_list<int> with an element 7
+    // (this will will change to "element 7" in C++17)
+    auto x2 = {7};
 
     auto x11 {7, 8};    // error: two initializers
     auto x22 = {7, 8};  // x2 is an initializer_list<int> with elements 7 and 8
@@ -10511,7 +10513,7 @@ Consider keeping previously computed results around for a costly operation:
 
     class Cache {   // some type implementing a cache for an int->int operation
     public:
-        pair<bool,int> find(int x) const;   // is there a value for x?
+        pair<bool, int> find(int x) const;   // is there a value for x?
         void set(int x, int v);             // make y the value for x
         // ...
     private:
@@ -10520,12 +10522,12 @@ Consider keeping previously computed results around for a costly operation:
 
     class X {
     public:
-        int get_val(int x) 
+        int get_val(int x)
         {
             auto p = cache.find(x);
             if (p.first) return p.second;
             int val = compute(x);
-            cache.set(x,val); // insert value for x
+            cache.set(x, val); // insert value for x
             return val;
         }
         // ...
@@ -10541,10 +10543,10 @@ To do this we still need to mutate `cache`, so people sometimes resort to a `con
         int get_val(int x) const
         {
             auto p = cache.find(x);
-			if (p.first) return p.second;
-			int val = compute(x);
-			const_cast<Cache&>(cache).set(x,val);   // ugly
-			return val;
+            if (p.first) return p.second;
+            int val = compute(x);
+            const_cast<Cache&>(cache).set(x, val);   // ugly
+            return val;
         }
         // ...
     private:
@@ -10561,7 +10563,7 @@ State that `cache` is mutable even for a `const` object:
             auto p = cache.find(x);
             if (p.first) return p.second;
             int val = compute(x);
-            cache.set(x,val);
+            cache.set(x, val);
             return val;
         }
         // ...
@@ -10856,7 +10858,7 @@ Avoid wrong results.
     unsigned int y = 7;
 
     cout << x - y << '\n';  // unsigned result, possibly 4294967286
-    cout << x + y << '\n';  // unsiged result: 4
+    cout << x + y << '\n';  // unsigned result: 4
     cout << x * y << '\n';  // unsigned result, possibly 4294967275
 
 It is harder to spot the problem in more realistic examples.
@@ -10939,12 +10941,15 @@ The build-in array uses signed types for subscripts.
 This makes surprises (and bugs) inevitable.
 
     int a[10];
-    for (int i=0; i<10; ++i) a[i]=i;
+    for (int i=0; i < 10; ++i) a[i]=i;
     vector<int> v(10);
-    for (int i=0; v.size()<10; ++i) v[i]=i; // compares signed to unsigned; some compilers warn
+    // compares signed to unsigned; some compilers warn
+    for (int i=0; v.size() < 10; ++i) v[i]=i;
 
     int a2[-2];         // error: negative size
-    vector<int> v2(-2); // OK, but the number of ints (4294967294) is so large that we should get an exception
+
+    // OK, but the number of ints (4294967294) is so large that we should get an exception
+    vector<int> v2(-2);
 
 ##### Enforcement
 
@@ -11190,7 +11195,7 @@ Because a design that ignore the possibility of later improvement is hard to cha
 
 From the C (and C++) standard:
 
-    void qsort (void* base, size_t num, size_t size, int (*compar)(const void*,const void*));
+    void qsort (void* base, size_t num, size_t size, int (*compar)(const void*, const void*));
 
 When did you even want to sort memory?
 Really, we sort sequences of elements, typically stored in containers.
@@ -11200,7 +11205,10 @@ This implies added work for the programmer, is error prone, and deprives the com
 
     double data[100];
     // ... fill a ...
-    qsort(data,100,sizeof(double),compare_doubles);  // 100 chunks of memory of sizeof(double) starting at address data using the order defined by compare_doubles
+
+    // 100 chunks of memory of sizeof(double) starting at
+    // address data using the order defined by compare_doubles
+    qsort(data, 100, sizeof(double), compare_doubles);
 
 From the point of view of interface design is that `qsort` throws away useful information.
 
@@ -11209,13 +11217,15 @@ We can do better (in C++98)
     template<typename Iter>
         void sort(Iter b, Iter e);  // sort [b:e)
 
-    sort(data,data+100);
+    sort(data, data + 100);
 
 Here, we use the compiler's knowledge about the size of the array, the type of elements, and how to compare `double`s.
 
 With C++11 plus [concepts](#???), we can do better still
 
-    void sort(Sortable& c); // Sortable specifies that c must be a random-access sequence of elements comparable with <
+    // Sortable specifies that c must be a
+    // random-access sequence of elements comparable with <
+    void sort(Sortable& c);
 
     sort(c);
 
@@ -11224,17 +11234,18 @@ In this, the `sort` interfaces shown here still have a weakness:
 They implicitly rely on the element type having less-than (`<`) defined.
 To complete the interface, we need a second version that accepts a comparison criteria:
 
-    void sort(Sortable& c, Predicate<Value_type<Sortable>> p); // compare elements of c using p
+    // compare elements of c using p
+    void sort(Sortable& c, Predicate<Value_type<Sortable>> p);
 
 The standard-library specification of `sort` offers those two versions,
 but the semantics is expressed in English rather than code using concepts.
 
-##### Note 
+##### Note
 
 Premature optimization is said to be [the root of all evil](#Rper-Knuth), but that's not a reason to despise performance.
 It is never premature to consider what makes a design amenable to improvement, and improved performance is a commonly desired improvement.
 Aim to build a set of habits that by default results in efficient, maintainable, and optimizable code.
-In particular, when you write a function that is not a one-off implementation detail, consider 
+In particular, when you write a function that is not a one-off implementation detail, consider
 
 * Information passing:
 Prefer clean [interfaces](#S-interfaces) carrying sufficient information for later improvement of implementation.
@@ -11267,7 +11278,7 @@ Don't let bad designs "bleed into" your code.
 Consider:
 
     template <class ForwardIterator, class T>
-    bool binary_search (ForwardIterator first, ForwardIterator last, const T& val);
+    bool binary_search(ForwardIterator first, ForwardIterator last, const T& val);
 
 `binary_search(begin(c),end(c),7)` will tell you whether `7` is in `c` or not.
 However, it will not tell you where that `7` is or whether there are more than one `7`.
@@ -11280,16 +11291,16 @@ needed information back to the caller. Therefore, the standard library also offe
 
 `lower_bound` returns an iterator to the first match if any, otherwise `last`.
 
-However, `lower_bound` still doesn't return enough information for all uses, so the standard library also offers 
+However, `lower_bound` still doesn't return enough information for all uses, so the standard library also offers
 
     template <class ForwardIterator, class T>
-    pair<ForwardIterator,ForwardIterator>
-    equal_range (ForwardIterator first, ForwardIterator last, const T& val);
+    pair<ForwardIterator, ForwardIterator>
+    equal_range(ForwardIterator first, ForwardIterator last, const T& val);
 
 `equal_range` returns a `pair` of iterators specifying the first and one beyond last match.
 
-    auto r = equal_range(begin(c),end(c),7);
-    for (auto p = r.first(); p!=r.second(), ++p)
+    auto r = equal_range(begin(c), end(c),7);
+    for (auto p = r.first(); p != r.second(), ++p)
         cout << *p << '\n';
 
 Obviously, these three interfaces are implemented by the same basic code.
@@ -16546,9 +16557,9 @@ In particular, the single-return rule makes it harder to concentrate error check
     //  requires Number<T>
     string sign(T x)
     {
-        if (x<0)
+        if (x < 0)
             return "negative";
-        else if (x>0)
+        else if (x > 0)
             return "positive";
         return "zero";
     }
@@ -16560,12 +16571,12 @@ to use a single return only we would have to do something like
     string sign(T x)        // bad
     {
         string res;
-        if (x<0)
+        if (x < 0)
             res = "negative";
-        else if (x>0)
+        else if (x > 0)
             res = "positive";
         else
-            res ="zero";
+            res = "zero";
         return res;
     }
 
@@ -16577,7 +16588,7 @@ Of course many simple functions will naturally have just one `return` because of
 
     int index(const char* p)
     {
-        if (p==nullptr) return -1;  // error indicator: alternatively `throw nullptr_error{}`
+        if (p == nullptr) return -1;  // error indicator: alternatively "throw nullptr_error{}"
         // ... do a lookup to find the index for p
         return i;
     }
@@ -16587,7 +16598,7 @@ If we applied the rule, we'd get something like
     int index2(const char* p)
     {
         int i;
-        if (p==nullptr)
+        if (p == nullptr)
             i = -1;  // error indicator
         else {
             // ... do a lookup to find the index for p
@@ -16715,9 +16726,9 @@ This technique is a pre-exception technique for RAII-like resource and error han
 
     void do_something(int n)
     {
-        if (n<100) goto exit;
+        if (n < 100) goto exit;
         // ...
-        int* p = (int*)malloc(n);
+        int* p = (int*) malloc(n);
         // ...
         if (some_ error) goto_exit;
         // ...
