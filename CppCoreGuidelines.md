@@ -987,7 +987,7 @@ Messy, low-level code breeds more such code.
     // ...
     for (;;) {
         // ... read an int into x, exit loop if end of file is reached ...
-        // ... check that x is valid ... 
+        // ... check that x is valid ...
         if (count == sz)
             p = (int*) realloc(p, sizeof(int) * sz * 2);
         p[count++] = x;
@@ -3142,10 +3142,10 @@ Here on one popular implementation I got the output:
 
 I expected that because the call of `g()` reuses the stack space abandoned by the call of `f()` so `*p` refers to the space now occupied by `gx`.
 
-Imagine what would happen if `fx` and `gx` were of different types.
-Imagine what would happen if `fx` or `gx` was a type with an invariant.
-Imagine what would happen if more that dangling pointer was passed around among a larger set of functions.
-Imagine what a cracker could do with that dangling pointer.
+* Imagine what would happen if `fx` and `gx` were of different types.
+* Imagine what would happen if `fx` or `gx` was a type with an invariant.
+* Imagine what would happen if more that dangling pointer was passed around among a larger set of functions.
+* Imagine what a cracker could do with that dangling pointer.
 
 Fortunately, most (all?) modern compilers catch and warn against this simple case.
 
@@ -3400,7 +3400,7 @@ There is not a choice when a set of functions are used to do a semantically equi
 ##### See also
 
 
-[Default arguments for virtual functions](#Rh-virtual-default-arg}
+[Default arguments for virtual functions](#Rh-virtual-default-arg)
 
 ##### Enforcement
 
@@ -7360,7 +7360,7 @@ What we have here is an "invisible" type error that happens to give a result tha
 And, talking about "invisible", this code produced no output:
 
     v.x = 123;
-	cout << v.d << '\n';    // BAD: undefined behavior
+    cout << v.d << '\n';    // BAD: undefined behavior
 
 ###### Alternative
 
@@ -7368,7 +7368,7 @@ Wrap a `union` in a class together with a type field.
 
 The soon-to-be-standard `variant` type (to be found in `<variant>`) does that for you:
 
-    variant<int,double> v;
+    variant<int, double> v;
     v = 123;        // v holds an int
     int x = get<int>(v);
     v = 123.456;    // v holds a double
@@ -7394,85 +7394,85 @@ The code is somewhat elaborate.
 Handling a type with user-defined assignment and destructor is tricky.
 Saving programmers from having to write such code is one reason for including `variant` in the standard.
 
-    class Value {	// two alternative representations represented as a union
+    class Value { // two alternative representations represented as a union
     private:
-	    enum class Tag { number, text };
-	    Tag type;	// discriminant
+        enum class Tag { number, text };
+        Tag type; // discriminant
 
-	    union {	// representation (note: anonymous union)
-		    int i;
-		    string s;	// string has default constructor, copy operations, and destructor
-	    };
+        union { // representation (note: anonymous union)
+            int i;
+            string s; // string has default constructor, copy operations, and destructor
+        };
     public:
-	    struct Bad_entry { };	// used for exceptions
-	
-	    ~Value();
-	    Value& operator=(const Value&); 	// necessary because of the string variant
-	    Value(const Value&);
-	    // ...
-	    int number() const;
-	    string text() const;
+        struct Bad_entry { }; // used for exceptions
 
-	    void set_number(int n);
-	    void set_text(const string&);
-	    // ...
+        ~Value();
+        Value& operator=(const Value&);   // necessary because of the string variant
+        Value(const Value&);
+        // ...
+        int number() const;
+        string text() const;
+
+        void set_number(int n);
+        void set_text(const string&);
+        // ...
     };
 
     int Value::number() const
     {
-	    if (type!=Tag::number) throw Bad_entry{};
-	    return i;
+        if (type != Tag::number) throw Bad_entry{};
+        return i;
     }
 
     string Value::text() const
     {
-	    if (type!=Tag::text) throw Bad_entry{};
-	    return s;
+        if (type != Tag::text) throw Bad_entry{};
+        return s;
     }
 
     void Value::set_number(int n)
     {
-    	if (type==Tag::text) {
-	    	s.~string();			// explicitly destroy string
-	    	type = Tag::number;
-    	}
-    	i = n;
+        if (type == Tag::text) {
+            s.~string();      // explicitly destroy string
+            type = Tag::number;
+        }
+        i = n;
     }
 
     void Value::set_text(const string& ss)
     {
-    	if (type==Tag::text)
-    		s = ss;
-    	else {
-    		new(&s) string{ss};		// placement new: explicitly construct string
-    		type = Tag::text;
-    	}
+        if (type == Tag::text)
+            s = ss;
+        else {
+            new(&s) string{ss};   // placement new: explicitly construct string
+            type = Tag::text;
+        }
     }
 
-    Value& Value::operator=(const Value& e) 	// necessary because of  the string variant
+    Value& Value::operator=(const Value& e)   // necessary because of the string variant
     {
-    	if (type==Tag::text && e.type==Tag::text) {
-    		s = e.s;		// usual string assignment
-    		return *this;
-    	}
+        if (type == Tag::text && e.type == Tag::text) {
+            s = e.s;    // usual string assignment
+            return *this;
+        }
 
-    	if (type==Tag::text) s.~string();	// explicit destroy
+        if (type == Tag::text) s.~string(); // explicit destroy
 
-    	switch (e.type) {
-    	case Tag::number:
-	    	i = e.i;
-	    	break;
-    	case Tag::text:
-    		new(&s)(e.s); 	// placement new: explicit construct
-    		type = e.type;
-    	}
+        switch (e.type) {
+        case Tag::number:
+            i = e.i;
+            break;
+        case Tag::text:
+            new(&s)(e.s);   // placement new: explicit construct
+            type = e.type;
+        }
 
-    	return *this;
+        return *this;
     }
 
     Value::~Value()
     {
-    	if (type==Tag::text) s.~string();	// explicit destroy
+        if (type == Tag::text) s.~string(); // explicit destroy
     }
 
 ##### Enforcement
@@ -7504,12 +7504,12 @@ The idea of `Pun` is to be able to look at the character representation of an `i
 
 If you wanted to see the bytes of an `int`, use a (named) cast:
 
-   void if_you_must_pun(int& x)
-   {
-       auto p = reinterpret_cast<unsigned char*>(&x);
-    cout << p[0] << '\n';     // undefined behavior
-       // ...
-   }
+    void if_you_must_pun(int& x)
+    {
+        auto p = reinterpret_cast<unsigned char*>(&x);
+        cout << p[0] << '\n';     // undefined behavior
+        // ...
+    }
 
 Accessing the result of an `reinterpret_cast` to a different type from the objects declared type is still undefined behavior,
 but at least we can see that something tricky is going on.
@@ -7731,9 +7731,9 @@ The default is the easiest to read and write.
     enum class Direction : char { n, s, e, w,
                                   ne, nw, se, sw };  // underlying type saves space
 
-    enum class Web_color : int { red = 0xFF0000,
-                                green = 0x00FF00,
-                                blue = 0x0000FF };  // underlying type is redundant
+    enum class Web_color : int { red   = 0xFF0000,
+                                 green = 0x00FF00,
+                                 blue  = 0x0000FF };  // underlying type is redundant
 
 ##### Note
 
@@ -8460,14 +8460,14 @@ Any type (including primary template or specialization) that overloads unary `*`
 ##### Example
 
     // use Boost's intrusive_ptr
-    #include <boost/intrusive_ptr.hpp>
+    #include<boost/intrusive_ptr.hpp>
     void f(boost::intrusive_ptr<widget> p)  // error under rule 'sharedptrparam'
     {
         p->foo();
     }
 
     // use Microsoft's CComPtr
-    #include <atlbase.h>
+    #include<atlbase.h>
     void f(CComPtr<widget> p)               // error under rule 'sharedptrparam'
     {
         p->foo();
@@ -9168,7 +9168,7 @@ Reuse of a member name as a local variable can also be a problem:
 
     void S::f(int x)
     {
-        m=7;    // assign to member
+        m = 7;    // assign to member
         if (x) {
             int m = 9;
             // ...
@@ -9487,7 +9487,9 @@ For containers, there is a tradition for using `{...}` for a list of elements an
 Initialization of a variable declared using `auto` with a single value, e.g., `{v}`, had surprising results until recently:
 
     auto x1 {7};        // x1 is an int with the value 7
-    auto x2 = {7};      // x2 is an initializer_list<int> with an element 7 (this will will change to "element 7" in C++17)
+    // x2 is an initializer_list<int> with an element 7
+    // (this will will change to "element 7" in C++17)
+    auto x2 = {7};
 
     auto x11 {7, 8};    // error: two initializers
     auto x22 = {7, 8};  // x2 is an initializer_list<int> with elements 7 and 8
@@ -9776,7 +9778,7 @@ Requires messy cast-and-macro-laden code to get working right.
 
 ##### Example
 
-    #include <cstdarg>
+    #include<cstdarg>
 
     // "severity" followed by a zero-terminated list of char*s; write the C-style strings to cerr
     void error(int severity ...)
@@ -10364,7 +10366,7 @@ A key example is basic narrowing:
 
     double d = 7.9;
     int i = d;    // bad: narrowing: i becomes 7
-    i = (int)d;   // bad: we're going to claim this is still not explicit enough
+    i = (int) d;  // bad: we're going to claim this is still not explicit enough
 
     void f(int x, long y, double d)
     {
@@ -10507,11 +10509,11 @@ Such examples are often handled as well or better using `mutable` or an indirect
 
 Consider keeping previously computed results around for a costly operation:
 
-    int compute(int x);	// compute a value for x; assume this to be costly
+    int compute(int x); // compute a value for x; assume this to be costly
 
-    class Cache {   // some type implementing a cache for an int->int operation 
+    class Cache {   // some type implementing a cache for an int->int operation
     public:
-        pair<bool,int> find(int x) const;   // is there a value for x?
+        pair<bool, int> find(int x) const;   // is there a value for x?
         void set(int x, int v);             // make y the value for x
         // ...
     private:
@@ -10520,12 +10522,12 @@ Consider keeping previously computed results around for a costly operation:
 
     class X {
     public:
-        int get_val(int x) 
+        int get_val(int x)
         {
             auto p = cache.find(x);
-			if (p.first) return p.second;
+            if (p.first) return p.second;
             int val = compute(x);
-            cache.set(x,val); // insert value for x
+            cache.set(x, val); // insert value for x
             return val;
         }
         // ...
@@ -10541,10 +10543,10 @@ To do this we still need to mutate `cache`, so people sometimes resort to a `con
         int get_val(int x) const
         {
             auto p = cache.find(x);
-			if (p.first) return p.second;
-			int val = compute(x);
-			const_cast<Cache&>(cache).set(x,val);   // ugly
-			return val;
+            if (p.first) return p.second;
+            int val = compute(x);
+            const_cast<Cache&>(cache).set(x, val);   // ugly
+            return val;
         }
         // ...
     private:
@@ -10559,10 +10561,10 @@ State that `cache` is mutable even for a `const` object:
         int get_val(int x) const
         {
             auto p = cache.find(x);
-			if (p.first) return p.second;
-			int val = compute(x);
-			cache.set(x,val);
-			return val;
+            if (p.first) return p.second;
+            int val = compute(x);
+            cache.set(x, val);
+            return val;
         }
         // ...
     private:
@@ -10576,10 +10578,10 @@ An alternative solution would to store a pointer to the `cache`:
         int get_val(int x) const
         {
             auto p = cache->find(x);
-			if (p.first) return p.second;
-			int val = compute(x);
-			cache->set(x, val);
-			return val;
+            if (p.first) return p.second;
+            int val = compute(x);
+            cache->set(x, val);
+            return val;
         }
         // ...
     private:
@@ -10587,7 +10589,7 @@ An alternative solution would to store a pointer to the `cache`:
     };
 
 That solution is the most flexible, but requires explicit construction and destruction of `*cache`
-(most likely in the constructor and destructor of `X`). 
+(most likely in the constructor and destructor of `X`).
 
 In any variant, we must guard against data races on the `cache` in multithreaded code, possibly using a `std::mutex`.
 
@@ -10855,7 +10857,7 @@ Avoid wrong results.
     int x = -3;
     unsigned int y = 7;
 
-    cout << x - y << '\n';  // unsigned result, possibly 4294967286 
+    cout << x - y << '\n';  // unsigned result, possibly 4294967286
     cout << x + y << '\n';  // unsigned result: 4
     cout << x * y << '\n';  // unsigned result, possibly 4294967275
 
@@ -10906,22 +10908,22 @@ Unsigned arithmetic can yield surprising results if you are not expecting it.
 This is even more true for mixed signed and unsigned arithmetic.
 
     template<typename T, typename T2>
-	T subtract(T x, T2 y)
-	{
-		return x-y;
-	}
+    T subtract(T x, T2 y)
+    {
+        return x-y;
+    }
 
-	void test()
-	{
-		int s = 5;
-		unsigned int us = 5;
-		cout << subtract(s, 7) << '\n';     // -2
-		cout << subtract(us, 7u) << '\n';   // 4294967294
-		cout << subtract(s, 7u) << '\n';    // -2
-		cout << subtract(us, 7) << '\n';    // 4294967294
-		cout << subtract(s, us+2) << '\n';  // -2
-		cout << subtract(us, s+2) << '\n';  // 4294967294
-	}
+    void test()
+    {
+        int s = 5;
+        unsigned int us = 5;
+        cout << subtract(s, 7) << '\n';     // -2
+        cout << subtract(us, 7u) << '\n';   // 4294967294
+        cout << subtract(s, 7u) << '\n';    // -2
+        cout << subtract(us, 7) << '\n';    // 4294967294
+        cout << subtract(s, us+2) << '\n';  // -2
+        cout << subtract(us, s+2) << '\n';  // 4294967294
+    }
 
 Here we have been very explicit about what's happening,
 but if you had see `us-(s+2)` or `s+=2; ... us-s` would you reliably have suspected that the result would print as `4294967294`?
@@ -10939,12 +10941,15 @@ The build-in array uses signed types for subscripts.
 This makes surprises (and bugs) inevitable.
 
     int a[10];
-    for (int i=0; i<10; ++i) a[i]=i;
+    for (int i=0; i < 10; ++i) a[i]=i;
     vector<int> v(10);
-    for (int i=0; v.size()<10; ++i) v[i]=i; // compares signed to unsigned; some compilers warn
+    // compares signed to unsigned; some compilers warn
+    for (int i=0; v.size() < 10; ++i) v[i]=i;
 
     int a2[-2];         // error: negative size
-    vector<int> v2(-2); // OK, but the number of ints (4294967294) is so large that we should get an exception
+
+    // OK, but the number of ints (4294967294) is so large that we should get an exception
+    vector<int> v2(-2);
 
 ##### Enforcement
 
@@ -11190,7 +11195,7 @@ Because a design that ignore the possibility of later improvement is hard to cha
 
 From the C (and C++) standard:
 
-    void qsort (void* base, size_t num, size_t size, int (*compar)(const void*,const void*));
+    void qsort (void* base, size_t num, size_t size, int (*compar)(const void*, const void*));
 
 When did you even want to sort memory?
 Really, we sort sequences of elements, typically stored in containers.
@@ -11200,7 +11205,10 @@ This implies added work for the programmer, is error prone, and deprives the com
 
     double data[100];
     // ... fill a ...
-    qsort(data,100,sizeof(double),compare_doubles);  // 100 chunks of memory of sizeof(double) starting at address data using the order defined by compare_doubles
+
+    // 100 chunks of memory of sizeof(double) starting at
+    // address data using the order defined by compare_doubles
+    qsort(data, 100, sizeof(double), compare_doubles);
 
 From the point of view of interface design is that `qsort` throws away useful information.
 
@@ -11209,13 +11217,15 @@ We can do better (in C++98)
     template<typename Iter>
         void sort(Iter b, Iter e);  // sort [b:e)
 
-    sort(data,data+100);
+    sort(data, data + 100);
 
 Here, we use the compiler's knowledge about the size of the array, the type of elements, and how to compare `double`s.
 
 With C++11 plus [concepts](#???), we can do better still
 
-    void sort(Sortable& c); // Sortable specifies that c must be a random-access sequence of elements comparable with <
+    // Sortable specifies that c must be a
+    // random-access sequence of elements comparable with <
+    void sort(Sortable& c);
 
     sort(c);
 
@@ -11224,17 +11234,18 @@ In this, the `sort` interfaces shown here still have a weakness:
 They implicitly rely on the element type having less-than (`<`) defined.
 To complete the interface, we need a second version that accepts a comparison criteria:
 
-    void sort(Sortable& c, Predicate<Value_type<Sortable>> p); // compare elements of c using p
+    // compare elements of c using p
+    void sort(Sortable& c, Predicate<Value_type<Sortable>> p);
 
 The standard-library specification of `sort` offers those two versions,
 but the semantics is expressed in English rather than code using concepts.
 
-##### Note 
+##### Note
 
 Premature optimization is said to be [the root of all evil](#Rper-Knuth), but that's not a reason to despise performance.
 It is never premature to consider what makes a design amenable to improvement, and improved performance is a commonly desired improvement.
 Aim to build a set of habits that by default results in efficient, maintainable, and optimizable code.
-In particular, when you write a function that is not a one-off implementation detail, consider 
+In particular, when you write a function that is not a one-off implementation detail, consider
 
 * Information passing:
 Prefer clean [interfaces](#S-interfaces) carrying sufficient information for later improvement of implementation.
@@ -11267,7 +11278,7 @@ Don't let bad designs "bleed into" your code.
 Consider:
 
     template <class ForwardIterator, class T>
-    bool binary_search (ForwardIterator first, ForwardIterator last, const T& val);
+    bool binary_search(ForwardIterator first, ForwardIterator last, const T& val);
 
 `binary_search(begin(c),end(c),7)` will tell you whether `7` is in `c` or not.
 However, it will not tell you where that `7` is or whether there are more than one `7`.
@@ -11280,16 +11291,16 @@ needed information back to the caller. Therefore, the standard library also offe
 
 `lower_bound` returns an iterator to the first match if any, otherwise `last`.
 
-However, `lower_bound` still doesn't return enough information for all uses, so the standard library also offers 
+However, `lower_bound` still doesn't return enough information for all uses, so the standard library also offers
 
     template <class ForwardIterator, class T>
-    pair<ForwardIterator,ForwardIterator>
-    equal_range (ForwardIterator first, ForwardIterator last, const T& val);
+    pair<ForwardIterator, ForwardIterator>
+    equal_range(ForwardIterator first, ForwardIterator last, const T& val);
 
 `equal_range` returns a `pair` of iterators specifying the first and one beyond last match.
 
-    auto r = equal_range(begin(c),end(c),7);
-    for (auto p = r.first(); p!=r.second(), ++p)
+    auto r = equal_range(begin(c), end(c),7);
+    for (auto p = r.first(); p != r.second(), ++p)
         cout << *p << '\n';
 
 Obviously, these three interfaces are implemented by the same basic code.
@@ -12069,7 +12080,7 @@ A `thread` that has not been `detach()`ed when it is destroyed terminates the pr
 
 ##### Enforcement
 
-* Flag `join's for `raii_thread`s ???
+* Flag `join`s for `raii_thread`s ???
 * Flag `detach`s for `detached_thread`s
 
 
@@ -13957,7 +13968,7 @@ It also avoids brittle or inefficient workarounds. Convention: That's the way th
     };
 
     Container c(10, sizeof(double));
-    ((double*)c.elem)[] = 9.9;
+    ((double*) c.elem)[] = 9.9;
 
 This doesn't directly express the intent of the programmer and hides the structure of the program from the type system and optimizer.
 
@@ -15458,7 +15469,7 @@ Variadic templates is the most general mechanism for that, and is both efficient
 
 ##### Enforcement
 
-    * Flag uses of `va_arg` in user code.
+* Flag uses of `va_arg` in user code.
 
 ### <a name="Rt-variadic-pass"></a>T.101: ??? How to pass arguments to a variadic template ???
 
@@ -15612,7 +15623,7 @@ Often a `constexpr` function implies less compile-time overhead than alternative
 
 ##### Enforcement
 
-    * Flag template metaprograms yielding a value. These should be replaced with `constexpr` functions.
+* Flag template metaprograms yielding a value. These should be replaced with `constexpr` functions.
 
 ### <a name="Rt-std-tmp"></a>T.124: Prefer to use standard-library TMP facilities
 
@@ -15762,7 +15773,7 @@ Use `!=` instead of `<` to compare iterators; `!=` works for more objects becaus
         // ...
     }
 
-Of course, range-for is better still where it does what you want.
+Of course, range-`for` is better still where it does what you want.
 
 ##### Example
 
@@ -15891,7 +15902,7 @@ That subset can be compiled with both C and C++ compilers, and when compiled as 
     int* p1 = malloc(10 * sizeof(int));                      // not C++
     int* p2 = static_cast<int*>(malloc(10 * sizeof(int)));   // not C, C-style C++
     int* p3 = new int[10];                                   // not C
-    int* p4 = (int*)malloc(10 * sizeof(int));                // both C and C++
+    int* p4 = (int*) malloc(10 * sizeof(int));               // both C and C++
 
 ##### Enforcement
 
@@ -16409,7 +16420,7 @@ This slowdown can be significant compared to `printf`-style output.
 ##### Example
 
     cout << "Hello, World!" << endl;    // two output operations and a flush
-    cout << "hello, World!\n";          // one output operation and no flush
+    cout << "Hello, World!\n";          // one output operation and no flush
 
 ##### Note
 
@@ -16546,26 +16557,26 @@ In particular, the single-return rule makes it harder to concentrate error check
     //  requires Number<T>
     string sign(T x)
     {
-        if (x<0)
+        if (x < 0)
             return "negative";
-        else if (x>0)
+        else if (x > 0)
             return "positive";
         return "zero";
     }
 
 to use a single return only we would have to do something like
 
-    template<class T>   
+    template<class T>
     //  requires Number<T>
     string sign(T x)        // bad
     {
         string res;
-        if (x<0)
+        if (x < 0)
             res = "negative";
-        else if (x>0)
+        else if (x > 0)
             res = "positive";
         else
-            res ="zero";
+            res = "zero";
         return res;
     }
 
@@ -16577,7 +16588,7 @@ Of course many simple functions will naturally have just one `return` because of
 
     int index(const char* p)
     {
-        if (p==nullptr) return -1;  // error indicator: alternatively `throw nullptr_error{}`
+        if (p == nullptr) return -1;  // error indicator: alternatively "throw nullptr_error{}"
         // ... do a lookup to find the index for p
         return i;
     }
@@ -16587,7 +16598,7 @@ If we applied the rule, we'd get something like
     int index2(const char* p)
     {
         int i;
-        if (p==nullptr)
+        if (p == nullptr)
             i = -1;  // error indicator
         else {
             // ... do a lookup to find the index for p
@@ -16715,9 +16726,9 @@ This technique is a pre-exception technique for RAII-like resource and error han
 
     void do_something(int n)
     {
-        if (n<100) goto exit;
+        if (n < 100) goto exit;
         // ...
-        int* p = (int*)malloc(n);
+        int* p = (int*) malloc(n);
         // ...
         if (some_ error) goto_exit;
         // ...
