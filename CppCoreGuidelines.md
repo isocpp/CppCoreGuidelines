@@ -11280,7 +11280,7 @@ Consider:
     template <class ForwardIterator, class T>
     bool binary_search(ForwardIterator first, ForwardIterator last, const T& val);
 
-`binary_search(begin(c),end(c),7)` will tell you whether `7` is in `c` or not.
+`binary_search(begin(c) ,end(c) ,7)` will tell you whether `7` is in `c` or not.
 However, it will not tell you where that `7` is or whether there are more than one `7`.
 
 Sometimes, just passing the minimal amount of information back (here, `true` or `false`) is sufficient, but a good interface passes
@@ -11299,7 +11299,7 @@ However, `lower_bound` still doesn't return enough information for all uses, so 
 
 `equal_range` returns a `pair` of iterators specifying the first and one beyond last match.
 
-    auto r = equal_range(begin(c), end(c),7);
+    auto r = equal_range(begin(c), end(c) ,7);
     for (auto p = r.first(); p != r.second(), ++p)
         cout << *p << '\n';
 
