@@ -11514,7 +11514,10 @@ There are several ways that this example could be made safe for a multi-threaded
 * Refuse to build and/or run in a multi-threaded environment.
 * Provide two implementations, one which is used in single-threaded environments and another which is used in multi-threaded environments.
 
- Code that is never run in a multi-threaded environment.
+##### Exception
+
+Code that is never run in a multi-threaded environment.
+
 Be careful: there are many examples where code that was "known" to never run in a multi-threaded program
 was run as part of a multi-threaded program. Often years later.
 Typically, such programs lead to a painful effort to remove data races.
