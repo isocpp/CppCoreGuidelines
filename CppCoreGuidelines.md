@@ -11622,8 +11622,8 @@ The less sharing you do, the less chance you have to wait on a lock (so performa
 ##### Example
 
     bool validate(const vector<Reading>&);
-    Graph<Temp_node> validate(const vector<Reading>&);
-    Image validate(const vector<Reading>&);
+    Graph<Temp_node> temperature_gradiants(const vector<Reading>&);
+    Image altitude_map(const vector<Reading>&);
     // ...
 
     void process_readings(istream& socket1)
@@ -11633,7 +11633,7 @@ The less sharing you do, the less chance you have to wait on a lock (so performa
         if (!socket1) throw Bad_input{};
 
         auto h1 = async([&] { if (!validate(surface_readings) throw Invalide_data{}; });
-        auto h2 = async([&] { return temparature_gradiants(surface_readings); });
+        auto h2 = async([&] { return temperature_gradiants(surface_readings); });
         auto h3 = async([&] { return altitude_map(surface_readings); });
         // ...
         auto v1 = h1.get();
