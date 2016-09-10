@@ -105,7 +105,7 @@ def process_code(read_filehandle, text_filehandle, line, linenum, sourcefile, co
         if (not line.strip() == '```'):
             if ('???' == no_comment_line or '...' == no_comment_line):
                 has_question_marks = True
-            linebuffer.append(dedent(line) if not fenced else line)
+            linebuffer.append(dedent(line, indent_depth) if not fenced else line)
         try:
             line = read_filehandle.next()
             linenum += 1
@@ -147,7 +147,7 @@ def is_code(line, indent_depth = 4):
     return 0
 
 def is_inside_code(line, indent_depth):
-    return is_code(line, indent_depth) or line.strip() == ''
+    return is_code(line, indent_depth) > 0 or line.strip() == ''
 
 def stripped(line):
     # Remove well-formed html tags, fixing mistakes by legitimate users
@@ -155,9 +155,9 @@ def stripped(line):
     sline = re.sub('[()\[\]#*]', ' ', line)
     return sline
 
-def dedent(line):
-    if line.startswith('    '):
-        return line[4:]
+def dedent(line, indent_depth):
+    if line.startswith(' ' * indent_depth):
+        return line[indent_depth:]
     if line.startswith('\t'):
         return line[1:]
     return line
