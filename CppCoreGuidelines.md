@@ -2263,7 +2263,7 @@ This is usually a very good thing.
 When given a non-constant argument, a `constexpr` function can throw.
 If you consider exiting by throwing a side-effect, a `constexpr` function isn't completely pure;
 if not, this is not an issue.
-??? A question for the committe: can a constructor for an exception thrown by a `constexpr` function modify state?
+??? A question for the committee: can a constructor for an exception thrown by a `constexpr` function modify state?
 "No" would be a nice answer that matches most practice.
 
 ##### Note
@@ -2449,7 +2449,7 @@ Pure functions are easier to reason about, sometimes easier to optimize (and eve
 When given a non-constant argument, a `constexpr` function can throw.
 If you consider exiting by throwing a side-effect, a `constexpr` function isn't completely pure;
 if not, this is not an issue.
-??? A question for the committe: can a constructor for an exception thrown by a `constexpr` function modify state?
+??? A question for the committee: can a constructor for an exception thrown by a `constexpr` function modify state?
 "No" would be a nice answer that matches most practice.
 
 ##### Enforcement
@@ -11259,14 +11259,14 @@ Don't impose spurious run-time indirections on your users.
 Use [conventional ways](#Rf-conventional) of passing information through an interface;
 unconventional and/or "optimized" ways of passing data can seriously complicate later reimplementation.
 * Abstraction:
-Don't overgeneralize; a design that tries to cater for every possible use (and misuse) and defers every design desison for later
+Don't overgeneralize; a design that tries to cater for every possible use (and misuse) and defers every design decision for later
 (using compile-time or run-time indirections) is usually a complicated, bloated, hard-to-understand mess.
 Generalize from concrete examples, preserving performance as we generalize.
 Do not generalize based on mere speculation about future needs.
 The ideal is zero-overhead generalization.
 * Libraries:
 Use libraries with good interfaces.
-If no library is available build one yourself and immitate the interface style from a good library.
+If no library is available build one yourself and imitate the interface style from a good library.
 The [standard library](#S-stdlib) is a good first place to look for inspiration.
 * Isolation:
 Isolate your code from messy and/or old style code by providing an interface of your choosing to it.
@@ -11347,7 +11347,7 @@ It complements it encouraging developers enable later - appropriate and non-prem
 ##### Enforcement
 
 Tricky.
-Maybe looing for `void*` function arguments will find examples of interfaces that hinder later optimization.
+Maybe looking for `void*` function arguments will find examples of interfaces that hinder later optimization.
 
 ### <a name="Rper-type"></a>Per.10: Rely on the static type system
 
