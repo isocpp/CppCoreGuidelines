@@ -117,8 +117,22 @@ def process_code(read_filehandle, text_filehandle, line, linenum, sourcefile, co
         text_filehandle.write('\n')
 
     if (has_actual_code and not has_question_marks):
+        linebuffer = clean_trailing_newlines(linebuffer)
         write_with_harness(codefile, sourcefile, start_linenum, linebuffer)
     return (line, linenum)
+
+
+def clean_trailing_newlines(linebuffer):
+    result = []
+    code_started = False
+    linebuffer.reverse()
+    for line in linebuffer:
+        if not code_started and line == '\n':
+            continue
+        code_started = True
+        result.append(line)
+    result.reverse()
+    return result
 
 
 def write_with_harness(codefile, sourcefile, start_linenum, linebuffer):
