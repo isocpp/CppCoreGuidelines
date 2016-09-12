@@ -108,7 +108,7 @@ def process_code(read_filehandle, text_filehandle, line, linenum, sourcefile, co
         if (not line.strip() == '```'):
             if ('???' == no_comment_line or '...' == no_comment_line):
                 has_question_marks = True
-            linebuffer.append(dedent(line) if not fenced else line)
+            linebuffer.append(dedent(line, indent_depth) if not fenced else line)
         try:
             line = read_filehandle.next()
             linenum += 1
@@ -118,10 +118,33 @@ def process_code(read_filehandle, text_filehandle, line, linenum, sourcefile, co
     codefile = os.path.join(codedir, '%s%s.cpp' % (name, index))
     if fenced:
         text_filehandle.write('\n')
+
     if (has_actual_code and not has_question_marks):
-        # add commonly used headers, so that lines can compile
-        with io.open(codefile, 'w') as code_filehandle:
-            code_filehandle.write('''\
+        linebuffer = clean_trailing_newlines(linebuffer)
+        write_with_harness(codefile, sourcefile, start_linenum, linebuffer)
+    return (line, linenum)
+
+
+def clean_trailing_newlines(linebuffer):
+    result = []
+    code_started = False
+    linebuffer.reverse()
+    for line in linebuffer:
+        if not code_started and line == '\n':
+            continue
+        code_started = True
+        result.append(line)
+    result.reverse()
+    return result
+
+
+def write_with_harness(codefile, sourcefile, start_linenum, linebuffer):
+    '''write output with additional lines to make code likely compilable'''
+    # add commonly used headers, so that lines can likely compile.
+    # This is work in progress, the main issue remains handling class
+    # declarations in in-function code differently
+    with io.open(codefile, 'w') as code_filehandle:
+        code_filehandle.write('''\
 #include<stdio.h>      // by md-split
 #include<stdlib.h>     // by md-split
 #include<tuple>        // by md-split
@@ -137,10 +160,9 @@ def process_code(read_filehandle, text_filehandle, line, linenum, sourcefile, co
 using namespace std;   // by md-split
 // %s : %s
 ''' % (sourcefile, start_linenum))
-            # TODO: if not toplevel code, wrap inside class
-            for codeline in linebuffer:
-                code_filehandle.write(codeline)
-    return (line, linenum)
+        # TODO: if not toplevel code, wrap inside class
+        for codeline in linebuffer:
+            code_filehandle.write(codeline)
 
 
 def is_code(line, indent_depth = 4):
@@ -150,7 +172,7 @@ def is_code(line, indent_depth = 4):
     return 0
 
 def is_inside_code(line, indent_depth):
-    return is_code(line, indent_depth) or line.strip() == ''
+    return is_code(line, indent_depth) > 0 or line.strip() == ''
 
 def stripped(line):
     # Remove well-formed html tags, fixing mistakes by legitimate users
@@ -158,9 +180,9 @@ def stripped(line):
     sline = re.sub('[()\[\]#*]', ' ', line)
     return sline
 
-def dedent(line):
-    if line.startswith('    '):
-        return line[4:]
+def dedent(line, indent_depth):
+    if line.startswith(' ' * indent_depth):
+        return line[indent_depth:]
     if line.startswith('\t'):
         return line[1:]
     return line
