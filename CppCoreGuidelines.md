@@ -587,7 +587,7 @@ You don't need to write error handlers for errors caught at compile time.
 This example is easily simplified
 
     // Int is an alias used for integers
-    static_assert(sizeof(Int) >= 4);    // do: compile-time check
+    static_assert(sizeof(int) >= 4);    // do: compile-time check
 
 ##### Example
 
@@ -2609,6 +2609,7 @@ Unique owner types that are move-only and cheap-to-move, such as `unique_ptr`, c
 
 For example:
 
+    template <class T>
     void sink(std::unique_ptr<T> p) {
         // use p ... possibly std::move(p) onward somewhere else
     }   // p gets destroyed
@@ -6606,7 +6607,7 @@ Capping an individual virtual function with `final` is error-prone as that `fina
 
     // ...
 
-    use(new Better_interface{});
+    use(new Better_implementation{});
 
 The problem is easy to see in a small example, but in a large hierarchy with many virtual functions, tools are required for reliably spotting such problems.
 Consistent use of `override` would catch this.
@@ -7230,7 +7231,7 @@ Readability. Convention. Reusability. Support for generic code
 
 ##### Example
 
-    void cout_my_class(const my_class& c) // confusing, not conventional,not generic
+    void cout_my_class(const My_class& c) // confusing, not conventional,not generic
     {
         std::cout << /* class members here */;
     }
@@ -15012,7 +15013,7 @@ This limits use and typically increases code size.
     };
 
     List<int> lst1;
-    List<int, my_allocator> lst2;
+    List<int, My_allocator> lst2;
 
     ???
 
@@ -15039,7 +15040,7 @@ This looks innocent enough, but ???
     };
 
     List<int> lst1;
-    List<int, my_allocator> lst2;
+    List<int, My_allocator> lst2;
 
     ???
 
@@ -15780,18 +15781,18 @@ Use the least-derived class that has the functionality you need.
 
     class Base {
     public:
-        void f();
-        void g();
+        Bar f();
+        Bar g();
     };
 
     class Derived1 : public Base {
     public:
-        void h();
+        Bar h();
     };
 
     class Derived2 : public Base {
     public:
-        void j();
+        Bar j();
     };
 
     // bad, unless there is a specific reason for limiting to Derived1 objects only
@@ -16133,7 +16134,7 @@ This enables the compiler to do an early consistency check.
 
     // foo.h:
     void foo(int);
-    int bar(long double);
+    int bar(long);
     int foobar(int);
 
     // foo.cpp:
@@ -16147,7 +16148,7 @@ The errors will not be caught until link time for a program calling `bar` or `fo
 
     // foo.h:
     void foo(int);
-    int bar(long double);
+    int bar(long);
     int foobar(int);
 
     // foo.cpp:
@@ -16992,10 +16993,10 @@ Use of these casts can violate type safety and cause the program to access a var
     };
 
     Derived1 d1;
-    Base* p = &d1; // ok, implicit conversion to pointer to Base is fine
+    Base* p1 = &d1; // ok, implicit conversion to pointer to Base is fine
 
     // BAD, tries to treat d1 as a Derived2, which it is not
-    Derived2* p2 = static_cast<Derived2*>(p);
+    Derived2* p2 = static_cast<Derived2*>(p1);
     // tries to access d1's nonexistent string member, instead sees arbitrary bytes near d1
     cout << p2->get_s();
 
@@ -17131,7 +17132,7 @@ Note that a C-style `(T)expression` cast means to perform the first of the follo
     Base* p1 = &d1; // ok, implicit conversion to pointer to Base is fine
 
     // BAD, tries to treat d1 as a Derived2, which it is not
-    Derived2* p2 = (Derived2*)(p);
+    Derived2* p2 = (Derived2*)(p1);
     // tries to access d1's nonexistent string member, instead sees arbitrary bytes near d1
     cout << p2->get_s();
 
@@ -17318,14 +17319,14 @@ Dynamic accesses into arrays are difficult for both tools and humans to validate
     // ALTERNATIVE A: Use a span
 
     // A1: Change parameter type to use span
-    void f(span<int, 10> a, int pos)
+    void f1(span<int, 10> a, int pos)
     {
         a[pos / 2] = 1; // OK
         a[pos - 1] = 2; // OK
     }
 
     // A2: Add local span and use that
-    void f(array<int, 10> arr, int pos)
+    void f2(array<int, 10> arr, int pos)
     {
         span<int> a = {arr, pos}
         a[pos / 2] = 1; // OK
@@ -17333,7 +17334,7 @@ Dynamic accesses into arrays are difficult for both tools and humans to validate
     }
 
     // ALTERNATIVE B: Use at() for access
-    void f(array<int, 10> a, int pos)
+    void f3(array<int, 10> a, int pos)
     {
         at(a, pos / 2) = 1; // OK
         at(a, pos - 1) = 2; // OK
@@ -17460,7 +17461,7 @@ If code is using an unmodified standard library, then there are still workaround
         at(v, 0) = a[0];    // OK (alternative 2)
 
         v.at(0) = a[i];     // BAD
-        v.at(0) = a.at(i)   // OK (alternative 1)
+        v.at(0) = a.at(i);  // OK (alternative 1)
         v.at(0) = at(a, i); // OK (alternative 2)
     }
 
