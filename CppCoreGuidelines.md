@@ -15126,11 +15126,11 @@ Specialization offers a powerful mechanism for providing alternative implementat
 This is a simplified version of `std::copy` (ignoring the possibility of non-contiguous sequences)
 
     struct pod_tag {};
-    struct non_pod_tag;
+    struct non_pod_tag {};
 
     template<class T> struct copy_trait { using tag = non_pod_tag; };   // T is not "plain old data"
 
-    template<> struct copy_trait<int> { using tab = pod_tag; };         // int is "plain old data"
+    template<> struct copy_trait<int> { using tag = pod_tag; };         // int is "plain old data"
 
     template<class Iter>
     Out copy_helper(Iter first, Iter last, Iter out, pod_tag)
@@ -15163,7 +15163,7 @@ This is a general and powerful technique for compile-time algorithm selection.
 When `concept`s become widely available such alternatives can be distinguished directly:
 
     template<class Iter>
-        requires Pod<Value_type_iter>
+        requires Pod<Value_type<iter>>
     Out copy_helper(In, first, In last, Out out)
     {
         // use memmove
