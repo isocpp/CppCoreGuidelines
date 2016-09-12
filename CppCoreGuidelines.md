@@ -11864,7 +11864,7 @@ Maybe it will lock on a different mutex and not return in a reasonable time, cau
 ##### Example
 
 A common example of the "calling unknown code" problem is a call to a function that tries to gain locked access to the same object.
-Such problem cal often be solved by using a `recursive_mutex`. For example:
+Such problem can often be solved by using a `recursive_mutex`. For example:
 
     recursive_mutex my_mutex;
 
@@ -12135,7 +12135,7 @@ Defining "small amount" precisely is impossible.
     }
 
 The call of `modify1` involves copying two `string` values; the call of `modify2` does not.
-On the other hand, the implementation of `modify1` is exactly as we would have written in for single-threaded code,
+On the other hand, the implementation of `modify1` is exactly as we would have written it for single-threaded code,
 whereas the implementation of `modify2` will need some form of locking to avoid data races.
 If the string is short (say 10 characters), the call of `modify1` can be surprisingly fast;
 essentially all the cost is in the `thread` switch. If the string is long (say 1,000,000 characters), copying it twice
@@ -12402,7 +12402,7 @@ It should be obvious to a reader that the data is to be guarded and how.
 
 ## <a name="SScp-par"></a>CP.par: Parallelism
 
-By "parallelism" we refer to a performing a task (more or less) simultaneously ("in parallel with") on many data items.
+By "parallelism" we refer to performing a task (more or less) simultaneously ("in parallel with") on many data items.
 
 Parallelism rule summary:
 
@@ -12415,7 +12415,7 @@ Parallelism rule summary:
 
 ## <a name="SScp-mess"></a>CP.mess: Message passing
 
-The standard-library facilities are quite low level, focused on the needs of close-to the hardware critical programming using `thread`s, `mutex`ex, `atomic` types, etc.
+The standard-library facilities are quite low level, focused on the needs of close-to the hardware critical programming using `thread`s, `mutex`es, `atomic` types, etc.
 Most people shouldn't work at this level: it's error-prone and development is slow.
 If possible, use a higher level facility: messaging libraries, parallel algorithms, and vectorization.
 This section looks at passing messages so that a programmer doesn't have to do explicit synchronization.
@@ -12853,7 +12853,7 @@ Not all member functions can be called.
         // if elem != nullptr then elem points to sz doubles
     public:
         Vector() : elem{nullptr}, sz{0}{}
-        vector(int s) : elem{new double}, sz{s} { /* initialize elements */ }
+        Vector(int s) : elem{new double}, sz{s} { /* initialize elements */ }
         ~Vector() { delete elem; }
         double& operator[](int s) { return elem[s]; }
         // ...
@@ -13534,7 +13534,7 @@ A not uncommon technique is to gather cleanup at the end of the function to avoi
 
         Gadget g1 = make_gadget(17);
         if (!g1.valid()) {
-                err = g2_error;
+                err = g1_error;
                 goto exit;
         }
 
@@ -13552,7 +13552,7 @@ A not uncommon technique is to gather cleanup at the end of the function to avoi
 
     exit:
       if (g1.valid()) cleanup(g1);
-      if (g1.valid()) cleanup(g2);
+      if (g2.valid()) cleanup(g2);
       return {res, err};
     }
 
