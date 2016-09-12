@@ -72,6 +72,8 @@ def main():
                     sline = stripped(line)
                     text_filehandle.write(sline)
 
+    assert line_length(args.sourcefile) == line_length(args.targetfile)
+
 
 def process_code(read_filehandle, text_filehandle, line, linenum, sourcefile, codedir, name, index, indent_depth):
     fenced = (line.strip() == '```')
@@ -91,16 +93,17 @@ def process_code(read_filehandle, text_filehandle, line, linenum, sourcefile, co
         comment_idx = line.find('//')
         no_comment_line = line
         if comment_idx >= 0:
-            no_comment_line = line[:comment_idx]
+            no_comment_line = line[:comment_idx].strip()
             text_filehandle.write(line[comment_idx + 2:])
+        else:
+            # write empty line so line numbers stay stable
+            text_filehandle.write('\n')
+
         if (not has_actual_code
             and not line.strip().startswith('//')
             and not line.strip().startswith('???')
             and not line.strip() == ''):
             has_actual_code = True
-        else:
-            # write empty line so line numbers stay stable
-            text_filehandle.write('\n')
 
         if (not line.strip() == '```'):
             if ('???' == no_comment_line or '...' == no_comment_line):
@@ -170,6 +173,9 @@ def get_marker(line):
             return namematch.group(1) # group 0 is full match
 
     return None
+
+def line_length(filename):
+    return sum(1 for line in open(filename))
 
 if __name__ == '__main__':
     main()
