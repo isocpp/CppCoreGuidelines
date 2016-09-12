@@ -14804,7 +14804,7 @@ Note that C++17 will make this rule redundant by allowing the template arguments
 [Template parameter deduction for constructors (Rev. 3)](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/p0091r1.html).
 For example:
 
-    tuple t1 = {1, "Hamlet", 3.14}; // deduced: tuple<int, string, double>
+    tuple t1 = {1, "Hamlet"s, 3.14}; // deduced: tuple<int, string, double>
 
 ##### Enforcement
 
