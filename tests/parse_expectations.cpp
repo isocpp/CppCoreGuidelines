@@ -1,7 +1,7 @@
 #include <string>
 #include <iostream>
 
-void main()
+int main()
 {
     constexpr char prefix[] = "@expected(";
     constexpr char suffix[] = ")";
@@ -36,5 +36,7 @@ void main()
             }
         }
     }
+
+    return 0;
 }
 
