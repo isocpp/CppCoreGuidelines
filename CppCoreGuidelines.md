@@ -15132,20 +15132,20 @@ This is a simplified version of `std::copy` (ignoring the possibility of non-con
 
     template<> struct copy_trait<int> { using tag = pod_tag; };         // int is "plain old data"
 
-    template<class Iter>
-    Out copy_helper(Iter first, Iter last, Iter out, pod_tag)
+    template<class IterIn, class IterOut>
+    IterOut copy_helper(IterIn first, IterIn last, IterOut out, pod_tag)
     {
         // use memmove
     }
 
-    template<class Iter>
-    Out copy_helper(Iter first, Iter last, Iter out, non_pod_tag)
+    template<class IterIn, class IterOut>
+    IterOut copy_helper(IterIn first, IterIn last, IterOut out, non_pod_tag)
     {
         // use loop calling copy constructors
     }
 
-    template<class Itert>
-    Out copy(Iter first, Iter last, Iter out)
+    template<class IterIn, class IterOut>
+    IterOut copy(IterIn first, IterIn last, IterOut out)
     {
         return copy_helper(first, last, out, typename copy_trait<Iter>::tag{})
     }
@@ -15162,15 +15162,15 @@ This is a general and powerful technique for compile-time algorithm selection.
 
 When `concept`s become widely available such alternatives can be distinguished directly:
 
-    template<class Iter>
-        requires Pod<Value_type<iter>>
-    Out copy_helper(In, first, In last, Out out)
+    template<class IterIn, class IterOut>
+        requires Pod<Value_type<Iter>>
+    IterOut copy_helper(IterIn first, IterIn last, IterOut out)
     {
         // use memmove
     }
 
-    template<class Iter>
-    Out copy_helper(In, first, In last, Out out)
+    template<class IterIn, class IterOut>
+    IterOut copy_helper(IterIn first, IterIn last, IterOut out)
     {
         // use loop calling copy constructors
     }
