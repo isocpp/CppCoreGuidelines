@@ -6103,7 +6103,7 @@ Readability.
 Detection of mistakes.
 Writing explicit `virtual`, `override`, or `final` is self-documenting and enables the compiler to catch mismatch of types and/or names between base and derived classes. However, writing more than one of these three is both redundant and a potential source of errors.
 
-Use `virtual` only when declaring a new virtual function. Use `override` only when declaring an overrider. Use `final` only when declaring an final overrider.
+Use `virtual` only when declaring a new virtual function. Use `override` only when declaring an overrider. Use `final` only when declaring an final overrider. If a base class destructor is declared `virtual`, derived class destructors should neither be declared `virtual` nor `override`. 
 
 ##### Example, bad
 
