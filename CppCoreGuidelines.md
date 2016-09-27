@@ -6103,7 +6103,7 @@ Readability.
 Detection of mistakes.
 Writing explicit `virtual`, `override`, or `final` is self-documenting and enables the compiler to catch mismatch of types and/or names between base and derived classes. However, writing more than one of these three is both redundant and a potential source of errors.
 
-Use `virtual` only when declaring a new virtual function. Use `override` only when declaring an overrider. Use `final` only when declaring an final overrider. If a base class destructor is declared `virtual`, derived class destructors should neither be declared `virtual` nor `override`. 
+Use `virtual` only when declaring a new virtual function. Use `override` only when declaring an overrider. Use `final` only when declaring an final overrider. If a base class destructor is declared `virtual`, derived class destructors should neither be declared `virtual` nor `override`.
 
 ##### Example, bad
 
@@ -18976,9 +18976,9 @@ A relatively informal definition of terms used in the guidelines
 * *pure virtual function*: a virtual function that must be overridden in a derived class.
 * *RAII*: ("Resource Acquisition Is Initialization") a basic technique for resource management based on scopes.
 * *range*: a sequence of values that can be described by a start point and an end point. For example, \[0:5) means the values 0, 1, 2, 3, and 4.
-* *regular expression*: a notation for patterns in character strings.
 * *recursion*: the act of a function calling itself; see also iteration.
 * *reference*: (1) a value describing the location of a typed value in memory; (2) a variable holding such a value.
+* *regular expression*: a notation for patterns in character strings.
 * *requirement*: (1) a description of the desired behavior of a program or part of a program; (2) a description of the assumptions a function or template makes of its arguments.
 * *resource*: something that is acquired and must later be released, such as a file handle, a lock, or memory. See also handle, owner.
 * *rounding*: conversion of a value to the mathematically nearest value of a less precise type.
