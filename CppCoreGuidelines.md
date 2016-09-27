@@ -18878,7 +18878,7 @@ A relatively informal definition of terms used in the guidelines
 (based of the glossary in [Programming: Principles and Practice using C++](http://www.stroustrup.com/programming.html))
 
 * *abstract class*: a class that cannot be directly used to create objects; often used to define an interface to derived classes.
-  A class is made abstract by having a pure virtual function or a protected constructor.
+  A class is made abstract by having a pure virtual function or only protected constructors.
 * *abstraction*: a description of something that selectively and deliberately ignores (hides) details (e.g., implementation details); selective ignorance.
 * *address*: a value that allows us to find an object in a computer's memory.
 * *algorithm*: a procedure or formula for solving a problem; a finite series of computational steps to produce a result.
@@ -18929,7 +18929,7 @@ A relatively informal definition of terms used in the guidelines
 * *function*: a named unit of code that can be invoked (called) from different parts of a program; a logical unit of computation.
 * *generic programming*: a style of programming focused on the design and efficient implementation of algorithms.
   A generic algorithm will work for all argument types that meet its requirements. In C++, generic programming typically uses templates.
-* *Global variable*: Technically, a named object in namespace scope
+* *global variable*: technically, a named object in namespace scope.
 * *handle*: a class that allows access to another through a member pointer or reference. See also resource, copy, move.
 * *header*: a file containing declarations used to share interfaces between parts of a program.
 * *hiding*: the act of preventing a piece of information from being directly seen or accessed.
@@ -18953,7 +18953,7 @@ A relatively informal definition of terms used in the guidelines
 * *literal*: a notation that directly specifies a value, such as 12 specifying the integer value "twelve."
 * *loop*: a piece of code executed repeatedly; in C++, typically a for-statement or a while-statement.
 * *move*: an operation that transfers a value from one object to another leaving behind a value representing "empty." See also copy.
-* *mutable*: changeable; the opposite of immutable, constant, and variable.
+* *mutable*: changeable; the opposite of immutable, constant, and invariable.
 * *object*: (1) an initialized region of memory of a known type which holds a value of that type; (2) a region of memory.
 * *object code*: output from a compiler intended as input for a linker (for the linker to produce executable code).
 * *object file*: a file containing object code.
