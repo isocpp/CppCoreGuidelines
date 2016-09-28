@@ -8197,7 +8197,7 @@ The allocation of `buf` may fail and leak the file handle.
 
     void f(const string& name)
     {
-        ifstream f{name, "r"};   // open the file
+        ifstream f{name};   // open the file
         vector<char> buf(1024);
         // ...
     }
