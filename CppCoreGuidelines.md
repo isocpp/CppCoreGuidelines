@@ -501,7 +501,7 @@ Now, there is no explicit mention of the iteration mechanism, and the loop opera
 Sometimes better still, use a named algorithm:
 
     for_each(v, [](int x) { /* do something with x */ });
-    for_each(parallel.v, [](int x) { /* do something with x */ });
+    for_each(par, v, [](int x) { /* do something with x */ });
 
 The last variant makes it clear that we are not interested in the order in which the elements of `v` are handled.
 
