@@ -9985,7 +9985,7 @@ The termination condition is at the end (where it can be overlooked) and the con
     int x;
     do {
         cin >> x;
-        x
+        // ...
     } while (x < 0);
 
 ##### Enforcement
