@@ -17904,7 +17904,7 @@ This is not evil.
 
 ##### Example
 
-    sqrt double(double x);   // return the square root of x; x must be non-negative
+    double sqrt(double x);   // return the square root of x; x must be non-negative
 
     int length(const char* p);  // return the number of characters in a zero-terminated C-style string
 
