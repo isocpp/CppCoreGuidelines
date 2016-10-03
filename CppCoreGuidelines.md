@@ -12503,7 +12503,7 @@ Lock-free programming rule summary:
 * how/when to use atomics
 * avoid starvation
 * use a lock free data structure rather than hand-crafting specific lock-free access
-* [CP.110: Do not write your own double-checked locking for initialization](#Rconc-double-init)
+* [CP.110: Do not write your own double-checked locking for initialization](#Rconc-double)
 * [CP.111: Use a conventional pattern if you really need double-checked locking](#Rconc-double-pattern)
 * how/when to compare and swap
 
@@ -12581,7 +12581,7 @@ Become an expert before shipping lock-free code for others to use.
 * Damian Dechev, Peter Pirkelbauer, Nicolas Rouquette, and Bjarne Stroustrup: Semantically Enhanced Containers for Concurrent Real-Time Systems. Proc. 16th Annual IEEE International Conference and Workshop on the Engineering of Computer Based Systems (IEEE ECBS). April 2009.
 
 
-### <a name="Rconc-double-init"></a>CP.110: Do not write your own double-checked locking for initialization
+### <a name="Rconc-double"></a>CP.110: Do not write your own double-checked locking for initialization
 
 ##### Reason
 
@@ -12628,7 +12628,7 @@ Example with thread-safe static local variables of C++11.
 
 ##### Reason
 
-Double-checked locking is easy to mess up. If you really need to write your own double-checked locking, in spite of the rules [CP.110: Do not write your own double-checked locking for initialization](#Rconc-double-init) and [CP.100: Don't use lock-free programming unless you absolutely have to](#Rconc-lockfree), then do it in a conventional pattern.
+Double-checked locking is easy to mess up. If you really need to write your own double-checked locking, in spite of the rules [CP.110: Do not write your own double-checked locking for initialization](#Rconc-double) and [CP.100: Don't use lock-free programming unless you absolutely have to](#Rconc-lockfree), then do it in a conventional pattern.
 
 ##### Example, bad
 
