@@ -132,7 +132,7 @@ We plan to modify and extend this document as our understanding improves and the
 
 # <a name="S-introduction"></a>In: Introduction
 
-This is a set of core guidelines for modern C++, C++14, and taking likely future enhancements and taking ISO Technical Specifications (TSs) into account.
+This is a set of core guidelines for modern C++, C++14, taking likely future enhancements and ISO Technical Specifications (TSs) into account.
 The aim is to help C++ programmers to write simpler, more efficient, more maintainable code.
 
 Introduction summary:
@@ -154,7 +154,7 @@ The purpose of this document is to help developers to adopt modern C++ (C++11, C
 
 We do not suffer the delusion that every one of these rules can be effectively applied to every code base. Upgrading old systems is hard. However, we do believe that a program that uses a rule is less error-prone and more maintainable than one that does not. Often, rules also lead to faster/easier initial development.
 As far as we can tell, these rules lead to code that performs as well or better than older, more conventional techniques; they are meant to follow the zero-overhead principle ("what you don't use, you don't pay for" or "when you use an abstraction mechanism appropriately, you get at least as good performance as if you had handcoded using lower-level language constructs").
-Consider these rules ideals for new code, opportunities to exploit when working on older code, and try to approximate these ideas as closely as feasible.
+Consider these rules ideals for new code, opportunities to exploit when working on older code, and try to approximate these ideals as closely as feasible.
 Remember:
 
 ### <a name="R0"></a>In.0: Don't panic!
@@ -252,7 +252,7 @@ The ideal is to use all rules; that gives the greatest benefits.
 This adds up to quite a few dilemmas.
 We try to resolve those using tools.
 Each rule has an **Enforcement** section listing ideas for enforcement.
-Enforcement might be by code review, by static analysis, by compiler, or by run-time checks.
+Enforcement might be done by code review, by static analysis, by compiler, or by run-time checks.
 Wherever possible, we prefer "mechanical" checking (humans are slow, inaccurate, and bore easily) and static checking.
 Run-time checks are suggested only rarely where no alternative exists; we do not want to introduce "distributed fat".
 Where appropriate, we label a rule (in the **Enforcement** sections) with the name of groups of related rules (called "profiles").
@@ -280,7 +280,7 @@ Each rule (guideline, suggestion) can have several parts:
 
 * The rule itself -- e.g., **no naked `new`**
 * A rule reference number -- e.g., **C.7** (the 7th rule related to classes).
-  Since the major sections are not inherently ordered, we use a letter as the first part of a rule reference "number".
+  Since the major sections are not inherently ordered, we use letters as the first part of a rule reference "number".
   We leave gaps in the numbering to minimize "disruption" when we add or remove rules.
 * **Reason**s (rationales) -- because programmers find it hard to follow rules they don't understand
 * **Example**s -- because rules are hard to understand in the abstract; can be positive or negative
