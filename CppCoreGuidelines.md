@@ -579,7 +579,7 @@ You don't need to write error handlers for errors caught at compile time.
 
     // Int is an alias used for integers
     int bits = 0;         // don't: avoidable code
-    for (int i = 1; i; i <<= 1)
+    for (Int i = 1; i; i <<= 1)
         ++bits;
     if (bits < 32)
         cerr << "Int too small\n"
@@ -587,7 +587,7 @@ You don't need to write error handlers for errors caught at compile time.
 This example is easily simplified
 
     // Int is an alias used for integers
-    static_assert(sizeof(int) >= 4);    // do: compile-time check
+    static_assert(sizeof(Int) >= 4);    // do: compile-time check
 
 ##### Example
 
