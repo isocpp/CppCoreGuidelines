@@ -12503,7 +12503,8 @@ Lock-free programming rule summary:
 * how/when to use atomics
 * avoid starvation
 * use a lock free data structure rather than hand-crafting specific lock-free access
-* [CP.110: Use a conventional pattern for double-checked locking](#Rconc-double)
+* [CP.110: Do not write your own double-checked locking for initialization](#Rconc-double-init)
+* [CP.111: Use a conventional pattern if you really need double-checked locking](#Rconc-double-pattern)
 * how/when to compare and swap
 
 
@@ -12580,13 +12581,58 @@ Become an expert before shipping lock-free code for others to use.
 * Damian Dechev, Peter Pirkelbauer, Nicolas Rouquette, and Bjarne Stroustrup: Semantically Enhanced Containers for Concurrent Real-Time Systems. Proc. 16th Annual IEEE International Conference and Workshop on the Engineering of Computer Based Systems (IEEE ECBS). April 2009.
 
 
-### <a name="Rconc-double"></a>CP.110: Use a conventional pattern for double-checked locking
+### <a name="Rconc-double-init"></a>CP.110: Do not write your own double-checked locking for initialization
 
 ##### Reason
 
-Double-checked locking is easy to mess up.
+Since C++11, static local variables are now initialized in a thread-safe way. When combined with the RAII pattern, static local variables can replace the need for writing your own double-checked locking for initialization. std::call_once can also achieve the same purpose. Use either static local variables of C++11 or std::call_once instead of writing your own double-checked locking for initialization.
 
 ##### Example
+
+Example with std::call_once.
+
+    void f()
+    {
+        static std::once_flag my_once_flag;
+        std::call_once(my_once_flag, []()
+        {
+            // do this only once
+        });
+        // ...
+    }
+
+Example with thread-safe static local variables of C++11.
+
+    void f()
+    {
+        // Assuming the compiler is compliant with C++11
+        static My_class my_object; // Constructor called only once
+        // ...
+    }
+    
+    class My_class
+    {
+    public:
+        My_class()
+        {
+            // ...
+        }
+    };
+
+##### Enforcement
+
+??? Is it possible to detect the idiom?
+
+
+### <a name="Rconc-double-pattern"></a>CP.111: Use a conventional pattern if you really need double-checked locking
+
+##### Reason
+
+Double-checked locking is easy to mess up. If you really need to write your own double-checked locking, in spite of the rules [CP.110: Do not write your own double-checked locking for initialization](#Rconc-double-init) and [CP.100: Don't use lock-free programming unless you absolutely have to](#Rconc-lockfree), then do it in a conventional pattern.
+
+##### Example, bad
+
+Even if the following example works correctly on most hardware platforms, it is not guaranteed to work by the C++ standard. The x_init.load(memory_order_relaxed) call may see a value from outside of the lock guard. 
 
     atomic<bool> x_init;
 
@@ -12598,8 +12644,28 @@ Double-checked locking is easy to mess up.
         }
     }
 
-    // ... use x ...
+##### Example, good
 
+One of the conventional patterns is below.
+
+    std::atomic<int> state;
+    
+    // If state == SOME_ACTION_NEEDED maybe an action is needed, maybe not, we need to
+    // check again in a lock. However, if state != SOME_ACTION_NEEDED, then we can be
+    // sure that an action is not needed. This is the basic assumption of double-checked
+    // locking.
+    
+    if (state == SOME_ACTION_NEEDED)
+    {
+        std::lock_guard<std::mutex> lock(mutex);
+        if (state == SOME_ACTION_NEEDED)
+        {
+            // do something
+            state = NO_ACTION_NEEDED;
+        }
+    }
+
+In the example above (state == SOME_ACTION_NEEDED) could be any condition. It doesn't necessarily needs to be equality comparison. For example, it could as well be (size > MIN_SIZE_TO_TAKE_ACTION).
 
 ##### Enforcement
 
