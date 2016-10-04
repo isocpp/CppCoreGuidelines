@@ -11830,7 +11830,7 @@ Sooner or later, someone will forget the `mtx.unlock()`, place a `return` in the
 Flag calls of member `lock()` and `unlock()`.  ???
 
 
-### <a name="Rconc-lock"></a>CP.21: Use `std::lock()` to acquire multiple `mutex`es
+### <a name="Rconc-lock"></a>CP.21: Use `std::lock()` or variadic `std::lock_guard` to acquire multiple `mutex`es
 
 ##### Reason
 
@@ -11859,6 +11859,14 @@ Instead, use `lock()`:
     lock_guard<mutex> lck2(m2, defer_lock);
     lock_guard<mutex> lck1(m1, defer_lock);
     lock(lck2, lck1);
+
+or (better, but C++17 only):
+
+    // thread 1
+    lock_guard<mutex,mutex> lck1(m1, m2);
+
+    // thread 2
+    lock_guard<mutex,mutex> lck2(m2, m1);
 
 Here, the writers of `thread1` and `thread2` are still not agreeing on the order of the `mutex`es, but order no longer matters.
 
