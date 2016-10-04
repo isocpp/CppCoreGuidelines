@@ -12434,17 +12434,26 @@ Flag all unnamed `lock_guard`s and `unique_lock`s.
 
 
 
-### <a name="Rconc-mutex"></a>P.50: Define a `mutex` together with the data it guards
+### <a name="Rconc-mutex"></a>P.50: Define a `mutex` together with the data it guards. Use `synchronized_value<T>` where possible
 
 ##### Reason
 
-It should be obvious to a reader that the data is to be guarded and how.
+It should be obvious to a reader that the data is to be guarded and how. This decreases the chance of the wrong mutex being locked, or the mutex not being locked. 
+
+Using a `synchronized_value<T>` (see the [WG21 proposal](http://wg21.link/p0290)) ensures that the data has a mutex, and the right mutex is locked when the data is accessed.
 
 ##### Example
 
     struct Record {
         std::mutex m;   // take this mutex before accessing other members
         // ...
+    };
+    
+    class MyClass {
+        struct DataRecord {
+           // ...
+        };
+        synchronized_value<DataRecord> data; // Protect the data with a mutex
     };
 
 ##### Enforcement
