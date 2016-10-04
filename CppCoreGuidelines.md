@@ -998,7 +998,8 @@ This is low-level, verbose, and error-prone.
 For example, we "forgot" to test for memory exhaustion.
 Instead, we could use `vector`:
 
-    vector<int> v(100);
+    vector<int> v;
+    v.reserve(100);
     // ...
     for (int x; cin >> x; ) {
         // ... check that x is valid ...
