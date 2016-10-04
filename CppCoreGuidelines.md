@@ -12570,7 +12570,7 @@ Read up on the ABA problem.
 
 ##### Exception
 
-[Atomic variables](#???) can be used simply and safely.
+[Atomic variables](#???) can be used simply and safely, as long as you are using the sequentially consistent memory model (memory_order_seq_cst), which is the default.
 
 ##### Note
 
