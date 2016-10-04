@@ -11863,10 +11863,10 @@ Instead, use `lock()`:
 or (better, but C++17 only):
 
     // thread 1
-    lock_guard<mutex,mutex> lck1(m1, m2);
+    lock_guard<mutex, mutex> lck1(m1, m2);
 
     // thread 2
-    lock_guard<mutex,mutex> lck2(m2, m1);
+    lock_guard<mutex, mutex> lck2(m2, m1);
 
 Here, the writers of `thread1` and `thread2` are still not agreeing on the order of the `mutex`es, but order no longer matters.
 
