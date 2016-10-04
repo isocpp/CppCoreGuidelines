@@ -11775,7 +11775,7 @@ This section focuses on relatively ad-hoc uses of multiple threads communicating
 Concurrency rule summary:
 
 * [CP.20: Use RAII, never plain `lock()`/`unlock()`](#Rconc-raii)
-* [CP.21: Use `std::lock()` to acquire multiple `mutex`es](#Rconc-lock)
+* [CP.21: Use `std::lock()` or variadic `std::lock_guard` to acquire multiple `mutex`es](#Rconc-lock)
 * [CP.22: Never call unknown code while holding a lock (e.g., a callback)](#Rconc-unknown)
 * [CP.23: Think of a joining `thread` as a scoped container](#Rconc-join)
 * [CP.24: Think of a detached `thread` as a global container](#Rconc-detach)
