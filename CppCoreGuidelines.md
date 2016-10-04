@@ -12053,7 +12053,7 @@ This section focuses on relatively ad-hoc uses of multiple threads communicating
 Concurrency rule summary:
 
 * [CP.20: Use RAII, never plain `lock()`/`unlock()`](#Rconc-raii)
-* [CP.21: Use `std::lock()` to acquire multiple `mutex`es](#Rconc-lock)
+* [CP.21: Use `std::lock()` or `std::scoped_lock` to acquire multiple `mutex`es](#Rconc-lock)
 * [CP.22: Never call unknown code while holding a lock (e.g., a callback)](#Rconc-unknown)
 * [CP.23: Think of a joining `thread` as a scoped container](#Rconc-join)
 * [CP.24: Think of a detached `thread` as a global container](#Rconc-detach)
@@ -12108,7 +12108,7 @@ Sooner or later, someone will forget the `mtx.unlock()`, place a `return` in the
 Flag calls of member `lock()` and `unlock()`.  ???
 
 
-### <a name="Rconc-lock"></a>CP.21: Use `std::lock()` to acquire multiple `mutex`es
+### <a name="Rconc-lock"></a>CP.21: Use `std::lock()` or `std::scoped_lock` to acquire multiple `mutex`es
 
 ##### Reason
 
@@ -12137,6 +12137,14 @@ Instead, use `lock()`:
     lock_guard<mutex> lck2(m2, defer_lock);
     lock_guard<mutex> lck1(m1, defer_lock);
     lock(lck2, lck1);
+
+or (better, but C++17 only):
+
+    // thread 1
+    scoped_lock<mutex, mutex> lck1(m1, m2);
+
+    // thread 2
+    scoped_lock<mutex, mutex> lck2(m2, m1);
 
 Here, the writers of `thread1` and `thread2` are still not agreeing on the order of the `mutex`es, but order no longer matters.
 
