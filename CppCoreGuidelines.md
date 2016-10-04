@@ -12287,6 +12287,12 @@ By "bad" we mean that a `thread` may use a pointer after the pointed-to object i
 The fact that `thread`s run concurrently doesn't affect the lifetime or ownership issues here;
 these `thread`s can be seen as just a function object called from `some_fct`.
 
+##### Note
+
+Even objects with static storage duration can be problematic if used from detached threads: if the
+thread continues until the end of the program, it might be running concurrently with the destruction
+of objects with static storage duration, and thus accesses to such objects might race.
+
 ##### Enforcement
 
 In general, it is undecidable whether a `detach()` is executed for a `thread`, but simple common cases are easily detected.
