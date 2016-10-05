@@ -4185,7 +4185,7 @@ There is a lot of code that is non-specific about ownership.
 ##### Note
 
 If the `T*` or `T&` is owning, mark it `owning`. If the `T*` is not owning, consider marking it `ptr`.
-This will aide documentation and analysis.
+This will aid documentation and analysis.
 
 ##### Enforcement
 
