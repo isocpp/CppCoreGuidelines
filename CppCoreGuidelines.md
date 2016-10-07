@@ -8952,7 +8952,7 @@ An index is conventionally called `i` and there is no hint about the meaning of 
                 current_element_index < current_vector.size();
                 ++current_element_index
         )
-        target_stream << current_vector[i] << '\n';
+        target_stream << current_vector[current_element_index] << '\n';
     }
 
 Yes, it is a caricature, but we have seen worse.
