@@ -6765,14 +6765,14 @@ Consider:
         cout << pb2->id(); // "D"
 
         if (pb1->id() == pb2->id()) // *pb1 is the same type as *pb2
-        if (pb2 == "D") {         // looks innocent
-                D* pd = static_cast<D*>(pb1);
-                // ...
+        if (pb2->id() == "D") {         // looks innocent
+            D* pd = static_cast<D*>(pb1);
+            // ...
         }
         // ...
     }
 
-The result of `pb2 == "D"` is actually implementation defined.
+The result of `pb2->id() == "D"` is actually implementation defined.
 We added it to warn of the dangers of home-brew RTTI.
 This code may work as expected for years, just to fail on a new machine, new compiler, or a new linker that does not unify character literals.
 
