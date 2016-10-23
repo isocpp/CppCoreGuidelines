@@ -15538,7 +15538,7 @@ It could be a base class:
     template<typename T>
     class List : List_base {
     public:
-        void put_front(const T& e) { add_front(new Link<T>{e}); }   // implicit cast to Link_base
+        void put_front(const T& e) { add_front(new Link<T>{{}, e}); }   // implicit cast to Link_base
         T& front() { static_cast<Link<T>*>(first).val; }   // explicit cast back to Link<T>
         // ...
     };
