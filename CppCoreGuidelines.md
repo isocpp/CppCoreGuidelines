@@ -17600,7 +17600,7 @@ Eventually, use [the one voted into C++17](http://www.open-std.org/jtc1/sc22/wg2
 Summary of GSL components:
 
 * [GSL.view: Views](#SS-views)
-* [GSL.owner](#Ownership pointers)
+* [GSL.owner](#SS-ownership)
 * [GSL.assert: Assertions](#SS-assertions)
 * [GSL.util: Utilities](#SS-utilities)
 * [GSL.concept: Concepts](#SS-gsl-concepts)
