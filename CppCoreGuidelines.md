@@ -11641,7 +11641,7 @@ approaches) is particularly valuable here.
 
 In the realm of static enforcement,
 both [clang](http://clang.llvm.org/docs/ThreadSafetyAnalysis.html) and some
-older verisons of [gcc](https://gcc.gnu.org/wiki/ThreadSafetyAnnotation) have
+older versions of [GCC](https://gcc.gnu.org/wiki/ThreadSafetyAnnotation) have
 some support for static annotation of thread safety properties. Consistent use
 of this technique turns many classes of thread-safety errors into compile-time
 errors. The annotations are generally local (marking a particular member
@@ -11650,12 +11650,12 @@ learn. However, as with many static tools, it can often present false
 negatives - cases that should have been caught but were allowed.
 
 Clang's [Thread Sanitizer](http://clang.llvm.org/docs/ThreadSanitizer.html) (aka
-tsan) is a powerful example of dynamic tools: it changes the build and execution
+TSAN) is a powerful example of dynamic tools: it changes the build and execution
 of your program to add bookkeeping on memory access, absolutely identifying data
 races in a given execution of your binary. The cost for this is both memory
 (5-10x in most cases) and CPU slowdown (2-20x). Dynamic tools like this are best
 when applied to integration tests, canary pushes, or unittests that operate on
-multiple threads. Workload matters: When tsan identifies a problem, it is
+multiple threads. Workload matters: When TSAN identifies a problem, it is
 effectively always an actual data race, but it can only identify races seen in a
 given execution.
 
