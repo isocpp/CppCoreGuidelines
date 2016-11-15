@@ -3775,10 +3775,10 @@ Concrete types are also often referred to as value types to distinguish them fro
 
 Concrete type rule summary:
 
-* [C.10: Prefer a concrete type over more complicated classes](#Rc-concrete)
+* [C.10: Prefer concrete types over class hierarchies](#Rc-concrete)
 * [C.11: Make concrete types regular](#Rc-regular)
 
-### <a name="Rc-concrete"></a>C.10 Prefer a concrete type over more complicated classes
+### <a name="Rc-concrete"></a>C.10 Prefer concrete types over class hierarchies
 
 ##### Reason
 
