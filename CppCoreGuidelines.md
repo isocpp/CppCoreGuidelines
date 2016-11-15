@@ -943,7 +943,7 @@ There are several more performance bugs and gratuitous complication.
 
     void lower(zstring s)
     {
-        for (int i = 0; i < strlen(s); ++s) s[i] = tolower(s[i]);
+        for (int i = 0; i < strlen(s); ++i) s[i] = tolower(s[i]);
     }
 
 Yes, this is an example from production code.
