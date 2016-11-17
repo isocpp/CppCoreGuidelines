@@ -6621,7 +6621,7 @@ Too often, such claims are based on conjecture or experience with other language
 There are examples where `final` can be important for both logical and performance reasons.
 One example is a performance-critical AST hierarchy in a compiler or language analysis tool.
 New derived classes are not added every year and only by library implementers.
-However, misuses are (or at least has been) far more common.
+However, misuses are (or at least have been) far more common.
 
 ##### Enforcement
 
