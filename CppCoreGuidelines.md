@@ -3771,7 +3771,7 @@ A value of regular type can be copied and the result of a copy is an independent
 If a concrete type has both `=` and `==`, `a = b` should result in `a == b` being `true`.
 Concrete classes without assignment and equality can be defined, but they are (and should be) rare.
 The C++ built-in types are regular, and so are standard-library classes, such as `string`, `vector`, and `map`.
-Concrete types are also often referred to as value types to distinguish them from types uses as part of a hierarchy.
+Concrete types are also often referred to as value types to distinguish them from types used as part of a hierarchy.
 
 Concrete type rule summary:
 
