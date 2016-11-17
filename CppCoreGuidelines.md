@@ -3731,7 +3731,7 @@ There is nothing wrong with this code as far as the C++ language rules are conce
 but nearly everything is wrong from a design perspective.
 The private data is hidden far from the public data.
 The data is split in different parts of the class declaration.
-Different parts of the data has difference access.
+Different parts of the data have different access.
 All of this decreases readability and complicates maintenance.
 
 ##### Note
