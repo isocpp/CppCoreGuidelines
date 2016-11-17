@@ -5512,7 +5512,7 @@ comparisons, `swap`, and `hash`.
 
 ##### Reason
 
-The compiler is more likely to get the default semantics right and you cannot implement these function better than the compiler.
+The compiler is more likely to get the default semantics right and you cannot implement these functions better than the compiler.
 
 ##### Example
 
