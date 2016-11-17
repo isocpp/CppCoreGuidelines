@@ -6632,7 +6632,7 @@ Flag uses of `final`.
 
 ##### Reason
 
-That can cause confusion: An overrider do not inherit default arguments.
+That can cause confusion: An overrider does not inherit default arguments.
 
 ##### Example, bad
 
