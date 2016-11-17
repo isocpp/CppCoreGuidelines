@@ -3513,7 +3513,7 @@ Class rule summary:
 * [C.4: Make a function a member only if it needs direct access to the representation of a class](#Rc-member)
 * [C.5: Place helper functions in the same namespace as the class they support](#Rc-helper)
 * [C.7: Don't define a class or enum and declare a variable of its type in the same statement](#Rc-standalone)
-* [C.8: use `class` rather that `struct` if any member is non-public](#Rc-class)
+* [C.8: Use `class` rather than `struct` if any member is non-public](#Rc-class)
 * [C.9: minimize exposure of members](#Rc-private)
 
 Subsections:
@@ -3708,7 +3708,7 @@ Mixing a type definition and the definition of another entity in the same declar
 
 * Flag if the `}` of a class or enumeration definition is not followed by a `;`. The `;` is missing.
 
-### <a name="Rc-class"></a>C.8: use `class` rather that `struct` if any member is non-public
+### <a name="Rc-class"></a>C.8: Use `class` rather than `struct` if any member is non-public
 
 ##### Reason
 
