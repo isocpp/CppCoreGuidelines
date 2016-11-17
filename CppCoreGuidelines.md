@@ -12253,7 +12253,7 @@ Instead, we could have a set of pre-created worker threads processing the messag
     void master(istream& is)
     {
         for (Message m; is >> m; )
-            work.put(n);
+            work.put(m);
     }
 
     void worker()
