@@ -3514,7 +3514,7 @@ Class rule summary:
 * [C.5: Place helper functions in the same namespace as the class they support](#Rc-helper)
 * [C.7: Don't define a class or enum and declare a variable of its type in the same statement](#Rc-standalone)
 * [C.8: Use `class` rather than `struct` if any member is non-public](#Rc-class)
-* [C.9: minimize exposure of members](#Rc-private)
+* [C.9: Minimize exposure of members](#Rc-private)
 
 Subsections:
 
@@ -3742,7 +3742,7 @@ Prefer to place the interface first in a class [see](#Rl-order).
 
 Flag classes declared with `struct` if there is a `private` or `public` member.
 
-### <a name="Rc-private"></a>C.9: minimize exposure of members
+### <a name="Rc-private"></a>C.9: Minimize exposure of members
 
 ##### Reason
 
