@@ -6204,7 +6204,7 @@ The importance of keeping the two kinds of inheritance increases
 
 Problems:
 
-* As the hierarchy grows and more data is adder to `Shape`, the constructors gets harder to write and maintain.
+* As the hierarchy grows and more data is added to `Shape`, the constructors gets harder to write and maintain.
 * Why calculate the center for the `Triangle`? we may never us it.
 * Add a data member to `Shape` (e.g., drawing style or canvas)
 and all derived classes and all users needs to be reviewed, possibly changes, and probably recompiled.
