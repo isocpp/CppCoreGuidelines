@@ -4542,7 +4542,7 @@ Compilers do not read comments.
 
 ##### Exception
 
-If a valid object cannot conveniently be constructed by a constructor [use a factory function](#Rc-factory).
+If a valid object cannot conveniently be constructed by a constructor, [use a factory function](#Rc-factory).
 
 ##### Note
 
