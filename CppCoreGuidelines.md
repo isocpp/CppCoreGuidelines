@@ -3513,8 +3513,8 @@ Class rule summary:
 * [C.4: Make a function a member only if it needs direct access to the representation of a class](#Rc-member)
 * [C.5: Place helper functions in the same namespace as the class they support](#Rc-helper)
 * [C.7: Don't define a class or enum and declare a variable of its type in the same statement](#Rc-standalone)
-* [C.8: use `class` rather that `struct` if any member is non-public](#Rc-class)
-* [C.9: minimize exposure of members](#Rc-private)
+* [C.8: Use `class` rather than `struct` if any member is non-public](#Rc-class)
+* [C.9: Minimize exposure of members](#Rc-private)
 
 Subsections:
 
@@ -3708,7 +3708,7 @@ Mixing a type definition and the definition of another entity in the same declar
 
 * Flag if the `}` of a class or enumeration definition is not followed by a `;`. The `;` is missing.
 
-### <a name="Rc-class"></a>C.8: use `class` rather that `struct` if any member is non-public
+### <a name="Rc-class"></a>C.8: Use `class` rather than `struct` if any member is non-public
 
 ##### Reason
 
@@ -3731,7 +3731,7 @@ There is nothing wrong with this code as far as the C++ language rules are conce
 but nearly everything is wrong from a design perspective.
 The private data is hidden far from the public data.
 The data is split in different parts of the class declaration.
-Different parts of the data has difference access.
+Different parts of the data have different access.
 All of this decreases readability and complicates maintenance.
 
 ##### Note
@@ -3742,7 +3742,7 @@ Prefer to place the interface first in a class [see](#Rl-order).
 
 Flag classes declared with `struct` if there is a `private` or `public` member.
 
-### <a name="Rc-private"></a>C.9: minimize exposure of members
+### <a name="Rc-private"></a>C.9: Minimize exposure of members
 
 ##### Reason
 
@@ -3771,7 +3771,7 @@ A value of regular type can be copied and the result of a copy is an independent
 If a concrete type has both `=` and `==`, `a = b` should result in `a == b` being `true`.
 Concrete classes without assignment and equality can be defined, but they are (and should be) rare.
 The C++ built-in types are regular, and so are standard-library classes, such as `string`, `vector`, and `map`.
-Concrete types are also often referred to as value types to distinguish them from types uses as part of a hierarchy.
+Concrete types are also often referred to as value types to distinguish them from types used as part of a hierarchy.
 
 Concrete type rule summary:
 
@@ -3935,7 +3935,7 @@ Other default operations rules:
 
 ## <a name="SS-defop"></a>C.defop: Default Operations
 
-By default, the language supply the default operations with their default semantics.
+By default, the language supplies the default operations with their default semantics.
 However, a programmer can disable or replace these defaults.
 
 ### <a name="Rc-zero"></a>C.20: If you can avoid defining default operations, do
@@ -4542,7 +4542,7 @@ Compilers do not read comments.
 
 ##### Exception
 
-If a valid object cannot conveniently be constructed by a constructor [use a factory function](#Rc-factory).
+If a valid object cannot conveniently be constructed by a constructor, [use a factory function](#Rc-factory).
 
 ##### Note
 
@@ -5512,7 +5512,7 @@ comparisons, `swap`, and `hash`.
 
 ##### Reason
 
-The compiler is more likely to get the default semantics right and you cannot implement these function better than the compiler.
+The compiler is more likely to get the default semantics right and you cannot implement these functions better than the compiler.
 
 ##### Example
 
@@ -6104,7 +6104,7 @@ Readability.
 Detection of mistakes.
 Writing explicit `virtual`, `override`, or `final` is self-documenting and enables the compiler to catch mismatch of types and/or names between base and derived classes. However, writing more than one of these three is both redundant and a potential source of errors.
 
-Use `virtual` only when declaring a new virtual function. Use `override` only when declaring an overrider. Use `final` only when declaring an final overrider. If a base class destructor is declared `virtual`, derived class destructors should neither be declared `virtual` nor `override`.
+Use `virtual` only when declaring a new virtual function. Use `override` only when declaring an overrider. Use `final` only when declaring a final overrider. If a base class destructor is declared `virtual`, derived class destructors should neither be declared `virtual` nor `override`.
 
 ##### Example, bad
 
@@ -6204,7 +6204,7 @@ The importance of keeping the two kinds of inheritance increases
 
 Problems:
 
-* As the hierarchy grows and more data is adder to `Shape`, the constructors gets harder to write and maintain.
+* As the hierarchy grows and more data is added to `Shape`, the constructors gets harder to write and maintain.
 * Why calculate the center for the `Triangle`? we may never us it.
 * Add a data member to `Shape` (e.g., drawing style or canvas)
 and all derived classes and all users needs to be reviewed, possibly changes, and probably recompiled.
@@ -6621,7 +6621,7 @@ Too often, such claims are based on conjecture or experience with other language
 There are examples where `final` can be important for both logical and performance reasons.
 One example is a performance-critical AST hierarchy in a compiler or language analysis tool.
 New derived classes are not added every year and only by library implementers.
-However, misuses are (or at least has been) far more common.
+However, misuses are (or at least have been) far more common.
 
 ##### Enforcement
 
@@ -6632,7 +6632,7 @@ Flag uses of `final`.
 
 ##### Reason
 
-That can cause confusion: An overrider do not inherit default arguments.
+That can cause confusion: An overrider does not inherit default arguments.
 
 ##### Example, bad
 
