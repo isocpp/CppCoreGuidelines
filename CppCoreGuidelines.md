@@ -12860,7 +12860,7 @@ If `use()` could handle the failure to construct `bar` it can take control using
 In either case, `Foo`'s constructor correctly destroys constructed members before passing control to whatever tried to create a `Foo`.
 Note that there is no return value that could contain an error code.
 
-The `File_handle` constructor might defined like this:
+The `File_handle` constructor might be defined like this:
 
     File_handle::File_handle(const string& name, const string& mode)
         :f{fopen(name.c_str(), mode.c_str())}
@@ -13435,9 +13435,9 @@ In the absence of appropriate time estimation tools, this is hard to guarantee f
 Such systems (e.g. flight control software) typically also ban the use of dynamic (heap) memory.
 
 So, the primary guideline for error handling is "use exceptions and [RAII](#Re-raii)."
-This section deals with the cases where you either do not have an efficient implementation or exceptions
+This section deals with the cases where you either do not have an efficient implementation of exceptions,
 or have such a rat's nest of old-style code
-(e.g., lots of pointers, ill-defined ownership, and lots of unsystematic error handling based on tests of errors codes)
+(e.g., lots of pointers, ill-defined ownership, and lots of unsystematic error handling based on tests of error codes)
 that it is infeasible to introduce simple and systematic exception handling.
 
 Before condemning exceptions or complaining too much about their cost, consider examples of the use of [error codes](#Re-no-throw-codes).
@@ -13465,7 +13465,7 @@ If we cannot throw an exception, we can simulate this RAII style of resource han
         return 0;   // zero indicates "good"
     }
 
-The problem is of course that the caller now have to remember to test the return value.
+The problem is of course that the caller now has to remember to test the return value.
 
 **See also**: [Discussion](#Sd-???).
 
