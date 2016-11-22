@@ -17738,14 +17738,14 @@ IDEs and tools can help (as well as hinder).
 
 Naming and layout rules:
 
-* [NL 1: Don't say in comments what can be clearly stated in code](#Rl-comments)
+* [NL.1: Don't say in comments what can be clearly stated in code](#Rl-comments)
 * [NL.2: State intent in comments](#Rl-comments-intent)
 * [NL.3: Keep comments crisp](#Rl-comments-crisp)
 * [NL.4: Maintain a consistent indentation style](#Rl-indent)
 * [NL.5: Don't encode type information in names](#Rl-name-type)
 * [NL.7: Make the length of a name roughly proportional to the length of its scope](#Rl-name-length)
 * [NL.8: Use a consistent naming style](#Rl-name)
-* [NL 9: Use `ALL_CAPS` for macro names only](#Rl-all-caps)
+* [NL.9: Use `ALL_CAPS` for macro names only](#Rl-all-caps)
 * [NL.10: Avoid CamelCase](#Rl-camel)
 * [NL.15: Use spaces sparingly](#Rl-space)
 * [NL.16: Use a conventional class member declaration order](#Rl-order)
@@ -17852,7 +17852,7 @@ Use a tool.
 
 ##### Rationale
 
-If names reflects type rather than functionality, it becomes hard to change the types used to provide that functionality.
+If names reflect types rather than functionality, it becomes hard to change the types used to provide that functionality.
 Also, if the type of a variable is changed, code using it will have to be modified.
 Minimize unintentional conversions.
 
@@ -17927,7 +17927,7 @@ The use of `p` for pointer and `x` for a floating-point variable is conventional
 
 ##### Note
 
-Where are many styles and when you use multiple libraries, you can't follow all their differences conventions.
+There are many styles and when you use multiple libraries, you can't follow all their different conventions.
 Choose a "house style", but leave "imported" libraries with their original style.
 
 ##### Example
@@ -17971,11 +17971,11 @@ Try to be consistent in your use of acronyms and lengths of identifiers:
 
 Would be possible except for the use of libraries with varying conventions.
 
-### <a name="Rl-all-caps"></a>NL 9: Use `ALL_CAPS` for macro names only
+### <a name="Rl-all-caps"></a>NL.9: Use `ALL_CAPS` for macro names only
 
 ##### Reason
 
-To avoid confusing macros from names that obeys scope and type rules.
+To avoid confusing macros with names that obey scope and type rules.
 
 ##### Example
 
@@ -18184,7 +18184,7 @@ Impossible in the face of history.
 ##### Reason
 
 Readability.
-Not everyone has screens and printers that makes it easy to distinguish all characters.
+Not everyone has screens and printers that make it easy to distinguish all characters.
 We easily confuse similarly spelled and slightly misspelled words.
 
 ##### Example
