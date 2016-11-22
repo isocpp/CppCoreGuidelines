@@ -9533,7 +9533,7 @@ Initialization of a variable declared using `auto` with a single value, e.g., `{
 
 Use `={...}` if you really want an `initializer_list<T>`
 
-    auto fib10 = {0, 1, 2, 3, 5, 8, 13, 25, 38, 63};   // fib10 is a list
+    auto fib10 = {0, 1, 2, 3, 5, 8, 13, 21, 34, 55};   // fib10 is a list
 
 ##### Note
 
@@ -9915,8 +9915,8 @@ Readability. Error prevention. Efficiency.
         cout << f(v, &v[i]) << '\n';
 
     for (int i = 0; i < v.size(); ++i) { // body messes with loop variable: can't be a range-for
-        if (i % 2)
-            ++i;   // skip even elements
+        if (i % 2 == 0)
+            continue;   // skip even elements
         else
             cout << v[i] << '\n';
     }
@@ -15113,7 +15113,7 @@ This limits use and typically increases code size.
 
         // ...
     private:
-        Node* head;
+        Link* head;
     };
 
     List<int> lst1;
@@ -15140,7 +15140,7 @@ This looks innocent enough, but ???
 
         // ...
     private:
-        Node* head;
+        Link* head;
     };
 
     List<int> lst1;
@@ -15452,12 +15452,12 @@ Note that `maul()` violates the a `T*` points to an individual object [Rule](#??
         *p = Pear{};   // put a Pear into *p
     }
 
-    vector<Apple> va = { an_apple, another_apple };   // aa contains Apples (obviously!)
+    vector<Apple> va = { an_apple, another_apple };   // va contains Apples (obviously!)
 
-    maul2(aa);       // error: cannot convert a vector<Apple> to a Fruit*
-    maul2(&aa[0]);   // you asked for it
+    maul2(va);       // error: cannot convert a vector<Apple> to a Fruit*
+    maul2(&va[0]);   // you asked for it
 
-    Apple& a0 = &aa[0];   // a Pear?
+    Apple& a0 = &va[0];   // a Pear?
 
 Note that the assignment in `maul2()` violated the no-slicing [Rule](#???).
 
@@ -18873,7 +18873,7 @@ To avoid extremely hard-to-find errors. Dereferencing such a pointer is undefine
 
     string* bad()   // really bad
     {
-        vector<string> v = { "this", "will", "cause" "trouble" };
+        vector<string> v = { "This", "will", "cause", "trouble", "!" };
         // leaking a pointer into a destroyed member of a destroyed object (v)
         return &v[0];
     }
@@ -18882,7 +18882,7 @@ To avoid extremely hard-to-find errors. Dereferencing such a pointer is undefine
     {
         string* p = bad();
         vector<int> xx = {7, 8, 9};
-        // undefined behavior: x may not be "this"
+        // undefined behavior: x may not be the string "This"
         string x = *p;
         // undefined behavior: we don't know what (if anything) is allocated a location p
         *p = "Evil!";
