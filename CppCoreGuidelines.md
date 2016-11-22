@@ -2821,7 +2821,7 @@ In traditional C and C++ code, plain `T*` is used for many weakly-related purpos
 * Identify an array with a length specified separately
 * Identify a location in an array
 
-The makes it hard to understand what code does and is supposed to do.
+This makes it hard to understand what the code does and is supposed to do.
 It complicates checking and tool support.
 
 ##### Example
@@ -5894,7 +5894,7 @@ Designing rules for classes in a hierarchy summary:
 
 * [C.126: An abstract class typically doesn't need a constructor](#Rh-abstract-ctor)
 * [C.127: A class with a virtual function should have a virtual or protected destructor](#Rh-dtor)
-* [C.128: Use `override` to make overriding explicit in large class hierarchies](#Rh-override)
+* [C.128: Virtual functions should specify exactly one of `virtual`, `override`, or `final`](#Rh-override)
 * [C.129: When designing a class hierarchy, distinguish between implementation inheritance and interface inheritance](#Rh-kind)
 * [C.130: Redefine or prohibit copying for a base class; prefer a virtual `clone` function instead](#Rh-copy)
 * [C.131: Avoid trivial getters and setters](#Rh-get)
@@ -13713,7 +13713,7 @@ Constant rule summary:
 
 ##### Reason
 
-Immutable objects are easier to reason about, so make object non-`const` only when there is a need to change their value.
+Immutable objects are easier to reason about, so make objects non-`const` only when there is a need to change their value.
 Prevents accidental or hard-to-notice change of value.
 
 ##### Example
@@ -15547,7 +15547,7 @@ It could be a base class:
     List<string> ls;
 
 Now there is only one copy of the operations linking and unlinking elements of a `List`.
-The `Link` and `List` classes does nothing but type manipulation.
+The `Link` and `List` classes do nothing but type manipulation.
 
 Instead of using a separate "base" type, another common technique is to specialize for `void` or `void*` and have the general template for `T` be just the safely-encapsulated casts to and from the core `void` implementation.
 
@@ -16620,7 +16620,7 @@ The positive arguments for alternatives to these non-rules are listed in the rul
 Non-rule summary:
 
 * [NR.1: Don't: All declarations should be at the top of a function](#Rnr-top)
-* [NR.2: Don't: Have only a single single `return`-statement in a function](#Rnr-single-return)
+* [NR.2: Don't: Have only a single `return`-statement in a function](#Rnr-single-return)
 * [NR.3: Don't: Don't use exceptions](#Rnr-no-exceptions)
 * [NR.4: Don't: Place each class declaration in its own source file](#Rnr-lots-of-files)
 * [NR.5: Don't: Don't do substantive work in a constructor; instead use two-phase initialization](#Rnr-two-phase-init)
@@ -16648,7 +16648,7 @@ Fortunately, compilers catch many "used before set" errors.
 * [Always initialize an object](#Res-always)
 * [ES.21: Don't introduce a variable (or constant) before you need to use it](#Res-introduce)
 
-### <a name="Rnr-single-return"></a>NR.2: Don't: Have only a single single `return`-statement in a function
+### <a name="Rnr-single-return"></a>NR.2: Don't: Have only a single `return`-statement in a function
 
 ##### Reason (not to follow this rule)
 
