@@ -8736,7 +8736,7 @@ Expression rules:
 * [ES.55: Avoid the need for range checking](#Res-range-checking)
 * [ES.56: Avoid `std::move()` in application code](#Res-move)
 * [ES.60: Avoid `new` and `delete` outside resource management functions](#Res-new)
-* [ES.61: delete arrays using `delete[]` and non-arrays using `delete`](#Res-del)
+* [ES.61: Delete arrays using `delete[]` and non-arrays using `delete`](#Res-del)
 * [ES.62: Don't compare pointers into different arrays](#Res-arr2)
 * [ES.63: Don't slice](#Res-slice)
 
@@ -8746,7 +8746,7 @@ Statement rules:
 * [ES.71: Prefer a range-`for`-statement to a `for`-statement when there is a choice](#Res-for-range)
 * [ES.72: Prefer a `for`-statement to a `while`-statement when there is an obvious loop variable](#Res-for-while)
 * [ES.73: Prefer a `while`-statement to a `for`-statement when there is no obvious loop variable](#Res-while-for)
-* [ES.74: Prefer to declare a loop variable in the initializer part of as `for`-statement](#Res-for-init)
+* [ES.74: Prefer to declare a loop variable in the initializer part of a `for`-statement](#Res-for-init)
 * [ES.75: Avoid `do`-statements](#Res-do)
 * [ES.76: Avoid `goto`](#Res-goto)
 * [ES.77: ??? `continue`](#Res-continue)
@@ -8834,7 +8834,7 @@ Not easy. ??? Look for messy loops, nested loops, long functions, absence of fun
 
 ## ES.dcl: Declarations
 
-A declaration is a statement. a declaration introduces a name into a scope and may cause the construction of a named object.
+A declaration is a statement. A declaration introduces a name into a scope and may cause the construction of a named object.
 
 ### <a name="Res-scope"></a>ES.5: Keep scopes small
 
@@ -9586,7 +9586,7 @@ If `leak == true` the object pointed to by `p2` is leaked and the object pointed
 
 Look for raw pointers that are targets of `new`, `malloc()`, or functions that may return such pointers.
 
-### <a name="Res-const"></a>ES.25: Declare objects `const` or `constexpr` unless you want to modify its value later on
+### <a name="Res-const"></a>ES.25: Declare an object `const` or `constexpr` unless you want to modify its value later on
 
 ##### Reason
 
@@ -9725,8 +9725,8 @@ Hard. At best a heuristic. Look for an uninitialized variable followed by a loop
 
 Macros are a major source of bugs.
 Macros don't obey the usual scope and type rules.
-Macros ensure that the human reader see something different from what the compiler sees.
-Macros complicates tool building.
+Macros ensure that the human reader sees something different from what the compiler sees.
+Macros complicate tool building.
 
 ##### Example, bad
 
@@ -9740,7 +9740,7 @@ This rule does not ban the use of macros for "configuration control" use in `#if
 
 ##### Enforcement
 
-Scream when you see a macro that isn't just use for source control (e.g., `#ifdef`)
+Scream when you see a macro that isn't just used for source control (e.g., `#ifdef`)
 
 ### <a name="Res-macros2"></a>ES.31: Don't use macros for constants or "functions"
 
@@ -9865,7 +9865,7 @@ Statements control the flow of control (except for function calls and exception 
 
 * Readability.
 * Efficiency: A `switch` compares against constants and is usually better optimized than a series of tests in an `if`-`then`-`else` chain.
-* a `switch` is enables some heuristic consistency checking. For example, have all values of an `enum` been covered? If not, is there a `default`?
+* A `switch` enables some heuristic consistency checking. For example, have all values of an `enum` been covered? If not, is there a `default`?
 
 ##### Example
 
@@ -9981,7 +9981,7 @@ Readability: the complete logic of the loop is visible "up front". The scope of 
 
 ???
 
-### <a name="Res-for-init"></a>ES.74: Prefer to declare a loop variable in the initializer part of as `for`-statement
+### <a name="Res-for-init"></a>ES.74: Prefer to declare a loop variable in the initializer part of a `for`-statement
 
 ##### Reason
 
@@ -10218,10 +10218,10 @@ Complicated expressions are error-prone.
     // better, but possibly still too complicated
     for (char c1, c2; cin >> c1 >> c2 && c1 == c2;)
 
-    // OK: iff i and j are not aliased
+    // OK: if i and j are not aliased
     int x = ++i + ++j;
 
-    // OK: iff i != j and i != k
+    // OK: if i != j and i != k
     v[i] = v[j] + v[k];
 
     // bad: multiple assignments "hidden" in subexpressions
@@ -10792,7 +10792,7 @@ There can be code in the `...` part that causes the `delete` never to happen.
 
 Flag naked `new`s and naked `delete`s.
 
-### <a name="Res-del"></a>ES.61: delete arrays using `delete[]` and non-arrays using `delete`
+### <a name="Res-del"></a>ES.61: Delete arrays using `delete[]` and non-arrays using `delete`
 
 ##### Reason
 
@@ -10861,7 +10861,7 @@ The first defense against this is to [define the base class `Shape` not to allow
 
 ##### Alternative
 
-If you mean to slice, define an explicit operations to do so.
+If you mean to slice, define an explicit operation to do so.
 This saves readers from confusion.
 For example:
 
@@ -10961,7 +10961,7 @@ This is even more true for mixed signed and unsigned arithmetic.
     }
 
 Here we have been very explicit about what's happening,
-but if you had see `us-(s+2)` or `s+=2; ... us-s` would you reliably have suspected that the result would print as `4294967294`?
+but if you had seen `us-(s+2)` or `s+=2; ... us-s`, would you reliably have suspected that the result would print as `4294967294`?
 
 ##### Exception
 
