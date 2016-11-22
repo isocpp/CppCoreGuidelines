@@ -11501,7 +11501,7 @@ Concurrency and parallelism rule summary:
 * [CP.2: Avoid data races](#Rconc-races)
 * [CP.3: Minimize explicit sharing of writable data](#Rconc-data)
 * [CP.4: Think in terms of tasks, rather than threads](#Rconc-task)
-* [CP.8 Don't try to use `volatile` for synchronization](#Rconc-volatile)
+* [CP.8: Don't try to use `volatile` for synchronization](#Rconc-volatile)
 
 See also:
 
@@ -11711,7 +11711,7 @@ This is a potent argument for using higher level, more applications-oriented lib
 
 ???
 
-### <a name="Rconc-volatile"></a>CP.8 Don't try to use `volatile` for synchronization
+### <a name="Rconc-volatile"></a>CP.8: Don't try to use `volatile` for synchronization
 
 ##### Reason
 
@@ -11783,7 +11783,7 @@ Concurrency rule summary:
 * [CP.26: Prefer `gsl::detached_thread` over `std::thread` if you plan to `detach()`](#Rconc-detached_thread)
 * [CP.27: Use plain `std::thread` for `thread`s that detach based on a run-time condition (only)](#Rconc-thread)
 * [CP.28: Remember to join scoped `thread`s that are not `detach()`ed](#Rconc-join-undetached)
-* [CP.30: Do not pass pointers to local variables to non-`raii_thread's](#Rconc-pass)
+* [CP.30: Do not pass pointers to local variables to non-`raii_thread`s](#Rconc-pass)
 * [CP.31: Pass small amounts of data between threads by value, rather than by reference or pointer](#Rconc-data-by-value)
 * [CP.32: To share ownership between unrelated `thread`s use `shared_ptr`](#Rconc-shared)
 * [CP.40: Minimize context switching](#Rconc-switch)
@@ -12122,7 +12122,7 @@ A `thread` that has not been `detach()`ed when it is destroyed terminates the pr
 * Flag `detach`s for `detached_thread`s
 
 
-### <a name="RRconc-pass"></a>CP.30: Do not pass pointers to local variables to non-`raii_thread's
+### <a name="RRconc-pass"></a>CP.30: Do not pass pointers to local variables to non-`raii_thread`s
 
 ##### Reason
 
@@ -12592,7 +12592,7 @@ If you are doing lock-free programming for performance, you need to check for re
 Instruction reordering (static and dynamic) makes it hard for us to think effectively at this level (especially if you use relaxed memory models).
 Experience, (semi)formal models and model checking can be useful.
 Testing - often to an extreme extent - is essential.
-"Don't fly too close to the wind."
+"Don't fly too close to the sun."
 
 ##### Enforcement
 
