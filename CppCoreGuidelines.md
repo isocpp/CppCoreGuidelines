@@ -1175,13 +1175,14 @@ You can use the simplest "singleton" (so simple that it is often not considered 
 
     X& myX()
     {
-        static X my_x {3};
-        return my_x;
+        static X* my_x = new X{3};
+        return *my_x;
     }
 
-This is one of the most effective solutions to problems related to initialization order.
+This is one of the most effective solutions to problems related to initialization and destruction order.
 In a multi-threaded environment the initialization of the static object does not introduce a race condition
-(unless you carelessly access a shared object from within its constructor).
+(unless you carelessly access a shared object from within its constructor). At program exit, the object is
+not destructed, so it is safe even in the face of access from un-joined threads.
 
 Note that the initialization of a local `static` does not imply a race condition.
 However, if the destruction of `X` involves an operation that needs to be synchronized we must use a less simple solution.
