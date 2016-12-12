@@ -4544,6 +4544,11 @@ Compilers do not read comments.
 
 If a valid object cannot conveniently be constructed by a constructor, [use a factory function](#Rc-factory).
 
+##### Enforcement
+
+* (Simple) Every constructor should initialize every member variable (either explicitly, via a delegating ctor call or via default construction).
+* (Unknown) If a constructor has an `Ensures` contract, try to see if it holds as a postcondition.
+
 ##### Note
 
 If a constructor acquires a resource (to create a valid object), that resource should be [released by the destructor](#Rc-dtor-release).
@@ -4633,9 +4638,6 @@ One reason people have used `init()` functions rather than doing the initializat
 Another reason is been to delay initialization until an object is needed; the solution to that is often [not to declare a variable until it can be properly initialized](#Res-init)
 
 ##### Enforcement
-
-* (Simple) Every constructor should initialize every member variable (either explicitly, via a delegating ctor call or via default construction).
-* (Unknown) If a constructor has an `Ensures` contract, try to see if it holds as a postcondition.
 
 ### <a name="Rc-default0"></a>C.43: Ensure that a class has a default constructor
 
