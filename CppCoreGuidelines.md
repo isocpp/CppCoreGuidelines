@@ -2331,7 +2331,7 @@ The C++ standard library does that implicitly for all functions in the C standar
 
 ##### Note
 
-`constexpr` functions cannot throw, so you don't need to use `noexcept` for those.
+This also applies to `constexpr` functions, which can throw exceptions just like normal functions when evaluated during runtime.
 
 ##### Example
 
