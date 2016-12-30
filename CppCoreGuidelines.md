@@ -534,7 +534,7 @@ Look for common patterns for which there are better alternatives
 * `f(T*, int)` interfaces vs. `f(span<T>)` interfaces
 * loop variables in too large a scope
 * naked `new` and `delete`
-* functions with many arguments of built-in types
+* functions with many parameters of built-in types
 
 There is a huge scope for cleverness and semi-automated program transformation.
 
@@ -920,7 +920,7 @@ Time and space that you spend well to achieve a goal (e.g., speed of development
         // ... manipulate buffer ...
         X x;
         x.ch = 'a';
-        x.s = string(n);    // give x.s space for *ps
+        x.s = string(n);    // give x.s space for *p
         for (int i = 0; i < x.s.size(); ++i) x.s[i] = buf[i];  // copy buf into x.s
         delete buf;
         return x;
@@ -933,7 +933,7 @@ Time and space that you spend well to achieve a goal (e.g., speed of development
     }
 
 Yes, this is a caricature, but we have seen every individual mistake in production code, and worse.
-Note that the layout of `X` guarantees that at least 6 bytes (and most likely more) bytes are wasted.
+Note that the layout of `X` guarantees that at least 6 bytes (and most likely more) are wasted.
 The spurious definition of copy operations disables move semantics so that the return operation is slow
 (please note that the Return Value Optimization, RVO, is not guaranteed here).
 The use of `new` and `delete` for `buf` is redundant; if we really needed a local string, we should use a local `string`.
@@ -1010,7 +1010,7 @@ Instead, we could use `vector`:
 
 The standards library and the GSL are examples of this philosophy.
 For example, instead of messing with the arrays, unions, cast, tricky lifetime issues, `gsl::owner`, etc.
-that is needed to implement key abstractions, such as `vector`, `span`, `lock_guard`, and `future`, we use the libraries
+that are needed to implement key abstractions, such as `vector`, `span`, `lock_guard`, and `future`, we use the libraries
 designed and implemented by people with more time and expertise than we usually have.
 Similarly, we can and should design and implement more specialized libraries, rather than leaving the users (often ourselves)
 with the challenge of repeatedly getting low-level code well.
