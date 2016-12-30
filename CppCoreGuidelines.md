@@ -17626,9 +17626,9 @@ The names are mostly ISO standard-library style (lower case and underscore):
 * `T&`      // The `T&` is not an owner and can never be a "null reference"; references are always bound to objects.
 
 The "raw-pointer" notation (e.g. `int*`) is assumed to have its most common meaning; that is, a pointer points to an object, but does not own it.
-Owners should be converted to resource handles (e.g., `unique_ptr` or `vector<T>`) or marked `owner<T*>`
+Owners should be converted to resource handles (e.g., `unique_ptr` or `vector<T>`) or marked `owner<T*>`.
 
-* `owner<T*>`   // a `T*`that owns the object pointed/referred to; may be `nullptr`.
+* `owner<T*>`   // a `T*` that owns the object pointed/referred to; may be `nullptr`.
 * `owner<T&>`   // a `T&` that owns the object pointed/referred to.
 
 `owner` is used to mark owning pointers in code that cannot be upgraded to use proper resource handles.
@@ -17647,7 +17647,7 @@ If something is not supposed to be `nullptr`, say so:
 * `not_null<T>`   // `T` is usually a pointer type (e.g., `not_null<int*>` and `not_null<owner<Foo*>>`) that may not be `nullptr`.
   `T` can be any type for which `==nullptr` is meaningful.
 
-* `span<T>`       // `[`p`:`p+n`), constructor from `{p, q}` and `{p, n}`; `T` is the pointer type
+* `span<T>`       // `[`p`:`p+n`)`, constructor from `{p, q}` and `{p, n}`; `T` is the pointer type
 * `span_p<T>`     // `{p, predicate}` \[`p`:`q`) where `q` is the first element for which `predicate(*p)` is true
 * `string_span`   // `span<char>`
 * `cstring_span`  // `span<const char>`
@@ -17683,8 +17683,8 @@ Use `not_null<zstring>` for C-style strings that cannot be `nullptr`. ??? Do we 
 
 These assertions is currently macros (yuck!) and must appear in function definitions (only)
 pending standard commission decisions on contracts and assertion syntax.
-See [the contract proposal](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/p0380r1.pdf) uses the attribute syntax,
-for example, `Expects(p!=nullptr)` will become`[[expects: p!=nullptr]]`.
+See [the contract proposal](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/p0380r1.pdf); using the attribute syntax,
+for example, `Expects(p!=nullptr)` will become `[[expects: p!=nullptr]]`.
 
 ## <a name="SS-utilities"></a>GSL.util: Utilities
 
