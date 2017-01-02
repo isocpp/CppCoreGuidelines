@@ -1037,7 +1037,7 @@ Interface rule summary:
 * [I.7: State postconditions](#Ri-post)
 * [I.8: Prefer `Ensures()` for expressing postconditions](#Ri-ensures)
 * [I.9: If an interface is a template, document its parameters using concepts](#Ri-concepts)
-* [I.10: Use exceptions to signal a failure to perform a required tasks](#Ri-except)
+* [I.10: Use exceptions to signal a failure to perform a required task](#Ri-except)
 * [I.11: Never transfer ownership by a raw pointer (`T*`)](#Ri-raw)
 * [I.12: Declare a pointer that must not be null as `not_null`](#Ri-nullptr)
 * [I.13: Do not pass an array as a single pointer](#Ri-array)
@@ -1133,7 +1133,7 @@ Global constants are useful.
 
 The rule against global variables applies to namespace scope variables as well.
 
-**Alternative**: If you use global (more generally namespace scope data) to avoid copying, consider passing the data as an object by reference to `const`.
+**Alternative**: If you use global (more generally namespace scope) data to avoid copying, consider passing the data as an object by reference to `const`.
 Another solution is to define the data as the state of some object and the operations as member functions.
 
 **Warning**: Beware of data races: If one thread can access nonlocal data (or data passed by reference) while another thread executes the callee, we can have a data race.
@@ -1455,7 +1455,7 @@ Stating the postcondition would have made it clear:
         // ... no m.unlock() ...
     }
 
-The bug is now obvious (but only to a human reading comments)
+The bug is now obvious (but only to a human reading comments).
 
 Better still, use [RAII](#Rr-raii) to ensure that the postcondition ("the lock must be released") is enforced in code:
 
@@ -1532,7 +1532,7 @@ Use the ISO Concepts TS style of requirements specification. For example:
 Soon (maybe in 2017), most compilers will be able to check `requires` clauses once the `//` is removed.
 For now, the concept TS is supported only in GCC 6.1.
 
-**See also**: See [generic programming](#SS-GP) and [concepts](#SS-t-concepts).
+**See also**: [Generic programming](#SS-GP) and [concepts](#SS-t-concepts).
 
 ##### Enforcement
 
@@ -1558,7 +1558,7 @@ This is a major source of errors.
 What is an error?
 
 An error means that the function cannot achieve its advertised purpose (including establishing postconditions).
-Calling code that ignores the error could lead to wrong results or undefined systems state.
+Calling code that ignores an error could lead to wrong results or undefined systems state.
 For example, not being able to connect to a remote server is not by itself an error:
 the server can refuse a connection for all kinds of reasons, so the natural thing is to return a result that the caller always has to check.
 However, if failing to make a connection is considered an error, then a failure should throw an exception.
@@ -1579,7 +1579,7 @@ If you can't use exceptions (e.g. because your code is full of old-style raw-poi
     }
     // ... use val ...
 
-This style unfortunately leads to uninitialized variable.
+This style unfortunately leads to uninitialized variables.
 A facility [structured bindings](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/p0144r1.pdf) to deal with that will become available in C++17.
 
     [val, error_code] = do_something();
@@ -1587,7 +1587,6 @@ A facility [structured bindings](http://www.open-std.org/jtc1/sc22/wg21/docs/pap
         // ... handle the error or exit ...
     }
     // ... use val ...
-
 
 ##### Note
 
@@ -1637,7 +1636,7 @@ Consider returning the result by value (use move semantics if the result is larg
 However that is less elegant and less efficient unless reference semantics are needed.
 
 **Alternative**: Sometimes older code can't be modified because of ABI compatibility requirements or lack of resources.
-In that case, mark owning pointers using `owner` from [guideline support library](#S-gsl):
+In that case, mark owning pointers using `owner` from the [guideline support library](#S-gsl):
 
     owner<X*> compute(args)    // It is now clear that ownership is transferred
     {
@@ -1687,11 +1686,11 @@ By stating the intent in source, implementers and tools can provide better diagn
 
 ##### Note
 
-`not_null` is defined in the [guideline support library](#S-gsl)
+`not_null` is defined in the [guideline support library](#S-gsl).
 
 ##### Note
 
-The assumption that the pointer to `char` pointed to a C-style string (a zero-terminated string of characters) was still implicit, and a potential source of confusion and errors. Use `zstring` in preference to `const char*`.
+The assumption that the pointer to `char` pointed to a C-style string (a zero-terminated string of characters) was still implicit, and a potential source of confusion and errors. Use `czstring` in preference to `const char*`.
 
     // we can assume that p cannot be nullptr
     // we can assume that p points to a zero-terminated array of characters
@@ -1841,7 +1840,7 @@ There are functions that are best expressed with four individual arguments, but 
 
 ##### Enforcement
 
-* Warn when a functions declares two iterators (including pointers) of the same type instead of a range or a view.
+* Warn when a function declares two iterators (including pointers) of the same type instead of a range or a view.
 * (Not enforceable) This is a philosophical guideline that is infeasible to check directly.
 
 ### <a name="Ri-unrelated"></a>I.24: Avoid adjacent unrelated parameters of the same type
