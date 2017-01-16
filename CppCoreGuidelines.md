@@ -208,7 +208,7 @@ If you need a tutorial for some given level of experience, see [the references](
 This is not a guide on how to convert old C++ code to more modern code.
 It is meant to articulate ideas for new code in a concrete fashion.
 However, see [the modernization section](#S-modernizing) for some possible approaches to modernizing/rejuvenating/upgrading.
-Importantly, the rules support gradual adoption: It is typically infeasible to convert all of a large code base at once.
+Importantly, the rules support gradual adoption: It is typically infeasible to completely convert a large code base all at once.
 
 These guidelines are not meant to be complete or exact in every language-technical detail.
 For the final word on language definition issues, including every exception to general rules and every feature, see the ISO C++ standard.
@@ -363,7 +363,7 @@ Philosophy rules summary:
 
 Philosophical rules are generally not mechanically checkable.
 However, individual rules reflecting these philosophical themes are.
-Without a philosophical basis the more concrete/specific/checkable rules lack rationale.
+Without a philosophical basis, the more concrete/specific/checkable rules lack rationale.
 
 ### <a name="Rp-direct"></a>P.1: Express ideas directly in code
 
@@ -618,7 +618,7 @@ Leaving hard-to-detect errors in a program is asking for crashes and bad results
 
 ##### Note
 
-Ideally we catch all errors (that are not errors in the programmer's logic) at either compile-time or run-time. It is impossible to catch all errors at compile time and often not affordable to catch all remaining errors at run time. However, we should endeavor to write programs that in principle can be checked, given sufficient resources (analysis programs, run-time checks, machine resources, time).
+Ideally, we catch all errors (that are not errors in the programmer's logic) at either compile-time or run-time. It is impossible to catch all errors at compile time and often not affordable to catch all remaining errors at run-time. However, we should endeavor to write programs that in principle can be checked, given sufficient resources (analysis programs, run-time checks, machine resources, time).
 
 ##### Example, bad
 
@@ -743,7 +743,7 @@ Avoid errors leading to (possibly unrecognized) wrong results.
 
 Here we made a small error in `use1` that will lead to corrupted data or a crash.
 The (pointer, count)-style interface leaves `increment1()` with no realistic way of defending itself against out-of-range errors.
-Assuming that we could check subscripts for out of range access, the error would not be discovered until `p[10]` was accessed.
+If we could check subscripts for out of range access, then the error would not be discovered until `p[10]` was accessed.
 We could check earlier and improve the code:
 
     void increment2(span<int> p)
@@ -1180,7 +1180,7 @@ You can use the simplest "singleton" (so simple that it is often not considered 
     }
 
 This is one of the most effective solutions to problems related to initialization order.
-In a multi-threaded environment the initialization of the static object does not introduce a race condition
+In a multi-threaded environment, the initialization of the static object does not introduce a race condition
 (unless you carelessly access a shared object from within its constructor).
 
 Note that the initialization of a local `static` does not imply a race condition.
@@ -1193,7 +1193,7 @@ For example:
         return *p;  // potential leak
     }
 
-Now someone has to `delete` that object in some suitably thread-safe way.
+Now someone must `delete` that object in some suitably thread-safe way.
 That's error-prone, so we don't use that technique unless
 
 * `myX` is in multithreaded code,
@@ -1223,7 +1223,7 @@ Consider:
 
     void pass(void* data);    // void* is suspicious
 
-Now the callee has to cast the data pointer (back) to a correct type to use it. That is error-prone and often verbose.
+Now the callee must cast the data pointer (back) to a correct type to use it. That is error-prone and often verbose.
 Avoid `void*`, especially in interfaces.
 Consider using a `variant` or a pointer to base instead.
 
@@ -1560,7 +1560,7 @@ What is an error?
 An error means that the function cannot achieve its advertised purpose (including establishing postconditions).
 Calling code that ignores an error could lead to wrong results or undefined systems state.
 For example, not being able to connect to a remote server is not by itself an error:
-the server can refuse a connection for all kinds of reasons, so the natural thing is to return a result that the caller always has to check.
+the server can refuse a connection for all kinds of reasons, so the natural thing is to return a result that the caller should always check.
 However, if failing to make a connection is considered an error, then a failure should throw an exception.
 
 ##### Exception
@@ -1633,7 +1633,7 @@ Consider returning the result by value (use move semantics if the result is larg
     }
 
 **Alternative**: Pass ownership using a "smart pointer", such as `unique_ptr` (for exclusive ownership) and `shared_ptr` (for shared ownership).
-However that is less elegant and less efficient unless reference semantics are needed.
+However, that is less elegant and less efficient unless reference semantics are needed.
 
 **Alternative**: Sometimes older code can't be modified because of ABI compatibility requirements or lack of resources.
 In that case, mark owning pointers using `owner` from the [guideline support library](#S-gsl):
@@ -1781,7 +1781,7 @@ Complex initialization can lead to undefined order of execution.
 
 Since `x` and `y` are in different translation units the order of calls to `f()` and `g()` is undefined;
 one will access an uninitialized `const`.
-This particular example shows that the order-of-initialization problem for global (namespace scope) objects is not limited to global *variables*.
+This shows that the order-of-initialization problem for global (namespace scope) objects is not limited to global *variables*.
 
 ##### Note
 
@@ -1831,7 +1831,7 @@ Alternatively, we could use concepts (as defined by the ISO TS) to define the no
 
 ##### Note
 
-How many arguments are too many? Four arguments is a lot.
+How many arguments are too many? Try to use less than Four arguments.
 There are functions that are best expressed with four individual arguments, but not many.
 
 **Alternative**: Group arguments into meaningful objects and pass the objects (by value or by reference).
@@ -1884,7 +1884,7 @@ Define a `struct` as the parameter type and name the fields for those parameters
     };
     void initialize(SystemParams p);
 
-This has a tendency to make invocations of this clear to future readers, as the parameters
+This tends to make invocations of this clear to future readers, as the parameters
 are often filled in by name at the call site.
 
 ##### Enforcement
@@ -2084,7 +2084,7 @@ Consider:
         cout << x << "\n";
     }
 
-This is a monolith that is tied to a specific input and will never find a another (different) use. Instead, break functions up into suitable logical parts and parameterize:
+This is a monolith that is tied to a specific input and will never find another (different) use. Instead, break functions up into suitable logical parts and parameterize:
 
     int read(istream& is)    // better
     {
@@ -2165,7 +2165,7 @@ Consider:
         return finalize(intermediate, 0.);
     }
 
-This is too complex (and also pretty long).
+This is too complex (and long).
 How would you know if all possible alternatives have been correctly handled?
 Yes, it breaks other rules also.
 
@@ -2275,8 +2275,8 @@ Most computation is best done at run time.
 
 Any API that may eventually depend on high-level runtime configuration or
 business logic should not be made `constexpr`. Such customization can not be
-evaluated by the compiler, and any `constexpr` functions that depend upon that
-API will have to be refactored or drop `constexpr`.
+evaluated by the compiler, and any `constexpr` functions that depended upon 
+that API would have to be refactored or drop `constexpr`.
 
 ##### Enforcement
 
@@ -2298,7 +2298,7 @@ Specifying `inline` encourages the compiler to do a better job.
 
 ##### Exception
 
-Do not put an `inline` function in what is meant to be a stable interface unless you are really sure that it will not change.
+Do not put an `inline` function in what is meant to be a stable interface unless you are certain that it will not change.
 An inline function is part of the ABI.
 
 ##### Note
@@ -2355,7 +2355,7 @@ deciding whether to tag a function `noexcept`, especially because of the issue
 of throwing and allocation.  Code that is intended to be perfectly general (like
 the standard library and other utility code of that sort) needs to support
 environments where a `bad_alloc` exception may be handled meaningfully.
-However, the majority of programs and execution environments cannot meaningfully
+However, most programs and execution environments cannot meaningfully
 handle a failure to allocate, and aborting the program is the cleanest and
 simplest response to an allocation failure in those cases.  If you know that
 your application code cannot respond to an allocation failure, it may be
@@ -2578,11 +2578,11 @@ Thus `T&` could be an in-out-parameter. That can in itself be a problem and a so
     }
 
 Here, the writer of `g()` is supplying a buffer for `f()` to fill, but `f()` simply replaces it (at a somewhat higher cost than a simple copy of the characters).
-If the writer of `g()` makes an assumption about the size of `buffer` a bad logic error can happen.
+A bad logic error can happen if the writer of `g()` incorrectly assumes the size of the `buffer`.
 
 ##### Enforcement
 
-* (Moderate) ((Foundation)) Warn about functions with reference to non-`const` parameters that do *not* write to them.
+* (Moderate) ((Foundation)) Warn about functions regarding reference to non-`const` parameters that do *not* write to them.
 * (Simple) ((Foundation)) Warn when a non-`const` parameter being passed by reference is `move`d.
 
 ### <a name="Rf-consume"></a>F.18: For "consume" parameters, pass by `X&&` and `std::move` the parameter
@@ -2780,15 +2780,15 @@ To compare, if we passed out all values as return values, we would something lik
         // do something with p.second
     }
 
-We consider that significantly less elegant and definitely significantly slower.
+We consider that significantly less elegant with significantly less performance.
 
-For a really strict reading this rule (F.21), the exceptions isn't really an exception because it relies on in-out parameters,
+For a truly strict reading of this rule (F.21), the exception isn't really an exception because it relies on in-out parameters,
 rather than the plain out parameters mentioned in the rule.
 However, we prefer to be explicit, rather than subtle.
 
 ##### Note
 
-In many cases it may be useful to return a specific, user-defined "Value or error" type.
+In many cases, it may be useful to return a specific, user-defined "Value or error" type.
 For example:
 
     struct
@@ -3449,8 +3449,8 @@ Pointers and references to locals shouldn't outlive their scope. Lambdas that ca
 
     int local = 42;
     // Want a copy of local.
-    // Since a copy of local is made, it will be
-    // available at all times for the call.
+    // Since a copy of local is made, it will
+    // always be available for the call.
     thread_pool.queue_work([=]{ process(local); });
 
 ##### Enforcement
