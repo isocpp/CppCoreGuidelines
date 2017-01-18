@@ -3913,10 +3913,10 @@ Copy and move rules:
 
 * [C.60: Make copy assignment non-`virtual`, take the parameter by `const&`, and return by non-`const&`](#Rc-copy-assignment)
 * [C.61: A copy operation should copy](#Rc-copy-semantic)
-* [C.62: Make copy assignment safe for self-assignment](#Rc-move-self)
+* [C.62: Make copy assignment safe for self-assignment](#Rc-copy-self)
 * [C.63: Make move assignment non-`virtual`, take the parameter by `&&`, and return by non-`const&`](#Rc-move-assignment)
 * [C.64: A move operation should move and leave its source in a valid state](#Rc-move-semantic)
-* [C.65: Make move assignment safe for self-assignment](#Rc-copy-self)
+* [C.65: Make move assignment safe for self-assignment](#Rc-move-self)
 * [C.66: Make move operations `noexcept`](#Rc-move-noexcept)
 * [C.67: A base class should suppress copying, and provide a virtual `clone` instead if "copying" is desired](#Rc-copy-virtual)
 
