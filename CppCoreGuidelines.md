@@ -6077,7 +6077,7 @@ A class with a virtual function is usually (and in general) used via a pointer t
         // ... no user-written destructor, defaults to public nonvirtual ...
     };
 
-    // bad: class with a resource derived from a class without a virtual destructor
+    // bad: derived from a class without a virtual destructor
     struct D : B {
         string s {"default"};
     };
@@ -6086,7 +6086,7 @@ A class with a virtual function is usually (and in general) used via a pointer t
     {
         auto p = make_unique<D>();
         // ...
-    } // calls B::~B only, leaks the string
+    } // undefined behavior. May call B::~B only and leak the string
 
 ##### Note
 
