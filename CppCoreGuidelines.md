@@ -9613,7 +9613,7 @@ not. Unfortunately, it may be impossible to detect when a non-`const` was not
 
 ##### Reason
 
-Readability.
+Readability and safety.
 
 ##### Example, bad
 
@@ -9622,6 +9622,26 @@ Readability.
         int i;
         for (i = 0; i < 20; ++i) { /* ... */ }
         for (i = 0; i < 200; ++i) { /* ... */ } // bad: i recycled
+    }
+
+##### Note
+
+As an optimization, you may want to reuse a buffer as a scratchpad, but even then prefer to limit the variables's scope as much as possible and be careful not to cause bugs from data left in a recycled buffer as this is a common source of security bugs.
+
+    {
+        std::string buffer;             // to avoid reallocations on every loop iteration
+        for (auto& o : objects)
+        {
+            // First part of the work.
+            generateFirstString(buffer, o);
+            writeToFile(buffer);
+
+            // Second part of the work.
+            generateSecondString(buffer, o);
+            writeToFile(buffer);
+
+            // etc...
+        }
     }
 
 ##### Enforcement
