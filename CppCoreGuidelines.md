@@ -6393,9 +6393,9 @@ A trivial getter or setter adds no semantic value; the data item could just as w
         int y;
     public:
         Point(int xx, int yy) : x{xx}, y{yy} { }
-        int get_x() { return x; }
+        int get_x() const { return x; }
         void set_x(int xx) { x = xx; }
-        int get_y() { return y; }
+        int get_y() const { return y; }
         void set_y(int yy) { y = yy; }
         // no behavioral member functions
     };
