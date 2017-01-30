@@ -6084,7 +6084,7 @@ A class with a virtual function is usually (and in general) used via a pointer t
 
     void use()
     {
-        auto p = make_unique<D>();
+        unique_ptr<B> p = make_unique<D>();
         // ...
     } // undefined behavior. May call B::~B only and leak the string
 
