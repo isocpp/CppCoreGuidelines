@@ -16068,8 +16068,8 @@ Source file rule summary:
 * [SF.3: Use `.h` files for all declarations used in multiple source files](#Rs-declaration-header)
 * [SF.4: Include `.h` files before other declarations in a file](#Rs-include-order)
 * [SF.5: A `.cpp` file must include the `.h` file(s) that defines its interface](#Rs-consistency)
-* [SF.6: Use `using`-directives for transition, for foundation libraries (such as `std`), or within a local scope](#Rs-using)
-* [SF.7: Don't put a `using`-directive in a header file](#Rs-using-directive)
+* [SF.6: Use `using namespace` directives for transition, for foundation libraries (such as `std`), or within a local scope](#Rs-using)
+* [SF.7: Don't write `using namespace` in a header file](#Rs-using-directive)
 * [SF.8: Use `#include` guards for all `.h` files](#Rs-guards)
 * [SF.9: Avoid cyclic dependencies among source files](#Rs-cycles)
 
@@ -16271,7 +16271,7 @@ The argument-type error for `bar` cannot be caught until link time because of th
 
 ???
 
-### <a name="Rs-using"></a>SF.6: Use `using`-directives for transition, for foundation libraries (such as `std`), or within a local scope
+### <a name="Rs-using"></a>SF.6: Use `using namespace` directives for transition, for foundation libraries (such as `std`), or within a local scope
 
 ##### Reason
 
@@ -16285,7 +16285,7 @@ The argument-type error for `bar` cannot be caught until link time because of th
 
 ???
 
-### <a name="Rs-using-directive"></a>SF.7: Don't put a `using`-directive in a header file
+### <a name="Rs-using-directive"></a>SF.7: Don't write `using namespace` in a header file
 
 ##### Reason
 
@@ -16293,11 +16293,22 @@ Doing so takes away an `#include`r's ability to effectively disambiguate and to 
 
 ##### Example
 
-    ???
+    // bad.h
+    #include <iostream>
+    using namespace std; // bad
+
+    // user.cpp
+    #include "bad.h"
+    
+    bool copy( /*... some parameters ...*/);    // some function that happens to be named copy
+
+    int main() {
+        copy( /*...*/ );    // now overloads local ::copy and std::copy, could be ambiguous
+    }
 
 ##### Enforcement
 
-???
+Flag `using namespace` at global scope in a header file.
 
 ### <a name="Rs-guards"></a>SF.8: Use `#include` guards for all `.h` files
 
