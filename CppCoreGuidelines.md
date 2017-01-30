@@ -3774,17 +3774,17 @@ Concrete types are also often referred to as value types to distinguish them fro
 
 Concrete type rule summary:
 
-* [C.10: Prefer a concrete types over class hierarchies](#Rc-concrete)
+* [C.10: Prefer concrete types over class hierarchies](#Rc-concrete)
 * [C.11: Make concrete types regular](#Rc-regular)
 
-### <a name="Rc-concrete"></a>C.10 Prefer a concrete types over class hierarchies
+### <a name="Rc-concrete"></a>C.10 Prefer concrete types over class hierarchies
 
 ##### Reason
 
 A concrete type is fundamentally simpler than a hierarchy:
 easier to design, easier to implement, easier to use, easier to reason about, smaller, and faster.
 You need a reason (use cases) for using a hierarchy.
-n
+
 ##### Example
 
     class Point1 {
