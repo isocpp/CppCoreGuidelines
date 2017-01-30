@@ -1663,7 +1663,7 @@ so the default is "no ownership transfer."
 
 * (Simple) Warn on `delete` of a raw pointer that is not an `owner`.
 * (Simple) Warn on failure to either `reset` or explicitly `delete` an `owner` pointer on every code path.
-* (Simple) Warn if the return value of `new` or a function call with return value of pointer type is assigned to a raw pointer.
+* (Simple) Warn if the return value of `new` or a function call with an `owner` return value is assigned to a raw pointer or non-`owner` reference.
 
 ### <a name="Ri-nullptr"></a>I.12: Declare a pointer that must not be null as `not_null`
 
@@ -1926,7 +1926,7 @@ This will force every derived class to compute a center -- even if that's non-tr
 
 ##### Enforcement
 
-(Simple) Warn if a pointer to a class `C` is assigned to a pointer to a base of `C` and the base class contains data members.
+(Simple) Warn if a pointer/reference to a class `C` is assigned to a pointer/reference to a base of `C` and the base class contains data members.
 
 ### <a name="Ri-abi"></a>I.26: If you want a cross-compiler ABI, use a C-style subset
 
