@@ -11701,30 +11701,6 @@ When possible, rely on tooling enforcement, but be aware that any tooling
 solution has costs and blind spots. Defense in depth (multiple tools, multiple
 approaches) is particularly valuable here.
 
-In the realm of static enforcement,
-both [clang](http://clang.llvm.org/docs/ThreadSafetyAnalysis.html) and some
-older versions of [GCC](https://gcc.gnu.org/wiki/ThreadSafetyAnnotation) have
-some support for static annotation of thread safety properties. Consistent use
-of this technique turns many classes of thread-safety errors into compile-time
-errors. The annotations are generally local (marking a particular member
-variable as guarded by a particular mutex), and are usually easy to
-learn. However, as with many static tools, it can often present false
-negatives - cases that should have been caught but were allowed.
-
-Clang's [Thread Sanitizer](http://clang.llvm.org/docs/ThreadSanitizer.html) (aka
-TSAN) is a powerful example of dynamic tools: it changes the build and execution
-of your program to add bookkeeping on memory access, absolutely identifying data
-races in a given execution of your binary. The cost for this is both memory
-(5-10x in most cases) and CPU slowdown (2-20x). Dynamic tools like this are best
-when applied to integration tests, canary pushes, or unittests that operate on
-multiple threads. Workload matters: When TSAN identifies a problem, it is
-effectively always an actual data race, but it can only identify races seen in a
-given execution.
-
-There are many other tools, both commercial and open-source. Thread safety is
-challenging, often getting the better of experienced programmers: tooling is an
-important strategy to mitigate those risks.
-
 There are other ways you can mitigate the chance of data races:
 
 * Avoid global data
