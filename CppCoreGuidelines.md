@@ -1,6 +1,6 @@
 # <a name="main"></a>C++ Core Guidelines
 
-December 12, 2016
+February 1, 2017
 
 Editors:
 
@@ -6388,7 +6388,7 @@ A trivial getter or setter adds no semantic value; the data item could just as w
 
 ##### Example
 
-    class Point {
+    class Point {   // Bad: verbose
         int x;
         int y;
     public:
@@ -6403,9 +6403,11 @@ A trivial getter or setter adds no semantic value; the data item could just as w
 Consider making such a class a `struct` -- that is, a behaviorless bunch of variables, all public data and no member functions.
 
     struct Point {
-        int x = 0;
-        int y = 0;
+        int x {0};
+        int y {0};
     };
+
+Note that we can put default initializers on member variables: [C.49: Prefer initialization to assignment in constructors](#Rc-initialize).
 
 ##### Note
 
@@ -6560,11 +6562,49 @@ This a relatively rare use because implementation can often be organized into a 
 
 ##### Reason
 
-???
+Without a using declaration, member functions in the derived class hide the entire inherited overload sets.
 
-##### Example
+##### Example, bad
 
-    ???
+    #include <iostream>
+    class B {
+    public:
+        virtual int f(int i) { std::cout << "f(int): "; return i; }
+        virtual double f(double d) { std::cout << "f(double): "; return d; }
+    };
+    class D: public B {
+    public:
+        int f(int i) override { std::cout << "f(int): "; return i+1; }
+    };
+    int main()
+    {
+        D d;
+        std::cout << d.f(2) << '\n';   // prints "f(int): 3"
+        std::cout << d.f(2.3) << '\n'; // prints "f(int): 3"
+    }
+
+##### Example, good
+
+    class D: public B {
+    public:
+        int f(int i) override { std::cout << "f(int): "; return i+1; }
+        using B::f; // exposes f(double)
+    };
+
+##### Note
+
+This issue affects both virtual and non-virtual member functions
+
+For variadic bases, C++17 introduced a variadic form of the using-declaration,
+
+    template <class... Ts>
+    struct Overloader : Ts... {
+        using Ts::operator()...; // exposes operator() from every base
+    };
+
+##### Enforcement
+
+Diagnose name hiding
 
 ### <a name="Rh-final"></a>C.139: Use `final` sparingly
 
@@ -9316,7 +9356,7 @@ Assuming that there is a logical connection between `i` and `j`, that connection
 
 Obviously, what we really would like is a construct that initialized n variables from a `tuple`. For example:
 
-    auto {i, j} = make_related_widgets(cond);    // Not C++14
+    auto [i,j] = make_related_widgets(cond);    // C++17, not C++14
 
 Today, we might approximate that using `tie()`:
 
@@ -9613,7 +9653,7 @@ not. Unfortunately, it may be impossible to detect when a non-`const` was not
 
 ##### Reason
 
-Readability.
+Readability and safety.
 
 ##### Example, bad
 
@@ -9622,6 +9662,26 @@ Readability.
         int i;
         for (i = 0; i < 20; ++i) { /* ... */ }
         for (i = 0; i < 200; ++i) { /* ... */ } // bad: i recycled
+    }
+
+##### Note
+
+As an optimization, you may want to reuse a buffer as a scratchpad, but even then prefer to limit the variables's scope as much as possible and be careful not to cause bugs from data left in a recycled buffer as this is a common source of security bugs.
+
+    {
+        std::string buffer;             // to avoid reallocations on every loop iteration
+        for (auto& o : objects)
+        {
+            // First part of the work.
+            generateFirstString(buffer, o);
+            writeToFile(buffer);
+
+            // Second part of the work.
+            generateSecondString(buffer, o);
+            writeToFile(buffer);
+
+            // etc...
+        }
     }
 
 ##### Enforcement
@@ -13762,7 +13822,28 @@ This gives a more precise statement of design intent, better readability, more e
 
 ##### Note
 
-[Do not cast away `const`](#Res-casts-const).
+It is not inherently bad to pass a pointer or reference to non-const,
+but that should be done only when the called function is supposed to modify the object.
+A reader of code must assume that a funtion that takes a "plain" `T*` or `T&` will modify the object referred to.
+If it doesn't now, it might do so later without forcing recompilation.
+
+##### Note
+
+There are code/libraries that are offer functions that declare a`T*` even though
+those function do not modify that `T`.
+This is a problem for people modernizing code.
+You can
+
+* update the library to be `const`-correct; preferred long-term solution
+* "cast away `const`"; [best avoided](#Res-casts-const).
+* provide a wrapper function; for example
+
+    void f(int* p);   // old code: f() does not mpdify `*p`
+    void f(const int* p) { f(const_cast<int*>(p); } // wrapper
+
+Note that this wrapper solution is a patch that should be used only when the declaration of `f()` cannot be be modified,
+e.g. because it is in a library that you cannot modify.
+
 
 ##### Enforcement
 
@@ -16068,8 +16149,8 @@ Source file rule summary:
 * [SF.3: Use `.h` files for all declarations used in multiple source files](#Rs-declaration-header)
 * [SF.4: Include `.h` files before other declarations in a file](#Rs-include-order)
 * [SF.5: A `.cpp` file must include the `.h` file(s) that defines its interface](#Rs-consistency)
-* [SF.6: Use `using`-directives for transition, for foundation libraries (such as `std`), or within a local scope](#Rs-using)
-* [SF.7: Don't put a `using`-directive in a header file](#Rs-using-directive)
+* [SF.6: Use `using namespace` directives for transition, for foundation libraries (such as `std`), or within a local scope](#Rs-using)
+* [SF.7: Don't write `using namespace` in a header file](#Rs-using-directive)
 * [SF.8: Use `#include` guards for all `.h` files](#Rs-guards)
 * [SF.9: Avoid cyclic dependencies among source files](#Rs-cycles)
 
@@ -16271,7 +16352,7 @@ The argument-type error for `bar` cannot be caught until link time because of th
 
 ???
 
-### <a name="Rs-using"></a>SF.6: Use `using`-directives for transition, for foundation libraries (such as `std`), or within a local scope
+### <a name="Rs-using"></a>SF.6: Use `using namespace` directives for transition, for foundation libraries (such as `std`), or within a local scope
 
 ##### Reason
 
@@ -16285,7 +16366,7 @@ The argument-type error for `bar` cannot be caught until link time because of th
 
 ???
 
-### <a name="Rs-using-directive"></a>SF.7: Don't put a `using`-directive in a header file
+### <a name="Rs-using-directive"></a>SF.7: Don't write `using namespace` in a header file
 
 ##### Reason
 
@@ -16293,11 +16374,22 @@ Doing so takes away an `#include`r's ability to effectively disambiguate and to 
 
 ##### Example
 
-    ???
+    // bad.h
+    #include <iostream>
+    using namespace std; // bad
+
+    // user.cpp
+    #include "bad.h"
+    
+    bool copy( /*... some parameters ...*/);    // some function that happens to be named copy
+
+    int main() {
+        copy( /*...*/ );    // now overloads local ::copy and std::copy, could be ambiguous
+    }
 
 ##### Enforcement
 
-???
+Flag `using namespace` at global scope in a header file.
 
 ### <a name="Rs-guards"></a>SF.8: Use `#include` guards for all `.h` files
 
@@ -19121,10 +19213,11 @@ A relatively informal definition of terms used in the guidelines
 This is our to-do list.
 Eventually, the entries will become rules or parts of rules.
 Alternatively, we will decide that no change is needed and delete the entry.
-
 * No long-distance friendship
 * Should physical design (what's in a file) and large-scale design (libraries, groups of libraries) be addressed?
 * Namespaces
+* Don't place using directives in headers
+* Avoid using directives in the global scope (except for std, and other "fundamental" namespaces (e.g. experimental))
 * How granular should namespaces be? All classes/functions designed to work together and released together (as defined in Sutter/Alexandrescu) or something narrower or wider?
 * Should there be inline namespaces (à la `std::literals::*_literals`)?
 * Avoid implicit conversions
