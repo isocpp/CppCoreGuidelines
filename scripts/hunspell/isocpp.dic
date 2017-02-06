@@ -1,7 +1,9 @@
 '
 0xFF0000
 0b0101'0101
+10x
 '14
+20x
 2D
 2K
 2ndEdition
@@ -69,6 +71,7 @@ CComPtr
 cerr
 chrono
 cin
+Clang's
 class'
 clib
 Cline99
@@ -492,6 +495,7 @@ toolchains
 TotallyOrdered
 TP
 tradeoff
+TSAN
 TSs
 tt
 typeid
