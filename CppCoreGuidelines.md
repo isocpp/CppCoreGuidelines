@@ -1,6 +1,6 @@
 # <a name="main"></a>C++ Core Guidelines
 
-February 1, 2017
+February 6, 2017
 
 Editors:
 
@@ -6562,11 +6562,49 @@ This a relatively rare use because implementation can often be organized into a 
 
 ##### Reason
 
-???
+Without a using declaration, member functions in the derived class hide the entire inherited overload sets.
 
-##### Example
+##### Example, bad
 
-    ???
+    #include <iostream>
+    class B {
+    public:
+        virtual int f(int i) { std::cout << "f(int): "; return i; }
+        virtual double f(double d) { std::cout << "f(double): "; return d; }
+    };
+    class D: public B {
+    public:
+        int f(int i) override { std::cout << "f(int): "; return i+1; }
+    };
+    int main()
+    {
+        D d;
+        std::cout << d.f(2) << '\n';   // prints "f(int): 3"
+        std::cout << d.f(2.3) << '\n'; // prints "f(int): 3"
+    }
+
+##### Example, good
+
+    class D: public B {
+    public:
+        int f(int i) override { std::cout << "f(int): "; return i+1; }
+        using B::f; // exposes f(double)
+    };
+
+##### Note
+
+This issue affects both virtual and non-virtual member functions
+
+For variadic bases, C++17 introduced a variadic form of the using-declaration,
+
+    template <class... Ts>
+    struct Overloader : Ts... {
+        using Ts::operator()...; // exposes operator() from every base
+    };
+
+##### Enforcement
+
+Diagnose name hiding
 
 ### <a name="Rh-final"></a>C.139: Use `final` sparingly
 
@@ -7327,9 +7365,9 @@ But heed the warning: [Avoid "naked" `union`s](#Ru-naked)
 ##### Example
 
     // Short string optimization
-    
+
     constexpr size_t buffer_size = 16; // Slightly larger than the size of a pointer
-    
+
     class Immutable_string {
     public:
         Immutable_string(const char* str) :
@@ -7342,18 +7380,18 @@ But heed the warning: [Avoid "naked" `union`s](#Ru-naked)
                 strcpy_s(string_ptr, size + 1, str);
             }
         }
-    
+
         ~Immutable_string()
         {
             if (size >= buffer_size)
                 delete string_ptr;
         }
-    
+
         const char* get_str() const
         {
             return (size < buffer_size) ? string_buffer : string_ptr;
         }
-    
+
     private:
         // If the string is short enough, we store the string itself
         // instead of a pointer to the string.
@@ -7361,7 +7399,7 @@ But heed the warning: [Avoid "naked" `union`s](#Ru-naked)
             char* string_ptr;
             char string_buffer[buffer_size];
         };
-    
+
         const size_t size;
     };
 
@@ -11659,16 +11697,16 @@ this can be a security risk.
 
 ##### Enforcement
 
-Some is possible, do at least something.
-There are commercial and open-source tools that try to address this problem, but static tools often have many false positives and run-time tools often have a significant cost.
-We hope for better tools.
+When possible, rely on tooling enforcement, but be aware that any tooling
+solution has costs and blind spots. Defense in depth (multiple tools, multiple
+approaches) is particularly valuable here.
 
-Help the tools:
+There are other ways you can mitigate the chance of data races:
 
-* less global data
-* fewer `static` variables
-* more use of stack memory (and don't pass pointers around too much)
-* more immutable data (literals, `constexpr`, and `const`)
+* Avoid global data
+* Avoid `static` variables
+* More use of value types on the stack (and don't pass pointers around too much)
+* More use of immutable data (literals, `constexpr`, and `const`)
 
 ### <a name="Rconc-data"></a>CP.3: Minimize explicit sharing of writable data
 
@@ -12671,7 +12709,7 @@ Example with thread-safe static local variables of C++11.
         static My_class my_object; // Constructor called only once
         // ...
     }
-    
+
     class My_class
     {
     public:
@@ -12694,7 +12732,7 @@ Double-checked locking is easy to mess up. If you really need to write your own 
 
 ##### Example, bad
 
-Even if the following example works correctly on most hardware platforms, it is not guaranteed to work by the C++ standard. The x_init.load(memory_order_relaxed) call may see a value from outside of the lock guard. 
+Even if the following example works correctly on most hardware platforms, it is not guaranteed to work by the C++ standard. The x_init.load(memory_order_relaxed) call may see a value from outside of the lock guard.
 
     atomic<bool> x_init;
 
@@ -12711,12 +12749,12 @@ Even if the following example works correctly on most hardware platforms, it is 
 One of the conventional patterns is below.
 
     std::atomic<int> state;
-    
+
     // If state == SOME_ACTION_NEEDED maybe an action is needed, maybe not, we need to
     // check again in a lock. However, if state != SOME_ACTION_NEEDED, then we can be
     // sure that an action is not needed. This is the basic assumption of double-checked
     // locking.
-    
+
     if (state == SOME_ACTION_NEEDED)
     {
         std::lock_guard<std::mutex> lock(mutex);
