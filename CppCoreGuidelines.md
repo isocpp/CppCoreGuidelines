@@ -1,6 +1,6 @@
 # <a name="main"></a>C++ Core Guidelines
 
-February 1, 2017
+February 7, 2017
 
 Editors:
 
@@ -360,6 +360,8 @@ Philosophy rules summary:
 * [P.9: Don't waste time or space](#Rp-waste)
 * [P.10: Prefer immutable data to mutable data](#Rp-mutable)
 * [P.11: Encapsulate messy constructs, rather than spreading through the code](#Rp-library)
+* [P.12: Use supporting tools as appropriate](#Rp-tools)
+* [P.13: Use support libraries as appropriate](#Rp-lib)
 
 Philosophical rules are generally not mechanically checkable.
 However, individual rules reflecting these philosophical themes are.
@@ -1019,6 +1021,66 @@ This is a variant of the [subset of superset principle](#R0) that underlies thes
 ##### Enforcement
 
 * Look for "messy code" such as complex pointer manipulation and casting outside the implementation of abstractions.
+
+
+### <a name="Rp-tools"></a>P.12: Use supporting tools as appropriate
+
+##### Reason
+
+There are many things that are done better "by machine".
+Computers don't tire or get bored by repettitive tasks.
+We typically have better things to do than to repeatedly do routine tasks.
+
+##### Example
+
+Run a static analyser to verify that your code follows the guidelines you want it to follow.
+
+##### Note
+
+See
+
+* [Static analysis tools](???)
+* [Concurrency tools](#Rconst-tools)
+* [Testing tools](???)
+
+There are many other kinds of tools, such as source code depositories, build tools, etc. but these are beyond the scope of these guidelines.
+
+###### Note
+
+Be careful not to become dependent on over-elaborate or over-specialized tool chains.
+Those can make your otherwise portable code non-portable.
+
+
+### <a name="Rp-lib"></a>P.13: Use support libraries as appropriate
+
+##### Reason
+
+If a well-designed, well-documented, and well-supported library exists for a given domain,
+using it saves time and effort; its quality and documentation are likely to be greater than what you could do if the majority of your
+time must be spent on an implementation.
+The cost (time. effort, money) of a library can be shared over many users.
+A widely used library is more likely to be kept up-to-date and ported to new systems than an individual application.
+Knowledge of a widely-used library can save time on other/future projects.
+
+##### Example
+
+    std::sort(begin(v),end(v),std::greater<>());
+
+Unless you are an expert in sorting algorithms and have plenty of time, this is more likely to be correct and to tun faster
+that anything you write for a specific application.
+You need a reason not to use the standard library (or whatever foundational libraries your application uses) rather than a reason to use it.
+
+##### Note
+
+By default use
+
+* The [ISO C++ standard library](#S-stdlib)
+* The [Guidelines Support Library](#S-gsl)
+
+##### Note
+
+If no well-designed, well-documented, and well-supported library exists for an important domain,
+maybe you should design and implement it.
 
 
 # <a name="S-interfaces"></a>I: Interfaces
@@ -11526,6 +11588,7 @@ Concurrency and parallelism rule summary:
 * [CP.3: Minimize explicit sharing of writable data](#Rconc-data)
 * [CP.4: Think in terms of tasks, rather than threads](#Rconc-task)
 * [CP.8: Don't try to use `volatile` for synchronization](#Rconc-volatile)
+* [CP.9: Whenever feasible use tools to validate your concurrent code](#Rconc-tools)
 
 See also:
 
@@ -11786,6 +11849,44 @@ Use a `mutex` for more complicated examples.
 ##### See also
 
 [(rare) proper uses of `volatile`](#Rconc-volatile2)
+
+### <a name="Rconc-tols"></a>CP.9: Whenever feasible use tools to validate your concurrent code
+
+Experience shows that concurrent code is exceptionally hard to get right
+and that compile-time checking, run-time checks, and testing are less effective at finding concurrency errors
+than they areat finding errors in sequential code.
+Subtle concurrency errors can have dramatically bad effects, including memory corruption and deadlocks.
+
+##### Example
+
+    ???
+
+##### Note
+
+Thread safety is challenging, often getting the better of experienced programmers: tooling is an important strategy to mitigate those risks.
+There are many tools "out there", both commercial and open-source tools, both research and production tools.
+Unfortunately people's needs and constraints differ so dramatically that we cannot make specific recommendations,
+but we can mention:
+
+ * Static enforcement tools: both [clang](http://clang.llvm.org/docs/ThreadSafetyAnalysis.html)
+ and some older versions of [GCC](https://gcc.gnu.org/wiki/ThreadSafetyAnnotation)
+ have some support for static annotation of thread safety properties.
+ Consistent use of this technique turns many classes of thread-safety errors into compile-time errors.
+ The annotations are generally local (marking a particular member variable as guarded by a particular mutex),
+ and are usually easy to learn. However, as with many static tools, it can often present false negatives;
+ cases that should have been caught but were allowed.
+
+* dynamic enforcement tools: Clang's [Thread Sanitizer](http://clang.llvm.org/docs/ThreadSanitizer.html) (aka TSAN)
+is a powerful example of dynamic tools: it changes the build and execution of your program to add bookkeeping on memory access,
+absolutely identifying data races in a given execution of your binary.
+The cost for this is both memory (5-10x in most cases) and CPU slowdown (2-20x).
+Dynamic tools like this are best when applied to integration tests, canary pushes, or unittests that operate on multiple threads.
+Workload matters: When TSAN identifies a problem, it is effectively always an actual data race,
+but it can only identify races seen in a given execution.
+
+##### Enforcement
+
+It is up to an application builder to choose which support tools are valuable for a particular applications.
 
 ## <a name="SScp-con"></a>CP.con: Concurrency
 
