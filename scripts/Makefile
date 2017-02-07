@@ -86,7 +86,7 @@ check-badchars: $(SOURCEPATH) $(BUILD_DIR) Makefile
 .PHONY: hunspell-check
 hunspell-check: $(BUILD_DIR)/plain-nohtml.txt
 	@echo '##################### Spell check ##################'
-	hunspell -p hunspell/isocpp.dic -u < build/plain-nohtml.txt > $(BUILD_DIR)/hunspell-report.txt
+	hunspell -d hunspell/en_US -p hunspell/isocpp.dic -u < build/plain-nohtml.txt > $(BUILD_DIR)/hunspell-report.txt
 	@if [ -s $(BUILD_DIR)/hunspell-report.txt ]; then echo 'Warning: Spellcheck failed, fix words or add to dictionary:'; cat $(BUILD_DIR)/hunspell-report.txt; false; fi;
 
 # only list words that are not in dict
