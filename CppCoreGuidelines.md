@@ -1,6 +1,6 @@
 # <a name="main"></a>C++ Core Guidelines
 
-February 7, 2017
+February 9, 2017
 
 Editors:
 
@@ -1028,8 +1028,8 @@ This is a variant of the [subset of superset principle](#R0) that underlies thes
 ##### Reason
 
 There are many things that are done better "by machine".
-Computers don't tire or get bored by repettitive tasks.
-We typically have better things to do than to repeatedly do routine tasks.
+Computers don't tire or get bored by repetitive tasks.
+We typically have better things to do than repeatedly do routine tasks.
 
 ##### Example
 
@@ -1040,10 +1040,11 @@ Run a static analyser to verify that your code follows the guidelines you want i
 See
 
 * [Static analysis tools](???)
-* [Concurrency tools](#Rconst-tools)
+* [Concurrency tools](#Rconc-tools)
 * [Testing tools](???)
 
-There are many other kinds of tools, such as source code depositories, build tools, etc. but these are beyond the scope of these guidelines.
+There are many other kinds of tools, such as source code depositories, build tools, etc.,
+but those are beyond the scope of these guidelines.
 
 ###### Note
 
@@ -1055,19 +1056,20 @@ Those can make your otherwise portable code non-portable.
 
 ##### Reason
 
-If a well-designed, well-documented, and well-supported library exists for a given domain,
-using it saves time and effort; its quality and documentation are likely to be greater than what you could do if the majority of your
-time must be spent on an implementation.
-The cost (time. effort, money) of a library can be shared over many users.
+Using a well-designed, well-documented, and well-supported library saves time and effort;
+its quality and documentation are likely to be greater than what you could do
+if the majority of your time must be spent on an implementation.
+The cost (time, effort, money, etc.) of a library can be shared over many users.
 A widely used library is more likely to be kept up-to-date and ported to new systems than an individual application.
 Knowledge of a widely-used library can save time on other/future projects.
+So, if a suitable library exists for your application domain, use it.
 
 ##### Example
 
     std::sort(begin(v),end(v),std::greater<>());
 
-Unless you are an expert in sorting algorithms and have plenty of time, this is more likely to be correct and to tun faster
-that anything you write for a specific application.
+Unless you are an expert in sorting algorithms and have plenty of time,
+this is more likely to be correct and to run faster than anything you write for a specific application.
 You need a reason not to use the standard library (or whatever foundational libraries your application uses) rather than a reason to use it.
 
 ##### Note
@@ -1080,7 +1082,7 @@ By default use
 ##### Note
 
 If no well-designed, well-documented, and well-supported library exists for an important domain,
-maybe you should design and implement it.
+maybe you should design and implement it, and then use it.
 
 
 # <a name="S-interfaces"></a>I: Interfaces
@@ -3717,10 +3719,38 @@ The "helper functions" have no need for direct access to the representation of a
 
 This rule becomes even better if C++ gets ["uniform function call"](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/p0251r0.pdf).
 
+##### Exception
+
+`virtual` funtions must be members because of language rules, and not all `virtual` functions directly access data.
+In particular, members of an abstract class rarely do.
+
+Note [multimethods](https://parasol.tamu.edu/~yuriys/papers/OMM10.pdf).
+
+###### Exception
+
+An overload set may have some members that do not directly access `private` data:
+
+    class Foobar {
+        void foo(int x)    { /* manipulate private data */ }
+        void foo(double x) { foo(std::round(x)); }
+        // ...
+    private:
+        // ...
+    };
+
+Similarly, a set of functions may be designed to be used in a chain:
+
+    x.scale(0.5).rotate(45).set_color(Color::red);
+
+Typically, some but not all of such functions directly access `private` data.
+
 ##### Enforcement
 
-Look for member function that do not touch data members directly.
+* Look for non-`virtual` member functions that do not touch data members directly.
 The snag is that many member functions that do not need to touch data members directly do.
+* Ignore `virtual` functions.
+* Ignore functions that are part of an overload set out of which at least one function accesses `private` members.
+* Ignore functions returning `this`.
 
 ### <a name="Rc-helper"></a>C.5: Place helper functions in the same namespace as the class they support
 
@@ -6565,11 +6595,17 @@ Flag any class that has non-`const` data members with different access levels.
 
 ##### Reason
 
-Not all classes will necessarily support all interfaces, and not all callers will necessarily want to deal with all operations. Especially to break apart monolithic interfaces into "aspects" of behavior supported by a given derived class.
+Not all classes will necessarily support all interfaces, and not all callers will necessarily want to deal with all operations.
+Especially to break apart monolithic interfaces into "aspects" of behavior supported by a given derived class.
 
 ##### Example
 
-    ???
+    class iostream : public istream, public ostream {   // very simplified
+        // ...
+    };
+
+`istream` provides the interface to input operations; `ostream` provides the interface to output operations.
+`iostream` provides the union of the `istream` and `ostream` interfaces and the synchronization needed to allow both on a single stream. 
 
 ##### Note
 
@@ -6588,11 +6624,17 @@ Such interfaces are typically abstract classes.
 
 ##### Reason
 
- ??? Herb: Here's the second mention of implementation inheritance. I'm very skeptical, even of single implementation inheritance, never mind multiple implementation inheritance which just seems frightening -- I don't think that even policy-based design really needs to inherit from the policy types. Am I missing some good examples, or could we consider discouraging this as an anti-pattern?
+Some forms of mixins have state and often operations on that state.
+If the operations are virtual the use of inheritance is necessary, if not using inheritance can avoid boilerplate and forwarding.
 
 ##### Example
 
-    ???
+      class iostream : public istream, public ostream {   // very simplified
+        // ...
+    };
+
+`istream` provides the interface to input operations (and some data); `ostream` provides the interface to output operations (and some data).
+`iostream` provides the union of the `istream` and `ostream` interfaces and the synchronization needed to allow both on a single stream. 
 
 ##### Note
 
@@ -6600,7 +6642,7 @@ This a relatively rare use because implementation can often be organized into a 
 
 ##### Enforcement
 
-??? Herb: How about opposite enforcement: Flag any type that inherits from more than one non-empty base class?
+??? 
 
 ### <a name="Rh-vbase"></a>C.137: Use `virtual` bases to avoid overly general base classes
 
@@ -7388,7 +7430,7 @@ But heed the warning: [Avoid "naked" `union`s](#Ru-naked)
 
 ##### Example
 
-    // Short string optimization
+    // Short-string optimization
     
     constexpr size_t buffer_size = 16; // Slightly larger than the size of a pointer
     
@@ -11723,8 +11765,11 @@ this can be a security risk.
 ##### Enforcement
 
 Some is possible, do at least something.
-There are commercial and open-source tools that try to address this problem, but static tools often have many false positives and run-time tools often have a significant cost.
+There are commercial and open-source tools that try to address this problem,
+but be aware that solutions have costs and blind spots.
+Static tools often have many false positives and run-time tools often have a significant cost.
 We hope for better tools.
+Using multiple tools can catch more problems than a single one.
 
 Help the tools:
 
@@ -11850,11 +11895,11 @@ Use a `mutex` for more complicated examples.
 
 [(rare) proper uses of `volatile`](#Rconc-volatile2)
 
-### <a name="Rconc-tols"></a>CP.9: Whenever feasible use tools to validate your concurrent code
+### <a name="Rconc-tools"></a>CP.9: Whenever feasible use tools to validate your concurrent code
 
 Experience shows that concurrent code is exceptionally hard to get right
 and that compile-time checking, run-time checks, and testing are less effective at finding concurrency errors
-than they areat finding errors in sequential code.
+than they are at finding errors in sequential code.
 Subtle concurrency errors can have dramatically bad effects, including memory corruption and deadlocks.
 
 ##### Example
