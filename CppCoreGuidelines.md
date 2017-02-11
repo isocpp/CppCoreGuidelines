@@ -1,6 +1,6 @@
 # <a name="main"></a>C++ Core Guidelines
 
-February 9, 2017
+February 11, 2017
 
 Editors:
 
@@ -2033,6 +2033,7 @@ Function definition rules:
 * [F.6: If your function may not throw, declare it `noexcept`](#Rf-noexcept)
 * [F.7: For general use, take `T*` or `T&` arguments rather than smart pointers](#Rf-smart)
 * [F.8: Prefer pure functions](#Rf-pure)
+* [F.9: Unused parameters should be unnamed](#Rf-unused)
 
 Parameter passing expression rules:
 
@@ -2394,7 +2395,7 @@ The C++ standard library does that implicitly for all functions in the C standar
 
 ##### Note
 
-`constexpr` functions cannot throw, so you don't need to use `noexcept` for those.
+`constexpr` functions can when evaluated at run time, so yu may need `noexcept` for some of those.
 
 ##### Example
 
@@ -2519,6 +2520,25 @@ if not, this is not an issue.
 ##### Enforcement
 
 Not possible.
+
+### <a name="Rf-unused"></a>F.9: Unused parameters should be unnamed
+
+##### Reason
+
+Readability.
+Suppression of unused parameter warnings.
+
+##### Example
+
+    X* find(map<Blob>& m, const string& s, Hint);   // once upon a time, a hint was used
+
+##### Note
+
+Allowing parameters to be unnamed was introduced in the early 1980 to address this problem.
+
+##### Enforcement
+
+Flag named unused parameters.
 
 ## <a name="SS-call"></a>F.call: Parameter passing
 
@@ -3721,10 +3741,14 @@ This rule becomes even better if C++ gets ["uniform function call"](http://www.o
 
 ##### Exception
 
-`virtual` funtions must be members because of language rules, and not all `virtual` functions directly access data.
+The language requires `virtual` funtions to be members, and not all `virtual` functions directly access data.
 In particular, members of an abstract class rarely do.
 
 Note [multimethods](https://parasol.tamu.edu/~yuriys/papers/OMM10.pdf).
+
+##### Exception
+
+The language requires operators `=`, `()`, `[]`, and `->` to be members.
 
 ###### Exception
 
@@ -17264,6 +17288,7 @@ Type safety profile summary:
 * [Type.4: Don't use C-style `(T)expression` casts that would perform a `static_cast` downcast, `const_cast`, or `reinterpret_cast`](#Pro-type-cstylecast)
 * [Type.5: Don't use a variable before it has been initialized](#Pro-type-init)
 * [Type.6: Always initialize a member variable](#Pro-type-memberinit)
+* [Type.7: Don't use `T(expression)` for casting`](#Pro-fct-style-cast)
 
 ### <a name="Pro-type-reinterpretcast"></a>Type.1: Don't use `reinterpret_cast`.
 
@@ -17455,6 +17480,29 @@ Note that a C-style `(T)expression` cast means to perform the first of the follo
 ##### Enforcement
 
 Issue a diagnostic for any use of a C-style `(T)expression` cast that would invoke a `static_cast` downcast, `const_cast`, or `reinterpret_cast`. To fix: Use a `dynamic_cast`, `const`-correct declaration, or `variant`, respectively.
+
+### <a name="Pro-fct-style-cast"></a>Type.7: Don't use `T(expression)` for casting`
+
+##### Reason
+
+If `e` is of a built-in type, `T(e)` is equivalent to the error-prone `(T)e`.
+
+##### Example, bad
+
+    int* p = f(x);
+    auto i = int(p);    // Potential damaging cast; don't or use `reinterpret_cast`
+
+    short s = short(i); // potentially narrowing; don't or use `narrow` or `narrow_cast`
+
+##### Note
+
+The {}-syntax makes the desire for construction explicit and doesn't allow narrowing
+
+    f(Foo{bar});
+
+##### Enforcement
+
+Flag `T(e)` if used for `e` of a built-in type.
 
 ### <a name="Pro-type-init"></a>Type.5: Don't use a variable before it has been initialized.
 
