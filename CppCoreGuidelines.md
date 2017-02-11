@@ -1,6 +1,7 @@
 # <a name="main"></a>C++ Core Guidelines
 
-February 6, 2017
+February 11, 2017
+
 
 Editors:
 
@@ -360,6 +361,8 @@ Philosophy rules summary:
 * [P.9: Don't waste time or space](#Rp-waste)
 * [P.10: Prefer immutable data to mutable data](#Rp-mutable)
 * [P.11: Encapsulate messy constructs, rather than spreading through the code](#Rp-library)
+* [P.12: Use supporting tools as appropriate](#Rp-tools)
+* [P.13: Use support libraries as appropriate](#Rp-lib)
 
 Philosophical rules are generally not mechanically checkable.
 However, individual rules reflecting these philosophical themes are.
@@ -1019,6 +1022,68 @@ This is a variant of the [subset of superset principle](#R0) that underlies thes
 ##### Enforcement
 
 * Look for "messy code" such as complex pointer manipulation and casting outside the implementation of abstractions.
+
+
+### <a name="Rp-tools"></a>P.12: Use supporting tools as appropriate
+
+##### Reason
+
+There are many things that are done better "by machine".
+Computers don't tire or get bored by repetitive tasks.
+We typically have better things to do than repeatedly do routine tasks.
+
+##### Example
+
+Run a static analyser to verify that your code follows the guidelines you want it to follow.
+
+##### Note
+
+See
+
+* [Static analysis tools](???)
+* [Concurrency tools](#Rconc-tools)
+* [Testing tools](???)
+
+There are many other kinds of tools, such as source code depositories, build tools, etc.,
+but those are beyond the scope of these guidelines.
+
+###### Note
+
+Be careful not to become dependent on over-elaborate or over-specialized tool chains.
+Those can make your otherwise portable code non-portable.
+
+
+### <a name="Rp-lib"></a>P.13: Use support libraries as appropriate
+
+##### Reason
+
+Using a well-designed, well-documented, and well-supported library saves time and effort;
+its quality and documentation are likely to be greater than what you could do
+if the majority of your time must be spent on an implementation.
+The cost (time, effort, money, etc.) of a library can be shared over many users.
+A widely used library is more likely to be kept up-to-date and ported to new systems than an individual application.
+Knowledge of a widely-used library can save time on other/future projects.
+So, if a suitable library exists for your application domain, use it.
+
+##### Example
+
+    std::sort(begin(v),end(v),std::greater<>());
+
+Unless you are an expert in sorting algorithms and have plenty of time,
+this is more likely to be correct and to run faster than anything you write for a specific application.
+You need a reason not to use the standard library (or whatever foundational libraries your application uses) rather than a reason to use it.
+
+##### Note
+
+By default use
+
+* The [ISO C++ standard library](#S-stdlib)
+* The [Guidelines Support Library](#S-gsl)
+
+##### Note
+
+If no well-designed, well-documented, and well-supported library exists for an important domain,
+maybe you should design and implement it, and then use it.
 
 
 # <a name="S-interfaces"></a>I: Interfaces
@@ -1969,6 +2034,7 @@ Function definition rules:
 * [F.6: If your function may not throw, declare it `noexcept`](#Rf-noexcept)
 * [F.7: For general use, take `T*` or `T&` arguments rather than smart pointers](#Rf-smart)
 * [F.8: Prefer pure functions](#Rf-pure)
+* [F.9: Unused parameters should be unnamed](#Rf-unused)
 
 Parameter passing expression rules:
 
@@ -2330,7 +2396,7 @@ The C++ standard library does that implicitly for all functions in the C standar
 
 ##### Note
 
-`constexpr` functions cannot throw, so you don't need to use `noexcept` for those.
+`constexpr` functions can when evaluated at run time, so yu may need `noexcept` for some of those.
 
 ##### Example
 
@@ -2455,6 +2521,25 @@ if not, this is not an issue.
 ##### Enforcement
 
 Not possible.
+
+### <a name="Rf-unused"></a>F.9: Unused parameters should be unnamed
+
+##### Reason
+
+Readability.
+Suppression of unused parameter warnings.
+
+##### Example
+
+    X* find(map<Blob>& m, const string& s, Hint);   // once upon a time, a hint was used
+
+##### Note
+
+Allowing parameters to be unnamed was introduced in the early 1980 to address this problem.
+
+##### Enforcement
+
+Flag named unused parameters.
 
 ## <a name="SS-call"></a>F.call: Parameter passing
 
@@ -3655,10 +3740,42 @@ The "helper functions" have no need for direct access to the representation of a
 
 This rule becomes even better if C++ gets ["uniform function call"](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/p0251r0.pdf).
 
+##### Exception
+
+The language requires `virtual` funtions to be members, and not all `virtual` functions directly access data.
+In particular, members of an abstract class rarely do.
+
+Note [multimethods](https://parasol.tamu.edu/~yuriys/papers/OMM10.pdf).
+
+##### Exception
+
+The language requires operators `=`, `()`, `[]`, and `->` to be members.
+
+###### Exception
+
+An overload set may have some members that do not directly access `private` data:
+
+    class Foobar {
+        void foo(int x)    { /* manipulate private data */ }
+        void foo(double x) { foo(std::round(x)); }
+        // ...
+    private:
+        // ...
+    };
+
+Similarly, a set of functions may be designed to be used in a chain:
+
+    x.scale(0.5).rotate(45).set_color(Color::red);
+
+Typically, some but not all of such functions directly access `private` data.
+
 ##### Enforcement
 
-Look for member function that do not touch data members directly.
+* Look for non-`virtual` member functions that do not touch data members directly.
 The snag is that many member functions that do not need to touch data members directly do.
+* Ignore `virtual` functions.
+* Ignore functions that are part of an overload set out of which at least one function accesses `private` members.
+* Ignore functions returning `this`.
 
 ### <a name="Rc-helper"></a>C.5: Place helper functions in the same namespace as the class they support
 
@@ -6503,11 +6620,17 @@ Flag any class that has non-`const` data members with different access levels.
 
 ##### Reason
 
-Not all classes will necessarily support all interfaces, and not all callers will necessarily want to deal with all operations. Especially to break apart monolithic interfaces into "aspects" of behavior supported by a given derived class.
+Not all classes will necessarily support all interfaces, and not all callers will necessarily want to deal with all operations.
+Especially to break apart monolithic interfaces into "aspects" of behavior supported by a given derived class.
 
 ##### Example
 
-    ???
+    class iostream : public istream, public ostream {   // very simplified
+        // ...
+    };
+
+`istream` provides the interface to input operations; `ostream` provides the interface to output operations.
+`iostream` provides the union of the `istream` and `ostream` interfaces and the synchronization needed to allow both on a single stream. 
 
 ##### Note
 
@@ -6526,11 +6649,17 @@ Such interfaces are typically abstract classes.
 
 ##### Reason
 
- ??? Herb: Here's the second mention of implementation inheritance. I'm very skeptical, even of single implementation inheritance, never mind multiple implementation inheritance which just seems frightening -- I don't think that even policy-based design really needs to inherit from the policy types. Am I missing some good examples, or could we consider discouraging this as an anti-pattern?
+Some forms of mixins have state and often operations on that state.
+If the operations are virtual the use of inheritance is necessary, if not using inheritance can avoid boilerplate and forwarding.
 
 ##### Example
 
-    ???
+      class iostream : public istream, public ostream {   // very simplified
+        // ...
+    };
+
+`istream` provides the interface to input operations (and some data); `ostream` provides the interface to output operations (and some data).
+`iostream` provides the union of the `istream` and `ostream` interfaces and the synchronization needed to allow both on a single stream. 
 
 ##### Note
 
@@ -6538,7 +6667,7 @@ This a relatively rare use because implementation can often be organized into a 
 
 ##### Enforcement
 
-??? Herb: How about opposite enforcement: Flag any type that inherits from more than one non-empty base class?
+??? 
 
 ### <a name="Rh-vbase"></a>C.137: Use `virtual` bases to avoid overly general base classes
 
@@ -7364,7 +7493,7 @@ But heed the warning: [Avoid "naked" `union`s](#Ru-naked)
 
 ##### Example
 
-    // Short string optimization
+    // Short-string optimization
 
     constexpr size_t buffer_size = 16; // Slightly larger than the size of a pointer
 
@@ -11564,6 +11693,7 @@ Concurrency and parallelism rule summary:
 * [CP.3: Minimize explicit sharing of writable data](#Rconc-data)
 * [CP.4: Think in terms of tasks, rather than threads](#Rconc-task)
 * [CP.8: Don't try to use `volatile` for synchronization](#Rconc-volatile)
+* [CP.9: Whenever feasible use tools to validate your concurrent code](#Rconc-tools)
 
 See also:
 
@@ -11697,9 +11827,12 @@ this can be a security risk.
 
 ##### Enforcement
 
-When possible, rely on tooling enforcement, but be aware that any tooling
-solution has costs and blind spots. Defense in depth (multiple tools, multiple
-approaches) is particularly valuable here.
+Some is possible, do at least something.
+There are commercial and open-source tools that try to address this problem,
+but be aware that solutions have costs and blind spots.
+Static tools often have many false positives and run-time tools often have a significant cost.
+We hope for better tools.
+Using multiple tools can catch more problems than a single one.
 
 There are other ways you can mitigate the chance of data races:
 
@@ -11824,6 +11957,44 @@ Use a `mutex` for more complicated examples.
 ##### See also
 
 [(rare) proper uses of `volatile`](#Rconc-volatile2)
+
+### <a name="Rconc-tools"></a>CP.9: Whenever feasible use tools to validate your concurrent code
+
+Experience shows that concurrent code is exceptionally hard to get right
+and that compile-time checking, run-time checks, and testing are less effective at finding concurrency errors
+than they are at finding errors in sequential code.
+Subtle concurrency errors can have dramatically bad effects, including memory corruption and deadlocks.
+
+##### Example
+
+    ???
+
+##### Note
+
+Thread safety is challenging, often getting the better of experienced programmers: tooling is an important strategy to mitigate those risks.
+There are many tools "out there", both commercial and open-source tools, both research and production tools.
+Unfortunately people's needs and constraints differ so dramatically that we cannot make specific recommendations,
+but we can mention:
+
+ * Static enforcement tools: both [clang](http://clang.llvm.org/docs/ThreadSafetyAnalysis.html)
+ and some older versions of [GCC](https://gcc.gnu.org/wiki/ThreadSafetyAnnotation)
+ have some support for static annotation of thread safety properties.
+ Consistent use of this technique turns many classes of thread-safety errors into compile-time errors.
+ The annotations are generally local (marking a particular member variable as guarded by a particular mutex),
+ and are usually easy to learn. However, as with many static tools, it can often present false negatives;
+ cases that should have been caught but were allowed.
+
+* dynamic enforcement tools: Clang's [Thread Sanitizer](http://clang.llvm.org/docs/ThreadSanitizer.html) (aka TSAN)
+is a powerful example of dynamic tools: it changes the build and execution of your program to add bookkeeping on memory access,
+absolutely identifying data races in a given execution of your binary.
+The cost for this is both memory (5-10x in most cases) and CPU slowdown (2-20x).
+Dynamic tools like this are best when applied to integration tests, canary pushes, or unittests that operate on multiple threads.
+Workload matters: When TSAN identifies a problem, it is effectively always an actual data race,
+but it can only identify races seen in a given execution.
+
+##### Enforcement
+
+It is up to an application builder to choose which support tools are valuable for a particular applications.
 
 ## <a name="SScp-con"></a>CP.con: Concurrency
 
@@ -12300,7 +12471,8 @@ Thread creation is expensive.
         // process
     }
 
-    void master(istream& is)
+    void 
+    (istream& is)
     {
         for (Message m; is >> m; )
             run_list.push_back(new thread(worker, m));
@@ -17156,6 +17328,7 @@ Type safety profile summary:
 * [Type.4: Don't use C-style `(T)expression` casts that would perform a `static_cast` downcast, `const_cast`, or `reinterpret_cast`](#Pro-type-cstylecast)
 * [Type.5: Don't use a variable before it has been initialized](#Pro-type-init)
 * [Type.6: Always initialize a member variable](#Pro-type-memberinit)
+* [Type.7: Don't use `T(expression)` for casting`](#Pro-fct-style-cast)
 
 ### <a name="Pro-type-reinterpretcast"></a>Type.1: Don't use `reinterpret_cast`.
 
@@ -17347,6 +17520,29 @@ Note that a C-style `(T)expression` cast means to perform the first of the follo
 ##### Enforcement
 
 Issue a diagnostic for any use of a C-style `(T)expression` cast that would invoke a `static_cast` downcast, `const_cast`, or `reinterpret_cast`. To fix: Use a `dynamic_cast`, `const`-correct declaration, or `variant`, respectively.
+
+### <a name="Pro-fct-style-cast"></a>Type.7: Don't use `T(expression)` for casting`
+
+##### Reason
+
+If `e` is of a built-in type, `T(e)` is equivalent to the error-prone `(T)e`.
+
+##### Example, bad
+
+    int* p = f(x);
+    auto i = int(p);    // Potential damaging cast; don't or use `reinterpret_cast`
+
+    short s = short(i); // potentially narrowing; don't or use `narrow` or `narrow_cast`
+
+##### Note
+
+The {}-syntax makes the desire for construction explicit and doesn't allow narrowing
+
+    f(Foo{bar});
+
+##### Enforcement
+
+Flag `T(e)` if used for `e` of a built-in type.
 
 ### <a name="Pro-type-init"></a>Type.5: Don't use a variable before it has been initialized.
 
