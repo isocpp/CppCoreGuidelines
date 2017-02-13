@@ -1067,7 +1067,7 @@ So, if a suitable library exists for your application domain, use it.
 
 ##### Example
 
-    std::sort(begin(v),end(v),std::greater<>());
+    std::sort(begin(v), end(v), std::greater<>());
 
 Unless you are an expert in sorting algorithms and have plenty of time,
 this is more likely to be correct and to run faster than anything you write for a specific application.
@@ -9485,7 +9485,7 @@ Assuming that there is a logical connection between `i` and `j`, that connection
 
 Obviously, what we really would like is a construct that initialized n variables from a `tuple`. For example:
 
-    auto [i,j] = make_related_widgets(cond);    // C++17, not C++14
+    auto [i, j] = make_related_widgets(cond);    // C++17, not C++14
 
 Today, we might approximate that using `tie()`:
 
@@ -12471,8 +12471,7 @@ Thread creation is expensive.
         // process
     }
 
-    void 
-    (istream& is)
+    void master(istream& is)
     {
         for (Message m; is >> m; )
             run_list.push_back(new thread(worker, m));
@@ -16553,10 +16552,10 @@ Doing so takes away an `#include`r's ability to effectively disambiguate and to 
     // user.cpp
     #include "bad.h"
     
-    bool copy( /*... some parameters ...*/);    // some function that happens to be named copy
+    bool copy(/*... some parameters ...*/);    // some function that happens to be named copy
 
     int main() {
-        copy( /*...*/ );    // now overloads local ::copy and std::copy, could be ambiguous
+        copy(/*...*/);    // now overloads local ::copy and std::copy, could be ambiguous
     }
 
 ##### Enforcement
