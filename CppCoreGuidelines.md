@@ -2396,7 +2396,7 @@ The C++ standard library does that implicitly for all functions in the C standar
 
 ##### Note
 
-`constexpr` functions can when evaluated at run time, so you may need `noexcept` for some of those.
+`constexpr` functions can throw when evaluated at run time, so you may need `noexcept` for some of those.
 
 ##### Example
 
