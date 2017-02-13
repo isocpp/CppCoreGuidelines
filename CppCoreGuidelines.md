@@ -1034,7 +1034,7 @@ We typically have better things to do than repeatedly do routine tasks.
 
 ##### Example
 
-Run a static analyser to verify that your code follows the guidelines you want it to follow.
+Run a static analyzer to verify that your code follows the guidelines you want it to follow.
 
 ##### Note
 
@@ -2396,7 +2396,7 @@ The C++ standard library does that implicitly for all functions in the C standar
 
 ##### Note
 
-`constexpr` functions can when evaluated at run time, so yu may need `noexcept` for some of those.
+`constexpr` functions can when evaluated at run time, so you may need `noexcept` for some of those.
 
 ##### Example
 
@@ -3742,10 +3742,10 @@ This rule becomes even better if C++ gets ["uniform function call"](http://www.o
 
 ##### Exception
 
-The language requires `virtual` funtions to be members, and not all `virtual` functions directly access data.
+The language requires `virtual` functions to be members, and not all `virtual` functions directly access data.
 In particular, members of an abstract class rarely do.
 
-Note [multimethods](https://parasol.tamu.edu/~yuriys/papers/OMM10.pdf).
+Note [multi-methods](https://parasol.tamu.edu/~yuriys/papers/OMM10.pdf).
 
 ##### Exception
 
