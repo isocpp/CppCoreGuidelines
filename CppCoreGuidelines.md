@@ -11976,7 +11976,7 @@ There are many tools "out there", both commercial and open-source tools, both re
 Unfortunately people's needs and constraints differ so dramatically that we cannot make specific recommendations,
 but we can mention:
 
- * Static enforcement tools: both [clang](http://clang.llvm.org/docs/ThreadSafetyAnalysis.html)
+* Static enforcement tools: both [clang](http://clang.llvm.org/docs/ThreadSafetyAnalysis.html)
  and some older versions of [GCC](https://gcc.gnu.org/wiki/ThreadSafetyAnnotation)
  have some support for static annotation of thread safety properties.
  Consistent use of this technique turns many classes of thread-safety errors into compile-time errors.
@@ -19409,6 +19409,7 @@ A relatively informal definition of terms used in the guidelines
 This is our to-do list.
 Eventually, the entries will become rules or parts of rules.
 Alternatively, we will decide that no change is needed and delete the entry.
+
 * No long-distance friendship
 * Should physical design (what's in a file) and large-scale design (libraries, groups of libraries) be addressed?
 * Namespaces
