@@ -277,6 +277,8 @@ Meyers15
 Meyers96
 Meyers97
 microbenchmarks
+mixin
+mixins
 modify1
 modify2
 moredata
@@ -510,6 +512,7 @@ unenforceable
 uninit
 uniqueptrparam
 unittest
+unittests
 unnamed2
 use1
 users'
