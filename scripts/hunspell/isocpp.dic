@@ -98,6 +98,7 @@ cpp
 cpp98
 CppCon
 CRTP
+cst
 cstdarg
 cstring
 cstylecast
