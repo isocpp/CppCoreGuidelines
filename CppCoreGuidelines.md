@@ -11976,13 +11976,13 @@ There are many tools "out there", both commercial and open-source tools, both re
 Unfortunately people's needs and constraints differ so dramatically that we cannot make specific recommendations,
 but we can mention:
 
- * Static enforcement tools: both [clang](http://clang.llvm.org/docs/ThreadSafetyAnalysis.html)
- and some older versions of [GCC](https://gcc.gnu.org/wiki/ThreadSafetyAnnotation)
- have some support for static annotation of thread safety properties.
- Consistent use of this technique turns many classes of thread-safety errors into compile-time errors.
- The annotations are generally local (marking a particular member variable as guarded by a particular mutex),
- and are usually easy to learn. However, as with many static tools, it can often present false negatives;
- cases that should have been caught but were allowed.
+* Static enforcement tools: both [clang](http://clang.llvm.org/docs/ThreadSafetyAnalysis.html)
+and some older versions of [GCC](https://gcc.gnu.org/wiki/ThreadSafetyAnnotation)
+have some support for static annotation of thread safety properties.
+Consistent use of this technique turns many classes of thread-safety errors into compile-time errors.
+The annotations are generally local (marking a particular member variable as guarded by a particular mutex),
+and are usually easy to learn. However, as with many static tools, it can often present false negatives;
+cases that should have been caught but were allowed.
 
 * dynamic enforcement tools: Clang's [Thread Sanitizer](http://clang.llvm.org/docs/ThreadSanitizer.html) (aka TSAN)
 is a powerful example of dynamic tools: it changes the build and execution of your program to add bookkeeping on memory access,
@@ -19409,6 +19409,7 @@ A relatively informal definition of terms used in the guidelines
 This is our to-do list.
 Eventually, the entries will become rules or parts of rules.
 Alternatively, we will decide that no change is needed and delete the entry.
+
 * No long-distance friendship
 * Should physical design (what's in a file) and large-scale design (libraries, groups of libraries) be addressed?
 * Namespaces
