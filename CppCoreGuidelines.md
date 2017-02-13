@@ -12000,12 +12000,12 @@ Unfortunately people's needs and constraints differ so dramatically that we cann
 but we can mention:
 
 * Static enforcement tools: both [clang](http://clang.llvm.org/docs/ThreadSafetyAnalysis.html)
- and some older versions of [GCC](https://gcc.gnu.org/wiki/ThreadSafetyAnnotation)
- have some support for static annotation of thread safety properties.
- Consistent use of this technique turns many classes of thread-safety errors into compile-time errors.
- The annotations are generally local (marking a particular member variable as guarded by a particular mutex),
- and are usually easy to learn. However, as with many static tools, it can often present false negatives;
- cases that should have been caught but were allowed.
+and some older versions of [GCC](https://gcc.gnu.org/wiki/ThreadSafetyAnnotation)
+have some support for static annotation of thread safety properties.
+Consistent use of this technique turns many classes of thread-safety errors into compile-time errors.
+The annotations are generally local (marking a particular member variable as guarded by a particular mutex),
+and are usually easy to learn. However, as with many static tools, it can often present false negatives;
+cases that should have been caught but were allowed.
 
 * dynamic enforcement tools: Clang's [Thread Sanitizer](http://clang.llvm.org/docs/ThreadSanitizer.html) (aka TSAN)
 is a powerful example of dynamic tools: it changes the build and execution of your program to add bookkeeping on memory access,
