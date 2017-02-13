@@ -12471,8 +12471,7 @@ Thread creation is expensive.
         // process
     }
 
-    void 
-    (istream& is)
+    void master(istream& is)
     {
         for (Message m; is >> m; )
             run_list.push_back(new thread(worker, m));
