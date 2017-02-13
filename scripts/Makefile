@@ -58,7 +58,7 @@ check-references: $(SOURCEPATH) $(BUILD_DIR) Makefile
 	@echo '##################### References check ##################'
 ## check references unique
 	@rm -f $(BUILD_DIR)/$(SOURCEFILE).uniq
-	@grep -oP '(?<=<a name=")[^\"]+' $(SOURCEPATH) | sort | uniq -d > $(BUILD_DIR)/$(SOURCEFILE).uniq
+	@cat $(SOURCEPATH) | perl -ne 'print "$$1\n" if (/<a name="([^\"]+)/)' | sort | uniq -d > $(BUILD_DIR)/$(SOURCEFILE).uniq
 ## check if output has data
 	@if [ -s "build/CppCoreGuidelines.md.uniq" ]; then echo 'Found duplicate anchors:'; cat $(BUILD_DIR)/$(SOURCEFILE).uniq; false; fi
 
@@ -69,7 +69,7 @@ check-notabs: $(SOURCEPATH) $(BUILD_DIR) Makefile
 # old file still might be around
 	@rm -f $(BUILD_DIR)/CppCoreGuidelines.md.tabs
 # print file, add line numbers, remove tabs from nl tool, grep for remaining tabs, replace with stars
-	@cat ../CppCoreGuidelines.md | nl -ba | sed -s 's/\(^[^\t]*\)\t/\1--/g' | grep -P '\t' | sed -s 's/\t/\*\*\*\*/g' > $(BUILD_DIR)/CppCoreGuidelines.md.tabs
+	@cat ../$(SOURCEFILE) | nl -ba | perl -pe 's/(^[^\t]*)\t/$1--/g' | perl -ne 'print if /\t/' | perl -pe 's/\t/\*\*\*\*/g' > $(BUILD_DIR)/$(SOURCEFILE).tabs
 	@if [ -s $(BUILD_DIR)/CppCoreGuidelines.md.tabs ]; then echo 'Warning: Tabs found:'; cat $(BUILD_DIR)/CppCoreGuidelines.md.tabs; false; fi;
 
 .PHONY: check-badchars
@@ -79,14 +79,14 @@ check-badchars: $(SOURCEPATH) $(BUILD_DIR) Makefile
 # old file still might be around
 	@rm -f $(BUILD_DIR)/CppCoreGuidelines.md.badchars
 # print file, add line numbers, grep for bad chars
-	@cat ../CppCoreGuidelines.md | nl -ba | grep -P '’|‘|”|“|¸|–|…|¦' > $(BUILD_DIR)/CppCoreGuidelines.md.badchars || true
+	@cat ../$(SOURCEFILE) | nl -ba | perl -ne 'print if /’|‘|”|“|¸|–|…|¦/' > $(BUILD_DIR)/$(SOURCEFILE).badchars || true
 	@if [ -s $(BUILD_DIR)/CppCoreGuidelines.md.badchars ]; then echo 'Warning: Undesired chars (–’‘“”¸…¦) found, use straight quotes instead:'; cat $(BUILD_DIR)/CppCoreGuidelines.md.badchars; false; fi;
 
 
 .PHONY: hunspell-check
 hunspell-check: $(BUILD_DIR)/plain-nohtml.txt
 	@echo '##################### Spell check ##################'
-	hunspell -p hunspell/isocpp.dic -u < build/plain-nohtml.txt > $(BUILD_DIR)/hunspell-report.txt
+	hunspell -d hunspell/en_US -p hunspell/isocpp.dic -u < build/plain-nohtml.txt > $(BUILD_DIR)/hunspell-report.txt
 	@if [ -s $(BUILD_DIR)/hunspell-report.txt ]; then echo 'Warning: Spellcheck failed, fix words or add to dictionary:'; cat $(BUILD_DIR)/hunspell-report.txt; false; fi;
 
 # only list words that are not in dict

@@ -9795,7 +9795,7 @@ Readability and safety.
 
 ##### Note
 
-As an optimization, you may want to reuse a buffer as a scratchpad, but even then prefer to limit the variables's scope as much as possible and be careful not to cause bugs from data left in a recycled buffer as this is a common source of security bugs.
+As an optimization, you may want to reuse a buffer as a scratch pad, but even then prefer to limit the variable's scope as much as possible and be careful not to cause bugs from data left in a recycled buffer as this is a common source of security bugs.
 
     {
         std::string buffer;             // to avoid reallocations on every loop iteration
@@ -13996,7 +13996,7 @@ This gives a more precise statement of design intent, better readability, more e
 
 It is not inherently bad to pass a pointer or reference to non-const,
 but that should be done only when the called function is supposed to modify the object.
-A reader of code must assume that a funtion that takes a "plain" `T*` or `T&` will modify the object referred to.
+A reader of code must assume that a function that takes a "plain" `T*` or `T&` will modify the object referred to.
 If it doesn't now, it might do so later without forcing recompilation.
 
 ##### Note
@@ -14010,7 +14010,7 @@ You can
 * "cast away `const`"; [best avoided](#Res-casts-const).
 * provide a wrapper function; for example
 
-    void f(int* p);   // old code: f() does not mpdify `*p`
+    void f(int* p);   // old code: f() does not modify `*p`
     void f(const int* p) { f(const_cast<int*>(p); } // wrapper
 
 Note that this wrapper solution is a patch that should be used only when the declaration of `f()` cannot be be modified,
@@ -14646,7 +14646,7 @@ Concepts with multiple operations have far lower chance of accidentally matching
 * Flag uses of `enable_if` that appears to simulate single-operation `concepts`.
 
 
-### <a name="ations"></a>T.21: Require a complete set of operations for a concept
+### <a name="RT-operations"></a>T.21: Require a complete set of operations for a concept
 
 ##### Reason
 
