@@ -9067,7 +9067,7 @@ In this case, it might be a good idea to factor out the read:
 * Flag loop variable declared outside a loop and not used after the loop
 * Flag when expensive resources, such as file handles and locks are not used for N-lines (for some suitable N)
 
-### <a name="Res-cond"></a>ES.6: Declare names in for-statement initializers and conditions to limit scope
+### <a name="Res-cond"></a>ES.6: Declare names in selection statement and for-statement initializers and conditions to limit scope.
 
 ##### Reason
 
@@ -9092,10 +9092,15 @@ Readability. Minimize resource retention.
         }
     }
 
+##### Note
+
+C++17 introduces initializer statements for if-statements and switch-statements, which are present
+in GCC 7 and Clang 4 with the `-std=c++1z` flag.
+
 ##### Enforcement
 
-* Flag loop variables declared before the loop and not used after the loop
-* (hard) Flag loop variables declared before the loop and used after the loop for an unrelated purpose.
+* Flag selection/loop variables declared before the body and not used after the body
+* (hard) Flag selection/loop variables declared before the body and used after the body for an unrelated purpose.
 
 ### <a name="Res-name-length"></a>ES.7: Keep common and local names short, and keep uncommon and nonlocal names longer
 
