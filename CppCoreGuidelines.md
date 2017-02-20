@@ -9067,7 +9067,7 @@ In this case, it might be a good idea to factor out the read:
 * Flag loop variable declared outside a loop and not used after the loop
 * Flag when expensive resources, such as file handles and locks are not used for N-lines (for some suitable N)
 
-### <a name="Res-cond"></a>ES.6: Declare names in selection statement and for-statement initializers and conditions to limit scope.
+### <a name="Res-cond"></a>ES.6: Declare names in selection statement and for-statement initializers and conditions to limit scope
 
 ##### Reason
 
