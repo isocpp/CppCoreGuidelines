@@ -14027,8 +14027,10 @@ This is a problem for people modernizing code.
 You can
 
 * update the library to be `const`-correct; preferred long-term solution
-* "cast away `const`"; [best avoided](#Res-casts-const).
-* provide a wrapper function; for example
+* "cast away `const`"; [best avoided](#Res-casts-const)
+* provide a wrapper function
+
+Example:
 
     void f(int* p);   // old code: f() does not modify `*p`
     void f(const int* p) { f(const_cast<int*>(p); } // wrapper
