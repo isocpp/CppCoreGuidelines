@@ -39,6 +39,14 @@
     padding: unset;
 }
 
+/** highlight js change colors (overrides style) */
+.hljs-comment {
+    color: #008000;
+}
+.hljs-meta {
+    color: #2b91af;
+}
+
 .zip_download_link {
   display: block;
   float: right;
