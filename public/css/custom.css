@@ -33,6 +33,12 @@
   background: url('../images/icon_download.png') no-repeat 0% 90%;
 }
 
+/** same style for highlighted, non-highlight */
+.cpp.hljs {
+    overflow-x: unset;
+    padding: unset;
+}
+
 .zip_download_link {
   display: block;
   float: right;
