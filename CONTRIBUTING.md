@@ -1,6 +1,6 @@
 ## Contributing to the C++ Core Guidelines
 
->“Within C++ is a smaller, simpler, safer language struggling to get out.”<br />
+>“Within C++ is a smaller, simpler, safer language struggling to get out.”  
 >— <cite>Bjarne Stroustrup</cite>
 
 The C++ Core Guidelines are a collaborative effort led by Bjarne Stroustrup, much like the C++ language itself. They are the result of many 
