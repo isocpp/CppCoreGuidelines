@@ -17935,7 +17935,6 @@ The "raw-pointer" notation (e.g. `int*`) is assumed to have its most common mean
 Owners should be converted to resource handles (e.g., `unique_ptr` or `vector<T>`) or marked `owner<T*>`.
 
 * `owner<T*>`   // a `T*` that owns the object pointed/referred to; may be `nullptr`.
-* `owner<T&>`   // a `T&` that owns the object pointed/referred to.
 
 `owner` is used to mark owning pointers in code that cannot be upgraded to use proper resource handles.
 Reasons for that include:
