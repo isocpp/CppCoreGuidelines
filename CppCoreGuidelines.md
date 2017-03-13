@@ -17924,7 +17924,7 @@ These types allow the user to distinguish between owning and non-owning pointers
 
 These "views" are never owners.
 
-References are never owners.
+References are never owners. Note: References have many opportunities to outlive the objects they refer to (returning a local variable by reference, holding a reference to an element of a vector and doing `push_back`, binding to `std::max(x,y+1)`, etc. The Lifetime safety profile aims to address those things, but even so `owner<T&>` does not make sense and is discouraged.
 
 The names are mostly ISO standard-library style (lower case and underscore):
 
