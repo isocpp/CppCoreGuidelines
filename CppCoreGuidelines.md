@@ -9097,6 +9097,25 @@ Readability. Minimize resource retention.
 * Flag loop variables declared before the loop and not used after the loop
 * (hard) Flag loop variables declared before the loop and used after the loop for an unrelated purpose.
 
+##### C++17 example
+
+Note: C++17 also adds `if` and `switch` initializer statements. These require C++17 support.
+
+    map<int,string> mymap;
+
+    if (auto result = mymap.insert(value); result.second) {
+        // insert succeeded, and result is valid for this block
+        use(result.first);  // ok
+        // ...
+    } // result is destroyed here
+
+##### C++17 enforcement (if using a C++17 compiler)
+
+* Flag selection/loop variables declared before the body and not used after the body
+* (hard) Flag selection/loop variables declared before the body and used after the body for an unrelated purpose.
+
+
+
 ### <a name="Res-name-length"></a>ES.7: Keep common and local names short, and keep uncommon and nonlocal names longer
 
 ##### Reason
