@@ -3064,6 +3064,8 @@ When I call `length(s)` should I test for `s == nullptr` first? Should the imple
 
 Using `unique_ptr` is the cheapest way to pass a pointer safely.
 
+See also [C.50](#Rc-factory) regarding when to return a `shared_ptr` from a factory.
+
 ##### Example
 
     unique_ptr<Shape> get_shape(istream& is)  // assemble shape from input stream
@@ -5058,6 +5060,10 @@ An initialization explicitly states that initialization, rather than assignment,
 
 If the state of a base class object must depend on the state of a derived part of the object, we need to use a virtual function (or equivalent) while minimizing the window of opportunity to misuse an imperfectly constructed object.
 
+##### Note
+
+The return type of the factory should normally be `unique_ptr` by default; if some uses are shared, the caller can `move` the `unique_ptr` into a `shared_ptr`. However, if the factory author knows that all uses of the returned object will be shared uses, return `shared_ptr` and use `make_shared` in the body to save an allocation.
+
 ##### Example, bad
 
     class B {
@@ -5091,7 +5097,7 @@ If the state of a base class object must depend on the state of a derived part o
         virtual void f() = 0;
 
         template<class T>
-        static shared_ptr<T> Create()  // interface for creating objects
+        static shared_ptr<T> Create()  // interface for creating shared objects
         {
             auto p = make_shared<T>();
             p->PostInitialize();
@@ -5099,7 +5105,7 @@ If the state of a base class object must depend on the state of a derived part o
         }
     };
 
-    class D : public B { /* ... */ };            // some derived class
+    class D : public B { /* ... */ };  // some derived class
 
     shared_ptr<D> p = D::Create<D>();  // creating a D object
 
