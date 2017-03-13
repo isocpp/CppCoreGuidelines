@@ -1,26 +1,26 @@
 ## Contributing to the C++ Core Guidelines
 
->"Within C++ is a smaller, simpler, safer language struggling to get out." 
->-- <cite>Bjarne Stroustrup</cite>
+>“Within C++ is a smaller, simpler, safer language struggling to get out.”\
+>— <cite>Bjarne Stroustrup</cite>
 
 The C++ Core Guidelines are a collaborative effort led by Bjarne Stroustrup, much like the C++ language itself. They are the result of many 
 person-years of discussion and design across a number of organizations. Their design encourages general applicability and broad adoption but 
-they can be freely copied and modified to meet your organization's needs. 
+they can be freely copied and modified to meet your organization’s needs. 
 
 We encourage contributions to the C++ Core Guidelines in a number of ways:
 - **Individual feedback** Are you a developer who is passionate about your code? Join the discussion in 
-[Issues](https://github.com/isocpp/CppCoreGuidelines/issues). We want to know which rules resonate with you and which don't. Were any rules
-inordinately difficult to apply? Does your compiler vendor's Guideline Support Library (e.g., 
-[Microsoft's implementation of the GSL](https://github.com/microsoft/gsl)) suit your needs in adopting these guidelines?
+[Issues](https://github.com/isocpp/CppCoreGuidelines/issues). We want to know which rules resonate with you and which don’t. Were any rules
+inordinately difficult to apply? Does your compiler vendor’s Guideline Support Library (e.g., 
+[Microsoft’s implementation of the GSL](https://github.com/microsoft/gsl)) suit your needs in adopting these guidelines?
 - **Organizational adoption** While the guidelines are designed to be broadly adoptable they are also intended to be modified to fit your
-organization's particular needs. We encourage your organization to fork this repo and create your own copy of these guidelines with changes 
-that reflect your needs. We suggest that you make it clear in the title of your guidelines that these are your organization's fork of the
+organization’s particular needs. We encourage your organization to fork this repo and create your own copy of these guidelines with changes 
+that reflect your needs. We suggest that you make it clear in the title of your guidelines that these are your organization’s fork of the
 guidelines and that you provide a link back to the original set of [guidelines](https://github.com/isocpp/CppCoreGuidelines). And if any of
 your local changes are appropriate to pull back into the original guidelines, please open an 
 [Issue](https://github.com/isocpp/CppCoreGuidelines/issues) which can lead to a pull request.
 - **Maintain the Guidelines** The C++ Core Guidelines were created from a wealth of knowledge spread across a number of organizations
 worldwide. If you or your organization is passionate about helping to create the guidelines, consider becoming an editor or maintainer. If
-you're a C++ expert who is serious about participating, please 
+you’re a C++ expert who is serious about participating, please 
 [email coreguidelines@isocpp.org](mailto:coreguidelines@isocpp.org?subject=Maintain the C++ Code Guidelines).
  
 ## Contributor License Agreement
@@ -41,7 +41,7 @@ to display, reproduce, perform, distribute, and create derivative works of that 
 
 ## Pull requests
 
-We welcome pull requests for scoped changes to the guidelines--bug fixes in
+We welcome pull requests for scoped changes to the guidelines — bug fixes in
 examples, clarifying ambiguous text, etc.  Significant changes should first be
 discussed in the [Issues](https://github.com/isocpp/CppCoreGuidelines/issues)
 and the Issue number must be included in the pull request.  For
