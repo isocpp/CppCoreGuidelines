@@ -17906,7 +17906,7 @@ If code is using an unmodified standard library, then there are still workaround
 
 ## <a name="SS-lifetime"></a>Pro.lifetime: Lifetime safety profile
 
-???
+See /docs folder for the initial design. The formal rules are in progress (as of March 2017).
 
 # <a name="S-gsl"></a>GSL: Guideline support library
 
