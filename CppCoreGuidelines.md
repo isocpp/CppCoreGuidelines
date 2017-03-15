@@ -17666,6 +17666,14 @@ The following are under consideration but not yet in the rules below, and may be
 
 An implementation of this profile shall recognize the following patterns in source code as non-conforming and issue a diagnostic.
 
+Bounds safety profile summary:
+
+* [Bounds.1: Don't use pointer arithmetic. Use `span` instead](#Pro-bounds-arithmetic)
+* [Bounds.2: Only index into arrays using constant expressions](#Pro-bounds-arrayindex)
+* [Bounds.3: No array-to-pointer decay](#Pro-bounds-decay)
+* [Bounds.4: Don't use standard library functions and types that are not bounds-checked](#Pro-bounds-stdlib)
+
+
 ### <a name="Pro-bounds-arithmetic"></a>Bounds.1: Don't use pointer arithmetic. Use `span` instead.
 
 ##### Reason
