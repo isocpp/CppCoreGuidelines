@@ -1,9 +1,11 @@
 ---
 layout: default
 ---
+
 # <a name="main"></a>C++ Core Guidelines
 
-February 6, 2017
+March 17, 2017
+
 
 Editors:
 
@@ -363,6 +365,8 @@ Philosophy rules summary:
 * [P.9: Don't waste time or space](#Rp-waste)
 * [P.10: Prefer immutable data to mutable data](#Rp-mutable)
 * [P.11: Encapsulate messy constructs, rather than spreading through the code](#Rp-library)
+* [P.12: Use supporting tools as appropriate](#Rp-tools)
+* [P.13: Use support libraries as appropriate](#Rp-lib)
 
 Philosophical rules are generally not mechanically checkable.
 However, individual rules reflecting these philosophical themes are.
@@ -1022,6 +1026,68 @@ This is a variant of the [subset of superset principle](#R0) that underlies thes
 ##### Enforcement
 
 * Look for "messy code" such as complex pointer manipulation and casting outside the implementation of abstractions.
+
+
+### <a name="Rp-tools"></a>P.12: Use supporting tools as appropriate
+
+##### Reason
+
+There are many things that are done better "by machine".
+Computers don't tire or get bored by repetitive tasks.
+We typically have better things to do than repeatedly do routine tasks.
+
+##### Example
+
+Run a static analyzer to verify that your code follows the guidelines you want it to follow.
+
+##### Note
+
+See
+
+* [Static analysis tools](???)
+* [Concurrency tools](#Rconc-tools)
+* [Testing tools](???)
+
+There are many other kinds of tools, such as source code depositories, build tools, etc.,
+but those are beyond the scope of these guidelines.
+
+###### Note
+
+Be careful not to become dependent on over-elaborate or over-specialized tool chains.
+Those can make your otherwise portable code non-portable.
+
+
+### <a name="Rp-lib"></a>P.13: Use support libraries as appropriate
+
+##### Reason
+
+Using a well-designed, well-documented, and well-supported library saves time and effort;
+its quality and documentation are likely to be greater than what you could do
+if the majority of your time must be spent on an implementation.
+The cost (time, effort, money, etc.) of a library can be shared over many users.
+A widely used library is more likely to be kept up-to-date and ported to new systems than an individual application.
+Knowledge of a widely-used library can save time on other/future projects.
+So, if a suitable library exists for your application domain, use it.
+
+##### Example
+
+    std::sort(begin(v),end(v),std::greater<>());
+
+Unless you are an expert in sorting algorithms and have plenty of time,
+this is more likely to be correct and to run faster than anything you write for a specific application.
+You need a reason not to use the standard library (or whatever foundational libraries your application uses) rather than a reason to use it.
+
+##### Note
+
+By default use
+
+* The [ISO C++ standard library](#S-stdlib)
+* The [Guidelines Support Library](#S-gsl)
+
+##### Note
+
+If no well-designed, well-documented, and well-supported library exists for an important domain,
+maybe you should design and implement it, and then use it.
 
 
 # <a name="S-interfaces"></a>I: Interfaces
@@ -1972,6 +2038,7 @@ Function definition rules:
 * [F.6: If your function may not throw, declare it `noexcept`](#Rf-noexcept)
 * [F.7: For general use, take `T*` or `T&` arguments rather than smart pointers](#Rf-smart)
 * [F.8: Prefer pure functions](#Rf-pure)
+* [F.9: Unused parameters should be unnamed](#Rf-unused)
 
 Parameter passing expression rules:
 
@@ -2333,7 +2400,7 @@ The C++ standard library does that implicitly for all functions in the C standar
 
 ##### Note
 
-`constexpr` functions cannot throw, so you don't need to use `noexcept` for those.
+`constexpr` functions can throw when evaluated at run time, so you may need `noexcept` for some of those.
 
 ##### Example
 
@@ -2458,6 +2525,25 @@ if not, this is not an issue.
 ##### Enforcement
 
 Not possible.
+
+### <a name="Rf-unused"></a>F.9: Unused parameters should be unnamed
+
+##### Reason
+
+Readability.
+Suppression of unused parameter warnings.
+
+##### Example
+
+    X* find(map<Blob>& m, const string& s, Hint);   // once upon a time, a hint was used
+
+##### Note
+
+Allowing parameters to be unnamed was introduced in the early 1980 to address this problem.
+
+##### Enforcement
+
+Flag named unused parameters.
 
 ## <a name="SS-call"></a>F.call: Parameter passing
 
@@ -2981,6 +3067,8 @@ When I call `length(s)` should I test for `s == nullptr` first? Should the imple
 ##### Reason
 
 Using `unique_ptr` is the cheapest way to pass a pointer safely.
+
+See also [C.50](#Rc-factory) regarding when to return a `shared_ptr` from a factory.
 
 ##### Example
 
@@ -3658,10 +3746,42 @@ The "helper functions" have no need for direct access to the representation of a
 
 This rule becomes even better if C++ gets ["uniform function call"](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/p0251r0.pdf).
 
+##### Exception
+
+The language requires `virtual` functions to be members, and not all `virtual` functions directly access data.
+In particular, members of an abstract class rarely do.
+
+Note [multimethods](https://parasol.tamu.edu/~yuriys/papers/OMM10.pdf).
+
+##### Exception
+
+The language requires operators `=`, `()`, `[]`, and `->` to be members.
+
+###### Exception
+
+An overload set may have some members that do not directly access `private` data:
+
+    class Foobar {
+        void foo(int x)    { /* manipulate private data */ }
+        void foo(double x) { foo(std::round(x)); }
+        // ...
+    private:
+        // ...
+    };
+
+Similarly, a set of functions may be designed to be used in a chain:
+
+    x.scale(0.5).rotate(45).set_color(Color::red);
+
+Typically, some but not all of such functions directly access `private` data.
+
 ##### Enforcement
 
-Look for member function that do not touch data members directly.
+* Look for non-`virtual` member functions that do not touch data members directly.
 The snag is that many member functions that do not need to touch data members directly do.
+* Ignore `virtual` functions.
+* Ignore functions that are part of an overload set out of which at least one function accesses `private` members.
+* Ignore functions returning `this`.
 
 ### <a name="Rc-helper"></a>C.5: Place helper functions in the same namespace as the class they support
 
@@ -4944,6 +5064,10 @@ An initialization explicitly states that initialization, rather than assignment,
 
 If the state of a base class object must depend on the state of a derived part of the object, we need to use a virtual function (or equivalent) while minimizing the window of opportunity to misuse an imperfectly constructed object.
 
+##### Note
+
+The return type of the factory should normally be `unique_ptr` by default; if some uses are shared, the caller can `move` the `unique_ptr` into a `shared_ptr`. However, if the factory author knows that all uses of the returned object will be shared uses, return `shared_ptr` and use `make_shared` in the body to save an allocation.
+
 ##### Example, bad
 
     class B {
@@ -4977,7 +5101,7 @@ If the state of a base class object must depend on the state of a derived part o
         virtual void f() = 0;
 
         template<class T>
-        static shared_ptr<T> Create()  // interface for creating objects
+        static shared_ptr<T> Create()  // interface for creating shared objects
         {
             auto p = make_shared<T>();
             p->PostInitialize();
@@ -4985,7 +5109,7 @@ If the state of a base class object must depend on the state of a derived part o
         }
     };
 
-    class D : public B { /* ... */ };            // some derived class
+    class D : public B { /* ... */ };  // some derived class
 
     shared_ptr<D> p = D::Create<D>();  // creating a D object
 
@@ -6506,11 +6630,17 @@ Flag any class that has non-`const` data members with different access levels.
 
 ##### Reason
 
-Not all classes will necessarily support all interfaces, and not all callers will necessarily want to deal with all operations. Especially to break apart monolithic interfaces into "aspects" of behavior supported by a given derived class.
+Not all classes will necessarily support all interfaces, and not all callers will necessarily want to deal with all operations.
+Especially to break apart monolithic interfaces into "aspects" of behavior supported by a given derived class.
 
 ##### Example
 
-    ???
+    class iostream : public istream, public ostream {   // very simplified
+        // ...
+    };
+
+`istream` provides the interface to input operations; `ostream` provides the interface to output operations.
+`iostream` provides the union of the `istream` and `ostream` interfaces and the synchronization needed to allow both on a single stream. 
 
 ##### Note
 
@@ -6529,11 +6659,17 @@ Such interfaces are typically abstract classes.
 
 ##### Reason
 
- ??? Herb: Here's the second mention of implementation inheritance. I'm very skeptical, even of single implementation inheritance, never mind multiple implementation inheritance which just seems frightening -- I don't think that even policy-based design really needs to inherit from the policy types. Am I missing some good examples, or could we consider discouraging this as an anti-pattern?
+Some forms of mixins have state and often operations on that state.
+If the operations are virtual the use of inheritance is necessary, if not using inheritance can avoid boilerplate and forwarding.
 
 ##### Example
 
-    ???
+      class iostream : public istream, public ostream {   // very simplified
+        // ...
+    };
+
+`istream` provides the interface to input operations (and some data); `ostream` provides the interface to output operations (and some data).
+`iostream` provides the union of the `istream` and `ostream` interfaces and the synchronization needed to allow both on a single stream. 
 
 ##### Note
 
@@ -6541,7 +6677,7 @@ This a relatively rare use because implementation can often be organized into a 
 
 ##### Enforcement
 
-??? Herb: How about opposite enforcement: Flag any type that inherits from more than one non-empty base class?
+??? 
 
 ### <a name="Rh-vbase"></a>C.137: Use `virtual` bases to avoid overly general base classes
 
@@ -7367,7 +7503,7 @@ But heed the warning: [Avoid "naked" `union`s](#Ru-naked)
 
 ##### Example
 
-    // Short string optimization
+    // Short-string optimization
 
     constexpr size_t buffer_size = 16; // Slightly larger than the size of a pointer
 
@@ -7876,7 +8012,7 @@ Here, we ignore such cases.
   * [R.2: In interfaces, use raw pointers to denote individual objects (only)](#Rr-use-ptr)
   * [R.3: A raw pointer (a `T*`) is non-owning](#Rr-ptr)
   * [R.4: A raw reference (a `T&`) is non-owning](#Rr-ref)
-  * [R.5: Prefer scoped objects](#Rr-scoped)
+  * [R.5: Prefer scoped objects, don't heap-allocate unnecessarily](#Rr-scoped)
   * [R.6: Avoid non-`const` global variables](#Rr-global)
 
 * Allocation and deallocation rule summary:
@@ -8135,7 +8271,7 @@ We want owners identified so that we can reliably and efficiently delete the obj
 
 See [the raw pointer rule](#Rr-ptr)
 
-### <a name="Rr-scoped"></a>R.5: Don't heap-allocate unnecessarily
+### <a name="Rr-scoped"></a>R.5: Prefer scoped objects, don't heap-allocate unnecessarily
 
 ##### Reason
 
@@ -8568,7 +8704,7 @@ Using `unique_ptr` in this way both documents and enforces the function call's o
 
     void sink(unique_ptr<widget>); // consumes the widget
 
-    void sink(widget*);            // just uses the widget
+    void uses(widget*);            // just uses the widget
 
 ##### Example, bad
 
@@ -8578,7 +8714,6 @@ Using `unique_ptr` in this way both documents and enforces the function call's o
 
 * (Simple) Warn if a function takes a `Unique_ptr<T>` parameter by lvalue reference and does not either assign to it or call `reset()` on it on at least one code path. Suggest taking a `T*` or `T&` instead.
 * (Simple) ((Foundation)) Warn if a function takes a `Unique_ptr<T>` parameter by reference to `const`. Suggest taking a `const T*` or `const T&` instead.
-* (Simple) ((Foundation)) Warn if a function takes a `Unique_ptr<T>` parameter by rvalue reference. Suggest using pass by value instead.
 
 ### <a name="Rr-reseat"></a>R.33: Take a `unique_ptr<widget>&` parameter to express that a function reseats the`widget`
 
@@ -8588,7 +8723,7 @@ Using `unique_ptr` in this way both documents and enforces the function call's r
 
 ##### Note
 
-"reseat" means "making a reference or a smart pointer refer to a different object."
+"reseat" means "making a pointer or a smart pointer refer to a different object."
 
 ##### Example
 
@@ -8602,7 +8737,6 @@ Using `unique_ptr` in this way both documents and enforces the function call's r
 
 * (Simple) Warn if a function takes a `Unique_ptr<T>` parameter by lvalue reference and does not either assign to it or call `reset()` on it on at least one code path. Suggest taking a `T*` or `T&` instead.
 * (Simple) ((Foundation)) Warn if a function takes a `Unique_ptr<T>` parameter by reference to `const`. Suggest taking a `const T*` or `const T&` instead.
-* (Simple) ((Foundation)) Warn if a function takes a `Unique_ptr<T>` parameter by rvalue reference. Suggest using pass by value instead.
 
 ### <a name="Rr-sharedptrparam-owner"></a>R.34: Take a `shared_ptr<widget>` parameter to express that a function is part owner
 
@@ -8614,9 +8748,9 @@ This makes the function's ownership sharing explicit.
 
     void share(shared_ptr<widget>);            // share -- "will" retain refcount
 
-    void reseat(shared_ptr<widget>&);          // "might" reseat ptr
-
     void may_share(const shared_ptr<widget>&); // "might" retain refcount
+
+    void reseat(shared_ptr<widget>&);          // "might" reseat ptr
 
 ##### Enforcement
 
@@ -8970,6 +9104,25 @@ Readability. Minimize resource retention.
 
 * Flag loop variables declared before the loop and not used after the loop
 * (hard) Flag loop variables declared before the loop and used after the loop for an unrelated purpose.
+
+##### C++17 example
+
+Note: C++17 also adds `if` and `switch` initializer statements. These require C++17 support.
+
+    map<int,string> mymap;
+
+    if (auto result = mymap.insert(value); result.second) {
+        // insert succeeded, and result is valid for this block
+        use(result.first);  // ok
+        // ...
+    } // result is destroyed here
+
+##### C++17 enforcement (if using a C++17 compiler)
+
+* Flag selection/loop variables declared before the body and not used after the body
+* (hard) Flag selection/loop variables declared before the body and used after the body for an unrelated purpose.
+
+
 
 ### <a name="Res-name-length"></a>ES.7: Keep common and local names short, and keep uncommon and nonlocal names longer
 
@@ -9669,7 +9822,7 @@ Readability and safety.
 
 ##### Note
 
-As an optimization, you may want to reuse a buffer as a scratchpad, but even then prefer to limit the variables's scope as much as possible and be careful not to cause bugs from data left in a recycled buffer as this is a common source of security bugs.
+As an optimization, you may want to reuse a buffer as a scratch pad, but even then prefer to limit the variable's scope as much as possible and be careful not to cause bugs from data left in a recycled buffer as this is a common source of security bugs.
 
     {
         std::string buffer;             // to avoid reallocations on every loop iteration
@@ -11567,6 +11720,7 @@ Concurrency and parallelism rule summary:
 * [CP.3: Minimize explicit sharing of writable data](#Rconc-data)
 * [CP.4: Think in terms of tasks, rather than threads](#Rconc-task)
 * [CP.8: Don't try to use `volatile` for synchronization](#Rconc-volatile)
+* [CP.9: Whenever feasible use tools to validate your concurrent code](#Rconc-tools)
 
 See also:
 
@@ -11700,9 +11854,12 @@ this can be a security risk.
 
 ##### Enforcement
 
-When possible, rely on tooling enforcement, but be aware that any tooling
-solution has costs and blind spots. Defense in depth (multiple tools, multiple
-approaches) is particularly valuable here.
+Some is possible, do at least something.
+There are commercial and open-source tools that try to address this problem,
+but be aware that solutions have costs and blind spots.
+Static tools often have many false positives and run-time tools often have a significant cost.
+We hope for better tools.
+Using multiple tools can catch more problems than a single one.
 
 There are other ways you can mitigate the chance of data races:
 
@@ -11827,6 +11984,44 @@ Use a `mutex` for more complicated examples.
 ##### See also
 
 [(rare) proper uses of `volatile`](#Rconc-volatile2)
+
+### <a name="Rconc-tools"></a>CP.9: Whenever feasible use tools to validate your concurrent code
+
+Experience shows that concurrent code is exceptionally hard to get right
+and that compile-time checking, run-time checks, and testing are less effective at finding concurrency errors
+than they are at finding errors in sequential code.
+Subtle concurrency errors can have dramatically bad effects, including memory corruption and deadlocks.
+
+##### Example
+
+    ???
+
+##### Note
+
+Thread safety is challenging, often getting the better of experienced programmers: tooling is an important strategy to mitigate those risks.
+There are many tools "out there", both commercial and open-source tools, both research and production tools.
+Unfortunately people's needs and constraints differ so dramatically that we cannot make specific recommendations,
+but we can mention:
+
+* Static enforcement tools: both [clang](http://clang.llvm.org/docs/ThreadSafetyAnalysis.html)
+ and some older versions of [GCC](https://gcc.gnu.org/wiki/ThreadSafetyAnnotation)
+ have some support for static annotation of thread safety properties.
+ Consistent use of this technique turns many classes of thread-safety errors into compile-time errors.
+ The annotations are generally local (marking a particular member variable as guarded by a particular mutex),
+ and are usually easy to learn. However, as with many static tools, it can often present false negatives;
+ cases that should have been caught but were allowed.
+
+* dynamic enforcement tools: Clang's [Thread Sanitizer](http://clang.llvm.org/docs/ThreadSanitizer.html) (aka TSAN)
+is a powerful example of dynamic tools: it changes the build and execution of your program to add bookkeeping on memory access,
+absolutely identifying data races in a given execution of your binary.
+The cost for this is both memory (5-10x in most cases) and CPU slowdown (2-20x).
+Dynamic tools like this are best when applied to integration tests, canary pushes, or unittests that operate on multiple threads.
+Workload matters: When TSAN identifies a problem, it is effectively always an actual data race,
+but it can only identify races seen in a given execution.
+
+##### Enforcement
+
+It is up to an application builder to choose which support tools are valuable for a particular applications.
 
 ## <a name="SScp-con"></a>CP.con: Concurrency
 
@@ -12303,7 +12498,8 @@ Thread creation is expensive.
         // process
     }
 
-    void master(istream& is)
+    void 
+    (istream& is)
     {
         for (Message m; is >> m; )
             run_list.push_back(new thread(worker, m));
@@ -12635,7 +12831,7 @@ Read up on the ABA problem.
 
 ##### Exception
 
-[Atomic variables](#???) can be used simply and safely.
+[Atomic variables](#???) can be used simply and safely, as long as you are using the sequentially consistent memory model (memory_order_seq_cst), which is the default.
 
 ##### Note
 
@@ -13783,11 +13979,9 @@ Prevents accidental or hard-to-notice change of value.
 
 ##### Example
 
-    for (const string& s : c) cout << s << '\n';    // just reading: const
+    for (const int i : c) cout << i << '\n';    // just reading: const
 
-    for (string& s : c) cout << s << '\n';    // BAD: just reading
-
-    for (string& s : c) cin >> s;  // needs to write: non-const
+    for (int i : c) cout << i << '\n';          // BAD: just reading
 
 ##### Exception
 
@@ -13827,7 +14021,7 @@ This gives a more precise statement of design intent, better readability, more e
 
 It is not inherently bad to pass a pointer or reference to non-const,
 but that should be done only when the called function is supposed to modify the object.
-A reader of code must assume that a funtion that takes a "plain" `T*` or `T&` will modify the object referred to.
+A reader of code must assume that a function that takes a "plain" `T*` or `T&` will modify the object referred to.
 If it doesn't now, it might do so later without forcing recompilation.
 
 ##### Note
@@ -13841,7 +14035,7 @@ You can
 * "cast away `const`"; [best avoided](#Res-casts-const).
 * provide a wrapper function; for example
 
-    void f(int* p);   // old code: f() does not mpdify `*p`
+    void f(int* p);   // old code: f() does not modify `*p`
     void f(const int* p) { f(const_cast<int*>(p); } // wrapper
 
 Note that this wrapper solution is a patch that should be used only when the declaration of `f()` cannot be be modified,
@@ -14477,7 +14671,7 @@ Concepts with multiple operations have far lower chance of accidentally matching
 * Flag uses of `enable_if` that appears to simulate single-operation `concepts`.
 
 
-### <a name="ations"></a>T.21: Require a complete set of operations for a concept
+### <a name="RT-operations"></a>T.21: Require a complete set of operations for a concept
 
 ##### Reason
 
@@ -17157,8 +17351,11 @@ Type safety profile summary:
 * [Type.2: Don't use `static_cast` downcasts. Use `dynamic_cast` instead](#Pro-type-downcast)
 * [Type.3: Don't use `const_cast` to cast away `const` (i.e., at all)](#Pro-type-constcast)
 * [Type.4: Don't use C-style `(T)expression` casts that would perform a `static_cast` downcast, `const_cast`, or `reinterpret_cast`](#Pro-type-cstylecast)
+* [Type.4.1: Don't use `T(expression)` for casting](#Pro-fct-style-cast)
 * [Type.5: Don't use a variable before it has been initialized](#Pro-type-init)
 * [Type.6: Always initialize a member variable](#Pro-type-memberinit)
+* [Type.7: Avoid accessing members of raw unions. Prefer `variant` instead](#Pro-fct-style-cast)
+* [Type.8: Avoid reading from varargs or passing vararg arguments. Prefer variadic template parameters instead](#Pro-type-varargs)
 
 ### <a name="Pro-type-reinterpretcast"></a>Type.1: Don't use `reinterpret_cast`.
 
@@ -17351,6 +17548,29 @@ Note that a C-style `(T)expression` cast means to perform the first of the follo
 
 Issue a diagnostic for any use of a C-style `(T)expression` cast that would invoke a `static_cast` downcast, `const_cast`, or `reinterpret_cast`. To fix: Use a `dynamic_cast`, `const`-correct declaration, or `variant`, respectively.
 
+### <a name="Pro-fct-style-cast"></a>Type.4.1: Don't use `T(expression)` for casting.
+
+##### Reason
+
+If `e` is of a built-in type, `T(e)` is equivalent to the error-prone `(T)e`.
+
+##### Example, bad
+
+    int* p = f(x);
+    auto i = int(p);    // Potential damaging cast; don't or use `reinterpret_cast`
+
+    short s = short(i); // potentially narrowing; don't or use `narrow` or `narrow_cast`
+
+##### Note
+
+The {}-syntax makes the desire for construction explicit and doesn't allow narrowing
+
+    f(Foo{bar});
+
+##### Enforcement
+
+Flag `T(e)` if used for `e` of a built-in type.
+
 ### <a name="Pro-type-init"></a>Type.5: Don't use a variable before it has been initialized.
 
 [ES.20: Always initialize an object](#Res-always) is required.
@@ -17445,6 +17665,14 @@ The following are under consideration but not yet in the rules below, and may be
 * ???
 
 An implementation of this profile shall recognize the following patterns in source code as non-conforming and issue a diagnostic.
+
+Bounds safety profile summary:
+
+* [Bounds.1: Don't use pointer arithmetic. Use `span` instead](#Pro-bounds-arithmetic)
+* [Bounds.2: Only index into arrays using constant expressions](#Pro-bounds-arrayindex)
+* [Bounds.3: No array-to-pointer decay](#Pro-bounds-decay)
+* [Bounds.4: Don't use standard library functions and types that are not bounds-checked](#Pro-bounds-stdlib)
+
 
 ### <a name="Pro-bounds-arithmetic"></a>Bounds.1: Don't use pointer arithmetic. Use `span` instead.
 
@@ -17678,7 +17906,7 @@ If code is using an unmodified standard library, then there are still workaround
 
 ## <a name="SS-lifetime"></a>Pro.lifetime: Lifetime safety profile
 
-???
+See /docs folder for the initial design. The formal rules are in progress (as of March 2017).
 
 # <a name="S-gsl"></a>GSL: Guideline support library
 
@@ -17712,7 +17940,7 @@ These types allow the user to distinguish between owning and non-owning pointers
 
 These "views" are never owners.
 
-References are never owners.
+References are never owners. Note: References have many opportunities to outlive the objects they refer to (returning a local variable by reference, holding a reference to an element of a vector and doing `push_back`, binding to `std::max(x,y+1)`, etc. The Lifetime safety profile aims to address those things, but even so `owner<T&>` does not make sense and is discouraged.
 
 The names are mostly ISO standard-library style (lower case and underscore):
 
@@ -17723,7 +17951,6 @@ The "raw-pointer" notation (e.g. `int*`) is assumed to have its most common mean
 Owners should be converted to resource handles (e.g., `unique_ptr` or `vector<T>`) or marked `owner<T*>`.
 
 * `owner<T*>`   // a `T*` that owns the object pointed/referred to; may be `nullptr`.
-* `owner<T&>`   // a `T&` that owns the object pointed/referred to.
 
 `owner` is used to mark owning pointers in code that cannot be upgraded to use proper resource handles.
 Reasons for that include:
@@ -19216,6 +19443,7 @@ A relatively informal definition of terms used in the guidelines
 This is our to-do list.
 Eventually, the entries will become rules or parts of rules.
 Alternatively, we will decide that no change is needed and delete the entry.
+
 * No long-distance friendship
 * Should physical design (what's in a file) and large-scale design (libraries, groups of libraries) be addressed?
 * Namespaces
@@ -19234,7 +19462,6 @@ Alternatively, we will decide that no change is needed and delete the entry.
 * Never pass a pointer down the call stack
 * falling through a function bottom
 * Should there be guidelines to choose between polymorphisms? YES. classic (virtual functions, reference semantics) vs. Sean Parent style (value semantics, type-erased, kind of like `std::function`)  vs. CRTP/static? YES Perhaps even vs. tag dispatch?
-* Speaking of virtual functions, should non-virtual interface be promoted? YES. (public non-virtual `foo()` calling private/protected `do_foo()`)? Not a new thing, seeing as locales/streams use it, but it seems to be under-emphasized.
 * should virtual calls be banned from ctors/dtors in your guidelines? YES. A lot of people ban them, even though I think it's a big strength of C++ that they are ??? -preserving (D disappointed me so much when it went the Java way). WHAT WOULD BE A GOOD EXAMPLE?
 * Speaking of lambdas, what would weigh in on the decision between lambdas and (local?) classes in algorithm calls and other callback scenarios?
 * And speaking of `std::bind`, Stephen T. Lavavej criticizes it so much I'm starting to wonder if it is indeed going to fade away in future. Should lambdas be recommended instead?
