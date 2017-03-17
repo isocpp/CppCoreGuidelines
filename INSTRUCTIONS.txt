@@ -14,7 +14,7 @@ layout: default
    This escapes the Liquid Template tag which has format {{ liquid }} 
    If you're lucky enough to use vi, your command is: %s/{{/{{ "{{" }}/g
 
-7. git commit -a
+7. git commit -a -m "message"
 8. git push
 9. Refresh the http://isocpp.github.io/CppCoreGuidelines/ to verify that the
 build succeeded. If not, check your email! If the page fails to build, you'll 
