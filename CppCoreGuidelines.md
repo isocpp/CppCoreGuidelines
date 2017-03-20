@@ -4573,7 +4573,7 @@ If a destructor uses operations that may fail, it can catch exceptions and in so
 
 ##### Enforcement
 
-(Simple) A destructor should be declared `noexcept`.
+(Simple) A destructor should be declared `noexcept` if it could throw.
 
 ### <a name="Rc-dtor-noexcept"></a>C.37: Make destructors `noexcept`
 
@@ -4583,11 +4583,11 @@ If a destructor uses operations that may fail, it can catch exceptions and in so
 
 ##### Note
 
-A destructor (either user-defined or compiler-generated) is implicitly declared `noexcept` (independently of what code is in its body) if all of the members of its class have `noexcept` destructors.
+A destructor (either user-defined or compiler-generated) is implicitly declared `noexcept` (independently of what code is in its body) if all of the members of its class have `noexcept` destructors. By explicitly marking destructors `noexcept`, an author guards against the destructor becoming implicitly `noexcept(false)` through the addition or modification of a class member.
 
 ##### Enforcement
 
-(Simple) A destructor should be declared `noexcept`.
+(Simple) A destructor should be declared `noexcept` if it could throw.
 
 ## <a name="SS-ctor"></a>C.ctor: Constructors
 
