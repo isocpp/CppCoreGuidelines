@@ -269,7 +269,7 @@ We do not limit our comment in the **Enforcement** sections to things we know ho
 
 Tools that implement these rules shall respect the following syntax to explicitly suppress a rule:
 
-    [[suppress(tag)]]
+    [[gsl::suppress(tag)]]
 
 where "tag" is the anchor name of the item where the Enforcement rule appears (e.g., for [C.134](#Rh-public) it is "Rh-public"), the
 name of a profile group-of-rules ("type", "bounds", or "lifetime"),
