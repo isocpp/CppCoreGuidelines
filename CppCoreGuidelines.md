@@ -1864,14 +1864,24 @@ It is usually best to avoid global (namespace scope) objects altogether.
 
 Having many arguments opens opportunities for confusion. Passing lots of arguments is often costly compared to alternatives.
 
+##### Discussion
+
+The two most common reasons why functions have too many parameters are:
+
+    1. *Missing an abstraction.* There is an abstraction missing, so that a compound value is being passed as individual elements instead of as a single object that enforces an invariant. This not only expands the parameter list, but it leads to errors because the component values are no longer protected by an enforced invariant.
+
+    2. *Violating "one function, one responsibility."* The function is trying to do more than one job and should probably be refactored.
+
 ##### Example
 
-The standard-library `merge()` is at the limit of what we can comfortably handle
+The standard-library `merge()` is at the limit of what we can comfortably handle:
 
     template<class InputIterator1, class InputIterator2, class OutputIterator, class Compare>
     OutputIterator merge(InputIterator1 first1, InputIterator1 last1,
                          InputIterator2 first2, InputIterator2 last2,
                          OutputIterator result, Compare comp);
+
+Note that this is because of problem 1 above -- missing abstraction. Instead of passing a range (abstraction), STL passed iterator pairs (unencapsulated component values).
 
 Here, we have four template arguments and six function arguments.
 To simplify the most frequent and simplest uses, the comparison argument can be defaulted to `<`:
@@ -1894,12 +1904,24 @@ Alternatively, we could use concepts (as defined by the ISO TS) to define the no
     Mergeable{In1 In2, Out}
     OutputIterator merge(In1 r1, In2 r2, Out result);
 
+##### Example
+
+The safety Profiles recommend replacing
+
+    void f(int* some_ints, int some_ints_length);  // BAD: C style, unsafe
+
+with
+
+    void f(gsl::span<int> some_ints);              // GOOD: safe, bounds-checked
+
+Here, using an abstraction has safety and robustness benefits, and naturally also reduces the number of parameters.
+
 ##### Note
 
-How many arguments are too many? Try to use less than Four arguments.
-There are functions that are best expressed with four individual arguments, but not many.
+How many parameters are too many? Try to use fewer than four (4) parameters.
+There are functions that are best expressed with four individual parameters, but not many.
 
-**Alternative**: Group arguments into meaningful objects and pass the objects (by value or by reference).
+**Alternative**: Use better abstraction: Group arguments into meaningful objects and pass the objects (by value or by reference).
 
 **Alternative**: Use default arguments or overloads to allow the most common forms of calls to be done with fewer arguments.
 
@@ -4551,7 +4573,7 @@ If a destructor uses operations that may fail, it can catch exceptions and in so
 
 ##### Enforcement
 
-(Simple) A destructor should be declared `noexcept`.
+(Simple) A destructor should be declared `noexcept` if it could throw.
 
 ### <a name="Rc-dtor-noexcept"></a>C.37: Make destructors `noexcept`
 
@@ -4561,11 +4583,11 @@ If a destructor uses operations that may fail, it can catch exceptions and in so
 
 ##### Note
 
-A destructor (either user-defined or compiler-generated) is implicitly declared `noexcept` (independently of what code is in its body) if all of the members of its class have `noexcept` destructors.
+A destructor (either user-defined or compiler-generated) is implicitly declared `noexcept` (independently of what code is in its body) if all of the members of its class have `noexcept` destructors. By explicitly marking destructors `noexcept`, an author guards against the destructor becoming implicitly `noexcept(false)` through the addition or modification of a class member.
 
 ##### Enforcement
 
-(Simple) A destructor should be declared `noexcept`.
+(Simple) A destructor should be declared `noexcept` if it could throw.
 
 ## <a name="SS-ctor"></a>C.ctor: Constructors
 
