@@ -19302,12 +19302,16 @@ When is a class a container? ???
 A relatively informal definition of terms used in the guidelines
 (based of the glossary in [Programming: Principles and Practice using C++](http://www.stroustrup.com/programming.html))
 
+More information on many topics about C++ can be found on the [Standard C++ Foundation](https://isocpp.org)'s site. 
+
+* *ABI* Application Binary Interface, a specification for a specific hardware platform combined with the operating system. Contrast with API.
 * *abstract class*: a class that cannot be directly used to create objects; often used to define an interface to derived classes.
   A class is made abstract by having a pure virtual function or only protected constructors.
 * *abstraction*: a description of something that selectively and deliberately ignores (hides) details (e.g., implementation details); selective ignorance.
 * *address*: a value that allows us to find an object in a computer's memory.
 * *algorithm*: a procedure or formula for solving a problem; a finite series of computational steps to produce a result.
 * *alias*: an alternative way of referring to an object; often a name, pointer, or reference.
+* *API* Application Programming Interface, a set of methods that form the communication between various software components. Contrast with ABI.
 * *application*: a program or a collection of programs that is considered an entity by its users.
 * *approximation*: something (e.g., a value or a design) that is close to the perfect or ideal (value or design).
   Often an approximation is a result of trade-offs among ideals.
@@ -19372,6 +19376,7 @@ A relatively informal definition of terms used in the guidelines
 * *invariant*: something that must be always true at a given point (or points) of a program; typically used to describe the state (set of values) of an object or the state of a loop before entry into the repeated statement.
 * *iteration*: the act of repeatedly executing a piece of code; see recursion.
 * *iterator*: an object that identifies an element of a sequence.
+* *ISO*, International Organization for Standardization. The C++ language is an ISO standard, ISO/IEC 14882. More information at [iso.org](iso.org).
 * *library*: a collection of types, functions, classes, etc. implementing a set of facilities (abstractions) meant to be potentially used as part of more that one program.
 * *lifetime*: the time from the initialization of an object until it becomes unusable (goes out of scope, is deleted, or the program terminates).
 * *linker*: a program that combines object code files and libraries into an executable program.
@@ -19422,6 +19427,7 @@ A relatively informal definition of terms used in the guidelines
 * *subtype*: derived type; a type that has all the properties of a type and possibly more.
 * *supertype*: base type; a type that has a subset of the properties of a type.
 * *system*: (1) a program or a set of programs for performing a task on a computer; (2) a shorthand for "operating system", that is, the fundamental execution environment and tools for a computer.
+* *TS* [Technical Specification](https://www.iso.org/deliverables-all.html?type=ts), A Technical Specification addresses work still under technical development, or where it is believed that there will be a future, but not immediate, possibility of agreement on an International Standard. A Technical Specification is published for immediate use, but it also provides a means to obtain feedback. The aim is that it will eventually be transformed and republished as an International Standard. 
 * *template*: a class or a function parameterized by one or more types or (compile-time) values; the basic C++ language construct supporting generic programming.
 * *testing*: a systematic search for errors in a program.
 * *trade-off*: the result of balancing several design and implementation criteria.
