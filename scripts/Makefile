@@ -79,8 +79,8 @@ check-badchars: $(SOURCEPATH) $(BUILD_DIR) Makefile
 # old file still might be around
 	@rm -f $(BUILD_DIR)/CppCoreGuidelines.md.badchars
 # print file, add line numbers, grep for bad chars
-	@cat ../$(SOURCEFILE) | nl -ba | perl -ne 'print if /’|‘|”|“|¸|–|…|¦/' > $(BUILD_DIR)/$(SOURCEFILE).badchars || true
-	@if [ -s $(BUILD_DIR)/CppCoreGuidelines.md.badchars ]; then echo 'Warning: Undesired chars (–’‘“”¸…¦) found, use straight quotes instead:'; cat $(BUILD_DIR)/CppCoreGuidelines.md.badchars; false; fi;
+	@cat ../$(SOURCEFILE) | nl -ba | perl -ne 'print if /’|‘|”|“|¸| |–|…|¦/' > $(BUILD_DIR)/$(SOURCEFILE).badchars || true
+	@if [ -s $(BUILD_DIR)/CppCoreGuidelines.md.badchars ]; then echo 'Warning: Undesired chars (–’‘“”¸…¦) or Unicode EN SPACE found, use markdown-compatible symbols instead:'; cat $(BUILD_DIR)/CppCoreGuidelines.md.badchars; false; fi;
 
 
 .PHONY: hunspell-check
