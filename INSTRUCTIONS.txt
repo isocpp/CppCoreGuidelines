@@ -13,6 +13,7 @@ layout: default
 6. Replace all instances of {{ with {{ "{{" }}
    This escapes the Liquid Template tag which has format {{ liquid }} 
    If you're lucky enough to use vi, your command is: %s/{{/{{ "{{" }}/g
+   Remember to save the file!
 
 7. git commit -a -m "message"
 8. git push
