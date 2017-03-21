@@ -8263,7 +8263,7 @@ If pointer semantics are required (e.g., because the return type needs to refer 
 
 * (Simple) Warn on `delete` of a raw pointer that is not an `owner<T>`.
 * (Moderate) Warn on failure to either `reset` or explicitly `delete` an `owner<T>` pointer on every code path.
-* (Simple) Warn if the return value of `new` or a function call with return value of pointer type is assigned to a raw pointer.
+* (Simple) Warn if the return value of `new` is assigned to a raw pointer.
 * (Simple) Warn if a function returns an object that was allocated within the function but has a move constructor.
   Suggest considering returning it by value instead.
 
