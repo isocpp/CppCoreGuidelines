@@ -15818,18 +15818,19 @@ Avoid code bloat.
 It could be a base class:
 
     struct Link_base {   // stable
-        Link* suc;
-        Link* pre;
+        Link* suc = nullptr;
+        Link* pre = nullptr;
     };
 
     template<typename T>   // templated wrapper to add type safety
     struct Link : Link_base {
+        explicit Link(const T& v) : val(v) { }
         T val;
     };
 
     struct List_base {
-        Link_base* first;   // first element (if any)
-        int sz;             // number of elements
+        Link_base* first = nullptr;   // first element (if any)
+        int sz = 0;                   // number of elements
         void add_front(Link_base* p);
         // ...
     };
@@ -15838,7 +15839,7 @@ It could be a base class:
     class List : List_base {
     public:
         void put_front(const T& e) { add_front(new Link<T>{e}); }   // implicit cast to Link_base
-        T& front() { static_cast<Link<T>*>(first).val; }   // explicit cast back to Link<T>
+        T& front() { static_cast<Link<T>*>(first)->val; }   // explicit cast back to Link<T>
         // ...
     };
 
