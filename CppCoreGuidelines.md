@@ -1,6 +1,7 @@
 ---
 layout:default
 ---
+
 # <a name="main"></a>C++ Core Guidelines
 
 March 27, 2017
@@ -12056,7 +12057,7 @@ This section focuses on relatively ad-hoc uses of multiple threads communicating
 Concurrency rule summary:
 
 * [CP.20: Use RAII, never plain `lock()`/`unlock()`](#Rconc-raii)
-* [CP.21: Use `std::lock()` to acquire multiple `mutex`es](#Rconc-lock)
+* [CP.21: Use `std::lock()` or `std::scoped_lock` to acquire multiple `mutex`es](#Rconc-lock)
 * [CP.22: Never call unknown code while holding a lock (e.g., a callback)](#Rconc-unknown)
 * [CP.23: Think of a joining `thread` as a scoped container](#Rconc-join)
 * [CP.24: Think of a detached `thread` as a global container](#Rconc-detach)
@@ -12111,11 +12112,11 @@ Sooner or later, someone will forget the `mtx.unlock()`, place a `return` in the
 Flag calls of member `lock()` and `unlock()`.  ???
 
 
-### <a name="Rconc-lock"></a>CP.21: Use `std::lock()` to acquire multiple `mutex`es
+### <a name="Rconc-lock"></a>CP.21: Use `std::lock()` or `std::scoped_lock` to acquire multiple `mutex`es
 
 ##### Reason
 
-To avoid deadlocks on multiple `mutex`s
+To avoid deadlocks on multiple `mutex`es.
 
 ##### Example
 
@@ -12132,14 +12133,22 @@ This is asking for deadlock:
 Instead, use `lock()`:
 
     // thread 1
-    lock_guard<mutex> lck1(m1, defer_lock);
-    lock_guard<mutex> lck2(m2, defer_lock);
     lock(lck1, lck2);
+    lock_guard<mutex> lck1(m1, adopt_lock);
+    lock_guard<mutex> lck2(m2, adopt_lock);
 
     // thread 2
-    lock_guard<mutex> lck2(m2, defer_lock);
-    lock_guard<mutex> lck1(m1, defer_lock);
     lock(lck2, lck1);
+    lock_guard<mutex> lck2(m2, adopt_lock);
+    lock_guard<mutex> lck1(m1, adopt_lock);
+
+or (better, but C++17 only):
+
+    // thread 1
+    scoped_lock<mutex, mutex> lck1(m1, m2);
+
+    // thread 2
+    scoped_lock<mutex, mutex> lck2(m2, m1);
 
 Here, the writers of `thread1` and `thread2` are still not agreeing on the order of the `mutex`es, but order no longer matters.
 
@@ -12148,9 +12157,9 @@ Here, the writers of `thread1` and `thread2` are still not agreeing on the order
 In real code, `mutex`es are rarely named to conveniently remind the programmer of an intended relation and intended order of acquisition.
 In real code, `mutex`es are not always conveniently acquired on consecutive lines.
 
-I'm really looking forward to be able to write plain
+In C++17 it's possible to write plain
 
-    lock_guard lck1(m1, defer_lock);
+    lock_guard lck1(m1, adopt_lock);
 
 and have the `mutex` type deduced.
 
@@ -12281,6 +12290,12 @@ By "OK" we mean that the object will be in scope ("live") for as long as a `thre
 By "bad" we mean that a `thread` may use a pointer after the pointed-to object is destroyed.
 The fact that `thread`s run concurrently doesn't affect the lifetime or ownership issues here;
 these `thread`s can be seen as just a function object called from `some_fct`.
+
+##### Note
+
+Even objects with static storage duration can be problematic if used from detached threads: if the
+thread continues until the end of the program, it might be running concurrently with the destruction
+of objects with static storage duration, and thus accesses to such objects might race.
 
 ##### Enforcement
 
@@ -12701,17 +12716,27 @@ Flag all unnamed `lock_guard`s and `unique_lock`s.
 
 
 
-### <a name="Rconc-mutex"></a>P.50: Define a `mutex` together with the data it guards
+### <a name="Rconc-mutex"></a>P.50: Define a `mutex` together with the data it guards. Use `synchronized_value<T>` where possible
 
 ##### Reason
 
-It should be obvious to a reader that the data is to be guarded and how.
+It should be obvious to a reader that the data is to be guarded and how. This decreases the chance of the wrong mutex being locked, or the mutex not being locked. 
+
+Using a `synchronized_value<T>` ensures that the data has a mutex, and the right mutex is locked when the data is accessed.
+See the [WG21 proposal](http://wg21.link/p0290)) to add `synchronized_value` to a future TS or revision of the C++ standard.
 
 ##### Example
 
     struct Record {
         std::mutex m;   // take this mutex before accessing other members
         // ...
+    };
+
+    class MyClass {
+        struct DataRecord {
+           // ...
+        };
+        synchronized_value<DataRecord> data; // Protect the data with a mutex
     };
 
 ##### Enforcement
