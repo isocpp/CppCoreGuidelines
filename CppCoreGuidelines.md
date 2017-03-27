@@ -1,10 +1,9 @@
 ---
-layout: default
+layout:default
 ---
-
 # <a name="main"></a>C++ Core Guidelines
 
-March 20, 2017
+March 27, 2017
 
 
 Editors:
@@ -8267,7 +8266,7 @@ If pointer semantics are required (e.g., because the return type needs to refer 
 
 * (Simple) Warn on `delete` of a raw pointer that is not an `owner<T>`.
 * (Moderate) Warn on failure to either `reset` or explicitly `delete` an `owner<T>` pointer on every code path.
-* (Simple) Warn if the return value of `new` or a function call with return value of pointer type is assigned to a raw pointer.
+* (Simple) Warn if the return value of `new` is assigned to a raw pointer.
 * (Simple) Warn if a function returns an object that was allocated within the function but has a move constructor.
   Suggest considering returning it by value instead.
 
@@ -8698,14 +8697,14 @@ Any type (including primary template or specialization) that overloads unary `*`
 ##### Example
 
     // use Boost's intrusive_ptr
-    #include<boost/intrusive_ptr.hpp>
+    #include <boost/intrusive_ptr.hpp>
     void f(boost::intrusive_ptr<widget> p)  // error under rule 'sharedptrparam'
     {
         p->foo();
     }
 
     // use Microsoft's CComPtr
-    #include<atlbase.h>
+    #include <atlbase.h>
     void f(CComPtr<widget> p)               // error under rule 'sharedptrparam'
     {
         p->foo();
@@ -10053,7 +10052,7 @@ Requires messy cast-and-macro-laden code to get working right.
 
 ##### Example
 
-    #include<cstdarg>
+    #include <cstdarg>
 
     // "severity" followed by a zero-terminated list of char*s; write the C-style strings to cerr
     void error(int severity ...)
@@ -10093,7 +10092,7 @@ This is basically the way `printf` is implemented.
 ##### Enforcement
 
 * Flag definitions of C-style variadic functions.
-* Flag `#include<cstdarg>` and `#include<stdarg.h>`
+* Flag `#include <cstdarg>` and `#include <stdarg.h>`
 
 ## ES.stmt: Statements
 
@@ -15822,8 +15821,8 @@ Avoid code bloat.
 It could be a base class:
 
     struct Link_base {   // stable
-        Link* suc;
-        Link* pre;
+        Link_base* suc;
+        Link_base* pre;
     };
 
     template<typename T>   // templated wrapper to add type safety
@@ -16418,7 +16417,7 @@ Your IDE (if you use one) may have strong opinions about suffices.
     int a;   // a definition
     void foo() { ++a; }
 
-`#include<foo.h>` twice in a program and you get a linker error for two one-definition-rule violations.
+`#include <foo.h>` twice in a program and you get a linker error for two one-definition-rule violations.
 
 ##### Enforcement
 
@@ -16440,11 +16439,11 @@ Including entities subject to the one-definition rule leads to linkage errors.
     }
 
     // file1.cpp:
-    #include<file.h>
+    #include <file.h>
     // ... more ...
 
      // file2.cpp:
-    #include<file.h>
+    #include <file.h>
     // ... more ...
 
 Linking `file1.cpp` and `file2.cpp` will give two linker errors.
@@ -16496,20 +16495,20 @@ Minimize context dependencies and increase readability.
 
 ##### Example
 
-    #include<vector>
-    #include<algorithm>
-    #include<string>
+    #include <vector>
+    #include <algorithm>
+    #include <string>
 
     // ... my code here ...
 
 ##### Example, bad
 
-    #include<vector>
+    #include <vector>
 
     // ... my code here ...
 
-    #include<algorithm>
-    #include<string>
+    #include <algorithm>
+    #include <string>
 
 ##### Note
 
@@ -16559,7 +16558,7 @@ The errors will not be caught until link time for a program calling `bar` or `fo
     int foobar(int);
 
     // foo.cpp:
-    #include<foo.h>
+    #include <foo.h>
 
     void foo(int) { /* ... */ }
     int bar(double) { /* ... */ }
@@ -17733,9 +17732,9 @@ Pointers should only refer to single objects, and pointer arithmetic is fragile 
     {
         if (a.length() < 2) return;
 
-        int n = *a++; // OK
+        int n = a[0]; // OK
 
-        span<int> q = a + 1; // OK
+        span<int> q = a.subspan(1); // OK 
 
         if (a.length() < 6) return;
 
@@ -17810,6 +17809,16 @@ Dynamic accesses into arrays are difficult for both tools and humans to validate
         span<int> av = arr;
         for (int i = 0; i < COUNT; ++i)
             av[i] = i;
+    }
+    
+    // ALTERNATIVE Aa: Use a span and range-for
+    void f1a()
+    {
+         int arr[COUNT];
+         span<int,COUNT> av = arr;
+         int i = 0;
+         for (auto& e : av)
+             e = i++;
     }
 
     // ALTERNATIVE B: Use at() for access
@@ -18386,7 +18395,7 @@ Too much space makes the text larger and distracts.
 
 ##### Example
 
-    #include<map>
+    #include <map>
 
     int main(int argc, char* argv[])
     {
