@@ -1,7 +1,9 @@
 '
 0xFF0000
 0b0101'0101
+10x
 '14
+20x
 2D
 2K
 2ndEdition
@@ -69,6 +71,7 @@ CComPtr
 cerr
 chrono
 cin
+Clang's
 class'
 clib
 Cline99
@@ -95,6 +98,7 @@ cpp
 cpp98
 CppCon
 CRTP
+cst
 cstdarg
 cstring
 cstylecast
@@ -273,6 +277,8 @@ Meyers15
 Meyers96
 Meyers97
 microbenchmarks
+mixin
+mixins
 modify1
 modify2
 moredata
@@ -492,6 +498,7 @@ toolchains
 TotallyOrdered
 TP
 tradeoff
+TSAN
 TSs
 tt
 typeid
@@ -504,6 +511,8 @@ undetached
 unenforceable
 uninit
 uniqueptrparam
+unittest
+unittests
 unnamed2
 use1
 users'
