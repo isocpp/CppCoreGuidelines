@@ -1,5 +1,5 @@
 ---
-layout:default
+layout: default
 ---
 
 # <a name="main"></a>C++ Core Guidelines
