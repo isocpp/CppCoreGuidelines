@@ -12718,7 +12718,8 @@ Flag all unnamed `lock_guard`s and `unique_lock`s.
 
 It should be obvious to a reader that the data is to be guarded and how. This decreases the chance of the wrong mutex being locked, or the mutex not being locked. 
 
-Using a `synchronized_value<T>` (see the [WG21 proposal](http://wg21.link/p0290)) ensures that the data has a mutex, and the right mutex is locked when the data is accessed.
+Using a `synchronized_value<T>` ensures that the data has a mutex, and the right mutex is locked when the data is accessed.
+See the [WG21 proposal](http://wg21.link/p0290)) to add `synchronized_value` to a future TS or revision of the C++ standard.
 
 ##### Example
 
