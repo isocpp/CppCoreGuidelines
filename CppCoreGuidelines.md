@@ -10089,7 +10089,7 @@ This is basically the way `printf` is implemented.
 ##### Enforcement
 
 * Flag definitions of C-style variadic functions.
-* Flag `#include <cstdarg>` and `#include<stdarg.h>`
+* Flag `#include <cstdarg>` and `#include <stdarg.h>`
 
 ## ES.stmt: Statements
 
