@@ -1868,9 +1868,13 @@ Having many arguments opens opportunities for confusion. Passing lots of argumen
 
 The two most common reasons why functions have too many parameters are:
 
-    1. *Missing an abstraction.* There is an abstraction missing, so that a compound value is being passed as individual elements instead of as a single object that enforces an invariant. This not only expands the parameter list, but it leads to errors because the component values are no longer protected by an enforced invariant.
+    1. *Missing an abstraction.* There is an abstraction missing, so that a compound value is being
+    passed as individual elements instead of as a single object that enforces an invariant.
+    This not only expands the parameter list, but it leads to errors because the component values
+    are no longer protected by an enforced invariant.
 
-    2. *Violating "one function, one responsibility."* The function is trying to do more than one job and should probably be refactored.
+    2. *Violating "one function, one responsibility."* The function is trying to do more than one
+    job and should probably be refactored.
 
 ##### Example
 
@@ -17755,7 +17759,7 @@ Pointers should only refer to single objects, and pointer arithmetic is fragile 
 
         int n = a[0]; // OK
 
-        span<int> q = a.subspan(1); // OK 
+        span<int> q = a.subspan(1); // OK
 
         if (a.length() < 6) return;
 
@@ -17836,7 +17840,7 @@ Dynamic accesses into arrays are difficult for both tools and humans to validate
     void f1a()
     {
          int arr[COUNT];
-         span<int,COUNT> av = arr;
+         span<int, COUNT> av = arr;
          int i = 0;
          for (auto& e : av)
              e = i++;
