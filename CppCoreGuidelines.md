@@ -6447,7 +6447,6 @@ To make this interface useful, we must provide its implementation classes (here,
 Now `Shape` is a poor example of a class with an implementation,
 but bear with us because this is just a simple example of a technique aimed at more complex hierarchies.
 
-
     class Impl::Circle : public Circle, public Impl::Shape {   // implementation
     public:
         // constructors, destructor
@@ -6696,6 +6695,13 @@ If the operations are virtual the use of inheritance is necessary, if not using 
 ##### Note
 
 This a relatively rare use because implementation can often be organized into a single-rooted hierarchy.
+
+##### Example
+
+Sometimes, an "implementation attribute" is more like a "mixin" that determine the behavior of an implementation and inject
+members to enable the implementation of the policies it requires. 
+For example, see `std::enable_shared_from_this`
+or various bases from boost.intrusive (e.g. `list_base_hook` or `intrusive_ref_counter`).
 
 ##### Enforcement
 
