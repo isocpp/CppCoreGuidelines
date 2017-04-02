@@ -6559,7 +6559,7 @@ Note that we can put default initializers on member variables: [C.49: Prefer ini
 
 ##### Note
 
-A getter or a setter that converts from an internal type to an interface type is not trivial (it provides a form of information hiding).
+The key to this rule is whether the semantics of the getter/setter are trivial. While it is not a complete definition of "trivial", consider whether there would be any difference beyond syntax if the getter/setter was a public data member instead. Examples of non-trival semantics would be: maintaining a class invariant or converting between an internal type and an interface type.
 
 ##### Enforcement
 
