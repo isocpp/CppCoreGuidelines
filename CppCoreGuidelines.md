@@ -9315,9 +9315,15 @@ or:
     // better: base * pow(FLT_RADIX, exponent); FLT_RADIX is usually 2
     double scalbn(double base, int exponent);
 
+##### Example
+
+    int a=7, b=9, c, d=10, e=3;
+
+In a long list of declarators is is easy to overlook an uninitializeed variable.
+
 ##### Enforcement
 
-Flag non-function arguments with multiple declarators involving declarator operators (e.g., `int* p, q;`)
+Flag variable and constant declarations with multiple declarators (e.g., `int* p, q;`)
 
 ### <a name="Res-auto"></a>ES.11: Use `auto` to avoid redundant repetition of type names
 
