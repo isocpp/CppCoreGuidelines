@@ -1,6 +1,6 @@
 # <a name="main"></a>C++ Core Guidelines
 
-April 2, 2017
+April 3, 2017
 
 
 Editors:
@@ -10890,7 +10890,7 @@ In any variant, we must guard against data races on the `cache` in multithreaded
 
 ##### Enforcement
 
-Flag `const_cast`s.
+Flag `const_cast`s. See also [Type.3: Don't use `const_cast` to cast away `const` (i.e., at all)](#Pro-type-constcast) for the related Profile.
 
 ### <a name="Res-range-checking"></a>ES.55: Avoid the need for range checking
 
@@ -17607,6 +17607,8 @@ Instead, prefer to put the common code in a common helper function -- and make i
 ##### Exception
 
 You may need to cast away `const` when calling `const`-incorrect functions. Prefer to wrap such functions in inline `const`-correct wrappers to encapsulate the cast in one place.
+
+##### See also: [ES.50, Don't cast away `const`](#Res-casts-const) for more discussion.
 
 ##### Enforcement
 
