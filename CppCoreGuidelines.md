@@ -17608,7 +17608,9 @@ Instead, prefer to put the common code in a common helper function -- and make i
 
 You may need to cast away `const` when calling `const`-incorrect functions. Prefer to wrap such functions in inline `const`-correct wrappers to encapsulate the cast in one place.
 
-##### See also: [ES.50, Don't cast away `const`](#Res-casts-const) for more discussion.
+##### See also: 
+
+[ES.50, Don't cast away `const`](#Res-casts-const) for more discussion.
 
 ##### Enforcement
 
