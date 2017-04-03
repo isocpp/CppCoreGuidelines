@@ -2899,22 +2899,22 @@ However, we prefer to be explicit, rather than subtle.
 
 ##### Note
 
-In many cases, it may be useful to return a specific, user-defined "Value or error" type.
+In many cases, it may be useful to return a specific, user-defined type.
 For example:
 
     struct Distance {
         int value;
-        int unit = 1;   // 1 mens meters
+        int unit = 1;   // 1 means meters
     };
 
-    Distance d1 = measure(obj1);    // access d1.value and d1.unit
-    auto d2 = measure(obj2);        // access d2.value and d2.unit
+    Distance d1 = measure(obj1);        // access d1.value and d1.unit
+    auto d2 = measure(obj2);            // access d2.value and d2.unit
     auto [value, unit] = measure(obj3);   // access value and unit; somewhat redundant to people who know measure()
-    auto [x,y] = measure(obj4);     // don't; it's likely to be confusiong
+    auto [x,y] = measure(obj4);         // don't; it's likely to be confusing
 
 The overly-generic `pair` and `tuple` should be used only when the value returned represents to independent entities rather than an abstraction.
 
-type along the lines of `variant<T, error_code>`, rather than using the generic `tuple`.
+Another example, use a specific type along the lines of `variant<T, error_code>`, rather than using the generic `tuple`.
 
 ##### Enforcement
 
