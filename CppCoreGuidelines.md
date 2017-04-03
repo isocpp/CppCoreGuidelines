@@ -1,6 +1,6 @@
 # <a name="main"></a>C++ Core Guidelines
 
-March 27, 2017
+April 2, 2017
 
 
 Editors:
@@ -2902,7 +2902,15 @@ However, we prefer to be explicit, rather than subtle.
 In many cases, it may be useful to return a specific, user-defined "Value or error" type.
 For example:
 
-    struct
+    struct Distance {
+        int value;
+        int unit = 1;   // 1 mens meters
+    };
+
+    Distance d1 = measure(obj1);    // access d1.value and d1.unit
+    auto d2 = measure(obj2);        // access d2.value and d2.unit
+    auto [value, unit] = measure(obj3);   // access value and unit; somewhat redundant to people who know measure()
+    auto [x,y] = measure(obj4);     // don't; it's likely to be confusiong
 
 The overly-generic `pair` and `tuple` should be used only when the value returned represents to independent entities rather than an abstraction.
 
