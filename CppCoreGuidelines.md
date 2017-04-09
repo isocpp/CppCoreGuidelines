@@ -8964,9 +8964,9 @@ Statement rules:
 * [ES.74: Prefer to declare a loop variable in the initializer part of a `for`-statement](#Res-for-init)
 * [ES.75: Avoid `do`-statements](#Res-do)
 * [ES.76: Avoid `goto`](#Res-goto)
-* [ES.77: ??? `continue`](#Res-continue)
+* [ES.77: Minimize the use of 'break' and `continue` in loops](#Res-continue)
 * [ES.78: Always end a non-empty `case` with a `break`](#Res-break)
-* [ES.79: ??? `default`](#Res-default)
+* [ES.79: Use `default` to handle common cases (only)](#Res-default)
 * [ES.85: Make empty statements visible](#Res-empty)
 * [ES.86: Avoid modifying loop control variables inside the body of raw for-loops](#Res-loop-counter)
 
@@ -10264,7 +10264,7 @@ Better
 
 ##### Enforcement
 
-Flag actions in `for`-initializesr and `for`-increments that do not relate to the `for`-condition.
+Flag actions in `for`-initializers and `for`-increments that do not relate to the `for`-condition.
 
 ### <a name="Res-for-init"></a>ES.74: Prefer to declare a loop variable in the initializer part of a `for`-statement
 
@@ -10333,9 +10333,8 @@ Readability, avoidance of errors. There are better control structures for humans
 
 ##### Exception
 
-Breaking out of a nested loop. In that case, always jump forwards.
-
-##### Example
+Breaking out of a nested loop.
+In that case, always jump forwards.
 
     for (int i = 0; i<imax; ++i)
         for (int j = 0; j<jmax; ++j ) {
@@ -10345,7 +10344,7 @@ Breaking out of a nested loop. In that case, always jump forwards.
     finished:
     // ...
 
-##### Example
+##### Example, bad
 
 There is a fair amount of use of the C goto-exit idiom:
 
@@ -10369,15 +10368,32 @@ consider `gsl::finally()` as a cleaner and more reliable alternative to `goto ex
 
 * Flag `goto`. Better still flag all `goto`s that do not jump from a nested loop to the statement immediately after a nest of loops.
 
-### <a name="Res-continue"></a>ES.77: ??? `continue`
+### <a name="Res-continue"></a>ES.77: Minimize the use of 'break' and `continue` in loops
 
 ##### Reason
 
- ???
+ In a non-trivial loop body, it is easy to overlook a `break` or a `continue`.
+ A `break` in a loop has a dramatically different meaning than a `break` in a `switch`-statement
+ (and you can have `switch`-statement in a loop and a loop in a `switch`-case).
 
 ##### Example
 
     ???
+
+##### Alternative
+
+Often, a loop that requires a `break` is a god candidate for a function (algorithm), in which case the `break` becomes a `return`.
+
+    ???
+
+Often. a loop that that uses `continue` can equivalently and as clearly be expressed by an `if`-statement. 
+
+    ???
+
+##### Note
+
+If you really need to break out a loop, a `break` is typically better than alternatives such as [modifying the loop variable](#Res-loop-counter) or a [`goto`](#Res-goto):
+
 
 ##### Enforcement
 
@@ -10419,7 +10435,20 @@ It is easy to overlook the fallthrough. Be explicit:
         break;
     }
 
-There is a proposal for a `[[fallthrough]]` annotation.
+In C++17, use a `[[fallthrough]]` annotation:
+
+    switch (eventType)
+    {
+    case Information:
+        update_status_bar();
+        break;
+    case Warning:
+        write_event_log();
+        [[fallthrough]]         // C++17
+    case Error:
+        display_error_window(); // Bad
+        break;
+    }
 
 ##### Note
 
@@ -10437,19 +10466,78 @@ Multiple case labels of a single statement is OK:
 
 Flag all fallthroughs from non-empty `case`s.
 
-### <a name="Res-default"></a>ES.79: ??? `default`
+### <a name="Res-default"></a>ES.79: Use `default` to handle common cases (only)
 
 ##### Reason
 
- ???
+ Code clarity.
+ Improved opportunities for error detection.
 
 ##### Example
 
-    ???
+    enum E { a, b, c , d };
+
+    void f1(E x)
+    {
+        switch (x) {
+        case a:
+            do_something();
+            break;
+        case b:
+            do_something_else();
+            break;
+        default:
+            take_the default_action();
+            break;
+        }
+    }
+
+Here it is clear that there is a default action and that cases `a` and `b` are special.
+
+##### Example
+
+But what if there is no default action and you mean to handle only specific cases?
+In that case, have an empty default or else it is impossible to know if you meant to handle all cases:
+
+    void f2(E x)
+    {
+        switch (x) {
+        case a:
+            do_something();
+            break;
+        case b:
+            do_something_else();
+            break;
+        default:
+            // do nothing for the rest of the cases
+            break;
+        }
+    }
+
+If you leave out the `default`, a maintainer and or a compiler may reasonably assume that you intended to handle all cases:
+
+    void f2(E x)
+    {
+        switch (x) {
+        case a:
+            do_something();
+            break;
+        case b:
+        case c:
+            do_something_else();
+            break;
+        }
+    }
+
+Did you forget case `d` or deliberately leave it out?
+Forgetting a case typically happens when a case is added to an enumeration and the person doing so fails to add it to every
+switch over the enumerators.
 
 ##### Enforcement
 
-???
+Flag `switch`-statements over an enumeration that don't handle all enumerators and do not have a `default`.
+This may yield too many false positives in some code bases; if so, flag only `switch`es that handle most but not all cases
+(that was the strategy of the very first C++ compiler).
 
 ### <a name="Res-empty"></a>ES.85: Make empty statements visible
 
@@ -10541,6 +10629,12 @@ Some of these expressions are unconditionally bad (e.g., they rely on undefined 
 
 ##### Note
 
+C++17 tightens up the rules for the order of evaluation
+(left-to-right except right-to-left in assignments, and the order of evaluation of function arguments is unspecified; [see ES.43](#Res-order)),
+but that doesn't change the fact that complicated expressions are potentially confusing.
+
+##### Note
+
 A programmer should know and use the basic rules for expressions.
 
 ##### Example
@@ -10624,19 +10718,18 @@ We need a heuristic limiting the complexity of pointer arithmetic statement.
 You have no idea what such code does. Portability.
 Even if it does something sensible for you, it may do something different on another compiler (e.g., the next release of your compiler) or with a different optimizer setting.
 
+##### Note
+
+C++17 tightens up the rules for the order of evaluation:
+left-to-right except right-to-left in assignments, and the order of evaluation of function arguments is unspecified.
+
+However, remember that your code may be compiled with a pre-C++17 compiler (e.g., through cut-and-paste) so don't be too clever.
+
 ##### Example
 
     v[i] = ++i;   //  the result is undefined
 
 A good rule of thumb is that you should not read a value twice in an expression where you write to it.
-
-##### Example
-
-    ???
-
-##### Note
-
-What is safe?
 
 ##### Enforcement
 
@@ -10647,6 +10740,10 @@ Can be detected by a good analyzer.
 ##### Reason
 
 Because that order is unspecified.
+
+##### Note
+
+C++17 tightens up the rules for the order of evaluation, but the order of evaluation of function arguments is still unspecified.
 
 ##### Example
 
