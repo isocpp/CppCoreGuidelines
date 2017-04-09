@@ -9304,6 +9304,13 @@ comment.
 
 A function declaration can contain several function argument declarations.
 
+##### Exception
+
+A structured binding (C++17) is specifically designed to introduce several variables:
+
+    auto [iter,inserted] = m.insert_or_assign(k,val);
+    if (inserted) { /* new entry was inserted */ }
+
 ##### Example
 
     template <class InputIterator, class Predicate>
@@ -9333,7 +9340,7 @@ or:
 
     int a=7, b=9, c, d=10, e=3;
 
-In a long list of declarators is is easy to overlook an uninitializeed variable.
+In a long list of declarators is is easy to overlook an uninitialized variable.
 
 ##### Enforcement
 
@@ -9379,6 +9386,10 @@ When concepts become available, we can (and should) be more specific about the t
 
     // ...
     ForwardIterator p = algo(x, y, z);
+
+##### Example (C++17)
+    
+    auto [ quotient,remainder ] = div(123456,73);   // break out the members of the div_t result
 
 ##### Enforcement
 
@@ -9968,12 +9979,14 @@ If at all possible, reduce the conditions to a simple set of alternatives (e.g.,
 
 ##### Example
 
-    owner<istream&> in = [&]{
+    bool owned = false;
+    owner<istream*> inp = [&]{
         switch (source) {
-        case default:       owned = false; return cin;
-        case command_line:  owned = true;  return *new istringstream{argv[2]};
-        case file:          owned = true;  return *new ifstream{argv[2]};
+        case default:       owned = false; return &cin;
+        case command_line:  owned = true;  return new istringstream{argv[2]};
+        case file:          owned = true;  return new ifstream{argv[2]};
     }();
+    istream& in = *inp;
 
 ##### Enforcement
 
@@ -10231,15 +10244,27 @@ Readability: the complete logic of the loop is visible "up front". The scope of 
 
 ##### Reason
 
- ???
+Readability.
 
 ##### Example
 
-    ???
+    int events = 0;
+    for (; wait_for_event(); ++events) {  // bad, confusing
+        // ...
+    }
+
+The "event loop" is misleading because the `events` counter has nothing to do with the loop cindition (`wait_for_1vent()`).
+Better
+
+    int events = 0;
+    while (wait_for_event()) {      // better
+        ++events;
+        // ...
+    }
 
 ##### Enforcement
 
-???
+Flag actions in `for`-initializesr and `for`-increments that do not relate to the `for`-condition.
 
 ### <a name="Res-for-init"></a>ES.74: Prefer to declare a loop variable in the initializer part of a `for`-statement
 
@@ -10264,6 +10289,12 @@ Avoid using the loop variable for other purposes after the loop.
 
 **See also**: [Don't use a variable for two unrelated purposes](#Res-recycle)
 
+##### Example
+
+    for (string s; cin>>s; ) {
+        cout << s << '\n';
+    }
+
 ##### Enforcement
 
 Warn when a variable modified inside the `for`-statement is declared outside the loop and not being used outside the loop.
@@ -10276,7 +10307,7 @@ is only accessible in the loop body unblocks optimizations such as hoisting, str
 ##### Reason
 
 Readability, avoidance of errors.
-The termination condition is at the end (where it can be overlooked) and the condition is not checked the first time through. ???
+The termination condition is at the end (where it can be overlooked) and the condition is not checked the first time through.
 
 ##### Example
 
@@ -10286,9 +10317,13 @@ The termination condition is at the end (where it can be overlooked) and the con
         // ...
     } while (x < 0);
 
+##### Note
+
+Yes, there are genuine examples where a `do`-statement is a clear statement of a solution, but also many bugs.
+
 ##### Enforcement
 
-???
+Flag `do`-statements.
 
 ### <a name="Res-goto"></a>ES.76: Avoid `goto`
 
@@ -10302,7 +10337,13 @@ Breaking out of a nested loop. In that case, always jump forwards.
 
 ##### Example
 
-    ???
+    for (int i = 0; i<imax; ++i)
+        for (int j = 0; j<jmax; ++j ) {
+            if (a[i][j]>elem_max) goto finished;
+            // ...
+        }
+    finished:
+    // ...
 
 ##### Example
 
@@ -10319,7 +10360,10 @@ There is a fair amount of use of the C goto-exit idiom:
         ... common cleanup code ...
     }
 
-This is an ad-hoc simulation of destructors. Declare your resources with handles with destructors that clean up.
+This is an ad-hoc simulation of destructors.
+Declare your resources with handles with destructors that clean up.
+If for some reason you cannot handle all cleanup with destructors for the variables used,
+consider `gsl::finally()` as a cleaner and more reliable alternative to `goto exit`
 
 ##### Enforcement
 
