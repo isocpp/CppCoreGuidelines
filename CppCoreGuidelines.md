@@ -2095,7 +2095,7 @@ Other function rules:
 
 * [F.50: Use a lambda when a function won't do (to capture local variables, or to write a local function)](#Rf-capture-vs-overload)
 * [F.51: Where there is a choice, prefer default arguments over overloading](#Rf-default-args)
-* [F.52: Prefer capturing by reference in lambdas that will be used locally, including passed to algorithms](#Rf-reference-capture)
+* [F.52: When a lambda stays in local scope, prefer capturing by reference, including passed to algorithms](#Rf-reference-capture)
 * [F.53: Avoid capturing by reference in lambdas that will be used nonlocally, including returned, stored on the heap, or passed to another thread](#Rf-value-capture)
 * [F.54: If you capture `this`, capture all variables explicitly (no default capture)](#Rf-this-capture)
 
@@ -3528,13 +3528,31 @@ There is not a choice when a set of functions are used to do a semantically equi
 
     ???
 
-### <a name="Rf-reference-capture"></a>F.52: Prefer capturing by reference in lambdas that will be used locally, including passed to algorithms
+### <a name="Rf-reference-capture"></a>F.52: When a lambda stays in local scope, prefer capturing by reference, including passed to algorithms
 
 ##### Reason
 
-For efficiency and correctness, you nearly always want to capture by reference when using the lambda locally. This includes when writing or calling parallel algorithms that are local because they join before returning.
+When a lambda is only used locally, capturing by reference is always more efficient.  This includes calling parallel algorithms because they join before returning.
 
-##### Example
+##### Example 1
+
+
+Here, a 'heavy' object (the y-values) is passed to an algorithm in a closure;
+
+	auto interpolated_xs(const std::vector<float>& ys, float start, const float increment, const size_t n)
+	{
+		std::vector<std::pair<float, float>> y_values;
+		std::generate_n(std::back_inserter(x_values), n, [&]
+		{
+			auto y1 = ys[std::floor(start)];
+			auto y2 = ys[std::ceil(start + epsilon)];
+			start += increment;
+			return (y1 + y2) / 2.;
+		});
+		return y_values;
+	}
+
+##### Example 2
 
 This is a simple three-stage parallel pipeline. Each `stage` object encapsulates a worker thread and a queue, has a `process` function to enqueue work, and in its destructor automatically blocks waiting for the queue to empty before ending the thread.
 
@@ -3549,6 +3567,10 @@ This is a simple three-stage parallel pipeline. Each `stage` object encapsulates
 ##### Enforcement
 
 ???
+
+##### Note
+
+References in lambdas that are not locally scoped cannot be guaranteed to stay valid.  This results in undefined behaviour.  See also [F.53](#Rf-value-capture).
 
 ### <a name="Rf-value-capture"></a>F.53: Avoid capturing by reference in lambdas that will be used nonlocally, including returned, stored on the heap, or passed to another thread
 
@@ -6032,7 +6054,7 @@ Function objects should be cheap to copy (and therefore [passed by value](#Rf-in
 Summary:
 
 * [F.50: Use a lambda when a function won't do (to capture local variables, or to write a local function)](#Rf-capture-vs-overload)
-* [F.52: Prefer capturing by reference in lambdas that will be used locally, including passed to algorithms](#Rf-reference-capture)
+* [F.52: When a lambda stays in local scope, prefer capturing by reference, including passed to algorithms](#Rf-reference-capture)
 * [F.53: Avoid capturing by reference in lambdas that will be used nonlocally, including returned, stored on the heap, or passed to another thread](#Rf-value-capture)
 * [ES.28: Use lambdas for complex initialization, especially of `const` variables](#Res-lambda-init)
 
