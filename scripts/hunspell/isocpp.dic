@@ -111,6 +111,7 @@ czstring
 d1
 D1
 d1's
+d2
 D2
 d2's
 dag
@@ -304,6 +305,7 @@ newdelete
 nh
 NL
 noexcept
+noname
 nondependent
 nonexported
 nongeneric

@@ -2909,8 +2909,9 @@ For example:
 
     Distance d1 = measure(obj1);        // access d1.value and d1.unit
     auto d2 = measure(obj2);            // access d2.value and d2.unit
-    auto [value, unit] = measure(obj3);   // access value and unit; somewhat redundant to people who know measure()
-    auto [x,y] = measure(obj4);         // don't; it's likely to be confusing
+    auto [value, unit] = measure(obj3); // access value and unit; somewhat redundant
+                                        // to people who know measure()
+    auto [x, y] = measure(obj4);        // don't; it's likely to be confusing
 
 The overly-generic `pair` and `tuple` should be used only when the value returned represents to independent entities rather than an abstraction.
 
@@ -6567,7 +6568,7 @@ Note that we can put default initializers on member variables: [C.49: Prefer ini
 
 ##### Note
 
-The key to this rule is whether the semantics of the getter/setter are trivial. While it is not a complete definition of "trivial", consider whether there would be any difference beyond syntax if the getter/setter was a public data member instead. Examples of non-trival semantics would be: maintaining a class invariant or converting between an internal type and an interface type.
+The key to this rule is whether the semantics of the getter/setter are trivial. While it is not a complete definition of "trivial", consider whether there would be any difference beyond syntax if the getter/setter was a public data member instead. Examples of non-trivial semantics would be: maintaining a class invariant or converting between an internal type and an interface type.
 
 ##### Enforcement
 
@@ -8964,7 +8965,7 @@ Statement rules:
 * [ES.74: Prefer to declare a loop variable in the initializer part of a `for`-statement](#Res-for-init)
 * [ES.75: Avoid `do`-statements](#Res-do)
 * [ES.76: Avoid `goto`](#Res-goto)
-* [ES.77: Minimize the use of 'break' and `continue` in loops](#Res-continue)
+* [ES.77: Minimize the use of `break` and `continue` in loops](#Res-continue)
 * [ES.78: Always end a non-empty `case` with a `break`](#Res-break)
 * [ES.79: Use `default` to handle common cases (only)](#Res-default)
 * [ES.84: Don't (try to) declare a local variable with no name](#Res-noname)
@@ -9309,7 +9310,7 @@ A function declaration can contain several function argument declarations.
 
 A structured binding (C++17) is specifically designed to introduce several variables:
 
-    auto [iter,inserted] = m.insert_or_assign(k,val);
+    auto [iter, inserted] = m.insert_or_assign(k, val);
     if (inserted) { /* new entry was inserted */ }
 
 ##### Example
@@ -9339,7 +9340,7 @@ or:
 
 ##### Example
 
-    int a=7, b=9, c, d=10, e=3;
+    int a = 7, b = 9, c, d = 10, e = 3;
 
 In a long list of declarators is is easy to overlook an uninitialized variable.
 
@@ -9390,7 +9391,7 @@ When concepts become available, we can (and should) be more specific about the t
 
 ##### Example (C++17)
     
-    auto [ quotient,remainder ] = div(123456,73);   // break out the members of the div_t result
+    auto [ quotient, remainder ] = div(123456, 73);   // break out the members of the div_t result
 
 ##### Enforcement
 
@@ -10255,7 +10256,7 @@ Readability.
         // ...
     }
 
-The "event loop" is misleading because the `events` counter has nothing to do with the loop cindition (`wait_for_1vent()`).
+The "event loop" is misleading because the `events` counter has nothing to do with the loop condition (`wait_for_event()`).
 Better
 
     int events = 0;
@@ -10293,7 +10294,7 @@ Avoid using the loop variable for other purposes after the loop.
 
 ##### Example
 
-    for (string s; cin>>s; ) {
+    for (string s; cin >> s; ) {
         cout << s << '\n';
     }
 
@@ -10338,9 +10339,9 @@ Readability, avoidance of errors. There are better control structures for humans
 Breaking out of a nested loop.
 In that case, always jump forwards.
 
-    for (int i = 0; i<imax; ++i)
-        for (int j = 0; j<jmax; ++j ) {
-            if (a[i][j]>elem_max) goto finished;
+    for (int i = 0; i < imax; ++i)
+        for (int j = 0; j < jmax; ++j) {
+            if (a[i][j] > elem_max) goto finished;
             // ...
         }
     finished:
@@ -10370,7 +10371,7 @@ consider `gsl::finally()` as a cleaner and more reliable alternative to `goto ex
 
 * Flag `goto`. Better still flag all `goto`s that do not jump from a nested loop to the statement immediately after a nest of loops.
 
-### <a name="Res-continue"></a>ES.77: Minimize the use of 'break' and `continue` in loops
+### <a name="Res-continue"></a>ES.77: Minimize the use of `break` and `continue` in loops
 
 ##### Reason
 
@@ -10548,7 +10549,7 @@ This may yield too many false positives in some code bases; if so, flag only `sw
 
 There is no such thing.
 What looks to a human like a variable without a name is to the compiler a statement consisting of a temporary that immediately goes out of scope.
-To avoid unpleasent surprises.
+To avoid unpleasant surprises.
 
 ###### Example, bad
 
@@ -10898,9 +10899,9 @@ Casts are a well-known source of errors. Make some optimizations unreliable.
 ##### Example, bad
 
     double d = 2;
-	auto p = (long*)&d;
-	auto q = (long long*)&d;
-	cout << d << ' ' << *p << ' ' << *q << '\n';
+    auto p = (long*)&d;
+    auto q = (long long*)&d;
+    cout << d << ' ' << *p << ' ' << *q << '\n';
 
 What would you think this fragment prints? The result is at best implementation defined. I got
 
@@ -10908,8 +10909,8 @@ What would you think this fragment prints? The result is at best implementation 
 
 Adding 
 
-	*q = 666;
-	cout << d << ' ' << *p << ' ' << *q << '\n';
+    *q = 666;
+    cout << d << ' ' << *p << ' ' << *q << '\n';
 
 I got 
 
@@ -16841,7 +16842,7 @@ The argument-type error for `bar` cannot be caught until link time because of th
 
     // ...
 
-Here (obviously), the standard library is used pervasively and apparantly no other library is used, so requiring `std::` everywhere
+Here (obviously), the standard library is used pervasively and apparently no other library is used, so requiring `std::` everywhere
 could be distracting.
 
 ##### Example
@@ -16874,7 +16875,7 @@ and M functions each containing a `using namespace X`with N lines of code in tot
 
 ##### Enforcement
 
-Flag multiple `using namespace` directives for different namespaces in a single sourcefile.
+Flag multiple `using namespace` directives for different namespaces in a single source file.
 
 ### <a name="Rs-using-directive"></a>SF.7: Don't write `using namespace` in a header file
 
