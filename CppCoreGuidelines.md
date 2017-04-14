@@ -3537,20 +3537,13 @@ When a lambda is only used locally, capturing large(ish) objects by reference is
 ##### Example 1
 
 
-Here, a 'heavy' object (the y-values) is passed to an algorithm in a closure;
+Here, a 'heavy' object (a network message) is passed to an algorithm in a closure;
 
-    auto interpolated_xs(const std::vector<float>& ys, float start, const float increment, const size_t n)
+    std::for_each(begin(sockets), end(sockets), [&message](auto &&socket)
     {
-        std::vector<std::pair<float, float>> y_values;
-        std::generate_n(std::back_inserter(x_values), n, [&]
-        {
-            auto y1 = ys[std::floor(start)];
-            auto y2 = ys[std::ceil(start + epsilon)];
-            start += increment;
-            return (y1 + y2) / 2.;
-        });
-        return y_values;
-    }
+        socket.send(message);
+    });
+
 
 ##### Example 2
 
