@@ -3539,18 +3539,18 @@ When a lambda is only used locally, capturing large(ish) objects by reference is
 
 Here, a 'heavy' object (the y-values) is passed to an algorithm in a closure;
 
-	auto interpolated_xs(const std::vector<float>& ys, float start, const float increment, const size_t n)
-	{
-		std::vector<std::pair<float, float>> y_values;
-		std::generate_n(std::back_inserter(x_values), n, [&]
-		{
-			auto y1 = ys[std::floor(start)];
-			auto y2 = ys[std::ceil(start + epsilon)];
-			start += increment;
-			return (y1 + y2) / 2.;
-		});
-		return y_values;
-	}
+    auto interpolated_xs(const std::vector<float>& ys, float start, const float increment, const size_t n)
+    {
+        std::vector<std::pair<float, float>> y_values;
+        std::generate_n(std::back_inserter(x_values), n, [&]
+        {
+            auto y1 = ys[std::floor(start)];
+            auto y2 = ys[std::ceil(start + epsilon)];
+            start += increment;
+            return (y1 + y2) / 2.;
+        });
+        return y_values;
+    }
 
 ##### Example 2
 
