@@ -13573,7 +13573,7 @@ That's even simpler and safer, and often more efficient.
 
 ##### Note
 
-If there is no obvious resource handle and for some reason defining a proper RAII objct/handle is infeasible,
+If there is no obvious resource handle and for some reason defining a proper RAII object/handle is infeasible,
 as a last resort, cleanup actions can be represented by a [`final_action`](#Re-finally) object.
 
 ##### Note
@@ -17518,7 +17518,18 @@ This leads to longer programs and more errors caused by uninitialized and wrongl
 
 ##### Example, bad
 
-    ???
+    void foo()
+    {
+        int i = 0; // declare i at top, holdover from C
+
+        // ... bunch of unrelated code
+
+        // BAD, i could be anything at this point
+        for (; i < COUNT; ++i)
+        {
+            // do something with i
+        }
+    }
 
 The larger the distance between the uninitialized variable and its use, the larger the chance of a bug.
 Fortunately, compilers catch many "used before set" errors.
