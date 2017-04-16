@@ -13573,7 +13573,7 @@ That's even simpler and safer, and often more efficient.
 
 ##### Note
 
-If there is no obvious resource handle and for some reason defining a proper RAII objct/handle is infeasible,
+If there is no obvious resource handle and for some reason defining a proper RAII object/handle is infeasible,
 as a last resort, cleanup actions can be represented by a [`final_action`](#Re-finally) object.
 
 ##### Note
