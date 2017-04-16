@@ -17248,7 +17248,18 @@ This leads to longer programs and more errors caused by uninitialized and wrongl
 
 ##### Example, bad
 
-    ???
+    void foo()
+    {
+        int i = 0; // declare i at top, holdover from C
+
+        // ... bunch of unrelated code
+
+        // BAD, i could be anything at this point
+        for (; i < COUNT; ++i)
+        {
+            // do something with i
+        }
+    }
 
 The larger the distance between the uninitialized variable and its use, the larger the chance of a bug.
 Fortunately, compilers catch many "used before set" errors.
