@@ -13512,7 +13512,9 @@ Flag classes with `private` state without a constructor (public, protected, or p
 
 ##### Reason
 
-Leaks are typically unacceptable. RAII ("Resource Acquisition Is Initialization") is the simplest, most systematic way of preventing leaks.
+Leaks are typically unacceptable.
+Manual resource release is error-prone.
+RAII ("Resource Acquisition Is Initialization") is the simplest, most systematic way of preventing leaks.
 
 ##### Example
 
@@ -13526,7 +13528,7 @@ Leaks are typically unacceptable. RAII ("Resource Acquisition Is Initialization"
 
 We could carefully release the resource before the throw:
 
-    void f2(int i)   // Clumsy: explicit release
+    void f2(int i)   // Clumsy and error-prone: explicit release
     {
         int* p = new int[12];
         // ...
@@ -13539,7 +13541,7 @@ We could carefully release the resource before the throw:
 
 This is verbose. In larger code with multiple possible `throw`s explicit releases become repetitive and error-prone.
 
-    void f3(int i)   // OK: resource management done by a handle
+    void f3(int i)   // OK: resource management done by a handle (but see below)
     {
         auto p = make_unique<int[]>(12);
         // ...
@@ -13549,7 +13551,7 @@ This is verbose. In larger code with multiple possible `throw`s explicit release
 
 Note that this works even when the `throw` is implicit because it happened in a called function:
 
-    void f4(int i)   // OK: resource management done by a handle
+    void f4(int i)   // OK: resource management done by a handle (but see below)
     {
         auto p = make_unique<int[]>(12);
         // ...
@@ -13567,9 +13569,12 @@ Unless you really need pointer semantics, use a local resource object:
         // ...
     }
 
+That's even simpler and safer, and often more efficient.
+
 ##### Note
 
-If there is no obvious resource handle, cleanup actions can be represented by a [`final_action` object](#Re-finally)
+If there is no obvious resource handle and for some reason defining a proper RAII objct/handle is infeasible,
+as a last resort, cleanup actions can be represented by a [`final_action`](#Re-finally) object.
 
 ##### Note
 
@@ -13934,6 +13939,7 @@ Better:
 
 `finally` is not as messy as `try`/`catch`, but it is still ad-hoc.
 Prefer [proper resource management objects](#Re-raii).
+Consider `finally` a last resort.
 
 ##### Note
 
