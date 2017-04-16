@@ -17894,9 +17894,31 @@ and see the contributor list on the github.
 
 # <a name="S-profile"></a>Pro: Profiles
 
-A "profile" is a set of deterministic and portably enforceable subset rules (i.e., restrictions) that are designed to achieve a specific guarantee. "Deterministic" means they require only local analysis and could be implemented in a compiler (though they don't need to be). "Portably enforceable" means they are like language rules, so programmers can count on enforcement tools giving the same answer for the same code.
+Ideally, we would follow all of the guidelines.
+That would give the cleanest, most regular, least error-prone, and often the fastest code.
+Unfortunately, that is usually impossible because we have to fit our code into large code bases and use existing libraries.
+Often, such code has been written over decades and does not follow these guidelines.
+We must aim for [gradual adoption](#S-modernizing).
 
-Code written to be warning-free using such a language profile is considered to conform to the profile. Conforming code is considered to be safe by construction with regard to the safety properties targeted by that profile. Conforming code will not be the root cause of errors for that property, although such errors may be introduced into a program by other code, libraries or the external environment. A profile may also introduce additional library types to ease conformance and encourage correct code.
+Whatever strategy for gradual adoption we adopt, we need to be able to apply sets of related guidelines to address some set
+of problems first and leave the rest until later.
+A similar idea of "related guidelines" become important when some, but not all, guidelines are considered relevant to a code base
+or if a set of specialized guidelines are to be applied for a specialized application area.
+We call such a set of related guidelines a "profile".
+We aim for such a set of guidelines to be coherent so that they together help us reach a specific goal, such a "absence of range errors"
+or "static type safety."
+Each profile is designed to eliminate a class of errors.
+Enforcement of "random" rules in isolation is more likely to be disruptive to a code base than delivering a definite improvement.
+
+A "profile" is a set of deterministic and portably enforceable subset rules (i.e., restrictions) that are designed to achieve a specific guarantee.
+"Deterministic" means they require only local analysis and could be implemented in a compiler (though they don't need to be).
+"Portably enforceable" means they are like language rules, so programmers can count on different enforcement tools giving the same answer for the same code.
+
+Code written to be warning-free using such a language profile is considered to conform to the profile.
+Conforming code is considered to be safe by construction with regard to the safety properties targeted by that profile.
+Conforming code will not be the root cause of errors for that property,
+although such errors may be introduced into a program by other code, libraries or the external environment.
+A profile may also introduce additional library types to ease conformance and encourage correct code.
 
 Profiles summary:
 
@@ -17909,9 +17931,9 @@ Candidates include:
 
 * narrowing arithmetic promotions/conversions (likely part of a separate safe-arithmetic profile)
 * arithmetic cast from negative floating point to unsigned integral type (ditto)
-* selected undefined behavior: ??? start with Gaby's UB list
-* selected unspecified behavior: ??? a portability concern?
-* `const` violations
+* selected undefined behavior: Start with Gaby Dos Reis's UB list developed for the WG21 study group
+* selected unspecified behavior: Addessing portability concerns.
+* `const` violations: Mostly done by compilers already, but we can catch inappropriate casting and underuse of `cost`.
 
 To suppress enforcement of a profile check, place a `suppress` annotation on a language contract. For example:
 
@@ -17923,7 +17945,7 @@ To suppress enforcement of a profile check, place a `suppress` annotation on a l
 Now `raw_find()` can scramble memory to its heart's content.
 Obviously, suppression should be very rare.
 
-## <a name="SS-type"></a>Pro.safety: Type safety profile
+## <a name="SS-type"></a>Pro.safety: Type-safety profile
 
 This profile makes it easier to construct code that uses types correctly and avoids inadvertent type punning.
 It does so by focusing on removing the primary sources of type violations, including unsafe uses of casts and unions.
@@ -17946,6 +17968,13 @@ Type safety profile summary:
 * [Type.6: Always initialize a member variable](#Pro-type-memberinit)
 * [Type.7: Avoid accessing members of raw unions. Prefer `variant` instead](#Pro-fct-style-cast)
 * [Type.8: Avoid reading from varargs or passing vararg arguments. Prefer variadic template parameters instead](#Pro-type-varargs)
+
+##### Impact
+
+With the type-safety profile you can trust that every operation is applied to a valid object.
+Exception may be thrown to indicate errors that cannot be detected statically (at compile time).
+Note that this type-safety can be complete only if we also have [Bounds safety](#SS-bounds) and [Lifetime safety](#SS-lifetime).
+Without those guarantees, a region of memory could be accesses independently which object, objects, or parts of objects are stored in it.
 
 ### <a name="Pro-type-reinterpretcast"></a>Type.1: Don't use `reinterpret_cast`.
 
