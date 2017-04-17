@@ -60,22 +60,22 @@ Supporting sections:
 * [Glossary](#S-glossary)
 * [To-do: Unclassified proto-rules](#S-unclassified)
 
-or look at a specific language feature
+or look at a specific language feature:
 
 * [assignment](#S-???)
 * [`class`](#S-class)
 * [constructor](#SS-ctor)
 * [derived `class`](#SS-hier)
-* destructor: [and constructors](#Rc-matched), [when needed?] (#Rc-dtor), [may not fail](#Rc-dtor-fail)
+* destructor: [and constructors](#Rc-matched), [when needed?](#Rc-dtor), [may not fail](#Rc-dtor-fail)
 * [exception](#S-errors)
-* [`for`](#S-???)
+* `for`: [range-for and for](#Res-for-range), [for and while](#Res-for-while) [for-initializer](#Res-for-init), [empty body](#Res-empty), [loop variable](#Res-loop-counter), [loop variable type ???](#Res-???)
 * [`inline`](#S-class)
 * [initialization](#S-???)
 * [lambda expression](#SS-lambdas)
 * [operator](#S-???)
 * [`public`, `private`, and `protected`](#S-???)
 * [`static_assert`](#S-???)
-* `struct`: is a class with members public by default, [use if no invariant](#Rc-struct), [no private members](#Rc-class)
+* `struct`: [for organizing data](#Rc-org), [use if no invariant](#Rc-struct), [no private members](#Rc-class)
 * [`template`](#S-???)
 * [`unsigned`](#S-???)
 * [`virtual`](#SS-hier)
