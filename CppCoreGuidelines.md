@@ -66,7 +66,7 @@ or look at a specific language feature
 * [`class`](#S-class)
 * [constructor](#SS-ctor)
 * [derived `class`](#SS-hier)
-* [destructor](#SS-dtor)
+* destructor: [and constructors](#Rc-matched), [when needed?] (#Rc-dtor), [may not fail](#Rc-dtor-fail)
 * [exception](#S-errors)
 * [`for`](#S-???)
 * [`inline`](#S-class)
@@ -75,7 +75,7 @@ or look at a specific language feature
 * [operator](#S-???)
 * [`public`, `private`, and `protected`](#S-???)
 * [`static_assert`](#S-???)
-* [`struct`](#S-class)
+* `struct`: is a class with members public by default, [use if no invariant](#Rc-struct), [no private members](#Rc-class)
 * [`template`](#S-???)
 * [`unsigned`](#S-???)
 * [`virtual`](#SS-hier)
@@ -3651,7 +3651,8 @@ Subsections:
 
 ##### Reason
 
-Ease of comprehension. If data is related (for fundamental reasons), that fact should be reflected in code.
+Ease of comprehension.
+If data is related (for fundamental reasons), that fact should be reflected in code.
 
 ##### Example
 
