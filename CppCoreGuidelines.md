@@ -17518,10 +17518,28 @@ This leads to longer programs and more errors caused by uninitialized and wrongl
 
 ##### Example, bad
 
-    ???
+   int use(int x)
+   {
+       int i;
+       char c;
+       double d;
+
+       // ... some stuff ...
+
+       if (x<i) {
+           // ...
+           i=  f(x,d);
+       }
+       if (i<x) {
+           // ...
+           i = g(x,c);
+       }
+       return i;
+   }
 
 The larger the distance between the uninitialized variable and its use, the larger the chance of a bug.
 Fortunately, compilers catch many "used before set" errors.
+Unfortunately, compilers cannot catch all such errors and unfortunately, the bugs aren't always as simple to spot as in this small example.
 
 
 ##### Alternative
