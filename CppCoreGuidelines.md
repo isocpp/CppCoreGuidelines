@@ -3532,12 +3532,12 @@ There is not a choice when a set of functions are used to do a semantically equi
 
 ##### Reason
 
-When a lambda is only used locally, capturing large(ish) objects by reference is always more efficient.  This includes calling parallel algorithms because they join before returning.
+When a lambda is only used locally, capturing large objects by reference is always more efficient.  This includes calling parallel algorithms because they join before returning.
 
 ##### Example 1
 
 
-Here, a 'heavy' object (a network message) is passed to an algorithm in a closure;
+Here, a large object (a network message) is passed to an algorithm in a closure;
 
     std::for_each(begin(sockets), end(sockets), [&message](auto &&socket)
     {
@@ -3563,7 +3563,7 @@ This is a simple three-stage parallel pipeline. Each `stage` object encapsulates
 
 ##### Note
 
-References in lambdas that are not locally scoped cannot be guaranteed to stay valid.  This results in undefined behaviour.  See also [F.53](#Rf-value-capture).
+References in lambdas that are not locally scoped cannot be guaranteed to stay valid.  This results in undefined behavior.  See also [F.53](#Rf-value-capture).
 
 ### <a name="Rf-value-capture"></a>F.53: Avoid capturing by reference in lambdas that will be used nonlocally, including returned, stored on the heap, or passed to another thread
 
