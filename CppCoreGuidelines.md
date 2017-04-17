@@ -60,25 +60,79 @@ Supporting sections:
 * [Glossary](#S-glossary)
 * [To-do: Unclassified proto-rules](#S-unclassified)
 
-You can look at a specific language feature:
+You can sample rules for a specific language feature:
 
-* assignment: [???](#S-???)
-* `class`: [???](#S-class)
-* constructor: [???](#SS-ctor)
-* derived `class`: [???](#SS-hier)
-* destructor: [and constructors](#Rc-matched), [when needed?](#Rc-dtor), [may not fail](#Rc-dtor-fail)
-* exception: [???](#S-errors)
-* `for`: [range-for and for](#Res-for-range) -- [for and while](#Res-for-while) -- [for-initializer](#Res-for-init) -- [empty body](#Res-empty) -- [loop variable](#Res-loop-counter) -- [loop variable type ???](#Res-???)
-* `inline`: [???](#S-class)
-* initialization: [???](#S-???)
-* lambda expression: [???](#SS-lambdas)
-* operator: [???](#S-???)
-* `public`, `private`, and `protected`: [???]](#S-???)
-* `static_assert`: [???](#S-???)
-* `struct`: [for organizing data](#Rc-org), [use if no invariant](#Rc-struct), [no private members](#Rc-class)
-* `template`: [???](#S-???)
-* `unsigned`: [???](#S-???)
-* `virtual`: [???](#SS-hier)
+* assignment:
+[and regular types](#Rc-regular) --
+[prefer initialization](#Rc-initialize) --
+[copy semantics](#Rc-copy-semantics) --
+[move semantics](#Rc-move-semantics) --
+[and other operations](Rc-matched) --
+[default](#Rc-eqdefault)
+* `class`:
+[data](#Rc-org) --
+[invariant](#Rc-struct) --
+[members](#Rc-member) --
+[helper functions](#Rc-helper) --
+[concrete types](#SS-concrete) --
+[constructors, assignments, and destructors](#S-ctor) --
+[hierarchies](#SS-hier) --
+[operators](#SS-overload) --
+* constructor:
+[invariant](#Rc-struct) --
+[establish invariant](#Rc-ctor) --
+[`throw` in constructor](#Rc-throw) --
+[default](#Rc-default0) --
+[not needed](#Rc-default) --
+[`explicit`](#Rc-explicit) --
+[delegating](#Rc-delegating) --
+[and `virtual`](#RC-ctor-virtual)
+* derived `class`:
+[when to use](#Rh-domain) --
+[as interface](#Rh-abstract) --
+[and destructors](#Rh-dtor) --
+[copy](#Rh-copy) --
+[getters and setters](#Rh-get) --
+[`protected`](#Rh-protected) --
+[multiple inheritance](#Rh-mi-interface) --
+[overloading member functions](#Rh-using) --
+[slicing](#Rc-copy-virtual) --
+[`dynamic_cast`](#Rh-dynamic_cast)
+* destructor:
+[and constructors](#Rc-matched) --
+[when needed?](#Rc-dtor) --
+[may not fail](#Rc-dtor-fail)
+* exception:
+[???](#S-errors)
+* `for`:
+[range-for and for](#Res-for-range) --
+[for and while](#Res-for-while) --
+[for-initializer](#Res-for-init) --
+[empty body](#Res-empty) --
+[loop variable](#Res-loop-counter) --
+[loop variable type ???](#Res-???)
+* `inline`:
+[???](#S-class)
+* initialization:
+[???](#S-???)
+* lambda expression:
+[???](#SS-lambdas)
+* operator:
+[???](#S-???)
+* `public`, `private`, and `protected`:
+[???]](#S-???)
+* `static_assert`:
+[???](#S-???)
+* `struct`:
+[for organizing data](#Rc-org) --
+[use if no invariant](#Rc-struct) --
+[no private members](#Rc-class)
+* `template`:
+[???](#S-???)
+* `unsigned`:
+[???](#S-???)
+* `virtual`:
+[???](#SS-hier)
 
 You can look at design concepts used to express the rules:
 
