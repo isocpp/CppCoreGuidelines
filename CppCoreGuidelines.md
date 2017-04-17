@@ -60,37 +60,38 @@ Supporting sections:
 * [Glossary](#S-glossary)
 * [To-do: Unclassified proto-rules](#S-unclassified)
 
-or look at a specific language feature:
+You can look at a specific language feature:
 
-* [assignment](#S-???)
-* [`class`](#S-class)
-* [constructor](#SS-ctor)
-* [derived `class`](#SS-hier)
+* assignment: [???](#S-???)
+* `class`: [???](#S-class)
+* constructor: [???](#SS-ctor)
+* derived `class`: [???](#SS-hier)
 * destructor: [and constructors](#Rc-matched), [when needed?](#Rc-dtor), [may not fail](#Rc-dtor-fail)
-* [exception](#S-errors)
-* `for`: [range-for and for](#Res-for-range), [for and while](#Res-for-while) [for-initializer](#Res-for-init), [empty body](#Res-empty), [loop variable](#Res-loop-counter), [loop variable type ???](#Res-???)
-* [`inline`](#S-class)
-* [initialization](#S-???)
-* [lambda expression](#SS-lambdas)
-* [operator](#S-???)
-* [`public`, `private`, and `protected`](#S-???)
-* [`static_assert`](#S-???)
+* exception: [???](#S-errors)
+* `for`: [range-for and for](#Res-for-range) -- [for and while](#Res-for-while) -- [for-initializer](#Res-for-init) -- [empty body](#Res-empty) -- [loop variable](#Res-loop-counter) -- [loop variable type ???](#Res-???)
+* `inline`: [???](#S-class)
+* initialization: [???](#S-???)
+* lambda expression: [???](#SS-lambdas)
+* operator: [???](#S-???)
+* `public`, `private`, and `protected`: [???]](#S-???)
+* `static_assert`: [???](#S-???)
 * `struct`: [for organizing data](#Rc-org), [use if no invariant](#Rc-struct), [no private members](#Rc-class)
-* [`template`](#S-???)
-* [`unsigned`](#S-???)
-* [`virtual`](#SS-hier)
+* `template`: [???](#S-???)
+* `unsigned`: [???](#S-???)
+* `virtual`: [???](#SS-hier)
 
-Definitions of terms used to express and discuss the rules, that are not language-technical, but refer to design and programming techniques
+You can look at design concepts used to express the rules:
 
-* error
-* exception
-* failure
-* invariant
-* leak
-* precondition
-* postcondition
-* resource
-* exception guarantee
+* assertion: ???
+* error: ???
+* exception: [exception guarantee[(???)]
+* failure: ???
+* invariant: ???
+* leak: ???
+* library: ???
+* precondition: ???
+* postcondition: ???
+* resource: ???
 
 # <a name="S-abstract"></a>Abstract
 
@@ -99,7 +100,7 @@ The aim of this document is to help people to use modern C++ effectively.
 By "modern C++" we mean C++11 and C++14 (and soon C++17).
 In other words, what would you like your code to look like in 5 years' time, given that you can start now? In 10 years' time?
 
-The guidelines are focused on relatively higher-level issues, such as interfaces, resource management, memory management, and concurrency.
+The guidelines are focused on relatively high-level issues, such as interfaces, resource management, memory management, and concurrency.
 Such rules affect application architecture and library design.
 Following the rules will lead to code that is statically type safe, has no resource leaks, and catches many more programming logic errors than is common in code today.
 And it will run fast -- you can afford to do things right.
