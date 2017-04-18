@@ -60,7 +60,7 @@ Supporting sections:
 * [Glossary](#S-glossary)
 * [To-do: Unclassified proto-rules](#S-unclassified)
 
-You can sample rules for a specific language feature:
+You can sample rules for specific language features:
 
 * assignment:
 [and regular types](#Rc-regular) --
@@ -77,7 +77,12 @@ You can sample rules for a specific language feature:
 [concrete types](#SS-concrete) --
 [constructors, assignments, and destructors](#S-ctor) --
 [hierarchies](#SS-hier) --
-[operators](#SS-overload) --
+[operators](#SS-overload)
+* `concept`:
+[rules](#SS-concepts) --
+[in generic programming](#Rt-raise) --
+[template arguments](#RT-concepts) --
+[semantics](#Rt-low)
 * constructor:
 [invariant](#Rc-struct) --
 [establish invariant](#Rc-ctor) --
@@ -93,7 +98,6 @@ You can sample rules for a specific language feature:
 [and destructors](#Rh-dtor) --
 [copy](#Rh-copy) --
 [getters and setters](#Rh-get) --
-[`protected`](#Rh-protected) --
 [multiple inheritance](#Rh-mi-interface) --
 [overloading member functions](#Rh-using) --
 [slicing](#Rc-copy-virtual) --
@@ -136,23 +140,34 @@ You can sample rules for a specific language feature:
 [class members](#Rc-initialize) --
 [factory functions](#Rc-factory)
 * lambda expression:
-[???](#SS-lambdas)
+[when to use](#SS-lambdas)
 * operator:
-[???](#S-???)
+[conventional](Ro-conventional) --
+[avoid conversion operators](#Ro-conventional) --
+[and lambdas](#Ro-lambda)
 * `public`, `private`, and `protected`:
-[???]](#S-???)
+[information hiding](#Rc-private) --
+[consistency](#Rh-public) --
+[`protected`](#Rh-protected)
 * `static_assert`:
-[???](#S-???)
+[compile-time checking](#Rp-compile-time) --
+[and concepts](#Rt-check-class)
 * `struct`:
 [for organizing data](#Rc-org) --
 [use if no invariant](#Rc-struct) --
 [no private members](#Rc-class)
 * `template`:
-[???](#S-???)
+[abstraction](#Rt-raise) --
+[containers](#Rt-cont) --
+[concepts](#Rt-concepts)
 * `unsigned`:
-[???](#S-???)
+[and signed](#Res-mix) --
+[bit manipulation](#Res-unsigned)
 * `virtual`:
-[???](#SS-hier)
+[interfaces](#Ri-abstract) --
+[not `virtual`](#Rc-concrete) --
+[destructor](Rc-dtor-virtual) --
+[never fail](#Rc-dtor-fail)
 
 You can look at design concepts used to express the rules:
 
