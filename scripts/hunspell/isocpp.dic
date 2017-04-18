@@ -396,6 +396,7 @@ RegularFunction
 reimplement
 reinterpretcast
 Reis
+Reis's
 Renum
 reseat
 reseating
@@ -415,6 +416,7 @@ Rper
 Rr
 RRconc
 Rsl
+Rstr
 RTTI
 rvalue
 rvalues
@@ -509,6 +511,7 @@ typesafe
 UB
 unaliased
 uncompromised
+underuse
 undetached
 unencapsulated
 unenforceable
@@ -519,6 +522,7 @@ unittests
 unnamed2
 use1
 users'
+UTF
 util
 v1
 va
@@ -543,6 +547,7 @@ vr
 vtbls
 vv
 w0
+wchar
 webby
 Webcolor
 webcolors

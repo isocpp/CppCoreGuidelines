@@ -107,7 +107,7 @@ You can sample rules for a specific language feature:
 [`throw`](Re-throw) --
 [for errors only](#Re-errors) --
 [`noexcept`](#Re-noexcept) --
-[mimize `try`](#Re-catch) --
+[minimize `try`](#Re-catch) --
 [what if no exceptions?](#Re-no-throw-codes)
 * `for`:
 [range-for and for](#Res-for-range) --
@@ -10481,11 +10481,11 @@ consider `gsl::finally()` as a cleaner and more reliable alternative to `goto ex
 
 ##### Alternative
 
-Often, a loop that requires a `break` is a god candidate for a function (algorithm), in which case the `break` becomes a `return`.
+Often, a loop that requires a `break` is a good candidate for a function (algorithm), in which case the `break` becomes a `return`.
 
     ???
 
-Often. a loop that that uses `continue` can equivalently and as clearly be expressed by an `if`-statement. 
+Often. a loop that uses `continue` can equivalently and as clearly be expressed by an `if`-statement.
 
     ???
 
@@ -10543,7 +10543,7 @@ In C++17, use a `[[fallthrough]]` annotation:
         break;
     case Warning:
         write_event_log();
-        [[fallthrough]]         // C++17
+        [[fallthrough]];        // C++17
     case Error:
         display_error_window(); // Bad
         break;
@@ -10586,7 +10586,7 @@ Flag all fallthroughs from non-empty `case`s.
             do_something_else();
             break;
         default:
-            take_the default_action();
+            take_the_default_action();
             break;
         }
     }
@@ -10613,7 +10613,7 @@ In that case, have an empty default or else it is impossible to know if you mean
         }
     }
 
-If you leave out the `default`, a maintainer and or a compiler may reasonably assume that you intended to handle all cases:
+If you leave out the `default`, a maintainer and/or a compiler may reasonably assume that you intended to handle all cases:
 
     void f2(E x)
     {
@@ -13668,7 +13668,7 @@ That's even simpler and safer, and often more efficient.
 
 ##### Note
 
-If there is no obvious resource handle and for some reason defining a proper RAII objct/handle is infeasible,
+If there is no obvious resource handle and for some reason defining a proper RAII object/handle is infeasible,
 as a last resort, cleanup actions can be represented by a [`final_action`](#Re-finally) object.
 
 ##### Note
@@ -17200,23 +17200,23 @@ If you have a good reason to use another container, use that instead. For exampl
 Text manipulation is a huge topic.
 `std::string` doesn't cover all of it.
 This section primarily tries to clarify `std::string`'s relation to `char*`, `zstring`, `string_view`, and `gsl::string_span`.
-The important issue of non-ASCII charactersets and encodings (e.g., `wchar_t`, unicode, and UTF-8) will be covered elswhere.
+The important issue of non-ASCII character sets and encodings (e.g., `wchar_t`, Unicode, and UTF-8) will be covered elsewhere.
 
 See also [regular expressions](#SS-regex).
 
-Here, we use "sequence of characters" or "string" to refer to a sequence of charaters meant to be read as text (somehow, eventually).
+Here, we use "sequence of characters" or "string" to refer to a sequence of characters meant to be read as text (somehow, eventually).
 We don't consider 
 
 String summary:
 
 * [SL.str.1: Use `std::string` to own character sequences](#Rstr-string)
 * [SL.str.2: Use `std::string_view` or `gsl::string_span` to refer to character sequences](#Rstr-view)
-* [SL.str.3: Use `zstring` or `czstring` to refere to a C-style, zero-terminated, sequence of characters](#Rstr-zstring)
+* [SL.str.3: Use `zstring` or `czstring` to refer to a C-style, zero-terminated, sequence of characters](#Rstr-zstring)
 * [SL.str.4: Use `char*` to refer to a single character](#Rstr-char*)
 * [Sl.str.5: Use `std::byte` to refer to byte values that do not necessarily represent characters](#Rstr-byte)
 
 * [Sl.str.10: Use `std::string` when you need to perform locale-sensitive sting operations](#Rstr-locale)
-* [Sl.str.11: Use `gsl::string_span` rather than `std::view` when you need to mutate a string](#Rstr-span)
+* [Sl.str.11: Use `gsl::string_span` rather than `std::string_view` when you need to mutate a string](#Rstr-span)
 * [Sl.str.12: Use the `s` suffix for string literals meant to be standard-library `string`s](#Rstr-s)
 
 See also
@@ -17236,12 +17236,12 @@ See also
     vector<string> read_until(const string& terminator)
     {
         vector<string> res;
-        for (string s; cin>>s && s!=terminator; ) // read a word
+        for (string s; cin >> s && s != terminator; ) // read a word
             res.push_back(s);
         return res;
     }
 
-Note how `>>` and `!=` are provided for `string` (as examples of a useful operations) and there there are no explicit
+Note how `>>` and `!=` are provided for `string` (as examples of useful operations) and there are no explicit
 allocations, deallocations, or range checks (`string` takes care of those).
 
 In C++17, we might use `string_view` as the argument, rather than `const string *` to allow more flexibility to callers:
@@ -17249,7 +17249,7 @@ In C++17, we might use `string_view` as the argument, rather than `const string 
     vector<string> read_until(string_view terminator)   // C++17
     {
         vector<string> res;
-        for (string s; cin>>s && s!=terminator; ) // read a word
+        for (string s; cin >> s && s != terminator; ) // read a word
             res.push_back(s);
         return res;
     }
@@ -17259,7 +17259,7 @@ The `gsl::string_span` is a current alternative offering most of the benefits of
     vector<string> read_until(string_span terminator)
     {
         vector<string> res;
-        for (string s; cin>>s && s!=terminator; ) // read a word
+        for (string s; cin >> s && s != terminator; ) // read a word
             res.push_back(s);
         return res;
     }
@@ -17274,9 +17274,9 @@ Don't use C-style strings for operations that require non-trivial memory managem
         int l1 = strlen(s1);
         int l2 = strlen(s2);
         char* p = (char*)malloc(l1+l2+2);
-        strcpy(p,s1,l1);
+        strcpy(p, s1, l1);
         p[l1] = '.';
-        strcpy(p+l1+1,s2,l2);
+        strcpy(p+l1+1, s2, l2);
         p[l1+l2+1] = 0;
         return res;
     }
@@ -17321,20 +17321,20 @@ those sequences are allocated and stored.
 
 ???
     
-### <a name="Rstr-zstring"></a>SL.str.3: Use `zstring` or `czstring` to refere to a C-style, zero-terminated, sequence of characters
+### <a name="Rstr-zstring"></a>SL.str.3: Use `zstring` or `czstring` to refer to a C-style, zero-terminated, sequence of characters
 
 ##### Reason
 
 Readability.
 Statement of intent.
-A plain `char*` can be a pointer to a single character, a pointer to an arry of characters, a pointer to a C-style (zero terminated) string, or event to a small integer.
+A plain `char*` can be a pointer to a single character, a pointer to an array of characters, a pointer to a C-style (zero terminated) string, or even to a small integer.
 Distinguishing these alternatives prevents misunderstandings and bugs.
 
 ##### Example
 
     void f1(const char* s); // s is probably a string
 
-All we know is that it is supposet ot bet the nullptr or point to at least one character
+All we know is that it is supposed to be the nullptr or point to at least one character
 
     void f1(zstring s);     // s is a C-style string or the nullptr
     void f1(czstring s);    // s is a C-style string that is not the nullptr
@@ -17346,14 +17346,14 @@ Don't convert a C-style string to `string` unless there is a reason to.
 
 ##### Note
 
-Linke any other "plain pointer", a `zstring` should not represent ownership.
+Like any other "plain pointer", a `zstring` should not represent ownership.
 
 ##### Note
 
 There are billions of lines of C++ "out there", most use `char*` and `const char*` without documenting intent.
-They are use in a wide varity of ways, including to represent ownership and as generic pointers to memory (instead of `void*`).
+They are used in a wide variety of ways, including to represent ownership and as generic pointers to memory (instead of `void*`).
 It is hard to separate these uses, so this guideline is hard to follow.
-This is one of the major sources of bugs in C and C++ programs, so it it worth while to follow this guideline wherever feasible..
+This is one of the major sources of bugs in C and C++ programs, so it is worthwhile to follow this guideline wherever feasible..
 
 ##### Enforcement
 
@@ -17395,8 +17395,8 @@ See [`zstring`](#Rstr-zstring), [`string`](#Rstr-string), and [`string_span`](#R
 
 ##### Reason
 
-Use of `char*` to represent a pinter to something that is not necessarily a character cause confusion
-and disable valuable optimizations.
+Use of `char*` to represent a pointer to something that is not necessarily a character causes confusion
+and disables valuable optimizations.
 
 ##### Example
 
@@ -17415,7 +17415,7 @@ C++17
 
 ##### Reason
 
-`std::string` support standard-library [`locale` facilities](#Rstr-locale)
+`std::string` supports standard-library [`locale` facilities](#Rstr-locale)
 
 ##### Example
 
@@ -17428,7 +17428,7 @@ C++17
 ##### Enforcement
 
 ???
-### <a name="Rstr-span"></a>Sl.str.11: Use `gsl::string_span` rather than `std::view` when you need to mutate a string
+### <a name="Rstr-span"></a>Sl.str.11: Use `gsl::string_span` rather than `std::string_view` when you need to mutate a string
 
 ##### Reason
 
@@ -17444,7 +17444,7 @@ C++17
 
 ##### Enforcement
 
-The compile will flag attempts to write to a `string_view`.
+The compiler will flag attempts to write to a `string_view`.
 
 ### <a name="Rstr-s"></a>Sl.str.12: Use the `s` suffix for string literals meant to be standard-library `string`s
 
@@ -17454,10 +17454,10 @@ Direct expression of an idea minimizes mistakes.
 
 ##### Example
 
-    auto pp1 = make_pair("Tokyo",9.00);         // {C-style string,double} intended?
-    pair<string,double> pp2 = {"Tokyo",9.00};   // a bit verbose
-    auto pp3 = make_pair("Tokyo"s,9.00);        // {std::string,double}    // C++17
-    pair pp4 = {"Tokyo"s,9.00};                 // {std::string,double}    // C++17
+    auto pp1 = make_pair("Tokyo", 9.00);         // {C-style string,double} intended?
+    pair<string, double> pp2 = {"Tokyo", 9.00};  // a bit verbose
+    auto pp3 = make_pair("Tokyo"s, 9.00);        // {std::string,double}    // C++17
+    pair pp4 = {"Tokyo"s, 9.00};                 // {std::string,double}    // C++17
 
 
 ##### Note
@@ -17621,13 +17621,13 @@ This leads to longer programs and more errors caused by uninitialized and wrongl
 
        // ... some stuff ...
 
-       if (x<i) {
+       if (x < i) {
            // ...
-           i=  f(x,d);
+           i = f(x, d);
        }
-       if (i<x) {
+       if (i < x) {
            // ...
-           i = g(x,c);
+           i = g(x, c);
        }
        return i;
    }
@@ -18015,10 +18015,10 @@ We must aim for [gradual adoption](#S-modernizing).
 
 Whatever strategy for gradual adoption we adopt, we need to be able to apply sets of related guidelines to address some set
 of problems first and leave the rest until later.
-A similar idea of "related guidelines" become important when some, but not all, guidelines are considered relevant to a code base
-or if a set of specialized guidelines are to be applied for a specialized application area.
+A similar idea of "related guidelines" becomes important when some, but not all, guidelines are considered relevant to a code base
+or if a set of specialized guidelines is to be applied for a specialized application area.
 We call such a set of related guidelines a "profile".
-We aim for such a set of guidelines to be coherent so that they together help us reach a specific goal, such a "absence of range errors"
+We aim for such a set of guidelines to be coherent so that they together help us reach a specific goal, such as "absence of range errors"
 or "static type safety."
 Each profile is designed to eliminate a class of errors.
 Enforcement of "random" rules in isolation is more likely to be disruptive to a code base than delivering a definite improvement.
@@ -18045,8 +18045,8 @@ Candidates include:
 * narrowing arithmetic promotions/conversions (likely part of a separate safe-arithmetic profile)
 * arithmetic cast from negative floating point to unsigned integral type (ditto)
 * selected undefined behavior: Start with Gaby Dos Reis's UB list developed for the WG21 study group
-* selected unspecified behavior: Addessing portability concerns.
-* `const` violations: Mostly done by compilers already, but we can catch inappropriate casting and underuse of `cost`.
+* selected unspecified behavior: Addressing portability concerns.
+* `const` violations: Mostly done by compilers already, but we can catch inappropriate casting and underuse of `const`.
 
 To suppress enforcement of a profile check, place a `suppress` annotation on a language contract. For example:
 
@@ -18087,7 +18087,7 @@ Type safety profile summary:
 With the type-safety profile you can trust that every operation is applied to a valid object.
 Exception may be thrown to indicate errors that cannot be detected statically (at compile time).
 Note that this type-safety can be complete only if we also have [Bounds safety](#SS-bounds) and [Lifetime safety](#SS-lifetime).
-Without those guarantees, a region of memory could be accesses independently which object, objects, or parts of objects are stored in it.
+Without those guarantees, a region of memory could be accessed independent of which object, objects, or parts of objects are stored in it.
 
 ### <a name="Pro-type-reinterpretcast"></a>Type.1: Don't use `reinterpret_cast`.
 
