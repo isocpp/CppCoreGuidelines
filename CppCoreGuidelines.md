@@ -103,7 +103,12 @@ You can sample rules for a specific language feature:
 [when needed?](#Rc-dtor) --
 [may not fail](#Rc-dtor-fail)
 * exception:
-[???](#S-errors)
+[errors](#S-errors) --
+[`throw`](Re-throw) --
+[for errors only](#Re-errors) --
+[`noexcept`](#Re-noexcept) --
+[mimize `try`](#Re-catch) --
+[what if no exceptions?](#Re-no-throw-codes)
 * `for`:
 [range-for and for](#Res-for-range) --
 [for and while](#Res-for-while) --
@@ -111,10 +116,25 @@ You can sample rules for a specific language feature:
 [empty body](#Res-empty) --
 [loop variable](#Res-loop-counter) --
 [loop variable type ???](#Res-???)
+* function:
+[naming](#Rf-package) --
+[single operation](#Rf-logical) --
+[may not throw](#Rf-noexcept) --
+[arguments](#Rf-smart) --
+[argument passing](#Rf-conventional) --
+[multiple return values](#Rf-out-multi)
+[pointers](#Rf-return-ptr) --
+[lambdas](#Rf-capture-vs-overload)
 * `inline`:
-[???](#S-class)
+[small functions](#Rf-inline) --
+[in headers](Rs-inline)
 * initialization:
-[???](#S-???)
+[always](#Res-always) --
+[prefer `{}`](#Res-list) --
+[lambdas](#Res-lambda-init) --
+[in-class initializers](#Rc-in-class-initializer) --
+[class members](#Rc-initialize) --
+[factory functions](#Rc-factory)
 * lambda expression:
 [???](#SS-lambdas)
 * operator:
