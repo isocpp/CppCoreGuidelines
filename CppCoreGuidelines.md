@@ -158,7 +158,7 @@ You can look at design concepts used to express the rules:
 
 * assertion: ???
 * error: ???
-* exception: [exception guarantee[(???)]
+* exception: exception guarantee (???)
 * failure: ???
 * invariant: ???
 * leak: ???
@@ -17320,7 +17320,7 @@ those sequences are allocated and stored.
 ##### Enforcement
 
 ???
-    
+
 ### <a name="Rstr-zstring"></a>SL.str.3: Use `zstring` or `czstring` to refer to a C-style, zero-terminated, sequence of characters
 
 ##### Reason
@@ -17360,7 +17360,7 @@ This is one of the major sources of bugs in C and C++ programs, so it is worthwh
 * Flag uses of `[]` on a `char*`
 * Flag uses of `delete` on a `char*`
 * Flag uses of `free()` on a `char*`
-    
+
 ### <a name="Rstr-char*"></a>SL.str.4: Use `char*` to refer to a single character
 
 ##### Reason
@@ -17390,7 +17390,7 @@ See [`zstring`](#Rstr-zstring), [`string`](#Rstr-string), and [`string_span`](#R
 ##### Enforcement
   
 * Flag uses of `[]` on a `char*`
-    
+
 ### <a name="Rstr-byte"></a>Sl.str.5: Use `std::byte` to refer to byte values that do not necessarily represent characters
 
 ##### Reason
@@ -17428,6 +17428,7 @@ C++17
 ##### Enforcement
 
 ???
+
 ### <a name="Rstr-span"></a>Sl.str.11: Use `gsl::string_span` rather than `std::string_view` when you need to mutate a string
 
 ##### Reason
@@ -17630,7 +17631,7 @@ This leads to longer programs and more errors caused by uninitialized and wrongl
            i = g(x, c);
        }
        return i;
-   }
+    }
 
 The larger the distance between the uninitialized variable and its use, the larger the chance of a bug.
 Fortunately, compilers catch many "used before set" errors.
