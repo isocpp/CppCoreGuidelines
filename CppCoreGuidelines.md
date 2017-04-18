@@ -10234,16 +10234,20 @@ It nicely encapsulates local initialization, including cleaning up scratch varia
 
 If at all possible, reduce the conditions to a simple set of alternatives (e.g., an `enum`) and don't mix up selection and initialization.
 
-##### Example
+##### Example, good
 
-    bool owned = false;
-    owner<istream*> inp = [&]{
+    auto construction = [&] {
+        unique_ptr<istream> owner;
+        istream * p;
         switch (source) {
-        case default:       owned = false; return &cin;
-        case command_line:  owned = true;  return new istringstream{argv[2]};
-        case file:          owned = true;  return new ifstream{argv[2]};
+            case command_line: owner.reset(p = new istringstream(argv[2])); break;
+            case file:         owner.reset(p = new ifstream(argv[2])); break;
+            default:           p = &cin; break;
+        }
+        return construct_from_stream(*p);
     }();
-    istream& in = *inp;
+
+In the default case, the `owner` will not own anything, in the other cases, the allocated `ifstream` will be destructed after `owner` goes out of scope.
 
 ##### Enforcement
 
