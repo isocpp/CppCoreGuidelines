@@ -6183,7 +6183,27 @@ Do *not* use inheritance when simply having a data member will do. Usually this 
 
 ##### Example
 
-    ??? Good old Shape example?
+    class DrawableUIElement {
+    public:
+        virtual void render() const = 0;
+        // ...
+    };
+
+    class AbstractButton : public DrawableUIElement {
+    public:
+        virtual void onClick() = 0;
+        // ...
+    };
+
+    class PushButton : public AbstractButton {
+        virtual void render() const override;
+        virtual void onClick() override;
+        // ...
+    };
+
+    class Checkbox : public AbstractButton {
+    // ...
+    };
 
 ##### Example, bad
 
