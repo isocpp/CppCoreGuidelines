@@ -4016,7 +4016,61 @@ This simplifies maintenance.
 
 ##### Example
 
-    ???
+    template<typename T, typename U>
+    struct pair {
+        T a;
+        U b;
+        // ...
+    };
+
+Whatever we do in the `//`-part, an arbitrary user of a `pair` can arbitrarily and independently change its `a` and `b`.
+In a large code base, we cannot easily find which code does what to the members of `pair`.
+This may be exactly what we want, but if we want to enforce a relation among members, we need to make them `private`
+and enforce that relation (invariant) through constructors and member functions.
+For example:
+
+    struct Distance {
+    public:
+        // ...
+        double meters() const { return magnitude*unit; }
+        void set_unit(double u)
+        {
+                // ... check that u is a factor of 10 ...
+                // ... change magnitude appropriately ...
+                unit = u;
+        }
+        // ...
+    private:
+        double magnitude;
+        double unit;    // 1 is meters, 1000 is kilometers, 0.0001 is millimeters, etc.
+    };
+
+##### Note
+
+If the set of direct users of a set of variables cannot be easily determined, the type or usage of that set cannot be (easily) changed/improved.
+For `public`and `protected` data, that's usually the case.
+
+##### Example
+
+A class can provide two interfaces to its users.
+One for derived classes (`protected`) and one for general users (`public`).
+For example, a derived class might be allowed to skip a run-time check because it has already guarenteed correctness:
+
+    class Foo {
+    public:
+        int bar(int x); // do some operation on the data
+        // ...
+        void mem(int x) { check(x); /* ... do something ... */ } int y = do_bar(x); /* ... do some more ... */ }
+    protected:
+        int do_bar(int x) { check(x); return bar(); }
+        // ...
+    private:
+        // ... data ...
+    };
+
+##### Note
+
+[`protected` data is a bad idea](#Rh-protected).
 
 ##### Note
 
@@ -4024,7 +4078,8 @@ Prefer the order `public` members before `protected` members before `private` me
 
 ##### Enforcement
 
-Flag protected data.
+* [Flag protected data](#Rh-protected).
+* Flag mixtures of `public` and private `data`
 
 ## <a name="SS-concrete"></a>C.concrete: Concrete types
 
@@ -6739,9 +6794,33 @@ This kind of "vector" isn't meant to be used as a base class at all.
 `protected` data complicated the statement of invariants.
 `protected` data inherently violates the guidance against putting data in base classes, which usually leads to having to deal virtual inheritance as well.
 
-##### Example
+##### Example, bad
 
-    ???
+   class Shape {
+   public:
+        // ... interface functions ...
+   protected:
+        // data for use in derived classes:
+        Color fill_color;
+        Color edge_color;
+        Style st;
+   };
+
+Now it is up to every defived `Shape` to manipulate the protected data correctly.
+This has been popular, but also a major source of maintenance problems.
+In a large class hierarchy, the consistent use of protected data is hard to maintain because there can be a lot of code,
+spread over a lot of classes.
+The set of classes that can touch that data is open: anyone can derive a new class and start manipulating the protected data.
+Often, it is not possible to examine the complete set of classes so any change to the representation of the class becomes infeasible.
+There is no enforced invariant for the protected data; it is much like a set of global variables.
+The protected data has de-factor become global to a large body of code.
+
+##### Note
+
+Protected data often looks tempting to enable arbitrary improvements through derivation.
+Often, what you get is unprincipled changes and errors.
+[Prefer `private` data](#Rc-private) with a well-specified and enforced invariant.
+Alternative, and often better, [keep data out of any class used as an interface](#Rh-abstract).
 
 ##### Note
 
