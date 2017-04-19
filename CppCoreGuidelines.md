@@ -63,20 +63,20 @@ Supporting sections:
 You can sample rules for specific language features:
 
 * assignment:
-[and regular types](#Rc-regular) --
+[regular types](#Rc-regular) --
 [prefer initialization](#Rc-initialize) --
-[copy semantics](#Rc-copy-semantics) --
-[move semantics](#Rc-move-semantics) --
-[and other operations](Rc-matched) --
+[copy](#Rc-copy-semantics) --
+[move](#Rc-move-semantics) --
+[other operations](Rc-matched) --
 [default](#Rc-eqdefault)
 * `class`:
 [data](#Rc-org) --
 [invariant](#Rc-struct) --
 [members](#Rc-member) --
-[helper functions](#Rc-helper) --
+[helpers](#Rc-helper) --
 [concrete types](#SS-concrete) --
-[constructors, assignments, and destructors](#S-ctor) --
-[hierarchies](#SS-hier) --
+[ctors, assignments, and dtorss](#S-ctor) --
+[hierarchy](#SS-hier) --
 [operators](#SS-overload)
 * `concept`:
 [rules](#SS-concepts) --
@@ -86,20 +86,20 @@ You can sample rules for specific language features:
 * constructor:
 [invariant](#Rc-struct) --
 [establish invariant](#Rc-ctor) --
-[`throw` in constructor](#Rc-throw) --
+[`throw`](#Rc-throw) --
 [default](#Rc-default0) --
 [not needed](#Rc-default) --
 [`explicit`](#Rc-explicit) --
 [delegating](#Rc-delegating) --
-[and `virtual`](#RC-ctor-virtual)
+[`virtual`](#RC-ctor-virtual)
 * derived `class`:
 [when to use](#Rh-domain) --
 [as interface](#Rh-abstract) --
-[and destructors](#Rh-dtor) --
+[destructors](#Rh-dtor) --
 [copy](#Rh-copy) --
 [getters and setters](#Rh-get) --
 [multiple inheritance](#Rh-mi-interface) --
-[overloading member functions](#Rh-using) --
+[overloading](#Rh-using) --
 [slicing](#Rc-copy-virtual) --
 [`dynamic_cast`](#Rh-dynamic_cast)
 * destructor:
@@ -123,10 +123,10 @@ You can sample rules for specific language features:
 * function:
 [naming](#Rf-package) --
 [single operation](#Rf-logical) --
-[may not throw](#Rf-noexcept) --
+[no throw](#Rf-noexcept) --
 [arguments](#Rf-smart) --
 [argument passing](#Rf-conventional) --
-[multiple return values](#Rf-out-multi)
+[multiple return values](#Rf-out-multi) --
 [pointers](#Rf-return-ptr) --
 [lambdas](#Rf-capture-vs-overload)
 * `inline`:
@@ -6929,19 +6929,53 @@ or various bases from boost.intrusive (e.g. `list_base_hook` or `intrusive_ref_c
 
 ##### Reason
 
- ???
+ Allow separation of shared data and interface.
+ To avoid all shared data to being put into an ultimate base class.
 
 ##### Example
 
-    ???
+    struct Interface {
+        virtual void f();
+        virtual int g();
+        // ... no data here ...
+    };
+
+    class Utility {  // with data
+        void utility1();
+        virtual void utility2();    // customization point
+    public:
+        int x;
+        int y;
+    };
+
+    class Derive1 : public Interface, protected Utility {
+        // overrride Iterface functions
+        // Maybe overrid Utility virtual functions
+        // ...
+    };
+
+    class Derive2 : public Interface, protected Utility {
+        // overrride Iterface functions
+        // Maybe overrid Utility virtual functions
+        // ...
+    };
+
+Factoring out `Utility` makes sense if many derived classes share significent "implementation details."
+
 
 ##### Note
 
-???
+Obviously, the example is too "theoretical", but it is hard to find a *small* realistic example.
+`Interface` is the root of an [interface hierarchy](#Rh-abstract)
+and `Utility` is the root of an [implementation hierarchy](Rh-kind).
+
+##### Note
+
+Often, lineraization of a hierarchy is a better solution.
 
 ##### Enforcement
 
-???
+Flag mixed interface and implementation hierarchies.
 
 ### <a name="Rh-using"></a>C.138: Create an overload set for a derived class and its bases with `using`
 
