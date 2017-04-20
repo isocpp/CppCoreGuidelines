@@ -589,7 +589,7 @@ Better:
 
 Now, there is no explicit mention of the iteration mechanism, and the loop operates on a reference to `const` elements so that accidental modification cannot happen. If modification is desired, say so:
 
-    for (auto& x : v) { /* do to with x */ }
+    for (auto& x : v) { /* modify x */ }
 
 Sometimes better still, use a named algorithm:
 
@@ -4048,17 +4048,17 @@ For example:
 ##### Note
 
 If the set of direct users of a set of variables cannot be easily determined, the type or usage of that set cannot be (easily) changed/improved.
-For `public`and `protected` data, that's usually the case.
+For `public` and `protected` data, that's usually the case.
 
 ##### Example
 
 A class can provide two interfaces to its users.
 One for derived classes (`protected`) and one for general users (`public`).
-For example, a derived class might be allowed to skip a run-time check because it has already guarenteed correctness:
+For example, a derived class might be allowed to skip a run-time check because it has already guaranteed correctness:
 
     class Foo {
     public:
-        int bar(int x) { check(x); return do_bar(); } 
+        int bar(int x) { check(x); return do_bar(); }
         // ...
     protected:
         int do_bar(int x); // do some operation on the data
@@ -4069,12 +4069,16 @@ For example, a derived class might be allowed to skip a run-time check because i
 
     class Der : public Foo {
         //...
-        int mem(int x, int y) { /* ... do something ... */ rteurn do_bar(x+y); }  // OK: derived class can bypass check
-    }
+        int mem(int x, int y)
+        {
+            /* ... do something ... */
+            return do_bar(x+y);  // OK: derived class can bypass check
+        }
+    };
 
     void user(Foo& x)
     {
-        int r1 = x.bar(1);      // OK, will check 
+        int r1 = x.bar(1);      // OK, will check
         int r2 = x.do_bar(2);   // error: would bypass check
         // ...
     }
@@ -6817,14 +6821,14 @@ This kind of "vector" isn't meant to be used as a base class at all.
         Style st;
    };
 
-Now it is up to every defived `Shape` to manipulate the protected data correctly.
+Now it is up to every derived `Shape` to manipulate the protected data correctly.
 This has been popular, but also a major source of maintenance problems.
 In a large class hierarchy, the consistent use of protected data is hard to maintain because there can be a lot of code,
 spread over a lot of classes.
 The set of classes that can touch that data is open: anyone can derive a new class and start manipulating the protected data.
 Often, it is not possible to examine the complete set of classes so any change to the representation of the class becomes infeasible.
 There is no enforced invariant for the protected data; it is much like a set of global variables.
-The protected data has de-factor become global to a large body of code.
+The protected data has de facto become global to a large body of code.
 
 ##### Note
 
@@ -6960,18 +6964,18 @@ or various bases from boost.intrusive (e.g. `list_base_hook` or `intrusive_ref_c
     };
 
     class Derive1 : public Interface, protected Utility {
-        // overrride Iterface functions
-        // Maybe overrid Utility virtual functions
+        // override Interface functions
+        // Maybe override Utility virtual functions
         // ...
     };
 
     class Derive2 : public Interface, protected Utility {
-        // overrride Iterface functions
-        // Maybe overrid Utility virtual functions
+        // override Interface functions
+        // Maybe override Utility virtual functions
         // ...
     };
 
-Factoring out `Utility` makes sense if many derived classes share significent "implementation details."
+Factoring out `Utility` makes sense if many derived classes share significant "implementation details."
 
 
 ##### Note
@@ -6982,7 +6986,7 @@ and `Utility` is the root of an [implementation hierarchy](Rh-kind).
 
 ##### Note
 
-Often, lineraization of a hierarchy is a better solution.
+Often, linearization of a hierarchy is a better solution.
 
 ##### Enforcement
 
@@ -19309,9 +19313,9 @@ Use literal suffixes where clarification is needed
 
 ###### Note
 
-Literals should not be springled all over the code as ["magic constants'](#Res-magic),
+Literals should not be sprinkled all over the code as ["magic constants"](#Res-magic),
 but it is still a good idea to make them readable where they are defined.
-It is easy to make a yypo in a long string of integers.
+It is easy to make a typo in a long string of integers.
 
 ###### Enforcement
 
