@@ -1,6 +1,6 @@
 # <a name="main"></a>C++ Core Guidelines
 
-April 17, 2017
+April 19, 2017
 
 
 Editors:
@@ -75,7 +75,7 @@ You can sample rules for specific language features:
 [members](#Rc-member) --
 [helpers](#Rc-helper) --
 [concrete types](#SS-concrete) --
-[ctors, assignments, and dtorss](#S-ctor) --
+[ctors, =, and dtors](#S-ctor) --
 [hierarchy](#SS-hier) --
 [operators](#SS-overload)
 * `concept`:
@@ -20436,7 +20436,7 @@ Alternatively, we will decide that no change is needed and delete the entry.
 * <a name="Cplusplus03"></a>
   \[C++03]:           ISO/IEC 14882:2003(E), Programming Languages — C++ (updated ISO and ANSI C++ Standard including the contents of (C++98) plus errata corrections).
 * <a name="CplusplusCS"></a>
-  \[C++CS]:
+  \[C++CS]:           ???
 * <a name="Cargill92"></a>
   \[Cargill92]:       T. Cargill. C++ Programming Style (Addison-Wesley, 1992).
 * <a name="Cline99"></a>
