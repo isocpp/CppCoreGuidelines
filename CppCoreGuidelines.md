@@ -585,16 +585,16 @@ The intent of "just" looping over the elements of `v` is not expressed here. The
 
 Better:
 
-    for (const auto& x : v) { /* do something with x */ }
+    for (const auto& x : v) { /* do something with the value of x */ }
 
 Now, there is no explicit mention of the iteration mechanism, and the loop operates on a reference to `const` elements so that accidental modification cannot happen. If modification is desired, say so:
 
-    for (auto& x : v) { /* do something with x */ }
+    for (auto& x : v) { /* do to with x */ }
 
 Sometimes better still, use a named algorithm:
 
-    for_each(v, [](int x) { /* do something with x */ });
-    for_each(par, v, [](int x) { /* do something with x */ });
+    for_each(v, [](int x) { /* do something with the value of x */ });
+    for_each(par, v, [](int x) { /* do something with the value of x */ });
 
 The last variant makes it clear that we are not interested in the order in which the elements of `v` are handled.
 
@@ -1737,7 +1737,7 @@ If you can't use exceptions (e.g. because your code is full of old-style raw-poi
 This style unfortunately leads to uninitialized variables.
 A facility [structured bindings](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/p0144r1.pdf) to deal with that will become available in C++17.
 
-    [val, error_code] = do_something();
+    auto [val, error_code] = do_something();
     if (error_code == 0) {
         // ... handle the error or exit ...
     }
@@ -4058,15 +4058,26 @@ For example, a derived class might be allowed to skip a run-time check because i
 
     class Foo {
     public:
-        int bar(int x); // do some operation on the data
+        int bar(int x) { check(x); return do_bar(); } 
         // ...
-        void mem(int x) { check(x); /* ... do something ... */ } int y = do_bar(x); /* ... do some more ... */ }
     protected:
-        int do_bar(int x) { check(x); return bar(); }
+        int do_bar(int x); // do some operation on the data
         // ...
     private:
         // ... data ...
     };
+
+    class Der : public Foo {
+        //...
+        int mem(int x, int y) { /* ... do something ... */ rteurn do_bar(x+y); }  // OK: derived class can bypass check
+    }
+
+    void user(Foo& x)
+    {
+        int r1 = x.bar(1);      // OK, will check 
+        int r2 = x.do_bar(2);   // error: would bypass check
+        // ...
+    }
 
 ##### Note
 
