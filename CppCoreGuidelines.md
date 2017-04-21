@@ -4067,7 +4067,7 @@ For example, a derived class might be allowed to skip a run-time check because i
         // ... data ...
     };
 
-    class Der : public Foo {
+    class Dir : public Foo {
         //...
         int mem(int x, int y) { /* ... do something ... */ rteurn do_bar(x+y); }  // OK: derived class can bypass check
     }
@@ -6959,13 +6959,13 @@ or various bases from boost.intrusive (e.g. `list_base_hook` or `intrusive_ref_c
         int y;
     };
 
-    class Derive1 : public Interface, protected Utility {
+    class Derive1 : public Interface, virtual protected Utility {
         // overrride Iterface functions
         // Maybe overrid Utility virtual functions
         // ...
     };
 
-    class Derive2 : public Interface, protected Utility {
+    class Derive2 : public Interface, virtual protected Utility {
         // overrride Iterface functions
         // Maybe overrid Utility virtual functions
         // ...
@@ -17374,7 +17374,7 @@ String summary:
 * [SL.str.4: Use `char*` to refer to a single character](#Rstr-char*)
 * [Sl.str.5: Use `std::byte` to refer to byte values that do not necessarily represent characters](#Rstr-byte)
 
-* [Sl.str.10: Use `std::string` when you need to perform locale-sensitive sting operations](#Rstr-locale)
+* [Sl.str.10: Use `std::string` when you need to perform locale-sensitive string operations](#Rstr-locale)
 * [Sl.str.11: Use `gsl::string_span` rather than `std::string_view` when you need to mutate a string](#Rstr-span)
 * [Sl.str.12: Use the `s` suffix for string literals meant to be standard-library `string`s](#Rstr-s)
 
@@ -17570,7 +17570,7 @@ C++17
 ???
     
 
-### <a name="Rstr-locale"></a>Sl.str.10: Use `std::string` when you need to perform locale-sensitive sting operations
+### <a name="Rstr-locale"></a>Sl.str.10: Use `std::string` when you need to perform locale-sensitive string operations
 
 ##### Reason
 
@@ -18204,9 +18204,11 @@ Candidates include:
 
 * narrowing arithmetic promotions/conversions (likely part of a separate safe-arithmetic profile)
 * arithmetic cast from negative floating point to unsigned integral type (ditto)
-* selected undefined behavior: Start with Gaby Dos Reis's UB list developed for the WG21 study group
+* selected undefined behavior: Start with Gabriel Dos Reis's UB list developed for the WG21 study group
 * selected unspecified behavior: Addressing portability concerns.
 * `const` violations: Mostly done by compilers already, but we can catch inappropriate casting and underuse of `const`.
+
+Enabling a profile is implementation defined; typically, it is set in the analysis tool used.
 
 To suppress enforcement of a profile check, place a `suppress` annotation on a language contract. For example:
 
