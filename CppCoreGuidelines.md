@@ -6961,13 +6961,13 @@ or various bases from boost.intrusive (e.g. `list_base_hook` or `intrusive_ref_c
 
     class Derive1 : public Interface, virtual protected Utility {
         // overrride Iterface functions
-        // Maybe overrid Utility virtual functions
+        // Maybe override Utility virtual functions
         // ...
     };
 
     class Derive2 : public Interface, virtual protected Utility {
         // overrride Iterface functions
-        // Maybe overrid Utility virtual functions
+        // Maybe override Utility virtual functions
         // ...
     };
 
