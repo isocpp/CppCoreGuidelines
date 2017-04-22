@@ -1,6 +1,6 @@
 # <a name="main"></a>C++ Core Guidelines
 
-April 19, 2017
+April 22, 2017
 
 
 Editors:
@@ -17638,6 +17638,7 @@ Iostream rule summary:
 * [SL.io.1: Use character-level input only when you have to](#Rio-low)
 * [SL.io.2: When reading, always consider ill-formed input](#Rio-validate)
 * [???](#???)
+* [SL.io.10: Unless you use `printf`-family functions call `ios_base::sync_with_stdio(false)`](#Rio-sync) 
 * [SL.io.50: Avoid `endl`](#Rio-endl)
 * [???](#???)
 
@@ -17646,6 +17647,24 @@ Iostream rule summary:
 ???
 
 ### <a name="Rio-validate"></a>SL.io.2: When reading, always consider ill-formed input
+
+???
+
+### <a name="Rio-sync"></a>SL.io.10: Unless you use `printf`-family functions call `ios_base::sync_with_stdio(false)`
+
+##### Reason
+
+Synchronizing `iostreams` with `printf-style` I/O can be costly.
+
+##### Example
+
+    int main()
+    {
+        ios_base::sync_with_stdio(false);
+        // ... use iostreams ...
+    }
+
+##### Enforcement
 
 ???
 
@@ -17686,9 +17705,20 @@ the choice between `'\n'` and `endl` is almost completely aesthetic.
 
 C standard library rule summary:
 
+* [S.C.1: Don't use setjmp/longjmp](#Rclib-jmp)
 * [???](#???)
 * [???](#???)
-* [???](#???)
+
+### <a name="Rclib-jmp"></a>SL.C.1: Don't use setjmp/longjmp
+
+##### Reason
+
+a `longjmp` ignores destructors, thus invalidating all resource-management strategies relying on RAII
+
+##### Enforcement
+
+Flag all occurences of `longjmp`and `setjmp`
+
 
 
 # <a name="S-A"></a>A: Architectural Ideas
