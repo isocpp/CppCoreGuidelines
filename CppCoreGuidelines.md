@@ -14568,6 +14568,8 @@ You can
 
 Example:
 
+Example:
+
     void f(int* p);   // old code: f() does not modify `*p`
     void f(const int* p) { f(const_cast<int*>(p); } // wrapper
 
