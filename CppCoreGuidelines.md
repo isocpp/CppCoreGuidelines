@@ -13614,6 +13614,9 @@ Error-handling rule summary:
 * [E.27: If you can't throw exceptions, use error codes systematically](#Re-no-throw-codes)
 * [E.28: Avoid error handling based on global state (e.g. `errno`)](#Re-no-throw)
 
+* [E.30: Don't use exception specifications](#Re-specifications)
+* [E.31: Properly order your `catch`-clauses](#Re_catch)
+
 ### <a name="Re-design"></a>E.1: Develop an error-handling strategy early in a design
 
 ##### Reason
@@ -13918,9 +13921,16 @@ Many standard library functions are `noexcept` including all the standard librar
         // ... do something ...
     }
 
-The `noexcept` here states that I am not willing or able to handle the situation where I cannot construct the local `vector`. That is, I consider memory exhaustion a serious design error (on par with hardware failures) so that I'm willing to crash the program if it happens.
+The `noexcept` here states that I am not willing or able to handle the situation where I cannot construct the local `vector`.
+That is, I consider memory exhaustion a serious design error (on par with hardware failures) so that I'm willing to crash the program if it happens.
 
-**See also**: [discussion](#Sd-noexcept).
+##### Note
+
+Do not use traditional [exception-specifications](#Re-specifications).
+
+##### See also
+
+[discussion](#Sd-noexcept).
 
 ### <a name="Re-never-throw"></a>E.13: Never throw while being the direct owner of an object
 
@@ -13956,7 +13966,11 @@ Another solution (often better) would be to use a local variable to eliminate ex
         // ...
     }
 
-**See also**: ???resource rule ???
+##### Note
+
+If you have local "things" that requires cleanup, but is not represented by an object with a destructor, such cleanup must
+also be done before a `throw`.
+Sometimes, [`finally()`](#Re-finally) can make such unsystematic cleanup a bit more manageable.
 
 ### <a name="Re-exception-types"></a>E.14: Use purpose-designed user-defined types as exceptions (not built-in types)
 
@@ -14486,6 +14500,79 @@ C-style error handling is based on the global variable `errno`, so it is essenti
 ##### Enforcement
 
 Awkward.
+
+
+### <a name="Re-specifications"></a>E.30: Don't use exception specifications
+
+##### Reason
+
+Exception specifications make error handling brittle, impose a run-time cost, and have been deprecated from the C++ standard.
+
+##### Example
+
+    int use(int arg)
+        throw(X,Y)
+    {
+        // ...
+        auto x = f(arg);
+        // ...
+    }
+
+if 'f()' throws an exception different from `X` and `Y` the unexpected handler is invoked, which by default terminates.
+That's OK, but say that we have checked that this cannot happen and `f` is changed to throw a new exception `Z`,
+we now have a crash on our hands unless we change `use()` (and re-test everything).
+The snag is that `f()` may be in a library we do not control and the new exception is not anything that `use()` can do
+anything about or is in any way interested in.
+We can change `use()` to pass `Z` through, but now `use()`'s callers probably needs to be modified.
+This quickly becomes unmanageable.
+Alternatively, we can add a `try`-`catch` to `use()` to map `Z` into an acceptable excption.
+This too, quickly becomes unmanageable.
+Note that changes to the set of exceptions often happens at the lowest level of a system
+(e.g., because of changes to a network  library or some middleware), so changes "bubble up" through long call chains.
+In a large code base, this could mean that nobody could update to a new version of a library until the last user was modified.
+If `use()` is part of a library, it may not be possible to update it bacause a change could affect unknow clients.
+
+The policy of letting exceptions propogate until they reach a function that potentially can handle it has proven itself over the years.
+
+##### Note
+
+No. This would not be any better had exception specifications been statically enforced.
+For example, see [Stroustrup94](#Stroustrup94).
+
+##### Note
+
+If no exception may be throwh, use [`noexcept`(#Re-noexcept)]
+
+##### Enforcement
+
+Flag every exception specification.
+
+### <a name="Re_catch"></a>E.31: Properly order your `catch`-clauses
+
+##### Reason
+
+`catch`-clauses are evaluated in the order they appear and one clause can hide another.
+
+##### Example
+
+    void f()
+    {
+        // ...
+        try {
+                // ...
+        }
+        catch (Base& b) { /* ... */ }
+        catch (Derived& d) { /* ... */ }
+        catch (...) { /* ... */ }
+        catch (std::exception& e){ /* ... */ }
+    }
+
+If `Derived`is derived from `Base` the `Derived`-handler will never be invoked.
+The "catch everything" handler ensured that the `std::exception`-handler will never be invoked.
+
+##### Enforcement
+
+Flag all "hiding handlers".
 
 # <a name="S-const"></a>Con: Constants and Immutability
 
@@ -17275,6 +17362,7 @@ Standard-library rule summary:
 
 * [SL.1: Use libraries wherever possible](#Rsl-lib)
 * [SL.2: Prefer the standard library to other libraries](#Rsl-sl)
+* [SL.3: Do not add non-standard entities to namespace `std`](#sl-std)
 * ???
 
 ### <a name="Rsl-lib"></a>SL.1:  Use libraries wherever possible
@@ -17292,6 +17380,23 @@ Help other people when you make improvements.
 
 More people know the standard library.
 It is more likely to be stable, well-maintained, and widely available than your own code or most other libraries.
+
+
+### <a name="sl-std"></a>SL.3: Do not add non-standard entities to namespace `std`
+
+##### Reason
+
+Adding to `std` may change the meaning of otherwise standards conforming code.
+Additions to `std` may clash with furture versions of the standard.
+
+##### Example
+
+    ???
+
+##### Enforcement
+
+Possible, but messy and likely to cause problems with platforms.
+
 
 ## <a name="SS-con"></a>SL.con: Containers
 
@@ -17474,7 +17579,7 @@ those sequences are allocated and stored.
 
 ##### Note
 
-???
+`std::string_view` (C++17) is read only.
 
 ##### Enforcement
 
@@ -17637,24 +17742,58 @@ Iostream rule summary:
 
 * [SL.io.1: Use character-level input only when you have to](#Rio-low)
 * [SL.io.2: When reading, always consider ill-formed input](#Rio-validate)
-* [???](#???)
+* [SL.io.3: Prefer iostreams for I/O](#Rio-streams)
 * [SL.io.10: Unless you use `printf`-family functions call `ios_base::sync_with_stdio(false)`](#Rio-sync) 
 * [SL.io.50: Avoid `endl`](#Rio-endl)
 * [???](#???)
 
 ### <a name="Rio-low"></a>SL.io.1: Use character-level input only when you have to
 
-???
+##### Reason
+
+Unless you genuinely just deal with individual characters, using character-level input leads to the user code performing potentially error-prone
+and potentially inefficient compusition ot tokens out of characters.
+
+##### Example
+
+    ??? compose a number ???
+
 
 ### <a name="Rio-validate"></a>SL.io.2: When reading, always consider ill-formed input
 
 ???
+
+### <a name="Rio-streams"></a>SL.io.3: Prefer `iostream`s for I/O
+
+##### Reason
+
+`iosteam`s are safe, flexible, and extensible.
+
+##### Example
+
+    ??? complex I/O ???
+
+##### Exception
+
+??? performance ???
+
+##### Discussion: `iostream`s vs. the `printf()` family
+
+It is often (and often correctly) pointed out that the `printf()` family has two advantages compared to `iostream`s:
+flexibility of formatting and performance.
+This has to be weighed against `iostream`s advantages of extensibility to handle user-defined types, resilient against security violations,
+implicit memory management, and `locale` handling.
+
+If you need I/O performance, you can almost always do better than `printf()`.
+
+
 
 ### <a name="Rio-sync"></a>SL.io.10: Unless you use `printf`-family functions call `ios_base::sync_with_stdio(false)`
 
 ##### Reason
 
 Synchronizing `iostreams` with `printf-style` I/O can be costly.
+`cin` and `cout` are by default synchronized with `printf`.
 
 ##### Example
 
@@ -20500,6 +20639,8 @@ Alternatively, we will decide that no change is needed and delete the entry.
   \[Meyers15]:        S. Meyers. Effective Modern C++ (O'Reilly, 2015).
 * <a name="Murray93"></a>
   \[Murray93]:        R. Murray. C++ Strategies and Tactics (Addison-Wesley, 1993).
+  * <a name="Stroustrup94"></a>
+  \[Stroustrup94]:    B. Stroustrup. The Design and Evolution of C++ (Addison-Wesley, 1994).
 * <a name="Stroustrup00"></a>
   \[Stroustrup00]:    B. Stroustrup. The C++ Programming Language (Special 3rdEdition) (Addison-Wesley, 2000).
 * <a name="Stroustrup05"></a>
