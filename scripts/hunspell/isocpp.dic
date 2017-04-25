@@ -225,14 +225,17 @@ int32
 int64
 ints
 io
+ios
 iostream
 Iostream
+iostreams
 iso
 isocpp
 ISORC
 istream
 Iter
 Jiangang
+jmp
 join's
 JSF
 Juhl
@@ -244,9 +247,11 @@ Lakos96
 Lavavej
 LCSD05
 lifecycle
+linearization
 llvm
 lockfree
 Lomow
+longjmp
 LSP
 lst
 lvalue
@@ -278,6 +283,7 @@ Meyers15
 Meyers96
 Meyers97
 microbenchmarks
+middleware
 mixin
 mixins
 modify1
@@ -381,6 +387,7 @@ r2
 raii
 RAII
 Rc
+Rclib
 rcon
 Rcon
 Rconc
@@ -437,6 +444,7 @@ SFINAE
 sharedness
 sharedptrparam
 'sharedptrparam'
+setjmp
 SignedIntegral
 simpleFunc
 'size'
@@ -468,6 +476,7 @@ Stroustrup00
 Stroustrup05
 Stroustrup13
 Stroustrup14
+Stroustrup94
 Stroustrup's
 struct
 suboperations

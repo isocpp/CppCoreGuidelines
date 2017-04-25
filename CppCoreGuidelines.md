@@ -589,7 +589,7 @@ Better:
 
 Now, there is no explicit mention of the iteration mechanism, and the loop operates on a reference to `const` elements so that accidental modification cannot happen. If modification is desired, say so:
 
-    for (auto& x : v) { /* do to with x */ }
+    for (auto& x : v) { /* modify x */ }
 
 Sometimes better still, use a named algorithm:
 
@@ -4048,17 +4048,17 @@ For example:
 ##### Note
 
 If the set of direct users of a set of variables cannot be easily determined, the type or usage of that set cannot be (easily) changed/improved.
-For `public`and `protected` data, that's usually the case.
+For `public` and `protected` data, that's usually the case.
 
 ##### Example
 
 A class can provide two interfaces to its users.
 One for derived classes (`protected`) and one for general users (`public`).
-For example, a derived class might be allowed to skip a run-time check because it has already guarenteed correctness:
+For example, a derived class might be allowed to skip a run-time check because it has already guaranteed correctness:
 
     class Foo {
     public:
-        int bar(int x) { check(x); return do_bar(); } 
+        int bar(int x) { check(x); return do_bar(); }
         // ...
     protected:
         int do_bar(int x); // do some operation on the data
@@ -4069,12 +4069,16 @@ For example, a derived class might be allowed to skip a run-time check because i
 
     class Dir : public Foo {
         //...
-        int mem(int x, int y) { /* ... do something ... */ rteurn do_bar(x+y); }  // OK: derived class can bypass check
+        int mem(int x, int y)
+        {
+            /* ... do something ... */
+            return do_bar(x+y); // OK: derived class can bypass check
+        }
     }
 
     void user(Foo& x)
     {
-        int r1 = x.bar(1);      // OK, will check 
+        int r1 = x.bar(1);      // OK, will check
         int r2 = x.do_bar(2);   // error: would bypass check
         // ...
     }
@@ -6817,14 +6821,14 @@ This kind of "vector" isn't meant to be used as a base class at all.
         Style st;
    };
 
-Now it is up to every defived `Shape` to manipulate the protected data correctly.
+Now it is up to every derived `Shape` to manipulate the protected data correctly.
 This has been popular, but also a major source of maintenance problems.
 In a large class hierarchy, the consistent use of protected data is hard to maintain because there can be a lot of code,
 spread over a lot of classes.
 The set of classes that can touch that data is open: anyone can derive a new class and start manipulating the protected data.
 Often, it is not possible to examine the complete set of classes so any change to the representation of the class becomes infeasible.
 There is no enforced invariant for the protected data; it is much like a set of global variables.
-The protected data has de-factor become global to a large body of code.
+The protected data has de facto become global to a large body of code.
 
 ##### Note
 
@@ -6960,18 +6964,18 @@ or various bases from boost.intrusive (e.g. `list_base_hook` or `intrusive_ref_c
     };
 
     class Derive1 : public Interface, virtual protected Utility {
-        // overrride Iterface functions
+        // override Interface functions
         // Maybe override Utility virtual functions
         // ...
     };
 
     class Derive2 : public Interface, virtual protected Utility {
-        // overrride Iterface functions
+        // override Interface functions
         // Maybe override Utility virtual functions
         // ...
     };
 
-Factoring out `Utility` makes sense if many derived classes share significent "implementation details."
+Factoring out `Utility` makes sense if many derived classes share significant "implementation details."
 
 
 ##### Note
@@ -6982,7 +6986,7 @@ and `Utility` is the root of an [implementation hierarchy](Rh-kind).
 
 ##### Note
 
-Often, lineraization of a hierarchy is a better solution.
+Often, linearization of a hierarchy is a better solution.
 
 ##### Enforcement
 
@@ -14511,28 +14515,28 @@ Exception specifications make error handling brittle, impose a run-time cost, an
 ##### Example
 
     int use(int arg)
-        throw(X,Y)
+        throw(X, Y)
     {
         // ...
         auto x = f(arg);
         // ...
     }
 
-if 'f()' throws an exception different from `X` and `Y` the unexpected handler is invoked, which by default terminates.
+if `f()` throws an exception different from `X` and `Y` the unexpected handler is invoked, which by default terminates.
 That's OK, but say that we have checked that this cannot happen and `f` is changed to throw a new exception `Z`,
 we now have a crash on our hands unless we change `use()` (and re-test everything).
 The snag is that `f()` may be in a library we do not control and the new exception is not anything that `use()` can do
 anything about or is in any way interested in.
 We can change `use()` to pass `Z` through, but now `use()`'s callers probably needs to be modified.
 This quickly becomes unmanageable.
-Alternatively, we can add a `try`-`catch` to `use()` to map `Z` into an acceptable excption.
+Alternatively, we can add a `try`-`catch` to `use()` to map `Z` into an acceptable exception.
 This too, quickly becomes unmanageable.
 Note that changes to the set of exceptions often happens at the lowest level of a system
-(e.g., because of changes to a network  library or some middleware), so changes "bubble up" through long call chains.
+(e.g., because of changes to a network library or some middleware), so changes "bubble up" through long call chains.
 In a large code base, this could mean that nobody could update to a new version of a library until the last user was modified.
-If `use()` is part of a library, it may not be possible to update it bacause a change could affect unknow clients.
+If `use()` is part of a library, it may not be possible to update it because a change could affect unknown clients.
 
-The policy of letting exceptions propogate until they reach a function that potentially can handle it has proven itself over the years.
+The policy of letting exceptions propagate until they reach a function that potentially can handle it has proven itself over the years.
 
 ##### Note
 
@@ -14541,7 +14545,7 @@ For example, see [Stroustrup94](#Stroustrup94).
 
 ##### Note
 
-If no exception may be throwh, use [`noexcept`(#Re-noexcept)]
+If no exception may be thrown, use [`noexcept`](#Re-noexcept)
 
 ##### Enforcement
 
@@ -17387,7 +17391,7 @@ It is more likely to be stable, well-maintained, and widely available than your 
 ##### Reason
 
 Adding to `std` may change the meaning of otherwise standards conforming code.
-Additions to `std` may clash with furture versions of the standard.
+Additions to `std` may clash with future versions of the standard.
 
 ##### Example
 
@@ -17752,7 +17756,7 @@ Iostream rule summary:
 ##### Reason
 
 Unless you genuinely just deal with individual characters, using character-level input leads to the user code performing potentially error-prone
-and potentially inefficient compusition ot tokens out of characters.
+and potentially inefficient composition of tokens out of characters.
 
 ##### Example
 
@@ -17767,7 +17771,7 @@ and potentially inefficient compusition ot tokens out of characters.
 
 ##### Reason
 
-`iosteam`s are safe, flexible, and extensible.
+`iostream`s are safe, flexible, and extensible.
 
 ##### Example
 
@@ -17856,7 +17860,7 @@ a `longjmp` ignores destructors, thus invalidating all resource-management strat
 
 ##### Enforcement
 
-Flag all occurences of `longjmp`and `setjmp`
+Flag all occurrences of `longjmp`and `setjmp`
 
 
 
@@ -19480,9 +19484,9 @@ Use literal suffixes where clarification is needed
 
 ###### Note
 
-Literals should not be springled all over the code as ["magic constants'](#Res-magic),
+Literals should not be sprinkled all over the code as ["magic constants"](#Res-magic),
 but it is still a good idea to make them readable where they are defined.
-It is easy to make a yypo in a long string of integers.
+It is easy to make a typo in a long string of integers.
 
 ###### Enforcement
 
@@ -20639,7 +20643,7 @@ Alternatively, we will decide that no change is needed and delete the entry.
   \[Meyers15]:        S. Meyers. Effective Modern C++ (O'Reilly, 2015).
 * <a name="Murray93"></a>
   \[Murray93]:        R. Murray. C++ Strategies and Tactics (Addison-Wesley, 1993).
-  * <a name="Stroustrup94"></a>
+* <a name="Stroustrup94"></a>
   \[Stroustrup94]:    B. Stroustrup. The Design and Evolution of C++ (Addison-Wesley, 1994).
 * <a name="Stroustrup00"></a>
   \[Stroustrup00]:    B. Stroustrup. The C++ Programming Language (Special 3rdEdition) (Addison-Wesley, 2000).
