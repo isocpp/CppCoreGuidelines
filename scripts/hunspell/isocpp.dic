@@ -44,6 +44,7 @@ args
 arr2
 arrayindex
 ASIC
+asio
 AST
 async
 BDE
@@ -57,6 +58,7 @@ bool
 buf
 bufmax
 C1
+C11
 C2
 callees
 callers'
@@ -100,6 +102,7 @@ CppCon
 CRTP
 cst
 cstdarg
+cstdio
 cstring
 cstylecast
 ctor
