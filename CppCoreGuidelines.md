@@ -9183,7 +9183,7 @@ Declaration rules:
 * [ES.21: Don't introduce a variable (or constant) before you need to use it](#Res-introduce)
 * [ES.22: Don't declare a variable until you have a value to initialize it with](#Res-init)
 * [ES.23: Prefer the `{}`-initializer syntax](#Res-list)
-* [ES.24: Use a `unique_ptr<T>` to hold pointers in code that may throw](#Res-unique)
+* [ES.24: Use a `unique_ptr<T>` to hold pointers](#Res-unique)
 * [ES.25: Declare an object `const` or `constexpr` unless you want to modify its value later on](#Res-const)
 * [ES.26: Don't use a variable for two unrelated purposes](#Res-recycle)
 * [ES.27: Use `std::array` or `stack_array` for arrays on the stack](#Res-stack)
