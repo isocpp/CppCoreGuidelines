@@ -17997,23 +17997,23 @@ This leads to longer programs and more errors caused by uninitialized and wrongl
 
 ##### Example, bad
 
-   int use(int x)
-   {
-       int i;
-       char c;
-       double d;
+    int use(int x)
+    {
+        int i;
+        char c;
+        double d;
 
-       // ... some stuff ...
+        // ... some stuff ...
 
-       if (x < i) {
-           // ...
-           i = f(x, d);
-       }
-       if (i < x) {
-           // ...
-           i = g(x, c);
-       }
-       return i;
+        if (x < i) {
+            // ...
+            i = f(x, d);
+        }
+        if (i < x) {
+            // ...
+            i = g(x, c);
+        }
+        return i;
     }
 
 The larger the distance between the uninitialized variable and its use, the larger the chance of a bug.
