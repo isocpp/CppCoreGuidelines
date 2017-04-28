@@ -19134,7 +19134,7 @@ Use `not_null<zstring>` for C-style strings that cannot be `nullptr`. ??? Do we 
                 // `Expect` in under control of some options (enforcement, error message, alternatives to terminate)
 * `Ensures`     // postcondition assertion. Currently placed in function bodies. Later, should be moved to declarations.
 
-These assertions is currently macros (yuck!) and must appear in function definitions (only)
+These assertions are currently macros (yuck!) and must appear in function definitions (only)
 pending standard commission decisions on contracts and assertion syntax.
 See [the contract proposal](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/p0380r1.pdf); using the attribute syntax,
 for example, `Expects(p!=nullptr)` will become `[[expects: p!=nullptr]]`.
