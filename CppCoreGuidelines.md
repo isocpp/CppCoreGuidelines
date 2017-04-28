@@ -17999,11 +17999,11 @@ This leads to longer programs and more errors caused by uninitialized and wrongl
 
     int use(int x)
     {
-        int i;
-        char c;
-        double d;
+       int i;
+       char c;
+       double d;
  
-        // ... some stuff ...
+       // ... some stuff ...
  
         if (x < i) {
             // ...
