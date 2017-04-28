@@ -17997,8 +17997,8 @@ This leads to longer programs and more errors caused by uninitialized and wrongl
 
 ##### Example, bad
 
-   int use(int x)
-   {
+    int use(int x)
+    {
        int i;
        char c;
        double d;
