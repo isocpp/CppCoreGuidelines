@@ -19135,7 +19135,7 @@ Use `not_null<zstring>` for C-style strings that cannot be `nullptr`. ??? Do we 
 * `Ensures`     // postcondition assertion. Currently placed in function bodies. Later, should be moved to declarations.
 
 These assertions are currently macros (yuck!) and must appear in function definitions (only)
-pending standard commission decisions on contracts and assertion syntax.
+pending standard committee decisions on contracts and assertion syntax.
 See [the contract proposal](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/p0380r1.pdf); using the attribute syntax,
 for example, `Expects(p!=nullptr)` will become `[[expects: p!=nullptr]]`.
 
@@ -20577,11 +20577,14 @@ More information on many topics about C++ can be found on the [Standard C++ Foun
 * *recursion*: the act of a function calling itself; see also iteration.
 * *reference*: (1) a value describing the location of a typed value in memory; (2) a variable holding such a value.
 * *regular expression*: a notation for patterns in character strings.
+* *regular*: a type that behaves similarly to built-in types like `int` and can be compared with `==`.
+In particular, an object of a regular type can be copied and the result of a copy is a separate object that compares equal to the original. See also *semiregular type*.
 * *requirement*: (1) a description of the desired behavior of a program or part of a program; (2) a description of the assumptions a function or template makes of its arguments.
 * *resource*: something that is acquired and must later be released, such as a file handle, a lock, or memory. See also handle, owner.
 * *rounding*: conversion of a value to the mathematically nearest value of a less precise type.
 * *RTTI*: Run-Time Type Information. ???
 * *scope*: the region of program text (source code) in which a name can be referred to.
+* *semiregular*: a type that behaves roughtly like an built-in type like `int`, but possibly without a `==` operator. See also *regular type*.
 * *sequence*: elements that can be visited in a linear order.
 * *software*: a collection of pieces of code and associated data; often used interchangeably with program.
 * *source code*: code as produced by a programmer and (in principle) readable by other programmers.
