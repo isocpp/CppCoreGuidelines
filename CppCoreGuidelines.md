@@ -6983,6 +6983,7 @@ Factoring out `Utility` makes sense if many derived classes share significant "i
 Obviously, the example is too "theoretical", but it is hard to find a *small* realistic example.
 `Interface` is the root of an [interface hierarchy](#Rh-abstract)
 and `Utility` is the root of an [implementation hierarchy](Rh-kind).
+Here is [a slightly more realistic example](https://www.quora.com/What-are-the-uses-and-advantages-of-virtual-base-class-in-C%2B%2B/answer/Lance-Diduck?srid=tzNb) with an explanation.
 
 ##### Note
 
