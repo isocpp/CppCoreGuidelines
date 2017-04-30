@@ -7091,6 +7091,12 @@ Consistent use of `override` would catch this.
 
 ##### Note
 
+Note every class is meant to be a base class.
+Most standard-library classes are examples of that (e.g., `std::vector` and `std::string` are not designed to be derived from).
+This rule are about using `final` on classes with virtual functions meant to be interfaces for a class hierarchy.
+
+##### Note
+
 Claims of performance improvements from `final` should be substantiated.
 Too often, such claims are based on conjecture or experience with other languages.
 
