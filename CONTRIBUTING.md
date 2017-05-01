@@ -21,7 +21,7 @@ your local changes are appropriate to pull back into the original guidelines, pl
 - **Maintain the Guidelines** The C++ Core Guidelines were created from a wealth of knowledge spread across a number of organizations
 worldwide. If you or your organization is passionate about helping to create the guidelines, consider becoming an editor or maintainer. If
 you're a C++ expert who is serious about participating, please 
-[email coreguidelines@isocpp.org](mailto:coreguidelines@isocpp.org?subject=Maintain the C++ Code Guidelines).
+[email coreguidelines@isocpp.org](mailto:coreguidelines@isocpp.org?subject=Maintain%20the%20C++%20Code%20Guidelines).
  
 ## Contributor License Agreement
 By contributing content to the C++ Core Guidelines (i.e., submitting a pull request for inclusion in this repository) you agree with the 
