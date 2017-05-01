@@ -11076,9 +11076,11 @@ Unnamed constants embedded in expressions are easily overlooked and often hard t
 
 No, we don't all know that there are 12 months, numbered 1..12, in a year. Better:
 
-    constexpr int month_count = 12;   // months are numbered 1..12
+    // months are indexed 1..12
+    constexpr int first_month = 1;
+    constexpr int last_month = 12;
 
-    for (int m = first_month; m <= month_count; ++m)   // better
+    for (int m = first_month; m <= last_month; ++m)   // better
         cout << month[m] << '\n';
 
 Better still, don't expose constants:
