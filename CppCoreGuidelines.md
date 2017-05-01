@@ -1816,7 +1816,7 @@ so the default is "no ownership transfer."
 
 ##### Enforcement
 
-* (Simple) Warn on `delete` of a raw pointer that is not an `owner`.
+* (Simple) Warn on `delete` of a raw pointer that is not an `owner<T>`. Suggest use of standard-library resource handle or use of `owner<T>`.
 * (Simple) Warn on failure to either `reset` or explicitly `delete` an `owner` pointer on every code path.
 * (Simple) Warn if the return value of `new` or a function call with an `owner` return value is assigned to a raw pointer or non-`owner` reference.
 
