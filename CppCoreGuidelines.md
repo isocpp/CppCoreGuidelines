@@ -7302,7 +7302,7 @@ Contrast with [C.147](#Rh-ptr-cast), where failure is an error, and should not b
 
 ##### Example
 
-The example below describes a `Shape_owner` that takes ownership of constructed `Shape` objects. The objects are also sorted into views, according to their geometric attributes.
+The example below describes the `add` method of a `Shape_owner` that takes ownership of constructed `Shape` objects. The objects are also sorted into views, according to their geometric attributes.
 In this example, `Shape` does not inherit from `Geometric_attributes`. Only its subclasses do.
 
     void add(Shape* const item)
