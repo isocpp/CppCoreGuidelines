@@ -7296,15 +7296,57 @@ Casting to a reference expresses that you intend to end up with a valid object, 
 
 ##### Reason
 
-???
+A failure to find the required class will cause `dynamic_cast` to return a null value, and de-referencing a null-valued pointer will lead to undefined behaviour.
+Therefore the result of the `dynamic_cast` should always be treated as if it may contain a null value, and tested.
+
+If such a failure is contrary to your design, it should be an error; See [C.147](#Rh-ptr-cast).
 
 ##### Example
 
-    ???
+The example below describes a `ShapeOwner` that takes ownership of constructed `Shape` objects. The objects are also sorted into views, according to their geometric attributes.
+
+    #include <vector>
+    #include <memory>
+
+    struct GeometricAttribute { virtual ~GeometricAttribute() { } };
+
+    class TrilaterallySymmetrical : public GeometricAttribute { };
+    class EvenSided : public GeometricAttribute { };
+
+    struct Shape { virtual ~Shape() { } };
+
+    class Triangle : public Shape, public TrilaterallySymmetrical { };
+    class Square : public Shape, public EvenSided { };
+    class Hexagon : public Shape, public EvenSided, public TrilaterallySymmetrical { };
+
+    class ShapeOwner {
+      std::vector<std::unique_ptr<Shape>> owned;
+
+      std::vector<EvenSided *> view_of_evens;
+      std::vector<TrilaterallySymmetrical *> view_of_trisyms;
+
+      void add( Shape * const item )
+      {
+        // Ownership is always taken
+        owned.emplace_back( item );
+
+        // Check the GeometricAttributes and add the shape to none/one/some/all of the views
+
+        if( auto even = dynamic_cast<EvenSided * const>( item ) )
+        {
+          view_of_evens.emplace_back( even );
+        }
+
+        if( auto trisym = dynamic_cast<TrilaterallySymmetrical * const>( item ) )
+        {
+          view_of_trisyms.emplace_back( trisym );
+        }
+      }
+    };
 
 ##### Enforcement
 
-???
+* (Complex) Unless there is a null test on the result of a `dynamic_cast` of a pointer type, warn upon dereference of the pointer.
 
 ### <a name="Rh-smart"></a>C.149: Use `unique_ptr` or `shared_ptr` to avoid forgetting to `delete` objects created using `new`
 
