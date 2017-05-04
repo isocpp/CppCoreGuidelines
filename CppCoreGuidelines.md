@@ -7227,13 +7227,13 @@ the former (`dynamic_cast`) is far harder to implement correctly in general.
 Consider:
 
     struct B {
-        const char * name {"B"};
+        const char* name {"B"};
         virtual const char* id() const { return name; }
         // ...
     };
 
     struct D : B {
-        const char * name {"D"};
+        const char* name {"D"};
         const char* id() const override { return name; }
         // ...
     };
@@ -12717,7 +12717,7 @@ If a `thread` joins, we can safely pass pointers to objects in the scope of the 
 
 ##### Example
 
-    void f(int * p)
+    void f(int* p)
     {
         // ...
         *p = 99;
@@ -12756,7 +12756,7 @@ If a `thread` is detached, we can safely pass pointers to static and free store 
 
 ##### Example
 
-    void f(int * p)
+    void f(int* p)
     {
         // ...
         *p = 99;
@@ -17523,7 +17523,7 @@ See also
 Note how `>>` and `!=` are provided for `string` (as examples of useful operations) and there are no explicit
 allocations, deallocations, or range checks (`string` takes care of those).
 
-In C++17, we might use `string_view` as the argument, rather than `const string *` to allow more flexibility to callers:
+In C++17, we might use `string_view` as the argument, rather than `const string*` to allow more flexibility to callers:
 
     vector<string> read_until(string_view terminator)   // C++17
     {
