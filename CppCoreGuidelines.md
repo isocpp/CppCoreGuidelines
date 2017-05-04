@@ -7296,53 +7296,37 @@ Casting to a reference expresses that you intend to end up with a valid object, 
 
 ##### Reason
 
-A failure to find the required class will cause `dynamic_cast` to return a null value, and de-referencing a null-valued pointer will lead to undefined behaviour.
-Therefore the result of the `dynamic_cast` should always be treated as if it may contain a null value, and tested.
+The `dynamic_cast` conversion allows to test whether a pointer is pointing at a polymorphic object that has a given class in its hierarchy. Since failure to find the class merely returns a null value, it can be tested during run-time. This allows writing code that can choose alternative paths depending on the results.
 
-If such a failure is contrary to your design, it should be an error; See [C.147](#Rh-ptr-cast).
+Contrast with [C.147](#Rh-ptr-cast), where failure is an error, and should not be used for conditional execution.
 
 ##### Example
 
-The example below describes a `ShapeOwner` that takes ownership of constructed `Shape` objects. The objects are also sorted into views, according to their geometric attributes.
+The example below describes a `Shape_owner` that takes ownership of constructed `Shape` objects. The objects are also sorted into views, according to their geometric attributes.
+In this example, `Shape` does not inherit from `Geometric_attributes`. Only its subclasses do.
 
-    #include <vector>
-    #include <memory>
+    void add(Shape* const item)
+    {
+      // Ownership is always taken
+      owned_shapes.emplace_back(item);
 
-    struct GeometricAttribute { virtual ~GeometricAttribute() { } };
+      // Check the Geometric_attributes and add the shape to none/one/some/all of the views
 
-    class TrilaterallySymmetrical : public GeometricAttribute { };
-    class EvenSided : public GeometricAttribute { };
-
-    struct Shape { virtual ~Shape() { } };
-
-    class Triangle : public Shape, public TrilaterallySymmetrical { };
-    class Square : public Shape, public EvenSided { };
-    class Hexagon : public Shape, public EvenSided, public TrilaterallySymmetrical { };
-
-    class ShapeOwner {
-      std::vector<std::unique_ptr<Shape>> owned;
-
-      std::vector<EvenSided *> view_of_evens;
-      std::vector<TrilaterallySymmetrical *> view_of_trisyms;
-
-      void add(Shape * const item)
+      if (auto even = dynamic_cast<Even_sided*>(item))
       {
-        // Ownership is always taken
-        owned.emplace_back(item);
-
-        // Check the GeometricAttributes and add the shape to none/one/some/all of the views
-
-        if (auto even = dynamic_cast<EvenSided * const>(item))
-        {
-          view_of_evens.emplace_back(even);
-        }
-
-        if (auto trisym = dynamic_cast<TrilaterallySymmetrical * const>(item))
-        {
-          view_of_trisyms.emplace_back(trisym);
-        }
+        view_of_evens.emplace_back(even);
       }
-    };
+
+      if (auto trisym = dynamic_cast<Trilaterally_symmetrical*>(item))
+      {
+        view_of_trisyms.emplace_back(trisym);
+      }
+    }
+
+##### Notes
+
+A failure to find the required class will cause `dynamic_cast` to return a null value, and de-referencing a null-valued pointer will lead to undefined behavior.
+Therefore the result of the `dynamic_cast` should always be treated as if it may contain a null value, and tested.
 
 ##### Enforcement
 
