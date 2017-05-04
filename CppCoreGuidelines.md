@@ -7325,21 +7325,21 @@ The example below describes a `ShapeOwner` that takes ownership of constructed `
       std::vector<EvenSided *> view_of_evens;
       std::vector<TrilaterallySymmetrical *> view_of_trisyms;
 
-      void add( Shape * const item )
+      void add(Shape * const item)
       {
         // Ownership is always taken
-        owned.emplace_back( item );
+        owned.emplace_back(item);
 
         // Check the GeometricAttributes and add the shape to none/one/some/all of the views
 
-        if( auto even = dynamic_cast<EvenSided * const>( item ) )
+        if (auto even = dynamic_cast<EvenSided * const>(item))
         {
-          view_of_evens.emplace_back( even );
+          view_of_evens.emplace_back(even);
         }
 
-        if( auto trisym = dynamic_cast<TrilaterallySymmetrical * const>( item ) )
+        if (auto trisym = dynamic_cast<TrilaterallySymmetrical * const>(item))
         {
-          view_of_trisyms.emplace_back( trisym );
+          view_of_trisyms.emplace_back(trisym);
         }
       }
     };
