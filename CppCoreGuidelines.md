@@ -1137,7 +1137,7 @@ See
 There are many other kinds of tools, such as source code depositories, build tools, etc.,
 but those are beyond the scope of these guidelines.
 
-###### Note
+##### Note
 
 Be careful not to become dependent on over-elaborate or over-specialized tool chains.
 Those can make your otherwise portable code non-portable.
@@ -3898,7 +3898,7 @@ Note [multi-methods](https://parasol.tamu.edu/~yuriys/papers/OMM10.pdf).
 
 The language requires operators `=`, `()`, `[]`, and `->` to be members.
 
-###### Exception
+##### Exception
 
 An overload set may have some members that do not directly access `private` data:
 
@@ -6251,8 +6251,8 @@ Accessing objects in a hierarchy rule summary:
 
 * [C.145: Access polymorphic objects through pointers and references](#Rh-poly)
 * [C.146: Use `dynamic_cast` where class hierarchy navigation is unavoidable](#Rh-dynamic_cast)
-* [C.147: Use `dynamic_cast` to a reference type when failure to find the required class is considered an error](#Rh-ptr-cast)
-* [C.148: Use `dynamic_cast` to a pointer type when failure to find the required class is considered a valid alternative](#Rh-ref-cast)
+* [C.147: Use `dynamic_cast` to a reference type when failure to find the required class is considered an error](#Rh-ref-cast)
+* [C.148: Use `dynamic_cast` to a pointer type when failure to find the required class is considered a valid alternative](#Rh-ptr-cast)
 * [C.149: Use `unique_ptr` or `shared_ptr` to avoid forgetting to `delete` objects created using `new`](#Rh-smart)
 * [C.150: Use `make_unique()` to construct objects owned by `unique_ptr`s](#Rh-make_unique)
 * [C.151: Use `make_shared()` to construct objects owned by `shared_ptr`s](#Rh-make_shared)
@@ -7227,13 +7227,13 @@ the former (`dynamic_cast`) is far harder to implement correctly in general.
 Consider:
 
     struct B {
-        const char * name {"B"};
+        const char* name {"B"};
         virtual const char* id() const { return name; }
         // ...
     };
 
     struct D : B {
-        const char * name {"D"};
+        const char* name {"D"};
         const char* id() const override { return name; }
         // ...
     };
@@ -7278,7 +7278,7 @@ In very rare cases, if you have measured that the `dynamic_cast` overhead is mat
 
 Flag all uses of `static_cast` for downcasts, including C-style casts that perform a `static_cast`.
 
-### <a name="Rh-ptr-cast"></a>C.147: Use `dynamic_cast` to a reference type when failure to find the required class is considered an error
+### <a name="Rh-ref-cast"></a>C.147: Use `dynamic_cast` to a reference type when failure to find the required class is considered an error
 
 ##### Reason
 
@@ -7292,7 +7292,7 @@ Casting to a reference expresses that you intend to end up with a valid object, 
 
 ???
 
-### <a name="Rh-ref-cast"></a>C.148: Use `dynamic_cast` to a pointer type when failure to find the required class is considered a valid alternative
+### <a name="Rh-ptr-cast"></a>C.148: Use `dynamic_cast` to a pointer type when failure to find the required class is considered a valid alternative
 
 ##### Reason
 
@@ -7856,7 +7856,7 @@ A *naked union* is a union without an associated indicator which member (if any)
 so that the programmer has to keep track.
 Naked unions are a source of type errors.
 
-###### Example, bad
+##### Example, bad
 
     union Value {
         int x;
@@ -7879,7 +7879,7 @@ And, talking about "invisible", this code produced no output:
     v.x = 123;
     cout << v.d << '\n';    // BAD: undefined behavior
 
-###### Alternative
+##### Alternative
 
 Wrap a `union` in a class together with a type field.
 
@@ -10818,7 +10818,7 @@ There is no such thing.
 What looks to a human like a variable without a name is to the compiler a statement consisting of a temporary that immediately goes out of scope.
 To avoid unpleasant surprises.
 
-###### Example, bad
+##### Example, bad
 
     void f()
     {
@@ -12717,7 +12717,7 @@ If a `thread` joins, we can safely pass pointers to objects in the scope of the 
 
 ##### Example
 
-    void f(int * p)
+    void f(int* p)
     {
         // ...
         *p = 99;
@@ -12756,7 +12756,7 @@ If a `thread` is detached, we can safely pass pointers to static and free store 
 
 ##### Example
 
-    void f(int * p)
+    void f(int* p)
     {
         // ...
         *p = 99;
@@ -16857,7 +16857,7 @@ You can't partially specialize a function template per language rules. You can f
 
 If you intend for a class to match a concept, verifying that early saves users pain.
 
-###### Example
+##### Example
 
     class X {
         X() = delete;
@@ -16873,7 +16873,7 @@ Somewhere, possibly in an implementation file, let the compiler check the desire
     static_assert(Copyable<X>);                 // error: we forgot to define X's move constructor
 
 
-###### Enforcement
+##### Enforcement
 
 Not feasible.
 
@@ -17523,7 +17523,7 @@ See also
 Note how `>>` and `!=` are provided for `string` (as examples of useful operations) and there are no explicit
 allocations, deallocations, or range checks (`string` takes care of those).
 
-In C++17, we might use `string_view` as the argument, rather than `const string *` to allow more flexibility to callers:
+In C++17, we might use `string_view` as the argument, rather than `const string*` to allow more flexibility to callers:
 
     vector<string> read_until(string_view terminator)   // C++17
     {
@@ -17803,7 +17803,7 @@ and the `reserve(128)` is probably not worthwhile.
 Errors are typically best handled as soon as possible.
 If input isn't validated, every function must be written to cope with bad data (and that is not practical).
 
-###### Example
+##### Example
 
     ???
 
@@ -19528,7 +19528,7 @@ We value well-placed whitespace as a significant help for readability. Just don'
 
 Readability.
 
-###### Example
+##### Example
 
 Use digit separators to avoid long strings of digits
 
@@ -19536,7 +19536,7 @@ Use digit separators to avoid long strings of digits
     auto q2 = 0b0000'1111'0000'0000;
     auto ss_number = 123'456'7890;
 
-###### Example
+##### Example
 
 Use literal suffixes where clarification is needed
 
@@ -19544,13 +19544,13 @@ Use literal suffixes where clarification is needed
     auto world = "world";   // a C-style string
     auto interval = 100ms;  // using <chrono>
 
-###### Note
+##### Note
 
 Literals should not be sprinkled all over the code as ["magic constants"](#Res-magic),
 but it is still a good idea to make them readable where they are defined.
 It is easy to make a typo in a long string of integers.
 
-###### Enforcement
+##### Enforcement
 
 Flag long digit sequences. The trouble is to define "long"; maybe 7.
 
