@@ -1,6 +1,6 @@
 # <a name="main"></a>C++ Core Guidelines
 
-May 1, 2017
+May 7, 2017
 
 
 Editors:
@@ -14676,6 +14676,34 @@ Example:
 Note that this wrapper solution is a patch that should be used only when the declaration of `f()` cannot be be modified,
 e.g. because it is in a library that you cannot modify.
 
+##### Note
+
+A `const` member function can modify the value of an object that is `mutable` or accessed through a pointer member.
+A common use is to maintain a cache rather than repeatedly do a complicated computation.
+For example, here is a `Date` that caches (mnemonizes) its string representation to simplify repeated uses:
+
+    class Date {
+    public:
+        // ...
+        const string& string_ref() const
+        {
+            if (string_val=="") compute_string_rep();
+            return string_val;
+        }
+        // ...
+    private:
+        void compute_string_rep() const;    // compute string representation and place it in string_val
+        mutable string string_val;
+        // ...
+    };
+
+Another way of saying this is that `const`ness is not transitive.
+It is possible for a `const` member function to change the value of `mutable` members and the value of objects accessed
+through non-`const` pointers.
+It is the job of the class to ensure such mutation is done only when it makes sense according to the semantics (invariants)
+it offers to its users.
+
+See also [PIMPL](#???).
 
 ##### Enforcement
 
