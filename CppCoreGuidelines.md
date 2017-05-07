@@ -6251,8 +6251,8 @@ Accessing objects in a hierarchy rule summary:
 
 * [C.145: Access polymorphic objects through pointers and references](#Rh-poly)
 * [C.146: Use `dynamic_cast` where class hierarchy navigation is unavoidable](#Rh-dynamic_cast)
-* [C.147: Use `dynamic_cast` to a reference type when failure to find the required class is considered an error](#Rh-ref-cast)
-* [C.148: Use `dynamic_cast` to a pointer type when failure to find the required class is considered a valid alternative](#Rh-ptr-cast)
+* [C.147: Use `dynamic_cast` to a reference type when failure to find the required class is considered an error](#Rh-ptr-cast)
+* [C.148: Use `dynamic_cast` to a pointer type when failure to find the required class is considered a valid alternative](#Rh-ref-cast)
 * [C.149: Use `unique_ptr` or `shared_ptr` to avoid forgetting to `delete` objects created using `new`](#Rh-smart)
 * [C.150: Use `make_unique()` to construct objects owned by `unique_ptr`s](#Rh-make_unique)
 * [C.151: Use `make_shared()` to construct objects owned by `shared_ptr`s](#Rh-make_shared)
@@ -7278,7 +7278,7 @@ In very rare cases, if you have measured that the `dynamic_cast` overhead is mat
 
 Flag all uses of `static_cast` for downcasts, including C-style casts that perform a `static_cast`.
 
-### <a name="Rh-ref-cast"></a>C.147: Use `dynamic_cast` to a reference type when failure to find the required class is considered an error
+### <a name="Rh-ptr-cast"></a>C.147: Use `dynamic_cast` to a reference type when failure to find the required class is considered an error
 
 ##### Reason
 
@@ -7292,7 +7292,7 @@ Casting to a reference expresses that you intend to end up with a valid object, 
 
 ???
 
-### <a name="Rh-ptr-cast"></a>C.148: Use `dynamic_cast` to a pointer type when failure to find the required class is considered a valid alternative
+### <a name="Rh-ref-cast"></a>C.148: Use `dynamic_cast` to a pointer type when failure to find the required class is considered a valid alternative
 
 ##### Reason
 
