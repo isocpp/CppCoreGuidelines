@@ -13454,7 +13454,7 @@ Example with thread-safe static local variables of C++11.
     public:
         My_class()
         {
-            // ...
+            // do this only once
         }
     };
 
@@ -13469,42 +13469,48 @@ Example with thread-safe static local variables of C++11.
 
 Double-checked locking is easy to mess up. If you really need to write your own double-checked locking, in spite of the rules [CP.110: Do not write your own double-checked locking for initialization](#Rconc-double) and [CP.100: Don't use lock-free programming unless you absolutely have to](#Rconc-lockfree), then do it in a conventional pattern.
 
+The uses of double-checked locking pattern that are not in violation of [CP.110: Do not write your own double-checked locking for initialization](#Rconc-double) arise when a non-thread-safe action is both hard and rare, and there exists a fast thread-safe test that can be used to guarantees that the action is not needed, but cannot be used to guarantee the converse.
+
 ##### Example, bad
 
-Even if the following example works correctly on most hardware platforms, it is not guaranteed to work by the C++ standard. The x_init.load(memory_order_relaxed) call may see a value from outside of the lock guard.
+The use of volatile does not make the first check thread-safe, see also [CP.200: Use `volatile` only to talk to non-C++ memory](#Rconc-volatile2)
 
-    atomic<bool> x_init;
+    mutex action_mutex;
+    volatile bool action_needed;
 
-    if (!x_init.load(memory_order_acquire)) {
-        lock_guard<mutex> lck(x_mutex);
-        if (!x_init.load(memory_order_relaxed)) {
-            // ... initialize x ...
-            x_init.store(true, memory_order_release);
+    if (action_needed) {
+        std::lock_guard<std::mutex> lock(action_mutex);
+        if (action_needed) {
+            take_action();
+            action_needed = false;
         }
     }
 
 ##### Example, good
 
-One of the conventional patterns is below.
+    mutex action_mutex;
+    atomic<bool> action_needed;
 
-    std::atomic<int> state;
-
-    // If state == SOME_ACTION_NEEDED maybe an action is needed, maybe not, we need to
-    // check again in a lock. However, if state != SOME_ACTION_NEEDED, then we can be
-    // sure that an action is not needed. This is the basic assumption of double-checked
-    // locking.
-
-    if (state == SOME_ACTION_NEEDED)
-    {
-        std::lock_guard<std::mutex> lock(mutex);
-        if (state == SOME_ACTION_NEEDED)
-        {
-            // do something
-            state = NO_ACTION_NEEDED;
+    if (action_needed) {
+        std::lock_guard<std::mutex> lock(action_mutex);
+        if (action_needed) {
+            take_action();
+            action_needed = false;
         }
     }
 
-In the example above (state == SOME_ACTION_NEEDED) could be any condition. It doesn't necessarily needs to be equality comparison. For example, it could as well be (size > MIN_SIZE_TO_TAKE_ACTION).
+Fine-tuned memory order may be beneficial where acquire load is more efficient than sequentially-consistent load
+
+    mutex action_mutex;
+    atomic<bool> action_needed;
+
+    if (action_needed.load(memory_order_acquire)) {
+        lock_guard<std::mutex> lock(action_mutex);
+        if (action_needed.load(memory_order_relaxed)) {
+            take_action();
+            action_needed.store(false, memory_order_release);
+        }
+    }
 
 ##### Enforcement
 
