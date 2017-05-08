@@ -1,10 +1,9 @@
 ---
 layout: default
 ---
-
 # <a name="main"></a>C++ Core Guidelines
 
-May 1, 2017
+May 8, 2017
 
 
 Editors:
@@ -1141,7 +1140,7 @@ See
 There are many other kinds of tools, such as source code depositories, build tools, etc.,
 but those are beyond the scope of these guidelines.
 
-###### Note
+##### Note
 
 Be careful not to become dependent on over-elaborate or over-specialized tool chains.
 Those can make your otherwise portable code non-portable.
@@ -1820,7 +1819,7 @@ so the default is "no ownership transfer."
 
 ##### Enforcement
 
-* (Simple) Warn on `delete` of a raw pointer that is not an `owner`.
+* (Simple) Warn on `delete` of a raw pointer that is not an `owner<T>`. Suggest use of standard-library resource handle or use of `owner<T>`.
 * (Simple) Warn on failure to either `reset` or explicitly `delete` an `owner` pointer on every code path.
 * (Simple) Warn if the return value of `new` or a function call with an `owner` return value is assigned to a raw pointer or non-`owner` reference.
 
@@ -3902,7 +3901,7 @@ Note [multi-methods](https://parasol.tamu.edu/~yuriys/papers/OMM10.pdf).
 
 The language requires operators `=`, `()`, `[]`, and `->` to be members.
 
-###### Exception
+##### Exception
 
 An overload set may have some members that do not directly access `private` data:
 
@@ -4991,7 +4990,7 @@ Many language and library facilities rely on default constructors to initialize 
     };
 
     vector<Date> vd1(1000);   // default Date needed here
-    vector<Date> vd2(1000, Date{Month::october, 7, 1885});   // alternative
+    vector<Date> vd2(1000, Date{Month::October, 7, 1885});   // alternative
 
 The default constructor is only auto-generated if there is no user-declared constructor, hence it's impossible to initialize the vector `vd1` in the example above.
 
@@ -6255,8 +6254,8 @@ Accessing objects in a hierarchy rule summary:
 
 * [C.145: Access polymorphic objects through pointers and references](#Rh-poly)
 * [C.146: Use `dynamic_cast` where class hierarchy navigation is unavoidable](#Rh-dynamic_cast)
-* [C.147: Use `dynamic_cast` to a reference type when failure to find the required class is considered an error](#Rh-ptr-cast)
-* [C.148: Use `dynamic_cast` to a pointer type when failure to find the required class is considered a valid alternative](#Rh-ref-cast)
+* [C.147: Use `dynamic_cast` to a reference type when failure to find the required class is considered an error](#Rh-ref-cast)
+* [C.148: Use `dynamic_cast` to a pointer type when failure to find the required class is considered a valid alternative](#Rh-ptr-cast)
 * [C.149: Use `unique_ptr` or `shared_ptr` to avoid forgetting to `delete` objects created using `new`](#Rh-smart)
 * [C.150: Use `make_unique()` to construct objects owned by `unique_ptr`s](#Rh-make_unique)
 * [C.151: Use `make_shared()` to construct objects owned by `shared_ptr`s](#Rh-make_shared)
@@ -6987,7 +6986,7 @@ Factoring out `Utility` makes sense if many derived classes share significant "i
 Obviously, the example is too "theoretical", but it is hard to find a *small* realistic example.
 `Interface` is the root of an [interface hierarchy](#Rh-abstract)
 and `Utility` is the root of an [implementation hierarchy](Rh-kind).
-Here is [a slightly more realistic example](https://www.quora.com/What-are-the-uses-and-advantages-of-virtual-base-class-in-C%2B%2B/answer/Lance-Diduck?srid=tzNb) with an explanation.
+Here is [a slightly more realistic example](https://www.quora.com/What-are-the-uses-and-advantages-of-virtual-base-class-in-C%2B%2B/answer/Lance-Diduck) with an explanation.
 
 ##### Note
 
@@ -7231,13 +7230,13 @@ the former (`dynamic_cast`) is far harder to implement correctly in general.
 Consider:
 
     struct B {
-        const char * name {"B"};
+        const char* name {"B"};
         virtual const char* id() const { return name; }
         // ...
     };
 
     struct D : B {
-        const char * name {"D"};
+        const char* name {"D"};
         const char* id() const override { return name; }
         // ...
     };
@@ -7282,7 +7281,7 @@ In very rare cases, if you have measured that the `dynamic_cast` overhead is mat
 
 Flag all uses of `static_cast` for downcasts, including C-style casts that perform a `static_cast`.
 
-### <a name="Rh-ptr-cast"></a>C.147: Use `dynamic_cast` to a reference type when failure to find the required class is considered an error
+### <a name="Rh-ref-cast"></a>C.147: Use `dynamic_cast` to a reference type when failure to find the required class is considered an error
 
 ##### Reason
 
@@ -7296,19 +7295,45 @@ Casting to a reference expresses that you intend to end up with a valid object, 
 
 ???
 
-### <a name="Rh-ref-cast"></a>C.148: Use `dynamic_cast` to a pointer type when failure to find the required class is considered a valid alternative
+### <a name="Rh-ptr-cast"></a>C.148: Use `dynamic_cast` to a pointer type when failure to find the required class is considered a valid alternative
 
 ##### Reason
 
-???
+The `dynamic_cast` conversion allows to test whether a pointer is pointing at a polymorphic object that has a given class in its hierarchy. Since failure to find the class merely returns a null value, it can be tested during run-time. This allows writing code that can choose alternative paths depending on the results.
+
+Contrast with [C.147](#Rh-ptr-cast), where failure is an error, and should not be used for conditional execution.
 
 ##### Example
 
-    ???
+The example below describes the `add` method of a `Shape_owner` that takes ownership of constructed `Shape` objects. The objects are also sorted into views, according to their geometric attributes.
+In this example, `Shape` does not inherit from `Geometric_attributes`. Only its subclasses do.
+
+    void add(Shape* const item)
+    {
+      // Ownership is always taken
+      owned_shapes.emplace_back(item);
+
+      // Check the Geometric_attributes and add the shape to none/one/some/all of the views
+
+      if (auto even = dynamic_cast<Even_sided*>(item))
+      {
+        view_of_evens.emplace_back(even);
+      }
+
+      if (auto trisym = dynamic_cast<Trilaterally_symmetrical*>(item))
+      {
+        view_of_trisyms.emplace_back(trisym);
+      }
+    }
+
+##### Notes
+
+A failure to find the required class will cause `dynamic_cast` to return a null value, and de-referencing a null-valued pointer will lead to undefined behavior.
+Therefore the result of the `dynamic_cast` should always be treated as if it may contain a null value, and tested.
 
 ##### Enforcement
 
-???
+* (Complex) Unless there is a null test on the result of a `dynamic_cast` of a pointer type, warn upon dereference of the pointer.
 
 ### <a name="Rh-smart"></a>C.149: Use `unique_ptr` or `shared_ptr` to avoid forgetting to `delete` objects created using `new`
 
@@ -7860,7 +7885,7 @@ A *naked union* is a union without an associated indicator which member (if any)
 so that the programmer has to keep track.
 Naked unions are a source of type errors.
 
-###### Example, bad
+##### Example, bad
 
     union Value {
         int x;
@@ -7883,7 +7908,7 @@ And, talking about "invisible", this code produced no output:
     v.x = 123;
     cout << v.d << '\n';    // BAD: undefined behavior
 
-###### Alternative
+##### Alternative
 
 Wrap a `union` in a class together with a type field.
 
@@ -10822,7 +10847,7 @@ There is no such thing.
 What looks to a human like a variable without a name is to the compiler a statement consisting of a temporary that immediately goes out of scope.
 To avoid unpleasant surprises.
 
-###### Example, bad
+##### Example, bad
 
     void f()
     {
@@ -12410,7 +12435,7 @@ The less sharing you do, the less chance you have to wait on a lock (so performa
         socket1 >> surface_readings;
         if (!socket1) throw Bad_input{};
 
-        auto h1 = async([&] { if (!validate(surface_readings) throw Invalide_data{}; });
+        auto h1 = async([&] { if (!validate(surface_readings) throw Invalid_data{}; });
         auto h2 = async([&] { return temperature_gradiants(surface_readings); });
         auto h3 = async([&] { return altitude_map(surface_readings); });
         // ...
@@ -12721,7 +12746,7 @@ If a `thread` joins, we can safely pass pointers to objects in the scope of the 
 
 ##### Example
 
-    void f(int * p)
+    void f(int* p)
     {
         // ...
         *p = 99;
@@ -12760,7 +12785,7 @@ If a `thread` is detached, we can safely pass pointers to static and free store 
 
 ##### Example
 
-    void f(int * p)
+    void f(int* p)
     {
         // ...
         *p = 99;
@@ -13458,7 +13483,7 @@ Example with thread-safe static local variables of C++11.
     public:
         My_class()
         {
-            // ...
+            // do this only once
         }
     };
 
@@ -13473,42 +13498,48 @@ Example with thread-safe static local variables of C++11.
 
 Double-checked locking is easy to mess up. If you really need to write your own double-checked locking, in spite of the rules [CP.110: Do not write your own double-checked locking for initialization](#Rconc-double) and [CP.100: Don't use lock-free programming unless you absolutely have to](#Rconc-lockfree), then do it in a conventional pattern.
 
+The uses of double-checked locking pattern that are not in violation of [CP.110: Do not write your own double-checked locking for initialization](#Rconc-double) arise when a non-thread-safe action is both hard and rare, and there exists a fast thread-safe test that can be used to guarantees that the action is not needed, but cannot be used to guarantee the converse.
+
 ##### Example, bad
 
-Even if the following example works correctly on most hardware platforms, it is not guaranteed to work by the C++ standard. The x_init.load(memory_order_relaxed) call may see a value from outside of the lock guard.
+The use of volatile does not make the first check thread-safe, see also [CP.200: Use `volatile` only to talk to non-C++ memory](#Rconc-volatile2)
 
-    atomic<bool> x_init;
+    mutex action_mutex;
+    volatile bool action_needed;
 
-    if (!x_init.load(memory_order_acquire)) {
-        lock_guard<mutex> lck(x_mutex);
-        if (!x_init.load(memory_order_relaxed)) {
-            // ... initialize x ...
-            x_init.store(true, memory_order_release);
+    if (action_needed) {
+        std::lock_guard<std::mutex> lock(action_mutex);
+        if (action_needed) {
+            take_action();
+            action_needed = false;
         }
     }
 
 ##### Example, good
 
-One of the conventional patterns is below.
+    mutex action_mutex;
+    atomic<bool> action_needed;
 
-    std::atomic<int> state;
-
-    // If state == SOME_ACTION_NEEDED maybe an action is needed, maybe not, we need to
-    // check again in a lock. However, if state != SOME_ACTION_NEEDED, then we can be
-    // sure that an action is not needed. This is the basic assumption of double-checked
-    // locking.
-
-    if (state == SOME_ACTION_NEEDED)
-    {
-        std::lock_guard<std::mutex> lock(mutex);
-        if (state == SOME_ACTION_NEEDED)
-        {
-            // do something
-            state = NO_ACTION_NEEDED;
+    if (action_needed) {
+        std::lock_guard<std::mutex> lock(action_mutex);
+        if (action_needed) {
+            take_action();
+            action_needed = false;
         }
     }
 
-In the example above (state == SOME_ACTION_NEEDED) could be any condition. It doesn't necessarily needs to be equality comparison. For example, it could as well be (size > MIN_SIZE_TO_TAKE_ACTION).
+Fine-tuned memory order may be beneficial where acquire load is more efficient than sequentially-consistent load
+
+    mutex action_mutex;
+    atomic<bool> action_needed;
+
+    if (action_needed.load(memory_order_acquire)) {
+        lock_guard<std::mutex> lock(action_mutex);
+        if (action_needed.load(memory_order_relaxed)) {
+            take_action();
+            action_needed.store(false, memory_order_release);
+        }
+    }
 
 ##### Enforcement
 
@@ -14680,6 +14711,34 @@ Example:
 Note that this wrapper solution is a patch that should be used only when the declaration of `f()` cannot be be modified,
 e.g. because it is in a library that you cannot modify.
 
+##### Note
+
+A `const` member function can modify the value of an object that is `mutable` or accessed through a pointer member.
+A common use is to maintain a cache rather than repeatedly do a complicated computation.
+For example, here is a `Date` that caches (mnemonizes) its string representation to simplify repeated uses:
+
+    class Date {
+    public:
+        // ...
+        const string& string_ref() const
+        {
+            if (string_val=="") compute_string_rep();
+            return string_val;
+        }
+        // ...
+    private:
+        void compute_string_rep() const;    // compute string representation and place it in string_val
+        mutable string string_val;
+        // ...
+    };
+
+Another way of saying this is that `const`ness is not transitive.
+It is possible for a `const` member function to change the value of `mutable` members and the value of objects accessed
+through non-`const` pointers.
+It is the job of the class to ensure such mutation is done only when it makes sense according to the semantics (invariants)
+it offers to its users.
+
+See also [PIMPL](#???).
 
 ##### Enforcement
 
@@ -16861,7 +16920,7 @@ You can't partially specialize a function template per language rules. You can f
 
 If you intend for a class to match a concept, verifying that early saves users pain.
 
-###### Example
+##### Example
 
     class X {
         X() = delete;
@@ -16877,7 +16936,7 @@ Somewhere, possibly in an implementation file, let the compiler check the desire
     static_assert(Copyable<X>);                 // error: we forgot to define X's move constructor
 
 
-###### Enforcement
+##### Enforcement
 
 Not feasible.
 
@@ -17274,17 +17333,28 @@ Flag `using namespace` at global scope in a header file.
 
 To avoid files being `#include`d several times.
 
+In order to avoid include guard collisions, do not just name the guard after the filename.
+Be sure to also include a key and good differentiator, such as the name of library or component
+the header file is part of.
+
 ##### Example
 
     // file foobar.h:
-    #ifndef FOOBAR_H
-    #define FOOBAR_H
+    #ifndef LIBRARY_FOOBAR_H
+    #define LIBRARY_FOOBAR_H
     // ... declarations ...
-    #endif // FOOBAR_H
+    #endif // LIBRARY_FOOBAR_H
 
 ##### Enforcement
 
 Flag `.h` files without `#include` guards.
+
+#####  Note
+
+Some implementations offer vendor extensions like `#pragma once` as alternative to include guards.
+It is not standard and it is not portable.  It injects the hosting machine's filesystem semantics
+into your program, in addition to locking you down to a vendor.
+Our recommendation is to write in ISO C++: See [rule P.2]((#Rp-Cplusplus).
 
 ### <a name="Rs-cycles"></a>SF.9: Avoid cyclic dependencies among source files
 
@@ -17527,7 +17597,7 @@ See also
 Note how `>>` and `!=` are provided for `string` (as examples of useful operations) and there are no explicit
 allocations, deallocations, or range checks (`string` takes care of those).
 
-In C++17, we might use `string_view` as the argument, rather than `const string *` to allow more flexibility to callers:
+In C++17, we might use `string_view` as the argument, rather than `const string*` to allow more flexibility to callers:
 
     vector<string> read_until(string_view terminator)   // C++17
     {
@@ -17807,7 +17877,7 @@ and the `reserve(128)` is probably not worthwhile.
 Errors are typically best handled as soon as possible.
 If input isn't validated, every function must be written to cope with bad data (and that is not practical).
 
-###### Example
+##### Example
 
     ???
 
@@ -19532,7 +19602,7 @@ We value well-placed whitespace as a significant help for readability. Just don'
 
 Readability.
 
-###### Example
+##### Example
 
 Use digit separators to avoid long strings of digits
 
@@ -19540,7 +19610,7 @@ Use digit separators to avoid long strings of digits
     auto q2 = 0b0000'1111'0000'0000;
     auto ss_number = 123'456'7890;
 
-###### Example
+##### Example
 
 Use literal suffixes where clarification is needed
 
@@ -19548,13 +19618,13 @@ Use literal suffixes where clarification is needed
     auto world = "world";   // a C-style string
     auto interval = 100ms;  // using <chrono>
 
-###### Note
+##### Note
 
 Literals should not be sprinkled all over the code as ["magic constants"](#Res-magic),
 but it is still a good idea to make them readable where they are defined.
 It is easy to make a typo in a long string of integers.
 
-###### Enforcement
+##### Enforcement
 
 Flag long digit sequences. The trouble is to define "long"; maybe 7.
 
@@ -20599,7 +20669,7 @@ In particular, an object of a regular type can be copied and the result of a cop
 * *rounding*: conversion of a value to the mathematically nearest value of a less precise type.
 * *RTTI*: Run-Time Type Information. ???
 * *scope*: the region of program text (source code) in which a name can be referred to.
-* *semiregular*: a type that behaves roughtly like an built-in type like `int`, but possibly without a `==` operator. See also *regular type*.
+* *semiregular*: a type that behaves roughly like an built-in type like `int`, but possibly without a `==` operator. See also *regular type*.
 * *sequence*: elements that can be visited in a linear order.
 * *software*: a collection of pieces of code and associated data; often used interchangeably with program.
 * *source code*: code as produced by a programmer and (in principle) readable by other programmers.
