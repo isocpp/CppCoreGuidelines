@@ -1,6 +1,6 @@
 # <a name="main"></a>C++ Core Guidelines
 
-May 7, 2017
+May 8, 2017
 
 
 Editors:
@@ -4987,7 +4987,7 @@ Many language and library facilities rely on default constructors to initialize 
     };
 
     vector<Date> vd1(1000);   // default Date needed here
-    vector<Date> vd2(1000, Date{Month::october, 7, 1885});   // alternative
+    vector<Date> vd2(1000, Date{Month::October, 7, 1885});   // alternative
 
 The default constructor is only auto-generated if there is no user-declared constructor, hence it's impossible to initialize the vector `vd1` in the example above.
 
@@ -12432,7 +12432,7 @@ The less sharing you do, the less chance you have to wait on a lock (so performa
         socket1 >> surface_readings;
         if (!socket1) throw Bad_input{};
 
-        auto h1 = async([&] { if (!validate(surface_readings) throw Invalide_data{}; });
+        auto h1 = async([&] { if (!validate(surface_readings) throw Invalid_data{}; });
         auto h2 = async([&] { return temperature_gradiants(surface_readings); });
         auto h3 = async([&] { return altitude_map(surface_readings); });
         // ...
