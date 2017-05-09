@@ -11235,6 +11235,7 @@ If you feel the need for a lot of casts, there may be a fundamental design probl
 * Force the elimination of C-style casts
 * Warn against named casts
 * Warn if there are many functional style casts (there is an obvious problem in quantifying 'many').
+* Warn against unnecessary casts.
 
 ### <a name="Res-casts-named"></a>ES.49: If you must use a cast, use a named cast
 
@@ -11287,7 +11288,8 @@ for example.)
 
 ##### Enforcement
 
-Flag C-style and functional casts.
+* Flag C-style and functional casts.
+* Suggest brace initialization or gsl::narrow_cast instead of named casts on arithmetic types.
 
 ### <a name="Res-casts-const"></a>ES.50: Don't cast away `const`
 
@@ -18570,7 +18572,9 @@ Use of these casts can violate type safety and cause the program to access a var
 
 ##### Enforcement
 
-Issue a diagnostic for any use of `reinterpret_cast`. To fix: Consider using a `variant` instead.
+* Issue a diagnostic for any use of `reinterpret_cast`. To fix: Consider using a `variant` instead.
+* Issue a separate diagnostic for any reinterpret_cast to void*.  To fix: Remove the cast and allow the implicit type conversion.
+* Issue a separate diagnostic for any reinterpret_cast from void*.  To fix: Use static_cast instead
 
 ### <a name="Pro-type-downcast"></a>Type.2: Don't use `static_cast` downcasts. Use `dynamic_cast` instead.
 
