@@ -13495,7 +13495,7 @@ Example with thread-safe static local variables of C++11.
 
 Double-checked locking is easy to mess up. If you really need to write your own double-checked locking, in spite of the rules [CP.110: Do not write your own double-checked locking for initialization](#Rconc-double) and [CP.100: Don't use lock-free programming unless you absolutely have to](#Rconc-lockfree), then do it in a conventional pattern.
 
-The uses of double-checked locking pattern that are not in violation of [CP.110: Do not write your own double-checked locking for initialization](#Rconc-double) arise when a non-thread-safe action is both hard and rare, and there exists a fast thread-safe test that can be used to guarantees that the action is not needed, but cannot be used to guarantee the converse.
+The uses of the double-checked locking pattern that are not in violation of [CP.110: Do not write your own double-checked locking for initialization](#Rconc-double) arise when a non-thread-safe action is both hard and rare, and there exists a fast thread-safe test that can be used to guarantee that the action is not needed, but cannot be used to guarantee the converse.
 
 ##### Example, bad
 
@@ -14719,7 +14719,7 @@ For example, here is a `Date` that caches (mnemonizes) its string representation
         // ...
         const string& string_ref() const
         {
-            if (string_val=="") compute_string_rep();
+            if (string_val == "") compute_string_rep();
             return string_val;
         }
         // ...
@@ -17346,12 +17346,12 @@ the header file is part of.
 
 Flag `.h` files without `#include` guards.
 
-#####  Note
+##### Note
 
 Some implementations offer vendor extensions like `#pragma once` as alternative to include guards.
 It is not standard and it is not portable.  It injects the hosting machine's filesystem semantics
 into your program, in addition to locking you down to a vendor.
-Our recommendation is to write in ISO C++: See [rule P.2]((#Rp-Cplusplus).
+Our recommendation is to write in ISO C++: See [rule P.2](#Rp-Cplusplus).
 
 ### <a name="Rs-cycles"></a>SF.9: Avoid cyclic dependencies among source files
 

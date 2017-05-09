@@ -164,6 +164,7 @@ fib10
 file1
 file2
 file3
+filesystem
 flag1
 fmt
 fn
@@ -289,6 +290,7 @@ microbenchmarks
 middleware
 mixin
 mixins
+mnemonizes
 modify1
 modify2
 moredata
@@ -367,6 +369,7 @@ PortHandle
 PostInitialize
 pp216
 PPP
+pragma
 pre
 Pre
 precomputation
