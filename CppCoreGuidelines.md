@@ -324,8 +324,9 @@ Also, suggest an improvement.
 
 ## <a name="SS-force"></a>In.force: Enforcement
 
-Rules with no enforcement are unmanageable for large code bases.
-Enforcement of all rules is possible only for a small weak set of rules or for a specific user community.
+Rules without mechanical enforcement are unmanageable for large code bases.
+Enforcement of all rules is possible only for a specific user community.
+Mechanical enforcement is possible only for a small weak set of rules.
 
 * But we want lots of rules, and we want rules that everybody can use.
 * But different people have different needs.
