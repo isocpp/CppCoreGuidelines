@@ -4260,8 +4260,8 @@ Other default operations rules:
 * [C.81: Use `=delete` when you want to disable default behavior (without wanting an alternative)](#Rc-delete)
 * [C.82: Don't call virtual functions in constructors and destructors](#Rc-ctor-virtual)
 * [C.83: For value-like types, consider providing a `noexcept` swap function](#Rc-swap)
-* [C.84: A `swap` may not fail](#Rc-swap-fail)
-* [C.85: Make `swap` `noexcept`](#Rc-swap-noexcept)
+* [C.84: Make `swap` `noexcept` as it may not fail](#Rc-swap-fail)
+* [C.85: If a user defined `swap` member function is used, a namespace-level `swap(a, b)` function should be provided](#Rc-swap-namespace)
 * [C.86: Make `==` symmetric with respect of operand types and `noexcept`](#Rc-eq)
 * [C.87: Beware of `==` on base classes](#Rc-eq-base)
 * [C.89: Make a `hash` `noexcept`](#Rc-hash)
@@ -6024,7 +6024,7 @@ Providing a nonmember `swap` function in the same namespace as your type for cal
 * (Simple) A class without virtual functions should have a `swap` member function declared.
 * (Simple) When a class has a `swap` member function, it should be declared `noexcept`.
 
-### <a name="Rc-swap-fail"></a>C.84: A `swap` function may not fail
+### <a name="Rc-swap-fail"></a>C.84: Make `swap` `noexcept` as it may not fail
 
 ##### Reason
 
@@ -6045,16 +6045,34 @@ This is not just slow, but if a memory allocation occurs for the elements in `tm
 
 (Simple) When a class has a `swap` member function, it should be declared `noexcept`.
 
-### <a name="Rc-swap-noexcept"></a>C.85: Make `swap` `noexcept`
+### <a name="Rc-swap-namespace"></a>C.85: If a user defined swap member function is used, a namespace-level swap(a, b) function should be provided
 
 ##### Reason
 
- [A `swap` may not fail](#Rc-swap-fail).
-If a `swap` tries to exit with an exception, it's a bad design error and the program had better terminate.
+If a member has a swap function there should be a namespace level `swap(a, b)` function implemented as well. Such an additional function enables the Argument Dependent Lookup (ADL) to choose the best fitting function for the call. This makes it possible to implement a specialised swap function which can improve the swap process based on the non-static data members of the respective class.
+
+##### Example
+
+    namespace swap {
+        class Swappable {
+            void swap (Swappable &other) {
+                //swap implementation
+            }
+        };
+
+        void swap(Swappable &a, Swappable &b) { //namespace-level swap function
+            a.swap(b);
+        }
+    }
+
+##### Note
+
+For an example it may be enough to only swap a member field and not the whole member or the cache of the member can be disregarded for the swap process, resulting in a slimmer and better performing swap function.
+Additionally a lot of `<algorithm>` functions use the `swap(a, b)` syntax which would as well use the namespace-level one.
 
 ##### Enforcement
 
-(Simple) When a class has a `swap` member function, it should be declared `noexcept`.
+(Simple) When a class has a `swap` member function, there should be a `swap(a, b)` function in the same namespace.
 
 ### <a name="Rc-eq"></a>C.86: Make `==` symmetric with respect to operand types and `noexcept`
 
