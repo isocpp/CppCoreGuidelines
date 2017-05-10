@@ -6141,6 +6141,46 @@ It is really hard to write a foolproof and useful `==` for a hierarchy.
 
 Of course there are ways of making `==` work in a hierarchy, but the naive approaches do not scale
 
+One particular way of making it work can be seen below, by implementing a function that does the comparison. Whether the function is virtual or not depends on your aims. With a virtual function the comparison will work even with baseclass pointers, with a non-virtual function it will not. Do not forget to call the specific A::equals function specifically if you make the function virtual.
+
+##### Example; good
+
+    class A
+    {
+    private:
+        int id;
+    
+    protected:
+        bool equals(const A& other)
+        {
+            return id == other.id;
+        }
+    
+    public:
+        bool operator==(const A& other)
+        {
+            return equals(other);
+        }
+    };
+
+    class B : public A
+    {
+    private:
+        int id2;
+    
+    protected:
+        bool equals(const B& other)
+        {
+            return id2 == other.id2 && A::equals(other);
+        }
+    
+    public:
+        bool operator==(const B& other)
+        {
+            return equals(other);
+        }
+    };
+
 #### Note
 
 This rule applies to all the usual comparison operators: `!=`, `<`, `<=`, `>`, and `>=`.
