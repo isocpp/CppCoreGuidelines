@@ -9248,6 +9248,7 @@ Expression rules:
 * [ES.61: Delete arrays using `delete[]` and non-arrays using `delete`](#Res-del)
 * [ES.62: Don't compare pointers into different arrays](#Res-arr2)
 * [ES.63: Don't slice](#Res-slice)
+* [ES.64: Don't use the comma operator](#Res-comma)
 
 Statement rules:
 
@@ -11639,6 +11640,34 @@ For example:
 ##### Enforcement
 
 Warn against slicing.
+
+### <a name="Res-comma"></a>ES.64: Don't use the comma operator
+
+##### Reason
+
+In C++, (a,b) evaluates to b. This is called the "comma operator".
+
+Except very few legitimate cases, the comma operator makes the code unreadable; in the worst case the comma operator is an unintended typo in the code.
+
+##### Example
+
+    // Compiles fine but this is a typo. The intention was 1.8
+    double fahrenheit = (celcius * 1,8) + 32;
+
+Remember that in some countries the decimal separator sign is comma. It is easy to confuse 1.8 and 1,8. In this example (celcius * 1,8) is interpreted as (a,b) where a is celcius*1 and b is 8. Therefore it always evaluates to 8.
+
+##### Exception
+
+It is common practice to use the comma operator in the initialization or increase expression of a for statement. For example:
+
+    for(i=0, j=9; i<10; ++i, --j)  
+
+##### Enforcement  
+  
+* Ban all comma-operators where the left expression has no side effects.  
+* Flag for review other uses of comma-operators, except the initialization or increase expression of a for statement.  
+
+**See also**: [F.1](#Rf-package). The shortest code is not always the best for performance or maintainability.
 
 ## <a name="SS-numbers"></a>Arithmetic
 
