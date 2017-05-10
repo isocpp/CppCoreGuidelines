@@ -1556,7 +1556,7 @@ Consider using:
     int area(int height, int width)
     {
         auto res = height * width;
-        Ensures(res > 0);
+        Ensures(res >= 0);
         return res;
     }
 
