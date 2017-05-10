@@ -18442,6 +18442,7 @@ A textbook for beginners and relative novices.
 * Bjarne Stroustrup: [The Essence of C++: With Examples in C++84, C++98, C++11, and C++14](http://channel9.msdn.com/Events/GoingNative/2013/Opening-Keynote-Bjarne-Stroustrup). 2013
 * All the talks from [CppCon '14](https://isocpp.org/blog/2014/11/cppcon-videos-c9)
 * Bjarne Stroustrup: [The essence of C++](https://www.youtube.com/watch?v=86xWVb4XIyE) at the University of Edinburgh. 2014.
+* Bartosz Milewski: [Introduction to C++ Concurrency LiveLessons (Video Training)](http://www.informit.com/store/introduction-to-c-plus-plus-concurrency-livelessons-9780134031484)
 * Sutter: ???
 * CppCon 15
 * ??? C++ Next
