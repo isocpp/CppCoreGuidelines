@@ -18819,7 +18819,7 @@ Reading from a union member assumes that member was the last one written, and wr
     use(u.get<int>()); // ok
     use(u.get<double>()); // throws ??? update this when standardization finalizes the variant design
 
-Note that just copying a union is not type-unsafe, so safe code can pass a union from one piece of unsafe code to another.
+Note that just copying a union is type-safe, so safe code can pass a union from one piece of unsafe code to another.
 
 ##### Enforcement
 
