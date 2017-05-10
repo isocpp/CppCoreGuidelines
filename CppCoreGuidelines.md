@@ -2617,7 +2617,7 @@ that is
 
 ##### Reason
 
-Pure functions are easier to reason about, sometimes easier to optimize (and even parallelize), and sometimes can be memoized.
+Pure functions are easier to reason about, sometimes easier to optimize (and even parallelize), and sometimes can be memorized.
 
 ##### Example
 
