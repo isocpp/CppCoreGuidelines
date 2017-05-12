@@ -19128,52 +19128,12 @@ The following are specific rules that are being enforced.
 
 Lifetime safety profile summary:
 
-* [Lifetime.1: Don't dereference a possibly null pointer.](#Pro-lifetime-null-deref)
-* [Lifetime.2: Don't dereference a possibly invalid pointer.](#Pro-lifetime-invalid-deref)
+* [Lifetime.1: Don't dereference a possibly invalid pointer.](#Pro-lifetime-invalid-deref)
+* [Lifetime.2: Don't dereference a possibly null pointer.](#Pro-lifetime-null-deref)
 * [Lifetime.3: Don't pass a possibly invalid pointer to a function.](#Pro-lifetime-invalid-argument)
 
 
-### <a name="Pro-lifetime-null-deref"></a>Lifetime.1: Don't dereference a possibly null pointer.
-
-##### Reason
-
-It is undefined behavior.
-
-##### Example, bad
-
-    void f(int* p1)
-    {
-        *p1 = 42;           // BAD, p1 might be null
-
-        int i = 0;
-        int* p2 = condition() ? &i : nullptr;
-        *p2 = 42;           // BAD, p2 might be null
-    }
-
-##### Example, good
-
-    void f(int* p1, not_null<int*> p3)
-    {
-        if (p1 != nullptr) {
-            *p1 = 42;       // OK, must be not null in this branch
-        }
-
-        int i = 0;
-        int* p2 = condition() ? &i : nullptr;
-        if (p2 != nullptr) {
-            *p2 = 42;       // OK, must be not null in this branch
-        }
-
-        *p3 = 42;           // OK, not_null does not need to be tested for nullness
-    }
-
-##### Enforcement
-
-* Issue a diagnostic for any dereference of a pointer that could have been set to null along a local code path leading to the dereference. To fix: Add a null check and dereference the pointer only in a branch that has tested to ensure non-null.
-
-
-
-### <a name="Pro-lifetime-invalid-deref"></a>Lifetime.2: Don't dereference a possibly invalid pointer.
+### <a name="Pro-lifetime-invalid-deref"></a>Lifetime.1: Don't dereference a possibly invalid pointer.
 
 ##### Reason
 
@@ -19214,6 +19174,46 @@ To resolve the problem, either extend the lifetime of the object the pointer is 
 ##### Enforcement
 
 * Issue a diagnostic for any dereference of a pointer that could have been invalidated (could point to an object that was destroyed) along a local code path leading to the dereference. To fix: Extend the lifetime of the pointed-to object, or move the dereference to before the pointed-to object's lifetime ends.
+
+
+
+### <a name="Pro-lifetime-null-deref"></a>Lifetime.2: Don't dereference a possibly null pointer.
+
+##### Reason
+
+It is undefined behavior.
+
+##### Example, bad
+
+    void f(int* p1)
+    {
+        *p1 = 42;           // BAD, p1 might be null
+
+        int i = 0;
+        int* p2 = condition() ? &i : nullptr;
+        *p2 = 42;           // BAD, p2 might be null
+    }
+
+##### Example, good
+
+    void f(int* p1, not_null<int*> p3)
+    {
+        if (p1 != nullptr) {
+            *p1 = 42;       // OK, must be not null in this branch
+        }
+
+        int i = 0;
+        int* p2 = condition() ? &i : nullptr;
+        if (p2 != nullptr) {
+            *p2 = 42;       // OK, must be not null in this branch
+        }
+
+        *p3 = 42;           // OK, not_null does not need to be tested for nullness
+    }
+
+##### Enforcement
+
+* Issue a diagnostic for any dereference of a pointer that could have been set to null along a local code path leading to the dereference. To fix: Add a null check and dereference the pointer only in a branch that has tested to ensure non-null.
 
 
 
