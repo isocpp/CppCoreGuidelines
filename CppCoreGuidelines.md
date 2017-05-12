@@ -19118,9 +19118,150 @@ If code is using an unmodified standard library, then there are still workaround
 * We are considering specifying bounds-safe overloads for stdlib (especially C stdlib) functions like `memcmp` and shipping them in the GSL.
 * For existing stdlib functions and types like `vector` that are not fully bounds-checked, the goal is for these features to be bounds-checked when called from code with the bounds profile on, and unchecked when called from legacy code, possibly using contracts (concurrently being proposed by several WG21 members).
 
+
+
 ## <a name="SS-lifetime"></a>Pro.lifetime: Lifetime safety profile
 
-See /docs folder for the initial design. The formal rules are in progress (as of March 2017).
+See /docs folder for the initial design. The detailed formal rules are in progress (as of May 2017).
+
+The following are specific rules that are being enforced.
+
+Lifetime safety profile summary:
+
+* [Lifetime.1: Don't dereference a possibly null pointer.](#Pro-lifetime-null-deref)
+* [Lifetime.2: Don't dereference a possibly invalid pointer.](#Pro-lifetime-invalid-deref)
+* [Lifetime.3: Don't pass a possibly invalid pointer to a function.](#Pro-lifetime-invalid-argument)
+
+
+### <a name="Pro-lifetime-null-deref"></a>Lifetime.1: Don't dereference a possibly null pointer.
+
+##### Reason
+
+It is undefined behavior.
+
+##### Example, bad
+
+    void f(int* p1)
+    {
+        *p1 = 42;           // BAD, p1 might be null
+
+        int i = 0;
+        int* p2 = condition() ? &i : nullptr;
+        *p2 = 42;           // BAD, p2 might be null
+    }
+
+##### Example, good
+
+    void f(int* p1, not_null<int*> p3)
+    {
+        if (p1 != nullptr) {
+            *p1 = 42;       // OK, must be not null in this branch
+        }
+
+        int i = 0;
+        int* p2 = condition() ? &i : nullptr;
+        if (p2 != nullptr) {
+            *p2 = 42;       // OK, must be not null in this branch
+        }
+
+        *p3 = 42;           // OK, not_null does not need to be tested for nullness
+    }
+
+##### Enforcement
+
+* Issue a diagnostic for any dereference of a pointer that could have been set to null along a local code path leading to the dereference. To fix: Add a null check and dereference the pointer only in a branch that has tested to ensure non-null.
+
+
+
+### <a name="Pro-lifetime-invalid-deref"></a>Lifetime.2: Don't dereference a possibly invalid pointer.
+
+##### Reason
+
+It is undefined behavior.
+
+To resolve the problem, either extend the lifetime of the object the pointer is intended to refer to, or shorten the lifetime of the pointer (move the dereference to before the pointed-to object's lifetime ends).
+
+##### Example, bad
+
+    void f()
+    {
+        int x = 0;
+        int* p = &x;
+
+        if (condition()) {
+            int y = 0;
+            p = &y;
+        } // invalidates p
+
+        *p = 42;            // BAD, p might be invalid if the branch was taken
+    }
+
+##### Example, good
+
+    void f()
+    {
+        int x = 0;
+        int* p = &x;
+
+        int y = 0;
+        if (condition()) {
+            p = &y;
+        }
+
+        *p = 42;            // OK, p points to x or y and both are still in scope
+    }
+
+##### Enforcement
+
+* Issue a diagnostic for any dereference of a pointer that could have been invalidated (could point to an object that was destroyed) along a local code path leading to the dereference. To fix: Extend the lifetime of the pointed-to object, or move the dereference to before the pointed-to object's lifetime ends.
+
+
+
+### <a name="Pro-lifetime-invalid-argument"></a>Lifetime.3: Don't pass a possibly invalid pointer to a function.
+
+##### Reason
+
+The function cannot do anything useful with the pointer.
+
+To resolve the problem, either extend the lifetime of the object the pointer is intended to refer to, or shorten the lifetime of the pointer (move the function call to before the pointed-to object's lifetime ends).
+
+##### Example, bad
+
+    void f(int*);
+
+    void g()
+    {
+        int x = 0;
+        int* p = &x;
+
+        if (condition()) {
+            int y = 0;
+            p = &y;
+        } // invalidates p
+
+        f(p);               // BAD, p might be invalid if the branch was taken
+    }
+
+##### Example, good
+
+    void f()
+    {
+        int x = 0;
+        int* p = &x;
+
+        int y = 0;
+        if (condition()) {
+            p = &y;
+        }
+
+        f(p);               // OK, p points to x or y and both are still in scope
+    }
+
+##### Enforcement
+
+* Issue a diagnostic for any function argument that is a pointer that could have been invalidated (could point to an object that was destroyed) along a local code path leading to the dereference. To fix: Extend the lifetime of the pointed-to object, or move the function call to before the pointed-to object's lifetime ends.
+
+
 
 # <a name="S-gsl"></a>GSL: Guideline support library
 
