@@ -126,6 +126,7 @@ default0
 default00
 defop
 del
+deref
 derived1
 derived2
 destructors
@@ -327,6 +328,7 @@ nonvirtual
 nonvirtually
 nothrow
 NR
+nullness
 nullptr
 NVI
 ok
