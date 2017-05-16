@@ -1,6 +1,6 @@
 # <a name="main"></a>C++ Core Guidelines
 
-May 8, 2017
+May 16, 2017
 
 
 Editors:
@@ -7046,7 +7046,6 @@ Diagnose name hiding
 ##### Reason
 
 Capping a hierarchy with `final` is rarely needed for logical reasons and can be damaging to the extensibility of a hierarchy.
-Capping an individual virtual function with `final` is error-prone as that `final` can easily be overlooked when defining/overriding a set of functions.
 
 ##### Example, bad
 
@@ -7057,43 +7056,16 @@ Capping an individual virtual function with `final` is error-prone as that `fina
 
     class My_improved_widget : public My_widget { /* ... */ };  // error: can't do that
 
-##### Example, bad
-
-    struct Interface {
-        virtual int f() = 0;
-        virtual int g() = 0;
-    };
-
-    class My_implementation : public Interface {
-        int f() override;
-        int g() final;  // I want g() to be FAST!
-        // ...
-    };
-
-    class Better_implementation : public My_implementation {
-        int f();
-        int g();
-        // ...
-    };
-
-    void use(Interface* p)
-    {
-        int x = p->f();    // Better_implementation::f()
-        int y = p->g();    // My_implementation::g() Surprise?
-    }
-
-    // ...
-
-    use(new Better_implementation{});
-
-The problem is easy to see in a small example, but in a large hierarchy with many virtual functions, tools are required for reliably spotting such problems.
-Consistent use of `override` would catch this.
-
 ##### Note
 
 Not every class is meant to be a base class.
 Most standard-library classes are examples of that (e.g., `std::vector` and `std::string` are not designed to be derived from).
 This rule is about using `final` on classes with virtual functions meant to be interfaces for a class hierarchy.
+
+##### Note
+
+Capping an individual virtual function with `final` is error-prone as `final` can easily be overlooked when defining/overriding a set of functions.
+Fortunately, the compiler catches such mistakes: You cannot re-declare/re-open a `final` member a derived class.
 
 ##### Note
 
