@@ -6109,7 +6109,7 @@ This is not just slow, but if a memory allocation occurs for the elements in `tm
 
 (Simple) When a class has a `swap` member function, it should be declared `noexcept`.
 
-### <a name="Rc-swap-noexcept"></a>: Make `swap` `noexcept`
+### <a name="Rc-swap-noexcept"></a>: C.85: Make `swap` `noexcept`
 
 ##### Reason
 
