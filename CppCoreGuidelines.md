@@ -6109,7 +6109,7 @@ This is not just slow, but if a memory allocation occurs for the elements in `tm
 
 (Simple) When a class has a `swap` member function, it should be declared `noexcept`.
 
-### <a name="Rc-swap-noexcept"></a>C.85: Make `swap` `noexcept`
+### <a name="Rc-swap-noexcept"></a>: Make `swap` `noexcept`
 
 ##### Reason
 
@@ -6129,7 +6129,7 @@ Asymmetric treatment of operands is surprising and a source of errors where conv
 
 ##### Example
 
-    class X {
+    struct X {
         string name;
         int number;
     };
