@@ -1788,8 +1788,9 @@ Consider returning the result by value (use move semantics if the result is larg
         return res;
     }
 
-**Alternative**: Pass ownership using a "smart pointer", such as `unique_ptr` (for exclusive ownership) and `shared_ptr` (for shared ownership).
-However, that is less elegant and less efficient unless reference semantics are needed.
+**Alternative**: [Pass ownership](#Rr-smartptrparam) using a "smart pointer", such as `unique_ptr` (for exclusive ownership) and `shared_ptr` (for shared ownership).
+However, that is less elegant and often less efficient than returning the object itself,
+so use smart pointers only if reference semantics are needed.
 
 **Alternative**: Sometimes older code can't be modified because of ABI compatibility requirements or lack of resources.
 In that case, mark owning pointers using `owner` from the [guideline support library](#S-gsl):
@@ -1813,7 +1814,7 @@ caller, so that its lifetime is handled by the caller. Viewed another way:
 ownership transferring APIs are relatively rare compared to pointer-passing APIs,
 so the default is "no ownership transfer."
 
-**See also**: [Argument passing](#Rf-conventional) and [value return](#Rf-T-return).
+**See also**: [Argument passing](#Rf-conventional), [use of smart pointer arguments](#Rr-smartptrparam), and [value return](#Rf-T-return).
 
 ##### Enforcement
 
