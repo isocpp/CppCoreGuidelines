@@ -14139,9 +14139,15 @@ To prevent slicing.
         // ...
     }
 
-Instead, use:
+Instead, use a reference:
 
     catch (exception& e) { /* ... */ }
+
+of - typically better stil - a `const` reference:
+
+    catch (const exception& e) { /* ... */ }
+
+Most handlers do not modify their exception and in general we [recommend use of `const`](#Res-const).
 
 ##### Enforcement
 
