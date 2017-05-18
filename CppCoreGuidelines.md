@@ -1,6 +1,6 @@
 # <a name="main"></a>C++ Core Guidelines
 
-May 16, 2017
+May 18, 2017
 
 
 Editors:
@@ -1532,6 +1532,10 @@ Once language support becomes available (e.g., see the [contract proposal](http:
 ##### Note
 
 `Expects()` can also be used to check a condition in the middle of an algorithm.
+
+##### Note
+
+No, using `unsigned` is not a good way to sidestep the problem of [ensuring that a value is nonnegative](#Res-nonnegative).
 
 ##### Enforcement
 
@@ -9310,6 +9314,8 @@ Arithmetic rules:
 * [ES.103: Don't overflow](#Res-overflow)
 * [ES.104: Don't underflow](#Res-underflow)
 * [ES.105: Don't divide by zero](#Res-zero)
+* [ES.106: Don't try t avoid negative values by using `unsigned`](#Res-nonnegative)
+* [ES.107: Don't use `unsigned` for subscripts](#Res-subscripts)
 
 ### <a name="Res-lib"></a>ES.1: Prefer the standard library to other libraries and to "handcrafted code"
 
@@ -11874,6 +11880,122 @@ This also applies to `%`.
 ##### Enforcement
 
 * Flag division by an integral value that could be zero
+
+
+### <a name="Res-nonnegative"></a>ES.106: Don't try to avoid negative values by using `unsigned`
+
+##### Reason
+
+Choosing `unsigned` implies many changes to the usual behavior of integers, including modulo arithmetic,
+can suppress warnings related to overflow,
+and opens the door for errors related to signed/unsigned mixes.
+Using `unsigned` doesn't actually eliminate the possibility of negative values. 
+
+##### Example
+
+    unsigned int u1 = -2;   // OK: the value of u1 is 4294967294
+    int i1 = -2;
+    unsigned int u2 = i1;   // OK: the value of u2 is -2
+    int i2 = u2;            // OK: the value of i2 is -2
+
+These problems with such (perfectly legal) constructs are hard to spot in real code and are the source of many real-world errors.
+Consider:
+
+    unsigned area(unsigned height, unsigned width) { return height*width; } // [see also](#Ri-expects)
+    // ...
+    int height;
+    cin>>height;
+    auto a = area(height,2);    // if the input is -2 a becomes 4294967292
+
+Remember that `-1` when assigned to an `unsigned int` becomes the largest `unsigned int`.
+Also, since unsigned arithmetic is modulo arithmentic the multiplication didn't overflow, it wrapped around.
+
+##### Example
+
+    unsigned max = 100000;  // "accidental typo", I mean to say 10'000
+    unsigned short x = 100;
+    while (x<max) x += 100; // infinite loop
+
+Had `x` been a signed `short`, we could have warned about the undefined behavior upon overflow.
+
+##### Alternatives
+
+* use signed integers and check for `x>= 0`
+* use a positive integer type
+* use an integer subrange type
+* `Assert(-1<x)`
+
+For example
+
+    struct Positive {
+        int val;
+        Positive(int x) :val{x} { Assert(0<x); }
+        operator int() { return val; }
+    };
+
+    int f(Positive arg) {return arg };
+
+    int r1 = f(2);
+    int r2 = f(-2);  // throws
+
+##### Note
+
+???
+
+##### Enforcement
+
+Hard: there is a lot of code using `unsigned` and we don't offer a practical positive number type.
+
+
+### <a name="Res-subscripts"></a>ES.107: Don't use `unsigned` for subscripts
+
+##### Reason
+
+To avoid signed/unsigned confusion.
+To enable better optimization.
+To enable better error detection.
+
+##### Example, bad
+
+    vector<int> vec {1,2,3,4,5};
+
+    for (int i=0; i<vec.size(); i+=2) cout << vec[i] << '\n';                       // mix int and unsigned
+    for (unsigned i=0; i<vec.size(); i+=2) cout << vec[i] << '\n';                  // risk wraparound
+    for (vector<int>::size_type i=0; i<vec.size(); i+=2) cout << vec[i] << '\n';    // verbose
+    for (auto i=0; i<vec.size(); i+=2) cout << vec[i] << '\n';                      // mix int and unsigned
+
+##### Note
+
+The built-in array uses signed subscripts.
+The standard-library containers use unsigned sunscripts.
+Thus, no perfect and fully compatible solution is possible.
+Given the known problems with unsigned and signed/unsigned mixtures, better stick to (signed) integers.
+
+##### Example
+
+    template<typename T>
+    struct My_container {
+    public:
+        // ...
+        T& operator[](int i);    // not unsigned
+        // ...
+    };
+
+##### Example
+
+    ??? demonstrate improved code generation and potential for error detection ???
+
+##### Alternatives
+
+Alternatives for users
+
+* use algorithms
+* use range-for
+* use iterators/pointers
+
+##### Enforcement
+
+Very tricky as long as the standard-library containers get it wrong.
 
 # <a name="S-performance"></a>Per: Performance
 
