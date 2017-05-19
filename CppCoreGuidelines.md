@@ -1,6 +1,6 @@
 # <a name="main"></a>C++ Core Guidelines
 
-May 18, 2017
+May 19, 2017
 
 
 Editors:
@@ -9314,7 +9314,7 @@ Arithmetic rules:
 * [ES.103: Don't overflow](#Res-overflow)
 * [ES.104: Don't underflow](#Res-underflow)
 * [ES.105: Don't divide by zero](#Res-zero)
-* [ES.106: Don't try t avoid negative values by using `unsigned`](#Res-nonnegative)
+* [ES.106: Don't try to avoid negative values by using `unsigned`](#Res-nonnegative)
 * [ES.107: Don't use `unsigned` for subscripts](#Res-subscripts)
 
 ### <a name="Res-lib"></a>ES.1: Prefer the standard library to other libraries and to "handcrafted code"
