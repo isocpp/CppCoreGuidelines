@@ -2162,7 +2162,7 @@ We might write
     }
     istream& in = *inp;
 
-This violated the ruly [against uninitialized variables](#Res-always),
+This violated the rule [against uninitialized variables](#Res-always),
 the rule against [ignoring ownership](#Ri-raw),
 and the rule [against magic constants](#Res-magic) .
 In particular, someone has to remember to somewhere write
@@ -2171,27 +2171,27 @@ In particular, someone has to remember to somewhere write
 
 We could handle this particular example by using `unique_ptr` with a special deleter that does nothing for `cin`,
 but that's complicated for novices (who can easily encounter this problem) and the example is an example of a more general
-problem where a property that we would like to consider static (here, ownership) needs infrequesntly be addressed
+problem where a property that we would like to consider static (here, ownership) needs infrequently be addressed
 at run time.
 The common, most frequent, and safest examples can be handled statically, so we don't want to add cost and complexity to those.
 But we must also cope with the uncommon, less-safe, and necessarily more expensive cases.
 Such examples are discussed in [[Str15]](http://www.stroustrup.com/resource-model.pdf).
 
-So, we write a class 
+So, we write a class
 
     class Istream { [[gsl::suppress(lifetime)]]
     public:
-        enum Opt { from_line=1 };
+        enum Opt { from_line = 1 };
         Istream() { }
         Istream(zstring p) :owned{true}, inp{new ifstream{p}} {}            // read from file
-        Istream(zstring p,Opt) :owned{true}, inp{new istringstream{p}} {}   // read from command line
+        Istream(zstring p, Opt) :owned{true}, inp{new istringstream{p}} {}  // read from command line
         ~Itream() { if (owned) delete inp; }
         operator istream& () { return *inp; }
     private:
         bool owned = false;
         istream* inp = &cin;
     };
-    
+
 Now, the dynamic nature of `istream` ownership has been encapsulated.
 Presumably, a bit of checking for potential errors would be added in real code.
 
@@ -6114,7 +6114,7 @@ This is not just slow, but if a memory allocation occurs for the elements in `tm
 
 (Simple) When a class has a `swap` member function, it should be declared `noexcept`.
 
-### <a name="Rc-swap-noexcept"></a>: C.85: Make `swap` `noexcept`
+### <a name="Rc-swap-noexcept"></a>C.85: Make `swap` `noexcept`
 
 ##### Reason
 
@@ -7134,7 +7134,7 @@ This rule is about using `final` on classes with virtual functions meant to be i
 ##### Note
 
 Capping an individual virtual function with `final` is error-prone as `final` can easily be overlooked when defining/overriding a set of functions.
-Fortunately, the compiler catches such mistakes: You cannot re-declare/re-open a `final` member a derived class.
+Fortunately, the compiler catches such mistakes: You cannot re-declare/re-open a `final` member in a derived class.
 
 ##### Note
 
@@ -11889,7 +11889,7 @@ This also applies to `%`.
 Choosing `unsigned` implies many changes to the usual behavior of integers, including modulo arithmetic,
 can suppress warnings related to overflow,
 and opens the door for errors related to signed/unsigned mixes.
-Using `unsigned` doesn't actually eliminate the possibility of negative values. 
+Using `unsigned` doesn't actually eliminate the possibility of negative values.
 
 ##### Example
 
@@ -11904,32 +11904,32 @@ Consider:
     unsigned area(unsigned height, unsigned width) { return height*width; } // [see also](#Ri-expects)
     // ...
     int height;
-    cin>>height;
-    auto a = area(height,2);    // if the input is -2 a becomes 4294967292
+    cin >> height;
+    auto a = area(height, 2);   // if the input is -2 a becomes 4294967292
 
 Remember that `-1` when assigned to an `unsigned int` becomes the largest `unsigned int`.
-Also, since unsigned arithmetic is modulo arithmentic the multiplication didn't overflow, it wrapped around.
+Also, since unsigned arithmetic is modulo arithmetic the multiplication didn't overflow, it wrapped around.
 
 ##### Example
 
-    unsigned max = 100000;  // "accidental typo", I mean to say 10'000
+    unsigned max = 100000;    // "accidental typo", I mean to say 10'000
     unsigned short x = 100;
-    while (x<max) x += 100; // infinite loop
+    while (x < max) x += 100; // infinite loop
 
 Had `x` been a signed `short`, we could have warned about the undefined behavior upon overflow.
 
 ##### Alternatives
 
-* use signed integers and check for `x>= 0`
+* use signed integers and check for `x >= 0`
 * use a positive integer type
 * use an integer subrange type
-* `Assert(-1<x)`
+* `Assert(-1 < x)`
 
 For example
 
     struct Positive {
         int val;
-        Positive(int x) :val{x} { Assert(0<x); }
+        Positive(int x) :val{x} { Assert(0 < x); }
         operator int() { return val; }
     };
 
@@ -11957,17 +11957,21 @@ To enable better error detection.
 
 ##### Example, bad
 
-    vector<int> vec {1,2,3,4,5};
+    vector<int> vec {1, 2, 3, 4, 5};
 
-    for (int i=0; i<vec.size(); i+=2) cout << vec[i] << '\n';                       // mix int and unsigned
-    for (unsigned i=0; i<vec.size(); i+=2) cout << vec[i] << '\n';                  // risk wraparound
-    for (vector<int>::size_type i=0; i<vec.size(); i+=2) cout << vec[i] << '\n';    // verbose
-    for (auto i=0; i<vec.size(); i+=2) cout << vec[i] << '\n';                      // mix int and unsigned
+    for (int i=0; i < vec.size(); i+=2)                    // mix int and unsigned
+        cout << vec[i] << '\n';
+    for (unsigned i=0; i < vec.size(); i+=2)               // risk wraparound
+        cout << vec[i] << '\n';
+    for (vector<int>::size_type i=0; i < vec.size(); i+=2) // verbose
+        cout << vec[i] << '\n';
+    for (auto i=0; i < vec.size(); i+=2)                   // mix int and unsigned
+        cout << vec[i] << '\n';
 
 ##### Note
 
 The built-in array uses signed subscripts.
-The standard-library containers use unsigned sunscripts.
+The standard-library containers use unsigned subscripts.
 Thus, no perfect and fully compatible solution is possible.
 Given the known problems with unsigned and signed/unsigned mixtures, better stick to (signed) integers.
 
@@ -14266,7 +14270,7 @@ Instead, use a reference:
 
     catch (exception& e) { /* ... */ }
 
-of - typically better stil - a `const` reference:
+of - typically better still - a `const` reference:
 
     catch (const exception& e) { /* ... */ }
 
@@ -17545,15 +17549,15 @@ Avoid accidentally becoming dependent on implementation details and logically se
 
 ##### Example
 
-    #include<iostream>
+    #include <iostream>
     using namespace std;
 
     void use()                  // bad
     {
         string s;
         cin >> s;               // fine
-        getline(cin,s);         // error: getline() not defined
-        if (s=="surprise") {    // error == not defined
+        getline(cin, s);        // error: getline() not defined
+        if (s == "surprise") {  // error == not defined
             // ...
         }
     }
@@ -17565,16 +17569,16 @@ or even an occasional "`string`s cannot be compared with `==`).
 
 The solution is to explicitly `#include<string>`:
 
-    #include<iostream>
-    #include<string>
+    #include <iostream>
+    #include <string>
     using namespace std;
 
     void use()
     {
         string s;
         cin >> s;               // fine
-        getline(cin,s);         // fine
-        if (s=="surprise") {    // fine
+        getline(cin, s);        // fine
+        if (s == "surprise") {  // fine
             // ...
         }
     }
@@ -17586,12 +17590,12 @@ For example:
 
     // basic_std_lib.h:
 
-    #include<vector>
-    #include<string>
-    #include<map>
-    #include<iostream>
-    #include<random>
-    #include<vector>
+    #include <vector>
+    #include <string>
+    #include <map>
+    #include <iostream>
+    #include <random>
+    #include <vector>
 
 a user can now get that set of declarations with a single `#include`"
 

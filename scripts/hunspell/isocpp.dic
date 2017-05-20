@@ -1,4 +1,5 @@
 '
+10'000
 0xFF0000
 0b0101'0101
 10x
@@ -184,6 +185,7 @@ g1
 g2
 GCC
 Geosoft
+getline
 getx
 GFM
 Girou
@@ -205,7 +207,9 @@ hnd
 homebrew
 HPL
 href
+HTTP
 Hyslop
+i2
 IDE
 IDEs
 IEC
@@ -480,6 +484,7 @@ stmt
 str
 strdup
 strlen
+Str15
 Stroustrup
 Stroustrup00
 Stroustrup05
@@ -527,6 +532,8 @@ typeid
 typename
 typesafe
 UB
+u1
+u2
 unaliased
 uncompromised
 underuse
