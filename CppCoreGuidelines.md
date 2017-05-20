@@ -4301,7 +4301,7 @@ Constructor rules:
 * [C.40: Define a constructor if a class has an invariant](#Rc-ctor)
 * [C.41: A constructor should create a fully initialized object](#Rc-complete)
 * [C.42: If a constructor cannot construct a valid object, throw an exception](#Rc-throw)
-* [C.43: Ensure that a class has a default constructor](#Rc-default0)
+* [C.43: Ensure that a value type class has a default constructor](#Rc-default0)
 * [C.44: Prefer default constructors to be simple and non-throwing](#Rc-default00)
 * [C.45: Don't define a default constructor that only initializes data members; use member initializers instead](#Rc-default)
 * [C.46: By default, declare single-argument constructors `explicit`](#Rc-explicit)
@@ -5030,7 +5030,9 @@ Leaving behind an invalid object and relying on users to consistently check an `
 There are domains, such as some hard-real-time systems (think airplane controls) where (without additional tool support) exception handling is not sufficiently predictable from a timing perspective.
 There the `is_valid()` technique must be used. In such cases, check `is_valid()` consistently and immediately to simulate [RAII](#Rr-raii).
 
-**Alternative**: If you feel tempted to use some "post-constructor initialization" or "two-stage initialization" idiom, try not to do that.
+##### Alternative
+
+If you feel tempted to use some "post-constructor initialization" or "two-stage initialization" idiom, try not to do that.
 If you really have to, look at [factory functions](#Rc-factory).
 
 ##### Note
@@ -5041,13 +5043,22 @@ Another reason is been to delay initialization until an object is needed; the so
 
 ##### Enforcement
 
-### <a name="Rc-default0"></a>C.43: Ensure that a class has a default constructor
+???
+
+### <a name="Rc-default0"></a>C.43: Ensure that a value type class has a default constructor
 
 ##### Reason
 
 Many language and library facilities rely on default constructors to initialize their elements, e.g. `T a[10]` and `std::vector<T> v(10)`.
+A default constructor often simplifies the task of defining a suitable [moved-from state](#???).
 
-##### Example , bad
+##### Note
+
+We have not (yet) formally defined [value type](#SS-concrete), but think of it as a class that behaves much as an `int`:
+it can be copied using `=` and usually compared using `==`.
+It is closely related to the notion of Regular type from [EoP](http://elementsofprogramming.com/) and [the Palo Alto TR](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2012/n3351.pdf).
+
+##### Example
 
     class Date { // BAD: no default constructor
     public:
@@ -5059,17 +5070,17 @@ Many language and library facilities rely on default constructors to initialize 
     vector<Date> vd2(1000, Date{Month::October, 7, 1885});   // alternative
 
 The default constructor is only auto-generated if there is no user-declared constructor, hence it's impossible to initialize the vector `vd1` in the example above.
+The absense of a default value can cause surprises for users and complicate its use, so if one can be reasonably defined, it should be.
 
+`Date` is chosen to encourage thought:
 There is no "natural" default date (the big bang is too far back in time to be useful for most people), so this example is non-trivial.
 `{0, 0, 0}` is not a valid date in most calendar systems, so choosing that would be introducing something like floating-point's `NaN`.
 However, most realistic `Date` classes have a "first date" (e.g. January 1, 1970 is popular), so making that the default is usually trivial.
 
-##### Example
-
     class Date {
     public:
         Date(int dd, int mm, int yyyy);
-        Date() = default; // See also C.45
+        Date() = default; // [See also](#Rc-default)
         // ...
     private:
         int dd = 1;
@@ -5116,9 +5127,41 @@ Assuming that you want initialization, an explicit default initialization can he
         int i {};   // default initialize (to 0)
     };
 
+##### Example
+
+There are classses that simply don't have a reasonable default.
+
+A class designed to be useful only as a base does not need a default constructor because it cannot be constructed by itself:
+
+    struct Shape {  // pure interface: all members are pure virtual functions
+            void draw() = 0;
+            void rotate(int) = 0;
+            // ...
+    };
+
+A class that represent a unmodifiable 
+
+    lock_guard g {mx};  // guard the mutex mx
+    lock_guard g2;      // error: guarding nothing
+
+##### Note
+
+A class that has a "special state" that must be handled separately from other states by member functions or users causes extra work
+(and most likely more errors). For example
+
+    ofstream out {"Foobar"};
+    // ...
+    out << log(time,transaction);
+
+If `Foobar` couldn't be opened for writing and `out` wasn't set to throw exceptions upon errors, the output operations become no-ops.
+The implementation must take care of that case, and users must remember to test for success.
+
+Pointers, even smart pointers, that can point to nothing (null pointers) are an example of this.
+Having a default constructor is not a panacea; ideally it defaults to a meaningful state such as `std::string`s `""` and `std::vector`s `{}`.
+
 ##### Enforcement
 
-* Flag classes without a default constructor
+* Flag classes that are copyable by `=` or comparable with `==` without a default constructor
 
 ### <a name="Rc-default00"></a>C.44: Prefer default constructors to be simple and non-throwing
 
