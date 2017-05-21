@@ -12776,12 +12776,9 @@ Concurrency rule summary:
 * [CP.21: Use `std::lock()` or `std::scoped_lock` to acquire multiple `mutex`es](#Rconc-lock)
 * [CP.22: Never call unknown code while holding a lock (e.g., a callback)](#Rconc-unknown)
 * [CP.23: Think of a joining `thread` as a scoped container](#Rconc-join)
-* [CP.24: Think of a detached `thread` as a global container](#Rconc-detach)
-* [CP.25: Prefer `gsl::raii_thread` over `std::thread` unless you plan to `detach()`](#Rconc-raii_thread)
-* [CP.26: Prefer `gsl::detached_thread` over `std::thread` if you plan to `detach()`](#Rconc-detached_thread)
-* [CP.27: Use plain `std::thread` for `thread`s that detach based on a run-time condition (only)](#Rconc-thread)
-* [CP.28: Remember to join scoped `thread`s that are not `detach()`ed](#Rconc-join-undetached)
-* [CP.30: Do not pass pointers to local variables to non-`raii_thread`s](#Rconc-pass)
+* [CP.24: Think of a `thread` as a global container](#Rconc-detach)
+* [CP.25: Prefer `gsl::joining_thread` over `std::thread`](#Rconc-joining_thread)
+* [CP.26: Don't `detach()` a tread](#Rconc-detached_thread)
 * [CP.31: Pass small amounts of data between threads by value, rather than by reference or pointer](#Rconc-data-by-value)
 * [CP.32: To share ownership between unrelated `thread`s use `shared_ptr`](#Rconc-shared)
 * [CP.40: Minimize context switching](#Rconc-switch)
@@ -12949,26 +12946,25 @@ If a `thread` joins, we can safely pass pointers to objects in the scope of the 
     void some_fct(int* p)
     {
         int x = 77;
-        raii_thread t0(f, &x);           // OK
-        raii_thread t1(f, p);            // OK
-        raii_thread t2(f, &glob);        // OK
+        joining_thread t0(f, &x);           // OK
+        joining_thread t1(f, p);            // OK
+        joining_thread t2(f, &glob);        // OK
         auto q = make_unique<int>(99);
-        raii_thread t3(f, q.get());      // OK
+        joining_thread t3(f, q.get());      // OK
         // ...
     }
 
-An `raii_thread` is a `std::thread` with a destructor that joined and cannot be `detached()`.
+A `gsl::joining_thread` is a `std::thread` with a destructor that joined and cannot be `detached()`.
 By "OK" we mean that the object will be in scope ("live") for as long as a `thread` can use the pointer to it.
 The fact that `thread`s run concurrently doesn't affect the lifetime or ownership issues here;
 these `thread`s can be seen as just a function object called from `some_fct`.
 
 ##### Enforcement
 
-Ensure that `raii_thread`s don't `detach()`.
+Ensure that `joining_thread`s don't `detach()`.
 After that, the usual lifetime and ownership (for local objects) enforcement applies.
 
-
-### <a name="Rconc-detach"></a>CP.24: Think of a detached `thread` as a global container
+### <a name="Rconc-detach"></a>CP.24: Think of a `thread` as a global container
 
 ##### Reason
 
@@ -13013,87 +13009,28 @@ Even objects with static storage duration can be problematic if used from detach
 thread continues until the end of the program, it might be running concurrently with the destruction
 of objects with static storage duration, and thus accesses to such objects might race.
 
-##### Enforcement
+##### Note
+
+This rule is redundant if you [don't `detach()`](#Rconc-detached_thread) and [use `gsl::joining_tread`](#Rconc-joining_thread).
+However, converting code to follow those guidelines could be difficult and even impossible for third-party libraries.
+In such cases, the rule becomes essential for lifetime safety and type safety.
+
 
 In general, it is undecidable whether a `detach()` is executed for a `thread`, but simple common cases are easily detected.
 If we cannot prove that a `thread` does not `detach()`, we must assume that it does and that it outlives the scope in which it was constructed;
 After that, the usual lifetime and ownership (for global objects) enforcement applies.
 
+##### Enforcement
 
-### <a name="Rconc-raii_thread"></a>CP.25: Prefer `gsl::raii_thread` over `std::thread` unless you plan to `detach()`
+Flag attempts to pass local variables to a thread that might `detach()`.
+
+### <a name="Rconc-joining_thread"></a>CP.25: Prefer `gsl::joining_thread` over `std::thread`
 
 ##### Reason
 
-An `raii_thread` is a thread that joins at the end of its scope.
-
+A `joining_thread` is a thread that joins at the end of its scope.
 Detached threads are hard to monitor.
-
-??? Place all "immortal threads" on the free store rather than `detach()`?
-
-##### Example
-
-    ???
-
-##### Enforcement
-
-???
-
-### <a name="Rconc-detached_thread"></a>CP.26: Prefer `gsl::detached_thread` over `std::thread` if you plan to `detach()`
-
-##### Reason
-
-Often, the need to `detach` is inherent in the `thread`s task.
-Documenting that aids comprehension and helps static analysis.
-
-##### Example
-
-    void heartbeat();
-
-    void use()
-    {
-        gsl::detached_thread t1(heartbeat);    // obviously need not be joined
-        std::thread t2(heartbeat);             // do we need to join? (read the code for heartbeat())
-        // ...
-    }
-
-Flag unconditional `detach` on a plain `thread`
-
-
-### <a name="Rconc-thread"></a>CP.27: Use plain `std::thread` for `thread`s that detach based on a run-time condition (only)
-
-##### Reason
-
-`thread`s that are supposed to unconditionally `join` or unconditionally `detach` can be clearly identified as such.
-The plain `thread`s should be assumed to use the full generality of `std::thread`.
-
-##### Example
-
-    void tricky(thread* t, int n)
-    {
-        // ...
-        if (is_odd(n))
-            t->detach();
-        // ...
-    }
-
-    void use(int n)
-    {
-        thread t { tricky, this, n };
-        // ...
-        // ... should I join here? ...
-    }
-
-##### Enforcement
-
-???
-
-
-
-### <a name="Rconc-join-undetached"></a>CP.28: Remember to join scoped `thread`s that are not `detach()`ed
-
-##### Reason
-
-A `thread` that has not been `detach()`ed when it is destroyed terminates the program.
+It is harder to ensure absence of errors in detached threads (and potentially detached threads)
 
 ##### Example, bad
 
@@ -13126,40 +13063,96 @@ A `thread` that has not been `detach()`ed when it is destroyed terminates the pr
         t2.join();
     }  // one bad bug left
 
-??? Is `cout` synchronized?
+
+##### Example, bad
+
+The code determining whether to `join()` or `detach()` may be complicated and even decided in the thread of functions called from it or functions called by the function that creates a thread:
+
+    void tricky(thread* t, int n)
+    {
+        // ...
+        if (is_odd(n))
+            t->detach();
+        // ...
+    }
+
+    void use(int n)
+    {
+        thread t { tricky, this, n };
+        // ...
+        // ... should I join here? ...
+    }
+
+This seriously complicted lifetime analysis, and in not too unlikely cases make lifetime analysis impossible.
+This implies that we cannot safely refer to local objects in `use()` from the thread or refer to local objects in the thread from `use()`.
+
+##### Note
+
+Make "immortal threads" globals, put them in an enclosing scope, or put them on the on the free store rather than `detach()`.
+[don't `detach`](#Rconc-detached_thread).
+
+##### Note
+
+Because of old code and third party libraries using `std::thread` this rule can be hard to introduce.
 
 ##### Enforcement
 
-* Flag `join`s for `raii_thread`s ???
-* Flag `detach`s for `detached_thread`s
+Flag uses of 'std::thread':
 
+* Suggest use of `gsl::joining_thread`.
+* Suggest ["exporting ownership"](#Rconc-detached_thread) to an enclosing scope if it detaches.
+* Seriously warn if it is not obvious whether if joins of detaches.
 
-### <a name="RRconc-pass"></a>CP.30: Do not pass pointers to local variables to non-`raii_thread`s
+### <a name="Rconc-detached_thread"></a>CP.26: Don't `detach()` a thread
 
 ##### Reason
 
-In general, you cannot know whether a non-`raii_thread` will outlive the scope of the variables, so that those pointers will become invalid.
+Often, the need to outlive the scope of its creation is inherent in the `thread`s task,
+but implementing that idea by `detach` makes it harder monitor and communicat with the detached thread.
+In particular, it is harder (though not impossible) to ensure that the thread completed as expected or lived for as long as expected.
 
-##### Example, bad
+##### Example
+
+    void heartbeat();
 
     void use()
     {
-        int x = 7;
-        thread t0 { f, ref(x) };
+        std::thread t(heartbeat);             // don't join; heartbeat is meant to run forever
+        t.detach();
         // ...
-        t0.detach();
     }
 
-The `detach` may not be so easy to spot.
-Use a `raii_thread` or don't pass the pointer.
+This is a reasonable use of a thread, for which `detach()` is commonly used.
+There are problems, though.
+How do we monitor the detached thread to see if it is alive?
+Something might go wrong with the heartbeat, and loosing a haertbeat can be very serious in a system for which it is needed.
+So, we need to communicate with the haertbeat thread
+(e.g., through a stream of messages or notification events using a `conrition_variable`).
 
-##### Example, bad
+An alternative, and usually superior solution is to control its lifetime by placing it in a scope outside its point of creation (or activation).
+For example:
 
-    ??? put pointer to a local on a queue that is read by a longer-lived thread ???
+    void heartbeat();
 
-##### Enforcement
+    gsl::joining_thread t(heartbeat);             // heartbeat is meant to run "forever"
 
-Flag pointers to locals passed in the constructor of a plain `thread`.
+This heartbeat will (barring error, hardware problems, etc.) run for as long as the program does.
+
+Sometimes, we need to separate the point of creation from the point of ownership:
+
+    void heartbeat();
+
+    unique_ptr<gsl::joining_thread> tick_tock {nullptr};
+
+    void use()
+    {
+        tick_toc = make_unique(gsl::joining_thread,heartbeat);       // heartbeat is meant to run as long as tick_tock lives
+        // ...
+    }
+
+#### Enforcement
+
+Flag `detach()`.
 
 
 ### <a name="Rconc-data-by-value"></a>CP.31: Pass small amounts of data between threads by value, rather than by reference or pointer
@@ -13277,10 +13270,10 @@ Instead, we could have a set of pre-created worker threads processing the messag
 
     void workers()  // set up worker threads (specifically 4 worker threads)
     {
-        raii_thread w1 {worker};
-        raii_thread w2 {worker};
-        raii_thread w3 {worker};
-        raii_thread w4 {worker};
+        joining_thread w1 {worker};
+        joining_thread w2 {worker};
+        joining_thread w3 {worker};
+        joining_thread w4 {worker};
     }
 
 ##### Note
