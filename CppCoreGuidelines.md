@@ -1,6 +1,6 @@
 # <a name="main"></a>C++ Core Guidelines
 
-May 19, 2017
+May 21, 2017
 
 
 Editors:
@@ -6369,6 +6369,7 @@ Accessing objects in a hierarchy rule summary:
 * [C.150: Use `make_unique()` to construct objects owned by `unique_ptr`s](#Rh-make_unique)
 * [C.151: Use `make_shared()` to construct objects owned by `shared_ptr`s](#Rh-make_shared)
 * [C.152: Never assign a pointer to an array of derived class objects to a pointer to its base](#Rh-array)
+* [C.153: Prefer virtual function to casting](#Rh-use-virtual)
 
 ### <a name="Rh-domain"></a>C.120: Use class hierarchies to represent concepts with inherent hierarchical structure (only)
 
@@ -7292,10 +7293,29 @@ Flag all slicing.
         }
     }
 
+Use of the other casts casts can violate type safety and cause the program to access a variable that is actually of type `X` to be accessed as if it were of an unrelated type `Z`:
+
+    void user2(B* pb)   // bad
+    {
+        if (D* pd = static_cast<D*>(pb)) {  // I know that pb really points to a D; trust me
+            // ... use D's interface ...
+        }
+        else {
+            // ... make do with B's interface ...
+        }
+    }
+
+    void f()
+    {
+        B b;
+        user(&b);   // OK
+        user2(&b);  // bad error
+    }
+
 ##### Note
 
 Like other casts, `dynamic_cast` is overused.
-[Prefer virtual functions to casting](#???).
+[Prefer virtual functions to casting](#Rh-use-virtual).
 Prefer [static polymorphism](#???) to hierarchy navigation where it is possible (no run-time resolution necessary)
 and reasonably convenient.
 
@@ -7311,8 +7331,8 @@ the former (`dynamic_cast`) is far harder to implement correctly in general.
 Consider:
 
     struct B {
-        const char* name {"B"};
-        virtual const char* id() const { return name; }
+        const char* name {"B"}; 
+        virtual const char* id() const { return name; }     // if pb1->id() == pb2->id() *pb1 is the same type as *pb2
         // ...
     };
 
@@ -7330,8 +7350,8 @@ Consider:
         cout << pb1->id(); // "B"
         cout << pb2->id(); // "D"
 
-        if (pb1->id() == pb2->id()) // *pb1 is the same type as *pb2
-        if (pb2->id() == "D") {         // looks innocent
+
+        if (pb1->id() == "D") {         // looks innocent
             D* pd = static_cast<D*>(pb1);
             // ...
         }
@@ -7358,9 +7378,19 @@ However, compatibility makes changes difficult even if all agree that an effort 
 
 In very rare cases, if you have measured that the `dynamic_cast` overhead is material, you have other means to statically guarantee that a downcast will succeed (e.g., you are using CRTP carefully), and there is no virtual inheritance involved, consider tactically resorting `static_cast` with a prominent comment and disclaimer summarizing this paragraph and that human attention is needed under maintenance because the type system can't verify correctness. Even so, in our experience such "I know what I'm doing" situations are still a known bug source.
 
+##### Exception
+
+Consider:
+
+    template<typename B>
+    class Dx : B {
+        // ...
+    };
+
 ##### Enforcement
 
-Flag all uses of `static_cast` for downcasts, including C-style casts that perform a `static_cast`.
+* Flag all uses of `static_cast` for downcasts, including C-style casts that perform a `static_cast`.
+* This rule is part of the [type-safety profile](#Pro-type-downcast).
 
 ### <a name="Rh-ref-cast"></a>C.147: Use `dynamic_cast` to a reference type when failure to find the required class is considered an error
 
@@ -7510,6 +7540,23 @@ Subscripting the resulting base pointer will lead to invalid object access and p
 
 * Flag all combinations of array decay and base to derived conversions.
 * Pass an array as a `span` rather than as a pointer, and don't let the array name suffer a derived-to-base conversion before getting into the `span`
+
+
+### <a name="Rh-use-virtual"></a>CC.153: Prefer virtual function to casting
+
+##### Reason
+
+A virtual function call is safe, whereas casting is error-prone.
+A virtual function call reached the most derived function, whereas a cast may reach an intermediate class and therefore
+give a wrong result (especially as a hierarchy is modified during maintenance).
+
+##### Example
+
+    ???
+
+##### Enforcement
+
+See [C.146] and [???]
 
 ## <a name="SS-overload"></a>C.over: Overloading and overloaded operators
 
@@ -11305,11 +11352,20 @@ are seriously overused as well as a major source of errors.
 
 If you feel the need for a lot of casts, there may be a fundamental design problem.
 
+##### Alternatives
+
+Casts are widely (mis) used. Modern C++ has constructs that eliminats the need for casts in many contexts, such as
+
+* Use templates
+* Use `std::variant`
+
+
 ##### Enforcement
 
 * Force the elimination of C-style casts
 * Warn against named casts
 * Warn if there are many functional style casts (there is an obvious problem in quantifying 'many').
+* The [type profile](#Pro-type-reinterpretcast) bans `reinterpret_cast`.
 
 ### <a name="Res-casts-named"></a>ES.49: If you must use a cast, use a named cast
 
@@ -11360,23 +11416,99 @@ conversions between types that might result in loss of precision. (It is a
 compilation error to try to initialize a `float` from a `double` in this fashion,
 for example.)
 
+##### Note
+
+`reinterpret_cast` can be essential, but the essential uses (e.g., turning a machine addresses into pointer) are not type safe:
+
+    auto p = reinterpret_cast<Device_register>(0x800);  // inherently dangerous
+
+
 ##### Enforcement
 
-Flag C-style and functional casts.
+* Flag C-style and functional casts.
+* The [type profile](#Pro-type-reinterpretcast) bans `reinterpret_cast`.
 
 ### <a name="Res-casts-const"></a>ES.50: Don't cast away `const`
 
 ##### Reason
 
 It makes a lie out of `const`.
+If the variable is actually declared `const`, the result of "casting away `const`" is undefined behavior.
 
-##### Note
+##### Example, bad
 
-Usually the reason to "cast away `const`" is to allow the updating of some transient information of an otherwise immutable object.
-Examples are caching, memoization, and precomputation.
-Such examples are often handled as well or better using `mutable` or an indirection than with a `const_cast`.
+    void f(const int& i)
+    {
+        const_cast<int&>(i) = 42;   // BAD
+    }
+
+    static int i = 0;
+    static const int j = 0;
+
+    f(i); // silent side effect
+    f(j); // undefined behavior
 
 ##### Example
+
+Sometimes, you may be tempted to resort to `const_cast` to avoid code duplication, such as when two accessor functions that differ only in `const`-ness have similar implementations. For example:
+
+    class Bar;
+
+    class Foo {
+    public:
+        // BAD, duplicates logic
+        Bar& get_bar() {
+            /* complex logic around getting a non-const reference to my_bar */
+        }
+
+        const Bar& get_bar() const {
+            /* same complex logic around getting a const reference to my_bar */
+        }
+    private:
+        Bar my_bar;
+    };
+
+Instead, prefer to share implementations. Normally, you can just have the non-`const` function call the `const` function. However, when there is complex logic this can lead to the following pattern that still resorts to a `const_cast`:
+
+    class Foo {
+    public:
+        // not great, non-const calls const version but resorts to const_cast
+        Bar& get_bar() {
+            return const_cast<Bar&>(static_cast<const Foo&>(*this).get_bar());
+        }
+        const Bar& get_bar() const {
+            /* the complex logic around getting a const reference to my_bar */
+        }
+    private:
+        Bar my_bar;
+    };
+
+Although this pattern is safe when applied correctly, because the caller must have had a non-`const` object to begin with, it's not ideal because the safety is hard to enforce automatically as a checker rule.
+
+Instead, prefer to put the common code in a common helper function -- and make it a template so that it deduces `const`. This doesn't use any `const_cast` at all:
+
+    class Foo {
+    public:                         // good
+              Bar& get_bar()       { return get_bar_impl(*this); }
+        const Bar& get_bar() const { return get_bar_impl(*this); }
+    private:
+        Bar my_bar;
+
+        template<class T>           // good, deduces whether T is const or non-const
+        static auto get_bar_impl(T& t) -> decltype(t.get_bar())
+            { /* the complex logic around getting a possibly-const reference to my_bar */ }
+    };
+
+##### Exception
+
+You may need to cast away `const` when calling `const`-incorrect functions.
+Prefer to wrap such functions in inline `const`-correct wrappers to encapsulate the cast in one place.
+
+##### Example
+
+Sometimes, "cast away `const`" is to allow the updating of some transient information of an otherwise immutable object.
+Examples are caching, memoization, and precomputation.
+Such examples are often handled as well or better using `mutable` or an indirection than with a `const_cast`.
 
 Consider keeping previously computed results around for a costly operation:
 
@@ -11466,7 +11598,8 @@ In any variant, we must guard against data races on the `cache` in multithreaded
 
 ##### Enforcement
 
-Flag `const_cast`s. See also [Type.3: Don't use `const_cast` to cast away `const` (i.e., at all)](#Pro-type-constcast) for the related Profile.
+* Flag `const_cast`s.
+* This rule is part of the [type-safety profile](#Pro-type-constcast) for the related Profile.
 
 ### <a name="Res-range-checking"></a>ES.55: Avoid the need for range checking
 
@@ -12689,7 +12822,7 @@ It simply has nothing to do with concurrency.
     }
 
 Here we have a problem:
-This is perfectly good code in a single-threaded program, but have two treads execute this and
+This is perfectly good code in a single-threaded program, but have two threads execute this and
 there is a race condition on `free_slots` so that two threads might get the same value and `free_slots`.
 That's (obviously) a bad data race, so people trained in other languages may try to fix it like this:
 
@@ -12778,7 +12911,7 @@ Concurrency rule summary:
 * [CP.23: Think of a joining `thread` as a scoped container](#Rconc-join)
 * [CP.24: Think of a `thread` as a global container](#Rconc-detach)
 * [CP.25: Prefer `gsl::joining_thread` over `std::thread`](#Rconc-joining_thread)
-* [CP.26: Don't `detach()` a tread](#Rconc-detached_thread)
+* [CP.26: Don't `detach()` a thread](#Rconc-detached_thread)
 * [CP.31: Pass small amounts of data between threads by value, rather than by reference or pointer](#Rconc-data-by-value)
 * [CP.32: To share ownership between unrelated `thread`s use `shared_ptr`](#Rconc-shared)
 * [CP.40: Minimize context switching](#Rconc-switch)
@@ -13011,7 +13144,7 @@ of objects with static storage duration, and thus accesses to such objects might
 
 ##### Note
 
-This rule is redundant if you [don't `detach()`](#Rconc-detached_thread) and [use `gsl::joining_tread`](#Rconc-joining_thread).
+This rule is redundant if you [don't `detach()`](#Rconc-detached_thread) and [use `gsl::joining_thread`](#Rconc-joining_thread).
 However, converting code to follow those guidelines could be difficult and even impossible for third-party libraries.
 In such cases, the rule becomes essential for lifetime safety and type safety.
 
@@ -18805,9 +18938,12 @@ An implementation of this profile shall recognize the following patterns in sour
 
 Type safety profile summary:
 
-* [Type.1: Don't use `reinterpret_cast`](#Pro-type-reinterpretcast)
-* [Type.2: Don't use `static_cast` downcasts. Use `dynamic_cast` instead](#Pro-type-downcast)
-* [Type.3: Don't use `const_cast` to cast away `const` (i.e., at all)](#Pro-type-constcast)
+* [Type.1: Don't use `reinterpret_cast`](#Pro-type-reinterpretcast):
+a stricter version of [Avoid casts](#Res-casts), [prefer named casts](#Res-casts-named).
+* [Type.2: Don't use `static_cast` downcasts. ](#Pro-type-downcast):
+[Use `dynamic_cast` instead](#Rh-dynamic_cast).
+* [Type.3: Don't use `const_cast` to cast away `const` (i.e., at all)](#Pro-type-constcast):
+[Don't cast away const](#Res-casts-const).
 * [Type.4: Don't use C-style `(T)expression` casts that would perform a `static_cast` downcast, `const_cast`, or `reinterpret_cast`](#Pro-type-cstylecast)
 * [Type.4.1: Don't use `T(expression)` for casting](#Pro-fct-style-cast)
 * [Type.5: Don't use a variable before it has been initialized](#Pro-type-init)
@@ -18822,156 +18958,6 @@ Exception may be thrown to indicate errors that cannot be detected statically (a
 Note that this type-safety can be complete only if we also have [Bounds safety](#SS-bounds) and [Lifetime safety](#SS-lifetime).
 Without those guarantees, a region of memory could be accessed independent of which object, objects, or parts of objects are stored in it.
 
-### <a name="Pro-type-reinterpretcast"></a>Type.1: Don't use `reinterpret_cast`.
-
-##### Reason
-
-Use of these casts can violate type safety and cause the program to access a variable that is actually of type `X` to be accessed as if it were of an unrelated type `Z`.
-
-##### Example, bad
-
-    std::string s = "hello world";
-    double* p = reinterpret_cast<double*>(&s); // BAD
-
-##### Enforcement
-
-Issue a diagnostic for any use of `reinterpret_cast`. To fix: Consider using a `variant` instead.
-
-### <a name="Pro-type-downcast"></a>Type.2: Don't use `static_cast` downcasts. Use `dynamic_cast` instead.
-
-##### Reason
-
-Use of these casts can violate type safety and cause the program to access a variable that is actually of type `X` to be accessed as if it were of an unrelated type `Z`.
-
-##### Example, bad
-
-    class Base { public: virtual ~Base() = 0; };
-
-    class Derived1 : public Base { };
-
-    class Derived2 : public Base {
-        std::string s;
-    public:
-        std::string get_s() { return s; }
-    };
-
-    Derived1 d1;
-    Base* p1 = &d1; // ok, implicit conversion to pointer to Base is fine
-
-    // BAD, tries to treat d1 as a Derived2, which it is not
-    Derived2* p2 = static_cast<Derived2*>(p1);
-    // tries to access d1's nonexistent string member, instead sees arbitrary bytes near d1
-    cout << p2->get_s();
-
-##### Example, bad
-
-    struct Foo { int a, b; };
-    struct Foobar : Foo { int bar; };
-
-    void use(int i, Foo& x)
-    {
-        if (0 < i) {
-            Foobar& x1 = dynamic_cast<Foobar&>(x);  // error: Foo is not polymorphic
-            Foobar& x2 = static_cast<Foobar&>(x);   // bad
-            // ...
-        }
-        // ...
-    }
-
-    // ...
-
-    use(99, *new Foo{1, 2});  // not a Foobar
-
-If a class hierarchy isn't polymorphic, avoid casting.
-It is entirely unsafe.
-Look for a better design.
-See also [C.146](#Rh-dynamic_cast).
-
-##### Enforcement
-
-Issue a diagnostic for any use of `static_cast` to downcast, meaning to cast from a pointer or reference to `X` to a pointer or reference to a type that is not `X` or an accessible base of `X`. To fix: If this is a downcast or cross-cast then use a `dynamic_cast` instead, otherwise consider using a `variant` instead.
-
-### <a name="Pro-type-constcast"></a>Type.3: Don't use `const_cast` to cast away `const` (i.e., at all).
-
-##### Reason
-
-Casting away `const` is a lie. If the variable is actually declared `const`, it's a lie punishable by undefined behavior.
-
-##### Example, bad
-
-    void f(const int& i)
-    {
-        const_cast<int&>(i) = 42;   // BAD
-    }
-
-    static int i = 0;
-    static const int j = 0;
-
-    f(i); // silent side effect
-    f(j); // undefined behavior
-
-##### Example
-
-Sometimes you may be tempted to resort to `const_cast` to avoid code duplication, such as when two accessor functions that differ only in `const`-ness have similar implementations. For example:
-
-    class Bar;
-
-    class Foo {
-    public:
-        // BAD, duplicates logic
-        Bar& get_bar() {
-            /* complex logic around getting a non-const reference to my_bar */
-        }
-
-        const Bar& get_bar() const {
-            /* same complex logic around getting a const reference to my_bar */
-        }
-    private:
-        Bar my_bar;
-    };
-
-Instead, prefer to share implementations. Normally, you can just have the non-`const` function call the `const` function. However, when there is complex logic this can lead to the following pattern that still resorts to a `const_cast`:
-
-    class Foo {
-    public:
-        // not great, non-const calls const version but resorts to const_cast
-        Bar& get_bar() {
-            return const_cast<Bar&>(static_cast<const Foo&>(*this).get_bar());
-        }
-        const Bar& get_bar() const {
-            /* the complex logic around getting a const reference to my_bar */
-        }
-    private:
-        Bar my_bar;
-    };
-
-Although this pattern is safe when applied correctly, because the caller must have had a non-`const` object to begin with, it's not ideal because the safety is hard to enforce automatically as a checker rule.
-
-Instead, prefer to put the common code in a common helper function -- and make it a template so that it deduces `const`. This doesn't use any `const_cast` at all:
-
-    class Foo {
-    public:                         // good
-              Bar& get_bar()       { return get_bar_impl(*this); }
-        const Bar& get_bar() const { return get_bar_impl(*this); }
-    private:
-        Bar my_bar;
-
-        template<class T>           // good, deduces whether T is const or non-const
-        static auto get_bar_impl(T& t) -> decltype(t.get_bar())
-            { /* the complex logic around getting a possibly-const reference to my_bar */ }
-    };
-
-##### Exception
-
-You may need to cast away `const` when calling `const`-incorrect functions. Prefer to wrap such functions in inline `const`-correct wrappers to encapsulate the cast in one place.
-
-##### See also: 
-
-[ES.50, Don't cast away `const`](#Res-casts-const) for more discussion.
-
-##### Enforcement
-
-Issue a diagnostic for any use of `const_cast`. To fix: Either don't use the variable in a non-`const` way, or don't make it `const`.
 
 ### <a name="Pro-type-cstylecast"></a>Type.4: Don't use C-style `(T)expression` casts that would perform a `static_cast` downcast, `const_cast`, or `reinterpret_cast`.
 
@@ -19634,6 +19620,7 @@ for example, `Expects(p!=nullptr)` will become `[[expects: p!=nullptr]]`.
 * `narrow`        // `narrow<T>(x)` is `static_cast<T>(x)` if `static_cast<T>(x) == x` or it throws `narrowing_error`
 * `[[implicit]]`  // "Marker" to put on single-argument constructors to explicitly make them non-explicit.
 * `move_owner`    // `p = move_owner(q)` means `p = q` but ???
+* `joining_thread` // a RAII style versin of `std::thread` that joins.
 
 ## <a name="SS-gsl-concepts"></a>GSL.concept: Concepts
 
