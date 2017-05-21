@@ -146,6 +146,7 @@ endl
 enum
 Enum
 enums
+EoP
 eq
 eqdefault
 EqualityComparable
@@ -305,6 +306,7 @@ mtx
 Murray93
 mutex
 mutexes
+mx
 myMap
 MyMap
 myset

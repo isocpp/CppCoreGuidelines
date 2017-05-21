@@ -5070,7 +5070,7 @@ It is closely related to the notion of Regular type from [EoP](http://elementsof
     vector<Date> vd2(1000, Date{Month::October, 7, 1885});   // alternative
 
 The default constructor is only auto-generated if there is no user-declared constructor, hence it's impossible to initialize the vector `vd1` in the example above.
-The absense of a default value can cause surprises for users and complicate its use, so if one can be reasonably defined, it should be.
+The absence of a default value can cause surprises for users and complicate its use, so if one can be reasonably defined, it should be.
 
 `Date` is chosen to encourage thought:
 There is no "natural" default date (the big bang is too far back in time to be useful for most people), so this example is non-trivial.
@@ -5129,7 +5129,7 @@ Assuming that you want initialization, an explicit default initialization can he
 
 ##### Example
 
-There are classses that simply don't have a reasonable default.
+There are classes that simply don't have a reasonable default.
 
 A class designed to be useful only as a base does not need a default constructor because it cannot be constructed by itself:
 
@@ -5151,7 +5151,7 @@ A class that has a "special state" that must be handled separately from other st
 
     ofstream out {"Foobar"};
     // ...
-    out << log(time,transaction);
+    out << log(time, transaction);
 
 If `Foobar` couldn't be opened for writing and `out` wasn't set to throw exceptions upon errors, the output operations become no-ops.
 The implementation must take care of that case, and users must remember to test for success.
