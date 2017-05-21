@@ -1,4 +1,5 @@
 '
+10'000
 0xFF0000
 0b0101'0101
 10x
@@ -44,6 +45,7 @@ args
 arr2
 arrayindex
 ASIC
+asio
 AST
 async
 BDE
@@ -57,6 +59,7 @@ bool
 buf
 bufmax
 C1
+C11
 C2
 callees
 callers'
@@ -100,6 +103,7 @@ CppCon
 CRTP
 cst
 cstdarg
+cstdio
 cstring
 cstylecast
 ctor
@@ -111,6 +115,7 @@ czstring
 d1
 D1
 d1's
+d2
 D2
 d2's
 dag
@@ -122,6 +127,7 @@ default0
 default00
 defop
 del
+deref
 derived1
 derived2
 destructors
@@ -140,6 +146,7 @@ endl
 enum
 Enum
 enums
+EoP
 eq
 eqdefault
 EqualityComparable
@@ -160,6 +167,7 @@ fib10
 file1
 file2
 file3
+filesystem
 flag1
 fmt
 fn
@@ -178,6 +186,7 @@ g1
 g2
 GCC
 Geosoft
+getline
 getx
 GFM
 Girou
@@ -199,7 +208,9 @@ hnd
 homebrew
 HPL
 href
+HTTP
 Hyslop
+i2
 IDE
 IDEs
 IEC
@@ -224,14 +235,17 @@ int32
 int64
 ints
 io
+ios
 iostream
 Iostream
+iostreams
 iso
 isocpp
 ISORC
 istream
 Iter
 Jiangang
+jmp
 join's
 JSF
 Juhl
@@ -243,9 +257,11 @@ Lakos96
 Lavavej
 LCSD05
 lifecycle
+linearization
 llvm
 lockfree
 Lomow
+longjmp
 LSP
 lst
 lvalue
@@ -277,6 +293,10 @@ Meyers15
 Meyers96
 Meyers97
 microbenchmarks
+middleware
+mixin
+mixins
+mnemonizes
 modify1
 modify2
 moredata
@@ -286,6 +306,7 @@ mtx
 Murray93
 mutex
 mutexes
+mx
 myMap
 MyMap
 myset
@@ -302,6 +323,7 @@ newdelete
 nh
 NL
 noexcept
+noname
 nondependent
 nonexported
 nongeneric
@@ -312,6 +334,7 @@ nonvirtual
 nonvirtually
 nothrow
 NR
+nullness
 nullptr
 NVI
 ok
@@ -354,6 +377,7 @@ PortHandle
 PostInitialize
 pp216
 PPP
+pragma
 pre
 Pre
 precomputation
@@ -377,6 +401,7 @@ r2
 raii
 RAII
 Rc
+Rclib
 rcon
 Rcon
 Rconc
@@ -392,6 +417,7 @@ RegularFunction
 reimplement
 reinterpretcast
 Reis
+Reis's
 Renum
 reseat
 reseating
@@ -411,6 +437,7 @@ Rper
 Rr
 RRconc
 Rsl
+Rstr
 RTTI
 rvalue
 rvalues
@@ -423,6 +450,7 @@ Sarkar
 scanf
 Sd
 SEI
+semiregular
 Semiregular
 SemiRegular
 Sergey
@@ -431,6 +459,7 @@ SFINAE
 sharedness
 sharedptrparam
 'sharedptrparam'
+setjmp
 SignedIntegral
 simpleFunc
 'size'
@@ -457,11 +486,13 @@ stmt
 str
 strdup
 strlen
+Str15
 Stroustrup
 Stroustrup00
 Stroustrup05
 Stroustrup13
 Stroustrup14
+Stroustrup94
 Stroustrup's
 struct
 suboperations
@@ -503,16 +534,22 @@ typeid
 typename
 typesafe
 UB
+u1
+u2
 unaliased
 uncompromised
+underuse
 undetached
+unencapsulated
 unenforceable
 uninit
 uniqueptrparam
 unittest
+unittests
 unnamed2
 use1
 users'
+UTF
 util
 v1
 va
@@ -537,6 +574,7 @@ vr
 vtbls
 vv
 w0
+wchar
 webby
 Webcolor
 webcolors

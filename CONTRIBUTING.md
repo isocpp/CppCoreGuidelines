@@ -21,7 +21,7 @@ your local changes are appropriate to pull back into the original guidelines, pl
 - **Maintain the Guidelines** The C++ Core Guidelines were created from a wealth of knowledge spread across a number of organizations
 worldwide. If you or your organization is passionate about helping to create the guidelines, consider becoming an editor or maintainer. If
 you're a C++ expert who is serious about participating, please 
-[email coreguidelines@isocpp.org](mailto:coreguidelines@isocpp.org?subject=Maintain the C++ Code Guidelines).
+[email coreguidelines@isocpp.org](mailto:coreguidelines@isocpp.org?subject=Maintain%20the%20C++%20Code%20Guidelines).
  
 ## Contributor License Agreement
 By contributing content to the C++ Core Guidelines (i.e., submitting a pull request for inclusion in this repository) you agree with the 
@@ -80,7 +80,16 @@ Please use 4-space indentation to trigger code parsing, rather than [fenced code
             std::cout << "This is code.\n";
         }
 
+#### Document style decisions
+
+We've discussed and made decisions on a number of document style. Please do not open PRs that revisit these stylistic points:
+
+- The CppCoreGuidelines.md file is a single GH-flavored Markdown file. It is not split into separate chapters.
+- We do not use syntax highlighting in the Core Guidelines. See PRs #33, #96, #328, and #779. If you want syntax highlighting you
+can either view the "pretty" version at http://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines or do your own post-processing.
+- We're sticking with the ASCII character set (outside of the joke at the beginning of the document.) We do not use Unicode em-dashes, 
+Unicode spaces, or pretty quotes. Lots of people edit this file with their various text editors. ASCII is simple and universally understood. 
+
 ### Miscellaneous
 
-To avoid line-ending issues, please set `autocrlf = input` and `whitespace =
-cr-at-eol` in your git configuration.
+To avoid line-ending issues, please set `autocrlf = input` and `whitespace = cr-at-eol` in your git configuration.

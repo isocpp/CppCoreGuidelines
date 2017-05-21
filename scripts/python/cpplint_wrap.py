@@ -3,7 +3,7 @@ import cpplint
 import sys
 
 def main():
-    FILTERS='cpplint --verbose=0 --linelength=100 --filter=-legal/copyright,-build/include_order,-build/c++11,-build/namespaces,-build/class,-build/include,-build/include_subdir,-readability/inheritance,-readability/function,-readability/casting,-readability/namespace,-readability/alt_tokens,-readability/braces,-readability/fn_size,-whitespace/comments,-whitespace/braces,-whitespace/empty_loop_body,-whitespace/indent,-whitespace/newline,-runtime/explicit,-runtime/arrays,-runtime/int,-runtime/references,-runtime/string,-runtime/operator'.split(' ')
+    FILTERS='cpplint --verbose=0 --linelength=100 --filter=-legal/copyright,-build/include_order,-build/c++11,-build/namespaces,-build/class,-build/include,-build/include_subdir,-readability/inheritance,-readability/function,-readability/casting,-readability/namespace,-readability/alt_tokens,-readability/braces,-readability/fn_size,-whitespace/comments,-whitespace/braces,-whitespace/empty_loop_body,-whitespace/indent,-whitespace/newline,-runtime/explicit,-runtime/arrays,-runtime/int,-runtime/references,-runtime/string,-runtime/operator,-runtime/printf'.split(' ')
 
     result = False
     files = sys.argv[1:]
