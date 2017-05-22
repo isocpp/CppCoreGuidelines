@@ -2257,6 +2257,7 @@ Other function rules:
 * [F.52: Prefer capturing by reference in lambdas that will be used locally, including passed to algorithms](#Rf-reference-capture)
 * [F.53: Avoid capturing by reference in lambdas that will be used nonlocally, including returned, stored on the heap, or passed to another thread](#Rf-value-capture)
 * [F.54: If you capture `this`, capture all variables explicitly (no default capture)](#Rf-this-capture)
+* [F.55: Don't use `va_arg` arguments](#F-varargs)
 
 Functions have strong similarities to lambdas and function objects so see also Section ???.
 
@@ -3798,6 +3799,50 @@ This is under active discussion in standardization, and may be addressed in a fu
 ##### Enforcement
 
 * Flag any lambda capture-list that specifies a default capture and also captures `this` (whether explicitly or via default capture)
+
+### <a name="F-varargs"></a>F.55: Don't use `va_arg` arguments
+
+##### Reason
+
+Reading from a `va_arg` assumes that the correct type was actually passed.
+Passing to varargs assumes the correct type will be read.
+This is fragile because it cannot generally be enforced to be safe in the language and so relies on programmer discipline to get it right.
+
+##### Example
+
+    int sum(...) {
+        // ...
+        while (/*...*/)
+            result += va_arg(list, int); // BAD, assumes it will be passed ints
+        // ...
+    }
+
+    sum(3, 2); // ok
+    sum(3.14159, 2.71828); // BAD, undefined
+
+    template<class ...Args>
+    auto sum(Args... args) { // GOOD, and much more flexible
+        return (... + args); // note: C++17 "fold expression"
+    }
+
+    sum(3, 2); // ok: 5
+    sum(3.14159, 2.71828); // ok: ~5.85987
+
+##### Alternatives
+
+* overloading
+* variadic templates
+* `variant` arguments
+* `initializer_list` (homogeneous)
+
+##### Note
+
+Declaring a `...` parameter is sometimes useful for techniques that don't involve actual argument passing, notably to declare "take-anything" functions so as to disable "everything else" in an overload set or express a catchall case in a template metaprogram.
+
+##### Enforcement
+
+* Issue a diagnostic for using `va_list`, `va_start`, or `va_arg`.
+* Issue a diagnostic for passing an argument to a vararg parameter of a function that does not offer an overload for a more specific type in the position of the vararg. To fix: Use a different function, or `[[suppress(types)]]`.
 
 # <a name="S-class"></a>C: Classes and Class Hierarchies
 
@@ -18944,12 +18989,20 @@ a stricter version of [Avoid casts](#Res-casts), [prefer named casts](#Res-casts
 [Use `dynamic_cast` instead](#Rh-dynamic_cast).
 * [Type.3: Don't use `const_cast` to cast away `const` (i.e., at all)](#Pro-type-constcast):
 [Don't cast away const](#Res-casts-const).
-* [Type.4: Don't use C-style `(T)expression` casts that would perform a `static_cast` downcast, `const_cast`, or `reinterpret_cast`](#Pro-type-cstylecast)
-* [Type.4.1: Don't use `T(expression)` for casting](#Pro-fct-style-cast)
-* [Type.5: Don't use a variable before it has been initialized](#Pro-type-init)
-* [Type.6: Always initialize a member variable](#Pro-type-memberinit)
-* [Type.7: Avoid accessing members of raw unions. Prefer `variant` instead](#Pro-fct-style-cast)
-* [Type.8: Avoid reading from varargs or passing vararg arguments. Prefer variadic template parameters instead](#Pro-type-varargs)
+* [Type.4: Don't use C-style `(T)expression` casts](#Pro-type-cstylecast):
+[Prefer static casts](#Res-cast-named).
+* [Type.4.1: Don't use `T(expression)` cast](#Pro-fct-style-cast):
+[Prefer named casts](#Res-casts-named).
+* [Type.5: Don't use a variable before it has been initialized](#Pro-type-init):
+[always initialize](#Res-always).
+* [Type.6: Always initialize a member variable](#Pro-type-memberinit):
+[always initialize](#Res-always),
+possibly using [default constructors](#Rc-default0) or
+[default member initializers](#Rc-in-class-initializers).
+* [Type.7: Avoid naked union](#Pro-fct-style-cast):
+[Use `variant` instead](#Ru-naked).
+* [Type.8: Avoid varargs](#Pro-type-varargs):
+[Don't use `va_arg` arguments](#F-varargs).
 
 ##### Impact
 
@@ -18957,51 +19010,6 @@ With the type-safety profile you can trust that every operation is applied to a 
 Exception may be thrown to indicate errors that cannot be detected statically (at compile time).
 Note that this type-safety can be complete only if we also have [Bounds safety](#SS-bounds) and [Lifetime safety](#SS-lifetime).
 Without those guarantees, a region of memory could be accessed independent of which object, objects, or parts of objects are stored in it.
-
-
-### <a name="Pro-type-cstylecast"></a>Type.4: Don't use C-style `(T)expression` casts that would perform a `static_cast` downcast, `const_cast`, or `reinterpret_cast`.
-
-##### Reason
-
-Use of these casts can violate type safety and cause the program to access a variable that is actually of type `X` to be accessed as if it were of an unrelated type `Z`.
-Note that a C-style `(T)expression` cast means to perform the first of the following that is possible: a `const_cast`, a `static_cast`, a `static_cast` followed by a `const_cast`, a `reinterpret_cast`, or a `reinterpret_cast` followed by a `const_cast`. This rule bans `(T)expression` only when used to perform an unsafe cast.
-
-##### Example, bad
-
-    std::string s = "hello world";
-    double* p0 = (double*)(&s); // BAD
-
-    class Base { public: virtual ~Base() = 0; };
-
-    class Derived1 : public Base { };
-
-    class Derived2 : public Base {
-        std::string s;
-    public:
-        std::string get_s() { return s; }
-    };
-
-    Derived1 d1;
-    Base* p1 = &d1; // ok, implicit conversion to pointer to Base is fine
-
-    // BAD, tries to treat d1 as a Derived2, which it is not
-    Derived2* p2 = (Derived2*)(p1);
-    // tries to access d1's nonexistent string member, instead sees arbitrary bytes near d1
-    cout << p2->get_s();
-
-    void f(const int& i) {
-        (int&)(i) = 42;   // BAD
-    }
-
-    static int i = 0;
-    static const int j = 0;
-
-    f(i); // silent side effect
-    f(j); // undefined behavior
-
-##### Enforcement
-
-Issue a diagnostic for any use of a C-style `(T)expression` cast that would invoke a `static_cast` downcast, `const_cast`, or `reinterpret_cast`. To fix: Use a `dynamic_cast`, `const`-correct declaration, or `variant`, respectively.
 
 ### <a name="Pro-fct-style-cast"></a>Type.4.1: Don't use `T(expression)` for casting.
 
@@ -19026,9 +19034,6 @@ The {}-syntax makes the desire for construction explicit and doesn't allow narro
 
 Flag `T(e)` if used for `e` of a built-in type.
 
-### <a name="Pro-type-init"></a>Type.5: Don't use a variable before it has been initialized.
-
-[ES.20: Always initialize an object](#Res-always) is required.
 
 ### <a name="Pro-type-memberinit"></a>Type.6: Always initialize a member variable.
 
@@ -19051,63 +19056,7 @@ Before a variable has been initialized, it does not contain a deterministic vali
 * Issue a diagnostic for any constructor of a non-trivially-constructible type that does not initialize all member variables. To fix: Write a data member initializer, or mention it in the member initializer list.
 * Issue a diagnostic when constructing an object of a trivially constructible type without `()` or `{}` to initialize its members. To fix: Add `()` or `{}`.
 
-### <a name="Pro-type-unions"></a>Type.7: Avoid accessing members of raw unions. Prefer `variant` instead.
 
-##### Reason
-
-Reading from a union member assumes that member was the last one written, and writing to a union member assumes another member with a nontrivial destructor had its destructor called. This is fragile because it cannot generally be enforced to be safe in the language and so relies on programmer discipline to get it right.
-
-##### Example
-
-    union U { int i; double d; };
-
-    U u;
-    u.i = 42;
-    use(u.d); // BAD, undefined
-
-    variant<int, double> u;
-    u = 42; // u now contains int
-    use(u.get<int>()); // ok
-    use(u.get<double>()); // throws ??? update this when standardization finalizes the variant design
-
-Note that just copying a union is not type-unsafe, so safe code can pass a union from one piece of unsafe code to another.
-
-##### Enforcement
-
-* Issue a diagnostic for accessing a member of a union. To fix: Use a `variant` instead.
-
-### <a name="Pro-type-varargs"></a>Type.8: Avoid reading from varargs or passing vararg arguments. Prefer variadic template parameters instead.
-
-##### Reason
-
-Reading from a vararg assumes that the correct type was actually passed. Passing to varargs assumes the correct type will be read. This is fragile because it cannot generally be enforced to be safe in the language and so relies on programmer discipline to get it right.
-
-##### Example
-
-    int sum(...) {
-        // ...
-        while (/*...*/)
-            result += va_arg(list, int); // BAD, assumes it will be passed ints
-        // ...
-    }
-
-    sum(3, 2); // ok
-    sum(3.14159, 2.71828); // BAD, undefined
-
-    template<class ...Args>
-    auto sum(Args... args) { // GOOD, and much more flexible
-        return (... + args); // note: C++17 "fold expression"
-    }
-
-    sum(3, 2); // ok: 5
-    sum(3.14159, 2.71828); // ok: ~5.85987
-
-Note: Declaring a `...` parameter is sometimes useful for techniques that don't involve actual argument passing, notably to declare "take-anything" functions so as to disable "everything else" in an overload set or express a catchall case in a template metaprogram.
-
-##### Enforcement
-
-* Issue a diagnostic for using `va_list`, `va_start`, or `va_arg`. To fix: Use a variadic template parameter list instead.
-* Issue a diagnostic for passing an argument to a vararg parameter of a function that does not offer an overload for a more specific type in the position of the vararg. To fix: Use a different function, or `[[suppress(types)]]`.
 
 ## <a name="SS-bounds"></a>Pro.bounds: Bounds safety profile
 
