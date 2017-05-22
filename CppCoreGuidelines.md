@@ -18983,11 +18983,13 @@ An implementation of this profile shall recognize the following patterns in sour
 
 Type safety profile summary:
 
-* [Type.1: Don't use `reinterpret_cast`](#Pro-type-reinterpretcast):
-a stricter version of [Avoid casts](#Res-casts), [prefer named casts](#Res-casts-named).
-* [Type.2: Don't use `static_cast` downcasts. ](#Pro-type-downcast):
+<a name="Pro-type-reinterpretcast">Type.1: Don't use `reinterpret_cast`</a>:
+A strict version of [Avoid casts](#Res-casts) and [prefer named casts](#Res-casts-named).
+
+<a name="Pro-type-downcast">Type.2: Don't use `static_cast` downcasts</a>:
 [Use `dynamic_cast` instead](#Rh-dynamic_cast).
-* [Type.3: Don't use `const_cast` to cast away `const` (i.e., at all)](#Pro-type-constcast):
+
+<a name="Pro-type-constcast">Type.3: Don't use `const_cast` to cast away `const` (i.e., at all)</a>:
 [Don't cast away const](#Res-casts-const).
 * [Type.4: Don't use C-style `(T)expression` casts](#Pro-type-cstylecast):
 [Prefer static casts](#Res-cast-named).
