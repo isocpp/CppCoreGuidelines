@@ -7376,8 +7376,9 @@ the former (`dynamic_cast`) is far harder to implement correctly in general.
 Consider:
 
     struct B {
-        const char* name {"B"}; 
-        virtual const char* id() const { return name; }     // if pb1->id() == pb2->id() *pb1 is the same type as *pb2
+        const char* name {"B"};
+        // if pb1->id() == pb2->id() *pb1 is the same type as *pb2
+        virtual const char* id() const { return name; }
         // ...
     };
 
