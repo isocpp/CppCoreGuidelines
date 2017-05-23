@@ -13261,7 +13261,7 @@ The code determining whether to `join()` or `detach()` may be complicated and ev
         // ... should I join here? ...
     }
 
-This seriously complicted lifetime analysis, and in not too unlikely cases make lifetime analysis impossible.
+This seriously complicated lifetime analysis, and in not too unlikely cases make lifetime analysis impossible.
 This implies that we cannot safely refer to local objects in `use()` from the thread or refer to local objects in the thread from `use()`.
 
 ##### Note
