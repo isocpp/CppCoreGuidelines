@@ -11399,7 +11399,7 @@ If you feel the need for a lot of casts, there may be a fundamental design probl
 
 ##### Alternatives
 
-Casts are widely (mis) used. Modern C++ has constructs that eliminats the need for casts in many contexts, such as
+Casts are widely (mis) used. Modern C++ has constructs that eliminates the need for casts in many contexts, such as
 
 * Use templates
 * Use `std::variant`
