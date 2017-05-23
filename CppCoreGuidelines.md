@@ -13305,7 +13305,7 @@ There are problems, though.
 How do we monitor the detached thread to see if it is alive?
 Something might go wrong with the heartbeat, and loosing a haertbeat can be very serious in a system for which it is needed.
 So, we need to communicate with the haertbeat thread
-(e.g., through a stream of messages or notification events using a `conrition_variable`).
+(e.g., through a stream of messages or notification events using a `condition_variable`).
 
 An alternative, and usually superior solution is to control its lifetime by placing it in a scope outside its point of creation (or activation).
 For example:
