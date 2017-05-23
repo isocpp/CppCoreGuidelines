@@ -19569,7 +19569,7 @@ for example, `Expects(p!=nullptr)` will become `[[expects: p!=nullptr]]`.
 * `narrow`        // `narrow<T>(x)` is `static_cast<T>(x)` if `static_cast<T>(x) == x` or it throws `narrowing_error`
 * `[[implicit]]`  // "Marker" to put on single-argument constructors to explicitly make them non-explicit.
 * `move_owner`    // `p = move_owner(q)` means `p = q` but ???
-* `joining_thread` // a RAII style versin of `std::thread` that joins.
+* `joining_thread` // a RAII style version of `std::thread` that joins.
 
 ## <a name="SS-gsl-concepts"></a>GSL.concept: Concepts
 
