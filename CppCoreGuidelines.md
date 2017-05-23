@@ -13275,7 +13275,7 @@ Because of old code and third party libraries using `std::thread` this rule can 
 
 ##### Enforcement
 
-Flag uses of 'std::thread':
+Flag uses of `std::thread`:
 
 * Suggest use of `gsl::joining_thread`.
 * Suggest ["exporting ownership"](#Rconc-detached_thread) to an enclosing scope if it detaches.
