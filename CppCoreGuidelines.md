@@ -13286,7 +13286,7 @@ Flag uses of `std::thread`:
 ##### Reason
 
 Often, the need to outlive the scope of its creation is inherent in the `thread`s task,
-but implementing that idea by `detach` makes it harder monitor and communicat with the detached thread.
+but implementing that idea by `detach` makes it harder monitor and communicate with the detached thread.
 In particular, it is harder (though not impossible) to ensure that the thread completed as expected or lived for as long as expected.
 
 ##### Example
