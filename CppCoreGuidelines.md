@@ -13303,8 +13303,8 @@ In particular, it is harder (though not impossible) to ensure that the thread co
 This is a reasonable use of a thread, for which `detach()` is commonly used.
 There are problems, though.
 How do we monitor the detached thread to see if it is alive?
-Something might go wrong with the heartbeat, and loosing a haertbeat can be very serious in a system for which it is needed.
-So, we need to communicate with the haertbeat thread
+Something might go wrong with the heartbeat, and loosing a heartbeat can be very serious in a system for which it is needed.
+So, we need to communicate with the heartbeat thread
 (e.g., through a stream of messages or notification events using a `condition_variable`).
 
 An alternative, and usually superior solution is to control its lifetime by placing it in a scope outside its point of creation (or activation).
