@@ -1,6 +1,6 @@
 # <a name="main"></a>C++ Core Guidelines
 
-May 21, 2017
+May 22, 2017
 
 
 Editors:
@@ -9424,6 +9424,7 @@ Expression rules:
 * [ES.61: Delete arrays using `delete[]` and non-arrays using `delete`](#Res-del)
 * [ES.62: Don't compare pointers into different arrays](#Res-arr2)
 * [ES.63: Don't slice](#Res-slice)
+* [ES.64: Use the `T{e}`notation for construction](#Res-construct)
 
 Statement rules:
 
@@ -10052,6 +10053,29 @@ Creating optimal and equivalent code from all of these examples should be well w
 (but don't make performance claims without measuring; a compiler may very well not generate optimal code for every example and
 there may be language rules preventing some optimization that you would have liked in a particular case).
 
+##### Example
+
+This rule covers member variables.
+
+    class X {
+    public:
+        X(int i, int ci) : m2{i}, cm2{ci} {}
+        // ...
+
+    private:
+        int m1 = 7;
+        int m2;
+        int m3;
+
+        const int cm1 = 7;
+        const int cm2;
+        const int cm3;
+    };
+
+The compiler will flag the uninitialized `cm3` because it is a `const`, but it will not catch the lack of initialization of `m3`.
+Usially, a rare spurious member initialization is worth the absence of errors from lack of initialization and often an optimizer
+can elimitate a redundant initialization (e.g., an initialization that occurs immediately before a assignment).
+
 ##### Note
 
 Complex initialization has been popular with clever programmers for decades.
@@ -10590,6 +10614,7 @@ This is basically the way `printf` is implemented.
 
 * Flag definitions of C-style variadic functions.
 * Flag `#include <cstdarg>` and `#include <stdarg.h>`
+
 
 ## ES.stmt: Statements
 
@@ -11892,6 +11917,60 @@ For example:
 ##### Enforcement
 
 Warn against slicing.
+
+### <a name="Res-construct"></a>ES.64: Use the `T{e}`notation for construction
+
+##### Reason
+
+The `T{e}` construction syntax makes it explict that construction is desired.
+The `T{e}` construction syntax makes doesn't allow narrowing.
+`T{e}` is the only safe and general expression for constructing a value of type `T` from an expression `e`.
+The casts notations `T(e)` and `(T)e` are neither safe nor general.
+
+##### Example
+
+For built-in types, the construction notation protects against narrowing and reinterpretation
+
+    void use(char ch, int i, double d, char* p, long long lng)
+    {
+	    int x1 = int{ch};     // OK, but redundant
+        int x2 = int{d};      // error: double->int narrowing; use a cast if you need to
+        int x3 = int{p};      // error: pointer to->int; use a reinterpret_cast if you really need to
+        int x4 = int{lng};    // error: long long->int narrowing; use a cast if you need to
+
+	    int y1 = int(ch);     // OK, but redundant
+	    int y2 = int(d);      // bad: double->int narrowing; use a cast if you need to
+	    int y3 = int(p);      // bad: pointer to->int; use a reinterpret_cast if you really need to
+	    int y4 = int(lng);    // bad: long->int narrowing; use a cast if you need to
+
+	    int z1 = (int)ch;     // OK, but redundant
+	    int z2 = (int)d;      // bad: double->int narrowing; use a cast if you need to
+	    int z3 = (int)p;      // bad: pointer to->int; use a reinterpret_cast if you really need to
+	    int z4 = (int)lng;    // bad: long long->int narrowing; use a cast if you need to
+    }
+
+The integer to/from pointer conversions are implementation defined when usint the `T(e)` or `(T)e` notations, and non-portable
+between platforms with different integer and pointer sizes.
+
+##### Note
+
+[Avoid casts](#Res-casts) (explicit type conversion) and if you must [prefer named casts](#Res-casts-named).
+
+##### Note
+
+Whe unambiguous, the `T` can be left out of `T{e}`.
+
+    complex<double> f(complex<double>);
+
+    auto z = f({2*pi,1});
+
+##### Note
+
+The constructuction notation is the most general [initializer notation](#Res-list).
+
+##### Enforcement
+
+Flag the C-style `(T)e` and functional-style `T(e)` casts.
 
 ## <a name="SS-numbers"></a>Arithmetic
 
@@ -18985,23 +19064,21 @@ Type safety profile summary:
 
 * <a name="Pro-type-reinterpretcast"></a>Type.1: Don't use `reinterpret_cast`:
 A strict version of [Avoid casts](#Res-casts) and [prefer named casts](#Res-casts-named).
-* <a name="Pro-type-downcast"></a>Type.2: Don't use `static_cast` downcasts:
+* <a name="Pro-type-downcast"></a>Type.2: Don't use `static_cast` to downcast:
 [Use `dynamic_cast` instead](#Rh-dynamic_cast).
 * <a name="Pro-type-constcast"></a>Type.3: Don't use `const_cast` to cast away `const` (i.e., at all):
 [Don't cast away const](#Res-casts-const).
-* <a name="Pro-type-cstylecast"></a>Type.4: Don't use C-style `(T)expression` casts:
-[Prefer static casts](#Res-cast-named).
-* [Type.4.1: Don't use `T(expression)` cast](#Pro-fct-style-cast):
-[Prefer named casts](#Res-casts-named).
-* [Type.5: Don't use a variable before it has been initialized](#Pro-type-init):
+* <a name="Pro-type-cstylecast"></a>Type.4: Don't use C-style `(T)expression` or functional `T(expression)` casts:
+Prefer [construction](#Res-construct) or [named casts](#Res-cast-named).
+* <a name="Pro-type-init"></a>Type.5: Don't use a variable before it has been initialized:
 [always initialize](#Res-always).
-* [Type.6: Always initialize a member variable](#Pro-type-memberinit):
+* <a name="Pro-type-memberinit"></a>Type.6: Always initialize a member variable:
 [always initialize](#Res-always),
 possibly using [default constructors](#Rc-default0) or
 [default member initializers](#Rc-in-class-initializers).
-* [Type.7: Avoid naked union](#Pro-fct-style-cast):
+* <a name="Pro-type-unon"></a>Type.7: Avoid naked union:
 [Use `variant` instead](#Ru-naked).
-* [Type.8: Avoid varargs](#Pro-type-varargs):
+* <a name="Pro-type-varargs"></a>Type.8: Avoid varargs:
 [Don't use `va_arg` arguments](#F-varargs).
 
 ##### Impact
@@ -19010,52 +19087,6 @@ With the type-safety profile you can trust that every operation is applied to a 
 Exception may be thrown to indicate errors that cannot be detected statically (at compile time).
 Note that this type-safety can be complete only if we also have [Bounds safety](#SS-bounds) and [Lifetime safety](#SS-lifetime).
 Without those guarantees, a region of memory could be accessed independent of which object, objects, or parts of objects are stored in it.
-
-### <a name="Pro-fct-style-cast"></a>Type.4.1: Don't use `T(expression)` for casting.
-
-##### Reason
-
-If `e` is of a built-in type, `T(e)` is equivalent to the error-prone `(T)e`.
-
-##### Example, bad
-
-    int* p = f(x);
-    auto i = int(p);    // Potential damaging cast; don't or use `reinterpret_cast`
-
-    short s = short(i); // potentially narrowing; don't or use `narrow` or `narrow_cast`
-
-##### Note
-
-The {}-syntax makes the desire for construction explicit and doesn't allow narrowing
-
-    f(Foo{bar});
-
-##### Enforcement
-
-Flag `T(e)` if used for `e` of a built-in type.
-
-
-### <a name="Pro-type-memberinit"></a>Type.6: Always initialize a member variable.
-
-##### Reason
-
-Before a variable has been initialized, it does not contain a deterministic valid value of its type. It could contain any arbitrary bit pattern, which could be different on each call.
-
-##### Example
-
-    struct X { int i; };
-
-    X x;
-    use(x); // BAD, x has not been initialized
-
-    X x2{}; // GOOD
-    use(x2);
-
-##### Enforcement
-
-* Issue a diagnostic for any constructor of a non-trivially-constructible type that does not initialize all member variables. To fix: Write a data member initializer, or mention it in the member initializer list.
-* Issue a diagnostic when constructing an object of a trivially constructible type without `()` or `{}` to initialize its members. To fix: Add `()` or `{}`.
-
 
 
 ## <a name="SS-bounds"></a>Pro.bounds: Bounds safety profile
