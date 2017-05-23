@@ -13324,7 +13324,8 @@ Sometimes, we need to separate the point of creation from the point of ownership
 
     void use()
     {
-        tick_toc = make_unique(gsl::joining_thread,heartbeat);       // heartbeat is meant to run as long as tick_tock lives
+        // heartbeat is meant to run as long as tick_tock lives
+        tick_toc = make_unique(gsl::joining_thread, heartbeat);
         // ...
     }
 
