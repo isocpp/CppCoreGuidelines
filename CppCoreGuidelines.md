@@ -7601,7 +7601,7 @@ give a wrong result (especially as a hierarchy is modified during maintenance).
 
 ##### Enforcement
 
-See [C.146] and [???]
+See [C.146](#Rh-dynamic_cast) and ???
 
 ## <a name="SS-overload"></a>C.over: Overloading and overloaded operators
 
