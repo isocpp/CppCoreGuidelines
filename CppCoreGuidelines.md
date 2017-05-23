@@ -1,6 +1,6 @@
 # <a name="main"></a>C++ Core Guidelines
 
-May 22, 2017
+May 23, 2017
 
 
 Editors:
@@ -11967,6 +11967,43 @@ Whe unambiguous, the `T` can be left out of `T{e}`.
 ##### Note
 
 The constructuction notation is the most general [initializer notation](#Res-list).
+
+##### Exception
+
+`std::vector` and other containers were defined before we had `{}` as a notation for construction.
+Consider:
+
+    vector<string> vs {10};                    // ten empty strings
+    vector<int> vi1 {1,2,3,4,5,6,7,8,9,10};    // ten elements 1..10
+    vector<int> vi2 {10};                      // one element with the value 10
+
+How do we get a `vector` of 10 default initialized `int`s?
+
+    vector<int> v3(10); // ten elements with value 0
+
+The use of `()` rather than `{}` for number of elements is conventional (going back to the early 1980s), hard to change, but still
+a design error: for a container where the element type can be confused with the number of elements, we have an ambiguity that
+must be resolved.
+The conventional resolution is to interpret `{10}` as a list of one element and use `(10)` to distinguish a size.
+
+This mistake need not be repeated in new code.
+We can define a type to represent the number of elements:
+
+    struct Count { int n };
+
+    template<typename T>
+    class Vector {
+    public:
+        Vector(Count n);                     // n default-initialized elements
+        Vector(initializer_list<T> init);    // init.size() elements
+        // ...
+    };
+
+    Vector<int> v1{10};
+    Vector<int> v2{Count{10}};
+    Vector<Count> v3{Count{10}};    // yes, there is still a very minor problem
+
+The main problem left is to find a suitable name for `Count`.
 
 ##### Enforcement
 
