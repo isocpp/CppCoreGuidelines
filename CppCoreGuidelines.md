@@ -7376,8 +7376,9 @@ the former (`dynamic_cast`) is far harder to implement correctly in general.
 Consider:
 
     struct B {
-        const char* name {"B"}; 
-        virtual const char* id() const { return name; }     // if pb1->id() == pb2->id() *pb1 is the same type as *pb2
+        const char* name {"B"};
+        // if pb1->id() == pb2->id() *pb1 is the same type as *pb2
+        virtual const char* id() const { return name; }
         // ...
     };
 
@@ -7601,7 +7602,7 @@ give a wrong result (especially as a hierarchy is modified during maintenance).
 
 ##### Enforcement
 
-See [C.146] and [???]
+See [C.146](#Rh-dynamic_cast) and ???
 
 ## <a name="SS-overload"></a>C.over: Overloading and overloaded operators
 
@@ -11604,7 +11605,7 @@ If you feel the need for a lot of casts, there may be a fundamental design probl
 
 ##### Alternatives
 
-Casts are widely (mis) used. Modern C++ has constructs that eliminats the need for casts in many contexts, such as
+Casts are widely (mis) used. Modern C++ has constructs that eliminates the need for casts in many contexts, such as
 
 * Use templates
 * Use `std::variant`
@@ -13557,7 +13558,7 @@ The code determining whether to `join()` or `detach()` may be complicated and ev
         // ... should I join here? ...
     }
 
-This seriously complicted lifetime analysis, and in not too unlikely cases make lifetime analysis impossible.
+This seriously complicated lifetime analysis, and in not too unlikely cases make lifetime analysis impossible.
 This implies that we cannot safely refer to local objects in `use()` from the thread or refer to local objects in the thread from `use()`.
 
 ##### Note
@@ -13571,7 +13572,7 @@ Because of old code and third party libraries using `std::thread` this rule can 
 
 ##### Enforcement
 
-Flag uses of 'std::thread':
+Flag uses of `std::thread`:
 
 * Suggest use of `gsl::joining_thread`.
 * Suggest ["exporting ownership"](#Rconc-detached_thread) to an enclosing scope if it detaches.
@@ -13582,7 +13583,7 @@ Flag uses of 'std::thread':
 ##### Reason
 
 Often, the need to outlive the scope of its creation is inherent in the `thread`s task,
-but implementing that idea by `detach` makes it harder monitor and communicat with the detached thread.
+but implementing that idea by `detach` makes it harder monitor and communicate with the detached thread.
 In particular, it is harder (though not impossible) to ensure that the thread completed as expected or lived for as long as expected.
 
 ##### Example
@@ -13599,9 +13600,9 @@ In particular, it is harder (though not impossible) to ensure that the thread co
 This is a reasonable use of a thread, for which `detach()` is commonly used.
 There are problems, though.
 How do we monitor the detached thread to see if it is alive?
-Something might go wrong with the heartbeat, and loosing a haertbeat can be very serious in a system for which it is needed.
-So, we need to communicate with the haertbeat thread
-(e.g., through a stream of messages or notification events using a `conrition_variable`).
+Something might go wrong with the heartbeat, and loosing a heartbeat can be very serious in a system for which it is needed.
+So, we need to communicate with the heartbeat thread
+(e.g., through a stream of messages or notification events using a `condition_variable`).
 
 An alternative, and usually superior solution is to control its lifetime by placing it in a scope outside its point of creation (or activation).
 For example:
@@ -13620,7 +13621,8 @@ Sometimes, we need to separate the point of creation from the point of ownership
 
     void use()
     {
-        tick_toc = make_unique(gsl::joining_thread,heartbeat);       // heartbeat is meant to run as long as tick_tock lives
+        // heartbeat is meant to run as long as tick_tock lives
+        tick_toc = make_unique(gsl::joining_thread, heartbeat);
         // ...
     }
 
@@ -19688,7 +19690,7 @@ for example, `Expects(p!=nullptr)` will become `[[expects: p!=nullptr]]`.
 * `narrow`        // `narrow<T>(x)` is `static_cast<T>(x)` if `static_cast<T>(x) == x` or it throws `narrowing_error`
 * `[[implicit]]`  // "Marker" to put on single-argument constructors to explicitly make them non-explicit.
 * `move_owner`    // `p = move_owner(q)` means `p = q` but ???
-* `joining_thread` // a RAII style versin of `std::thread` that joins.
+* `joining_thread` // a RAII style version of `std::thread` that joins.
 
 ## <a name="SS-gsl-concepts"></a>GSL.concept: Concepts
 
