@@ -5184,7 +5184,7 @@ A class designed to be useful only as a base does not need a default constructor
             // ...
     };
 
-A class that represent a unmodifiable
+A class that must acquire a resource during construction:
 
     lock_guard g {mx};  // guard the mutex mx
     lock_guard g2;      // error: guarding nothing
@@ -7342,7 +7342,14 @@ Use of the other casts can violate type safety and cause the program to access a
 
     void user2(B* pb)   // bad
     {
-        if (D* pd = static_cast<D*>(pb)) {  // I know that pb really points to a D; trust me
+        D* pd = static_cast<D*>(pb);    // I know that pb really points to a D; trust me
+        // ... use D's interface ...
+    }
+
+    void user3(B* pb)    // unsafe
+    {
+        if (some_condition) {
+            D* pd = static_cast<D*>(pb);   // I know that pb really points to a D; trust me
             // ... use D's interface ...
         }
         else {
@@ -7355,6 +7362,7 @@ Use of the other casts can violate type safety and cause the program to access a
         B b;
         user(&b);   // OK
         user2(&b);  // bad error
+        user3(&b);  // OK *if* the programmmer got the some_condition check right
     }
 
 ##### Note
@@ -11449,14 +11457,20 @@ C++17 tightens up the rules for the order of evaluation, but the order of evalua
     int i = 0;
     f(++i, ++i);
 
-The call will most likely be `f(0, 1)` or `f(1, 0)`, but you don't know which. Technically, the behavior is undefined.
+The call will most likely be `f(0, 1)` or `f(1, 0)`, but you don't know which.
+Technically, the behavior is undefined.
+In C++17, this code does not have undefined behavior, but it is still not specified which argument is evaluated first.
 
 ##### Example
 
-??? overloaded operators can lead to order of evaluation problems (shouldn't :-()
+Overloaded operators can lead to order of evaluation problems:
 
-    f1()->m(f2());   // m(f1(), f2())
+    f1()->m(f2());          // m(f1(), f2())
     cout << f1() << f2();   // operator<<(operator<<(cout, f1()), f2())
+
+In C++17, these examples work as expected (left to right) and assignments are evaluated right to left (just as ='s binding is right-to-left)
+
+    f1() = f2();    // undefined behavior in C++14; in C++17, f2() is evaluated before f1() 
 
 ##### Enforcement
 
