@@ -5184,7 +5184,7 @@ A class designed to be useful only as a base does not need a default constructor
             // ...
     };
 
-A class that represent a unmodifiable 
+A class that represent a unmodifiable
 
     lock_guard g {mx};  // guard the mutex mx
     lock_guard g2;      // error: guarding nothing
@@ -7338,7 +7338,7 @@ Flag all slicing.
         }
     }
 
-Use of the other casts casts can violate type safety and cause the program to access a variable that is actually of type `X` to be accessed as if it were of an unrelated type `Z`:
+Use of the other casts can violate type safety and cause the program to access a variable that is actually of type `X` to be accessed as if it were of an unrelated type `Z`:
 
     void user2(B* pb)   // bad
     {
@@ -7588,12 +7588,12 @@ Subscripting the resulting base pointer will lead to invalid object access and p
 * Pass an array as a `span` rather than as a pointer, and don't let the array name suffer a derived-to-base conversion before getting into the `span`
 
 
-### <a name="Rh-use-virtual"></a>CC.153: Prefer virtual function to casting
+### <a name="Rh-use-virtual"></a>C.153: Prefer virtual function to casting
 
 ##### Reason
 
 A virtual function call is safe, whereas casting is error-prone.
-A virtual function call reached the most derived function, whereas a cast may reach an intermediate class and therefore
+A virtual function call reaches the most derived function, whereas a cast may reach an intermediate class and therefore
 give a wrong result (especially as a hierarchy is modified during maintenance).
 
 ##### Example
@@ -10074,8 +10074,8 @@ This rule covers member variables.
     };
 
 The compiler will flag the uninitialized `cm3` because it is a `const`, but it will not catch the lack of initialization of `m3`.
-Usially, a rare spurious member initialization is worth the absence of errors from lack of initialization and often an optimizer
-can elimitate a redundant initialization (e.g., an initialization that occurs immediately before a assignment).
+Usually, a rare spurious member initialization is worth the absence of errors from lack of initialization and often an optimizer
+can eliminate a redundant initialization (e.g., an initialization that occurs immediately before an assignment).
 
 ##### Note
 
@@ -11331,7 +11331,7 @@ Use a `span`:
         for (int i = 0; i < COUNT; ++i)
             av[i] = i;
     }
-    
+
 Use a `span` and range-`for`:
 
     void f1a()
@@ -11605,7 +11605,7 @@ If you feel the need for a lot of casts, there may be a fundamental design probl
 
 ##### Alternatives
 
-Casts are widely (mis) used. Modern C++ has constructs that eliminates the need for casts in many contexts, such as
+Casts are widely (mis) used. Modern C++ has constructs that eliminate the need for casts in many contexts, such as
 
 * Use templates
 * Use `std::variant`
@@ -11669,7 +11669,7 @@ for example.)
 
 ##### Note
 
-`reinterpret_cast` can be essential, but the essential uses (e.g., turning a machine addresses into pointer) are not type safe:
+`reinterpret_cast` can be essential, but the essential uses (e.g., turning a machine address into pointer) are not type safe:
 
     auto p = reinterpret_cast<Device_register>(0x800);  // inherently dangerous
 
@@ -12103,8 +12103,8 @@ Warn against slicing.
 
 ##### Reason
 
-The `T{e}` construction syntax makes it explict that construction is desired.
-The `T{e}` construction syntax makes doesn't allow narrowing.
+The `T{e}` construction syntax makes it explicit that construction is desired.
+The `T{e}` construction syntax doesn't allow narrowing.
 `T{e}` is the only safe and general expression for constructing a value of type `T` from an expression `e`.
 The casts notations `T(e)` and `(T)e` are neither safe nor general.
 
@@ -12114,23 +12114,23 @@ For built-in types, the construction notation protects against narrowing and rei
 
     void use(char ch, int i, double d, char* p, long long lng)
     {
-	    int x1 = int{ch};     // OK, but redundant
+        int x1 = int{ch};     // OK, but redundant
         int x2 = int{d};      // error: double->int narrowing; use a cast if you need to
         int x3 = int{p};      // error: pointer to->int; use a reinterpret_cast if you really need to
         int x4 = int{lng};    // error: long long->int narrowing; use a cast if you need to
 
-	    int y1 = int(ch);     // OK, but redundant
-	    int y2 = int(d);      // bad: double->int narrowing; use a cast if you need to
-	    int y3 = int(p);      // bad: pointer to->int; use a reinterpret_cast if you really need to
-	    int y4 = int(lng);    // bad: long->int narrowing; use a cast if you need to
+        int y1 = int(ch);     // OK, but redundant
+        int y2 = int(d);      // bad: double->int narrowing; use a cast if you need to
+        int y3 = int(p);      // bad: pointer to->int; use a reinterpret_cast if you really need to
+        int y4 = int(lng);    // bad: long->int narrowing; use a cast if you need to
 
-	    int z1 = (int)ch;     // OK, but redundant
-	    int z2 = (int)d;      // bad: double->int narrowing; use a cast if you need to
-	    int z3 = (int)p;      // bad: pointer to->int; use a reinterpret_cast if you really need to
-	    int z4 = (int)lng;    // bad: long long->int narrowing; use a cast if you need to
+        int z1 = (int)ch;     // OK, but redundant
+        int z2 = (int)d;      // bad: double->int narrowing; use a cast if you need to
+        int z3 = (int)p;      // bad: pointer to->int; use a reinterpret_cast if you really need to
+        int z4 = (int)lng;    // bad: long long->int narrowing; use a cast if you need to
     }
 
-The integer to/from pointer conversions are implementation defined when usint the `T(e)` or `(T)e` notations, and non-portable
+The integer to/from pointer conversions are implementation defined when using the `T(e)` or `(T)e` notations, and non-portable
 between platforms with different integer and pointer sizes.
 
 ##### Note
@@ -12139,24 +12139,24 @@ between platforms with different integer and pointer sizes.
 
 ##### Note
 
-Whe unambiguous, the `T` can be left out of `T{e}`.
+When unambiguous, the `T` can be left out of `T{e}`.
 
     complex<double> f(complex<double>);
 
-    auto z = f({2*pi,1});
+    auto z = f({2*pi, 1});
 
 ##### Note
 
-The constructuction notation is the most general [initializer notation](#Res-list).
+The construction notation is the most general [initializer notation](#Res-list).
 
 ##### Exception
 
 `std::vector` and other containers were defined before we had `{}` as a notation for construction.
 Consider:
 
-    vector<string> vs {10};                    // ten empty strings
-    vector<int> vi1 {1,2,3,4,5,6,7,8,9,10};    // ten elements 1..10
-    vector<int> vi2 {10};                      // one element with the value 10
+    vector<string> vs {10};                           // ten empty strings
+    vector<int> vi1 {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};  // ten elements 1..10
+    vector<int> vi2 {10};                             // one element with the value 10
 
 How do we get a `vector` of 10 default initialized `int`s?
 
@@ -13429,7 +13429,7 @@ If a `thread` joins, we can safely pass pointers to objects in the scope of the 
         // ...
     }
 
-A `gsl::joining_thread` is a `std::thread` with a destructor that joined and cannot be `detached()`.
+A `gsl::joining_thread` is a `std::thread` with a destructor that joins and that cannot be `detached()`.
 By "OK" we mean that the object will be in scope ("live") for as long as a `thread` can use the pointer to it.
 The fact that `thread`s run concurrently doesn't affect the lifetime or ownership issues here;
 these `thread`s can be seen as just a function object called from `some_fct`.
@@ -13558,7 +13558,7 @@ The code determining whether to `join()` or `detach()` may be complicated and ev
         // ... should I join here? ...
     }
 
-This seriously complicated lifetime analysis, and in not too unlikely cases make lifetime analysis impossible.
+This seriously complicates lifetime analysis, and in not too unlikely cases makes lifetime analysis impossible.
 This implies that we cannot safely refer to local objects in `use()` from the thread or refer to local objects in the thread from `use()`.
 
 ##### Note
@@ -13583,8 +13583,8 @@ Flag uses of `std::thread`:
 ##### Reason
 
 Often, the need to outlive the scope of its creation is inherent in the `thread`s task,
-but implementing that idea by `detach` makes it harder monitor and communicate with the detached thread.
-In particular, it is harder (though not impossible) to ensure that the thread completed as expected or lived for as long as expected.
+but implementing that idea by `detach` makes it harder to monitor and communicate with the detached thread.
+In particular, it is harder (though not impossible) to ensure that the thread completed as expected or lives for as long as expected.
 
 ##### Example
 
@@ -13600,7 +13600,7 @@ In particular, it is harder (though not impossible) to ensure that the thread co
 This is a reasonable use of a thread, for which `detach()` is commonly used.
 There are problems, though.
 How do we monitor the detached thread to see if it is alive?
-Something might go wrong with the heartbeat, and loosing a heartbeat can be very serious in a system for which it is needed.
+Something might go wrong with the heartbeat, and losing a heartbeat can be very serious in a system for which it is needed.
 So, we need to communicate with the heartbeat thread
 (e.g., through a stream of messages or notification events using a `condition_variable`).
 
@@ -13622,7 +13622,7 @@ Sometimes, we need to separate the point of creation from the point of ownership
     void use()
     {
         // heartbeat is meant to run as long as tick_tock lives
-        tick_toc = make_unique(gsl::joining_thread, heartbeat);
+        tick_tock = make_unique<gsl::joining_thread>(heartbeat);
         // ...
     }
 
@@ -18190,7 +18190,7 @@ Standard-library rule summary:
 * [SL.1: Use libraries wherever possible](#Rsl-lib)
 * [SL.2: Prefer the standard library to other libraries](#Rsl-sl)
 * [SL.3: Do not add non-standard entities to namespace `std`](#sl-std)
-* [SL.4: Use the standard libray in a type-safe manner](#sl-safe)
+* [SL.4: Use the standard library in a type-safe manner](#sl-safe)
 * ???
 
 ### <a name="Rsl-lib"></a>SL.1:  Use libraries wherever possible
@@ -18225,7 +18225,7 @@ Additions to `std` may clash with future versions of the standard.
 
 Possible, but messy and likely to cause problems with platforms.
 
-### <a name="sl-safe"></a>SL.4: Use the standard libray in a type-safe manner
+### <a name="sl-safe"></a>SL.4: Use the standard library in a type-safe manner
 
 ##### Reason
 
@@ -18238,7 +18238,7 @@ We need it as a umbrella for the more specific rules.
 
 Summary of more specific rules:
 
-* [SL.4: Use the standard libray in a type-safe manner](#sl-safe)
+* [SL.4: Use the standard library in a type-safe manner](#sl-safe)
 
 
 ## <a name="SS-con"></a>SL.con: Containers
@@ -18315,7 +18315,7 @@ Read or write beyond an allocated range of elements typically leads to bad error
 
 ##### Note
 
-The standard-libray functions that apply to ranges of elements all have (or could have) bounds-safe overloads that take `span`.
+The standard-library functions that apply to ranges of elements all have (or could have) bounds-safe overloads that take `span`.
 Standard types such as `vector` can be modified to perform bounds-checks under the bounds profile (in a compatible way, such as by adding contracts), or used with `at()`.
 
 Ideally, the in-bounds guarantee should be statically enforced.
@@ -18324,9 +18324,9 @@ For example:
 * a range-`for` cannot loop beyond the range of the container to which it is applied
 * a `v.begin(),v.end()` is easily determined to be bounds safe
 
-Such loops are as fast as any unchecked/un-safe equivalent.
+Such loops are as fast as any unchecked/unsafe equivalent.
 
-Often a simple pre-check can eliminate the need for checking of individual indeces.
+Often a simple pre-check can eliminate the need for checking of individual indices.
 For example
 
 * for `v.begin(),v.begin()+i` the `i` can easily be checked against `v.size()`
@@ -19429,7 +19429,7 @@ Bounds safety profile summary:
 * <a href="Pro-bounds-decay"></a>Bounds.3: No array-to-pointer decay:
 [Pass pointers to single objects (only)](#Ri-array) and [Keep pointer arithmetic simple](#Res-simple).
 * <a href="Pro-bounds-stdlib"></a>Bounds.4: Don't use standard library functions and types that are not bounds-checked:
-[Use the standard libray in a type-safe manner](#Rsl-bounds).
+[Use the standard library in a type-safe manner](#Rsl-bounds).
 
 ##### Impact
 
