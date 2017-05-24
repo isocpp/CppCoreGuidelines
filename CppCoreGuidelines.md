@@ -67,7 +67,7 @@ You can sample rules for specific language features:
 [prefer initialization](#Rc-initialize) --
 [copy](#Rc-copy-semantics) --
 [move](#Rc-move-semantics) --
-[other operations](Rc-matched) --
+[other operations](#Rc-matched) --
 [default](#Rc-eqdefault)
 * `class`:
 [data](#Rc-org) --
@@ -108,7 +108,7 @@ You can sample rules for specific language features:
 [may not fail](#Rc-dtor-fail)
 * exception:
 [errors](#S-errors) --
-[`throw`](Re-throw) --
+[`throw`](#Re-throw) --
 [for errors only](#Re-errors) --
 [`noexcept`](#Re-noexcept) --
 [minimize `try`](#Re-catch) --
@@ -131,7 +131,7 @@ You can sample rules for specific language features:
 [lambdas](#Rf-capture-vs-overload)
 * `inline`:
 [small functions](#Rf-inline) --
-[in headers](Rs-inline)
+[in headers](#Rs-inline)
 * initialization:
 [always](#Res-always) --
 [prefer `{}`](#Res-list) --
@@ -142,7 +142,7 @@ You can sample rules for specific language features:
 * lambda expression:
 [when to use](#SS-lambdas)
 * operator:
-[conventional](Ro-conventional) --
+[conventional](#Ro-conventional) --
 [avoid conversion operators](#Ro-conventional) --
 [and lambdas](#Ro-lambda)
 * `public`, `private`, and `protected`:
@@ -166,7 +166,7 @@ You can sample rules for specific language features:
 * `virtual`:
 [interfaces](#Ri-abstract) --
 [not `virtual`](#Rc-concrete) --
-[destructor](Rc-dtor-virtual) --
+[destructor](#Rc-dtor-virtual) --
 [never fail](#Rc-dtor-fail)
 
 You can look at design concepts used to express the rules:
@@ -7140,7 +7140,7 @@ Factoring out `Utility` makes sense if many derived classes share significant "i
 
 Obviously, the example is too "theoretical", but it is hard to find a *small* realistic example.
 `Interface` is the root of an [interface hierarchy](#Rh-abstract)
-and `Utility` is the root of an [implementation hierarchy](Rh-kind).
+and `Utility` is the root of an [implementation hierarchy](#Rh-kind).
 Here is [a slightly more realistic example](https://www.quora.com/What-are-the-uses-and-advantages-of-virtual-base-class-in-C%2B%2B/answer/Lance-Diduck) with an explanation.
 
 ##### Note
