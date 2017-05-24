@@ -3,7 +3,7 @@
 
 by Herb Sutter
 
-updated 2017-04-17
+updated 2017-05-24
 
 
 ## Overview: "Is this document a tutorial or a FAQ?"
@@ -21,9 +21,15 @@ First look at the [C++ Core Guidelines](https://github.com/isocpp/CppCoreGuideli
 
 You can try out the examples in this document on all major compilers and platforms using [this GSL reference implementation](https://github.com/microsoft/gsl).
 
-# gsl::span: "What is gsl::span for?"
+
+# gsl::span: "What is gsl::span, and what is it for?"
 
 `gsl::span` is a replacement for `(pointer, length)` pairs to refer to a sequence of contiguous objects. It can be thought of as a pointer to an array, but that knows its bounds.
+
+For example, a `span<int,7>` refers to a sequence of seven contiguous `int`s.
+
+A `span` does not own the elements it points to. It is not a container like an `array` or a `vector`, it is a view into the contents of such a container.
+
 
 ## span parameters: "How should I choose between span and traditional (ptr, length) parameters?"
 
@@ -103,11 +109,6 @@ void dangerous_process_ints(int* p, size_t n) {
     for (auto i = 0; i < n; ++i) {
         p[i] = next_character();
     }
-
-    // or:    
-    // while (n--) {
-    //    *p = next_character();
-    //}
 }
 ~~~
 
@@ -120,6 +121,14 @@ void process_ints(span<int> s) {
     }
 }
 ~~~
+
+Note that this is bounds-safe with zero overhead, because there is no range check needed -- the range-`for` loop is known by construction to not exceed the range's bounds.
+
+
+## Element access: "How do I access a single element in a span?"
+
+Use `myspan[offset]` to subscript, or equivalently use `iter + offset` wheren `iter` is a `span<T>::iterator`. Both are range-checked.
+
 
 
 ## Sub-spans: "What if I need a subrange of a span?"
@@ -254,7 +263,7 @@ void serialize(span<const byte>); // can't forget const, the first test call sit
 void f(span<widget> s) {
     // ...
     // serialize one object's bytes (incl. padding)
-    serialize(s.as_bytes()); // ok
+    serialize(as_bytes(s)); // ok
 }
 ~~~
 
