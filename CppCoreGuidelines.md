@@ -18188,6 +18188,7 @@ Standard-library rule summary:
 * [SL.1: Use libraries wherever possible](#Rsl-lib)
 * [SL.2: Prefer the standard library to other libraries](#Rsl-sl)
 * [SL.3: Do not add non-standard entities to namespace `std`](#sl-std)
+* [SL.4: Use the standard libray in a type-safe manner](#sl-safe)
 * ???
 
 ### <a name="Rsl-lib"></a>SL.1:  Use libraries wherever possible
@@ -18222,6 +18223,21 @@ Additions to `std` may clash with future versions of the standard.
 
 Possible, but messy and likely to cause problems with platforms.
 
+### <a name="sl-safe"></a>SL.4: Use the standard libray in a type-safe manner
+
+##### Reason
+
+Because, obviously, breaking this rule can lead to undefined behavior, memory corruption, and all kinds of other bad errors.
+
+##### Note
+
+This is a semi-philosophical meta-rule, which needs many supporting concrete rules.
+We need it as a umbrella for the more specific rules.
+
+Summary of more specific rules:
+
+* [SL.4: Use the standard libray in a type-safe manner](#sl-safe)
+
 
 ## <a name="SS-con"></a>SL.con: Containers
 
@@ -18231,6 +18247,7 @@ Container rule summary:
 
 * [SL.con.1: Prefer using STL `array` or `vector` instead of a C array](#Rsl-arrays)
 * [SL.con.2: Prefer using STL `vector` by default unless you have a reason to use a different container](#Rsl-vector)
+* [SL.con.3: Avoid bounds errors](#Rsl-bounds)
 *  ???
 
 ### <a name="Rsl-arrays"></a>SL.con.1: Prefer using STL `array` or `vector` instead of a C array
@@ -18254,6 +18271,10 @@ For a variable-length array, use `std::vector`, which additionally can change it
     delete[] v;                         // BAD, manual delete
 
     std::vector<int> w(initial_size);   // ok
+
+##### Note
+
+Use `gsl::span` for non-owning references into a container.
 
 ##### Enforcement
 
@@ -18283,6 +18304,87 @@ If you have a good reason to use another container, use that instead. For exampl
 ##### Enforcement
 
 * Flag a `vector` whose size never changes after construction (such as because it's `const` or because no non-`const` functions are called on it). To fix: Use an `array` instead.
+
+### <a name="Rsl-bounds"></a>SL.con.3: Avoid bounds errors
+
+##### Reason
+
+Read or write beyond an allocated range of elements typically leads to bad errors, wrong results, crashes, and security violations.
+
+##### Note
+
+The standard-libray functions that apply to ranges of elements all have (or could have) bounds-safe overloads that take `span`.
+Standard types such as `vector` can be modified to perform bounds-checks under the bounds profile (in a compatible way, such as by adding contracts), or used with `at()`.
+
+Ideally, the in-bounds guarantee should be statically enforced.
+For example:
+
+* a range-`for` cannot loop beyond the range of the container to which it is applied
+* a `v.begin(),v.end()` is easily determined to be bounds safe
+
+Such loops are as fast as any unchecked/un-safe equivalent.
+
+Often a simple pre-check can eliminate the need for checking of individual indeces.
+For example
+
+* for `v.begin(),v.begin()+i` the `i` can easily be checked against `v.size()`
+
+Such loops can be much faster than individually checked element accesses.
+
+##### Example, bad
+
+    void f()
+    {
+        array<int, 10> a, b;
+        memset(a.data(), 0, 10);         // BAD, and contains a length error (length = 10 * sizeof(int))
+        memcmp(a.data(), b.data(), 10);  // BAD, and contains a length error (length = 10 * sizeof(int))
+    }
+
+Also, `std::array<>::fill()` or `std::fill()` or even an empty initializer are better candidate than `memset()`.
+
+##### Example, good
+
+    void f()
+    {
+        array<int, 10> a, b, c{};       // c is initialized to zero
+        a.fill(0);
+        fill(b.begin(), b.end(), 0);    // std::fill()
+        fill(b, 0);                     // std::fill() + Ranges TS
+
+        if ( a == b ) {
+          // ...
+        }
+    }
+
+##### Example
+
+If code is using an unmodified standard library, then there are still workarounds that enable use of `std::array` and `std::vector` in a bounds-safe manner. Code can call the `.at()` member function on each class, which will result in an `std::out_of_range` exception being thrown. Alternatively, code can call the `at()` free function, which will result in fail-fast (or a customized action) on a bounds violation.
+
+    void f(std::vector<int>& v, std::array<int, 12> a, int i)
+    {
+        v[0] = a[0];        // BAD
+        v.at(0) = a[0];     // OK (alternative 1)
+        at(v, 0) = a[0];    // OK (alternative 2)
+
+        v.at(0) = a[i];     // BAD
+        v.at(0) = a.at(i);  // OK (alternative 1)
+        v.at(0) = at(a, i); // OK (alternative 2)
+    }
+
+##### Enforcement
+
+* Issue a diagnostic for any call to a standard library function that is not bounds-checked.
+??? insert link to a list of banned functions
+
+This rule is part of the [bounds profile](#SS-bounds).
+
+**TODO Notes**:
+
+* Impact on the standard library will require close coordination with WG21, if only to ensure compatibility even if never standardized.
+* We are considering specifying bounds-safe overloads for stdlib (especially C stdlib) functions like `memcmp` and shipping them in the GSL.
+* For existing stdlib functions and types like `vector` that are not fully bounds-checked, the goal is for these features to be bounds-checked when called from code with the bounds profile on, and unchecked when called from legacy code, possibly using contracts (concurrently being proposed by several WG21 members).
+
+
 
 ## <a name="SS-string"></a>SL.str: String
 
@@ -19308,15 +19410,13 @@ Without those guarantees, a region of memory could be accessed independent of wh
 
 ## <a name="SS-bounds"></a>Pro.bounds: Bounds safety profile
 
-This profile makes it easier to construct code that operates within the bounds of allocated blocks of memory. It does so by focusing on removing the primary sources of bounds violations: pointer arithmetic and array indexing. One of the core features of this profile is to restrict pointers to only refer to single objects, not arrays.
+This profile makes it easier to construct code that operates within the bounds of allocated blocks of memory.
+It does so by focusing on removing the primary sources of bounds violations: pointer arithmetic and array indexing.
+One of the core features of this profile is to restrict pointers to only refer to single objects, not arrays.
 
-For the purposes of this document, bounds-safety is defined to be the property that a program does not use a variable to access memory outside of the range that was allocated and assigned to that variable. (Note that the safety is intended to be complete when combined also with [Type safety](#SS-type) and [Lifetime safety](#SS-lifetime), which cover other unsafe operations that allow bounds violations, such as type-unsafe casts that 'widen' pointers.)
-
-The following are under consideration but not yet in the rules below, and may be better in other profiles:
-
-* ???
-
-An implementation of this profile shall recognize the following patterns in source code as non-conforming and issue a diagnostic.
+We define bounds-safety to be the property that a program does not use an object to access memory outside of the range that was allocated for it.
+Bounds safety is intended to be complete only when combined with [Type safety](#SS-type) and [Lifetime safety](#SS-lifetime),
+which cover other unsafe operations that allow bounds violations.
 
 Bounds safety profile summary:
 
@@ -19327,65 +19427,15 @@ Bounds safety profile summary:
 * <a href="Pro-bounds-decay"></a>Bounds.3: No array-to-pointer decay:
 [Pass pointers to single objects (only)](#Ri-array) and [Keep pointer arithmetic simple](#Res-simple).
 * <a href="Pro-bounds-stdlib"></a>Bounds.4: Don't use standard library functions and types that are not bounds-checked:
-[???](#XXX)
+[Use the standard libray in a type-safe manner](#Rsl-bounds).
 
+##### Impact
 
-### <a name="XXX"></a>Bounds.4: Don't use standard library functions and types that are not bounds-checked.
-
-##### Reason
-
-These functions all have bounds-safe overloads that take `span`. Standard types such as `vector` can be modified to perform bounds-checks under the bounds profile (in a compatible way, such as by adding contracts), or used with `at()`.
-
-##### Example, bad
-
-    void f()
-    {
-        array<int, 10> a, b;
-        memset(a.data(), 0, 10);         // BAD, and contains a length error (length = 10 * sizeof(int))
-        memcmp(a.data(), b.data(), 10);  // BAD, and contains a length error (length = 10 * sizeof(int))
-    }
-
-Also, `std::array<>::fill()` or `std::fill()` or even an empty initializer are better candidate than `memset()`.
-
-##### Example, good
-
-    void f()
-    {
-        array<int, 10> a, b, c{};       // c is initialized to zero
-        a.fill(0);
-        fill(b.begin(), b.end(), 0);    // std::fill()
-        fill(b, 0);                     // std::fill() + Ranges TS
-
-        if ( a == b ) {
-          // ...
-        }
-    }
-
-##### Example
-
-If code is using an unmodified standard library, then there are still workarounds that enable use of `std::array` and `std::vector` in a bounds-safe manner. Code can call the `.at()` member function on each class, which will result in an `std::out_of_range` exception being thrown. Alternatively, code can call the `at()` free function, which will result in fail-fast (or a customized action) on a bounds violation.
-
-    void f(std::vector<int>& v, std::array<int, 12> a, int i)
-    {
-        v[0] = a[0];        // BAD
-        v.at(0) = a[0];     // OK (alternative 1)
-        at(v, 0) = a[0];    // OK (alternative 2)
-
-        v.at(0) = a[i];     // BAD
-        v.at(0) = a.at(i);  // OK (alternative 1)
-        v.at(0) = at(a, i); // OK (alternative 2)
-    }
-
-##### Enforcement
-
-* Issue a diagnostic for any call to a standard library function that is not bounds-checked. ??? insert link to a list of banned functions
-
-**TODO Notes**:
-
-* Impact on the standard library will require close coordination with WG21, if only to ensure compatibility even if never standardized.
-* We are considering specifying bounds-safe overloads for stdlib (especially C stdlib) functions like `memcmp` and shipping them in the GSL.
-* For existing stdlib functions and types like `vector` that are not fully bounds-checked, the goal is for these features to be bounds-checked when called from code with the bounds profile on, and unchecked when called from legacy code, possibly using contracts (concurrently being proposed by several WG21 members).
-
+Bounds safety implies that access to an object - notably arrays - does not access beyond the object's memory allocation.
+This eliminates a large class of insidious and hard-to-find errors, including the (in)famous "buffer overflow" errors.
+This closes security loopholes as well as a prominent source of memory corruption (when writing out of bounds).
+Even an out-of-bounds access is "just a read", it can lead to invariant violations (when the accessed isn't of the assumed type)
+and "mysterious values."
 
 
 ## <a name="SS-lifetime"></a>Pro.lifetime: Lifetime safety profile
@@ -19400,6 +19450,7 @@ Lifetime safety profile summary:
 * [Lifetime.2: Don't dereference a possibly null pointer.](#Pro-lifetime-null-deref)
 * [Lifetime.3: Don't pass a possibly invalid pointer to a function.](#Pro-lifetime-invalid-argument)
 
+??? These rules will be moved into the main-line sections of these guidelines ???
 
 ### <a name="Pro-lifetime-invalid-deref"></a>Lifetime.1: Don't dereference a possibly invalid pointer.
 
