@@ -112,7 +112,7 @@ void dangerous_process_ints(int* p, size_t n) {
 }
 ~~~
 
-A `span` supports range-`for`:
+A `span` supports range-`for` -- note this is zero-overhead and does not need to perform any range check, because the range-`for` loop is is known by construction not to exceed the range's bounds:
 
 ~~~cpp
 void process_ints(span<int> s) {
@@ -122,7 +122,11 @@ void process_ints(span<int> s) {
 }
 ~~~
 
-Note that this is bounds-safe with zero overhead, because there is no range check needed -- the range-`for` loop is known by construction to not exceed the range's bounds.
+A `span` also supports normal iteration using `.begin()` and `.end()`.
+
+Note that you cannot compare iterators from different spans, even if they refer to the same array.
+
+An iterator is valid as long as the `span` that it is iterating over exists.
 
 
 ## Element access: "How do I access a single element in a span?"
