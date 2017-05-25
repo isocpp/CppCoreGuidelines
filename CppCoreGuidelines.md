@@ -19075,7 +19075,7 @@ If your system consists of a million lines of such code,
 you probably will not be able to use exceptions,
 but that's a problem with excessive and undisciplined pointer use, rather than with exceptions.
 In our opinion, you need RAII to make exception-based error handling simple and safe -- simpler and safer than alternatives.
-* Exception performance is not predictable
+* Exception performance is not predictable.
 If you are in a hard-real-time system where you must guarantee completion of a task in a given time,
 you need tools to back up such guarantees.
 As far as we know such tools are not available (at least not to most programmers).
