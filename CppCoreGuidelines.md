@@ -7362,7 +7362,7 @@ Use of the other casts can violate type safety and cause the program to access a
         B b;
         user(&b);   // OK
         user2(&b);  // bad error
-        user3(&b);  // OK *if* the programmmer got the some_condition check right
+        user3(&b);  // OK *if* the programmer got the some_condition check right
     }
 
 ##### Note
@@ -11470,7 +11470,7 @@ Overloaded operators can lead to order of evaluation problems:
 
 In C++17, these examples work as expected (left to right) and assignments are evaluated right to left (just as ='s binding is right-to-left)
 
-    f1() = f2();    // undefined behavior in C++14; in C++17, f2() is evaluated before f1() 
+    f1() = f2();    // undefined behavior in C++14; in C++17, f2() is evaluated before f1()
 
 ##### Enforcement
 
