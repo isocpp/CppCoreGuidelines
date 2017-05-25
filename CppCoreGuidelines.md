@@ -1257,7 +1257,7 @@ Functions can be template functions and sets of functions can be classes or clas
 * (Simple) A function should not make control-flow decisions based on the values of variables declared at namespace scope.
 * (Simple) A function should not write to variables declared at namespace scope.
 
-### <a name="Ri-global"></a>I.2 Avoid global variables
+### <a name="Ri-global"></a>I.2: Avoid global variables
 
 ##### Reason
 
@@ -4225,7 +4225,7 @@ Concrete type rule summary:
 * [C.10: Prefer concrete types over class hierarchies](#Rc-concrete)
 * [C.11: Make concrete types regular](#Rc-regular)
 
-### <a name="Rc-concrete"></a>C.10 Prefer concrete types over class hierarchies
+### <a name="Rc-concrete"></a>C.10: Prefer concrete types over class hierarchies
 
 ##### Reason
 
@@ -18860,9 +18860,9 @@ This section contains ideas about higher-level architectural ideas and libraries
 
 Architectural rule summary:
 
-* [A.1 Separate stable from less stable part of code](#Ra-stable)
-* [A.2 Express potentially reusable parts as a library](#Ra-lib)
-* [A.4 There should be no cycles among libraries](#?Ra-dag)
+* [A.1: Separate stable from less stable part of code](#Ra-stable)
+* [A.2: Express potentially reusable parts as a library](#Ra-lib)
+* [A.4: There should be no cycles among libraries](#?Ra-dag)
 * [???](#???)
 * [???](#???)
 * [???](#???)
@@ -18870,11 +18870,11 @@ Architectural rule summary:
 * [???](#???)
 * [???](#???)
 
-### <a name="Ra-stable"></a>A.1 Separate stable from less stable part of code
+### <a name="Ra-stable"></a>A.1: Separate stable from less stable part of code
 
 ???
 
-### <a name="Ra-lib"></a>A.2 Express potentially reusable parts as a library
+### <a name="Ra-lib"></a>A.2: Express potentially reusable parts as a library
 
 ##### Reason
 
@@ -18885,7 +18885,7 @@ A library could be a set of headers (a "header only library") or a set of header
 A library can be statically or dynamically linked into a program, or it may be `#included`
 
 
-### <a name="Ra-dag"></a>A.4 There should be no cycles among libraries
+### <a name="Ra-dag"></a>A.4: There should be no cycles among libraries
 
 ##### Reason
 
@@ -19864,7 +19864,7 @@ Always indenting the statement after `if (...)`, `for (...)`, and `while (...)` 
 
 Use a tool.
 
-### <a name="Rl-name-type"></a>NL.5 Don't encode type information in names
+### <a name="Rl-name-type"></a>NL.5: Don't encode type information in names
 
 ##### Rationale
 
