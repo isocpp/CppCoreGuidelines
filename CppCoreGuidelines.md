@@ -20199,10 +20199,6 @@ The `{` for a `class` and a `struct` in *not* on a separate line, but the `{` fo
 
 ##### Note
 
-Capitalize the names of your user-defined types to distinguish them from standards-library types.
-
-##### Note
-
 Do not capitalize function names.
 
 ##### Enforcement
