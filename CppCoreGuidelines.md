@@ -8389,9 +8389,19 @@ Convenience of use and avoidance of errors.
 
     enum class Day { mon, tue, wed, thu, fri, sat, sun };
 
-    Day operator++(Day& d)
+    constexpr Day& operator++(Day& d)
     {
-        return d == Day::sun ? Day::mon : Day{++d};
+        switch (d)
+        {
+        case Day::mon: return (d = Day::tue);
+        case Day::tue: return (d = Day::wed);
+        case Day::wed: return (d = Day::thu);
+        case Day::thu: return (d = Day::fri);
+        case Day::fri: return (d = Day::sat);
+        case Day::sat: return (d = Day::sun);
+        default: // case Day::sun:
+            return (d = Day::mon);
+        }
     }
 
     Day today = Day::sat;
