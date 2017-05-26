@@ -26,7 +26,7 @@ You can try out the examples in this document on all major compilers and platfor
 
 `gsl::span` is a replacement for `(pointer, length)` pairs to refer to a sequence of contiguous objects. It can be thought of as a pointer to an array, but that knows its bounds.
 
-For example, a `span<int,7>` refers to a sequence of seven contiguous `int`s.
+For example, a `span<int,7>` refers to a sequence of seven contiguous integers.
 
 A `span` does not own the elements it points to. It is not a container like an `array` or a `vector`, it is a view into the contents of such a container.
 
@@ -190,7 +190,7 @@ void f(span<widget> s) {
 
 ## Comparison: "When I compare `span<T>`s, do I compare the `T` values or the underlying pointers?"
 
-Comparing two `span<T>`s compares the `T` values. To compare two `span`s for identity, to see if they're pointing to the same thing, use `.data()`.
+Comparing two `span<T>`s compares the `T` values. To compare two spans for identity, to see if they're pointing to the same thing, use `.data()`.
 
 ~~~cpp
 int a[] = { 1, 2, 3};
@@ -204,7 +204,7 @@ assert(sa.data() != sv.data()); // but sa and sv point to different memory areas
 ~~~  
 
 > Things to remember
-> - Comparing `span`s compares their contents, not whether they point to the same location.
+> - Comparing spans compares their contents, not whether they point to the same location.
 
 
 ## Empty vs null: "Do I have to explicitly check whether a span is null?"
