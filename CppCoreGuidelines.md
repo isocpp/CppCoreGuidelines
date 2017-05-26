@@ -853,7 +853,7 @@ We could check earlier and improve the code:
         // ...
     }
 
-Now, `m<=n` can be checked at the point of call (early) rather than later.
+Now, `m <= n` can be checked at the point of call (early) rather than later.
 If all we had was a typo so that we meant to use `n` as the bound, the code could be further simplified (eliminating the possibility of an error):
 
     void use3(int m)
@@ -1874,7 +1874,7 @@ Note: `length()` is, of course, `std::strlen()` in disguise.
 
 Consider:
 
-    void copy_n(const T* p, T* q, int n); // copy from [p:p+n) to [q:q+n)
+    void copy_n(const T* p, T* q, int n); // copy from [p:p + n) to [q:q + n)
 
 What if there are fewer than `n` elements in the array pointed to by `q`? Then, we overwrite some probably unrelated memory.
 What if there are fewer than `n` elements in the array pointed to by `p`? Then, we read some probably unrelated memory.
@@ -1964,13 +1964,14 @@ Having many arguments opens opportunities for confusion. Passing lots of argumen
 
 The two most common reasons why functions have too many parameters are:
 
-    1. *Missing an abstraction.* There is an abstraction missing, so that a compound value is being
-    passed as individual elements instead of as a single object that enforces an invariant.
-    This not only expands the parameter list, but it leads to errors because the component values
-    are no longer protected by an enforced invariant.
+1. *Missing an abstraction.*
+   There is an abstraction missing, so that a compound value is being
+   passed as individual elements instead of as a single object that enforces an invariant.
+   This not only expands the parameter list, but it leads to errors because the component values
+   are no longer protected by an enforced invariant.
 
-    2. *Violating "one function, one responsibility."* The function is trying to do more than one
-    job and should probably be refactored.
+2. *Violating "one function, one responsibility."*
+   The function is trying to do more than one job and should probably be refactored.
 
 ##### Example
 
@@ -2040,13 +2041,13 @@ Adjacent arguments of the same type are easily swapped by mistake.
 
 Consider:
 
-    void copy_n(T* p, T* q, int n);  // copy from [p:p+n) to [q:q+n)
+    void copy_n(T* p, T* q, int n);  // copy from [p:p + n) to [q:q + n)
 
 This is a nasty variant of a K&R C-style interface. It is easy to reverse the "to" and "from" arguments.
 
 Use `const` for the "from" argument:
 
-    void copy_n(const T* p, T* q, int n);  // copy from [p:p+n) to [q:q+n)
+    void copy_n(const T* p, T* q, int n);  // copy from [p:p + n) to [q:q + n)
 
 ##### Exception
 
@@ -2389,8 +2390,8 @@ Functions with complex control structures are more likely to be long and more li
 
 Consider:
 
-    double simpleFunc(double val, int flag1, int flag2)
-        // simpleFunc: takes a value and calculates the expected ASIC output,
+    double simple_func(double val, int flag1, int flag2)
+        // simple_func: takes a value and calculates the expected ASIC output,
         // given the two mode flags.
     {
         double intermediate;
@@ -2433,8 +2434,8 @@ We can refactor:
         // ???
     }
 
-    double simpleFunc(double val, int flag1, int flag2)
-        // simpleFunc: takes a value and calculates the expected ASIC output,
+    double simple_func(double val, int flag1, int flag2)
+        // simple_func: takes a value and calculates the expected ASIC output,
         // given the two mode flags.
     {
         if (flag1 > 0)
@@ -2527,7 +2528,7 @@ Most computation is best done at run time.
 
 Any API that may eventually depend on high-level runtime configuration or
 business logic should not be made `constexpr`. Such customization can not be
-evaluated by the compiler, and any `constexpr` functions that depended upon 
+evaluated by the compiler, and any `constexpr` functions that depended upon
 that API would have to be refactored or drop `constexpr`.
 
 ##### Enforcement
@@ -3191,7 +3192,7 @@ Informal/non-explicit ranges are a source of errors.
 ##### Note
 
 Ranges are extremely common in C++ code. Typically, they are implicit and their correct use is very hard to ensure.
-In particular, given a pair of arguments `(p, n)` designating an array \[`p`:`p+n`),
+In particular, given a pair of arguments `(p, n)` designating an array \[`p`:`p + n`),
 it is in general impossible to know if there really are `n` elements to access following `*p`.
 `span<T>` and `span_p<T>` are simple helper classes designating a \[`p`:`q`) range and a range starting with `p` and ending with the first element for which a predicate is true, respectively.
 
@@ -4186,7 +4187,7 @@ For example, a derived class might be allowed to skip a run-time check because i
         int mem(int x, int y)
         {
             /* ... do something ... */
-            return do_bar(x+y); // OK: derived class can bypass check
+            return do_bar(x + y); // OK: derived class can bypass check
         }
     }
 
@@ -6969,15 +6970,15 @@ This kind of "vector" isn't meant to be used as a base class at all.
 
 ##### Example, bad
 
-   class Shape {
-   public:
+    class Shape {
+    public:
         // ... interface functions ...
-   protected:
+    protected:
         // data for use in derived classes:
         Color fill_color;
         Color edge_color;
         Style st;
-   };
+    };
 
 Now it is up to every derived `Shape` to manipulate the protected data correctly.
 This has been popular, but also a major source of maintenance problems.
@@ -7052,7 +7053,7 @@ Especially to break apart monolithic interfaces into "aspects" of behavior suppo
     };
 
 `istream` provides the interface to input operations; `ostream` provides the interface to output operations.
-`iostream` provides the union of the `istream` and `ostream` interfaces and the synchronization needed to allow both on a single stream. 
+`iostream` provides the union of the `istream` and `ostream` interfaces and the synchronization needed to allow both on a single stream.
 
 ##### Note
 
@@ -7081,7 +7082,7 @@ If the operations are virtual the use of inheritance is necessary, if not using 
     };
 
 `istream` provides the interface to input operations (and some data); `ostream` provides the interface to output operations (and some data).
-`iostream` provides the union of the `istream` and `ostream` interfaces and the synchronization needed to allow both on a single stream. 
+`iostream` provides the union of the `istream` and `ostream` interfaces and the synchronization needed to allow both on a single stream.
 
 ##### Note
 
@@ -7090,13 +7091,13 @@ This a relatively rare use because implementation can often be organized into a 
 ##### Example
 
 Sometimes, an "implementation attribute" is more like a "mixin" that determine the behavior of an implementation and inject
-members to enable the implementation of the policies it requires. 
+members to enable the implementation of the policies it requires.
 For example, see `std::enable_shared_from_this`
 or various bases from boost.intrusive (e.g. `list_base_hook` or `intrusive_ref_counter`).
 
 ##### Enforcement
 
-??? 
+???
 
 ### <a name="Rh-vbase"></a>C.137: Use `virtual` bases to avoid overly general base classes
 
@@ -7167,7 +7168,7 @@ Without a using declaration, member functions in the derived class hide the enti
     };
     class D: public B {
     public:
-        int f(int i) override { std::cout << "f(int): "; return i+1; }
+        int f(int i) override { std::cout << "f(int): "; return i + 1; }
     };
     int main()
     {
@@ -7180,7 +7181,7 @@ Without a using declaration, member functions in the derived class hide the enti
 
     class D: public B {
     public:
-        int f(int i) override { std::cout << "f(int): "; return i+1; }
+        int f(int i) override { std::cout << "f(int): "; return i + 1; }
         using B::f; // exposes f(double)
     };
 
@@ -9871,7 +9872,7 @@ When concepts become available, we can (and should) be more specific about the t
     ForwardIterator p = algo(x, y, z);
 
 ##### Example (C++17)
-    
+
     auto [ quotient, remainder ] = div(123456, 73);   // break out the members of the div_t result
 
 ##### Enforcement
@@ -10384,17 +10385,17 @@ Readability and safety.
 
 As an optimization, you may want to reuse a buffer as a scratch pad, but even then prefer to limit the variable's scope as much as possible and be careful not to cause bugs from data left in a recycled buffer as this is a common source of security bugs.
 
-    {
+    void write_to_file() {
         std::string buffer;             // to avoid reallocations on every loop iteration
         for (auto& o : objects)
         {
             // First part of the work.
-            generateFirstString(buffer, o);
-            writeToFile(buffer);
+            generate_first_String(buffer, o);
+            write_to_file(buffer);
 
             // Second part of the work.
-            generateSecondString(buffer, o);
-            writeToFile(buffer);
+            generate_second_string(buffer, o);
+            write_to_file(buffer);
 
             // etc...
         }
@@ -11060,11 +11061,11 @@ There are exceedingly clever used of this "idiom", but they are far rarer than t
 
 ##### Note
 
-    Unnamed function arguments are fine.
+Unnamed function arguments are fine.
 
 ##### Enforcement
 
-    Flag statements that are just a temporary
+Flag statements that are just a temporary
 
 ### <a name="Res-empty"></a>ES.85: Make empty statements visible
 
@@ -11240,22 +11241,22 @@ Access into an array with known bounds using a constant as a subscript can be va
     {
         if (count < 2) return;
 
-        int* q = p + 1; // BAD
+        int* q = p + 1;    // BAD
 
         ptrdiff_t d;
         int n;
-        d = (p - &n); // OK
-        d = (q - p); // OK
+        d = (p - &n);      // OK
+        d = (q - p);       // OK
 
-        int n = *p++; // BAD
+        int n = *p++;      // BAD
 
         if (count < 6) return;
 
-        p[4] = 1; // BAD
+        p[4] = 1;          // BAD
 
-        p[count - 1] = 2; // BAD
+        p[count - 1] = 2;  // BAD
 
-        use(&p[0], 3); // BAD
+        use(&p[0], 3);     // BAD
     }
 
 ##### Example, good
@@ -11264,17 +11265,17 @@ Access into an array with known bounds using a constant as a subscript can be va
     {
         if (a.length() < 2) return;
 
-        int n = a[0]; // OK
+        int n = a[0];      // OK
 
         span<int> q = a.subspan(1); // OK
 
         if (a.length() < 6) return;
 
-        a[4] = 1; // OK
+        a[4] = 1;          // OK
 
-        a[count - 1] = 2; // OK
+        a[count - 1] = 2;  // OK
 
-        use(a.data(), 3); // OK
+        use(a.data(), 3);  // OK
     }
 
 ##### Note
@@ -11589,12 +11590,12 @@ What would you think this fragment prints? The result is at best implementation 
 
     2 0 4611686018427387904
 
-Adding 
+Adding
 
     *q = 666;
     cout << d << ' ' << *p << ' ' << *q << '\n';
 
-I got 
+I got
 
     3.29048e-321 666 666
 
@@ -12260,7 +12261,7 @@ can be surprising for many programmers.
 ##### Reason
 
 Because most arithmetic is assumed to be signed;
-`x-y` yields a negative number when `y>x` except in the rare cases where you really want modulo arithmetic.
+`x - y` yields a negative number when `y > x` except in the rare cases where you really want modulo arithmetic.
 
 ##### Example
 
@@ -12270,23 +12271,23 @@ This is even more true for mixed signed and unsigned arithmetic.
     template<typename T, typename T2>
     T subtract(T x, T2 y)
     {
-        return x-y;
+        return x - y;
     }
 
     void test()
     {
         int s = 5;
         unsigned int us = 5;
-        cout << subtract(s, 7) << '\n';     // -2
-        cout << subtract(us, 7u) << '\n';   // 4294967294
-        cout << subtract(s, 7u) << '\n';    // -2
-        cout << subtract(us, 7) << '\n';    // 4294967294
-        cout << subtract(s, us+2) << '\n';  // -2
-        cout << subtract(us, s+2) << '\n';  // 4294967294
+        cout << subtract(s, 7) << '\n';       // -2
+        cout << subtract(us, 7u) << '\n';     // 4294967294
+        cout << subtract(s, 7u) << '\n';      // -2
+        cout << subtract(us, 7) << '\n';      // 4294967294
+        cout << subtract(s, us + 2) << '\n';  // -2
+        cout << subtract(us, s + 2) << '\n';  // 4294967294
     }
 
 Here we have been very explicit about what's happening,
-but if you had seen `us-(s+2)` or `s+=2; ... us-s`, would you reliably have suspected that the result would print as `4294967294`?
+but if you had seen `us - (s + 2)` or `s += 2; ...; us - s`, would you reliably have suspected that the result would print as `4294967294`?
 
 ##### Exception
 
@@ -12301,10 +12302,10 @@ The build-in array uses signed types for subscripts.
 This makes surprises (and bugs) inevitable.
 
     int a[10];
-    for (int i=0; i < 10; ++i) a[i]=i;
+    for (int i = 0; i < 10; ++i) a[i] = i;
     vector<int> v(10);
     // compares signed to unsigned; some compilers warn
-    for (int i=0; v.size() < 10; ++i) v[i]=i;
+    for (int i = 0; v.size() < 10; ++i) v[i] = i;
 
     int a2[-2];         // error: negative size
 
@@ -12491,13 +12492,13 @@ To enable better error detection.
 
     vector<int> vec {1, 2, 3, 4, 5};
 
-    for (int i=0; i < vec.size(); i+=2)                    // mix int and unsigned
+    for (int i = 0; i < vec.size(); i += 2)                    // mix int and unsigned
         cout << vec[i] << '\n';
-    for (unsigned i=0; i < vec.size(); i+=2)               // risk wraparound
+    for (unsigned i = 0; i < vec.size(); i += 2)               // risk wraparound
         cout << vec[i] << '\n';
-    for (vector<int>::size_type i=0; i < vec.size(); i+=2) // verbose
+    for (vector<int>::size_type i = 0; i < vec.size(); i += 2) // verbose
         cout << vec[i] << '\n';
-    for (auto i=0; i < vec.size(); i+=2)                   // mix int and unsigned
+    for (auto i = 0; i < vec.size(); i += 2)                   // mix int and unsigned
         cout << vec[i] << '\n';
 
 ##### Note
@@ -13919,7 +13920,7 @@ Flag all unnamed `lock_guard`s and `unique_lock`s.
 
 ##### Reason
 
-It should be obvious to a reader that the data is to be guarded and how. This decreases the chance of the wrong mutex being locked, or the mutex not being locked. 
+It should be obvious to a reader that the data is to be guarded and how. This decreases the chance of the wrong mutex being locked, or the mutex not being locked.
 
 Using a `synchronized_value<T>` ensures that the data has a mutex, and the right mutex is locked when the data is accessed.
 See the [WG21 proposal](http://wg21.link/p0290)) to add `synchronized_value` to a future TS or revision of the C++ standard.
@@ -15249,7 +15250,7 @@ Exception specifications make error handling brittle, impose a run-time cost, an
         // ...
     }
 
-if `f()` throws an exception different from `X` and `Y` the unexpected handler is invoked, which by default terminates.
+If `f()` throws an exception different from `X` and `Y` the unexpected handler is invoked, which by default terminates.
 That's OK, but say that we have checked that this cannot happen and `f` is changed to throw a new exception `Z`,
 we now have a crash on our hands unless we change `use()` (and re-test everything).
 The snag is that `f()` may be in a library we do not control and the new exception is not anything that `use()` can do
@@ -17939,11 +17940,11 @@ The argument-type error for `bar` cannot be caught until link time because of th
 
 ##### Example
 
-    #include<string>
-    #include<vector>
-    #include<iostream>
-    #include<memory>
-    #include<algorithm>
+    #include <string>
+    #include <vector>
+    #include <iostream>
+    #include <memory>
+    #include <algorithm>
 
     using namespace std;
 
@@ -17956,7 +17957,7 @@ could be distracting.
 
 The use of `using namespace std;` leaves the programmer open to a name clash with a name from the standard library
 
-    #include<cmath>
+    #include <cmath>
     using namespace std;
 
     int g(int x)
@@ -17998,7 +17999,7 @@ Doing so takes away an `#include`r's ability to effectively disambiguate and to 
 
     // user.cpp
     #include "bad.h"
-    
+
     bool copy(/*... some parameters ...*/);    // some function that happens to be named copy
 
     int main() {
@@ -18093,7 +18094,7 @@ but it is not required to do so by transitively including the entire `<string>` 
 resulting in the popular beginner question "why doesn't `getline(cin,s);` work?"
 or even an occasional "`string`s cannot be compared with `==`).
 
-The solution is to explicitly `#include<string>`:
+The solution is to explicitly `#include <string>`:
 
     #include <iostream>
     #include <string>
@@ -18412,7 +18413,7 @@ The important issue of non-ASCII character sets and encodings (e.g., `wchar_t`, 
 See also [regular expressions](#SS-regex).
 
 Here, we use "sequence of characters" or "string" to refer to a sequence of characters meant to be read as text (somehow, eventually).
-We don't consider 
+We don't consider
 
 String summary:
 
@@ -18480,11 +18481,11 @@ Don't use C-style strings for operations that require non-trivial memory managem
     {
         int l1 = strlen(s1);
         int l2 = strlen(s2);
-        char* p = (char*)malloc(l1+l2+2);
+        char* p = (char*) malloc(l1 + l2 + 2);
         strcpy(p, s1, l1);
         p[l1] = '.';
-        strcpy(p+l1+1, s2, l2);
-        p[l1+l2+1] = 0;
+        strcpy(p + l1 + 1, s2, l2);
+        p[l1 + l2 + 1] = 0;
         return res;
     }
 
@@ -18595,7 +18596,7 @@ The array `arr` is not a C-style string because it is not zero-terminated.
 See [`zstring`](#Rstr-zstring), [`string`](#Rstr-string), and [`string_span`](#Rstr-view).
 
 ##### Enforcement
-  
+
 * Flag uses of `[]` on a `char*`
 
 ### <a name="Rstr-byte"></a>SL.str.5: Use `std::byte` to refer to byte values that do not necessarily represent characters
@@ -18616,7 +18617,7 @@ C++17
 ##### Enforcement
 
 ???
-    
+
 
 ### <a name="Rstr-locale"></a>SL.str.10: Use `std::string` when you need to perform locale-sensitive string operations
 
@@ -18689,7 +18690,7 @@ Iostream rule summary:
 * [SL.io.1: Use character-level input only when you have to](#Rio-low)
 * [SL.io.2: When reading, always consider ill-formed input](#Rio-validate)
 * [SL.io.3: Prefer iostreams for I/O](#Rio-streams)
-* [SL.io.10: Unless you use `printf`-family functions call `ios_base::sync_with_stdio(false)`](#Rio-sync) 
+* [SL.io.10: Unless you use `printf`-family functions call `ios_base::sync_with_stdio(false)`](#Rio-sync)
 * [SL.io.50: Avoid `endl`](#Rio-endl)
 * [???](#???)
 
@@ -19375,7 +19376,7 @@ Enabling a profile is implementation defined; typically, it is set in the analys
 
 To suppress enforcement of a profile check, place a `suppress` annotation on a language contract. For example:
 
-    [[suppress(bounds)]] char* raw_find(char* p, int n, char x)    // find x in p[0]..p[n-1]
+    [[suppress(bounds)]] char* raw_find(char* p, int n, char x)    // find x in p[0]..p[n - 1]
     {
         // ...
     }
@@ -19630,7 +19631,7 @@ These types allow the user to distinguish between owning and non-owning pointers
 
 These "views" are never owners.
 
-References are never owners. Note: References have many opportunities to outlive the objects they refer to (returning a local variable by reference, holding a reference to an element of a vector and doing `push_back`, binding to `std::max(x,y+1)`, etc. The Lifetime safety profile aims to address those things, but even so `owner<T&>` does not make sense and is discouraged.
+References are never owners. Note: References have many opportunities to outlive the objects they refer to (returning a local variable by reference, holding a reference to an element of a vector and doing `push_back`, binding to `std::max(x, y + 1)`, etc. The Lifetime safety profile aims to address those things, but even so `owner<T&>` does not make sense and is discouraged.
 
 The names are mostly ISO standard-library style (lower case and underscore):
 
@@ -19658,7 +19659,7 @@ If something is not supposed to be `nullptr`, say so:
 * `not_null<T>`   // `T` is usually a pointer type (e.g., `not_null<int*>` and `not_null<owner<Foo*>>`) that may not be `nullptr`.
   `T` can be any type for which `==nullptr` is meaningful.
 
-* `span<T>`       // `[`p`:`p+n`)`, constructor from `{p, q}` and `{p, n}`; `T` is the pointer type
+* `span<T>`       // `[`p`:`p + n`)`, constructor from `{p, q}` and `{p, n}`; `T` is the pointer type
 * `span_p<T>`     // `{p, predicate}` \[`p`:`q`) where `q` is the first element for which `predicate(*p)` is true
 * `string_span`   // `span<char>`
 * `cstring_span`  // `span<const char>`
@@ -19695,7 +19696,7 @@ Use `not_null<zstring>` for C-style strings that cannot be `nullptr`. ??? Do we 
 These assertions are currently macros (yuck!) and must appear in function definitions (only)
 pending standard committee decisions on contracts and assertion syntax.
 See [the contract proposal](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/p0380r1.pdf); using the attribute syntax,
-for example, `Expects(p!=nullptr)` will become `[[expects: p!=nullptr]]`.
+for example, `Expects(p != nullptr)` will become `[[expects: p != nullptr]]`.
 
 ## <a name="SS-utilities"></a>GSL.util: Utilities
 
@@ -21029,7 +21030,7 @@ When is a class a container? ???
 A relatively informal definition of terms used in the guidelines
 (based of the glossary in [Programming: Principles and Practice using C++](http://www.stroustrup.com/programming.html))
 
-More information on many topics about C++ can be found on the [Standard C++ Foundation](https://isocpp.org)'s site. 
+More information on many topics about C++ can be found on the [Standard C++ Foundation](https://isocpp.org)'s site.
 
 * *ABI*: Application Binary Interface, a specification for a specific hardware platform combined with the operating system. Contrast with API.
 * *abstract class*: a class that cannot be directly used to create objects; often used to define an interface to derived classes.
@@ -21157,7 +21158,7 @@ In particular, an object of a regular type can be copied and the result of a cop
 * *subtype*: derived type; a type that has all the properties of a type and possibly more.
 * *supertype*: base type; a type that has a subset of the properties of a type.
 * *system*: (1) a program or a set of programs for performing a task on a computer; (2) a shorthand for "operating system", that is, the fundamental execution environment and tools for a computer.
-* *TS*: [Technical Specification](https://www.iso.org/deliverables-all.html?type=ts), A Technical Specification addresses work still under technical development, or where it is believed that there will be a future, but not immediate, possibility of agreement on an International Standard. A Technical Specification is published for immediate use, but it also provides a means to obtain feedback. The aim is that it will eventually be transformed and republished as an International Standard. 
+* *TS*: [Technical Specification](https://www.iso.org/deliverables-all.html?type=ts), A Technical Specification addresses work still under technical development, or where it is believed that there will be a future, but not immediate, possibility of agreement on an International Standard. A Technical Specification is published for immediate use, but it also provides a means to obtain feedback. The aim is that it will eventually be transformed and republished as an International Standard.
 * *template*: a class or a function parameterized by one or more types or (compile-time) values; the basic C++ language construct supporting generic programming.
 * *testing*: a systematic search for errors in a program.
 * *trade-off*: the result of balancing several design and implementation criteria.
