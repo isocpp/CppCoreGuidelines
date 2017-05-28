@@ -12909,9 +12909,11 @@ Building on the last example, With the value of `fib(13)` known at compile-time,
 
 Which is great! We get these benefits:
 
- * The object is contiguous. Which also means that a contigious array of them will also be contigious in memory. This will be true of any container as long as its allocator uses contigous memory. For example, std::vector with the default allocator.
-   * Iterating over the such a container will access memory linearly; for more information why this is a good thing, see [Per.19](#Rper-access).
- * Instances of `sunflower` can be created on the stack without heap allocations. 
+* The object is contiguous. Which also means that a contiguous array of them will also be contiguous in memory. This will be true of any container as long as its allocator uses contigous memory. For example, std::vector with the default allocator.
+
+* Iterating over a contiguous container will access memory linearly; for more information why this is a good thing, see [Per.19](#Rper-access).
+
+* Instances of `sunflower` can be created on the stack without heap allocations. 
 
 For comparison, if we wanted to do the same without a compile time value for `fib(13)`, the code would require a run time calculation of the value of `fib(13)` and a run time allocation. For example:
 
