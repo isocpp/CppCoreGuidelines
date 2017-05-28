@@ -12876,7 +12876,7 @@ Because the function is `constexpr`, it's possible to replace calls to it with r
     auto constexpr sixth = fib(6); // sixth = 8;
 
 
-The property of "having a value known at compile time" is transitive, with some limitations. Performing a `constexpr` operation on such values will give a result that is also known at compile time. For example, Because `sixth` is `constexpr`, we can calculate other expressons based on its value. They will also be evaluated at compile time:
+The property of "having a value known at compile time" is transitive, with some limitations. Performing a `constexpr` operation on such values will give a result that is also known at compile time. For example, Because `sixth` is `constexpr`, we can calculate other expressions based on its value. They will also be evaluated at compile time:
 
     auto constexpr twice = sixth * 2;             // twice = 16
     auto constexpr twice_squared = twice * twice; // twice_squared = 256
@@ -12889,13 +12889,13 @@ The result of the function can also be used to construct objects wholly evaluate
         fib(12), fib(13),
         fib(14), fib(15)};
 
-If you read from the array, for example from `values[3]`, the compiler knows its value during compile time. If all the accesses to the array are known at compile time, there no need during run time to construct the array, and no need to populate it by performing many calls to `fib`. Because the `values` array is built at compile-time, there is zero cost to reading from it. Every read from the array is replaced by the actual value, right where you ask for it. This removes the need to read from memory, which means we've avoided consuming a cache line from the data caches. This addional performance gain comes at no cost to our abstraction, as the code is still expressing our intent. We've basically inlined reading!
+If you read from the array, for example from `values[3]`, the compiler knows its value during compile time. If all the accesses to the array are known at compile time, there no need during run time to construct the array, and no need to populate it by performing many calls to `fib`. Because the `values` array is built at compile-time, there is zero cost to reading from it. Every read from the array is replaced by the actual value, right where you ask for it. This removes the need to read from memory, which means we've avoided consuming a cache line from the data caches. This additional performance gain comes at no cost to our abstraction, as the code is still expressing our intent. We've basically inlined reading!
 
 Result: Instead of doing O(n) recursions per calculation, the final result is hard-coded as a constant in the compilation output.
 
 #### Example
 
-One of the most common types of run time computation is dynamic memory allocation. For an explanation on why it should be avoided, see [Per.14](#Rper-alloc) and [Per.15](#Rper-alloc0).Instead, we can use compile-time computation with the type system to define types that can be allocated entirely on the stack, and contigous in memory.
+One of the most common types of run time computation is dynamic memory allocation. For an explanation on why it should be avoided, see [Per.14](#Rper-alloc) and [Per.15](#Rper-alloc0).Instead, we can use compile-time computation with the type system to define types that can be allocated entirely on the stack, and contiguous in memory.
 
 Sunflowers grow their seeds in a spiral pattern where the number of seeds spirals is a Fibonacci Number. We will model a sunflower of size 13.
 Building on the last example, With the value of `fib(13)` known at compile-time, we can define an array using that value and put that into our `sunflower` object:
@@ -12909,7 +12909,7 @@ Building on the last example, With the value of `fib(13)` known at compile-time,
 
 Which is great! We get these benefits:
 
-* The object is contiguous. Which also means that a contiguous array of them will also be contiguous in memory. This will be true of any container as long as its allocator uses contigous memory. For example, std::vector with the default allocator.
+* The object is contiguous. Which also means that a contiguous array of them will also be contiguous in memory. This will be true of any container as long as its allocator uses contiguous memory. For example, std::vector with the default allocator.
 
 * Iterating over a contiguous container will access memory linearly; for more information why this is a good thing, see [Per.19](#Rper-access).
 
@@ -12930,7 +12930,7 @@ This is less expressive than the ideal. The value of fib(13) is a known fact (it
 
 #### Note
 
-Moving computation to copmile time doesn't mean you should manually perform computation. That's the the work of the optimizer. The following two lines produce the same assembly in all modern compilers:
+Moving computation to compile time doesn't mean you should manually perform computation. That's the the work of the optimizer. The following two lines produce the same assembly in all modern compilers:
 
     auto one_plus_two = 1 + 2; // original code
 
