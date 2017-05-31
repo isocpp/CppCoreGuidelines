@@ -42,6 +42,7 @@ archetypical
 arg
 argh
 args
+arithmeticcast
 arr2
 arrayindex
 ASIC
@@ -550,6 +551,7 @@ uniqueptrparam
 unittest
 unittests
 unnamed2
+unnecessarycast
 use1
 users'
 UTF
