@@ -19400,9 +19400,9 @@ An implementation of this profile shall recognize the following patterns in sour
 Type safety profile summary:
 
 * <a name="Pro-type-avoidcasts"></a>Type.1: [Avoid casts](#Res-casts):  
-<a name="Pro-type-reinterpretcast">a.</a>Don't use `reinterpret_cast`; A strict version of [Avoid casts](#Res-casts) and [prefer named casts](#Res-casts-named).  
-<a name="Pro-type-arithmeticcast">b.</a>Don't a `static_cast` for arithmetic types; A strict version of [Avoid casts](#Res-casts) and [prefer named casts](#Res-casts-named).  
-<a name="Pro-type-unnecessarycast">c.</a>Don't use pointer unnecessary pointer casts; A strict version of [Avoid casts](#Res-casts)  
+<a name="Pro-type-reinterpretcast">a. </a>Don't use `reinterpret_cast`; A strict version of [Avoid casts](#Res-casts) and [prefer named casts](#Res-casts-named).  
+<a name="Pro-type-arithmeticcast">b. </a>Don't a `static_cast` for arithmetic types; A strict version of [Avoid casts](#Res-casts) and [prefer named casts](#Res-casts-named).  
+<a name="Pro-type-unnecessarycast">c. </a>Don't use pointer unnecessary pointer casts; A strict version of [Avoid casts](#Res-casts)  
 * <a name="Pro-type-downcast"></a>Type.2: Don't use `static_cast` to downcast:
 [Use `dynamic_cast` instead](#Rh-dynamic_cast).
 * <a name="Pro-type-constcast"></a>Type.3: Don't use `const_cast` to cast away `const` (i.e., at all):
