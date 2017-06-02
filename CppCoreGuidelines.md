@@ -18420,11 +18420,11 @@ String summary:
 * [SL.str.2: Use `std::string_view` or `gsl::string_span` to refer to character sequences](#Rstr-view)
 * [SL.str.3: Use `zstring` or `czstring` to refer to a C-style, zero-terminated, sequence of characters](#Rstr-zstring)
 * [SL.str.4: Use `char*` to refer to a single character](#Rstr-char*)
-* [Sl.str.5: Use `std::byte` to refer to byte values that do not necessarily represent characters](#Rstr-byte)
+* [SL.str.5: Use `std::byte` to refer to byte values that do not necessarily represent characters](#Rstr-byte)
 
-* [Sl.str.10: Use `std::string` when you need to perform locale-sensitive string operations](#Rstr-locale)
-* [Sl.str.11: Use `gsl::string_span` rather than `std::string_view` when you need to mutate a string](#Rstr-span)
-* [Sl.str.12: Use the `s` suffix for string literals meant to be standard-library `string`s](#Rstr-s)
+* [SL.str.10: Use `std::string` when you need to perform locale-sensitive string operations](#Rstr-locale)
+* [SL.str.11: Use `gsl::string_span` rather than `std::string_view` when you need to mutate a string](#Rstr-span)
+* [SL.str.12: Use the `s` suffix for string literals meant to be standard-library `string`s](#Rstr-s)
 
 See also
 
@@ -18598,7 +18598,7 @@ See [`zstring`](#Rstr-zstring), [`string`](#Rstr-string), and [`string_span`](#R
   
 * Flag uses of `[]` on a `char*`
 
-### <a name="Rstr-byte"></a>Sl.str.5: Use `std::byte` to refer to byte values that do not necessarily represent characters
+### <a name="Rstr-byte"></a>SL.str.5: Use `std::byte` to refer to byte values that do not necessarily represent characters
 
 ##### Reason
 
@@ -18618,7 +18618,7 @@ C++17
 ???
     
 
-### <a name="Rstr-locale"></a>Sl.str.10: Use `std::string` when you need to perform locale-sensitive string operations
+### <a name="Rstr-locale"></a>SL.str.10: Use `std::string` when you need to perform locale-sensitive string operations
 
 ##### Reason
 
@@ -18636,7 +18636,7 @@ C++17
 
 ???
 
-### <a name="Rstr-span"></a>Sl.str.11: Use `gsl::string_span` rather than `std::string_view` when you need to mutate a string
+### <a name="Rstr-span"></a>SL.str.11: Use `gsl::string_span` rather than `std::string_view` when you need to mutate a string
 
 ##### Reason
 
@@ -18654,7 +18654,7 @@ C++17
 
 The compiler will flag attempts to write to a `string_view`.
 
-### <a name="Rstr-s"></a>Sl.str.12: Use the `s` suffix for string literals meant to be standard-library `string`s
+### <a name="Rstr-s"></a>SL.str.12: Use the `s` suffix for string literals meant to be standard-library `string`s
 
 ##### Reason
 
