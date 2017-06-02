@@ -17729,7 +17729,7 @@ Source file rule summary:
 * [SF.7: Don't write `using namespace` in a header file](#Rs-using-directive)
 * [SF.8: Use `#include` guards for all `.h` files](#Rs-guards)
 * [SF.9: Avoid cyclic dependencies among source files](#Rs-cycles)
-* [SF.10: Avoid dependencies on implicitly `#included` names](#Rs-implicit)
+* [SF.10: Avoid dependencies on implicitly `#include`d names](#Rs-implicit)
 
 * [SF.20: Use `namespace`s to express logical structure](#Rs-namespace)
 * [SF.21: Don't use an unnamed (anonymous) namespace in a header](#Rs-unnamed)
@@ -18065,7 +18065,7 @@ Eliminate cycles; don't just break them with `#include` guards.
 Flag all cycles.
 
 
-### <a name="Rs-implicit"></a>SF.10: Avoid dependencies on implicitly `#included` names
+### <a name="Rs-implicit"></a>SF.10: Avoid dependencies on implicitly `#include`d names
 
 ##### Reason
 
@@ -18882,7 +18882,7 @@ Architectural rule summary:
 
 A library is a collection of declarations and definitions maintained, documented, and shipped together.
 A library could be a set of headers (a "header only library") or a set of headers plus a set of object files.
-A library can be statically or dynamically linked into a program, or it may be `#included`
+A library can be statically or dynamically linked into a program, or it may be `#include`d
 
 
 ### <a name="Ra-dag"></a>A.4: There should be no cycles among libraries
