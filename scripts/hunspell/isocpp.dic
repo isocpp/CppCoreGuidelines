@@ -214,6 +214,7 @@ HTTP
 Hyslop
 i2
 IDE
+identitycast
 IDEs
 IEC
 ifdef
@@ -221,6 +222,7 @@ iff
 ifstream
 impactful
 Impl
+implicitpointercast
 incompleat
 increment1
 Incrementable
@@ -551,7 +553,6 @@ uniqueptrparam
 unittest
 unittests
 unnamed2
-unnecessarycast
 use1
 users'
 UTF
