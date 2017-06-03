@@ -18604,7 +18604,7 @@ In C++17, we might use `string_view` as the argument, rather than `const string*
         return res;
     }
 
-The `gsl::string_span` is a current alternative offering most of the benefits of `string_span` for simple examples:
+The `gsl::string_span` is a current alternative offering most of the benefits of `std::string_view` for simple examples:
 
     vector<string> read_until(string_span terminator)
     {
