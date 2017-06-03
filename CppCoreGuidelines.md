@@ -18089,7 +18089,7 @@ Avoid accidentally becoming dependent on implementation details and logically se
         }
     }
 
-<iostream> exposes the definition of `std::string` ("why?" makes for a fun trivia question),
+`<iostream>` exposes the definition of `std::string` ("why?" makes for a fun trivia question),
 but it is not required to do so by transitively including the entire `<string>` header,
 resulting in the popular beginner question "why doesn't `getline(cin,s);` work?"
 or even an occasional "`string`s cannot be compared with `==`).
