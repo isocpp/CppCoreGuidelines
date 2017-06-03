@@ -1,6 +1,6 @@
 # <a name="main"></a>C++ Core Guidelines
 
-May 29, 2017
+JUne 3, 2017
 
 
 Editors:
@@ -9435,6 +9435,7 @@ Expression rules:
 * [ES.62: Don't compare pointers into different arrays](#Res-arr2)
 * [ES.63: Don't slice](#Res-slice)
 * [ES.64: Use the `T{e}`notation for construction](#Res-construct)
+* [ES.65: Don't dereference an invalid pointer](#Res-deref)
 
 Statement rules:
 
@@ -12204,6 +12205,146 @@ The main problem left is to find a suitable name for `Count`.
 ##### Enforcement
 
 Flag the C-style `(T)e` and functional-style `T(e)` casts.
+
+
+### <a name="Res-deref"></a>ES.65: Don't dereference an invalid pointer
+
+##### Reason
+
+Dereferencing an invalid pointer, such as `nullptr`, is undefined behavior, typically leading to immediate crashes,
+wrong results, or memory corruption.
+
+##### Note
+
+This rule is an obvious and well-known language rule, but can be hard to follow.
+It takes good coding style, library support, and static analysis to eliminate violations without major overhead.
+This is a major part of the discussion of [C++'s resource- and type-safety model](#Stroustrup15).
+
+See also
+
+* Use [RAII](#Rr-raii) to avoid lifetime problems.
+* Use [unique_ptr](#Rf-unique_ptr) to avoid lifetime problems.
+* Use [shared_ptr](#Rf-shared_ptr) to avoid lifetime problems.
+* Use [references](#Rf-ptr-ref) when `nulllptr` isn't a possibility.
+* Use [not_null](#Rf-not_null) to catch unexpected `nullptr` early.
+* Use the [bounds profile](#SS-bounds) to avoid range errors.
+
+
+##### Example
+
+    void f()
+    {
+        int x = 0;
+        int* p = &x;
+
+        if (condition()) {
+            int y = 0;
+            p = &y;
+        } // invalidates p
+
+        *p = 42;            // BAD, p might be invalid if the branch was taken
+    }
+
+To resolve the problem, either extend the lifetime of the object the pointer is intended to refer to, or shorten the lifetime of the pointer (move the dereference to before the pointed-to object's lifetime ends).
+
+    void f1()
+    {
+        int x = 0;
+        int* p = &x;
+
+        int y = 0;
+        if (condition()) {
+            p = &y;
+        }
+
+        *p = 42;            // OK, p points to x or y and both are still in scope
+    }
+
+Unfortunately, most invalid pointer problems are harder to spot and harder to fix.
+
+##### Example
+
+    void f(int* p)
+    {
+        int x = *p; // BAD: how do we know that p is valid?
+    }
+
+There is a huge amount of such code.
+Most works -- after lots of testing -- but in isolation it is impossible to tell whether `p` could be the `nullptr`.
+Consequently, it this is also a major source of errors.
+There are many approaches to dealing with this potential problem:
+
+    void f1(int* p) // deal with nullptr
+    {
+        if (p==nullptr) {
+            // deal with nullptr (allocate, return, throw, make p point to something, whatever
+        }
+        int x = *p;
+    }
+
+There are two potential problems with testing for `nullptr`:
+
+* it is not always obvious what to do what to do if we find `nullptr`
+* the test can be redundant and/or relatively expensive
+* it is not obvious if the test is to protect against a violation or part of the required logic.
+
+    void f2(int* p) // state that p is not supposed to be nullptr
+    {
+        Assert(p!=nullptr);     
+        int x = *p;
+    }
+
+This would carry a cost only when the assertion checking was ensbled and would give a compiler/analyser useful information.
+This would work even better if/when C++ gets direct support for contracts:
+
+    void f3(int* p) // state that p is not supposed to be nullptr
+        [[expects: p!=nullptr]]
+    {
+        int x = *p;
+    }
+
+Alternatively, we could use `gsl::not_null` to ensure that `p` is not the `nullptr`.
+
+    void f(not_null<int*> p)
+    {
+        int x = *p;
+    }
+
+There remedies take care of `nullptr` only.
+Remember that there are other ways of getting an invalid pointer.
+
+##### Example
+
+    void f(int* p)  // old code, doesn't use owner
+    {
+        delete p;
+    }
+
+    void g()        // old code: uses naked new
+    {
+        auto q = new int{7};
+        f(q);
+        int x = *q; // BAD: dereferences invalid pointer
+    }
+
+##### Example
+
+    void f()
+    {
+        vector<int> v(10);
+        int* p = v(5);
+        v.pushback(99); // could rellocate v's elements
+        int x = *p; // BAD: dereferences potentially invalid pointer
+    }
+
+##### Enforcement
+
+This rule is part ot the [lifetime profile](#Pro.lifetime)
+
+* Flag a dereference of a pointer that points to an object that has gone out of scope
+* Flag a dereference of a pointer that may have beed invalidated by assigning a `nullptr`
+* Flag a dereference of a pointer that may have been invalidated by a `delete`
+* Flag a dereference to a pointer to a container element that may have been invalidated by dereference
 
 ## <a name="SS-numbers"></a>Arithmetic
 
@@ -19457,146 +19598,26 @@ and "mysterious values."
 
 ## <a name="SS-lifetime"></a>Pro.lifetime: Lifetime safety profile
 
-See /docs folder for the initial design. The detailed formal rules are in progress (as of May 2017).
+Accessing through a pointer that doesn't point to anything is a major source of errors,
+and very hard to avoid in many traditional C or C++ styles of programming.
+For example, a pointer my be uninitialized, the `nullptr`, point beyond the range of an array, or to a deleted object.
 
-The following are specific rules that are being enforced.
+See /docs folder for the initial design. The detailed formal rules are in progress (as of May 2017).
 
 Lifetime safety profile summary:
 
-* [Lifetime.1: Don't dereference a possibly invalid pointer.](#Pro-lifetime-invalid-deref)
-* [Lifetime.2: Don't dereference a possibly null pointer.](#Pro-lifetime-null-deref)
-* [Lifetime.3: Don't pass a possibly invalid pointer to a function.](#Pro-lifetime-invalid-argument)
+* <a href="Pro-lifetime-invalid-deref"></a>Lifetime.1: Don't dereference a possibly invalid pointer:
+[detect or avoid](#Res-deref).
 
-??? These rules will be moved into the main-line sections of these guidelines ???
+##### Impact
 
-### <a name="Pro-lifetime-invalid-deref"></a>Lifetime.1: Don't dereference a possibly invalid pointer.
+Once completely enforced through a combilnation of style rules, static analysis, and library support, this profile
 
-##### Reason
-
-It is undefined behavior.
-
-To resolve the problem, either extend the lifetime of the object the pointer is intended to refer to, or shorten the lifetime of the pointer (move the dereference to before the pointed-to object's lifetime ends).
-
-##### Example, bad
-
-    void f()
-    {
-        int x = 0;
-        int* p = &x;
-
-        if (condition()) {
-            int y = 0;
-            p = &y;
-        } // invalidates p
-
-        *p = 42;            // BAD, p might be invalid if the branch was taken
-    }
-
-##### Example, good
-
-    void f()
-    {
-        int x = 0;
-        int* p = &x;
-
-        int y = 0;
-        if (condition()) {
-            p = &y;
-        }
-
-        *p = 42;            // OK, p points to x or y and both are still in scope
-    }
-
-##### Enforcement
-
-* Issue a diagnostic for any dereference of a pointer that could have been invalidated (could point to an object that was destroyed) along a local code path leading to the dereference. To fix: Extend the lifetime of the pointed-to object, or move the dereference to before the pointed-to object's lifetime ends.
-
-
-
-### <a name="Pro-lifetime-null-deref"></a>Lifetime.2: Don't dereference a possibly null pointer.
-
-##### Reason
-
-It is undefined behavior.
-
-##### Example, bad
-
-    void f(int* p1)
-    {
-        *p1 = 42;           // BAD, p1 might be null
-
-        int i = 0;
-        int* p2 = condition() ? &i : nullptr;
-        *p2 = 42;           // BAD, p2 might be null
-    }
-
-##### Example, good
-
-    void f(int* p1, not_null<int*> p3)
-    {
-        if (p1 != nullptr) {
-            *p1 = 42;       // OK, must be not null in this branch
-        }
-
-        int i = 0;
-        int* p2 = condition() ? &i : nullptr;
-        if (p2 != nullptr) {
-            *p2 = 42;       // OK, must be not null in this branch
-        }
-
-        *p3 = 42;           // OK, not_null does not need to be tested for nullness
-    }
-
-##### Enforcement
-
-* Issue a diagnostic for any dereference of a pointer that could have been set to null along a local code path leading to the dereference. To fix: Add a null check and dereference the pointer only in a branch that has tested to ensure non-null.
-
-
-
-### <a name="Pro-lifetime-invalid-argument"></a>Lifetime.3: Don't pass a possibly invalid pointer to a function.
-
-##### Reason
-
-The function cannot do anything useful with the pointer.
-
-To resolve the problem, either extend the lifetime of the object the pointer is intended to refer to, or shorten the lifetime of the pointer (move the function call to before the pointed-to object's lifetime ends).
-
-##### Example, bad
-
-    void f(int*);
-
-    void g()
-    {
-        int x = 0;
-        int* p = &x;
-
-        if (condition()) {
-            int y = 0;
-            p = &y;
-        } // invalidates p
-
-        f(p);               // BAD, p might be invalid if the branch was taken
-    }
-
-##### Example, good
-
-    void f()
-    {
-        int x = 0;
-        int* p = &x;
-
-        int y = 0;
-        if (condition()) {
-            p = &y;
-        }
-
-        f(p);               // OK, p points to x or y and both are still in scope
-    }
-
-##### Enforcement
-
-* Issue a diagnostic for any function argument that is a pointer that could have been invalidated (could point to an object that was destroyed) along a local code path leading to the dereference. To fix: Extend the lifetime of the pointed-to object, or move the function call to before the pointed-to object's lifetime ends.
-
+* eliminates one of the major sources of nasty errors in C++
+* eliminates a major source of potential security violations
+* improves performance by eliminating redundant "paranoia" checks
+* increases confidence in correctness of code
+* avoids undefined behavior by enforcinga key C++ language rule
 
 
 # <a name="S-gsl"></a>GSL: Guideline support library
@@ -21268,6 +21289,8 @@ Alternatively, we will decide that no change is needed and delete the entry.
 * <a name="Stroustrup14"></a>
   \[Stroustrup14]:    B. Stroustrup. [A Tour of C++](http://www.stroustrup.com/Tour.html).
   Addison Wesley 2014.
+* <a name="Stroustrup15></a>
+  \[Stroustrup15]:    B. Stroustrup, Herb Sutter, and G. Dos Reis: [A brief introduction to C++’s model for type- and resource-safety](https://github.com/isocpp/CppCoreGuidelines/blob/master/docs/Introduction%20to%20type%20and%20resource%20safety.pdf).
 * <a name="SuttHysl04b"></a>
   \[SuttHysl04b]:     H. Sutter and J. Hyslop. "Collecting Shared Objects" (C/C++ Users Journal, 22(8), August 2004).
 * <a name="SuttAlex05"></a>
