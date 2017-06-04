@@ -12982,7 +12982,109 @@ Type violations, weak types (e.g. `void*`s), and low level code (e.g., manipulat
 
 ### <a name="Rper-Comp"></a>Per.11: Move computation from run time to compile time
 
-???
+Write code that does all its computation during compile time. Failing that, write code that only computes the minimum required during run time.
+
+C++ provides mechanisms for compile time computations:
+
+* `constexpr` functions and expressions
+* Template meta programming
+* Constant values such as enumerations
+* The static type system (See [Per.10: Rely on the static type system](#Rper-type))
+
+#### Reason
+
+Every computation done at compile time won't have to be done at run time. Instead, the results of the compile time computations are already stored into the assembly.
+Having the result of a computation (instead of having to re-calculate it) results in faster execution.
+
+Furthermore, the more you do at compile time, the more the compiler can reason about, and the more the optimizer can optimize.
+If the compiler can determine at compile time that a computation won't ever be run, it can be removed.
+
+This effect can cascade: the more that the compiler can optimize, the more it might be able to optimize further.
+In particular, any branches that can be removed from performance-critical code will remove the run time cost of branch mis-prediction.
+If all the branches in a function have conditions with values known at compile time, the entire function will be reduced to a branch-less block of statements and expressions. Such functions are great for reducing cache pressure.
+
+#### Example
+
+Here's a `constexpr` function for calculating Fibonacci Numbers:
+
+    static constexpr int fib(int const n)
+    {
+        auto ith_minus_one = 0, ith = 0, ith_plus_one = 1;
+        for (int i=0; i < n; ++i)
+        {
+            auto next_ith_plus_one = ith + ith_plus_one;
+            ith_minus_one = ith;
+            ith = ith_plus_one;
+            ith_plus_one = next_ith_plus_one;
+        }
+    }
+
+Because the function is `constexpr`, it's possible to replace calls to it with result. This can be done when the argument has a value known at compile time:
+
+    auto constexpr sixth = fib(6); // sixth = 8;
+
+
+The property of "having a value known at compile time" is transitive, with some limitations. Performing a `constexpr` operation on such values will give a result that is also known at compile time. For example, Because `sixth` is `constexpr`, we can calculate other expressions based on its value. They will also be evaluated at compile time:
+
+    auto constexpr twice = sixth * 2;             // twice = 16
+    auto constexpr twice_squared = twice * twice; // twice_squared = 256
+
+The result of the function can also be used to construct objects wholly evaluated at compile-time, such as this array:
+
+    // array with a few Fibonacci Numbers
+    constexpr array<int, 6> values = {
+        fib(10), fib(11),
+        fib(12), fib(13),
+        fib(14), fib(15)};
+
+If you read from the array, for example from `values[3]`, the compiler knows its value during compile time. If all the accesses to the array are known at compile time, there no need during run time to construct the array, and no need to populate it by performing many calls to `fib`. Because the `values` array is built at compile-time, there is zero cost to reading from it. Every read from the array is replaced by the actual value, right where you ask for it. This removes the need to read from memory, which means we've avoided consuming a cache line from the data caches. This additional performance gain comes at no cost to our abstraction, as the code is still expressing our intent. We've basically inlined reading!
+
+Result: Instead of doing O(n) loop iterations per calculation, the final result is hard-coded as a constant in the compilation output.
+
+#### Example
+
+One of the most common types of run time computation is dynamic memory allocation. For an explanation on why it should be avoided, see [Per.14](#Rper-alloc) and [Per.15](#Rper-alloc0).Instead, we can use compile-time computation with the type system to define types that can be allocated entirely on the stack, and contiguous in memory.
+
+Sunflowers grow their seeds in a spiral pattern where the number of seeds spirals is a Fibonacci Number. We will model a sunflower of size 13.
+Building on the last example, With the value of `fib(13)` known at compile-time, we can define an array using that value and put that into our `sunflower` object:
+
+    struct sunflower
+    {
+        int active;
+        array<int, fib(13)> spirals;
+        string name;
+    }
+
+Which is great! We get these benefits:
+
+* The object is contiguous. Which also means that a contiguous array of them will also be contiguous in memory. This will be true of any container as long as its allocator uses contiguous memory. For example, std::vector with the default allocator.
+
+* Iterating over a contiguous container will access memory linearly; for more information why this is a good thing, see [Per.19](#Rper-access).
+
+* Instances of `sunflower` can be created on the stack without heap allocations. 
+
+For comparison, if we wanted to do the same without a compile time value for `fib(13)`, the code would require a run time calculation of the value of `fib(13)` and a run time allocation. For example:
+
+    struct sunflower_not_constexpr
+    {
+        sunflower() { spirals.reserve(fib(13)); }
+
+        int active;
+        vector<int> spirals;
+        string name;
+    }
+
+This is less expressive than the ideal. The value of fib(13) is a known fact (it's 223, in case you're wondering), and therefore something that we should be able to tell the compiler. We've given that up, and discarded the size information. In addition, the std::vector is allocating memory in a different location than the location of the instance of `sunflower_not_constexpr`. So any read operation that includes a member of `sunflower_not_constexpr` as well as an item from `spirals` could potentially be reading from two different pages in memory. Making it less likely that all the data will already be in the CPU's cache.
+
+#### Note
+
+Moving computation to compile time doesn't mean you should manually perform computation. That's the the work of the optimizer. The following two lines produce the same assembly in all modern compilers:
+
+    auto one_plus_two = 1 + 2; // original code
+
+    auto one_plus_two = 3;     // manually optimized code that is not as expressive
+
+As long as your code is simple and expressive, the optimizer will see through the abstraction and produce minimal code.
 
 ### <a name="Rper-alias"></a>Per.12: Eliminate redundant aliases
 
