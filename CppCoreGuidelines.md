@@ -1,6 +1,6 @@
 # <a name="main"></a>C++ Core Guidelines
 
-JUne 3, 2017
+June 3, 2017
 
 
 Editors:
@@ -12225,7 +12225,7 @@ See also
 * Use [RAII](#Rr-raii) to avoid lifetime problems.
 * Use [unique_ptr](#Rf-unique_ptr) to avoid lifetime problems.
 * Use [shared_ptr](#Rf-shared_ptr) to avoid lifetime problems.
-* Use [references](#Rf-ptr-ref) when `nulllptr` isn't a possibility.
+* Use [references](#Rf-ptr-ref) when `nullptr` isn't a possibility.
 * Use [not_null](#Rf-not_null) to catch unexpected `nullptr` early.
 * Use the [bounds profile](#SS-bounds) to avoid range errors.
 
@@ -12276,7 +12276,7 @@ There are many approaches to dealing with this potential problem:
 
     void f1(int* p) // deal with nullptr
     {
-        if (p==nullptr) {
+        if (p == nullptr) {
             // deal with nullptr (allocate, return, throw, make p point to something, whatever
         }
         int x = *p;
@@ -12288,17 +12288,18 @@ There are two potential problems with testing for `nullptr`:
 * the test can be redundant and/or relatively expensive
 * it is not obvious if the test is to protect against a violation or part of the required logic.
 
+
     void f2(int* p) // state that p is not supposed to be nullptr
     {
-        Assert(p!=nullptr);     
+        assert(p != nullptr);
         int x = *p;
     }
 
-This would carry a cost only when the assertion checking was ensbled and would give a compiler/analyser useful information.
+This would carry a cost only when the assertion checking was enabled and would give a compiler/analyzer useful information.
 This would work even better if/when C++ gets direct support for contracts:
 
     void f3(int* p) // state that p is not supposed to be nullptr
-        [[expects: p!=nullptr]]
+        [[expects: p != nullptr]]
     {
         int x = *p;
     }
@@ -12310,7 +12311,7 @@ Alternatively, we could use `gsl::not_null` to ensure that `p` is not the `nullp
         int x = *p;
     }
 
-There remedies take care of `nullptr` only.
+These remedies take care of `nullptr` only.
 Remember that there are other ways of getting an invalid pointer.
 
 ##### Example
@@ -12332,17 +12333,17 @@ Remember that there are other ways of getting an invalid pointer.
     void f()
     {
         vector<int> v(10);
-        int* p = v(5);
-        v.pushback(99); // could rellocate v's elements
+        int* p = &v[5];
+        v.push_back(99); // could reallocate v's elements
         int x = *p; // BAD: dereferences potentially invalid pointer
     }
 
 ##### Enforcement
 
-This rule is part ot the [lifetime profile](#Pro.lifetime)
+This rule is part of the [lifetime profile](#Pro.lifetime)
 
 * Flag a dereference of a pointer that points to an object that has gone out of scope
-* Flag a dereference of a pointer that may have beed invalidated by assigning a `nullptr`
+* Flag a dereference of a pointer that may have been invalidated by assigning a `nullptr`
 * Flag a dereference of a pointer that may have been invalidated by a `delete`
 * Flag a dereference to a pointer to a container element that may have been invalidated by dereference
 
@@ -19600,7 +19601,7 @@ and "mysterious values."
 
 Accessing through a pointer that doesn't point to anything is a major source of errors,
 and very hard to avoid in many traditional C or C++ styles of programming.
-For example, a pointer my be uninitialized, the `nullptr`, point beyond the range of an array, or to a deleted object.
+For example, a pointer may be uninitialized, the `nullptr`, point beyond the range of an array, or to a deleted object.
 
 See /docs folder for the initial design. The detailed formal rules are in progress (as of May 2017).
 
@@ -19611,13 +19612,13 @@ Lifetime safety profile summary:
 
 ##### Impact
 
-Once completely enforced through a combilnation of style rules, static analysis, and library support, this profile
+Once completely enforced through a combination of style rules, static analysis, and library support, this profile
 
 * eliminates one of the major sources of nasty errors in C++
 * eliminates a major source of potential security violations
 * improves performance by eliminating redundant "paranoia" checks
 * increases confidence in correctness of code
-* avoids undefined behavior by enforcinga key C++ language rule
+* avoids undefined behavior by enforcing a key C++ language rule
 
 
 # <a name="S-gsl"></a>GSL: Guideline support library
@@ -21289,8 +21290,8 @@ Alternatively, we will decide that no change is needed and delete the entry.
 * <a name="Stroustrup14"></a>
   \[Stroustrup14]:    B. Stroustrup. [A Tour of C++](http://www.stroustrup.com/Tour.html).
   Addison Wesley 2014.
-* <a name="Stroustrup15></a>
-  \[Stroustrup15]:    B. Stroustrup, Herb Sutter, and G. Dos Reis: [A brief introduction to C++’s model for type- and resource-safety](https://github.com/isocpp/CppCoreGuidelines/blob/master/docs/Introduction%20to%20type%20and%20resource%20safety.pdf).
+* <a name="Stroustrup15"></a>
+  \[Stroustrup15]:    B. Stroustrup, Herb Sutter, and G. Dos Reis: [A brief introduction to C++'s model for type- and resource-safety](https://github.com/isocpp/CppCoreGuidelines/blob/master/docs/Introduction%20to%20type%20and%20resource%20safety.pdf).
 * <a name="SuttHysl04b"></a>
   \[SuttHysl04b]:     H. Sutter and J. Hyslop. "Collecting Shared Objects" (C/C++ Users Journal, 22(8), August 2004).
 * <a name="SuttAlex05"></a>
