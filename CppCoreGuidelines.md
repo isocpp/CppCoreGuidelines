@@ -13009,14 +13009,14 @@ Here's a `constexpr` function for calculating Fibonacci Numbers:
 
     static constexpr int fib(int const n)
     {
-        auto ith_minus_one = 0, ith = 0, ith_plus_one = 1;
-        for (int i=0; i < n; ++i)
+        int f_n = 0, f_next = 1;
+        for (int i = 0; i < n; ++i)
         {
-            auto next_ith_plus_one = ith + ith_plus_one;
-            ith_minus_one = ith;
-            ith = ith_plus_one;
-            ith_plus_one = next_ith_plus_one;
+            auto t = f_next;
+            f_next = f_next + f_n;
+            f_n = t;
         }
+        return f_n;
     }
 
 Because the function is `constexpr`, it's possible to replace calls to it with result. This can be done when the argument has a value known at compile time:
