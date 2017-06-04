@@ -12866,9 +12866,14 @@ Here's a `constexpr` function for calculating Fibonacci Numbers:
 
     static constexpr int fib(int const n)
     {
-        return (n <= 0) ? 0 :
-                  (n == 1) ? 1 :
-                     fib(n-1) + fib(n-2);
+        auto ith_minus_one = 0, ith = 0, ith_plus_one = 1;
+        for (int i=0; i < n; ++i)
+        {
+            auto next_ith_plus_one = ith + ith_plus_one;
+            ith_minus_one = ith;
+            ith = ith_plus_one;
+            ith_plus_one = next_ith_plus_one;
+        }
     }
 
 Because the function is `constexpr`, it's possible to replace calls to it with result. This can be done when the argument has a value known at compile time:
@@ -12891,7 +12896,7 @@ The result of the function can also be used to construct objects wholly evaluate
 
 If you read from the array, for example from `values[3]`, the compiler knows its value during compile time. If all the accesses to the array are known at compile time, there no need during run time to construct the array, and no need to populate it by performing many calls to `fib`. Because the `values` array is built at compile-time, there is zero cost to reading from it. Every read from the array is replaced by the actual value, right where you ask for it. This removes the need to read from memory, which means we've avoided consuming a cache line from the data caches. This additional performance gain comes at no cost to our abstraction, as the code is still expressing our intent. We've basically inlined reading!
 
-Result: Instead of doing O(n) recursions per calculation, the final result is hard-coded as a constant in the compilation output.
+Result: Instead of doing O(n) loop iterations per calculation, the final result is hard-coded as a constant in the compilation output.
 
 #### Example
 
