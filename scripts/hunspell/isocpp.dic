@@ -101,6 +101,7 @@ CplusplusCS
 cpp
 cpp98
 CppCon
+cppreference
 CRTP
 cst
 cstdarg
@@ -193,6 +194,7 @@ GFM
 Girou
 github
 GitHub
+GOTW
 gp
 GPLv3
 gsl
@@ -219,6 +221,7 @@ ifdef
 iff
 ifstream
 impactful
+impl
 Impl
 incompleat
 increment1
@@ -366,7 +369,8 @@ pb2
 pc
 performant
 pessimization
-PIMPL
+pimpl
+Pimpl
 Pirkelbauer
 PL4
 PLDI

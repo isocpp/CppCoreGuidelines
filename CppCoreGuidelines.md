@@ -1201,6 +1201,7 @@ Interface rule summary:
 * [I.24: Avoid adjacent unrelated parameters of the same type](#Ri-unrelated)
 * [I.25: Prefer abstract classes as interfaces to class hierarchies](#Ri-abstract)
 * [I.26: If you want a cross-compiler ABI, use a C-style subset](#Ri-abi)
+* [I.27: For stable library ABI, consider the Pimpl idiom](#Ri-pimpl)
 * [I.30: Encapsulate rule violations](#Ri-encapsulate)
 
 See also
@@ -2133,6 +2134,53 @@ Common ABIs are emerging on some platforms freeing you from the more draconian r
 ##### Note
 
 If you use a single compiler, you can use full C++ in interfaces. That may require recompilation after an upgrade to a new compiler version.
+
+##### Enforcement
+
+(Not enforceable) It is difficult to reliably identify where an interface forms part of an ABI.
+
+### <a name="Ri-pimpl"></a>I.27: For stable library ABI, consider the Pimpl idiom
+
+##### Reason
+
+Because private data members participate in class layout and private member functions participate in overload resolution, changes to those
+implementation details require recompilation of all users of a class that uses them. A non-polymorphic interface class holding a pointer to
+implementation (Pimpl) can isolate the users of a class from changes in its implementation at the cost of an indirection.
+
+##### Example
+
+interface (widget.h)
+
+    class widget {
+        class impl;
+        std::unique_ptr<impl> pimpl;
+    public:
+        void draw(); // public API that will be forwarded to the implementation
+        widget(int); // defined in the implementation file
+        ~widget();   // defined in the implementation file, where impl is a complete type
+        widget(widget&&) = default;
+        widget(const widget&) = delete;
+        widget& operator=(widget&&); // defined in the implementation file
+        widget& operator=(const widget&) = delete;
+    };
+
+
+implementation (widget.cpp)
+
+    class widget::impl {
+        int n; // private data
+    public:
+        void draw(const widget& w) { /* ... */ }
+        impl(int n) : n(n) {}
+    };
+    void widget::draw() { pimpl->draw(*this); }
+    widget::widget(int n) : pimpl{std::make_unique<impl>(n)} {}
+    widget::~widget() = default;
+    widget& widget::operator=(widget&&) = default;
+
+##### Notes
+
+See [GOTW #100](https://herbsutter.com/gotw/_100/) and [cppreference](http://en.cppreference.com/w/cpp/language/pimpl) for the trade-offs and additional implementation details associated with this idiom.
 
 ##### Enforcement
 
@@ -6850,7 +6898,7 @@ Since each implementation derived from its interface as well as its implementati
 
 As mentioned, this is just one way to construct a dual hierarchy.
 
-Another (related) technique for separating interface and implementation is [PIMPL](#???).
+Another (related) technique for separating interface and implementation is [Pimpl](#Ri-pimpl).
 
 ##### Note
 
@@ -15562,7 +15610,7 @@ through non-`const` pointers.
 It is the job of the class to ensure such mutation is done only when it makes sense according to the semantics (invariants)
 it offers to its users.
 
-See also [PIMPL](#???).
+See also [Pimpl](#Ri-pimpl).
 
 ##### Enforcement
 
@@ -17353,7 +17401,7 @@ The `Link` and `List` classes do nothing but type manipulation.
 
 Instead of using a separate "base" type, another common technique is to specialize for `void` or `void*` and have the general template for `T` be just the safely-encapsulated casts to and from the core `void` implementation.
 
-**Alternative**: Use a [PIMPL](#???) implementation.
+**Alternative**: Use a [Pimpl](#Ri-pimpl) implementation.
 
 ##### Enforcement
 
