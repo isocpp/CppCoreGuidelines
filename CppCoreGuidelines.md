@@ -13255,21 +13255,25 @@ The less sharing you do, the less chance you have to wait on a lock (so performa
 
     void process_readings(istream& socket1)
     {
-        vector<Reading> surface_readings;
-        socket1 >> surface_readings;
-        if (!socket1) throw Bad_input{};
+        const vector<Reading> surface_readings = [&]() {
+            vector<Reading> readings;
+            socket1 >> readings;
+            if (!socket1) throw Bad_input{};
+            return readings;
+        }();
 
-        auto h1 = async([&] { if (!validate(surface_readings) throw Invalid_data{}; });
+        auto h1 = async([&] { if (!validate(surface_readings)) throw Invalid_data{}; });
         auto h2 = async([&] { return temperature_gradiants(surface_readings); });
         auto h3 = async([&] { return altitude_map(surface_readings); });
         // ...
-        auto v1 = h1.get();
+        h1.get();
         auto v2 = h2.get();
         auto v3 = h3.get();
         // ...
     }
 
 Without those `const`s, we would have to review every asynchronously invoked function for potential data races on `surface_readings`.
+Making `surface_readings` const allow reasoning using only the function body.
 
 ##### Note
 
