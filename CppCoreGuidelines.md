@@ -91,7 +91,7 @@ You can sample rules for specific language features:
 [not needed](#Rc-default) --
 [`explicit`](#Rc-explicit) --
 [delegating](#Rc-delegating) --
-[`virtual`](#RC-ctor-virtual)
+[`virtual`](#Rc-ctor-virtual)
 * derived `class`:
 [when to use](#Rh-domain) --
 [as interface](#Rh-abstract) --
