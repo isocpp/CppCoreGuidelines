@@ -6965,8 +6965,8 @@ This kind of "vector" isn't meant to be used as a base class at all.
 ##### Reason
 
 `protected` data is a source of complexity and errors.
-`protected` data complicated the statement of invariants.
-`protected` data inherently violates the guidance against putting data in base classes, which usually leads to having to deal virtual inheritance as well.
+`protected` data complicates the statement of invariants.
+`protected` data inherently violates the guidance against putting data in base classes, which usually leads to having to deal with virtual inheritance as well.
 
 ##### Example, bad
 
@@ -6985,7 +6985,7 @@ This has been popular, but also a major source of maintenance problems.
 In a large class hierarchy, the consistent use of protected data is hard to maintain because there can be a lot of code,
 spread over a lot of classes.
 The set of classes that can touch that data is open: anyone can derive a new class and start manipulating the protected data.
-Often, it is not possible to examine the complete set of classes so any change to the representation of the class becomes infeasible.
+Often, it is not possible to examine the complete set of classes, so any change to the representation of the class becomes infeasible.
 There is no enforced invariant for the protected data; it is much like a set of global variables.
 The protected data has de facto become global to a large body of code.
 
