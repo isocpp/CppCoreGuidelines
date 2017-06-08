@@ -8404,8 +8404,17 @@ Convenience of use and avoidance of errors.
         }
     }
 
-    Day today = Day::sat;
-    Day tomorrow = ++today;
+    constexpr Day after(Day current_day)
+    {
+        return ++current_day;
+    }
+
+    Day some_day = Day::wed;
+    while (some_day != Day::sat)
+        ++some_day;
+
+    Day today    = some_day;     //Day::sat
+    Day tomorrow = after(today); //Day::sun
 
 ##### Enforcement
 
