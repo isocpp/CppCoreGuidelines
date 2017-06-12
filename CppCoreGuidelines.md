@@ -4,7 +4,7 @@ layout: default
 
 # <a name="main"></a>C++ Core Guidelines
 
-June 11, 2017
+June 12, 2017
 
 
 Editors:
@@ -1206,6 +1206,7 @@ Interface rule summary:
 * [I.24: Avoid adjacent unrelated parameters of the same type](#Ri-unrelated)
 * [I.25: Prefer abstract classes as interfaces to class hierarchies](#Ri-abstract)
 * [I.26: If you want a cross-compiler ABI, use a C-style subset](#Ri-abi)
+* [I.27: For stable library ABI, consider the Pimpl idiom](#Ri-pimpl)
 * [I.30: Encapsulate rule violations](#Ri-encapsulate)
 
 See also
@@ -2143,6 +2144,53 @@ If you use a single compiler, you can use full C++ in interfaces. That may requi
 
 (Not enforceable) It is difficult to reliably identify where an interface forms part of an ABI.
 
+### <a name="Ri-pimpl"></a>I.27: For stable library ABI, consider the Pimpl idiom
+
+##### Reason
+
+Because private data members participate in class layout and private member functions participate in overload resolution, changes to those
+implementation details require recompilation of all users of a class that uses them. A non-polymorphic interface class holding a pointer to
+implementation (Pimpl) can isolate the users of a class from changes in its implementation at the cost of an indirection.
+
+##### Example
+
+interface (widget.h)
+
+    class widget {
+        class impl;
+        std::unique_ptr<impl> pimpl;
+    public:
+        void draw(); // public API that will be forwarded to the implementation
+        widget(int); // defined in the implementation file
+        ~widget();   // defined in the implementation file, where impl is a complete type
+        widget(widget&&) = default;
+        widget(const widget&) = delete;
+        widget& operator=(widget&&); // defined in the implementation file
+        widget& operator=(const widget&) = delete;
+    };
+
+
+implementation (widget.cpp)
+
+    class widget::impl {
+        int n; // private data
+    public:
+        void draw(const widget& w) { /* ... */ }
+        impl(int n) : n(n) {}
+    };
+    void widget::draw() { pimpl->draw(*this); }
+    widget::widget(int n) : pimpl{std::make_unique<impl>(n)} {}
+    widget::~widget() = default;
+    widget& widget::operator=(widget&&) = default;
+
+##### Notes
+
+See [GOTW #100](https://herbsutter.com/gotw/_100/) and [cppreference](http://en.cppreference.com/w/cpp/language/pimpl) for the trade-offs and additional implementation details associated with this idiom.
+
+##### Enforcement
+
+(Not enforceable) It is difficult to reliably identify where an interface forms part of an ABI.
+
 ### <a name="Ri-encapsulate"></a>I.30: Encapsulate rule violations
 
 ##### Reason
@@ -2240,7 +2288,7 @@ Parameter passing expression rules:
 
 Parameter passing semantic rules:
 
-* [F.22: Use `T*` or `owner<T*>` or a smart pointer to designate a single object](#Rf-ptr)
+* [F.22: Use `T*` or `owner<T*>` to designate a single object](#Rf-ptr)
 * [F.23: Use a `not_null<T>` to indicate "null" is not a valid value](#Rf-nullptr)
 * [F.24: Use a `span<T>` or a `span_p<T>` to designate a half-open sequence](#Rf-range)
 * [F.25: Use a `zstring` or a `not_null<zstring>` to designate a C-style string](#Rf-zstring)
@@ -6855,7 +6903,7 @@ Since each implementation derived from its interface as well as its implementati
 
 As mentioned, this is just one way to construct a dual hierarchy.
 
-Another (related) technique for separating interface and implementation is [PIMPL](#???).
+Another (related) technique for separating interface and implementation is [Pimpl](#Ri-pimpl).
 
 ##### Note
 
@@ -8392,15 +8440,25 @@ Convenience of use and avoidance of errors.
 
 ##### Example
 
-    enum class Day { mon, tue, wed, thu, fri, sat, sun };
+    enum Day { mon, tue, wed, thu, fri, sat, sun };
 
-    Day operator++(Day& d)
+    Day& operator++(Day& d)
     {
-        return d == Day::sun ? Day::mon : Day{++d};
+        return d = (d==Day::sun) ? Day::mon : static_cast<Day>(static_cast<int>(d)+1);
     }
-
+    
     Day today = Day::sat;
     Day tomorrow = ++today;
+
+The use of a `static_cast` is not pretty, but
+
+    Day& operator++(Day& d)
+    {
+        return d = (d== Day::sun) ? Day::mon : Day{++d};    // error
+    }
+    
+is an infinite recursion, and writing it without a cast, using a `switch` on all cases is longwinded.
+
 
 ##### Enforcement
 
@@ -11609,7 +11667,8 @@ Surprised? I'm just glad I didn't crash the program.
 
 ##### Note
 
-Programmer who write casts typically assumes that they know what they are doing.
+Programmers who write casts typically assume that they know what they are doing, 
+or that writing a cast makes the program "easier to read".
 In fact, they often disable the general rules for using values.
 Overload resolution and template instantiation usually pick the right function if there is a right function to pick.
 If there is not, maybe there ought to be, rather than applying a local fix (cast).
@@ -11626,18 +11685,19 @@ If you feel the need for a lot of casts, there may be a fundamental design probl
 
 ##### Alternatives
 
-Casts are widely (mis) used. Modern C++ has constructs that eliminate the need for casts in many contexts, such as
+Casts are widely (mis) used. Modern C++ has rules and constructs that eliminate the need for casts in many contexts, such as
 
 * Use templates
 * Use `std::variant`
-
+* Rely on the well defined, safe, implicit conversions between pointer types
 
 ##### Enforcement
 
 * Force the elimination of C-style casts
-* Warn against named casts
-* Warn if there are many functional style casts (there is an obvious problem in quantifying 'many').
+* Warn if there are many functional style casts (there is an obvious problem in quantifying 'many')
 * The [type profile](#Pro-type-reinterpretcast) bans `reinterpret_cast`.
+* Warn against [identity casts](#Pro-type-identitycast) between pointer types, where the source and target types are the same (#Pro-type-identitycast)
+* Warn if a pointer cast could be [implicit](#Pro-type-implicitpointercast)
 
 ### <a name="Res-casts-named"></a>ES.49: If you must use a cast, use a named cast
 
@@ -11699,6 +11759,7 @@ for example.)
 
 * Flag C-style and functional casts.
 * The [type profile](#Pro-type-reinterpretcast) bans `reinterpret_cast`.
+* The [type profile](#Pro-type-arithmeticcast) warns when using `static_cast` between arithmetic types.
 
 ### <a name="Res-casts-const"></a>ES.50: Don't cast away `const`
 
@@ -15567,7 +15628,7 @@ through non-`const` pointers.
 It is the job of the class to ensure such mutation is done only when it makes sense according to the semantics (invariants)
 it offers to its users.
 
-See also [PIMPL](#???).
+See also [Pimpl](#Ri-pimpl).
 
 ##### Enforcement
 
@@ -17358,7 +17419,7 @@ The `Link` and `List` classes do nothing but type manipulation.
 
 Instead of using a separate "base" type, another common technique is to specialize for `void` or `void*` and have the general template for `T` be just the safely-encapsulated casts to and from the core `void` implementation.
 
-**Alternative**: Use a [PIMPL](#???) implementation.
+**Alternative**: Use a [Pimpl](#Ri-pimpl) implementation.
 
 ##### Enforcement
 
@@ -19363,6 +19424,7 @@ Reference sections:
 * [RF.web: Websites](#SS-web)
 * [RS.video: Videos about "modern C++"](#SS-vid)
 * [RF.man: Manuals](#SS-man)
+* [RF.core: Core Guidelines materials](#SS-core)
 
 ## <a name="SS-rules"></a>RF.rules: Coding rules
 
@@ -19447,7 +19509,10 @@ A textbook for beginners and relative novices.
 * Bjarne Stroustrup: [The Essence of C++: With Examples in C++84, C++98, C++11, and C++14](http://channel9.msdn.com/Events/GoingNative/2013/Opening-Keynote-Bjarne-Stroustrup). 2013
 * All the talks from [CppCon '14](https://isocpp.org/blog/2014/11/cppcon-videos-c9)
 * Bjarne Stroustrup: [The essence of C++](https://www.youtube.com/watch?v=86xWVb4XIyE) at the University of Edinburgh. 2014.
-* Sutter: ???
+* Bjarne Stroustrup: [The Evolution of C++ Past, Present and Future](https://www.youtube.com/watch?v=_wzc7a3McOs). Cppcon 2016 keynote.
+* Bjarne Stroustrup: [Make Simple Tasks Simple!](https://www.youtube.com/watch?v=nesCaocNjtQ). Cppcon 2014 keynote.
+* Bjarne Stroustrup: [Writing Good C++14](https://www.youtube.com/watch?v=1OEu9C51K2A). Cppcon 2015 keynote about the Core Guidelines.
+* Herb Sutter: [Writing Good C++14... By Default](https://www.youtube.com/watch?v=hEx5DNLWGgA). Cppcon 2015 keynote about the Core Guidelines.
 * CppCon 15
 * ??? C++ Next
 * ??? Meting C++
@@ -19461,6 +19526,26 @@ A textbook for beginners and relative novices.
 * [Palo Alto "Concepts" TR](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2012/n3351.pdf).
 * [ISO C++ Concepts TS](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2015/n4553.pdf).
 * [WG21 Ranges report](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/n4569.pdf). Draft.
+
+
+## <a name="SS-core"></a>RF.core: Core Guidelines materials
+
+This section contains materials that has been useful for presenting the core guidelines and the ideas behind them:
+
+* [Our documents directory](https://github.com/isocpp/CppCoreGuidelines/tree/master/docs)
+* Stroustrup, Sutter, and Dos Reis: [A brief introduction to C++’s model for type- and resource-safety](http://www.stroustrup.com/resource-model.pdf). A paper with lots of examples.
+* Segey Subkov: [a Core Guidelines talk](https://www.youtube.com/watch?v=DyLwdl_6vmU)
+and here are the [slides](http://2017.cppconf.ru/talks/sergey-zubkov). In Russian. 2017.
+* Neil MacIntosh: [The Guideline Support Library: One Year Later](https://www.youtube.com/watch?v=_GhNnCuaEjo). Cppcon 2016.
+* Bjarne Stroustrup: [Writing Good C++14](https://www.youtube.com/watch?v=1OEu9C51K2A). Cppcon 2015 keynote.
+* Herb Sutter: [Writing Good C++14... By Default](https://www.youtube.com/watch?v=hEx5DNLWGgA). Cppcon 2015 keynote.
+* Peter Sommerlad: [C++ Core Guidelines - Modernize your C++ Code Base](https://www.youtube.com/watch?v=fQ926v4ZzAM). ACCU 2017.
+* Bjarne Stroustrup: [No Littering!](https://www.youtube.com/watch?v=01zI9kV4h8c). Bay Area ACCU 2016.
+It gives some idea of the ambition level for the Core uidelines.
+
+Note that slides for Cppcon presentations are available (links with the posted videos videos).
+
+Contributions to this list would be most welcome.
 
 ## <a name="SS-ack"></a>Acknowledgements
 
@@ -19545,8 +19630,11 @@ An implementation of this profile shall recognize the following patterns in sour
 
 Type safety profile summary:
 
-* <a name="Pro-type-reinterpretcast"></a>Type.1: Don't use `reinterpret_cast`:
-A strict version of [Avoid casts](#Res-casts) and [prefer named casts](#Res-casts-named).
+* <a name="Pro-type-avoidcasts"></a>Type.1: [Avoid casts](#Res-casts):  
+<a name="Pro-type-reinterpretcast">a. </a>Don't use `reinterpret_cast`; A strict version of [Avoid casts](#Res-casts) and [prefer named casts](#Res-casts-named).  
+<a name="Pro-type-arithmeticcast">b. </a>Don't use `static_cast` for arithmetic types; A strict version of [Avoid casts](#Res-casts) and [prefer named casts](#Res-casts-named).  
+<a name="Pro-type-identitycast">c. </a>Don't cast between pointer types where the source type and the target type are the same; A strict version of [Avoid casts](#Res-casts).
+<a name="Pro-type-implicitpointercast">d. </a>Don't cast between pointer types when the conversion could be implicit; A strict version of [Avoid casts](#Res-casts).
 * <a name="Pro-type-downcast"></a>Type.2: Don't use `static_cast` to downcast:
 [Use `dynamic_cast` instead](#Rh-dynamic_cast).
 * <a name="Pro-type-constcast"></a>Type.3: Don't use `const_cast` to cast away `const` (i.e., at all):
@@ -19766,9 +19854,9 @@ Most of the concepts below are defined in [the Ranges TS](http://www.open-std.or
 * `Relation`
 * ...
 
-### <a name="SS-gsl-smartptrconcepts"></a>Smart pointer concepts
+### <a name="SS-gsl-smartptrconcepts"></a>GSL.ptr: Smart pointer concepts
 
-Described in [Lifetimes paper](https://github.com/isocpp/CppCoreGuidelines/blob/master/docs/Lifetimes%20I%20and%20II%20-%20v0.9.1.pdf).
+See [Lifetimes paper](https://github.com/isocpp/CppCoreGuidelines/blob/master/docs/Lifetimes%20I%20and%20II%20-%20v0.9.1.pdf).
 
 # <a name="S-naming"></a>NL: Naming and layout rules
 
@@ -20529,7 +20617,7 @@ If the class definition and the constructor body are in separate files, the long
 
 [\[Cline99\]](#Cline99) §22.03-11, [\[Dewhurst03\]](Dewhurst03) §52-53, [\[Koenig97\]](#Koenig97) §4, [\[Lakos96\]](#Lakos96) §10.3.5, [\[Meyers97\]](#Meyers97) §13, [\[Murray93\]](#Murray93) §2.1.3, [\[Sutter00\]](#Sutter00) §47
 
-### <a name="TBD"></a>Use of `=`, `{}`, and `()` as initializers
+### <a name="Sd-init"></a>Discussion: Use of `=`, `{}`, and `()` as initializers
 
 ???
 
@@ -20856,7 +20944,7 @@ Resource management rule summary:
 * [If a class is a resource handle, it needs a constructor, a destructor, and copy and/or move operations](#Cr-handle)
 * [If a class is a container, give it an initializer-list constructor](#Cr-list)
 
-### <a name="Cr-safety"></a>Provide strong resource safety; that is, never leak anything that you think of as a resource
+### <a name="Cr-safety"></a>Discussion: Provide strong resource safety; that is, never leak anything that you think of as a resource
 
 ##### Reason
 
@@ -20884,7 +20972,7 @@ This class is a resource handle. It manages the lifetime of the `T`s. To do so, 
 
 The basic technique for preventing leaks is to have every resource owned by a resource handle with a suitable destructor. A checker can find "naked `new`s". Given a list of C-style allocation functions (e.g., `fopen()`), a checker can also find uses that are not managed by a resource handle. In general, "naked pointers" can be viewed with suspicion, flagged, and/or analyzed. A complete list of resources cannot be generated without human input (the definition of "a resource" is necessarily too general), but a tool can be "parameterized" with a resource list.
 
-### <a name="Cr-never"></a>Never throw while holding a resource not owned by a handle
+### <a name="Cr-never"></a>Discussion: Never throw while holding a resource not owned by a handle
 
 ##### Reason
 
@@ -20929,7 +21017,7 @@ A checker probably must rely on a human-provided list of resources.
 For starters, we know about the standard-library containers, `string`, and smart pointers.
 The use of `span` and `string_span` should help a lot (they are not resource handles).
 
-### <a name="Cr-raw"></a>A "raw" pointer or reference is never a resource handle
+### <a name="Cr-raw"></a>Discussion: A "raw" pointer or reference is never a resource handle
 
 ##### Reason
 
@@ -20939,7 +21027,7 @@ To be able to distinguish owners from views.
 
 This is independent of how you "spell" pointer: `T*`, `T&`, `Ptr<T>` and `Range<T>` are not owners.
 
-### <a name="Cr-outlive"></a>Never let a pointer outlive the object it points to
+### <a name="Cr-outlive"></a>Discussion: Never let a pointer outlive the object it points to
 
 ##### Reason
 
@@ -20970,7 +21058,7 @@ The `string`s of `v` are destroyed upon exit from `bad()` and so is `v` itself. 
 
 Most compilers already warn about simple cases and has the information to do more. Consider any pointer returned from a function suspect. Use containers, resource handles, and views (e.g., `span` known not to be resource handles) to lower the number of cases to be examined. For starters, consider every class with a destructor as resource handle.
 
-### <a name="Cr-templates"></a>Use templates to express containers (and other resource handles)
+### <a name="Cr-templates"></a>Discussion: Use templates to express containers (and other resource handles)
 
 ##### Reason
 
@@ -20984,7 +21072,7 @@ To provide statically type-safe manipulation of elements.
         int sz;
     };
 
-### <a name="Cr-value-return"></a>Return containers by value (relying on move or copy elision for efficiency)
+### <a name="Cr-value-return"></a>Discussion: Return containers by value (relying on move or copy elision for efficiency)
 
 ##### Reason
 
@@ -21007,7 +21095,7 @@ See the Exceptions in [F.20](#Rf-out).
 
 Check for pointers and references returned from functions and see if they are assigned to resource handles (e.g., to a `unique_ptr`).
 
-### <a name="Cr-handle"></a>If a class is a resource handle, it needs a constructor, a destructor, and copy and/or move operations
+### <a name="Cr-handle"></a>Discussion: If a class is a resource handle, it needs a constructor, a destructor, and copy and/or move operations
 
 ##### Reason
 
@@ -21032,7 +21120,7 @@ Now `Named` has a default constructor, a destructor, and efficient copy and move
 
 In general, a tool cannot know if a class is a resource handle. However, if a class has some of [the default operations](#SS-ctor), it should have all, and if a class has a member that is a resource handle, it should be considered as resource handle.
 
-### <a name="Cr-list"></a>If a class is a container, give it an initializer-list constructor
+### <a name="Cr-list"></a>Discussion: If a class is a container, give it an initializer-list constructor
 
 ##### Reason
 
