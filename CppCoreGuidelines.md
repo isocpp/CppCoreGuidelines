@@ -486,11 +486,12 @@ The second version leaves the reader guessing and opens more possibilities for u
         cin >> val;
         // ...
         int index = -1;                    // bad
-        for (int i = 0; i < v.size(); ++i)
+        for (int i = 0; i < v.size(); ++i) {
             if (v[i] == val) {
                 index = i;
                 break;
             }
+        }
         // ...
     }
 
