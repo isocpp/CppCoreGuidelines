@@ -19420,6 +19420,7 @@ Reference sections:
 * [RF.web: Websites](#SS-web)
 * [RS.video: Videos about "modern C++"](#SS-vid)
 * [RF.man: Manuals](#SS-man)
+* [RF.core: Core Guidelines materials](#SS-core)
 
 ## <a name="SS-rules"></a>RF.rules: Coding rules
 
@@ -19504,7 +19505,10 @@ A textbook for beginners and relative novices.
 * Bjarne Stroustrup: [The Essence of C++: With Examples in C++84, C++98, C++11, and C++14](http://channel9.msdn.com/Events/GoingNative/2013/Opening-Keynote-Bjarne-Stroustrup). 2013
 * All the talks from [CppCon '14](https://isocpp.org/blog/2014/11/cppcon-videos-c9)
 * Bjarne Stroustrup: [The essence of C++](https://www.youtube.com/watch?v=86xWVb4XIyE) at the University of Edinburgh. 2014.
-* Sutter: ???
+* Bjarne Stroustrup: [The Evolution of C++ Past, Present and Future](https://www.youtube.com/watch?v=_wzc7a3McOs). Cppcon 2016 keynote.
+* Bjarne Stroustrup: [Make Simple Tasks Simple!](https://www.youtube.com/watch?v=nesCaocNjtQ). Cppcon 2014 keynote.
+* Bjarne Stroustrup: [Writing Good C++14](https://www.youtube.com/watch?v=1OEu9C51K2A). Cppcon 2015 keynote about the Core Guidelines.
+* Herb Sutter: [Writing Good C++14... By Default](https://www.youtube.com/watch?v=hEx5DNLWGgA). Cppcon 2015 keynote about the Core Guidelines.
 * CppCon 15
 * ??? C++ Next
 * ??? Meting C++
@@ -19518,6 +19522,26 @@ A textbook for beginners and relative novices.
 * [Palo Alto "Concepts" TR](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2012/n3351.pdf).
 * [ISO C++ Concepts TS](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2015/n4553.pdf).
 * [WG21 Ranges report](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/n4569.pdf). Draft.
+
+
+## <a name="SS-core"></a>RF.core: Core Guidelines materials
+
+This section contains materials that has been useful for presenting the core guidelines and the ideas behind them:
+
+* [Our documents directory](https://github.com/isocpp/CppCoreGuidelines/tree/master/docs)
+* Stroustrup, Sutter, and Dos Reis: [A brief introduction to C++’s model for type- and resource-safety](http://www.stroustrup.com/resource-model.pdf). A paper with lots of examples.
+* Segey Subkov: [a Core Guidelines talk](https://www.youtube.com/watch?v=DyLwdl_6vmU)
+and here are the [slides](http://2017.cppconf.ru/talks/sergey-zubkov). In Russian. 2017.
+* Neil MacIntosh: [The Guideline Support Library: One Year Later](https://www.youtube.com/watch?v=_GhNnCuaEjo). Cppcon 2016.
+* Bjarne Stroustrup: [Writing Good C++14](https://www.youtube.com/watch?v=1OEu9C51K2A). Cppcon 2015 keynote.
+* Herb Sutter: [Writing Good C++14... By Default](https://www.youtube.com/watch?v=hEx5DNLWGgA). Cppcon 2015 keynote.
+* Peter Sommerlad: [C++ Core Guidelines - Modernize your C++ Code Base](https://www.youtube.com/watch?v=fQ926v4ZzAM). ACCU 2017.
+* Bjarne Stroustrup: [No Littering!](https://www.youtube.com/watch?v=01zI9kV4h8c). Bay Area ACCU 2016.
+It gives some idea of the ambition level for the Core uidelines.
+
+Note that slides for Cppcon presentations are available (links with the posted videos videos).
+
+Contributions to this list would be most welcome.
 
 ## <a name="SS-ack"></a>Acknowledgements
 
