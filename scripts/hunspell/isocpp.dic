@@ -42,6 +42,7 @@ archetypical
 arg
 argh
 args
+arithmeticcast
 arr2
 arrayindex
 ASIC
@@ -215,6 +216,7 @@ HTTP
 Hyslop
 i2
 IDE
+identitycast
 IDEs
 IEC
 ifdef
@@ -223,6 +225,7 @@ ifstream
 impactful
 impl
 Impl
+implicitpointercast
 incompleat
 increment1
 Incrementable
