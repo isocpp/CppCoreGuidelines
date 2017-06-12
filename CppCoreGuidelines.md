@@ -1224,12 +1224,12 @@ Correctness. Assumptions not stated in an interface are easily overlooked and ha
 
 Controlling the behavior of a function through a global (namespace scope) variable (a call mode) is implicit and potentially confusing. For example:
 
-    int rnd(double d)
+    int round(double d)
     {
-        return (rnd_up) ? ceil(d) : d;    // don't: "invisible" dependency
+        return (round_up) ? ceil(d) : d;    // don't: "invisible" dependency
     }
 
-It will not be obvious to a caller that the meaning of two calls of `rnd(7.2)` might give different results.
+It will not be obvious to a caller that the meaning of two calls of `round(7.2)` might give different results.
 
 ##### Exception
 
