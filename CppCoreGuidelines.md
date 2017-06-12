@@ -8436,15 +8436,25 @@ Convenience of use and avoidance of errors.
 
 ##### Example
 
-    enum class Day { mon, tue, wed, thu, fri, sat, sun };
+    enum Day { mon, tue, wed, thu, fri, sat, sun };
 
-    Day operator++(Day& d)
+    Day& operator++(Day& d)
     {
-        return d == Day::sun ? Day::mon : Day{++d};
+        return d = (d==Day::sun) ? Day::mon : static_cast<Day>(static_cast<int>(d)+1);
     }
-
+    
     Day today = Day::sat;
     Day tomorrow = ++today;
+
+The use of a `static_cast` is not pretty, but
+
+    Day& operator++(Day& d)
+    {
+        return d = (d== Day::sun) ? Day::mon : Day{++d};    // error
+    }
+    
+is an infinite recursion, and writing it without a cast, using a `switch` on all cases is longwinded.
+
 
 ##### Enforcement
 
