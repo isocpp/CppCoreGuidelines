@@ -1490,7 +1490,7 @@ Ideally, that `Expects(x >= 0)` should be part of the interface of `sqrt()` but 
 ##### Note
 
 Prefer a formal specification of requirements, such as `Expects(p != nullptr);`.
-If that is infeasible, use English text in comments, such as `// the sequence [p:q) is ordered using <`.
+If that is infeasible, use English text in comments, such as `// the sequence [p, q) is ordered using <`.
 
 ##### Note
 
@@ -1875,7 +1875,7 @@ Note: `length()` is, of course, `std::strlen()` in disguise.
 
 Consider:
 
-    void copy_n(const T* p, T* q, int n); // copy from [p:p + n) to [q:q + n)
+    void copy_n(const T* p, T* q, int n); // copy from [p, p + n) to [q, q + n)
 
 What if there are fewer than `n` elements in the array pointed to by `q`? Then, we overwrite some probably unrelated memory.
 What if there are fewer than `n` elements in the array pointed to by `p`? Then, we read some probably unrelated memory.
@@ -1896,7 +1896,7 @@ Consider:
     // ...
     draw(arr, 10);
 
-Passing `10` as the `n` argument may be a mistake: the most common convention is to assume \[`0`:`n`) but that is nowhere stated. Worse is that the call of `draw()` compiled at all: there was an implicit conversion from array to pointer (array decay) and then another implicit conversion from `Circle` to `Shape`. There is no way that `draw()` can safely iterate through that array: it has no way of knowing the size of the elements.
+Passing `10` as the `n` argument may be a mistake: the most common convention is to assume `[0, n)` but that is nowhere stated. Worse is that the call of `draw()` compiled at all: there was an implicit conversion from array to pointer (array decay) and then another implicit conversion from `Circle` to `Shape`. There is no way that `draw()` can safely iterate through that array: it has no way of knowing the size of the elements.
 
 **Alternative**: Use a support class that ensures that the number of elements is correct and prevents dangerous implicit conversions. For example:
 
@@ -2042,13 +2042,13 @@ Adjacent arguments of the same type are easily swapped by mistake.
 
 Consider:
 
-    void copy_n(T* p, T* q, int n);  // copy from [p:p + n) to [q:q + n)
+    void copy_n(T* p, T* q, int n);  // copy from [p, p + n) to [q, q + n)
 
 This is a nasty variant of a K&R C-style interface. It is easy to reverse the "to" and "from" arguments.
 
 Use `const` for the "from" argument:
 
-    void copy_n(const T* p, T* q, int n);  // copy from [p:p + n) to [q:q + n)
+    void copy_n(const T* p, T* q, int n);  // copy from [p, p + n) to [q, q + n)
 
 ##### Exception
 
@@ -3193,9 +3193,9 @@ Informal/non-explicit ranges are a source of errors.
 ##### Note
 
 Ranges are extremely common in C++ code. Typically, they are implicit and their correct use is very hard to ensure.
-In particular, given a pair of arguments `(p, n)` designating an array \[`p`:`p + n`),
+In particular, given a pair of arguments `p, n` designating an array `[p, p + n)`,
 it is in general impossible to know if there really are `n` elements to access following `*p`.
-`span<T>` and `span_p<T>` are simple helper classes designating a \[`p`:`q`) range and a range starting with `p` and ending with the first element for which a predicate is true, respectively.
+`span<T>` and `span_p<T>` are simple helper classes designating a `[p, q)` range and a range starting with `p` and ending with the first element for which a predicate is true, respectively.
 
 ##### Example
 
@@ -12839,7 +12839,7 @@ From the point of view of interface design is that `qsort` throws away useful in
 We can do better (in C++98)
 
     template<typename Iter>
-        void sort(Iter b, Iter e);  // sort [b:e)
+        void sort(Iter b, Iter e);  // sort [b, e)
 
     sort(data, data + 100);
 
@@ -19682,8 +19682,8 @@ If something is not supposed to be `nullptr`, say so:
 * `not_null<T>`   // `T` is usually a pointer type (e.g., `not_null<int*>` and `not_null<owner<Foo*>>`) that may not be `nullptr`.
   `T` can be any type for which `==nullptr` is meaningful.
 
-* `span<T>`       // `[`p`:`p + n`)`, constructor from `{p, q}` and `{p, n}`; `T` is the pointer type
-* `span_p<T>`     // `{p, predicate}` \[`p`:`q`) where `q` is the first element for which `predicate(*p)` is true
+* `span<T>`       // `[p, p + n)`, constructor from `{p, q}` and `{p, n}`; `T` is the pointer type
+* `span_p<T>`     // `{p, predicate}` `[p, q)` where `q` is the first element for which `predicate(*p)` is true
 * `string_span`   // `span<char>`
 * `cstring_span`  // `span<const char>`
 
@@ -21067,7 +21067,7 @@ More information on many topics about C++ can be found on the [Standard C++ Foun
 * *approximation*: something (e.g., a value or a design) that is close to the perfect or ideal (value or design).
   Often an approximation is a result of trade-offs among ideals.
 * *argument*: a value passed to a function or a template, in which it is accessed through a parameter.
-* *array*: a homogeneous sequence of elements, usually numbered, e.g., \[0:max).
+* *array*: a homogeneous sequence of elements, usually numbered, e.g., `[0, max)`.
 * *assertion*: a statement inserted into a program to state (assert) that something must always be true at this point in the program.
 * *base class*: a class used as the base of a class hierarchy. Typically a base class has one or more virtual functions.
 * *bit*: the basic unit of information in a computer. A bit can have the value 0 or the value 1.
@@ -21156,7 +21156,7 @@ More information on many topics about C++ can be found on the [Standard C++ Foun
 * *pseudo code*: a description of a computation written in an informal notation rather than a programming language.
 * *pure virtual function*: a virtual function that must be overridden in a derived class.
 * *RAII*: ("Resource Acquisition Is Initialization") a basic technique for resource management based on scopes.
-* *range*: a sequence of values that can be described by a start point and an end point. For example, \[0:5) means the values 0, 1, 2, 3, and 4.
+* *range*: a sequence of values that can be described by a start point and an end point. For example, `[0, 5)` means the values 0, 1, 2, 3, and 4.
 * *recursion*: the act of a function calling itself; see also iteration.
 * *reference*: (1) a value describing the location of a typed value in memory; (2) a variable holding such a value.
 * *regular expression*: a notation for patterns in character strings.
