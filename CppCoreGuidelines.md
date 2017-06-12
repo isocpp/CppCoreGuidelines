@@ -4,7 +4,7 @@ layout: default
 
 # <a name="main"></a>C++ Core Guidelines
 
-June 8, 2017
+June 11, 2017
 
 
 Editors:
@@ -490,11 +490,12 @@ The second version leaves the reader guessing and opens more possibilities for u
         cin >> val;
         // ...
         int index = -1;                    // bad
-        for (int i = 0; i < v.size(); ++i)
+        for (int i = 0; i < v.size(); ++i) {
             if (v[i] == val) {
                 index = i;
                 break;
             }
+        }
         // ...
     }
 
@@ -1227,12 +1228,12 @@ Correctness. Assumptions not stated in an interface are easily overlooked and ha
 
 Controlling the behavior of a function through a global (namespace scope) variable (a call mode) is implicit and potentially confusing. For example:
 
-    int rnd(double d)
+    int round(double d)
     {
-        return (rnd_up) ? ceil(d) : d;    // don't: "invisible" dependency
+        return (round_up) ? ceil(d) : d;    // don't: "invisible" dependency
     }
 
-It will not be obvious to a caller that the meaning of two calls of `rnd(7.2)` might give different results.
+It will not be obvious to a caller that the meaning of two calls of `round(7.2)` might give different results.
 
 ##### Exception
 
@@ -18608,7 +18609,7 @@ In C++17, we might use `string_view` as the argument, rather than `const string*
         return res;
     }
 
-The `gsl::string_span` is a current alternative offering most of the benefits of `string_span` for simple examples:
+The `gsl::string_span` is a current alternative offering most of the benefits of `std::string_view` for simple examples:
 
     vector<string> read_until(string_span terminator)
     {
