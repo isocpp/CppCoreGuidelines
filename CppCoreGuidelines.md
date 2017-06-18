@@ -8440,7 +8440,7 @@ Convenience of use and avoidance of errors.
 
     Day& operator++(Day& d)
     {
-        return d = (d==Day::sun) ? Day::mon : static_cast<Day>(static_cast<int>(d)+1);
+        return d = (d == Day::sun) ? Day::mon : static_cast<Day>(static_cast<int>(d)+1);
     }
     
     Day today = Day::sat;
@@ -8450,9 +8450,9 @@ The use of a `static_cast` is not pretty, but
 
     Day& operator++(Day& d)
     {
-        return d = (d== Day::sun) ? Day::mon : Day{++d};    // error
+        return d = (d == Day::sun) ? Day::mon : Day{++d};    // error
     }
-    
+
 is an infinite recursion, and writing it without a cast, using a `switch` on all cases is long-winded.
 
 
@@ -19539,7 +19539,7 @@ and here are the [slides](http://2017.cppconf.ru/talks/sergey-zubkov). In Russia
 * Bjarne Stroustrup: [No Littering!](https://www.youtube.com/watch?v=01zI9kV4h8c). Bay Area ACCU 2016.
 It gives some idea of the ambition level for the Core Guidelines.
 
-Note that slides for CppCon presentations are available (links with the posted videos videos).
+Note that slides for CppCon presentations are available (links with the posted videos).
 
 Contributions to this list would be most welcome.
 
