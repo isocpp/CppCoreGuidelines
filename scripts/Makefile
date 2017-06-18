@@ -86,7 +86,7 @@ check-badchars: $(SOURCEPATH) $(BUILD_DIR) Makefile
 .PHONY: hunspell-check
 hunspell-check: $(BUILD_DIR)/plain-nohtml.txt
 	@echo '##################### Spell check ##################'
-	hunspell -d hunspell/en_US -p hunspell/isocpp.dic -u < build/plain-nohtml.txt > $(BUILD_DIR)/hunspell-report.txt
+	sed -e 's!http\(s\)\{0,1\}://[^[:space:]]*!!g' build/plain-nohtml.txt | hunspell -d hunspell/en_US -p hunspell/isocpp.dic -u  > $(BUILD_DIR)/hunspell-report.txt
 	@if [ -s $(BUILD_DIR)/hunspell-report.txt ]; then echo 'Warning: Spellcheck failed, fix words or add to dictionary:'; cat $(BUILD_DIR)/hunspell-report.txt; false; fi;
 
 # only list words that are not in dict
@@ -94,7 +94,7 @@ hunspell-check: $(BUILD_DIR)/plain-nohtml.txt
 # cat hunspell/isocpp.dic | sort | uniq > hunspell/isocpp.dic2; mv hunspell/isocpp.dic2 hunspell/isocpp.dic
 .PHONY: hunspell-list
 hunspell-list: $(BUILD_DIR)/plain.txt
-	hunspell -p hunspell/isocpp.dic -l < build/plain-nohtml.txt
+	sed -e 's!http\(s\)\{0,1\}://[^[:space:]]*!!g' build/plain-nohtml.txt | hunspell -p hunspell/isocpp.dic -l
 
 #### Cpplint
 

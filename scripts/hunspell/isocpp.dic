@@ -26,6 +26,7 @@ ABIs
 abstr
 accessor
 ack
+ACCU
 addressof
 adl
 ADL
@@ -480,6 +481,7 @@ smartptrget
 smartptrparam
 smartptrs
 SMS
+Sommerlad
 SomeLargeType
 specialization2
 spinlock
