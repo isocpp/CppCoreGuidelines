@@ -1,6 +1,6 @@
 # <a name="main"></a>C++ Core Guidelines
 
-June 12, 2017
+June 19, 2017
 
 
 Editors:
@@ -7620,8 +7620,8 @@ It also gives an opportunity to eliminate a separate allocation for the referenc
 
 ##### Enforcement
 
-* Flag the repetitive usage of template specialization list`<Foo>`
-* Flag variables declared to be `shared_ptr<Foo>`
+* Flag the repetitive usage of template specialization list`<Bar>`
+* Flag variables declared to be `shared_ptr<Bar>`
 
 ### <a name="Rh-array"></a>C.152: Never assign a pointer to an array of derived class objects to a pointer to its base
 
