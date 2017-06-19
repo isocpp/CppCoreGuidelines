@@ -4222,7 +4222,7 @@ For example, a derived class might be allowed to skip a run-time check because i
 
     class Foo {
     public:
-        int bar(int x) { check(x); return do_bar(); }
+        int bar(int x) { check(x); return do_bar(x); }
         // ...
     protected:
         int do_bar(int x); // do some operation on the data
@@ -4238,7 +4238,7 @@ For example, a derived class might be allowed to skip a run-time check because i
             /* ... do something ... */
             return do_bar(x + y); // OK: derived class can bypass check
         }
-    }
+    };
 
     void user(Foo& x)
     {
@@ -7126,7 +7126,7 @@ If the operations are virtual the use of inheritance is necessary, if not using 
 
 ##### Example
 
-      class iostream : public istream, public ostream {   // very simplified
+    class iostream : public istream, public ostream {   // very simplified
         // ...
     };
 
@@ -7611,10 +7611,12 @@ It also gives an opportunity to eliminate a separate allocation for the referenc
 
 ##### Example
 
-    // OK: but repetitive; and separate allocations for the Foo and shared_ptr's use count
-    shared_ptr<Foo> p {new<Foo>{7}};
+    void test() {
+        // OK: but repetitive; and separate allocations for the Bar and shared_ptr's use count
+        shared_ptr<Bar> p {new<Bar>{7}};
 
-    auto q = make_shared<Foo>(7);   // Better: no repetition of Foo; one object
+        auto q = make_shared<Bar>(7);   // Better: no repetition of Bar; one object
+    }
 
 ##### Enforcement
 
@@ -8978,9 +8980,9 @@ If you don't, an exception or a return may lead to a leak.
 
     void f(const string& name)
     {
-        FILE* f = fopen(name, "r");          // open the file
+        FILE* f = fopen(name, "r");            // open the file
         vector<char> buf(1024);
-        auto _ = finally([f] { fclose(f); })  // remember to close the file
+        auto _ = finally([f] { fclose(f); });  // remember to close the file
         // ...
     }
 
@@ -10914,7 +10916,7 @@ There is a fair amount of use of the C goto-exit idiom:
             goto exit;
         // ...
     exit:
-        ... common cleanup code ...
+        // ... common cleanup code ...
     }
 
 This is an ad-hoc simulation of destructors.
@@ -11367,7 +11369,7 @@ Use a `span`:
 
     void f2(array<int, 10> arr, int pos) // A2: Add local span and use that
     {
-        span<int> a = {arr, pos}
+        span<int> a = {arr, pos};
         a[pos / 2] = 1; // OK
         a[pos - 1] = 2; // OK
     }
@@ -12248,7 +12250,7 @@ The conventional resolution is to interpret `{10}` as a list of one element and 
 This mistake need not be repeated in new code.
 We can define a type to represent the number of elements:
 
-    struct Count { int n };
+    struct Count { int n; };
 
     template<typename T>
     class Vector {
@@ -12670,7 +12672,7 @@ For example
         operator int() { return val; }
     };
 
-    int f(Positive arg) {return arg };
+    int f(Positive arg) { return arg; }
 
     int r1 = f(2);
     int r2 = f(-2);  // throws
@@ -13321,7 +13323,7 @@ The less sharing you do, the less chance you have to wait on a lock (so performa
         socket1 >> surface_readings;
         if (!socket1) throw Bad_input{};
 
-        auto h1 = async([&] { if (!validate(surface_readings) throw Invalid_data{}; });
+        auto h1 = async([&] { if (!validate(surface_readings)) throw Invalid_data{}; });
         auto h2 = async([&] { return temperature_gradiants(surface_readings); });
         auto h3 = async([&] { return altitude_map(surface_readings); });
         // ...
@@ -13887,7 +13889,7 @@ message passing or shared memory.
 ???
 
 
-### <a name="Rconc-shared"></a>[CP.32: To share ownership between unrelated `thread`s use `shared_ptr`
+### <a name="Rconc-shared"></a>CP.32: To share ownership between unrelated `thread`s use `shared_ptr`
 
 ##### Reason
 
@@ -14709,7 +14711,7 @@ RAII ("Resource Acquisition Is Initialization") is the simplest, most systematic
     {
         int* p = new int[12];
         // ...
-        if (i < 17) throw Bad {"in f()", i};
+        if (i < 17) throw Bad{"in f()", i};
         // ...
     }
 
@@ -14721,7 +14723,7 @@ We could carefully release the resource before the throw:
         // ...
         if (i < 17) {
             delete[] p;
-            throw Bad {"in f()", i};
+            throw Bad{"in f()", i};
         }
         // ...
     }
@@ -14732,7 +14734,7 @@ This is verbose. In larger code with multiple possible `throw`s explicit release
     {
         auto p = make_unique<int[]>(12);
         // ...
-        if (i < 17) throw Bad {"in f()", i};
+        if (i < 17) throw Bad{"in f()", i};
         // ...
     }
 
@@ -14990,11 +14992,13 @@ To prevent slicing.
 ##### Example
 
     void f()
-    try {
-        // ...
-    }
-    catch (exception e) {   // don't: may slice
-        // ...
+    {
+        try {
+            // ...
+        }
+        catch (exception e) {   // don't: may slice
+            // ...
+        }
     }
 
 Instead, use a reference:
@@ -15592,7 +15596,7 @@ You can
 Example:
 
     void f(int* p);   // old code: f() does not modify `*p`
-    void f(const int* p) { f(const_cast<int*>(p); } // wrapper
+    void f(const int* p) { f(const_cast<int*>(p)); } // wrapper
 
 Note that this wrapper solution is a patch that should be used only when the declaration of `f()` cannot be be modified,
 e.g. because it is in a library that you cannot modify.
@@ -16296,13 +16300,13 @@ It is a general design rule that even applies to non-templates:
 
     void f(const Minimal& x, const Minimal& y)
     {
-        if (!(x == y) { /* ... */ }     // OK
+        if (!(x == y)) { /* ... */ }    // OK
         if (x != y) { /* ... */ }       // surprise! error
 
         while (!(x < y)) { /* ... */ }  // OK
         while (x >= y) { /* ... */ }    // surprise! error
 
-        x = x + y;        // OK
+        x = x + y;          // OK
         x += y;             // surprise! error
     }
 
@@ -16326,14 +16330,14 @@ The rule supports the view that a concept should reflect a (mathematically) cohe
 
     void f(const Convenient& x, const Convenient& y)
     {
-        if (!(x == y) { /* ... */ }     // OK
+        if (!(x == y)) { /* ... */ }    // OK
         if (x != y) { /* ... */ }       // OK
 
         while (!(x < y)) { /* ... */ }  // OK
         while (x >= y) { /* ... */ }    // OK
 
         x = x + y;     // OK
-        x += y;      // OK
+        x += y;        // OK
     }
 
 It can be a nuisance to define all operators, but not hard.
@@ -18690,7 +18694,7 @@ Don't use C-style strings for operations that require non-trivial memory managem
         p[l1] = '.';
         strcpy(p + l1 + 1, s2, l2);
         p[l1 + l2 + 1] = 0;
-        return res;
+        return p;
     }
 
 Did we get that right?
@@ -19356,7 +19360,7 @@ This technique is a pre-exception technique for RAII-like resource and error han
         // ...
         int* p = (int*) malloc(n);
         // ...
-        if (some_ error) goto_exit;
+        if (some_error) goto_exit;
         // ...
     exit:
         free(p);
