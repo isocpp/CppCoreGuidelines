@@ -4,7 +4,7 @@ layout: default
 
 # <a name="main"></a>C++ Core Guidelines
 
-June 12, 2017
+June 19, 2017
 
 
 Editors:
@@ -61,6 +61,7 @@ Supporting sections:
 * [Appendix A: Libraries](#S-libraries)
 * [Appendix B: Modernizing code](#S-modernizing)
 * [Appendix C: Discussion](#S-discussion)
+* [Appendix D: Tools support](#S-tools)
 * [Glossary](#S-glossary)
 * [To-do: Unclassified proto-rules](#S-unclassified)
 
@@ -430,6 +431,7 @@ Supporting sections:
 * [Appendix A: Libraries](#S-libraries)
 * [Appendix B: Modernizing code](#S-modernizing)
 * [Appendix C: Discussion](#S-discussion)
+* [Appendix D: Tools support](#S-tools)
 * [Glossary](#S-glossary)
 * [To-do: Unclassified proto-rules](#S-unclassified)
 
@@ -2210,9 +2212,9 @@ We might write
     bool owned;
     owner<istream*> inp;
     switch (source) {
-    case std_in:        owned = false; inp = &cin;
-    case command_line:  owned = true;  inp = new istringstream{argv[2]};
-    case file:          owned = true;  inp = new ifstream{argv[2]};
+    case std_in:        owned = false; inp = &cin;                       break;
+    case command_line:  owned = true;  inp = new istringstream{argv[2]}; break;
+    case file:          owned = true;  inp = new ifstream{argv[2]};      break;
     }
     istream& in = *inp;
 
@@ -2617,7 +2619,7 @@ Member functions defined in-class are `inline` by default.
 
 ##### Exception
 
-Template functions (incl. template member functions) must be in headers and therefore inline.
+Template functions (incl. template member functions) are normally defined in headers and therefore inline.
 
 ##### Enforcement
 
@@ -4226,7 +4228,7 @@ For example, a derived class might be allowed to skip a run-time check because i
 
     class Foo {
     public:
-        int bar(int x) { check(x); return do_bar(); }
+        int bar(int x) { check(x); return do_bar(x); }
         // ...
     protected:
         int do_bar(int x); // do some operation on the data
@@ -4242,7 +4244,7 @@ For example, a derived class might be allowed to skip a run-time check because i
             /* ... do something ... */
             return do_bar(x + y); // OK: derived class can bypass check
         }
-    }
+    };
 
     void user(Foo& x)
     {
@@ -7130,7 +7132,7 @@ If the operations are virtual the use of inheritance is necessary, if not using 
 
 ##### Example
 
-      class iostream : public istream, public ostream {   // very simplified
+    class iostream : public istream, public ostream {   // very simplified
         // ...
     };
 
@@ -7615,15 +7617,17 @@ It also gives an opportunity to eliminate a separate allocation for the referenc
 
 ##### Example
 
-    // OK: but repetitive; and separate allocations for the Foo and shared_ptr's use count
-    shared_ptr<Foo> p {new<Foo>{7}};
+    void test() {
+        // OK: but repetitive; and separate allocations for the Bar and shared_ptr's use count
+        shared_ptr<Bar> p {new<Bar>{7}};
 
-    auto q = make_shared<Foo>(7);   // Better: no repetition of Foo; one object
+        auto q = make_shared<Bar>(7);   // Better: no repetition of Bar; one object
+    }
 
 ##### Enforcement
 
-* Flag the repetitive usage of template specialization list`<Foo>`
-* Flag variables declared to be `shared_ptr<Foo>`
+* Flag the repetitive usage of template specialization list`<Bar>`
+* Flag variables declared to be `shared_ptr<Bar>`
 
 ### <a name="Rh-array"></a>C.152: Never assign a pointer to an array of derived class objects to a pointer to its base
 
@@ -8444,7 +8448,7 @@ Convenience of use and avoidance of errors.
 
     Day& operator++(Day& d)
     {
-        return d = (d==Day::sun) ? Day::mon : static_cast<Day>(static_cast<int>(d)+1);
+        return d = (d == Day::sun) ? Day::mon : static_cast<Day>(static_cast<int>(d)+1);
     }
     
     Day today = Day::sat;
@@ -8454,10 +8458,10 @@ The use of a `static_cast` is not pretty, but
 
     Day& operator++(Day& d)
     {
-        return d = (d== Day::sun) ? Day::mon : Day{++d};    // error
+        return d = (d == Day::sun) ? Day::mon : Day{++d};    // error
     }
-    
-is an infinite recursion, and writing it without a cast, using a `switch` on all cases is longwinded.
+
+is an infinite recursion, and writing it without a cast, using a `switch` on all cases is long-winded.
 
 
 ##### Enforcement
@@ -8982,9 +8986,9 @@ If you don't, an exception or a return may lead to a leak.
 
     void f(const string& name)
     {
-        FILE* f = fopen(name, "r");          // open the file
+        FILE* f = fopen(name, "r");            // open the file
         vector<char> buf(1024);
-        auto _ = finally([f] { fclose(f); })  // remember to close the file
+        auto _ = finally([f] { fclose(f); });  // remember to close the file
         // ...
     }
 
@@ -10918,7 +10922,7 @@ There is a fair amount of use of the C goto-exit idiom:
             goto exit;
         // ...
     exit:
-        ... common cleanup code ...
+        // ... common cleanup code ...
     }
 
 This is an ad-hoc simulation of destructors.
@@ -11371,7 +11375,7 @@ Use a `span`:
 
     void f2(array<int, 10> arr, int pos) // A2: Add local span and use that
     {
-        span<int> a = {arr, pos}
+        span<int> a = {arr, pos};
         a[pos / 2] = 1; // OK
         a[pos - 1] = 2; // OK
     }
@@ -12252,7 +12256,7 @@ The conventional resolution is to interpret `{10}` as a list of one element and 
 This mistake need not be repeated in new code.
 We can define a type to represent the number of elements:
 
-    struct Count { int n };
+    struct Count { int n; };
 
     template<typename T>
     class Vector {
@@ -12674,7 +12678,7 @@ For example
         operator int() { return val; }
     };
 
-    int f(Positive arg) {return arg };
+    int f(Positive arg) { return arg; }
 
     int r1 = f(2);
     int r2 = f(-2);  // throws
@@ -13325,7 +13329,7 @@ The less sharing you do, the less chance you have to wait on a lock (so performa
         socket1 >> surface_readings;
         if (!socket1) throw Bad_input{};
 
-        auto h1 = async([&] { if (!validate(surface_readings) throw Invalid_data{}; });
+        auto h1 = async([&] { if (!validate(surface_readings)) throw Invalid_data{}; });
         auto h2 = async([&] { return temperature_gradiants(surface_readings); });
         auto h3 = async([&] { return altitude_map(surface_readings); });
         // ...
@@ -13891,7 +13895,7 @@ message passing or shared memory.
 ???
 
 
-### <a name="Rconc-shared"></a>[CP.32: To share ownership between unrelated `thread`s use `shared_ptr`
+### <a name="Rconc-shared"></a>CP.32: To share ownership between unrelated `thread`s use `shared_ptr`
 
 ##### Reason
 
@@ -14713,7 +14717,7 @@ RAII ("Resource Acquisition Is Initialization") is the simplest, most systematic
     {
         int* p = new int[12];
         // ...
-        if (i < 17) throw Bad {"in f()", i};
+        if (i < 17) throw Bad{"in f()", i};
         // ...
     }
 
@@ -14725,7 +14729,7 @@ We could carefully release the resource before the throw:
         // ...
         if (i < 17) {
             delete[] p;
-            throw Bad {"in f()", i};
+            throw Bad{"in f()", i};
         }
         // ...
     }
@@ -14736,7 +14740,7 @@ This is verbose. In larger code with multiple possible `throw`s explicit release
     {
         auto p = make_unique<int[]>(12);
         // ...
-        if (i < 17) throw Bad {"in f()", i};
+        if (i < 17) throw Bad{"in f()", i};
         // ...
     }
 
@@ -14994,11 +14998,13 @@ To prevent slicing.
 ##### Example
 
     void f()
-    try {
-        // ...
-    }
-    catch (exception e) {   // don't: may slice
-        // ...
+    {
+        try {
+            // ...
+        }
+        catch (exception e) {   // don't: may slice
+            // ...
+        }
     }
 
 Instead, use a reference:
@@ -15596,7 +15602,7 @@ You can
 Example:
 
     void f(int* p);   // old code: f() does not modify `*p`
-    void f(const int* p) { f(const_cast<int*>(p); } // wrapper
+    void f(const int* p) { f(const_cast<int*>(p)); } // wrapper
 
 Note that this wrapper solution is a patch that should be used only when the declaration of `f()` cannot be be modified,
 e.g. because it is in a library that you cannot modify.
@@ -16300,13 +16306,13 @@ It is a general design rule that even applies to non-templates:
 
     void f(const Minimal& x, const Minimal& y)
     {
-        if (!(x == y) { /* ... */ }     // OK
+        if (!(x == y)) { /* ... */ }    // OK
         if (x != y) { /* ... */ }       // surprise! error
 
         while (!(x < y)) { /* ... */ }  // OK
         while (x >= y) { /* ... */ }    // surprise! error
 
-        x = x + y;        // OK
+        x = x + y;          // OK
         x += y;             // surprise! error
     }
 
@@ -16330,14 +16336,14 @@ The rule supports the view that a concept should reflect a (mathematically) cohe
 
     void f(const Convenient& x, const Convenient& y)
     {
-        if (!(x == y) { /* ... */ }     // OK
+        if (!(x == y)) { /* ... */ }    // OK
         if (x != y) { /* ... */ }       // OK
 
         while (!(x < y)) { /* ... */ }  // OK
         while (x >= y) { /* ... */ }    // OK
 
         x = x + y;     // OK
-        x += y;      // OK
+        x += y;        // OK
     }
 
 It can be a nuisance to define all operators, but not hard.
@@ -18694,7 +18700,7 @@ Don't use C-style strings for operations that require non-trivial memory managem
         p[l1] = '.';
         strcpy(p + l1 + 1, s2, l2);
         p[l1 + l2 + 1] = 0;
-        return res;
+        return p;
     }
 
 Did we get that right?
@@ -19360,7 +19366,7 @@ This technique is a pre-exception technique for RAII-like resource and error han
         // ...
         int* p = (int*) malloc(n);
         // ...
-        if (some_ error) goto_exit;
+        if (some_error) goto_exit;
         // ...
     exit:
         free(p);
@@ -19509,10 +19515,10 @@ A textbook for beginners and relative novices.
 * Bjarne Stroustrup: [The Essence of C++: With Examples in C++84, C++98, C++11, and C++14](http://channel9.msdn.com/Events/GoingNative/2013/Opening-Keynote-Bjarne-Stroustrup). 2013
 * All the talks from [CppCon '14](https://isocpp.org/blog/2014/11/cppcon-videos-c9)
 * Bjarne Stroustrup: [The essence of C++](https://www.youtube.com/watch?v=86xWVb4XIyE) at the University of Edinburgh. 2014.
-* Bjarne Stroustrup: [The Evolution of C++ Past, Present and Future](https://www.youtube.com/watch?v=_wzc7a3McOs). Cppcon 2016 keynote.
-* Bjarne Stroustrup: [Make Simple Tasks Simple!](https://www.youtube.com/watch?v=nesCaocNjtQ). Cppcon 2014 keynote.
-* Bjarne Stroustrup: [Writing Good C++14](https://www.youtube.com/watch?v=1OEu9C51K2A). Cppcon 2015 keynote about the Core Guidelines.
-* Herb Sutter: [Writing Good C++14... By Default](https://www.youtube.com/watch?v=hEx5DNLWGgA). Cppcon 2015 keynote about the Core Guidelines.
+* Bjarne Stroustrup: [The Evolution of C++ Past, Present and Future](https://www.youtube.com/watch?v=_wzc7a3McOs). CppCon 2016 keynote.
+* Bjarne Stroustrup: [Make Simple Tasks Simple!](https://www.youtube.com/watch?v=nesCaocNjtQ). CppCon 2014 keynote.
+* Bjarne Stroustrup: [Writing Good C++14](https://www.youtube.com/watch?v=1OEu9C51K2A). CppCon 2015 keynote about the Core Guidelines.
+* Herb Sutter: [Writing Good C++14... By Default](https://www.youtube.com/watch?v=hEx5DNLWGgA). CppCon 2015 keynote about the Core Guidelines.
 * CppCon 15
 * ??? C++ Next
 * ??? Meting C++
@@ -19533,17 +19539,17 @@ A textbook for beginners and relative novices.
 This section contains materials that has been useful for presenting the core guidelines and the ideas behind them:
 
 * [Our documents directory](https://github.com/isocpp/CppCoreGuidelines/tree/master/docs)
-* Stroustrup, Sutter, and Dos Reis: [A brief introduction to C++’s model for type- and resource-safety](http://www.stroustrup.com/resource-model.pdf). A paper with lots of examples.
-* Segey Subkov: [a Core Guidelines talk](https://www.youtube.com/watch?v=DyLwdl_6vmU)
+* Stroustrup, Sutter, and Dos Reis: [A brief introduction to C++'s model for type- and resource-safety](http://www.stroustrup.com/resource-model.pdf). A paper with lots of examples.
+* Sergey Zubkov: [a Core Guidelines talk](https://www.youtube.com/watch?v=DyLwdl_6vmU)
 and here are the [slides](http://2017.cppconf.ru/talks/sergey-zubkov). In Russian. 2017.
-* Neil MacIntosh: [The Guideline Support Library: One Year Later](https://www.youtube.com/watch?v=_GhNnCuaEjo). Cppcon 2016.
-* Bjarne Stroustrup: [Writing Good C++14](https://www.youtube.com/watch?v=1OEu9C51K2A). Cppcon 2015 keynote.
-* Herb Sutter: [Writing Good C++14... By Default](https://www.youtube.com/watch?v=hEx5DNLWGgA). Cppcon 2015 keynote.
+* Neil MacIntosh: [The Guideline Support Library: One Year Later](https://www.youtube.com/watch?v=_GhNnCuaEjo). CppCon 2016.
+* Bjarne Stroustrup: [Writing Good C++14](https://www.youtube.com/watch?v=1OEu9C51K2A). CppCon 2015 keynote.
+* Herb Sutter: [Writing Good C++14... By Default](https://www.youtube.com/watch?v=hEx5DNLWGgA). CppCon 2015 keynote.
 * Peter Sommerlad: [C++ Core Guidelines - Modernize your C++ Code Base](https://www.youtube.com/watch?v=fQ926v4ZzAM). ACCU 2017.
 * Bjarne Stroustrup: [No Littering!](https://www.youtube.com/watch?v=01zI9kV4h8c). Bay Area ACCU 2016.
-It gives some idea of the ambition level for the Core uidelines.
+It gives some idea of the ambition level for the Core Guidelines.
 
-Note that slides for Cppcon presentations are available (links with the posted videos videos).
+Note that slides for CppCon presentations are available (links with the posted videos).
 
 Contributions to this list would be most welcome.
 
@@ -21139,6 +21145,19 @@ It is common to need an initial set of elements.
 ##### Enforcement
 
 When is a class a container? ???
+
+# <a name="S-tools"></a>Appendix D: Supporting tools
+
+This section contains a list of tools that directly support adoption of the C++ Core Guidelines. This list is not intended to be an exhaustive list of tools
+that are helpful in writing good C++ code. If a tool is designed specifically to support and links to the C++ Core Guidelines it is a candidate for inclusion.
+
+### <a name="St-clangtidy"></a>Tools: [Clang-tidy](http://clang.llvm.org/extra/clang-tidy/checks/list.html)
+
+Clang-tidy has a set of rules that specifically enforce the C++ Core Guidelines. These rules are named in the pattern `cppcoreguidelines-*`.
+
+### <a name="St-cppcorecheck"></a>Tools: [CppCoreCheck](https://docs.microsoft.com/en-us/visualstudio/code-quality/using-the-cpp-core-guidelines-checkers)
+
+The Microsoft compiler's C++ code analysis contains a set of rules specifically aimed at enforcement of the C++ Core Guidelines. 
 
 # <a name="S-glossary"></a>Glossary
 
