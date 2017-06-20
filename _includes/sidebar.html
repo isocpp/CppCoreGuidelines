@@ -7,13 +7,15 @@
           C++ Core Guidelines
         </a>
       </h3>
-      <p class="lead">{{ site.description }}</p>
     </div>
-
     <nav class="sidebar-nav">
       <small>
         {% if page.name == "CppCoreGuidelines.md" %}
 
+        <div class="switch">
+          <input class="tgl tgl-cpp" id="hl_button" type="checkbox"/>
+          <label class="tgl-btn" data-tg-off="No highlight" data-tg-on="Highlight" for="hl_button"></label>
+        </div>
       <!-- Items have to be added manually until for now -->
       <b><a class="sidebar-nav-item active" href="#main">Top</a></b>
 
@@ -47,7 +49,6 @@
       <a class="sidebar-nav-item active" href="#S-tools">Appendix D: Tools support</a>
       <a class="sidebar-nav-item active" href="#S-glossary">Glossary</a>
       <a class="sidebar-nav-item active" href="#S-unclassified">To-do: Unclassified proto-rules</a>
-      <button id="button">Highlighting</button>
         {% else %}
 
       <a class="sidebar-nav-item active" href="CppCoreGuidelines.html">C++ Core Guidelines</a>

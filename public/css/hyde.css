@@ -55,7 +55,7 @@ html {
 
 .sidebar {
   text-align: center;
-  padding: 2rem 1rem;
+  padding: none;
   color: rgba(255,255,255,.5);
   background-color: #202020;
 }
@@ -112,7 +112,7 @@ a.sidebar-nav-item:focus {
     right:  1rem;
     bottom: 1rem;
     left:   1rem;
-    top:    1rem;
+    top:    0rem;
   }
 }
 
