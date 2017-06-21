@@ -1,4 +1,4 @@
-[![C++ Core Guidelines Logo](https://github.com/isocpp/logos/blob/master/cpp_core_guidelines/cpp_core_guidelines_logo.svg)](https://isocpp.github.io/CppCoreGuidelines)
+[![C++ Core Guidelines](https://github.com/isocpp/logos/blob/master/cpp_core_guidelines/cpp_core_guidelines_logo.png)](https://isocpp.github.io/CppCoreGuidelines)
 
 # [C++ Core Guidelines](http://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines)
 
