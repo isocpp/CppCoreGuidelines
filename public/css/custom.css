@@ -129,3 +129,72 @@ p:after {
         color: #000;
     }
 }
+
+
+.tgl {
+  display: none;
+}
+.tgl + .tgl-btn {
+  outline: 0;
+  display: block;
+  width: 8em;
+  height: 2em;
+  position: relative;
+  cursor: pointer;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+}
+.tgl + .tgl-btn:after, .tgl + .tgl-btn:before {
+  position: relative;
+  display: block;
+  content: "";
+  width: 50%;
+  height: 100%;
+}
+.tgl + .tgl-btn:after {
+  left: 0;
+}
+.tgl + .tgl-btn:before {
+  display: none;
+}
+.tgl:checked + .tgl-btn:after {
+  left: 50%;
+}
+
+.tgl-cpp + .tgl-btn {
+  overflow: hidden;
+  -webkit-backface-visibility: hidden;
+          backface-visibility: hidden;
+  background: #888;
+}
+.tgl-cpp + .tgl-btn:after, .tgl-cpp + .tgl-btn:before {
+  display: inline-block;
+  width: 100%;
+  text-align: center;
+  position: absolute;
+  line-height: 2em;
+  font-weight: bold;
+  color: #fff;
+}
+.tgl-cpp + .tgl-btn:after {
+  left: 100%;
+  content: attr(data-tg-on);
+}
+.tgl-cpp + .tgl-btn:before {
+  left: 0;
+  content: attr(data-tg-off);
+}
+.tgl-cpp + .tgl-btn:active {
+  background: #888;
+}
+.tgl-cpp:checked + .tgl-btn {
+  background: #268bd2;
+}
+.tgl-cpp:checked + .tgl-btn:before {
+  left: -100%;
+}
+.tgl-cpp:checked + .tgl-btn:after {
+  left: 0;
+}
