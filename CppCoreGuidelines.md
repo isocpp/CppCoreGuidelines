@@ -822,7 +822,7 @@ Avoid errors leading to (possibly unrecognized) wrong results.
 
 ##### Example
 
-    void increment1(int* p, int n)    // bad: error prone
+    void increment1(int* p, int n)    // bad: error-prone
     {
         for (int i = 0; i < n; ++i) ++p[i];
     }
@@ -5593,7 +5593,7 @@ The common action gets tedious to write and may accidentally not be common.
 
 ##### Reason
 
-If you need those constructors for a derived class, re-implementing them is tedious and error prone.
+If you need those constructors for a derived class, re-implementing them is tedious and error-prone.
 
 ##### Example
 
@@ -9898,7 +9898,7 @@ Flag variable and constant declarations with multiple declarators (e.g., `int* p
 
 ##### Reason
 
-* Simple repetition is tedious and error prone.
+* Simple repetition is tedious and error-prone.
 * When you use `auto`, the name of the declared entity is in a fixed position in the declaration, increasing readability.
 * In a template function declaration the return type can be a member type.
 
@@ -12890,7 +12890,7 @@ When did you even want to sort memory?
 Really, we sort sequences of elements, typically stored in containers.
 A call to `qsort` throws away much useful information (e.g., the element type), forces the user to repeat information
 already known (e.g., the element size), and forces the user to write extra code (e.g., a function to compare `double`s).
-This implies added work for the programmer, is error prone, and deprives the compiler of information needed for optimization.
+This implies added work for the programmer, is error-prone, and deprives the compiler of information needed for optimization.
 
     double data[100];
     // ... fill a ...
