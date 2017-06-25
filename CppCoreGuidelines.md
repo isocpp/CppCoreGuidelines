@@ -2565,7 +2565,7 @@ it just guarantees that the function can be evaluated at compile time for consta
 This is usually a very good thing.
 
 When given a non-constant argument, a `constexpr` function can throw.
-If you consider exiting by throwing a side-effect, a `constexpr` function isn't completely pure;
+If you consider exiting by throwing a side effect, a `constexpr` function isn't completely pure;
 if not, this is not an issue.
 ??? A question for the committee: can a constructor for an exception thrown by a `constexpr` function modify state?
 "No" would be a nice answer that matches most practice.
@@ -2751,7 +2751,7 @@ Pure functions are easier to reason about, sometimes easier to optimize (and eve
 `constexpr` functions are pure.
 
 When given a non-constant argument, a `constexpr` function can throw.
-If you consider exiting by throwing a side-effect, a `constexpr` function isn't completely pure;
+If you consider exiting by throwing a side effect, a `constexpr` function isn't completely pure;
 if not, this is not an issue.
 ??? A question for the committee: can a constructor for an exception thrown by a `constexpr` function modify state?
 "No" would be a nice answer that matches most practice.
@@ -10746,7 +10746,7 @@ Readability. Error prevention. Efficiency.
     for (int i = 1; i < v.size(); ++i) // touches two elements: can't be a range-for
         cout << v[i] + v[i - 1] << '\n';
 
-    for (int i = 0; i < v.size(); ++i) // possible side-effect: can't be a range-for
+    for (int i = 0; i < v.size(); ++i) // possible side effect: can't be a range-for
         cout << f(v, &v[i]) << '\n';
 
     for (int i = 0; i < v.size(); ++i) { // body messes with loop variable: can't be a range-for
@@ -10776,7 +10776,7 @@ Better still, if the loop variable isn't modified or copied:
 
 ##### Enforcement
 
-Look at loops, if a traditional loop just looks at each element of a sequence, and there are no side-effects on what it does with the elements, rewrite the loop to a ranged-`for` loop.
+Look at loops, if a traditional loop just looks at each element of a sequence, and there are no side effects on what it does with the elements, rewrite the loop to a ranged-`for` loop.
 
 ### <a name="Res-for-while"></a>ES.72: Prefer a `for`-statement to a `while`-statement when there is an obvious loop variable
 
