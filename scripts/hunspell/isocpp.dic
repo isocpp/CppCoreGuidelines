@@ -103,6 +103,8 @@ CplusplusCS
 cpp
 cpp98
 CppCon
+cppcorecheck
+cppcoreguidelines
 cppreference
 CRTP
 cst
