@@ -3644,7 +3644,7 @@ We mention this only because of the persistence of this error in the community.
 ##### Reason
 
 The convention for operator overloads (especially on value types) is for
-`operator=(const T&)` to perform the assignment and then return (non-const)
+`operator=(const T&)` to perform the assignment and then return (non-`const`)
 `*this`.  This ensures consistency with standard-library types and follows the
 principle of "do as the ints do."
 
@@ -11179,7 +11179,7 @@ The loop control up front should enable correct reasoning about what is happenin
 
 ##### Enforcement
 
-Flag variables that are potentially updated (have a non-const use) in both the loop control iteration-expression and the loop body.
+Flag variables that are potentially updated (have a non-`const` use) in both the loop control iteration-expression and the loop body.
 
 ## ES.expr: Expressions
 
@@ -15555,7 +15555,7 @@ Note that function parameter is a local variable so changes to it are local.
 
 ##### Enforcement
 
-* Flag non-const variables that are not modified (except for parameters to avoid many false positives)
+* Flag non-`const` variables that are not modified (except for parameters to avoid many false positives)
 
 ### <a name="Rconst-fct"></a>Con.2: By default, make member functions `const`
 
@@ -15579,7 +15579,7 @@ This gives a more precise statement of design intent, better readability, more e
 
 ##### Note
 
-It is not inherently bad to pass a pointer or reference to non-const,
+It is not inherently bad to pass a pointer or reference to non-`const`,
 but that should be done only when the called function is supposed to modify the object.
 A reader of code must assume that a function that takes a "plain" `T*` or `T&` will modify the object referred to.
 If it doesn't now, it might do so later without forcing recompilation.
@@ -15650,7 +15650,7 @@ See also [Pimpl](#Ri-pimpl).
 
 ##### Note
 
-It is not inherently bad to pass a pointer or reference to non-const,
+It is not inherently bad to pass a pointer or reference to non-`const`,
 but that should be done only when the called function is supposed to modify the object.
 
 ##### Note
@@ -21239,7 +21239,7 @@ More information on many topics about C++ can be found on the [Standard C++ Foun
 * *lifetime*: the time from the initialization of an object until it becomes unusable (goes out of scope, is deleted, or the program terminates).
 * *linker*: a program that combines object code files and libraries into an executable program.
 * *literal*: a notation that directly specifies a value, such as 12 specifying the integer value "twelve."
-* *loop*: a piece of code executed repeatedly; in C++, typically a for-statement or a while-statement.
+* *loop*: a piece of code executed repeatedly; in C++, typically a for-statement or a `while`-statement.
 * *move*: an operation that transfers a value from one object to another leaving behind a value representing "empty." See also copy.
 * *mutable*: changeable; the opposite of immutable, constant, and invariable.
 * *object*: (1) an initialized region of memory of a known type which holds a value of that type; (2) a region of memory.
