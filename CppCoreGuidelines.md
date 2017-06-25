@@ -2363,7 +2363,7 @@ The shortest code is not always the best for performance or maintainability.
 Loop bodies, including lambdas used as loop bodies, rarely need to be named.
 However, large loop bodies (e.g., dozens of lines or dozens of pages) can be a problem.
 The rule [Keep functions short](#Rf-single) implies "Keep loop bodies short."
-Similarly, lambdas used as callback arguments are sometimes non-trivial, yet unlikely to be re-usable.
+Similarly, lambdas used as callback arguments are sometimes non-trivial, yet unlikely to be reusable.
 
 ##### Enforcement
 
@@ -13172,7 +13172,7 @@ See also:
 ##### Reason
 
 It is hard to be certain that concurrency isn't used now or will be sometime in the future.
-Code gets re-used.
+Code gets reused.
 Libraries using threads may be used from some other part of the program.
 Note that this applies most urgently to library code and least urgently to stand-alone applications.
 However, thanks to the magic of cut-and-paste, code fragments can turn up in unexpected places.
@@ -15821,7 +15821,7 @@ Generic programming is programming using types and algorithms parameterized by t
 
 ##### Reason
 
-Generality. Re-use. Efficiency. Encourages consistent definition of user types.
+Generality. Reuse. Efficiency. Encourages consistent definition of user types.
 
 ##### Example, bad
 
@@ -15890,7 +15890,7 @@ If you use GCC 6.1, you can uncomment them.
 
 ##### Reason
 
-Generality. Minimizing the amount of source code. Interoperability. Re-use.
+Generality. Minimizing the amount of source code. Interoperability. Reuse.
 
 ##### Example
 
