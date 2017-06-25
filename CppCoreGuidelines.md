@@ -3333,7 +3333,7 @@ You need to pass a pointer rather than an object if what you are transferring is
 
 ##### Enforcement
 
-(Simple) Warn if a function returns a locally-allocated raw pointer. Suggest using either `unique_ptr` or `shared_ptr` instead.
+(Simple) Warn if a function returns a locally allocated raw pointer. Suggest using either `unique_ptr` or `shared_ptr` instead.
 
 ### <a name="Rf-shared_ptr"></a>F.27: Use a `shared_ptr<T>` to share ownership
 
@@ -4314,7 +4314,7 @@ That implies more memory overhead, more allocations and deallocations, and more 
 
 ##### Note
 
-Concrete types can be stack allocated and be members of other classes.
+Concrete types can be stack-allocated and be members of other classes.
 
 ##### Note
 
@@ -7563,7 +7563,7 @@ Avoid resource leaks.
     void use(int i)
     {
         auto p = new int {7};           // bad: initialize local pointers with new
-        auto q = make_unique<int>(9);   // ok: guarantee the release of the memory allocated for 9
+        auto q = make_unique<int>(9);   // ok: guarantee the release of the memory-allocated for 9
         if (0 < i) return;              // maybe return and leak
         delete p;                       // too late
     }
@@ -7593,7 +7593,7 @@ It also ensures exception safety in complex expressions.
     // 3. call bar,
     // 4. construct unique_ptr<Foo>.
     //
-    // If bar throws, Foo will not be destroyed, and the memory allocated for it will leak.
+    // If bar throws, Foo will not be destroyed, and the memory-allocated for it will leak.
     f(unique_ptr<Foo>(new Foo()), bar());
 
     // Exception-safe: calls to functions are never interleaved.
