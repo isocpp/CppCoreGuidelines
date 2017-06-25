@@ -7238,7 +7238,7 @@ Without a using declaration, member functions in the derived class hide the enti
 
 ##### Note
 
-This issue affects both virtual and non-virtual member functions
+This issue affects both virtual and nonvirtual member functions
 
 For variadic bases, C++17 introduced a variadic form of the using-declaration,
 
@@ -7709,7 +7709,7 @@ Here, the conventional semantics is maintained: [Copies compare equal](#SS-copy)
 
 ##### Note
 
-Non-member operators should be either friends or defined in [the same namespace as their operands](#Ro-namespace).
+Nonmember operators should be either friends or defined in [the same namespace as their operands](#Ro-namespace).
 [Binary operators should treat their operands equivalently](#Ro-symmetric).
 
 ##### Enforcement
@@ -7721,7 +7721,7 @@ Possibly impossible.
 ##### Reason
 
 If you use member functions, you need two.
-Unless you use a non-member function for (say) `==`, `a == b` and `b == a` will be subtly different.
+Unless you use a nonmember function for (say) `==`, `a == b` and `b == a` will be subtly different.
 
 ##### Example
 
@@ -20923,7 +20923,7 @@ If you need to define any of these five functions, it means you need it to do mo
 
 * If you write/disable either of the copy constructor or the copy assignment operator, you probably need to do the same for the other: If one does "special" work, probably so should the other because the two functions should have similar effects. (See Item 53, which expands on this point in isolation.)
 * If you explicitly write the copying functions, you probably need to write the destructor: If the "special" work in the copy constructor is to allocate or duplicate some resource (e.g., memory, file, socket), you need to deallocate it in the destructor.
-* If you explicitly write the destructor, you probably need to explicitly write or disable copying: If you have to write a nontrivial destructor, it's often because you need to manually release a resource that the object held. If so, it is likely that those resources require careful duplication, and then you need to pay attention to the way objects are copied and assigned, or disable copying completely.
+* If you explicitly write the destructor, you probably need to explicitly write or disable copying: If you have to write a non-trivial destructor, it's often because you need to manually release a resource that the object held. If so, it is likely that those resources require careful duplication, and then you need to pay attention to the way objects are copied and assigned, or disable copying completely.
 
 In many cases, holding properly encapsulated resources using RAII "owning" objects can eliminate the need to write these operations yourself. (See Item 13.)
 
