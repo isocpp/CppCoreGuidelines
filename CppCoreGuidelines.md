@@ -2006,7 +2006,7 @@ Grouping arguments into "bundles" is a general technique to reduce the number of
 
 Alternatively, we could use concepts (as defined by the ISO TS) to define the notion of three types that must be usable for merging:
 
-    Mergeable{In1 In2, Out}
+    Mergeable{In1, In2, Out}
     OutputIterator merge(In1 r1, In2 r2, Out result);
 
 ##### Example
