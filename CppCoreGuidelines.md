@@ -269,7 +269,7 @@ Other rules articulate general principles. For these more general rules, more de
 
 These guidelines address the core of C++ and its use.
 We expect that most large organizations, specific application areas, and even large projects will need further rules, possibly further restrictions, and further library support.
-For example, hard real-time programmers typically can't use free store (dynamic memory) freely and will be restricted in their choice of libraries.
+For example, hard-real-time programmers typically can't use free store (dynamic memory) freely and will be restricted in their choice of libraries.
 We encourage the development of such more specific rules as addenda to these core guidelines.
 Build your ideal small foundation library and use that, rather than lowering your level of programming to glorified assembly code.
 
@@ -714,7 +714,7 @@ Leaving hard-to-detect errors in a program is asking for crashes and bad results
 
 ##### Note
 
-Ideally, we catch all errors (that are not errors in the programmer's logic) at either compile-time or run-time. It is impossible to catch all errors at compile time and often not affordable to catch all remaining errors at run-time. However, we should endeavor to write programs that in principle can be checked, given sufficient resources (analysis programs, run-time checks, machine resources, time).
+Ideally, we catch all errors (that are not errors in the programmer's logic) at either compile time or run time. It is impossible to catch all errors at compile time and often not affordable to catch all remaining errors at run time. However, we should endeavor to write programs that in principle can be checked, given sufficient resources (analysis programs, run-time checks, machine resources, time).
 
 ##### Example, bad
 
@@ -2548,7 +2548,7 @@ it just guarantees that the function can be evaluated at compile time for consta
         int m1 = min(-1, 2);            // probably compile-time evaluation
         constexpr int m2 = min(-1, 2);  // compile-time evaluation
         int m3 = min(-1, v);            // run-time evaluation
-        constexpr int m4 = min(-1, v);  // error: cannot evaluate at compile-time
+        constexpr int m4 = min(-1, v);  // error: cannot evaluate at compile time
     }
 
 ##### Note
@@ -2577,7 +2577,7 @@ Most computation is best done at run time.
 
 ##### Note
 
-Any API that may eventually depend on high-level runtime configuration or
+Any API that may eventually depend on high-level run-time configuration or
 business logic should not be made `constexpr`. Such customization can not be
 evaluated by the compiler, and any `constexpr` functions that depended upon
 that API would have to be refactored or drop `constexpr`.
@@ -4321,7 +4321,7 @@ Concrete types can be stack allocated and be members of other classes.
 The use of indirection is fundamental for run-time polymorphic interfaces.
 The allocation/deallocation overhead is not (that's just the most common case).
 We can use a base class as the interface of a scoped object of a derived class.
-This is done where dynamic allocation is prohibited (e.g. hard real-time) and to provide a stable interface to some kinds of plug-ins.
+This is done where dynamic allocation is prohibited (e.g. hard-real-time) and to provide a stable interface to some kinds of plug-ins.
 
 ##### Enforcement
 
@@ -7516,7 +7516,7 @@ Casting to a reference expresses that you intend to end up with a valid object, 
 
 ##### Reason
 
-The `dynamic_cast` conversion allows to test whether a pointer is pointing at a polymorphic object that has a given class in its hierarchy. Since failure to find the class merely returns a null value, it can be tested during run-time. This allows writing code that can choose alternative paths depending on the results.
+The `dynamic_cast` conversion allows to test whether a pointer is pointing at a polymorphic object that has a given class in its hierarchy. Since failure to find the class merely returns a null value, it can be tested during run time. This allows writing code that can choose alternative paths depending on the results.
 
 Contrast with [C.147](#Rh-ptr-cast), where failure is an error, and should not be used for conditional execution.
 
@@ -8787,7 +8787,7 @@ For example, if an `owner<T*>` is a member of a class, that class better have a 
 
 ##### Example, bad
 
-Returning a (raw) pointer imposes a life-time management uncertainty on the caller; that is, who deletes the pointed-to object?
+Returning a (raw) pointer imposes a lifetime management uncertainty on the caller; that is, who deletes the pointed-to object?
 
     Gadget* make_gadget(int n)
     {
@@ -8945,7 +8945,7 @@ In some implementations that `delete` and that `free()` might work, or maybe the
 ##### Exception
 
 There are applications and sections of code where exceptions are not acceptable.
-Some of the best such examples are in life-critical hard real-time code.
+Some of the best such examples are in life-critical hard-real-time code.
 Beware that many bans on exception use are based on superstition (bad)
 or by concerns for older code bases with unsystematic resource management (unfortunately, but sometimes necessary).
 In such cases, consider the `nothrow` versions of `new`.
@@ -9552,7 +9552,7 @@ but don't hand-code a well-known algorithm:
 
 ##### Exception
 
-Large parts of the standard library rely on dynamic allocation (free store). These parts, notably the containers but not the algorithms, are unsuitable for some hard-real time and embedded applications. In such cases, consider providing/using similar facilities, e.g.,  a standard-library-style container implemented using a pool allocator.
+Large parts of the standard library rely on dynamic allocation (free store). These parts, notably the containers but not the algorithms, are unsuitable for some hard-real-time and embedded applications. In such cases, consider providing/using similar facilities, e.g.,  a standard-library-style container implemented using a pool allocator.
 
 ##### Enforcement
 
@@ -10386,7 +10386,7 @@ Tricky.
 
 Using `std::unique_ptr` is the simplest way to avoid leaks. It is reliable, it
 makes the type system do much of the work to validate ownership safety, it
-increases readability, and it has zero or near zero runtime cost.
+increases readability, and it has zero or near zero run-time cost.
 
 ##### Example
 
@@ -14612,7 +14612,7 @@ Don't use a `throw` as simply an alternative way of returning a value from a fun
 
 ##### Exception
 
-Some systems, such as hard-real time systems require a guarantee that an action is taken in a (typically short) constant maximum time known before execution starts. Such systems can use exceptions only if there is tool support for accurately predicting the maximum time to recover from a `throw`.
+Some systems, such as hard-real-time systems require a guarantee that an action is taken in a (typically short) constant maximum time known before execution starts. Such systems can use exceptions only if there is tool support for accurately predicting the maximum time to recover from a `throw`.
 
 **See also**: [RAII](#Re-raii)
 
@@ -15178,7 +15178,7 @@ When used for exceptional circumstances in code that is not littered with pointe
 exception handling is almost always affordable (in time and space) and almost always leads to better code.
 This, of course, assumes a good implementation of the exception handling mechanisms, which is not available on all systems.
 There are also cases where the problems above do not apply, but exceptions cannot be used for other reasons.
-Some hard real-time systems are an example: An operation has to be completed within a fixed time with an error or a correct answer.
+Some hard-real-time systems are an example: An operation has to be completed within a fixed time with an error or a correct answer.
 In the absence of appropriate time estimation tools, this is hard to guarantee for exceptions.
 Such systems (e.g. flight control software) typically also ban the use of dynamic (heap) memory.
 
@@ -19265,7 +19265,7 @@ However, we can briefly outline why we consider exceptions the best alternative 
 and in the context of these guidelines.
 Simple arguments for and against are often inconclusive.
 There are specialized applications where exceptions indeed can be inappropriate
-(e.g., hard-real time systems without support for reliable estimates of the cost of handling an exception).
+(e.g., hard-real-time systems without support for reliable estimates of the cost of handling an exception).
 
 Consider the major objections to exceptions in turn
 
@@ -19442,7 +19442,7 @@ Reference sections:
 * [JSF++: JOINT STRIKE FIGHTER AIR VEHICLE C++ CODING STANDARDS](http://www.stroustrup.com/JSF-AV-rules.pdf).
   Document Number 2RDU00001 Rev C. December 2005.
   For flight control software.
-  For hard real time.
+  For hard-real-time.
   This means that it is necessarily very restrictive ("if the program fails somebody dies").
   For example, no free store allocation or deallocation may occur after the plane takes off (no memory overflow and no fragmentation allowed).
   No exception may be used (because there was no available tool for guaranteeing that an exception would be handled within a fixed short time).
