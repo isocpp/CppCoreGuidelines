@@ -1356,7 +1356,7 @@ For example:
 Now someone must `delete` that object in some suitably thread-safe way.
 That's error-prone, so we don't use that technique unless
 
-* `myX` is in multithreaded code,
+* `myX` is in multi-threaded code,
 * that `X` object needs to be destroyed (e.g., because it releases a resource), and
 * `X`'s destructor's code needs to be synchronized.
 
@@ -2979,7 +2979,7 @@ If you have multiple values to return, [use a tuple](#Rf-out-multi) or similar m
     // OK: return pointers to elements with the value x
     vector<const int*> find_all(const vector<int>&, int x);
 
-    // Bad: place pointers to elements with value x in out
+    // Bad: place pointers to elements with value x in-out
     void find_all(const vector<int>&, vector<const int*>& out, int x);
 
 ##### Note
@@ -5687,7 +5687,7 @@ But what if you can get significantly better performance by not making a tempora
         return *this;
     }
 
-By writing directly to the target elements, we will get only [the basic guarantee](#???) rather than the strong guarantee offered by the `swap` technique. Beware of [self assignment](#Rc-copy-self).
+By writing directly to the target elements, we will get only [the basic guarantee](#???) rather than the strong guarantee offered by the `swap` technique. Beware of [self-assignment](#Rc-copy-self).
 
 **Alternatives**: If you think you need a `virtual` assignment operator, and understand why that's deeply problematic, don't call it `operator=`. Make it a named function like `virtual void assign(const Foo&)`.
 See [copy constructor vs. `clone()`](#Rc-copy-virtual).
@@ -11689,7 +11689,7 @@ Casts are widely (mis) used. Modern C++ has rules and constructs that eliminate 
 
 * Use templates
 * Use `std::variant`
-* Rely on the well defined, safe, implicit conversions between pointer types
+* Rely on the well-defined, safe, implicit conversions between pointer types
 
 ##### Enforcement
 
@@ -11927,7 +11927,7 @@ An alternative solution would to store a pointer to the `cache`:
 That solution is the most flexible, but requires explicit construction and destruction of `*cache`
 (most likely in the constructor and destructor of `X`).
 
-In any variant, we must guard against data races on the `cache` in multithreaded code, possibly using a `std::mutex`.
+In any variant, we must guard against data races on the `cache` in multi-threaded code, possibly using a `std::mutex`.
 
 ##### Enforcement
 
@@ -12958,7 +12958,7 @@ Use libraries with good interfaces.
 If no library is available build one yourself and imitate the interface style from a good library.
 The [standard library](#S-stdlib) is a good first place to look for inspiration.
 * Isolation:
-Isolate your code from messy and/or old style code by providing an interface of your choosing to it.
+Isolate your code from messy and/or old-style code by providing an interface of your choosing to it.
 This is sometimes called "providing a wrapper" for the useful/necessary but messy code.
 Don't let bad designs "bleed into" your code.
 
@@ -13042,7 +13042,7 @@ Maybe looking for `void*` function arguments will find examples of interfaces th
 
 ##### Reason
 
-Type violations, weak types (e.g. `void*`s), and low level code (e.g., manipulation of sequences as individual bytes) make the job of the optimizer much harder. Simple code often optimizes better than hand-crafted complex code.
+Type violations, weak types (e.g. `void*`s), and low-level code (e.g., manipulation of sequences as individual bytes) make the job of the optimizer much harder. Simple code often optimizes better than hand-crafted complex code.
 
 ???
 
@@ -14245,7 +14245,7 @@ Synchronization using `mutex`es and `condition_variable`s can be relatively expe
 Furthermore, it can lead to deadlock.
 For performance and to eliminate the possibility of deadlock, we sometimes have to use the tricky low-level "lock-free" facilities
 that rely on briefly gaining exclusive ("atomic") access to memory.
-Lock free programming is also used to implement higher-level concurrency mechanisms, such as `thread`s and `mutex`es.
+Lock-free programming is also used to implement higher-level concurrency mechanisms, such as `thread`s and `mutex`es.
 
 Lock-free programming rule summary:
 
@@ -14254,7 +14254,7 @@ Lock-free programming rule summary:
 * [CP.102: Carefully study the literature](#Rconc-literature)
 * how/when to use atomics
 * avoid starvation
-* use a lock free data structure rather than hand-crafting specific lock-free access
+* use a lock-free data structure rather than hand-crafting specific lock-free access
 * [CP.110: Do not write your own double-checked locking for initialization](#Rconc-double)
 * [CP.111: Use a conventional pattern if you really need double-checked locking](#Rconc-double-pattern)
 * how/when to compare and swap
@@ -15410,7 +15410,7 @@ A not uncommon technique is to gather cleanup at the end of the function to avoi
 
 The larger the function, the more tempting this technique becomes.
 `finally` can [ease the pain a bit](#Re-finally).
-Also, the larger the program becomes the harder it is to apply an error-indicator-based error handling strategy systematically.
+Also, the larger the program becomes the harder it is to apply an error-indicator-based error-handling strategy systematically.
 
 We [prefer exception-based error handling](#Re-throw) and recommend [keeping functions short](#Rf-single).
 
@@ -16386,7 +16386,7 @@ Once language support is available, the `//` in front of the axiom can be remove
 
 ##### Note
 
-The GSL concepts have well defined semantics; see the Palo Alto TR and the Ranges TS.
+The GSL concepts have well-defined semantics; see the Palo Alto TR and the Ranges TS.
 
 ##### Exception (using TS concepts)
 
@@ -18733,7 +18733,7 @@ those sequences are allocated and stored.
 
 ##### Note
 
-`std::string_view` (C++17) is read only.
+`std::string_view` (C++17) is read-only.
 
 ##### Enforcement
 
@@ -18745,7 +18745,7 @@ those sequences are allocated and stored.
 
 Readability.
 Statement of intent.
-A plain `char*` can be a pointer to a single character, a pointer to an array of characters, a pointer to a C-style (zero terminated) string, or even to a small integer.
+A plain `char*` can be a pointer to a single character, a pointer to an array of characters, a pointer to a C-style (zero-terminated) string, or even to a small integer.
 Distinguishing these alternatives prevents misunderstandings and bugs.
 
 ##### Example
@@ -18962,7 +18962,7 @@ If input isn't validated, every function must be written to cope with bad data (
     complex<double> z{ 3, 4 };
     cout << z << '\n';
 
-`complex` is a user defined type and its I/O is defined without modifying the `iostream` library.
+`complex` is a user-defined type and its I/O is defined without modifying the `iostream` library.
 
 ##### Example
 

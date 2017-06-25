@@ -83,6 +83,7 @@ Cline99
 ClosePort
 cm3
 CommonMark
+*compiletime
 composability
 composable
 conceptsTS
@@ -103,7 +104,7 @@ CplusplusCS
 cpp
 cpp98
 CppCon
-cppcorecheck
+CppCoreCheck
 cppcoreguidelines
 cppreference
 CRTP
@@ -267,6 +268,7 @@ Lakos96
 Lavavej
 LCSD05
 lifecycle
+*life-time
 linearization
 llvm
 lockfree
@@ -311,7 +313,7 @@ mnemonizes
 modify1
 modify2
 moredata
-multithreaded
+*multithreaded
 msgsl
 mtx
 Murray93
@@ -419,6 +421,7 @@ Rcon
 Rconc
 Rconst
 Rcpl
+*realtime
 Rec2
 refactor
 refactored
@@ -436,6 +439,10 @@ reseating
 reseats
 resizable
 retryable
+*re-use
+*re-usable
+*re-usability
+*Re-usability
 reusability
 Reusability
 Ri
