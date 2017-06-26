@@ -4,7 +4,7 @@ layout: default
 
 # <a name="main"></a>C++ Core Guidelines
 
-June 19, 2017
+June 26, 2017
 
 
 Editors:
@@ -13,7 +13,7 @@ Editors:
 * [Herb Sutter](http://herbsutter.com/)
 
 This document is a very early draft. It is inkorrekt, incompleat, and pÂµÃoorly formatted.
-Had it been an open source (code) project, this would have been release 0.7.
+Had it been an open-source (code) project, this would have been release 0.7.
 Copying, use, modification, and creation of derivative works from this project is licensed under an MIT-style license.
 Contributing to this project requires agreeing to a Contributor License. See the accompanying [LICENSE](LICENSE) file for details.
 We make this project available to "friendly users" to use, copy, modify, and derive from, hoping for constructive input.
@@ -273,7 +273,7 @@ Other rules articulate general principles. For these more general rules, more de
 
 These guidelines address the core of C++ and its use.
 We expect that most large organizations, specific application areas, and even large projects will need further rules, possibly further restrictions, and further library support.
-For example, hard real-time programmers typically can't use free store (dynamic memory) freely and will be restricted in their choice of libraries.
+For example, hard-real-time programmers typically can't use free store (dynamic memory) freely and will be restricted in their choice of libraries.
 We encourage the development of such more specific rules as addenda to these core guidelines.
 Build your ideal small foundation library and use that, rather than lowering your level of programming to glorified assembly code.
 
@@ -718,7 +718,7 @@ Leaving hard-to-detect errors in a program is asking for crashes and bad results
 
 ##### Note
 
-Ideally, we catch all errors (that are not errors in the programmer's logic) at either compile-time or run-time. It is impossible to catch all errors at compile time and often not affordable to catch all remaining errors at run-time. However, we should endeavor to write programs that in principle can be checked, given sufficient resources (analysis programs, run-time checks, machine resources, time).
+Ideally, we catch all errors (that are not errors in the programmer's logic) at either compile time or run time. It is impossible to catch all errors at compile time and often not affordable to catch all remaining errors at run time. However, we should endeavor to write programs that in principle can be checked, given sufficient resources (analysis programs, run-time checks, machine resources, time).
 
 ##### Example, bad
 
@@ -826,7 +826,7 @@ Avoid errors leading to (possibly unrecognized) wrong results.
 
 ##### Example
 
-    void increment1(int* p, int n)    // bad: error prone
+    void increment1(int* p, int n)    // bad: error-prone
     {
         for (int i = 0; i < n; ++i) ++p[i];
     }
@@ -1360,7 +1360,7 @@ For example:
 Now someone must `delete` that object in some suitably thread-safe way.
 That's error-prone, so we don't use that technique unless
 
-* `myX` is in multithreaded code,
+* `myX` is in multi-threaded code,
 * that `X` object needs to be destroyed (e.g., because it releases a resource), and
 * `X`'s destructor's code needs to be synchronized.
 
@@ -1882,7 +1882,7 @@ Note: `length()` is, of course, `std::strlen()` in disguise.
 
 Consider:
 
-    void copy_n(const T* p, T* q, int n); // copy from [p:p + n) to [q:q + n)
+    void copy_n(const T* p, T* q, int n); // copy from [p:p+n) to [q:q+n)
 
 What if there are fewer than `n` elements in the array pointed to by `q`? Then, we overwrite some probably unrelated memory.
 What if there are fewer than `n` elements in the array pointed to by `p`? Then, we read some probably unrelated memory.
@@ -1903,7 +1903,7 @@ Consider:
     // ...
     draw(arr, 10);
 
-Passing `10` as the `n` argument may be a mistake: the most common convention is to assume \[`0`:`n`) but that is nowhere stated. Worse is that the call of `draw()` compiled at all: there was an implicit conversion from array to pointer (array decay) and then another implicit conversion from `Circle` to `Shape`. There is no way that `draw()` can safely iterate through that array: it has no way of knowing the size of the elements.
+Passing `10` as the `n` argument may be a mistake: the most common convention is to assume `[0:n)` but that is nowhere stated. Worse is that the call of `draw()` compiled at all: there was an implicit conversion from array to pointer (array decay) and then another implicit conversion from `Circle` to `Shape`. There is no way that `draw()` can safely iterate through that array: it has no way of knowing the size of the elements.
 
 **Alternative**: Use a support class that ensures that the number of elements is correct and prevents dangerous implicit conversions. For example:
 
@@ -2010,7 +2010,7 @@ Grouping arguments into "bundles" is a general technique to reduce the number of
 
 Alternatively, we could use concepts (as defined by the ISO TS) to define the notion of three types that must be usable for merging:
 
-    Mergeable{In1 In2, Out}
+    Mergeable{In1, In2, Out}
     OutputIterator merge(In1 r1, In2 r2, Out result);
 
 ##### Example
@@ -2367,7 +2367,7 @@ The shortest code is not always the best for performance or maintainability.
 Loop bodies, including lambdas used as loop bodies, rarely need to be named.
 However, large loop bodies (e.g., dozens of lines or dozens of pages) can be a problem.
 The rule [Keep functions short](#Rf-single) implies "Keep loop bodies short."
-Similarly, lambdas used as callback arguments are sometimes non-trivial, yet unlikely to be re-usable.
+Similarly, lambdas used as callback arguments are sometimes non-trivial, yet unlikely to be reusable.
 
 ##### Enforcement
 
@@ -2552,7 +2552,7 @@ it just guarantees that the function can be evaluated at compile time for consta
         int m1 = min(-1, 2);            // probably compile-time evaluation
         constexpr int m2 = min(-1, 2);  // compile-time evaluation
         int m3 = min(-1, v);            // run-time evaluation
-        constexpr int m4 = min(-1, v);  // error: cannot evaluate at compile-time
+        constexpr int m4 = min(-1, v);  // error: cannot evaluate at compile time
     }
 
 ##### Note
@@ -2569,7 +2569,7 @@ it just guarantees that the function can be evaluated at compile time for consta
 This is usually a very good thing.
 
 When given a non-constant argument, a `constexpr` function can throw.
-If you consider exiting by throwing a side-effect, a `constexpr` function isn't completely pure;
+If you consider exiting by throwing a side effect, a `constexpr` function isn't completely pure;
 if not, this is not an issue.
 ??? A question for the committee: can a constructor for an exception thrown by a `constexpr` function modify state?
 "No" would be a nice answer that matches most practice.
@@ -2581,7 +2581,7 @@ Most computation is best done at run time.
 
 ##### Note
 
-Any API that may eventually depend on high-level runtime configuration or
+Any API that may eventually depend on high-level run-time configuration or
 business logic should not be made `constexpr`. Such customization can not be
 evaluated by the compiler, and any `constexpr` functions that depended upon
 that API would have to be refactored or drop `constexpr`.
@@ -2755,7 +2755,7 @@ Pure functions are easier to reason about, sometimes easier to optimize (and eve
 `constexpr` functions are pure.
 
 When given a non-constant argument, a `constexpr` function can throw.
-If you consider exiting by throwing a side-effect, a `constexpr` function isn't completely pure;
+If you consider exiting by throwing a side effect, a `constexpr` function isn't completely pure;
 if not, this is not an issue.
 ??? A question for the committee: can a constructor for an exception thrown by a `constexpr` function modify state?
 "No" would be a nice answer that matches most practice.
@@ -2983,7 +2983,7 @@ If you have multiple values to return, [use a tuple](#Rf-out-multi) or similar m
     // OK: return pointers to elements with the value x
     vector<const int*> find_all(const vector<int>&, int x);
 
-    // Bad: place pointers to elements with value x in out
+    // Bad: place pointers to elements with value x in-out
     void find_all(const vector<int>&, vector<const int*>& out, int x);
 
 ##### Note
@@ -3247,9 +3247,9 @@ Informal/non-explicit ranges are a source of errors.
 ##### Note
 
 Ranges are extremely common in C++ code. Typically, they are implicit and their correct use is very hard to ensure.
-In particular, given a pair of arguments `(p, n)` designating an array \[`p`:`p + n`),
+In particular, given a pair of arguments `(p, n)` designating an array `[p:p+n)`,
 it is in general impossible to know if there really are `n` elements to access following `*p`.
-`span<T>` and `span_p<T>` are simple helper classes designating a \[`p`:`q`) range and a range starting with `p` and ending with the first element for which a predicate is true, respectively.
+`span<T>` and `span_p<T>` are simple helper classes designating a `[p:q)` range and a range starting with `p` and ending with the first element for which a predicate is true, respectively.
 
 ##### Example
 
@@ -3337,7 +3337,7 @@ You need to pass a pointer rather than an object if what you are transferring is
 
 ##### Enforcement
 
-(Simple) Warn if a function returns a locally-allocated raw pointer. Suggest using either `unique_ptr` or `shared_ptr` instead.
+(Simple) Warn if a function returns a locally allocated raw pointer. Suggest using either `unique_ptr` or `shared_ptr` instead.
 
 ### <a name="Rf-shared_ptr"></a>F.27: Use a `shared_ptr<T>` to share ownership
 
@@ -3648,8 +3648,8 @@ We mention this only because of the persistence of this error in the community.
 ##### Reason
 
 The convention for operator overloads (especially on value types) is for
-`operator=(const T&)` to perform the assignment and then return (non-const)
-`*this`.  This ensures consistency with standard library types and follows the
+`operator=(const T&)` to perform the assignment and then return (non-`const`)
+`*this`.  This ensures consistency with standard-library types and follows the
 principle of "do as the ints do."
 
 ##### Note
@@ -4318,14 +4318,14 @@ That implies more memory overhead, more allocations and deallocations, and more 
 
 ##### Note
 
-Concrete types can be stack allocated and be members of other classes.
+Concrete types can be stack-allocated and be members of other classes.
 
 ##### Note
 
 The use of indirection is fundamental for run-time polymorphic interfaces.
 The allocation/deallocation overhead is not (that's just the most common case).
 We can use a base class as the interface of a scoped object of a derived class.
-This is done where dynamic allocation is prohibited (e.g. hard real-time) and to provide a stable interface to some kinds of plug-ins.
+This is done where dynamic allocation is prohibited (e.g. hard-real-time) and to provide a stable interface to some kinds of plug-ins.
 
 ##### Enforcement
 
@@ -5597,7 +5597,7 @@ The common action gets tedious to write and may accidentally not be common.
 
 ##### Reason
 
-If you need those constructors for a derived class, re-implementing them is tedious and error prone.
+If you need those constructors for a derived class, re-implementing them is tedious and error-prone.
 
 ##### Example
 
@@ -5691,7 +5691,7 @@ But what if you can get significantly better performance by not making a tempora
         return *this;
     }
 
-By writing directly to the target elements, we will get only [the basic guarantee](#???) rather than the strong guarantee offered by the `swap` technique. Beware of [self assignment](#Rc-copy-self).
+By writing directly to the target elements, we will get only [the basic guarantee](#???) rather than the strong guarantee offered by the `swap` technique. Beware of [self-assignment](#Rc-copy-self).
 
 **Alternatives**: If you think you need a `virtual` assignment operator, and understand why that's deeply problematic, don't call it `operator=`. Make it a named function like `virtual void assign(const Foo&)`.
 See [copy constructor vs. `clone()`](#Rc-copy-virtual).
@@ -5768,7 +5768,7 @@ After a copy `x` and `y` can be independent objects (value semantics, the way no
 
 ##### Note
 
-Prefer copy semantics unless you are building a "smart pointer". Value semantics is the simplest to reason about and what the standard library facilities expect.
+Prefer copy semantics unless you are building a "smart pointer". Value semantics is the simplest to reason about and what the standard-library facilities expect.
 
 ##### Enforcement
 
@@ -5943,7 +5943,7 @@ There is no know general way of avoiding a `if (this == &a) return *this;` test 
 
 ##### Note
 
-The ISO standard guarantees only a "valid but unspecified" state for the standard library containers. Apparently this has not been a problem in about 10 years of experimental and production use. Please contact the editors if you find a counter example. The rule here is more caution and insists on complete safety.
+The ISO standard guarantees only a "valid but unspecified" state for the standard-library containers. Apparently this has not been a problem in about 10 years of experimental and production use. Please contact the editors if you find a counter example. The rule here is more caution and insists on complete safety.
 
 ##### Example
 
@@ -7242,7 +7242,7 @@ Without a using declaration, member functions in the derived class hide the enti
 
 ##### Note
 
-This issue affects both virtual and non-virtual member functions
+This issue affects both virtual and nonvirtual member functions
 
 For variadic bases, C++17 introduced a variadic form of the using-declaration,
 
@@ -7520,7 +7520,7 @@ Casting to a reference expresses that you intend to end up with a valid object, 
 
 ##### Reason
 
-The `dynamic_cast` conversion allows to test whether a pointer is pointing at a polymorphic object that has a given class in its hierarchy. Since failure to find the class merely returns a null value, it can be tested during run-time. This allows writing code that can choose alternative paths depending on the results.
+The `dynamic_cast` conversion allows to test whether a pointer is pointing at a polymorphic object that has a given class in its hierarchy. Since failure to find the class merely returns a null value, it can be tested during run time. This allows writing code that can choose alternative paths depending on the results.
 
 Contrast with [C.147](#Rh-ptr-cast), where failure is an error, and should not be used for conditional execution.
 
@@ -7567,7 +7567,7 @@ Avoid resource leaks.
     void use(int i)
     {
         auto p = new int {7};           // bad: initialize local pointers with new
-        auto q = make_unique<int>(9);   // ok: guarantee the release of the memory allocated for 9
+        auto q = make_unique<int>(9);   // ok: guarantee the release of the memory-allocated for 9
         if (0 < i) return;              // maybe return and leak
         delete p;                       // too late
     }
@@ -7597,7 +7597,7 @@ It also ensures exception safety in complex expressions.
     // 3. call bar,
     // 4. construct unique_ptr<Foo>.
     //
-    // If bar throws, Foo will not be destroyed, and the memory allocated for it will leak.
+    // If bar throws, Foo will not be destroyed, and the memory-allocated for it will leak.
     f(unique_ptr<Foo>(new Foo()), bar());
 
     // Exception-safe: calls to functions are never interleaved.
@@ -7713,7 +7713,7 @@ Here, the conventional semantics is maintained: [Copies compare equal](#SS-copy)
 
 ##### Note
 
-Non-member operators should be either friends or defined in [the same namespace as their operands](#Ro-namespace).
+Nonmember operators should be either friends or defined in [the same namespace as their operands](#Ro-namespace).
 [Binary operators should treat their operands equivalently](#Ro-symmetric).
 
 ##### Enforcement
@@ -7725,7 +7725,7 @@ Possibly impossible.
 ##### Reason
 
 If you use member functions, you need two.
-Unless you use a non-member function for (say) `==`, `a == b` and `b == a` will be subtly different.
+Unless you use a nonmember function for (say) `==`, `a == b` and `b == a` will be subtly different.
 
 ##### Example
 
@@ -7837,7 +7837,7 @@ To find function objects and functions defined in a separate namespace to "custo
 
 ##### Example
 
-Consider `swap`. It is a general (standard library) function with a definition that will work for just about any type.
+Consider `swap`. It is a general (standard-library) function with a definition that will work for just about any type.
 However, it is desirable to define specific `swap()`s for specific types.
 For example, the general `swap()` will copy the elements of two `vector`s being swapped, whereas a good specific implementation will not copy elements at all.
 
@@ -8791,7 +8791,7 @@ For example, if an `owner<T*>` is a member of a class, that class better have a 
 
 ##### Example, bad
 
-Returning a (raw) pointer imposes a life-time management uncertainty on the caller; that is, who deletes the pointed-to object?
+Returning a (raw) pointer imposes a lifetime management uncertainty on the caller; that is, who deletes the pointed-to object?
 
     Gadget* make_gadget(int n)
     {
@@ -8949,7 +8949,7 @@ In some implementations that `delete` and that `free()` might work, or maybe the
 ##### Exception
 
 There are applications and sections of code where exceptions are not acceptable.
-Some of the best such examples are in life-critical hard real-time code.
+Some of the best such examples are in life-critical hard-real-time code.
 Beware that many bans on exception use are based on superstition (bad)
 or by concerns for older code bases with unsystematic resource management (unfortunately, but sometimes necessary).
 In such cases, consider the `nothrow` versions of `new`.
@@ -9556,7 +9556,7 @@ but don't hand-code a well-known algorithm:
 
 ##### Exception
 
-Large parts of the standard library rely on dynamic allocation (free store). These parts, notably the containers but not the algorithms, are unsuitable for some hard-real time and embedded applications. In such cases, consider providing/using similar facilities, e.g.,  a standard-library-style container implemented using a pool allocator.
+Large parts of the standard library rely on dynamic allocation (free store). These parts, notably the containers but not the algorithms, are unsuitable for some hard-real-time and embedded applications. In such cases, consider providing/using similar facilities, e.g.,  a standard-library-style container implemented using a pool allocator.
 
 ##### Enforcement
 
@@ -9902,7 +9902,7 @@ Flag variable and constant declarations with multiple declarators (e.g., `int* p
 
 ##### Reason
 
-* Simple repetition is tedious and error prone.
+* Simple repetition is tedious and error-prone.
 * When you use `auto`, the name of the declared entity is in a fixed position in the declaration, increasing readability.
 * In a template function declaration the return type can be a member type.
 
@@ -10390,7 +10390,7 @@ Tricky.
 
 Using `std::unique_ptr` is the simplest way to avoid leaks. It is reliable, it
 makes the type system do much of the work to validate ownership safety, it
-increases readability, and it has zero or near zero runtime cost.
+increases readability, and it has zero or near zero run-time cost.
 
 ##### Example
 
@@ -10750,7 +10750,7 @@ Readability. Error prevention. Efficiency.
     for (int i = 1; i < v.size(); ++i) // touches two elements: can't be a range-for
         cout << v[i] + v[i - 1] << '\n';
 
-    for (int i = 0; i < v.size(); ++i) // possible side-effect: can't be a range-for
+    for (int i = 0; i < v.size(); ++i) // possible side effect: can't be a range-for
         cout << f(v, &v[i]) << '\n';
 
     for (int i = 0; i < v.size(); ++i) { // body messes with loop variable: can't be a range-for
@@ -10780,7 +10780,7 @@ Better still, if the loop variable isn't modified or copied:
 
 ##### Enforcement
 
-Look at loops, if a traditional loop just looks at each element of a sequence, and there are no side-effects on what it does with the elements, rewrite the loop to a ranged-`for` loop.
+Look at loops, if a traditional loop just looks at each element of a sequence, and there are no side effects on what it does with the elements, rewrite the loop to a ranged-`for` loop.
 
 ### <a name="Res-for-while"></a>ES.72: Prefer a `for`-statement to a `while`-statement when there is an obvious loop variable
 
@@ -11183,7 +11183,7 @@ The loop control up front should enable correct reasoning about what is happenin
 
 ##### Enforcement
 
-Flag variables that are potentially updated (have a non-const use) in both the loop control iteration-expression and the loop body.
+Flag variables that are potentially updated (have a non-`const` use) in both the loop control iteration-expression and the loop body.
 
 ## ES.expr: Expressions
 
@@ -11693,7 +11693,7 @@ Casts are widely (mis) used. Modern C++ has rules and constructs that eliminate 
 
 * Use templates
 * Use `std::variant`
-* Rely on the well defined, safe, implicit conversions between pointer types
+* Rely on the well-defined, safe, implicit conversions between pointer types
 
 ##### Enforcement
 
@@ -11931,7 +11931,7 @@ An alternative solution would to store a pointer to the `cache`:
 That solution is the most flexible, but requires explicit construction and destruction of `*cache`
 (most likely in the constructor and destructor of `X`).
 
-In any variant, we must guard against data races on the `cache` in multithreaded code, possibly using a `std::mutex`.
+In any variant, we must guard against data races on the `cache` in multi-threaded code, possibly using a `std::mutex`.
 
 ##### Enforcement
 
@@ -12870,7 +12870,7 @@ Getting good performance measurements can be hard and require specialized tools.
 
 ##### Note
 
-A few simple microbenchmarks using Unix `time` or the standard library `<chrono>` can help dispel the most obvious myths.
+A few simple microbenchmarks using Unix `time` or the standard-library `<chrono>` can help dispel the most obvious myths.
 If you can't measure your complete system accurately, at least try to measure a few of your key operations and algorithms.
 A profiler can help tell you which parts of your system are performance critical.
 Often, you will be surprised.
@@ -12894,7 +12894,7 @@ When did you even want to sort memory?
 Really, we sort sequences of elements, typically stored in containers.
 A call to `qsort` throws away much useful information (e.g., the element type), forces the user to repeat information
 already known (e.g., the element size), and forces the user to write extra code (e.g., a function to compare `double`s).
-This implies added work for the programmer, is error prone, and deprives the compiler of information needed for optimization.
+This implies added work for the programmer, is error-prone, and deprives the compiler of information needed for optimization.
 
     double data[100];
     // ... fill a ...
@@ -12962,7 +12962,7 @@ Use libraries with good interfaces.
 If no library is available build one yourself and imitate the interface style from a good library.
 The [standard library](#S-stdlib) is a good first place to look for inspiration.
 * Isolation:
-Isolate your code from messy and/or old style code by providing an interface of your choosing to it.
+Isolate your code from messy and/or old-style code by providing an interface of your choosing to it.
 This is sometimes called "providing a wrapper" for the useful/necessary but messy code.
 Don't let bad designs "bleed into" your code.
 
@@ -13046,7 +13046,7 @@ Maybe looking for `void*` function arguments will find examples of interfaces th
 
 ##### Reason
 
-Type violations, weak types (e.g. `void*`s), and low level code (e.g., manipulation of sequences as individual bytes) make the job of the optimizer much harder. Simple code often optimizes better than hand-crafted complex code.
+Type violations, weak types (e.g. `void*`s), and low-level code (e.g., manipulation of sequences as individual bytes) make the job of the optimizer much harder. Simple code often optimizes better than hand-crafted complex code.
 
 ???
 
@@ -13176,7 +13176,7 @@ See also:
 ##### Reason
 
 It is hard to be certain that concurrency isn't used now or will be sometime in the future.
-Code gets re-used.
+Code gets reused.
 Libraries using threads may be used from some other part of the program.
 Note that this applies most urgently to library code and least urgently to stand-alone applications.
 However, thanks to the magic of cut-and-paste, code fragments can turn up in unexpected places.
@@ -14171,7 +14171,7 @@ Parallelism rule summary:
 
 ## <a name="SScp-mess"></a>CP.mess: Message passing
 
-The standard-library facilities are quite low level, focused on the needs of close-to the hardware critical programming using `thread`s, `mutex`es, `atomic` types, etc.
+The standard-library facilities are quite low-level, focused on the needs of close-to the hardware critical programming using `thread`s, `mutex`es, `atomic` types, etc.
 Most people shouldn't work at this level: it's error-prone and development is slow.
 If possible, use a higher level facility: messaging libraries, parallel algorithms, and vectorization.
 This section looks at passing messages so that a programmer doesn't have to do explicit synchronization.
@@ -14249,7 +14249,7 @@ Synchronization using `mutex`es and `condition_variable`s can be relatively expe
 Furthermore, it can lead to deadlock.
 For performance and to eliminate the possibility of deadlock, we sometimes have to use the tricky low-level "lock-free" facilities
 that rely on briefly gaining exclusive ("atomic") access to memory.
-Lock free programming is also used to implement higher-level concurrency mechanisms, such as `thread`s and `mutex`es.
+Lock-free programming is also used to implement higher-level concurrency mechanisms, such as `thread`s and `mutex`es.
 
 Lock-free programming rule summary:
 
@@ -14258,7 +14258,7 @@ Lock-free programming rule summary:
 * [CP.102: Carefully study the literature](#Rconc-literature)
 * how/when to use atomics
 * avoid starvation
-* use a lock free data structure rather than hand-crafting specific lock-free access
+* use a lock-free data structure rather than hand-crafting specific lock-free access
 * [CP.110: Do not write your own double-checked locking for initialization](#Rconc-double)
 * [CP.111: Use a conventional pattern if you really need double-checked locking](#Rconc-double-pattern)
 * how/when to compare and swap
@@ -14616,7 +14616,7 @@ Don't use a `throw` as simply an alternative way of returning a value from a fun
 
 ##### Exception
 
-Some systems, such as hard-real time systems require a guarantee that an action is taken in a (typically short) constant maximum time known before execution starts. Such systems can use exceptions only if there is tool support for accurately predicting the maximum time to recover from a `throw`.
+Some systems, such as hard-real-time systems require a guarantee that an action is taken in a (typically short) constant maximum time known before execution starts. Such systems can use exceptions only if there is tool support for accurately predicting the maximum time to recover from a `throw`.
 
 **See also**: [RAII](#Re-raii)
 
@@ -14849,7 +14849,7 @@ By declaring `compute` to be `noexcept`, we give the compiler and human readers 
 
 ##### Note
 
-Many standard library functions are `noexcept` including all the standard library functions "inherited" from the C standard library.
+Many standard-library functions are `noexcept` including all the standard-library functions "inherited" from the C standard library.
 
 ##### Example
 
@@ -15050,7 +15050,7 @@ Every example we have seen of this is error-prone, specialized, and often buggy.
 
 ##### Note
 
-The standard library assumes that destructors, deallocation functions (e.g., `operator delete`), and `swap` do not throw. If they do, basic standard library invariants are broken.
+The standard library assumes that destructors, deallocation functions (e.g., `operator delete`), and `swap` do not throw. If they do, basic standard-library invariants are broken.
 
 ##### Note
 
@@ -15182,7 +15182,7 @@ When used for exceptional circumstances in code that is not littered with pointe
 exception handling is almost always affordable (in time and space) and almost always leads to better code.
 This, of course, assumes a good implementation of the exception handling mechanisms, which is not available on all systems.
 There are also cases where the problems above do not apply, but exceptions cannot be used for other reasons.
-Some hard real-time systems are an example: An operation has to be completed within a fixed time with an error or a correct answer.
+Some hard-real-time systems are an example: An operation has to be completed within a fixed time with an error or a correct answer.
 In the absence of appropriate time estimation tools, this is hard to guarantee for exceptions.
 Such systems (e.g. flight control software) typically also ban the use of dynamic (heap) memory.
 
@@ -15414,7 +15414,7 @@ A not uncommon technique is to gather cleanup at the end of the function to avoi
 
 The larger the function, the more tempting this technique becomes.
 `finally` can [ease the pain a bit](#Re-finally).
-Also, the larger the program becomes the harder it is to apply an error-indicator-based error handling strategy systematically.
+Also, the larger the program becomes the harder it is to apply an error-indicator-based error-handling strategy systematically.
 
 We [prefer exception-based error handling](#Re-throw) and recommend [keeping functions short](#Rf-single).
 
@@ -15559,7 +15559,7 @@ Note that function parameter is a local variable so changes to it are local.
 
 ##### Enforcement
 
-* Flag non-const variables that are not modified (except for parameters to avoid many false positives)
+* Flag non-`const` variables that are not modified (except for parameters to avoid many false positives)
 
 ### <a name="Rconst-fct"></a>Con.2: By default, make member functions `const`
 
@@ -15583,7 +15583,7 @@ This gives a more precise statement of design intent, better readability, more e
 
 ##### Note
 
-It is not inherently bad to pass a pointer or reference to non-const,
+It is not inherently bad to pass a pointer or reference to non-`const`,
 but that should be done only when the called function is supposed to modify the object.
 A reader of code must assume that a function that takes a "plain" `T*` or `T&` will modify the object referred to.
 If it doesn't now, it might do so later without forcing recompilation.
@@ -15654,7 +15654,7 @@ See also [Pimpl](#Ri-pimpl).
 
 ##### Note
 
-It is not inherently bad to pass a pointer or reference to non-const,
+It is not inherently bad to pass a pointer or reference to non-`const`,
 but that should be done only when the called function is supposed to modify the object.
 
 ##### Note
@@ -15825,7 +15825,7 @@ Generic programming is programming using types and algorithms parameterized by t
 
 ##### Reason
 
-Generality. Re-use. Efficiency. Encourages consistent definition of user types.
+Generality. Reuse. Efficiency. Encourages consistent definition of user types.
 
 ##### Example, bad
 
@@ -15894,7 +15894,7 @@ If you use GCC 6.1, you can uncomment them.
 
 ##### Reason
 
-Generality. Minimizing the amount of source code. Interoperability. Re-use.
+Generality. Minimizing the amount of source code. Interoperability. Reuse.
 
 ##### Example
 
@@ -16390,7 +16390,7 @@ Once language support is available, the `//` in front of the axiom can be remove
 
 ##### Note
 
-The GSL concepts have well defined semantics; see the Palo Alto TR and the Ranges TS.
+The GSL concepts have well-defined semantics; see the Palo Alto TR and the Ranges TS.
 
 ##### Exception (using TS concepts)
 
@@ -16855,7 +16855,7 @@ This prints `T0` and `Bad`.
 Now the `==` in `Bad` was designed to cause trouble, but would you have spotted the problem in real code?
 The problem is that `v.size()` returns an `unsigned` integer so that a conversion is needed to call the local `==`;
 the `==` in `Bad` requires no conversions.
-Realistic types, such as the standard library iterators can be made to exhibit similar anti-social tendencies.
+Realistic types, such as the standard-library iterators can be made to exhibit similar anti-social tendencies.
 
 ##### Note
 
@@ -18604,7 +18604,7 @@ If code is using an unmodified standard library, then there are still workaround
 
 ##### Enforcement
 
-* Issue a diagnostic for any call to a standard library function that is not bounds-checked.
+* Issue a diagnostic for any call to a standard-library function that is not bounds-checked.
 ??? insert link to a list of banned functions
 
 This rule is part of the [bounds profile](#SS-bounds).
@@ -18737,7 +18737,7 @@ those sequences are allocated and stored.
 
 ##### Note
 
-`std::string_view` (C++17) is read only.
+`std::string_view` (C++17) is read-only.
 
 ##### Enforcement
 
@@ -18749,7 +18749,7 @@ those sequences are allocated and stored.
 
 Readability.
 Statement of intent.
-A plain `char*` can be a pointer to a single character, a pointer to an array of characters, a pointer to a C-style (zero terminated) string, or even to a small integer.
+A plain `char*` can be a pointer to a single character, a pointer to an array of characters, a pointer to a C-style (zero-terminated) string, or even to a small integer.
 Distinguishing these alternatives prevents misunderstandings and bugs.
 
 ##### Example
@@ -18966,7 +18966,7 @@ If input isn't validated, every function must be written to cope with bad data (
     complex<double> z{ 3, 4 };
     cout << z << '\n';
 
-`complex` is a user defined type and its I/O is defined without modifying the `iostream` library.
+`complex` is a user-defined type and its I/O is defined without modifying the `iostream` library.
 
 ##### Example
 
@@ -19269,7 +19269,7 @@ However, we can briefly outline why we consider exceptions the best alternative 
 and in the context of these guidelines.
 Simple arguments for and against are often inconclusive.
 There are specialized applications where exceptions indeed can be inappropriate
-(e.g., hard-real time systems without support for reliable estimates of the cost of handling an exception).
+(e.g., hard-real-time systems without support for reliable estimates of the cost of handling an exception).
 
 Consider the major objections to exceptions in turn
 
@@ -19446,7 +19446,7 @@ Reference sections:
 * [JSF++: JOINT STRIKE FIGHTER AIR VEHICLE C++ CODING STANDARDS](http://www.stroustrup.com/JSF-AV-rules.pdf).
   Document Number 2RDU00001 Rev C. December 2005.
   For flight control software.
-  For hard real time.
+  For hard-real-time.
   This means that it is necessarily very restrictive ("if the program fails somebody dies").
   For example, no free store allocation or deallocation may occur after the plane takes off (no memory overflow and no fragmentation allowed).
   No exception may be used (because there was no available tool for guaranteeing that an exception would be handled within a fixed short time).
@@ -19684,7 +19684,7 @@ Bounds safety profile summary:
 [Pass pointers to single objects (only)](#Ri-array) and [Keep pointer arithmetic simple](#Res-simple).
 * <a href="Pro-bounds-decay"></a>Bounds.3: No array-to-pointer decay:
 [Pass pointers to single objects (only)](#Ri-array) and [Keep pointer arithmetic simple](#Res-simple).
-* <a href="Pro-bounds-stdlib"></a>Bounds.4: Don't use standard library functions and types that are not bounds-checked:
+* <a href="Pro-bounds-stdlib"></a>Bounds.4: Don't use standard-library functions and types that are not bounds-checked:
 [Use the standard library in a type-safe manner](#Rsl-bounds).
 
 ##### Impact
@@ -19780,8 +19780,8 @@ If something is not supposed to be `nullptr`, say so:
 * `not_null<T>`   // `T` is usually a pointer type (e.g., `not_null<int*>` and `not_null<owner<Foo*>>`) that may not be `nullptr`.
   `T` can be any type for which `==nullptr` is meaningful.
 
-* `span<T>`       // `[`p`:`p + n`)`, constructor from `{p, q}` and `{p, n}`; `T` is the pointer type
-* `span_p<T>`     // `{p, predicate}` \[`p`:`q`) where `q` is the first element for which `predicate(*p)` is true
+* `span<T>`       // `[p:p+n)`, constructor from `{p, q}` and `{p, n}`; `T` is the pointer type
+* `span_p<T>`     // `{p, predicate}` `[p:q)` where `q` is the first element for which `predicate(*p)` is true
 * `string_span`   // `span<char>`
 * `cstring_span`  // `span<const char>`
 
@@ -20450,7 +20450,7 @@ This section covers answers to frequently asked questions about these guidelines
 
 ### <a name="Faq-aims"></a>FAQ.1: What do these guidelines aim to achieve?
 
-See the <a href="#S-abstract">top of this page</a>. This is an open source project to maintain modern authoritative guidelines for writing C++ code using the current C++ Standard (as of this writing, C++14). The guidelines are designed to be modern, machine-enforceable wherever possible, and open to contributions and forking so that organizations can easily incorporate them into their own corporate coding guidelines.
+See the <a href="#S-abstract">top of this page</a>. This is an open-source project to maintain modern authoritative guidelines for writing C++ code using the current C++ Standard (as of this writing, C++14). The guidelines are designed to be modern, machine-enforceable wherever possible, and open to contributions and forking so that organizations can easily incorporate them into their own corporate coding guidelines.
 
 ### <a name="Faq-announced"></a>FAQ.2: When and where was this work first announced?
 
@@ -20503,7 +20503,7 @@ The GSL is the small set of types and aliases specified in these guidelines. As 
 
 ### <a name="Faq-msgsl"></a>FAQ.51: Is [github.com/Microsoft/GSL](https://github.com/Microsoft/GSL) the GSL?
 
-No. That is just a first implementation contributed by Microsoft. Other implementations by other vendors are encouraged, as are forks of and contributions to that implementation. As of this writing one week into the public project, at least one GPLv3 open source implementation already exists. We plan to produce a WG21-style interface specification to ensure that different implementations agree.
+No. That is just a first implementation contributed by Microsoft. Other implementations by other vendors are encouraged, as are forks of and contributions to that implementation. As of this writing one week into the public project, at least one GPLv3 open-source implementation already exists. We plan to produce a WG21-style interface specification to ensure that different implementations agree.
 
 ### <a name="Faq-gsl-implementation"></a>FAQ.52: Why not supply an actual GSL implementation in/with these guidelines?
 
@@ -20835,7 +20835,7 @@ Consider the following advice and requirements found in the C++ Standard:
 
 > If a destructor called during stack unwinding exits with an exception, terminate is called (15.5.1). So destructors should generally catch exceptions and not let them propagate out of the destructor. --[\[C++03\]](#C++03) §15.2(3)
 >
-> No destructor operation defined in the C++ Standard Library (including the destructor of any type that is used to instantiate a standard library template) will throw an exception. --[\[C++03\]](#C++03) §17.4.4.8(3)
+> No destructor operation defined in the C++ Standard Library (including the destructor of any type that is used to instantiate a standard-library template) will throw an exception. --[\[C++03\]](#C++03) §17.4.4.8(3)
 
 Deallocation functions, including specifically overloaded `operator delete` and `operator delete[]`, fall into the same category, because they too are used during cleanup in general, and during exception handling in particular, to back out of partial work that needs to be undone.
 Besides destructors and deallocation functions, common error-safety techniques rely also on `swap` operations never failing -- in this case, not because they are used to implement a guaranteed rollback, but because they are used to implement a guaranteed commit. For example, here is an idiomatic implementation of `operator=` for a type `T` that performs copy construction followed by a call to a no-fail `swap`:
@@ -20927,7 +20927,7 @@ If you need to define any of these five functions, it means you need it to do mo
 
 * If you write/disable either of the copy constructor or the copy assignment operator, you probably need to do the same for the other: If one does "special" work, probably so should the other because the two functions should have similar effects. (See Item 53, which expands on this point in isolation.)
 * If you explicitly write the copying functions, you probably need to write the destructor: If the "special" work in the copy constructor is to allocate or duplicate some resource (e.g., memory, file, socket), you need to deallocate it in the destructor.
-* If you explicitly write the destructor, you probably need to explicitly write or disable copying: If you have to write a nontrivial destructor, it's often because you need to manually release a resource that the object held. If so, it is likely that those resources require careful duplication, and then you need to pay attention to the way objects are copied and assigned, or disable copying completely.
+* If you explicitly write the destructor, you probably need to explicitly write or disable copying: If you have to write a non-trivial destructor, it's often because you need to manually release a resource that the object held. If so, it is likely that those resources require careful duplication, and then you need to pay attention to the way objects are copied and assigned, or disable copying completely.
 
 In many cases, holding properly encapsulated resources using RAII "owning" objects can eliminate the need to write these operations yourself. (See Item 13.)
 
@@ -21178,7 +21178,7 @@ More information on many topics about C++ can be found on the [Standard C++ Foun
 * *approximation*: something (e.g., a value or a design) that is close to the perfect or ideal (value or design).
   Often an approximation is a result of trade-offs among ideals.
 * *argument*: a value passed to a function or a template, in which it is accessed through a parameter.
-* *array*: a homogeneous sequence of elements, usually numbered, e.g., \[0:max).
+* *array*: a homogeneous sequence of elements, usually numbered, e.g., `[0:max)`.
 * *assertion*: a statement inserted into a program to state (assert) that something must always be true at this point in the program.
 * *base class*: a class used as the base of a class hierarchy. Typically a base class has one or more virtual functions.
 * *bit*: the basic unit of information in a computer. A bit can have the value 0 or the value 1.
@@ -21243,7 +21243,7 @@ More information on many topics about C++ can be found on the [Standard C++ Foun
 * *lifetime*: the time from the initialization of an object until it becomes unusable (goes out of scope, is deleted, or the program terminates).
 * *linker*: a program that combines object code files and libraries into an executable program.
 * *literal*: a notation that directly specifies a value, such as 12 specifying the integer value "twelve."
-* *loop*: a piece of code executed repeatedly; in C++, typically a for-statement or a while-statement.
+* *loop*: a piece of code executed repeatedly; in C++, typically a for-statement or a `while`-statement.
 * *move*: an operation that transfers a value from one object to another leaving behind a value representing "empty." See also copy.
 * *mutable*: changeable; the opposite of immutable, constant, and invariable.
 * *object*: (1) an initialized region of memory of a known type which holds a value of that type; (2) a region of memory.
@@ -21267,7 +21267,7 @@ More information on many topics about C++ can be found on the [Standard C++ Foun
 * *pseudo code*: a description of a computation written in an informal notation rather than a programming language.
 * *pure virtual function*: a virtual function that must be overridden in a derived class.
 * *RAII*: ("Resource Acquisition Is Initialization") a basic technique for resource management based on scopes.
-* *range*: a sequence of values that can be described by a start point and an end point. For example, \[0:5) means the values 0, 1, 2, 3, and 4.
+* *range*: a sequence of values that can be described by a start point and an end point. For example, `[0:5)` means the values 0, 1, 2, 3, and 4.
 * *recursion*: the act of a function calling itself; see also iteration.
 * *reference*: (1) a value describing the location of a typed value in memory; (2) a variable holding such a value.
 * *regular expression*: a notation for patterns in character strings.
