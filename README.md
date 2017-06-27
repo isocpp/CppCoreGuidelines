@@ -1,4 +1,4 @@
-[![C++ Core Guidelines](CppCoreGuidelines.png)](http://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines)
+[![C++ Core Guidelines](cpp_core_guidelines_logo_text.png)](http://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines)
 
 >"Within C++ is a smaller, simpler, safer language struggling to get out."
 >-- <cite>Bjarne Stroustrup</cite>
