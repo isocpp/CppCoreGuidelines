@@ -4,7 +4,7 @@
 
 .inner {
   position: relative;
-  max-width: 640px;
+  max-width: 1280px;
   padding: 20px 10px;
   margin: 0 auto;
 }
@@ -137,7 +137,7 @@ p:after {
 .tgl + .tgl-btn {
   outline: 0;
   display: block;
-  width: 16em;
+  width: 8em;
   height: 2em;
   position: relative;
   cursor: pointer;
@@ -150,7 +150,7 @@ p:after {
   position: relative;
   display: block;
   content: "";
-  width: 100%;
+  width: 50%;
   height: 100%;
 }
 .tgl + .tgl-btn:after {
