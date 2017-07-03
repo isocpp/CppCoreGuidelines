@@ -1,6 +1,6 @@
 # <a name="main"></a>C++ Core Guidelines
 
-June 26, 2017
+July 3, 2017
 
 
 Editors:
