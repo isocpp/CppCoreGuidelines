@@ -1,9 +1,10 @@
 ---
 layout: default
 ---
+
 # <a name="main"></a>C++ Core Guidelines
 
-July 3, 2017
+July 18, 2017
 
 
 Editors:
@@ -12,7 +13,7 @@ Editors:
 * [Herb Sutter](http://herbsutter.com/)
 
 This document is a very early draft. It is inkorrekt, incompleat, and pÂµÃoorly formatted.
-Had it been an open-source (code) project, this would have been release 0.7.
+Had it been an open-source (code) project, this would have been release 0.8.
 Copying, use, modification, and creation of derivative works from this project is licensed under an MIT-style license.
 Contributing to this project requires agreeing to a Contributor License. See the accompanying [LICENSE](LICENSE) file for details.
 We make this project available to "friendly users" to use, copy, modify, and derive from, hoping for constructive input.
@@ -5899,7 +5900,7 @@ Ideally, that moved-from should be the default value of the type.
 Ensure that unless there is an exceptionally good reason not to.
 However, not all types have a default value and for some types establishing the default value can be expensive.
 The standard requires only that the moved-from object can be destroyed.
-Often, we can easily and cheaply do better: The standard library assumes that it it possible to assign to a moved-from object.
+Often, we can easily and cheaply do better: The standard library assumes that it is possible to assign to a moved-from object.
 Always leave the moved-from object in some (necessarily specified) valid state.
 
 ##### Note
@@ -5938,7 +5939,7 @@ The one-in-a-million argument against `if (this == &a) return *this;` tests from
 
 ##### Note
 
-There is no know general way of avoiding a `if (this == &a) return *this;` test for a move assignment and still get a correct answer (i.e., after `x = x` the value of `x` is unchanged).
+There is no known general way of avoiding a `if (this == &a) return *this;` test for a move assignment and still get a correct answer (i.e., after `x = x` the value of `x` is unchanged).
 
 ##### Note
 
@@ -10355,7 +10356,7 @@ The C++17 rules are somewhat less surprising:
 
 So use `={...}` if you really want an `initializer_list<T>`
 
-    auto fib10 = {0, 1, 2, 3, 5, 8, 13, 21, 34, 55};   // fib10 is a list
+    auto fib10 = {1, 1, 2, 3, 5, 8, 13, 21, 34, 55};   // fib10 is a list
 
 ##### Note
 
@@ -20316,7 +20317,7 @@ Use separate lines for each statement, the branches of an `if`, and the body of 
 
 ##### Note
 
-The `{` for a `class` and a `struct` in *not* on a separate line, but the `{` for a function is.
+The `{` for a `class` and a `struct` is *not* on a separate line, but the `{` for a function is.
 
 ##### Note
 
