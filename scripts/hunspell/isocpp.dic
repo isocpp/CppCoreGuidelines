@@ -26,6 +26,7 @@ ABIs
 abstr
 accessor
 ack
+ACCU
 addressof
 adl
 ADL
@@ -42,6 +43,7 @@ archetypical
 arg
 argh
 args
+arithmeticcast
 arr2
 arrayindex
 ASIC
@@ -81,6 +83,7 @@ Cline99
 ClosePort
 cm3
 CommonMark
+*compiletime
 composability
 composable
 conceptsTS
@@ -101,6 +104,9 @@ CplusplusCS
 cpp
 cpp98
 CppCon
+CppCoreCheck
+cppcoreguidelines
+cppreference
 CRTP
 cst
 cstdarg
@@ -193,6 +199,7 @@ GFM
 Girou
 github
 GitHub
+GOTW
 gp
 GPLv3
 gsl
@@ -213,13 +220,16 @@ HTTP
 Hyslop
 i2
 IDE
+identitycast
 IDEs
 IEC
 ifdef
 iff
 ifstream
 impactful
+impl
 Impl
+implicitpointercast
 incompleat
 increment1
 Incrementable
@@ -258,6 +268,7 @@ Lakos96
 Lavavej
 LCSD05
 lifecycle
+*life-time
 linearization
 llvm
 lockfree
@@ -302,7 +313,7 @@ mnemonizes
 modify1
 modify2
 moredata
-multithreaded
+*multithreaded
 msgsl
 mtx
 Murray93
@@ -366,7 +377,8 @@ pb2
 pc
 performant
 pessimization
-PIMPL
+pimpl
+Pimpl
 Pirkelbauer
 PL4
 PLDI
@@ -409,6 +421,7 @@ Rcon
 Rconc
 Rconst
 Rcpl
+*realtime
 Rec2
 refactor
 refactored
@@ -426,6 +439,10 @@ reseating
 reseats
 resizable
 retryable
+*re-use
+*re-usable
+*re-usability
+*Re-usability
 reusability
 Reusability
 Ri
@@ -473,6 +490,7 @@ smartptrget
 smartptrparam
 smartptrs
 SMS
+Sommerlad
 SomeLargeType
 specialization2
 spinlock

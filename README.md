@@ -1,4 +1,4 @@
-# [C++ Core Guidelines](http://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines)
+[![C++ Core Guidelines](cpp_core_guidelines_logo_text.png)](http://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines)
 
 >"Within C++ is a smaller, simpler, safer language struggling to get out."
 >-- <cite>Bjarne Stroustrup</cite>
@@ -10,7 +10,7 @@ they can be freely copied and modified to meet your organization's needs.
 ## Getting started
 
 The guidelines themselves are found at [CppCoreGuidelines](CppCoreGuidelines.md). The document is in GH-flavored MarkDown. It is intentionally kept simple, mostly in ASCII, to allow automatic post-processing such as language translation and reformatting. The editors maintain one
-[version formatted for browsing](http://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines). Note that it manually integrated and can be slightly older than the version in the master branch.
+[version formatted for browsing](http://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines). Note that it is manually integrated and can be slightly older than the version in the master branch.
 
 The Guidelines are a constantly evolving document without a strict "release" cadence. Bjarne Stroustrop periodically reviews the document and increments the version number in the introduction. [Checkins that increment the version number](https://github.com/isocpp/CppCoreGuidelines/releases) are tagged in git. 
 
