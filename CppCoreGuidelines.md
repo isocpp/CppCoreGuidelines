@@ -2885,7 +2885,7 @@ This makes it clear to callers that the object is assumed to be modified.
 
 ##### Note
 
-A `T&` argument can pass information into a function as well as well as out of it.
+A `T&` argument can pass information into a function as well as out of it.
 Thus `T&` could be an in-out-parameter. That can in itself be a problem and a source of errors:
 
     void f(string& s)
