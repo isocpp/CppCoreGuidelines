@@ -5976,7 +5976,7 @@ A non-throwing move will be used more efficiently by standard-library and langua
         int sz;
     };
 
-These copy operations do not throw.
+These operations do not throw.
 
 ##### Example, bad
 
