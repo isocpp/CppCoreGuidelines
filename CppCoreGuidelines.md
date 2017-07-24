@@ -21353,7 +21353,39 @@ Alternatively, we will decide that no change is needed and delete the entry.
 * should virtual calls be banned from ctors/dtors in your guidelines? YES. A lot of people ban them, even though I think it's a big strength of C++ that they are ??? -preserving (D disappointed me so much when it went the Java way). WHAT WOULD BE A GOOD EXAMPLE?
 * Speaking of lambdas, what would weigh in on the decision between lambdas and (local?) classes in algorithm calls and other callback scenarios?
 * And speaking of `std::bind`, Stephen T. Lavavej criticizes it so much I'm starting to wonder if it is indeed going to fade away in future. Should lambdas be recommended instead?
-* What to do with leaks out of temporaries? : `p = (s1 + s2).c_str();`
+* What to do with leaks out of temporaries? : `p = (s1 + s2).c_str();` Perhaps this can be fixed in the library - e.g. `char const* c_str() const &; char const* c_str() &&=delete;`. gcc 5.3.1 on Fedora produces an error when given the code:
+
+        #include <iostream> 
+        class A {
+        public:
+            A(int aa = 0) : a(aa) {}
+            int val() const & { return a; }
+            int val() && =delete;
+            private:
+                int a;
+        };
+        
+        A operator+(A const& a, int inc)
+        {
+            return A(a.val() + inc);
+        }
+        
+        int main(int argc, char* argv[])
+        {
+            A a(3);
+            std::cout << (a + 4).val() << '\n';
+            return 0;
+        }
+
+  The compiler gives the error 
+
+        In function 'int main(int, char**)':
+        error: use of deleted function 'int A::val() &&'
+             std::cout << (a + 4).val() << '\n';
+                                    ^
+        note: declared here
+             int val() && =delete;
+
 * pointer/iterator invalidation leading to dangling pointers:
 
         void bad()
