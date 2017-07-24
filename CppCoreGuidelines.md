@@ -13319,15 +13319,8 @@ The less sharing you do, the less chance you have to wait on a lock (so performa
     Image altitude_map(const vector<Reading>&);
     // ...
 
-    void process_readings(istream& socket1)
+    void process_readings(const Readings& surface_readings, istream& socket1)
     {
-        const vector<Reading> surface_readings = [&]() {
-            vector<Reading> readings;
-            socket1 >> readings;
-            if (!socket1) throw Bad_input{};
-            return readings;
-        }();
-
         auto h1 = async([&] { if (!validate(surface_readings)) throw Invalid_data{}; });
         auto h2 = async([&] { return temperature_gradiants(surface_readings); });
         auto h3 = async([&] { return altitude_map(surface_readings); });
