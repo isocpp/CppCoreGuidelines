@@ -1738,7 +1738,7 @@ If you can't use exceptions (e.g. because your code is full of old-style raw-poi
     int val;
     int error_code;
     tie(val, error_code) = do_something();
-    if (error_code == 0) {
+    if (error_code) {
         // ... handle the error or exit ...
     }
     // ... use val ...
@@ -1747,7 +1747,7 @@ This style unfortunately leads to uninitialized variables.
 A facility [structured bindings](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/p0144r1.pdf) to deal with that will become available in C++17.
 
     auto [val, error_code] = do_something();
-    if (error_code == 0) {
+    if (error_code) {
         // ... handle the error or exit ...
     }
     // ... use val ...
