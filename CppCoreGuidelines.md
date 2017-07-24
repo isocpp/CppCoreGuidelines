@@ -6693,6 +6693,8 @@ Use `virtual` only when declaring a new virtual function. Use `override` only wh
         // ...
     };
 
+##### Example, good
+
     struct Better : B {
         void f1(int) override;        // error (caught): D::f1() hides B::f1()
         void f2(int) const override;
