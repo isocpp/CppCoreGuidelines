@@ -10681,6 +10681,32 @@ Requires messy cast-and-macro-laden code to get working right.
     }
 
 **Alternative**: Overloading. Templates. Variadic templates.
+    #include <iostream>
+
+    void error(int severity)
+    {
+        std::cerr << std::endl;
+        std::exit(severity);
+    }
+
+    template <typename T, typename... Ts>
+    constexpr void error(int severity, T head, Ts... tail)
+    {
+        std::cerr << head;
+        error(severity, tail...);
+    }
+
+    void use()
+    {
+        error(7); // No crash!
+        error(5, "this", "is", "not", "an", "error"); // No crash!
+
+        std::string an = "an";
+        error(7, "this", "is", "not", an, "error"); // No crash!
+
+        error(5, "oh", "no", nullptr); // Compile error! No need for nullptr.
+    }
+
 
 ##### Note
 
