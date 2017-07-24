@@ -13319,7 +13319,7 @@ The less sharing you do, the less chance you have to wait on a lock (so performa
     Image altitude_map(const vector<Reading>&);
     // ...
 
-    void process_readings(const Readings& surface_readings, istream& socket1)
+    void process_readings(const vector<Readings>& surface_readings)
     {
         auto h1 = async([&] { if (!validate(surface_readings)) throw Invalid_data{}; });
         auto h2 = async([&] { return temperature_gradiants(surface_readings); });
@@ -13332,7 +13332,7 @@ The less sharing you do, the less chance you have to wait on a lock (so performa
     }
 
 Without those `const`s, we would have to review every asynchronously invoked function for potential data races on `surface_readings`.
-Making `surface_readings` const allow reasoning using only the function body.
+Making `surface_readings` be `const` (with respect to this function) allow reasoning using only the function body.
 
 ##### Note
 
