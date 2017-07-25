@@ -19322,7 +19322,7 @@ Many, possibly most, problems with exceptions stem from historical needs to inte
 
 The fundamental arguments for the use of exceptions are
 
-* They clearly separates error return from ordinary return
+* They clearly differentiate between erroneous return and ordinary return
 * They cannot be forgotten or ignored
 * They can be used systematically
 
