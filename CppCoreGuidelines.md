@@ -4,7 +4,7 @@ layout: default
 
 # <a name="main"></a>C++ Core Guidelines
 
-July 18, 2017
+July 31, 2017
 
 
 Editors:
@@ -684,10 +684,12 @@ You don't need to write error handlers for errors caught at compile time.
     if (bits < 32)
         cerr << "Int too small\n"
 
-This example is easily simplified
+This example fails to achieve what it is trying to achieve (because overflow is undefined) and should be replaced with a simple `static_assert`:
 
     // Int is an alias used for integers
     static_assert(sizeof(Int) >= 4);    // do: compile-time check
+
+Or better still just use the type system and replace `Int` with `int32_t`.
 
 ##### Example
 
@@ -1742,7 +1744,7 @@ If you can't use exceptions (e.g. because your code is full of old-style raw-poi
     int val;
     int error_code;
     tie(val, error_code) = do_something();
-    if (error_code == 0) {
+    if (error_code) {
         // ... handle the error or exit ...
     }
     // ... use val ...
@@ -1751,7 +1753,7 @@ This style unfortunately leads to uninitialized variables.
 A facility [structured bindings](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/p0144r1.pdf) to deal with that will become available in C++17.
 
     auto [val, error_code] = do_something();
-    if (error_code == 0) {
+    if (error_code) {
         // ... handle the error or exit ...
     }
     // ... use val ...
@@ -2844,7 +2846,7 @@ For advanced uses (only), where you really need to optimize for rvalues passed t
 Avoid "esoteric techniques" such as:
 
 * Passing arguments as `T&&` "for efficiency".
-  Most rumors about performance advantages from passing by `&&` are false or brittle (but see [F.25](#Rf-pass-ref-move).)
+  Most rumors about performance advantages from passing by `&&` are false or brittle (but see [F.18](#Rf-consume) and [F.19](#Rf-forward)).
 * Returning `const T&` from assignments and similar operations (see [F.47](#Rf-assignment-op).)
 
 ##### Example
@@ -2889,7 +2891,7 @@ This makes it clear to callers that the object is assumed to be modified.
 
 ##### Note
 
-A `T&` argument can pass information into a function as well as well as out of it.
+A `T&` argument can pass information into a function as well as out of it.
 Thus `T&` could be an in-out-parameter. That can in itself be a problem and a source of errors:
 
     void f(string& s)
@@ -3584,7 +3586,7 @@ Flag functions where no `return` expression could yield `nullptr`
 
 ##### Reason
 
-It's asking to return a reference to a destroyed temporary object. A `&&` is a magnet for temporary objects. This is fine when the reference to the temporary is being passed "downward" to a callee, because the temporary is guaranteed to outlive the function call. (See [F.24](#Rf-pass-ref-ref) and [F.25](#Rf-pass-ref-move).) However, it's not fine when passing such a reference "upward" to a larger caller scope. See also ???.
+It's asking to return a reference to a destroyed temporary object. A `&&` is a magnet for temporary objects. This is fine when the reference to the temporary is being passed "downward" to a callee, because the temporary is guaranteed to outlive the function call (see [F.18](#Rf-consume) and [F.19](#Rf-forward)). However, it's not fine when passing such a reference "upward" to a larger caller scope. See also ???.
 
 For passthrough functions that pass in parameters (by ordinary reference or by perfect forwarding) and want to return values, use simple `auto` return type deduction (not `auto&&`).
 
@@ -4173,7 +4175,7 @@ Prefer to place the interface first in a class [see](#Rl-order).
 
 ##### Enforcement
 
-Flag classes declared with `struct` if there is a `private` or `public` member.
+Flag classes declared with `struct` if there is a `private` or `protected` member.
 
 ### <a name="Rc-private"></a>C.9: Minimize exposure of members
 
@@ -5637,7 +5639,7 @@ Types can be defined to move for logical as well as performance reasons.
 
 ##### Reason
 
-It is simple and efficient. If you want to optimize for rvalues, provide an overload that takes a `&&` (see [F.24](#Rf-pass-ref-ref)).
+It is simple and efficient. If you want to optimize for rvalues, provide an overload that takes a `&&` (see [F.18](#Rf-consume)).
 
 ##### Example
 
@@ -5662,7 +5664,7 @@ It is simple and efficient. If you want to optimize for rvalues, provide an over
 
 ##### Note
 
-The `swap` implementation technique offers the [strong guarantee](???).
+The `swap` implementation technique offers the [strong guarantee](#Abrahams01).
 
 ##### Example
 
@@ -5691,7 +5693,7 @@ But what if you can get significantly better performance by not making a tempora
         return *this;
     }
 
-By writing directly to the target elements, we will get only [the basic guarantee](#???) rather than the strong guarantee offered by the `swap` technique. Beware of [self-assignment](#Rc-copy-self).
+By writing directly to the target elements, we will get only [the basic guarantee](#Abrahams01) rather than the strong guarantee offered by the `swap` technique. Beware of [self-assignment](#Rc-copy-self).
 
 **Alternatives**: If you think you need a `virtual` assignment operator, and understand why that's deeply problematic, don't call it `operator=`. Make it a named function like `virtual void assign(const Foo&)`.
 See [copy constructor vs. `clone()`](#Rc-copy-virtual).
@@ -5732,7 +5734,7 @@ After a copy `x` and `y` can be independent objects (value semantics, the way no
     X::X(const X& a)
         :p{new T[a.sz]}, sz{a.sz}
     {
-        copy(a.p, a.p + sz, a.p);
+        copy(a.p, a.p + sz, p);
     }
 
     X x;
@@ -5980,7 +5982,7 @@ A non-throwing move will be used more efficiently by standard-library and langua
         int sz;
     };
 
-These copy operations do not throw.
+These operations do not throw.
 
 ##### Example, bad
 
@@ -6694,6 +6696,8 @@ Use `virtual` only when declaring a new virtual function. Use `override` only wh
         void f3(double);     // bad (hope for a warning): D::f3() hides B::f3()
         // ...
     };
+
+##### Example, good
 
     struct Better : B {
         void f1(int) override;        // error (caught): D::f1() hides B::f1()
@@ -10683,6 +10687,32 @@ Requires messy cast-and-macro-laden code to get working right.
     }
 
 **Alternative**: Overloading. Templates. Variadic templates.
+    #include <iostream>
+
+    void error(int severity)
+    {
+        std::cerr << std::endl;
+        std::exit(severity);
+    }
+
+    template <typename T, typename... Ts>
+    constexpr void error(int severity, T head, Ts... tail)
+    {
+        std::cerr << head;
+        error(severity, tail...);
+    }
+
+    void use()
+    {
+        error(7); // No crash!
+        error(5, "this", "is", "not", "an", "error"); // No crash!
+
+        std::string an = "an";
+        error(7, "this", "is", "not", an, "error"); // No crash!
+
+        error(5, "oh", "no", nullptr); // Compile error! No need for nullptr.
+    }
+
 
 ##### Note
 
@@ -13323,23 +13353,20 @@ The less sharing you do, the less chance you have to wait on a lock (so performa
     Image altitude_map(const vector<Reading>&);
     // ...
 
-    void process_readings(istream& socket1)
+    void process_readings(const vector<Reading>& surface_readings)
     {
-        vector<Reading> surface_readings;
-        socket1 >> surface_readings;
-        if (!socket1) throw Bad_input{};
-
         auto h1 = async([&] { if (!validate(surface_readings)) throw Invalid_data{}; });
         auto h2 = async([&] { return temperature_gradiants(surface_readings); });
         auto h3 = async([&] { return altitude_map(surface_readings); });
         // ...
-        auto v1 = h1.get();
+        h1.get();
         auto v2 = h2.get();
         auto v3 = h3.get();
         // ...
     }
 
 Without those `const`s, we would have to review every asynchronously invoked function for potential data races on `surface_readings`.
+Making `surface_readings` be `const` (with respect to this function) allow reasoning using only the function body.
 
 ##### Note
 
@@ -13548,12 +13575,12 @@ This is asking for deadlock:
 Instead, use `lock()`:
 
     // thread 1
-    lock(lck1, lck2);
+    lock(m1, m2);
     lock_guard<mutex> lck1(m1, adopt_lock);
     lock_guard<mutex> lck2(m2, adopt_lock);
 
     // thread 2
-    lock(lck2, lck1);
+    lock(m2, m1);
     lock_guard<mutex> lck2(m2, adopt_lock);
     lock_guard<mutex> lck1(m1, adopt_lock);
 
@@ -15056,7 +15083,7 @@ The standard library assumes that destructors, deallocation functions (e.g., `op
 
 Deallocation functions, including `operator delete`, must be `noexcept`. `swap` functions must be `noexcept`.
 Most destructors are implicitly `noexcept` by default.
-Also, [make move operations `noexcept`](##Rc-move-noexcept).
+Also, [make move operations `noexcept`](#Rc-move-noexcept).
 
 ##### Enforcement
 
@@ -15157,7 +15184,7 @@ Consider `finally` a last resort.
 
 ##### Note
 
-Use of `finally` is a systematic and reasonably clean alternative to the old [`goto exit;` technique](##Re-no-throw-codes)
+Use of `finally` is a systematic and reasonably clean alternative to the old [`goto exit;` technique](#Re-no-throw-codes)
 for dealing with cleanup where resource management is not systematic.
 
 ##### Enforcement
@@ -18759,7 +18786,7 @@ Distinguishing these alternatives prevents misunderstandings and bugs.
 All we know is that it is supposed to be the nullptr or point to at least one character
 
     void f1(zstring s);     // s is a C-style string or the nullptr
-    void f1(czstring s);    // s is a C-style string that is not the nullptr
+    void f1(czstring s);    // s is a C-style string constant or the nullptr
     void f1(std::byte* s);  // s is a pointer to a byte (C++17)
 
 ##### Note
@@ -19299,7 +19326,7 @@ Many, possibly most, problems with exceptions stem from historical needs to inte
 
 The fundamental arguments for the use of exceptions are
 
-* They clearly separates error return from ordinary return
+* They clearly differentiate between erroneous return and ordinary return
 * They cannot be forgotten or ignored
 * They can be used systematically
 
@@ -20287,15 +20314,15 @@ In the context of C++, this style is often called "Stroustrup".
         }
 
         switch (x) {
-            case 0:
-                // ...
-                break;
-            case amazing:
-                // ...
-                break;
-            default:
-                // ...
-                break;
+        case 0:
+            // ...
+            break;
+        case amazing:
+            // ...
+            break;
+        default:
+            // ...
+            break;
         }
 
         if (0 < x)
@@ -20759,7 +20786,7 @@ In this rare case, you could make the destructor public and nonvirtual but clear
 
 In general, however, avoid concrete base classes (see Item 35). For example, `unary_function` is a bundle-of-typedefs that was never intended to be instantiated standalone. It really makes no sense to give it a public destructor; a better design would be to follow this Item's advice and give it a protected nonvirtual destructor.
 
-**References**: [\[C++CS\]](#C++CS) Item 50, [\[Cargill92\]](#Cargill92) pp. 77-79, 207, [\[Cline99\]](#Cline99) §21.06, 21.12-13, [\[Henricson97\]](#Henricson97) pp. 110-114, [\[Koenig97\]](#Koenig97) Chapters 4, 11, [\[Meyers97\]](#Meyers97) §14, [\[Stroustrup00\]](#Stroustrup00) §12.4.2, [\[Sutter02\]](#Sutter02) §27, [\[Sutter04\]](#Sutter04) §18
+**References**: [\[C++CS\]](#CplusplusCS) Item 50, [\[Cargill92\]](#Cargill92) pp. 77-79, 207, [\[Cline99\]](#Cline99) §21.06, 21.12-13, [\[Henricson97\]](#Henricson97) pp. 110-114, [\[Koenig97\]](#Koenig97) Chapters 4, 11, [\[Meyers97\]](#Meyers97) §14, [\[Stroustrup00\]](#Stroustrup00) §12.4.2, [\[Sutter02\]](#Sutter02) §27, [\[Sutter04\]](#Sutter04) §18
 
 ### <a name="Sd-noexcept"></a>Discussion: Usage of noexcept
 
@@ -20833,9 +20860,9 @@ These are key functions that must not fail because they are necessary for the tw
 
 Consider the following advice and requirements found in the C++ Standard:
 
-> If a destructor called during stack unwinding exits with an exception, terminate is called (15.5.1). So destructors should generally catch exceptions and not let them propagate out of the destructor. --[\[C++03\]](#C++03) §15.2(3)
+> If a destructor called during stack unwinding exits with an exception, terminate is called (15.5.1). So destructors should generally catch exceptions and not let them propagate out of the destructor. --[\[C++03\]](#Cplusplus03) §15.2(3)
 >
-> No destructor operation defined in the C++ Standard Library (including the destructor of any type that is used to instantiate a standard-library template) will throw an exception. --[\[C++03\]](#C++03) §17.4.4.8(3)
+> No destructor operation defined in the C++ Standard Library (including the destructor of any type that is used to instantiate a standard-library template) will throw an exception. --[\[C++03\]](#Cplusplus03) §17.4.4.8(3)
 
 Deallocation functions, including specifically overloaded `operator delete` and `operator delete[]`, fall into the same category, because they too are used during cleanup in general, and during exception handling in particular, to back out of partial work that needs to be undone.
 Besides destructors and deallocation functions, common error-safety techniques rely also on `swap` operations never failing -- in this case, not because they are used to implement a guaranteed rollback, but because they are used to implement a guaranteed commit. For example, here is an idiomatic implementation of `operator=` for a type `T` that performs copy construction followed by a call to a no-fail `swap`:
@@ -20851,7 +20878,7 @@ Fortunately, when releasing a resource, the scope for failure is definitely smal
 
 When using exceptions as your error handling mechanism, always document this behavior by declaring these functions `noexcept`. (See Item 75.)
 
-**References**: [\[C++CS\]](#C++CS) Item 51; [\[C++03\]](#C++03) §15.2(3), §17.4.4.8(3), [\[Meyers96\]](#Meyers96) §11, [\[Stroustrup00\]](#Stroustrup00) §14.4.7, §E.2-4, [\[Sutter00\]](#Sutter00) §8, §16, [\[Sutter02\]](#Sutter02) §18-19
+**References**: [\[C++CS\]](#CplusplusCS) Item 51; [\[C++03\]](#Cplusplus03) §15.2(3), §17.4.4.8(3), [\[Meyers96\]](#Meyers96) §11, [\[Stroustrup00\]](#Stroustrup00) §14.4.7, §E.2-4, [\[Sutter00\]](#Sutter00) §8, §16, [\[Sutter02\]](#Sutter02) §18-19
 
 ## <a name="Sd-consistent"></a>Define Copy, move, and destroy consistently
 
@@ -20937,7 +20964,7 @@ Prefer compiler-generated (including `=default`) special members; only these can
 In rare cases, classes that have members of strange types (such as reference members) are an exception because they have peculiar copy semantics.
 In a class holding a reference, you likely need to write the copy constructor and the assignment operator, but the default destructor already does the right thing. (Note that using a reference member is almost always wrong.)
 
-**References**: [\[C++CS\]](#C++CS) Item 52; [\[Cline99\]](#Cline99) §30.01-14, [\[Koenig97\]](#Koenig97) §4, [\[Stroustrup00\]](#Stroustrup00) §5.5, §10.4, [\[SuttHysl04b\]](#SuttHysl04b)
+**References**: [\[C++CS\]](#CplusplusCS) Item 52; [\[Cline99\]](#Cline99) §30.01-14, [\[Koenig97\]](#Koenig97) §4, [\[Stroustrup00\]](#Stroustrup00) §5.5, §10.4, [\[SuttHysl04b\]](#SuttHysl04b)
 
 Resource management rule summary:
 
@@ -21365,6 +21392,8 @@ Alternatively, we will decide that no change is needed and delete the entry.
 
 # Bibliography
 
+* <a name="Abrahams01"></a>
+  \[Abrahams01]:  D. Abrahams. [Exception-Safety in Generic Components](http://www.boost.org/community/exception_safety.html).
 * <a name="Alexandrescu01"></a>
   \[Alexandrescu01]:  A. Alexandrescu. Modern C++ Design (Addison-Wesley, 2001).
 * <a name="Cplusplus03"></a>
