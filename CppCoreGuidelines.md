@@ -11001,8 +11001,7 @@ If you really need to break out a loop, a `break` is typically better than alter
 
 ##### Example
 
-    switch (eventType)
-    {
+    switch (eventType) {
     case Information:
         update_status_bar();
         break;
@@ -11015,8 +11014,7 @@ If you really need to break out a loop, a `break` is typically better than alter
 
 It is easy to overlook the fallthrough. Be explicit:
 
-    switch (eventType)
-    {
+    switch (eventType) {
     case Information:
         update_status_bar();
         break;
@@ -11030,8 +11028,7 @@ It is easy to overlook the fallthrough. Be explicit:
 
 In C++17, use a `[[fallthrough]]` annotation:
 
-    switch (eventType)
-    {
+    switch (eventType) {
     case Information:
         update_status_bar();
         break;
