@@ -5867,7 +5867,7 @@ After `y = std::move(x)` the value of `y` should be the value `x` had and `x` sh
     class X {   // OK: value semantics
     public:
         X();
-        X(X&& a);          // move X
+        X(X&& a) noexcept;  // move X
         void modify();     // change the value of X
         // ...
         ~X() { delete[] p; }
@@ -5925,7 +5925,7 @@ If `x = x` changes the value of `x`, people will be surprised and bad errors may
         // ...
     };
 
-    Foo& Foo::operator=(Foo&& a)       // OK, but there is a cost
+    Foo& Foo::operator=(Foo&& a) noexcept  // OK, but there is a cost
     {
         if (this == &a) return *this;  // this line is redundant
         s = std::move(a.s);
@@ -16824,8 +16824,8 @@ Flag uses where an explicitly specialized type exactly matches the types of the 
         explicit X(int);
         X(const X&);            // copy
         X operator=(const X&);
-        X(X&&);                 // move
-        X& operator=(X&&);
+        X(X&&) noexcept;                 // move
+        X& operator=(X&&) noexcept;
         ~X();
         // ... no more constructors ...
     };
@@ -20896,7 +20896,7 @@ If you define a move constructor, you must also define a move assignment operato
 
         // BAD: failed to also define a copy assignment operator
 
-        X(x&&) { /* stuff */ }
+        X(x&&) noexcept { /* stuff */ }
 
         // BAD: failed to also define a move assignment operator
     };
