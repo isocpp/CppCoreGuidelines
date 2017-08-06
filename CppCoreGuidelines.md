@@ -10687,7 +10687,7 @@ Requires messy cast-and-macro-laden code to get working right.
 
     void error(int severity)
     {
-        std::cerr << std::endl;
+        std::cerr << '\n' << std::flush;
         std::exit(severity);
     }
 
