@@ -1,10 +1,10 @@
 ---
-layout: default
+layout:default
 ---
 
 # <a name="main"></a>C++ Core Guidelines
 
-July 31, 2017
+August 11, 2017
 
 
 Editors:
@@ -2467,10 +2467,10 @@ Consider:
             intermediate = func2(intermediate);
         }
         switch (flag2 / 10) {
-            case 1: if (flag1 == -1) return finalize(intermediate, 1.171);
-                    break;
-            case 2: return finalize(intermediate, 13.1);
-            default: break;
+        case 1: if (flag1 == -1) return finalize(intermediate, 1.171);
+                break;
+        case 2: return finalize(intermediate, 13.1);
+        default: break;
         }
         return finalize(intermediate, 0.);
     }
@@ -5871,7 +5871,7 @@ After `y = std::move(x)` the value of `y` should be the value `x` had and `x` sh
     class X {   // OK: value semantics
     public:
         X();
-        X(X&& a);          // move X
+        X(X&& a) noexcept;  // move X
         void modify();     // change the value of X
         // ...
         ~X() { delete[] p; }
@@ -5929,7 +5929,7 @@ If `x = x` changes the value of `x`, people will be surprised and bad errors may
         // ...
     };
 
-    Foo& Foo::operator=(Foo&& a)       // OK, but there is a cost
+    Foo& Foo::operator=(Foo&& a) noexcept  // OK, but there is a cost
     {
         if (this == &a) return *this;  // this line is redundant
         s = std::move(a.s);
@@ -11005,8 +11005,7 @@ If you really need to break out a loop, a `break` is typically better than alter
 
 ##### Example
 
-    switch (eventType)
-    {
+    switch (eventType) {
     case Information:
         update_status_bar();
         break;
@@ -11019,8 +11018,7 @@ If you really need to break out a loop, a `break` is typically better than alter
 
 It is easy to overlook the fallthrough. Be explicit:
 
-    switch (eventType)
-    {
+    switch (eventType) {
     case Information:
         update_status_bar();
         break;
@@ -11034,8 +11032,7 @@ It is easy to overlook the fallthrough. Be explicit:
 
 In C++17, use a `[[fallthrough]]` annotation:
 
-    switch (eventType)
-    {
+    switch (eventType) {
     case Information:
         update_status_bar();
         break;
@@ -11155,7 +11152,7 @@ To avoid unpleasant surprises.
 This declares an unnamed `lock` object that immediately goes out of scope at the point of the semicolon.
 This is not an uncommon mistake.
 In particular, this particular example can lead to hard-to find race conditions.
-There are exceedingly clever used of this "idiom", but they are far rarer than the mistakes.
+There are exceedingly clever uses of this "idiom", but they are far rarer than the mistakes.
 
 ##### Note
 
@@ -16831,8 +16828,8 @@ Flag uses where an explicitly specialized type exactly matches the types of the 
         explicit X(int);
         X(const X&);            // copy
         X operator=(const X&);
-        X(X&&);                 // move
-        X& operator=(X&&);
+        X(X&&) noexcept;                 // move
+        X& operator=(X&&) noexcept;
         ~X();
         // ... no more constructors ...
     };
@@ -20903,7 +20900,7 @@ If you define a move constructor, you must also define a move assignment operato
 
         // BAD: failed to also define a copy assignment operator
 
-        X(x&&) { /* stuff */ }
+        X(x&&) noexcept { /* stuff */ }
 
         // BAD: failed to also define a move assignment operator
     };
