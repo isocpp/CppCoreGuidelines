@@ -18483,7 +18483,7 @@ Because, obviously, breaking this rule can lead to undefined behavior, memory co
 ##### Note
 
 This is a semi-philosophical meta-rule, which needs many supporting concrete rules.
-We need it as a umbrella for the more specific rules.
+We need it as an umbrella for the more specific rules.
 
 Summary of more specific rules:
 
