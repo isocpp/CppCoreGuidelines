@@ -12661,10 +12661,10 @@ Using `unsigned` doesn't actually eliminate the possibility of negative values.
 
 ##### Example
 
-    unsigned int u1 = -2;   // OK: the value of u1 is 4294967294
+    unsigned int u1 = -2;   // Valid: the value of u1 is 4294967294
     int i1 = -2;
-    unsigned int u2 = i1;   // OK: the value of u2 is 4294967294
-    int i2 = u2;            // OK: the value of i2 is -2
+    unsigned int u2 = i1;   // Valid: the value of u2 is 4294967294
+    int i2 = u2;            // Valid: the value of i2 is -2
 
 These problems with such (perfectly legal) constructs are hard to spot in real code and are the source of many real-world errors.
 Consider:
