@@ -594,6 +594,7 @@ Now, there is no explicit mention of the iteration mechanism, and the loop opera
 
     for (auto& x : v) { /* modify x */ }
 
+For more details about for-statements, see [ES.71](#Res-for-range).
 Sometimes better still, use a named algorithm:
 
     for_each(v, [](int x) { /* do something with the value of x */ });
