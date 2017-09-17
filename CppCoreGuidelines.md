@@ -9522,6 +9522,7 @@ Statement rules:
 * [ES.84: Don't (try to) declare a local variable with no name](#Res-noname)
 * [ES.85: Make empty statements visible](#Res-empty)
 * [ES.86: Avoid modifying loop control variables inside the body of raw for-loops](#Res-loop-counter)
+* [ES.87: Don't add redundant `==` or `!=` to conditions](#Res-if)
 
 Arithmetic rules:
 
@@ -11210,6 +11211,70 @@ The loop control up front should enable correct reasoning about what is happenin
 ##### Enforcement
 
 Flag variables that are potentially updated (have a non-`const` use) in both the loop control iteration-expression and the loop body.
+
+
+### <a name="es-if"></a>ES.87: Don't add redundant `==` or `!=` to conditions
+
+##### Reason
+
+Doing so avoids verbosity and eliminats some opportunities for mistakes.
+Helps make style consistent and conventional.
+
+##### Example
+
+By definition, a condition in an `if`-statement, `while`-statement, or a `for`-statement selects between `true` and `false`.
+A numeric value is compared to `0` and a pointer value to `nullptr`.
+
+    if (p) { ... }          // means "if `p` is not `nullptr`, good
+    if (p!=0) { ... }       // means "if `p` is not `nullptr`, redundant `!=0`; bad: don't use 0 for pointers
+    if (p!=nullptr) { ... } // means "if `p` is not `nullptr`, redundant `!=nullptr`, not recommended
+
+Often, `if (p)` is read as "if `p` is valid" which is a direct expression of the programmers intent,
+whereas `if (p!=nullptr)` would be a long-winded workaround.
+
+##### Example
+
+This rule is especially useful when a declaration is used as a condition
+
+    if (auto pc = dynamic_cast<Circle>(ps)) { ... } // execute is ps points to a kind of Circle, good
+
+    if (auto pc = dynamic_cast<Circle>(ps); pc!=nullptr) { ... } // not recommended
+
+##### Example
+
+Note that implicit conversions to bool are applied in conditions.
+For example:
+
+    for (string s; cin>>s; ) v.push_back(s);
+
+This invokes `istream`'s `operator bool()`.
+
+##### Example, bad
+
+It has been noted that
+
+    if(strcmp(p1,p2)) { ... }   // are the two C-style strings equal? (mistake!)
+
+is a common beginners error.
+If you use C-style strings, you must know the `<cstring>` functions well.
+Being verbose and writing 
+
+    if(strcmp(p1,p2)!=0) { ... }   // are the two C-style strings equal? (mistake!)
+
+would not save you.
+
+##### Note
+
+The opposite condition is most easily expressed using a negation:
+
+    if (!p) { ... }         // means "if `p` is`nullptr`, good
+    if (p==0) { ... }       // means "if `p` is `nullptr`, redundant `!=0`; bad: don't use `0` for pointers
+    if (p==nullptr) { ... } // means "if `p` is `nullptr`, redundant `==nullptr`, not recommended
+
+##### Enforcement
+
+Easy, just check for redundant use of `!=` and `==` in conditions.
+
 
 ## ES.expr: Expressions
 
