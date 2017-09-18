@@ -10108,7 +10108,7 @@ Many such errors are introduced during maintenance years after the initial imple
 
 ##### Exception
 
-It you are declaring an object that is just about to be initialized from input, initializing it would cause a double initialization.
+If you are declaring an object that is just about to be initialized from input, initializing it would cause a double initialization.
 However, beware that this may leave uninitialized data beyond the input -- and that has been a fertile source of errors and security breaches:
 
     constexpr int max = 8 * 1024;
