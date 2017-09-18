@@ -1,6 +1,6 @@
 # <a name="main"></a>C++ Core Guidelines
 
-September 17, 2017
+September 18, 2017
 
 
 Editors:
@@ -11213,11 +11213,11 @@ The loop control up front should enable correct reasoning about what is happenin
 Flag variables that are potentially updated (have a non-`const` use) in both the loop control iteration-expression and the loop body.
 
 
-### <a name="es-if"></a>ES.87: Don't add redundant `==` or `!=` to conditions
+### <a name="Res-if"></a>ES.87: Don't add redundant `==` or `!=` to conditions
 
 ##### Reason
 
-Doing so avoids verbosity and eliminats some opportunities for mistakes.
+Doing so avoids verbosity and eliminates some opportunities for mistakes.
 Helps make style consistent and conventional.
 
 ##### Example
