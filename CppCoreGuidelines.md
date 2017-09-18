@@ -1199,7 +1199,7 @@ Interface rule summary:
 * [I.8: Prefer `Ensures()` for expressing postconditions](#Ri-ensures)
 * [I.9: If an interface is a template, document its parameters using concepts](#Ri-concepts)
 * [I.10: Use exceptions to signal a failure to perform a required task](#Ri-except)
-* [I.11: Never transfer ownership by a raw pointer (`T*`)](#Ri-raw)
+* [I.11: Never transfer ownership by a raw pointer (`T*`) or reference (`T&`)](#Ri-raw)
 * [I.12: Declare a pointer that must not be null as `not_null`](#Ri-nullptr)
 * [I.13: Do not pass an array as a single pointer](#Ri-array)
 * [I.22: Avoid complex initialization of global objects](#Ri-global-init)
@@ -1772,7 +1772,7 @@ We don't consider "performance" a valid reason not to use exceptions.
 * (Not enforceable) This is a philosophical guideline that is infeasible to check directly.
 * Look for `errno`.
 
-### <a name="Ri-raw"></a>I.11: Never transfer ownership by a raw pointer (`T*`)
+### <a name="Ri-raw"></a>I.11: Never transfer ownership by a raw pointer (`T*`) or reference (`T&`)
 
 ##### Reason
 
@@ -4391,7 +4391,6 @@ Destructor rules:
 * [C.31: All resources acquired by a class must be released by the class's destructor](#Rc-dtor-release)
 * [C.32: If a class has a raw pointer (`T*`) or reference (`T&`), consider whether it might be owning](#Rc-dtor-ptr)
 * [C.33: If a class has an owning pointer member, define or `=delete` a destructor](#Rc-dtor-ptr2)
-* [C.34: If a class has an owning reference member, define or `=delete` a destructor](#Rc-dtor-ref)
 * [C.35: A base class with a virtual function needs a virtual destructor](#Rc-dtor-virtual)
 * [C.36: A destructor may not fail](#Rc-dtor-fail)
 * [C.37: Make destructors `noexcept`](#Rc-dtor-noexcept)
@@ -4766,63 +4765,6 @@ That would sometimes require non-trivial code changes and may affect ABIs.
 * A class with a pointer data member is suspect.
 * A class with an `owner<T>` should define its default operations.
 
-### <a name="Rc-dtor-ref"></a>C.34: If a class has an owning reference member, define a destructor
-
-##### Reason
-
-A reference member may represent a resource.
-It should not do so, but in older code, that's common.
-See [pointer members and destructors](#Rc-dtor-ptr).
-Also, copying may lead to slicing.
-
-##### Example, bad
-
-    class Handle {  // Very suspect
-        Shape& s;   // use reference rather than pointer to prevent rebinding
-                    // BAD: vague about ownership of *p
-        // ...
-    public:
-        Handle(Shape& ss) : s{ss} { /* ... */ }
-        // ...
-    };
-
-The problem of whether `Handle` is responsible for the destruction of its `Shape` is the same as for [the pointer case](#Rc-dtor-ptr):
-If the `Handle` owns the object referred to by `s` it must have a destructor.
-
-##### Example
-
-    class Handle {        // OK
-        owner<Shape&> s;  // use reference rather than pointer to prevent rebinding
-        // ...
-    public:
-        Handle(Shape& ss) : s{ss} { /* ... */ }
-        ~Handle() { delete &s; }
-        // ...
-    };
-
-Independently of whether `Handle` owns its `Shape`, we must consider the default copy operations suspect:
-
-    // the Handle had better own the Circle or we have a leak
-    Handle x {*new Circle{p1, 17}};
-
-    Handle y {*new Triangle{p1, p2, p3}};
-    x = y;     // the default assignment will try *x.s = *y.s
-
-That `x = y` is highly suspect.
-Assigning a `Triangle` to a `Circle`?
-Unless `Shape` has its [copy assignment `=deleted`](#Rc-copy-virtual), only the `Shape` part of `Triangle` is copied into the `Circle`.
-
-##### Note
-
-Why not just require all owning references to be replaced by "smart pointers"?
-Changing from references to smart pointers implies code changes.
-We don't (yet) have smart references.
-Also, that may affect ABIs.
-
-##### Enforcement
-
-* A class with a reference data member is suspect.
-* A class with an `owner<T>` reference should define its default operations.
 
 ### <a name="Rc-dtor-virtual"></a>C.35: A base class destructor should be either public and virtual, or protected and nonvirtual
 
@@ -19840,7 +19782,7 @@ These types allow the user to distinguish between owning and non-owning pointers
 
 These "views" are never owners.
 
-References are never owners. Note: References have many opportunities to outlive the objects they refer to (returning a local variable by reference, holding a reference to an element of a vector and doing `push_back`, binding to `std::max(x, y + 1)`, etc. The Lifetime safety profile aims to address those things, but even so `owner<T&>` does not make sense and is discouraged.
+References are never owners (see [R.4](#Rr-ref). Note: References have many opportunities to outlive the objects they refer to (returning a local variable by reference, holding a reference to an element of a vector and doing `push_back`, binding to `std::max(x, y + 1)`, etc. The Lifetime safety profile aims to address those things, but even so `owner<T&>` does not make sense and is discouraged.
 
 The names are mostly ISO standard-library style (lower case and underscore):
 
