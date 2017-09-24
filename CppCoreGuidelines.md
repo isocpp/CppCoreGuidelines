@@ -6789,7 +6789,7 @@ First we devise a hierarchy of interface classes:
 
     class Circle : public Shape {   // pure interface
     public:
-        int radius() = 0;
+        virutal int radius() = 0;
         // ...
     };
 
@@ -6799,13 +6799,13 @@ To make this interface useful, we must provide its implementation classes (here,
     public:
         // constructors, destructor
         // ...
-        virtual Point center() const { /* ... */ }
-        virtual Color color() const { /* ... */ }
+        Point center() const override { /* ... */ }
+        Color color() const override { /* ... */ }
 
-        virtual void rotate(int) { /* ... */ }
-        virtual void move(Point p) { /* ... */ }
+        void rotate(int) override { /* ... */ }
+        void move(Point p) override { /* ... */ }
 
-        virtual void redraw() { /* ... */ }
+        void redraw() override { /* ... */ }
 
         // ...
     };
@@ -6817,7 +6817,7 @@ but bear with us because this is just a simple example of a technique aimed at m
     public:
         // constructors, destructor
 
-        int radius() { /* ... */ }
+        radius() override { /* ... */ }
         // ...
     };
 
