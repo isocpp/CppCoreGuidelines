@@ -6817,7 +6817,7 @@ but bear with us because this is just a simple example of a technique aimed at m
     public:
         // constructors, destructor
 
-        radius() override { /* ... */ }
+        int radius() override { /* ... */ }
         // ...
     };
 
