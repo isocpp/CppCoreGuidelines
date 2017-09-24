@@ -6789,7 +6789,7 @@ First we devise a hierarchy of interface classes:
 
     class Circle : public Shape {   // pure interface
     public:
-        virutal int radius() = 0;
+        virtual int radius() = 0;
         // ...
     };
 
