@@ -11167,9 +11167,9 @@ Helps make style consistent and conventional.
 By definition, a condition in an `if`-statement, `while`-statement, or a `for`-statement selects between `true` and `false`.
 A numeric value is compared to `0` and a pointer value to `nullptr`.
 
-    if (p) { ... }          // means "if `p` is not `nullptr`, good
-    if (p!=0) { ... }       // means "if `p` is not `nullptr`, redundant `!=0`; bad: don't use 0 for pointers
-    if (p!=nullptr) { ... } // means "if `p` is not `nullptr`, redundant `!=nullptr`, not recommended
+    if (p) { /* ... */ }          // means "if `p` is not `nullptr`, good
+    if (p!=0) { /* ... */ }       // means "if `p` is not `nullptr`, redundant `!=0`; bad: don't use 0 for pointers
+    if (p!=nullptr) { /* ... */ } // means "if `p` is not `nullptr`, redundant `!=nullptr`, not recommended
 
 Often, `if (p)` is read as "if `p` is valid" which is a direct expression of the programmers intent,
 whereas `if (p!=nullptr)` would be a long-winded workaround.
@@ -11209,9 +11209,9 @@ would not save you.
 
 The opposite condition is most easily expressed using a negation:
 
-    if (!p) { ... }         // means "if `p` is`nullptr`, good
-    if (p==0) { ... }       // means "if `p` is `nullptr`, redundant `!=0`; bad: don't use `0` for pointers
-    if (p==nullptr) { ... } // means "if `p` is `nullptr`, redundant `==nullptr`, not recommended
+    if (!p) { /* ... */ }         // means "if `p` is`nullptr`, good
+    if (p==0) { /* ... */ }       // means "if `p` is `nullptr`, redundant `!=0`; bad: don't use `0` for pointers
+    if (p==nullptr) { /* ... */ } // means "if `p` is `nullptr`, redundant `==nullptr`, not recommended
 
 ##### Enforcement
 
