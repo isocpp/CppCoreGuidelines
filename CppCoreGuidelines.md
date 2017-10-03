@@ -10666,560 +10666,6 @@ This is basically the way `printf` is implemented.
 * Flag `#include <cstdarg>` and `#include <stdarg.h>`
 
 
-## ES.stmt: Statements
-
-Statements control the flow of control (except for function calls and exception throws, which are expressions).
-
-### <a name="Res-switch-if"></a>ES.70: Prefer a `switch`-statement to an `if`-statement when there is a choice
-
-##### Reason
-
-* Readability.
-* Efficiency: A `switch` compares against constants and is usually better optimized than a series of tests in an `if`-`then`-`else` chain.
-* A `switch` enables some heuristic consistency checking. For example, have all values of an `enum` been covered? If not, is there a `default`?
-
-##### Example
-
-    void use(int n)
-    {
-        switch (n) {   // good
-        case 0:   // ...
-        case 7:   // ...
-        }
-    }
-
-rather than:
-
-    void use2(int n)
-    {
-        if (n == 0)   // bad: if-then-else chain comparing against a set of constants
-            // ...
-        else if (n == 7)
-            // ...
-    }
-
-##### Enforcement
-
-Flag `if`-`then`-`else` chains that check against constants (only).
-
-### <a name="Res-for-range"></a>ES.71: Prefer a range-`for`-statement to a `for`-statement when there is a choice
-
-##### Reason
-
-Readability. Error prevention. Efficiency.
-
-##### Example
-
-    for (int i = 0; i < v.size(); ++i)   // bad
-            cout << v[i] << '\n';
-
-    for (auto p = v.begin(); p != v.end(); ++p)   // bad
-        cout << *p << '\n';
-
-    for (auto& x : v)    // OK
-        cout << x << '\n';
-
-    for (int i = 1; i < v.size(); ++i) // touches two elements: can't be a range-for
-        cout << v[i] + v[i - 1] << '\n';
-
-    for (int i = 0; i < v.size(); ++i) // possible side effect: can't be a range-for
-        cout << f(v, &v[i]) << '\n';
-
-    for (int i = 0; i < v.size(); ++i) { // body messes with loop variable: can't be a range-for
-        if (i % 2 == 0)
-            continue;   // skip even elements
-        else
-            cout << v[i] << '\n';
-    }
-
-A human or a good static analyzer may determine that there really isn't a side effect on `v` in `f(v, &v[i])` so that the loop can be rewritten.
-
-"Messing with the loop variable" in the body of a loop is typically best avoided.
-
-##### Note
-
-Don't use expensive copies of the loop variable of a range-`for` loop:
-
-    for (string s : vs) // ...
-
-This will copy each elements of `vs` into `s`. Better:
-
-    for (string& s : vs) // ...
-
-Better still, if the loop variable isn't modified or copied:
-
-    for (const string& s : vs) // ...
-
-##### Enforcement
-
-Look at loops, if a traditional loop just looks at each element of a sequence, and there are no side effects on what it does with the elements, rewrite the loop to a ranged-`for` loop.
-
-### <a name="Res-for-while"></a>ES.72: Prefer a `for`-statement to a `while`-statement when there is an obvious loop variable
-
-##### Reason
-
-Readability: the complete logic of the loop is visible "up front". The scope of the loop variable can be limited.
-
-##### Example
-
-    for (int i = 0; i < vec.size(); i++) {
-        // do work
-    }
-
-##### Example, bad
-
-    int i = 0;
-    while (i < vec.size()) {
-        // do work
-        i++;
-    }
-
-##### Enforcement
-
-???
-
-### <a name="Res-while-for"></a>ES.73: Prefer a `while`-statement to a `for`-statement when there is no obvious loop variable
-
-##### Reason
-
-Readability.
-
-##### Example
-
-    int events = 0;
-    for (; wait_for_event(); ++events) {  // bad, confusing
-        // ...
-    }
-
-The "event loop" is misleading because the `events` counter has nothing to do with the loop condition (`wait_for_event()`).
-Better
-
-    int events = 0;
-    while (wait_for_event()) {      // better
-        ++events;
-        // ...
-    }
-
-##### Enforcement
-
-Flag actions in `for`-initializers and `for`-increments that do not relate to the `for`-condition.
-
-### <a name="Res-for-init"></a>ES.74: Prefer to declare a loop variable in the initializer part of a `for`-statement
-
-##### Reason
-
-Limit the loop variable visibility to the scope of the loop.
-Avoid using the loop variable for other purposes after the loop.
-
-##### Example
-
-    for (int i = 0; i < 100; ++i) {   // GOOD: i var is visible only inside the loop
-        // ...
-    }
-
-##### Example, don't
-
-    int j;                            // BAD: j is visible outside the loop
-    for (j = 0; j < 100; ++j) {
-        // ...
-    }
-    // j is still visible here and isn't needed
-
-**See also**: [Don't use a variable for two unrelated purposes](#Res-recycle)
-
-##### Example
-
-    for (string s; cin >> s; ) {
-        cout << s << '\n';
-    }
-
-##### Enforcement
-
-Warn when a variable modified inside the `for`-statement is declared outside the loop and not being used outside the loop.
-
-**Discussion**: Scoping the loop variable to the loop body also helps code optimizers greatly. Recognizing that the induction variable
-is only accessible in the loop body unblocks optimizations such as hoisting, strength reduction, loop-invariant code motion, etc.
-
-### <a name="Res-do"></a>ES.75: Avoid `do`-statements
-
-##### Reason
-
-Readability, avoidance of errors.
-The termination condition is at the end (where it can be overlooked) and the condition is not checked the first time through.
-
-##### Example
-
-    int x;
-    do {
-        cin >> x;
-        // ...
-    } while (x < 0);
-
-##### Note
-
-Yes, there are genuine examples where a `do`-statement is a clear statement of a solution, but also many bugs.
-
-##### Enforcement
-
-Flag `do`-statements.
-
-### <a name="Res-goto"></a>ES.76: Avoid `goto`
-
-##### Reason
-
-Readability, avoidance of errors. There are better control structures for humans; `goto` is for machine generated code.
-
-##### Exception
-
-Breaking out of a nested loop.
-In that case, always jump forwards.
-
-    for (int i = 0; i < imax; ++i)
-        for (int j = 0; j < jmax; ++j) {
-            if (a[i][j] > elem_max) goto finished;
-            // ...
-        }
-    finished:
-    // ...
-
-##### Example, bad
-
-There is a fair amount of use of the C goto-exit idiom:
-
-    void f()
-    {
-        // ...
-            goto exit;
-        // ...
-            goto exit;
-        // ...
-    exit:
-        // ... common cleanup code ...
-    }
-
-This is an ad-hoc simulation of destructors.
-Declare your resources with handles with destructors that clean up.
-If for some reason you cannot handle all cleanup with destructors for the variables used,
-consider `gsl::finally()` as a cleaner and more reliable alternative to `goto exit`
-
-##### Enforcement
-
-* Flag `goto`. Better still flag all `goto`s that do not jump from a nested loop to the statement immediately after a nest of loops.
-
-### <a name="Res-continue"></a>ES.77: Minimize the use of `break` and `continue` in loops
-
-##### Reason
-
- In a non-trivial loop body, it is easy to overlook a `break` or a `continue`.
-
- A `break` in a loop has a dramatically different meaning than a `break` in a `switch`-statement
- (and you can have `switch`-statement in a loop and a loop in a `switch`-case).
-
-##### Example
-
-    ???
-
-##### Alternative
-
-Often, a loop that requires a `break` is a good candidate for a function (algorithm), in which case the `break` becomes a `return`.
-
-    ???
-
-Often. a loop that uses `continue` can equivalently and as clearly be expressed by an `if`-statement.
-
-    ???
-
-##### Note
-
-If you really need to break out a loop, a `break` is typically better than alternatives such as [modifying the loop variable](#Res-loop-counter) or a [`goto`](#Res-goto):
-
-
-##### Enforcement
-
-???
-
-### <a name="Res-break"></a>ES.78: Always end a non-empty `case` with a `break`
-
-##### Reason
-
- Accidentally leaving out a `break` is a fairly common bug.
- A deliberate fallthrough is a maintenance hazard.
-
-##### Example
-
-    switch (eventType) {
-    case Information:
-        update_status_bar();
-        break;
-    case Warning:
-        write_event_log();
-    case Error:
-        display_error_window(); // Bad
-        break;
-    }
-
-It is easy to overlook the fallthrough. Be explicit:
-
-    switch (eventType) {
-    case Information:
-        update_status_bar();
-        break;
-    case Warning:
-        write_event_log();
-        // fallthrough
-    case Error:
-        display_error_window(); // Bad
-        break;
-    }
-
-In C++17, use a `[[fallthrough]]` annotation:
-
-    switch (eventType) {
-    case Information:
-        update_status_bar();
-        break;
-    case Warning:
-        write_event_log();
-        [[fallthrough]];        // C++17
-    case Error:
-        display_error_window(); // Bad
-        break;
-    }
-
-##### Note
-
-Multiple case labels of a single statement is OK:
-
-    switch (x) {
-    case 'a':
-    case 'b':
-    case 'f':
-        do_something(x);
-        break;
-    }
-
-##### Enforcement
-
-Flag all fallthroughs from non-empty `case`s.
-
-### <a name="Res-default"></a>ES.79: Use `default` to handle common cases (only)
-
-##### Reason
-
- Code clarity.
- Improved opportunities for error detection.
-
-##### Example
-
-    enum E { a, b, c , d };
-
-    void f1(E x)
-    {
-        switch (x) {
-        case a:
-            do_something();
-            break;
-        case b:
-            do_something_else();
-            break;
-        default:
-            take_the_default_action();
-            break;
-        }
-    }
-
-Here it is clear that there is a default action and that cases `a` and `b` are special.
-
-##### Example
-
-But what if there is no default action and you mean to handle only specific cases?
-In that case, have an empty default or else it is impossible to know if you meant to handle all cases:
-
-    void f2(E x)
-    {
-        switch (x) {
-        case a:
-            do_something();
-            break;
-        case b:
-            do_something_else();
-            break;
-        default:
-            // do nothing for the rest of the cases
-            break;
-        }
-    }
-
-If you leave out the `default`, a maintainer and/or a compiler may reasonably assume that you intended to handle all cases:
-
-    void f2(E x)
-    {
-        switch (x) {
-        case a:
-            do_something();
-            break;
-        case b:
-        case c:
-            do_something_else();
-            break;
-        }
-    }
-
-Did you forget case `d` or deliberately leave it out?
-Forgetting a case typically happens when a case is added to an enumeration and the person doing so fails to add it to every
-switch over the enumerators.
-
-##### Enforcement
-
-Flag `switch`-statements over an enumeration that don't handle all enumerators and do not have a `default`.
-This may yield too many false positives in some code bases; if so, flag only `switch`es that handle most but not all cases
-(that was the strategy of the very first C++ compiler).
-
-### <a name="Res-noname"></a>ES.84: Don't (try to) declare a local variable with no name
-
-##### Reason
-
-There is no such thing.
-What looks to a human like a variable without a name is to the compiler a statement consisting of a temporary that immediately goes out of scope.
-To avoid unpleasant surprises.
-
-##### Example, bad
-
-    void f()
-    {
-        lock<mutex>{mx};   // Bad
-        // ...
-    }
-
-This declares an unnamed `lock` object that immediately goes out of scope at the point of the semicolon.
-This is not an uncommon mistake.
-In particular, this particular example can lead to hard-to find race conditions.
-There are exceedingly clever uses of this "idiom", but they are far rarer than the mistakes.
-
-##### Note
-
-Unnamed function arguments are fine.
-
-##### Enforcement
-
-Flag statements that are just a temporary
-
-### <a name="Res-empty"></a>ES.85: Make empty statements visible
-
-##### Reason
-
-Readability.
-
-##### Example
-
-    for (i = 0; i < max; ++i);   // BAD: the empty statement is easily overlooked
-    v[i] = f(v[i]);
-
-    for (auto x : v) {           // better
-        // nothing
-    }
-    v[i] = f(v[i]);
-
-##### Enforcement
-
-Flag empty statements that are not blocks and don't contain comments.
-
-### <a name="Res-loop-counter"></a>ES.86: Avoid modifying loop control variables inside the body of raw for-loops
-
-##### Reason
-
-The loop control up front should enable correct reasoning about what is happening inside the loop. Modifying loop counters in both the iteration-expression and inside the body of the loop is a perennial source of surprises and bugs.
-
-##### Example
-
-    for (int i = 0; i < 10; ++i) {
-        // no updates to i -- ok
-    }
-
-    for (int i = 0; i < 10; ++i) {
-        //
-        if (/* something */) ++i; // BAD
-        //
-    }
-
-    bool skip = false;
-    for (int i = 0; i < 10; ++i) {
-        if (skip) { skip = false; continue; }
-        //
-        if (/* something */) skip = true;  // Better: using two variable for two concepts.
-        //
-    }
-
-##### Enforcement
-
-Flag variables that are potentially updated (have a non-`const` use) in both the loop control iteration-expression and the loop body.
-
-
-### <a name="Res-if"></a>ES.87: Don't add redundant `==` or `!=` to conditions
-
-##### Reason
-
-Doing so avoids verbosity and eliminates some opportunities for mistakes.
-Helps make style consistent and conventional.
-
-##### Example
-
-By definition, a condition in an `if`-statement, `while`-statement, or a `for`-statement selects between `true` and `false`.
-A numeric value is compared to `0` and a pointer value to `nullptr`.
-
-    // These all mean "if `p` is not `nullptr`"
-    if (p) { ... }            // good
-    if (p != 0) { ... }       // redundant `!=0`; bad: don't use 0 for pointers
-    if (p != nullptr) { ... } // redundant `!=nullptr`, not recommended
-
-Often, `if (p)` is read as "if `p` is valid" which is a direct expression of the programmers intent,
-whereas `if (p != nullptr)` would be a long-winded workaround.
-
-##### Example
-
-This rule is especially useful when a declaration is used as a condition
-
-    if (auto pc = dynamic_cast<Circle>(ps)) { ... } // execute is ps points to a kind of Circle, good
-
-    if (auto pc = dynamic_cast<Circle>(ps); pc != nullptr) { ... } // not recommended
-
-##### Example
-
-Note that implicit conversions to bool are applied in conditions.
-For example:
-
-    for (string s; cin >> s; ) v.push_back(s);
-
-This invokes `istream`'s `operator bool()`.
-
-##### Example, bad
-
-It has been noted that
-
-    if(strcmp(p1, p2)) { ... }   // are the two C-style strings equal? (mistake!)
-
-is a common beginners error.
-If you use C-style strings, you must know the `<cstring>` functions well.
-Being verbose and writing 
-
-    if(strcmp(p1, p2) != 0) { ... }   // are the two C-style strings equal? (mistake!)
-
-would not save you.
-
-##### Note
-
-The opposite condition is most easily expressed using a negation:
-
-    // These all mean "if `p` is `nullptr`"
-    if (!p) { ... }           // good
-    if (p == 0) { ... }       // redundant `!= 0`; bad: don't use `0` for pointers
-    if (p == nullptr) { ... } // redundant `== nullptr`, not recommended
-
-##### Enforcement
-
-Easy, just check for redundant use of `!=` and `==` in conditions.
-
-
 ## ES.expr: Expressions
 
 Expressions manipulate values.
@@ -12455,6 +11901,562 @@ This rule is part of the [lifetime profile](#Pro.lifetime)
 * Flag a dereference of a pointer that may have been invalidated by assigning a `nullptr`
 * Flag a dereference of a pointer that may have been invalidated by a `delete`
 * Flag a dereference to a pointer to a container element that may have been invalidated by dereference
+
+
+## ES.stmt: Statements
+
+Statements control the flow of control (except for function calls and exception throws, which are expressions).
+
+### <a name="Res-switch-if"></a>ES.70: Prefer a `switch`-statement to an `if`-statement when there is a choice
+
+##### Reason
+
+* Readability.
+* Efficiency: A `switch` compares against constants and is usually better optimized than a series of tests in an `if`-`then`-`else` chain.
+* A `switch` enables some heuristic consistency checking. For example, have all values of an `enum` been covered? If not, is there a `default`?
+
+##### Example
+
+    void use(int n)
+    {
+        switch (n) {   // good
+        case 0:   // ...
+        case 7:   // ...
+        }
+    }
+
+rather than:
+
+    void use2(int n)
+    {
+        if (n == 0)   // bad: if-then-else chain comparing against a set of constants
+            // ...
+        else if (n == 7)
+            // ...
+    }
+
+##### Enforcement
+
+Flag `if`-`then`-`else` chains that check against constants (only).
+
+### <a name="Res-for-range"></a>ES.71: Prefer a range-`for`-statement to a `for`-statement when there is a choice
+
+##### Reason
+
+Readability. Error prevention. Efficiency.
+
+##### Example
+
+    for (int i = 0; i < v.size(); ++i)   // bad
+            cout << v[i] << '\n';
+
+    for (auto p = v.begin(); p != v.end(); ++p)   // bad
+        cout << *p << '\n';
+
+    for (auto& x : v)    // OK
+        cout << x << '\n';
+
+    for (int i = 1; i < v.size(); ++i) // touches two elements: can't be a range-for
+        cout << v[i] + v[i - 1] << '\n';
+
+    for (int i = 0; i < v.size(); ++i) // possible side effect: can't be a range-for
+        cout << f(v, &v[i]) << '\n';
+
+    for (int i = 0; i < v.size(); ++i) { // body messes with loop variable: can't be a range-for
+        if (i % 2 == 0)
+            continue;   // skip even elements
+        else
+            cout << v[i] << '\n';
+    }
+
+A human or a good static analyzer may determine that there really isn't a side effect on `v` in `f(v, &v[i])` so that the loop can be rewritten.
+
+"Messing with the loop variable" in the body of a loop is typically best avoided.
+
+##### Note
+
+Don't use expensive copies of the loop variable of a range-`for` loop:
+
+    for (string s : vs) // ...
+
+This will copy each elements of `vs` into `s`. Better:
+
+    for (string& s : vs) // ...
+
+Better still, if the loop variable isn't modified or copied:
+
+    for (const string& s : vs) // ...
+
+##### Enforcement
+
+Look at loops, if a traditional loop just looks at each element of a sequence, and there are no side effects on what it does with the elements, rewrite the loop to a ranged-`for` loop.
+
+### <a name="Res-for-while"></a>ES.72: Prefer a `for`-statement to a `while`-statement when there is an obvious loop variable
+
+##### Reason
+
+Readability: the complete logic of the loop is visible "up front". The scope of the loop variable can be limited.
+
+##### Example
+
+    for (int i = 0; i < vec.size(); i++) {
+        // do work
+    }
+
+##### Example, bad
+
+    int i = 0;
+    while (i < vec.size()) {
+        // do work
+        i++;
+    }
+
+##### Enforcement
+
+???
+
+### <a name="Res-while-for"></a>ES.73: Prefer a `while`-statement to a `for`-statement when there is no obvious loop variable
+
+##### Reason
+
+Readability.
+
+##### Example
+
+    int events = 0;
+    for (; wait_for_event(); ++events) {  // bad, confusing
+        // ...
+    }
+
+The "event loop" is misleading because the `events` counter has nothing to do with the loop condition (`wait_for_event()`).
+Better
+
+    int events = 0;
+    while (wait_for_event()) {      // better
+        ++events;
+        // ...
+    }
+
+##### Enforcement
+
+Flag actions in `for`-initializers and `for`-increments that do not relate to the `for`-condition.
+
+### <a name="Res-for-init"></a>ES.74: Prefer to declare a loop variable in the initializer part of a `for`-statement
+
+##### Reason
+
+Limit the loop variable visibility to the scope of the loop.
+Avoid using the loop variable for other purposes after the loop.
+
+##### Example
+
+    for (int i = 0; i < 100; ++i) {   // GOOD: i var is visible only inside the loop
+        // ...
+    }
+
+##### Example, don't
+
+    int j;                            // BAD: j is visible outside the loop
+    for (j = 0; j < 100; ++j) {
+        // ...
+    }
+    // j is still visible here and isn't needed
+
+**See also**: [Don't use a variable for two unrelated purposes](#Res-recycle)
+
+##### Example
+
+    for (string s; cin >> s; ) {
+        cout << s << '\n';
+    }
+
+##### Enforcement
+
+Warn when a variable modified inside the `for`-statement is declared outside the loop and not being used outside the loop.
+
+**Discussion**: Scoping the loop variable to the loop body also helps code optimizers greatly. Recognizing that the induction variable
+is only accessible in the loop body unblocks optimizations such as hoisting, strength reduction, loop-invariant code motion, etc.
+
+### <a name="Res-do"></a>ES.75: Avoid `do`-statements
+
+##### Reason
+
+Readability, avoidance of errors.
+The termination condition is at the end (where it can be overlooked) and the condition is not checked the first time through.
+
+##### Example
+
+    int x;
+    do {
+        cin >> x;
+        // ...
+    } while (x < 0);
+
+##### Note
+
+Yes, there are genuine examples where a `do`-statement is a clear statement of a solution, but also many bugs.
+
+##### Enforcement
+
+Flag `do`-statements.
+
+### <a name="Res-goto"></a>ES.76: Avoid `goto`
+
+##### Reason
+
+Readability, avoidance of errors. There are better control structures for humans; `goto` is for machine generated code.
+
+##### Exception
+
+Breaking out of a nested loop.
+In that case, always jump forwards.
+
+    for (int i = 0; i < imax; ++i)
+        for (int j = 0; j < jmax; ++j) {
+            if (a[i][j] > elem_max) goto finished;
+            // ...
+        }
+    finished:
+    // ...
+
+##### Example, bad
+
+There is a fair amount of use of the C goto-exit idiom:
+
+    void f()
+    {
+        // ...
+            goto exit;
+        // ...
+            goto exit;
+        // ...
+    exit:
+        // ... common cleanup code ...
+    }
+
+This is an ad-hoc simulation of destructors.
+Declare your resources with handles with destructors that clean up.
+If for some reason you cannot handle all cleanup with destructors for the variables used,
+consider `gsl::finally()` as a cleaner and more reliable alternative to `goto exit`
+
+##### Enforcement
+
+* Flag `goto`. Better still flag all `goto`s that do not jump from a nested loop to the statement immediately after a nest of loops.
+
+### <a name="Res-continue"></a>ES.77: Minimize the use of `break` and `continue` in loops
+
+##### Reason
+
+ In a non-trivial loop body, it is easy to overlook a `break` or a `continue`.
+
+ A `break` in a loop has a dramatically different meaning than a `break` in a `switch`-statement
+ (and you can have `switch`-statement in a loop and a loop in a `switch`-case).
+
+##### Example
+
+    ???
+
+##### Alternative
+
+Often, a loop that requires a `break` is a good candidate for a function (algorithm), in which case the `break` becomes a `return`.
+
+    ???
+
+Often. a loop that uses `continue` can equivalently and as clearly be expressed by an `if`-statement.
+
+    ???
+
+##### Note
+
+If you really need to break out a loop, a `break` is typically better than alternatives such as [modifying the loop variable](#Res-loop-counter) or a [`goto`](#Res-goto):
+
+
+##### Enforcement
+
+???
+
+### <a name="Res-break"></a>ES.78: Always end a non-empty `case` with a `break`
+
+##### Reason
+
+ Accidentally leaving out a `break` is a fairly common bug.
+ A deliberate fallthrough is a maintenance hazard.
+
+##### Example
+
+    switch (eventType) {
+    case Information:
+        update_status_bar();
+        break;
+    case Warning:
+        write_event_log();
+    case Error:
+        display_error_window(); // Bad
+        break;
+    }
+
+It is easy to overlook the fallthrough. Be explicit:
+
+    switch (eventType) {
+    case Information:
+        update_status_bar();
+        break;
+    case Warning:
+        write_event_log();
+        // fallthrough
+    case Error:
+        display_error_window(); // Bad
+        break;
+    }
+
+In C++17, use a `[[fallthrough]]` annotation:
+
+    switch (eventType) {
+    case Information:
+        update_status_bar();
+        break;
+    case Warning:
+        write_event_log();
+        [[fallthrough]];        // C++17
+    case Error:
+        display_error_window(); // Bad
+        break;
+    }
+
+##### Note
+
+Multiple case labels of a single statement is OK:
+
+    switch (x) {
+    case 'a':
+    case 'b':
+    case 'f':
+        do_something(x);
+        break;
+    }
+
+##### Enforcement
+
+Flag all fallthroughs from non-empty `case`s.
+
+### <a name="Res-default"></a>ES.79: Use `default` to handle common cases (only)
+
+##### Reason
+
+ Code clarity.
+ Improved opportunities for error detection.
+
+##### Example
+
+    enum E { a, b, c , d };
+
+    void f1(E x)
+    {
+        switch (x) {
+        case a:
+            do_something();
+            break;
+        case b:
+            do_something_else();
+            break;
+        default:
+            take_the_default_action();
+            break;
+        }
+    }
+
+Here it is clear that there is a default action and that cases `a` and `b` are special.
+
+##### Example
+
+But what if there is no default action and you mean to handle only specific cases?
+In that case, have an empty default or else it is impossible to know if you meant to handle all cases:
+
+    void f2(E x)
+    {
+        switch (x) {
+        case a:
+            do_something();
+            break;
+        case b:
+            do_something_else();
+            break;
+        default:
+            // do nothing for the rest of the cases
+            break;
+        }
+    }
+
+If you leave out the `default`, a maintainer and/or a compiler may reasonably assume that you intended to handle all cases:
+
+    void f2(E x)
+    {
+        switch (x) {
+        case a:
+            do_something();
+            break;
+        case b:
+        case c:
+            do_something_else();
+            break;
+        }
+    }
+
+Did you forget case `d` or deliberately leave it out?
+Forgetting a case typically happens when a case is added to an enumeration and the person doing so fails to add it to every
+switch over the enumerators.
+
+##### Enforcement
+
+Flag `switch`-statements over an enumeration that don't handle all enumerators and do not have a `default`.
+This may yield too many false positives in some code bases; if so, flag only `switch`es that handle most but not all cases
+(that was the strategy of the very first C++ compiler).
+
+### <a name="Res-noname"></a>ES.84: Don't (try to) declare a local variable with no name
+
+##### Reason
+
+There is no such thing.
+What looks to a human like a variable without a name is to the compiler a statement consisting of a temporary that immediately goes out of scope.
+To avoid unpleasant surprises.
+
+##### Example, bad
+
+    void f()
+    {
+        lock<mutex>{mx};   // Bad
+        // ...
+    }
+
+This declares an unnamed `lock` object that immediately goes out of scope at the point of the semicolon.
+This is not an uncommon mistake.
+In particular, this particular example can lead to hard-to find race conditions.
+There are exceedingly clever uses of this "idiom", but they are far rarer than the mistakes.
+
+##### Note
+
+Unnamed function arguments are fine.
+
+##### Enforcement
+
+Flag statements that are just a temporary
+
+### <a name="Res-empty"></a>ES.85: Make empty statements visible
+
+##### Reason
+
+Readability.
+
+##### Example
+
+    for (i = 0; i < max; ++i);   // BAD: the empty statement is easily overlooked
+    v[i] = f(v[i]);
+
+    for (auto x : v) {           // better
+        // nothing
+    }
+    v[i] = f(v[i]);
+
+##### Enforcement
+
+Flag empty statements that are not blocks and don't contain comments.
+
+### <a name="Res-loop-counter"></a>ES.86: Avoid modifying loop control variables inside the body of raw for-loops
+
+##### Reason
+
+The loop control up front should enable correct reasoning about what is happening inside the loop. Modifying loop counters in both the iteration-expression and inside the body of the loop is a perennial source of surprises and bugs.
+
+##### Example
+
+    for (int i = 0; i < 10; ++i) {
+        // no updates to i -- ok
+    }
+
+    for (int i = 0; i < 10; ++i) {
+        //
+        if (/* something */) ++i; // BAD
+        //
+    }
+
+    bool skip = false;
+    for (int i = 0; i < 10; ++i) {
+        if (skip) { skip = false; continue; }
+        //
+        if (/* something */) skip = true;  // Better: using two variable for two concepts.
+        //
+    }
+
+##### Enforcement
+
+Flag variables that are potentially updated (have a non-`const` use) in both the loop control iteration-expression and the loop body.
+
+
+### <a name="Res-if"></a>ES.87: Don't add redundant `==` or `!=` to conditions
+
+##### Reason
+
+Doing so avoids verbosity and eliminates some opportunities for mistakes.
+Helps make style consistent and conventional.
+
+##### Example
+
+By definition, a condition in an `if`-statement, `while`-statement, or a `for`-statement selects between `true` and `false`.
+A numeric value is compared to `0` and a pointer value to `nullptr`.
+
+    // These all mean "if `p` is not `nullptr`"
+    if (p) { ... }            // good
+    if (p != 0) { ... }       // redundant `!=0`; bad: don't use 0 for pointers
+    if (p != nullptr) { ... } // redundant `!=nullptr`, not recommended
+
+Often, `if (p)` is read as "if `p` is valid" which is a direct expression of the programmers intent,
+whereas `if (p != nullptr)` would be a long-winded workaround.
+
+##### Example
+
+This rule is especially useful when a declaration is used as a condition
+
+    if (auto pc = dynamic_cast<Circle>(ps)) { ... } // execute is ps points to a kind of Circle, good
+
+    if (auto pc = dynamic_cast<Circle>(ps); pc != nullptr) { ... } // not recommended
+
+##### Example
+
+Note that implicit conversions to bool are applied in conditions.
+For example:
+
+    for (string s; cin >> s; ) v.push_back(s);
+
+This invokes `istream`'s `operator bool()`.
+
+##### Example, bad
+
+It has been noted that
+
+    if(strcmp(p1, p2)) { ... }   // are the two C-style strings equal? (mistake!)
+
+is a common beginners error.
+If you use C-style strings, you must know the `<cstring>` functions well.
+Being verbose and writing 
+
+    if(strcmp(p1, p2) != 0) { ... }   // are the two C-style strings equal? (mistake!)
+
+would not save you.
+
+##### Note
+
+The opposite condition is most easily expressed using a negation:
+
+    // These all mean "if `p` is `nullptr`"
+    if (!p) { ... }           // good
+    if (p == 0) { ... }       // redundant `!= 0`; bad: don't use `0` for pointers
+    if (p == nullptr) { ... } // redundant `== nullptr`, not recommended
+
+##### Enforcement
+
+Easy, just check for redundant use of `!=` and `==` in conditions.
+
+
 
 ## <a name="SS-numbers"></a>Arithmetic
 
