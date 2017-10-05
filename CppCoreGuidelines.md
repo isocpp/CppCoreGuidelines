@@ -4,7 +4,7 @@ layout: default
 
 # <a name="main"></a>C++ Core Guidelines
 
-September 18, 2017
+October 5, 2017
 
 
 Editors:
@@ -12,7 +12,7 @@ Editors:
 * [Bjarne Stroustrup](http://www.stroustrup.com)
 * [Herb Sutter](http://herbsutter.com/)
 
-This document is a very early draft. It is inkorrekt, incompleat, and pÂµÃoorly formatted.
+This document is an early draft. It's known to be incomplet, incorrekt, and has lots of b**a**d **fo**rm~att~ing.
 Had it been an open-source (code) project, this would have been release 0.8.
 Copying, use, modification, and creation of derivative works from this project is licensed under an MIT-style license.
 Contributing to this project requires agreeing to a Contributor License. See the accompanying [LICENSE](LICENSE) file for details.
@@ -1203,7 +1203,7 @@ Interface rule summary:
 * [I.8: Prefer `Ensures()` for expressing postconditions](#Ri-ensures)
 * [I.9: If an interface is a template, document its parameters using concepts](#Ri-concepts)
 * [I.10: Use exceptions to signal a failure to perform a required task](#Ri-except)
-* [I.11: Never transfer ownership by a raw pointer (`T*`)](#Ri-raw)
+* [I.11: Never transfer ownership by a raw pointer (`T*`) or reference (`T&`)](#Ri-raw)
 * [I.12: Declare a pointer that must not be null as `not_null`](#Ri-nullptr)
 * [I.13: Do not pass an array as a single pointer](#Ri-array)
 * [I.22: Avoid complex initialization of global objects](#Ri-global-init)
@@ -1776,7 +1776,7 @@ We don't consider "performance" a valid reason not to use exceptions.
 * (Not enforceable) This is a philosophical guideline that is infeasible to check directly.
 * Look for `errno`.
 
-### <a name="Ri-raw"></a>I.11: Never transfer ownership by a raw pointer (`T*`)
+### <a name="Ri-raw"></a>I.11: Never transfer ownership by a raw pointer (`T*`) or reference (`T&`)
 
 ##### Reason
 
@@ -4395,7 +4395,6 @@ Destructor rules:
 * [C.31: All resources acquired by a class must be released by the class's destructor](#Rc-dtor-release)
 * [C.32: If a class has a raw pointer (`T*`) or reference (`T&`), consider whether it might be owning](#Rc-dtor-ptr)
 * [C.33: If a class has an owning pointer member, define or `=delete` a destructor](#Rc-dtor-ptr2)
-* [C.34: If a class has an owning reference member, define or `=delete` a destructor](#Rc-dtor-ref)
 * [C.35: A base class with a virtual function needs a virtual destructor](#Rc-dtor-virtual)
 * [C.36: A destructor may not fail](#Rc-dtor-fail)
 * [C.37: Make destructors `noexcept`](#Rc-dtor-noexcept)
@@ -4770,63 +4769,6 @@ That would sometimes require non-trivial code changes and may affect ABIs.
 * A class with a pointer data member is suspect.
 * A class with an `owner<T>` should define its default operations.
 
-### <a name="Rc-dtor-ref"></a>C.34: If a class has an owning reference member, define a destructor
-
-##### Reason
-
-A reference member may represent a resource.
-It should not do so, but in older code, that's common.
-See [pointer members and destructors](#Rc-dtor-ptr).
-Also, copying may lead to slicing.
-
-##### Example, bad
-
-    class Handle {  // Very suspect
-        Shape& s;   // use reference rather than pointer to prevent rebinding
-                    // BAD: vague about ownership of *p
-        // ...
-    public:
-        Handle(Shape& ss) : s{ss} { /* ... */ }
-        // ...
-    };
-
-The problem of whether `Handle` is responsible for the destruction of its `Shape` is the same as for [the pointer case](#Rc-dtor-ptr):
-If the `Handle` owns the object referred to by `s` it must have a destructor.
-
-##### Example
-
-    class Handle {        // OK
-        owner<Shape&> s;  // use reference rather than pointer to prevent rebinding
-        // ...
-    public:
-        Handle(Shape& ss) : s{ss} { /* ... */ }
-        ~Handle() { delete &s; }
-        // ...
-    };
-
-Independently of whether `Handle` owns its `Shape`, we must consider the default copy operations suspect:
-
-    // the Handle had better own the Circle or we have a leak
-    Handle x {*new Circle{p1, 17}};
-
-    Handle y {*new Triangle{p1, p2, p3}};
-    x = y;     // the default assignment will try *x.s = *y.s
-
-That `x = y` is highly suspect.
-Assigning a `Triangle` to a `Circle`?
-Unless `Shape` has its [copy assignment `=deleted`](#Rc-copy-virtual), only the `Shape` part of `Triangle` is copied into the `Circle`.
-
-##### Note
-
-Why not just require all owning references to be replaced by "smart pointers"?
-Changing from references to smart pointers implies code changes.
-We don't (yet) have smart references.
-Also, that may affect ABIs.
-
-##### Enforcement
-
-* A class with a reference data member is suspect.
-* A class with an `owner<T>` reference should define its default operations.
 
 ### <a name="Rc-dtor-virtual"></a>C.35: A base class destructor should be either public and virtual, or protected and nonvirtual
 
@@ -6851,7 +6793,7 @@ First we devise a hierarchy of interface classes:
 
     class Circle : public Shape {   // pure interface
     public:
-        int radius() = 0;
+        virtual int radius() = 0;
         // ...
     };
 
@@ -6861,13 +6803,13 @@ To make this interface useful, we must provide its implementation classes (here,
     public:
         // constructors, destructor
         // ...
-        virtual Point center() const { /* ... */ }
-        virtual Color color() const { /* ... */ }
+        Point center() const override { /* ... */ }
+        Color color() const override { /* ... */ }
 
-        virtual void rotate(int) { /* ... */ }
-        virtual void move(Point p) { /* ... */ }
+        void rotate(int) override { /* ... */ }
+        void move(Point p) override { /* ... */ }
 
-        virtual void redraw() { /* ... */ }
+        void redraw() override { /* ... */ }
 
         // ...
     };
@@ -6879,7 +6821,7 @@ but bear with us because this is just a simple example of a technique aimed at m
     public:
         // constructors, destructor
 
-        int radius() { /* ... */ }
+        int radius() override { /* ... */ }
         // ...
     };
 
@@ -7915,6 +7857,45 @@ Note that `std::addressof()` always yields a built-in pointer.
 
 Tricky. Warn if `&` is user-defined without also defining `->` for the result type.
 
+### <a name="Ro-overload"></a>C.167: Use an operator for an operation with its conventional meaning
+
+##### Reason
+
+Readability. Convention. Reusability. Support for generic code
+
+##### Example
+
+    void cout_my_class(const My_class& c) // confusing, not conventional,not generic
+    {
+        std::cout << /* class members here */;
+    }
+
+    std::ostream& operator<<(std::ostream& os, const my_class& c) // OK
+    {
+        return os << /* class members here */;
+    }
+
+By itself, `cout_my_class` would be OK, but it is not usable/composable with code that rely on the `<<` convention for output:
+
+    My_class var { /* ... */ };
+    // ...
+    cout << "var = " << var << '\n';
+
+##### Note
+
+There are strong and vigorous conventions for the meaning most operators, such as
+
+* comparisons (`==`, `!=`, `<`, `<=`, `>`, and `>=`),
+* arithmetic operations (`+`, `-`, `*`, `/`, and `%`)
+* access operations (`.`, `->`, unary `*`, and `[]`)
+* assignment (`=`)
+
+Don't define those unconventionally and don't invent your own names for them.
+
+##### Enforcement
+
+Tricky. Requires semantic insight.
+
 ### <a name="Ro-namespace"></a>C.168: Define overloaded operators in the namespace of their operands
 
 ##### Reason
@@ -7979,45 +7960,6 @@ This is a special case of the rule that [helper functions should be defined in t
 ##### Enforcement
 
 * Flag operator definitions that are not it the namespace of their operands
-
-### <a name="Ro-overload"></a>C.167: Use an operator for an operation with its conventional meaning
-
-##### Reason
-
-Readability. Convention. Reusability. Support for generic code
-
-##### Example
-
-    void cout_my_class(const My_class& c) // confusing, not conventional,not generic
-    {
-        std::cout << /* class members here */;
-    }
-
-    std::ostream& operator<<(std::ostream& os, const my_class& c) // OK
-    {
-        return os << /* class members here */;
-    }
-
-By itself, `cout_my_class` would be OK, but it is not usable/composable with code that rely on the `<<` convention for output:
-
-    My_class var { /* ... */ };
-    // ...
-    cout << "var = " << var << '\n';
-
-##### Note
-
-There are strong and vigorous conventions for the meaning most operators, such as
-
-* comparisons (`==`, `!=`, `<`, `<=`, `>`, and `>=`),
-* arithmetic operations (`+`, `-`, `*`, `/`, and `%`)
-* access operations (`.`, `->`, unary `*`, and `[]`)
-* assignment (`=`)
-
-Don't define those unconventionally and don't invent your own names for them.
-
-##### Enforcement
-
-Tricky. Requires semantic insight.
 
 ### <a name="Ro-lambda"></a>C.170: If you feel like overloading a lambda, use a generic lambda
 
@@ -10170,7 +10112,7 @@ Many such errors are introduced during maintenance years after the initial imple
 
 ##### Exception
 
-It you are declaring an object that is just about to be initialized from input, initializing it would cause a double initialization.
+If you are declaring an object that is just about to be initialized from input, initializing it would cause a double initialization.
 However, beware that this may leave uninitialized data beyond the input -- and that has been a fertile source of errors and security breaches:
 
     constexpr int max = 8 * 1024;
@@ -11229,12 +11171,13 @@ Helps make style consistent and conventional.
 By definition, a condition in an `if`-statement, `while`-statement, or a `for`-statement selects between `true` and `false`.
 A numeric value is compared to `0` and a pointer value to `nullptr`.
 
-    if (p) { ... }          // means "if `p` is not `nullptr`, good
-    if (p!=0) { ... }       // means "if `p` is not `nullptr`, redundant `!=0`; bad: don't use 0 for pointers
-    if (p!=nullptr) { ... } // means "if `p` is not `nullptr`, redundant `!=nullptr`, not recommended
+    // These all mean "if `p` is not `nullptr`"
+    if (p) { ... }            // good
+    if (p != 0) { ... }       // redundant `!=0`; bad: don't use 0 for pointers
+    if (p != nullptr) { ... } // redundant `!=nullptr`, not recommended
 
 Often, `if (p)` is read as "if `p` is valid" which is a direct expression of the programmers intent,
-whereas `if (p!=nullptr)` would be a long-winded workaround.
+whereas `if (p != nullptr)` would be a long-winded workaround.
 
 ##### Example
 
@@ -11242,14 +11185,14 @@ This rule is especially useful when a declaration is used as a condition
 
     if (auto pc = dynamic_cast<Circle>(ps)) { ... } // execute is ps points to a kind of Circle, good
 
-    if (auto pc = dynamic_cast<Circle>(ps); pc!=nullptr) { ... } // not recommended
+    if (auto pc = dynamic_cast<Circle>(ps); pc != nullptr) { ... } // not recommended
 
 ##### Example
 
 Note that implicit conversions to bool are applied in conditions.
 For example:
 
-    for (string s; cin>>s; ) v.push_back(s);
+    for (string s; cin >> s; ) v.push_back(s);
 
 This invokes `istream`'s `operator bool()`.
 
@@ -11257,13 +11200,13 @@ This invokes `istream`'s `operator bool()`.
 
 It has been noted that
 
-    if(strcmp(p1,p2)) { ... }   // are the two C-style strings equal? (mistake!)
+    if(strcmp(p1, p2)) { ... }   // are the two C-style strings equal? (mistake!)
 
 is a common beginners error.
 If you use C-style strings, you must know the `<cstring>` functions well.
 Being verbose and writing 
 
-    if(strcmp(p1,p2)!=0) { ... }   // are the two C-style strings equal? (mistake!)
+    if(strcmp(p1, p2) != 0) { ... }   // are the two C-style strings equal? (mistake!)
 
 would not save you.
 
@@ -11271,9 +11214,10 @@ would not save you.
 
 The opposite condition is most easily expressed using a negation:
 
-    if (!p) { ... }         // means "if `p` is`nullptr`, good
-    if (p==0) { ... }       // means "if `p` is `nullptr`, redundant `!=0`; bad: don't use `0` for pointers
-    if (p==nullptr) { ... } // means "if `p` is `nullptr`, redundant `==nullptr`, not recommended
+    // These all mean "if `p` is `nullptr`"
+    if (!p) { ... }           // good
+    if (p == 0) { ... }       // redundant `!= 0`; bad: don't use `0` for pointers
+    if (p == nullptr) { ... } // redundant `== nullptr`, not recommended
 
 ##### Enforcement
 
@@ -11692,7 +11636,7 @@ A key example is basic narrowing:
 
 ##### Note
 
-The guideline support library offers a `narrow` operation for specifying that narrowing is acceptable and a `narrow` ("narrow if") that throws an exception if a narrowing would throw away information:
+The guideline support library offers a `narrow_cast` operation for specifying that narrowing is acceptable and a `narrow` ("narrow if") that throws an exception if a narrowing would throw away information:
 
     i = narrow_cast<int>(d);   // OK (you asked for it): narrowing: i becomes 7
     i = narrow<int>(d);        // OK: throws narrowing_error
@@ -19844,7 +19788,7 @@ These types allow the user to distinguish between owning and non-owning pointers
 
 These "views" are never owners.
 
-References are never owners. Note: References have many opportunities to outlive the objects they refer to (returning a local variable by reference, holding a reference to an element of a vector and doing `push_back`, binding to `std::max(x, y + 1)`, etc. The Lifetime safety profile aims to address those things, but even so `owner<T&>` does not make sense and is discouraged.
+References are never owners (see [R.4](#Rr-ref). Note: References have many opportunities to outlive the objects they refer to (returning a local variable by reference, holding a reference to an element of a vector and doing `push_back`, binding to `std::max(x, y + 1)`, etc. The Lifetime safety profile aims to address those things, but even so `owner<T&>` does not make sense and is discouraged.
 
 The names are mostly ISO standard-library style (lower case and underscore):
 
