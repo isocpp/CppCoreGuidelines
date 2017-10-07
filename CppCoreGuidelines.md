@@ -8,7 +8,7 @@ Editors:
 * [Bjarne Stroustrup](http://www.stroustrup.com)
 * [Herb Sutter](http://herbsutter.com/)
 
-This document is an early draft. It's known to be incomplet, incorrekt, and has lots of b**a**d **fo**rm~att~ing.
+This document is an early draft. It's known to be incomplet, incorrekt, and has lots of b**a**d **for**~mat~ting.
 Had it been an open-source (code) project, this would have been release 0.8.
 Copying, use, modification, and creation of derivative works from this project is licensed under an MIT-style license.
 Contributing to this project requires agreeing to a Contributor License. See the accompanying [LICENSE](LICENSE) file for details.
