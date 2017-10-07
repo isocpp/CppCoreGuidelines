@@ -1021,7 +1021,7 @@ Time and space that you spend well to achieve a goal (e.g., speed of development
         x.ch = 'a';
         x.s = string(n);    // give x.s space for *p
         for (int i = 0; i < x.s.size(); ++i) x.s[i] = buf[i];  // copy buf into x.s
-        delete buf;
+        delete[] buf;
         return x;
     }
 
@@ -16243,7 +16243,7 @@ and should be used only as building blocks for meaningful concepts, rather than 
     template<typename T>
     concept Addable = has_plus<T>;    // bad; insufficient
 
-    template<Addable N> auto algo(const N& a, const N& b) // use two numbers
+    template<Addable N> auto plus(const N& a, const N& b) // use two numbers
     {
         // ...
         return a + b;
@@ -16273,7 +16273,7 @@ The ability to specify a meaningful semantics is a defining characteristic of a 
                      && has_multiply<T>
                      && has_divide<T>;
 
-    template<Number N> auto algo(const N& a, const N& b) // use two numbers
+    template<Number N> auto plus(const N& a, const N& b) // use two numbers
     {
         // ...
         return a + b;
