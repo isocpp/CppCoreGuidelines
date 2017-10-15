@@ -13399,14 +13399,14 @@ Application concepts are easier to reason about.
         *msg = "Hello";
         // ...
     }
-    
+
     void manual_publishing(std::string* msg)
     {
         // Encapsulates thread functionality into the application task
         std::thread publisher(publish, &msg);
         publisher.join();
     }
-    
+
     void some_fun() {
         std::string  msg;
         std::thread publisher(publish, &msg);     // bad (less expressive and more error-prone)
@@ -13415,7 +13415,7 @@ Application concepts are easier to reason about.
         // ...
         publisher.join();
     }
-    
+
 ##### Note
 
 With the exception of `async()`, the standard-library facilities are low-level, machine-oriented, threads-and-lock level.
