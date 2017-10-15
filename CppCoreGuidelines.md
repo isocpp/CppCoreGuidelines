@@ -13402,7 +13402,7 @@ Application concepts are easier to reason about.
     
     void manual_publishing(std::string* msg)
     {
-	    // Incapsulates thread functionality into the application task
+        // Encapsulates thread functionality into the application task
         std::thread publisher(publish, &msg);
         publisher.join();
     }
