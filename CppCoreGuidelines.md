@@ -13400,18 +13400,10 @@ Application concepts are easier to reason about.
         // ...
     }
 
-    void manual_publishing(std::string* msg)
-    {
-        // Encapsulates thread functionality into the application task
-        std::thread publisher(publish, &msg);
-        publisher.join();
-    }
-
     void some_fun() {
         std::string  msg;
-        std::thread publisher(publish, &msg);     // bad (less expressive and more error-prone)
-        auto pubtask = std::sync(publish, &msg);  // OK
-        manual_publishing(&msg);                  // OK (manually crafted task)
+        std::thread publisher(publish, &msg);      // bad (less expressive and more error-prone)
+        auto pubtask = std::async(publish, &msg);  // OK
         // ...
         publisher.join();
     }
