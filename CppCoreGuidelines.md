@@ -3713,7 +3713,7 @@ Generic lambdas offer a concise way to write function templates and so can be us
 
 ##### Reason
 
-Default arguments simply provides alternative interfaces to a single implementation.
+Default arguments simply provide alternative interfaces to a single implementation.
 There is no guarantee that a set of overloaded functions all implement the same semantics.
 The use of default arguments can avoid code replication.
 
