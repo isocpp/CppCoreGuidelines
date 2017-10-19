@@ -4168,7 +4168,7 @@ All of this decreases readability and complicates maintenance.
 
 ##### Note
 
-Prefer to place the interface first in a class [see](#Rl-order).
+Prefer to place the interface first in a class, [see NL.16](#Rl-order).
 
 ##### Enforcement
 
