@@ -4198,7 +4198,7 @@ This may be exactly what we want, but if we want to enforce a relation among mem
 and enforce that relation (invariant) through constructors and member functions.
 For example:
 
-    struct Distance {
+    class Distance {
     public:
         // ...
         double meters() const { return magnitude*unit; }
