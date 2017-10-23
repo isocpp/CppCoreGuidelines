@@ -18,15 +18,19 @@ def main():
     """
     This script ended up ugly, so in case somebody wants to reimplement, here is the spec that grew by time.
 
-    What it should do it take a markdown file, and split it into more files. A targetfile should have the same number of lines as the original, with source code snippets and markdown non-words removed, for spell-checking.
+    What it should do it take a markdown file, and split it into more files. A targetfile should have the same
+    number of lines as the original, with source code snippets and markdown non-words removed, for spell-checking.
 
     Each code snipped should go into a separate file in codedir.
 
-    Each code snipped should get additional C++ code around it to help compile the line in context, with some heuristic guessing of what is needed around. The wrapping code should have a token in each line allowing other tools to filter out these lines
+    Each code snipped should get additional C++ code around it to help compile the line in context, with
+    some heuristic guessing of what is needed around. The wrapping code should have a token in each line allowing
+    other tools to filter out these lines
 
     The name for each file chosen consists os the section id in the markdown document, a counter for the snippet inside the section.
 
-    Snippets without code (only comments) or containing lines starting with ??? should not yeld files, but the counter for naming snippets should still increment.
+    Snippets without code (only comments) or containing lines starting with ??? should not yeld files,
+    but the counter for naming snippets should still increment.
     """
     parser = argparse.ArgumentParser(description='Split md file into plain text and code blocks')
     parser.add_argument('sourcefile',
