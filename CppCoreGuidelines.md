@@ -1021,7 +1021,7 @@ Time and space that you spend well to achieve a goal (e.g., speed of development
         x.ch = 'a';
         x.s = string(n);    // give x.s space for *p
         for (int i = 0; i < x.s.size(); ++i) x.s[i] = buf[i];  // copy buf into x.s
-        delete buf;
+        delete[] buf;
         return x;
     }
 
@@ -16251,11 +16251,11 @@ and should be used only as building blocks for meaningful concepts, rather than 
 
     int x = 7;
     int y = 9;
-    auto z = plus(x, y);   // z = 16
+    auto z = algo(x, y);   // z = 16
 
     string xx = "7";
     string yy = "9";
-    auto zz = plus(xx, yy);   // zz = "79"
+    auto zz = algo(xx, yy);   // zz = "79"
 
 Maybe the concatenation was expected. More likely, it was an accident. Defining minus equivalently would give dramatically different sets of accepted types.
 This `Addable` violates the mathematical rule that addition is supposed to be commutative: `a+b == b+a`.
@@ -16281,11 +16281,11 @@ The ability to specify a meaningful semantics is a defining characteristic of a 
 
     int x = 7;
     int y = 9;
-    auto z = plus(x, y);   // z = 18
+    auto z = algo(x, y);   // z = 18
 
     string xx = "7";
     string yy = "9";
-    auto zz = plus(xx, yy);   // error: string is not a Number
+    auto zz = algo(xx, yy);   // error: string is not a Number
 
 ##### Note
 
