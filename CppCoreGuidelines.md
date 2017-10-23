@@ -13393,17 +13393,10 @@ Application concepts are easier to reason about.
 
 ##### Example
 
-    void publish(std::string* msg)
-    {
-        // ...
-        *msg = "Hello";
-        // ...
-    }
-
     void some_fun() {
-        std::string  msg;
-        std::thread publisher(publish, &msg);      // bad (less expressive and more error-prone)
-        auto pubtask = std::async(publish, &msg);  // OK
+        std::string  msg, msg2;
+        std::thread publisher([&] { msg = "Hello"; });       // bad (less expressive and more error-prone)
+        auto pubtask = std::async([&] { msg2 = "Hello"; });  // OK
         // ...
         publisher.join();
     }
