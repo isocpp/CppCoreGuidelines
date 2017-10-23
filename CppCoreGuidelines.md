@@ -1696,8 +1696,8 @@ Use the ISO Concepts TS style of requirements specification. For example:
 
 ##### Note
 
-Soon (maybe in 2017), most compilers will be able to check `requires` clauses once the `//` is removed.
-For now, the concept TS is supported only in GCC 6.1.
+Soon (maybe in 2018), most compilers will be able to check `requires` clauses once the `//` is removed.
+For now, the concept TS is supported only in GCC 6.1 and later.
 
 **See also**: [Generic programming](#SS-GP) and [concepts](#SS-t-concepts).
 
