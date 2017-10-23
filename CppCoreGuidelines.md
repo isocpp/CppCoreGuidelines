@@ -4,7 +4,7 @@ layout: default
 
 # <a name="main"></a>C++ Core Guidelines
 
-October 5, 2017
+October 23, 2017
 
 
 Editors:
@@ -12,7 +12,7 @@ Editors:
 * [Bjarne Stroustrup](http://www.stroustrup.com)
 * [Herb Sutter](http://herbsutter.com/)
 
-This document is an early draft. It's known to be incomplet, incorrekt, and has lots of b**a**d **fo**rm~att~ing.
+This document is an early draft. It's known to be incomplet, incorrekt, and has lots of b**a**d **for**~mat~ting.
 Had it been an open-source (code) project, this would have been release 0.8.
 Copying, use, modification, and creation of derivative works from this project is licensed under an MIT-style license.
 Contributing to this project requires agreeing to a Contributor License. See the accompanying [LICENSE](LICENSE) file for details.
@@ -1025,7 +1025,7 @@ Time and space that you spend well to achieve a goal (e.g., speed of development
         x.ch = 'a';
         x.s = string(n);    // give x.s space for *p
         for (int i = 0; i < x.s.size(); ++i) x.s[i] = buf[i];  // copy buf into x.s
-        delete buf;
+        delete[] buf;
         return x;
     }
 
@@ -1700,8 +1700,8 @@ Use the ISO Concepts TS style of requirements specification. For example:
 
 ##### Note
 
-Soon (maybe in 2017), most compilers will be able to check `requires` clauses once the `//` is removed.
-For now, the concept TS is supported only in GCC 6.1.
+Soon (maybe in 2018), most compilers will be able to check `requires` clauses once the `//` is removed.
+For now, the concept TS is supported only in GCC 6.1 and later.
 
 **See also**: [Generic programming](#SS-GP) and [concepts](#SS-t-concepts).
 
@@ -3717,7 +3717,7 @@ Generic lambdas offer a concise way to write function templates and so can be us
 
 ##### Reason
 
-Default arguments simply provides alternative interfaces to a single implementation.
+Default arguments simply provide alternative interfaces to a single implementation.
 There is no guarantee that a set of overloaded functions all implement the same semantics.
 The use of default arguments can avoid code replication.
 
@@ -4172,7 +4172,7 @@ All of this decreases readability and complicates maintenance.
 
 ##### Note
 
-Prefer to place the interface first in a class [see](#Rl-order).
+Prefer to place the interface first in a class, [see NL.16](#Rl-order).
 
 ##### Enforcement
 
@@ -4202,7 +4202,7 @@ This may be exactly what we want, but if we want to enforce a relation among mem
 and enforce that relation (invariant) through constructors and member functions.
 For example:
 
-    struct Distance {
+    class Distance {
     public:
         // ...
         double meters() const { return magnitude*unit; }
@@ -13397,7 +13397,13 @@ Application concepts are easier to reason about.
 
 ##### Example
 
-    ???
+    void some_fun() {
+        std::string  msg, msg2;
+        std::thread publisher([&] { msg = "Hello"; });       // bad (less expressive and more error-prone)
+        auto pubtask = std::async([&] { msg2 = "Hello"; });  // OK
+        // ...
+        publisher.join();
+    }
 
 ##### Note
 
@@ -16255,11 +16261,11 @@ and should be used only as building blocks for meaningful concepts, rather than 
 
     int x = 7;
     int y = 9;
-    auto z = plus(x, y);   // z = 16
+    auto z = algo(x, y);   // z = 16
 
     string xx = "7";
     string yy = "9";
-    auto zz = plus(xx, yy);   // zz = "79"
+    auto zz = algo(xx, yy);   // zz = "79"
 
 Maybe the concatenation was expected. More likely, it was an accident. Defining minus equivalently would give dramatically different sets of accepted types.
 This `Addable` violates the mathematical rule that addition is supposed to be commutative: `a+b == b+a`.
@@ -16285,11 +16291,11 @@ The ability to specify a meaningful semantics is a defining characteristic of a 
 
     int x = 7;
     int y = 9;
-    auto z = plus(x, y);   // z = 18
+    auto z = algo(x, y);   // z = 18
 
     string xx = "7";
     string yy = "9";
-    auto zz = plus(xx, yy);   // error: string is not a Number
+    auto zz = algo(xx, yy);   // error: string is not a Number
 
 ##### Note
 
