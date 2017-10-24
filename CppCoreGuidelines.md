@@ -11722,6 +11722,10 @@ are seriously overused as well as a major source of errors.
 
 If you feel the need for a lot of casts, there may be a fundamental design problem.
 
+##### Exception
+
+Casting to `(void)` is the Standard-sanctioned way to turn off `[[nodiscard]]` warnings. If you are calling a function with a `[[nodiscard]]` return and you deliberately want to discard the result, first think hard about whether that is really a good idea (there is usually a good reason the author of the function or of the return type used `[[nodiscard]]` in the first place), but if you still think it's appropriate and your code reviewer agrees, write `(void)` to turn off the warning.
+
 ##### Alternatives
 
 Casts are widely (mis) used. Modern C++ has rules and constructs that eliminate the need for casts in many contexts, such as
@@ -11732,7 +11736,7 @@ Casts are widely (mis) used. Modern C++ has rules and constructs that eliminate 
 
 ##### Enforcement
 
-* Force the elimination of C-style casts
+* Force the elimination of C-style casts, except on a function with a `[[nodiscard]]` return
 * Warn if there are many functional style casts (there is an obvious problem in quantifying 'many')
 * The [type profile](#Pro-type-reinterpretcast) bans `reinterpret_cast`.
 * Warn against [identity casts](#Pro-type-identitycast) between pointer types, where the source and target types are the same (#Pro-type-identitycast)
