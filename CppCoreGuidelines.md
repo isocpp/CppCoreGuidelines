@@ -17983,7 +17983,7 @@ Source file rule summary:
 * [SF.4: Include `.h` files before other declarations in a file](#Rs-include-order)
 * [SF.5: A `.cpp` file must include the `.h` file(s) that defines its interface](#Rs-consistency)
 * [SF.6: Use `using namespace` directives for transition, for foundation libraries (such as `std`), or within a local scope (only)](#Rs-using)
-* [SF.7: Don't write `using namespace` in a header file](#Rs-using-directive)
+* [SF.7: Don't write `using namespace` at global scope in a header file](#Rs-using-directive)
 * [SF.8: Use `#include` guards for all `.h` files](#Rs-guards)
 * [SF.9: Avoid cyclic dependencies among source files](#Rs-cycles)
 * [SF.10: Avoid dependencies on implicitly `#include`d names](#Rs-implicit)
@@ -18241,11 +18241,11 @@ and M functions each containing a `using namespace X`with N lines of code in tot
 
 Flag multiple `using namespace` directives for different namespaces in a single source file.
 
-### <a name="Rs-using-directive"></a>SF.7: Don't write `using namespace` in a header file
+### <a name="Rs-using-directive"></a>SF.7: Don't write `using namespace` at global scope in a header file
 
 ##### Reason
 
-Doing so takes away an `#include`r's ability to effectively disambiguate and to use alternatives.
+Doing so takes away an `#include`r's ability to effectively disambiguate and to use alternatives. It also makes `#include`d headers order-dependent as they may have different meaning when included in different orders.
 
 ##### Example
 
