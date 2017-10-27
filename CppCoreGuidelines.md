@@ -6530,6 +6530,7 @@ Such as on an ABI (link) boundary.
 ##### Example
 
     struct Device {
+        virtual ~Device() = default;
         virtual void write(span<const char> outbuf) = 0;
         virtual void read(span<char> inbuf) = 0;
     };
