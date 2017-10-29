@@ -10137,7 +10137,7 @@ In the not uncommon case where the input target and the input operation get sepa
 
     int i2 = 0;   // better
     // ...
-    cin >> i;
+    cin >> i2;
 
 A good optimizer should know about input operations and eliminate the redundant operation.
 
@@ -10968,7 +10968,7 @@ It is easy to overlook the fallthrough. Be explicit:
         write_event_log();
         // fallthrough
     case Error:
-        display_error_window(); // Bad
+        display_error_window(); // OK
         break;
     }
 
@@ -10982,7 +10982,7 @@ In C++17, use a `[[fallthrough]]` annotation:
         write_event_log();
         [[fallthrough]];        // C++17
     case Error:
-        display_error_window(); // Bad
+        display_error_window(); // OK
         break;
     }
 
