@@ -2240,7 +2240,7 @@ So, we write a class
         Istream() { }
         Istream(zstring p) :owned{true}, inp{new ifstream{p}} {}            // read from file
         Istream(zstring p, Opt) :owned{true}, inp{new istringstream{p}} {}  // read from command line
-        ~Itream() { if (owned) delete inp; }
+        ~Istream() { if (owned) delete inp; }
         operator istream& () { return *inp; }
     private:
         bool owned = false;
