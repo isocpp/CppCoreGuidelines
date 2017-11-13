@@ -12380,7 +12380,7 @@ Unfortunately, most invalid pointer problems are harder to spot and harder to fi
 
 There is a huge amount of such code.
 Most works -- after lots of testing -- but in isolation it is impossible to tell whether `p` could be the `nullptr`.
-Consequently, it this is also a major source of errors.
+Consequently, this is also a major source of errors.
 There are many approaches to dealing with this potential problem:
 
     void f1(int* p) // deal with nullptr
