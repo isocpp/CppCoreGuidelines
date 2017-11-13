@@ -19060,7 +19060,7 @@ Synchronizing `iostreams` with `printf-style` I/O can be costly.
 
 ### <a name="Rio-endl"></a>SL.io.50: Avoid `endl`
 
-### Reason
+##### Reason
 
 The `endl` manipulator is mostly equivalent to `'\n'` and `"\n"`;
 as most commonly used it simply slows down output by doing redundant `flush()`s.
