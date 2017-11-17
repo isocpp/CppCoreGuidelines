@@ -3835,9 +3835,9 @@ It's confusing. Writing `[=]` in a member function appears to capture by value, 
             // [=,this] and [&,this] are not much better, and confusing
 
             x = 42;
-            lambda(); // calls use(42);
+            lambda(); // calls use(0, 42);
             x = 43;
-            lambda(); // calls use(43);
+            lambda(); // calls use(0, 43);
 
             // ...
 
