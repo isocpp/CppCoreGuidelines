@@ -69,7 +69,8 @@ You can sample rules for specific language features:
 [copy](#Rc-copy-semantics) --
 [move](#Rc-move-semantics) --
 [other operations](#Rc-matched) --
-[default](#Rc-eqdefault)
+[default](#Rc-eqdefault) --
+[delete](#Rc-delete)
 * `class`:
 [data](#Rc-org) --
 [invariant](#Rc-struct) --
