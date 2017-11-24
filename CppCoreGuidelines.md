@@ -679,7 +679,7 @@ You don't need to write error handlers for errors caught at compile time.
     for (Int i = 1; i; i <<= 1)
         ++bits;
     if (bits < 32)
-        cerr << "Int too small\n"
+        cerr << "Int too small\n";
 
 This example fails to achieve what it is trying to achieve (because overflow is undefined) and should be replaced with a simple `static_assert`:
 
