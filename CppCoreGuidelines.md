@@ -679,7 +679,7 @@ You don't need to write error handlers for errors caught at compile time.
     for (Int i = 1; i; i <<= 1)
         ++bits;
     if (bits < 32)
-        cerr << "Int too small\n"
+        cerr << "Int too small\n";
 
 This example fails to achieve what it is trying to achieve (because overflow is undefined) and should be replaced with a simple `static_assert`:
 
@@ -1108,7 +1108,7 @@ Instead, we could use `vector`:
 ##### Note
 
 The standards library and the GSL are examples of this philosophy.
-For example, instead of messing with the arrays, unions, cast, tricky lifetime issues, `gsl::owner`, etc.
+For example, instead of messing with the arrays, unions, cast, tricky lifetime issues, `gsl::owner`, etc.,
 that are needed to implement key abstractions, such as `vector`, `span`, `lock_guard`, and `future`, we use the libraries
 designed and implemented by people with more time and expertise than we usually have.
 Similarly, we can and should design and implement more specialized libraries, rather than leaving the users (often ourselves)
@@ -1249,7 +1249,7 @@ Reporting through non-local variables (e.g., `errno`) is easily ignored. For exa
     // don't: no test of printf's return value
     fprintf(connection, "logging: %d %d %d\n", x, y, s);
 
-What if the connection goes down so that no logging output is produced? See I.??.
+What if the connection goes down so that no logging output is produced? See I.???.
 
 **Alternative**: Throw an exception. An exception cannot be ignored.
 
