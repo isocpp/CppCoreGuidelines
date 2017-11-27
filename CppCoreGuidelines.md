@@ -1249,7 +1249,7 @@ Reporting through non-local variables (e.g., `errno`) is easily ignored. For exa
     // don't: no test of printf's return value
     fprintf(connection, "logging: %d %d %d\n", x, y, s);
 
-What if the connection goes down so that no logging output is produced? See I.??.
+What if the connection goes down so that no logging output is produced? See I.???.
 
 **Alternative**: Throw an exception. An exception cannot be ignored.
 
