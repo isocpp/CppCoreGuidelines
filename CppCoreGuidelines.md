@@ -2314,7 +2314,7 @@ Other function rules:
 * [F.54: If you capture `this`, capture all variables explicitly (no default capture)](#Rf-this-capture)
 * [F.55: Don't use `va_arg` arguments](#F-varargs)
 
-Functions have strong similarities to lambdas and function objects so see also Section ???.
+Functions have strong similarities to lambdas and function objects so see also [C.lambdas: Function objects and lambdas](#SS-lambdas).
 
 ## <a name="SS-fct-def"></a>F.def: Function definitions
 
