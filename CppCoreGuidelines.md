@@ -3565,7 +3565,7 @@ The language guarantees that a `T&` refers to an object, so that testing for `nu
         array<wheel, 4> w;
         // ...
     public:
-        wheel& get_wheel(size_t i) { Expects(i < 4); return w[i]; }
+        wheel& get_wheel(size_t i) { Expects(i < w.size()); return w[i]; }
         // ...
     };
 
