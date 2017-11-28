@@ -5403,7 +5403,7 @@ An initialization explicitly states that initialization, rather than assignment,
     class A {   // Good
         string s1;
     public:
-        A() : s1{"Hello, "} { }    // GOOD: directly construct
+        A(string n) : s1{n} { }    // GOOD: directly construct
         // ...
     };
 
@@ -5412,7 +5412,7 @@ An initialization explicitly states that initialization, rather than assignment,
     class B {   // BAD
         string s1;
     public:
-        B() { s1 = "Hello, "; }   // BAD: default constructor followed by assignment
+        B(string n) { s1 = n; }   // BAD: default constructor followed by assignment
         // ...
     };
 
