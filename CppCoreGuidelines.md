@@ -2253,7 +2253,7 @@ Presumably, a bit of checking for potential errors would be added in real code.
 ##### Enforcement
 
 * Hard, it is hard to decide what rule-breaking code is essential
-* flag rule suppression that enable rule-violations to cross interfaces
+* Flag rule suppression that enable rule-violations to cross interfaces
 
 # <a name="S-functions"></a>F: Functions
 
