@@ -2219,7 +2219,7 @@ We might write
 
 This violated the rule [against uninitialized variables](#Res-always),
 the rule against [ignoring ownership](#Ri-raw),
-and the rule [against magic constants](#Res-magic) .
+and the rule [against magic constants](#Res-magic).
 In particular, someone has to remember to somewhere write
 
     if (owned) delete inp;
