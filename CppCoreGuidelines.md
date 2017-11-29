@@ -1736,7 +1736,7 @@ Many traditional interface functions (e.g., UNIX signal handlers) use error code
 
 ##### Alternative
 
-If you can't use exceptions (e.g. because your code is full of old-style raw-pointer use or because there are hard-real-time constraints), consider using a style that returns a pair of values:
+If you can't use exceptions (e.g., because your code is full of old-style raw-pointer use or because there are hard-real-time constraints), consider using a style that returns a pair of values:
 
     int val;
     int error_code;
@@ -1789,7 +1789,7 @@ Consider:
         return res;
     }
 
-Who deletes the returned `X`? The problem would be harder to spot if compute returned a reference.
+Who deletes the returned `X`? The problem would be harder to spot if `compute` returned a reference.
 Consider returning the result by value (use move semantics if the result is large):
 
     vector<double> compute(args)  // good
@@ -2219,7 +2219,7 @@ We might write
 
 This violated the rule [against uninitialized variables](#Res-always),
 the rule against [ignoring ownership](#Ri-raw),
-and the rule [against magic constants](#Res-magic) .
+and the rule [against magic constants](#Res-magic).
 In particular, someone has to remember to somewhere write
 
     if (owned) delete inp;
@@ -2253,7 +2253,7 @@ Presumably, a bit of checking for potential errors would be added in real code.
 ##### Enforcement
 
 * Hard, it is hard to decide what rule-breaking code is essential
-* flag rule suppression that enable rule-violations to cross interfaces
+* Flag rule suppression that enable rule-violations to cross interfaces
 
 # <a name="S-functions"></a>F: Functions
 
