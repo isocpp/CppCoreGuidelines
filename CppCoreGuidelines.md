@@ -1736,7 +1736,7 @@ Many traditional interface functions (e.g., UNIX signal handlers) use error code
 
 ##### Alternative
 
-If you can't use exceptions (e.g. because your code is full of old-style raw-pointer use or because there are hard-real-time constraints), consider using a style that returns a pair of values:
+If you can't use exceptions (e.g., because your code is full of old-style raw-pointer use or because there are hard-real-time constraints), consider using a style that returns a pair of values:
 
     int val;
     int error_code;
