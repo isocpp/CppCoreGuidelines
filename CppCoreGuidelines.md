@@ -82,7 +82,7 @@ You can sample rules for specific language features:
 * `concept`:
 [rules](#SS-concepts) --
 [in generic programming](#Rt-raise) --
-[template arguments](#RT-concepts) --
+[template arguments](#Rt-concepts) --
 [semantics](#Rt-low)
 * constructor:
 [invariant](#Rc-struct) --
