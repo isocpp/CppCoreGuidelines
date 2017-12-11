@@ -12191,8 +12191,9 @@ If you really need to break out a loop, a `break` is typically better than alter
         break;
     case Warning:
         write_event_log();
+        // Bad - implicit fallthrough
     case Error:
-        display_error_window(); // Bad
+        display_error_window();
         break;
     }
 
@@ -12206,7 +12207,7 @@ It is easy to overlook the fallthrough. Be explicit:
         write_event_log();
         // fallthrough
     case Error:
-        display_error_window(); // Bad
+        display_error_window();
         break;
     }
 
@@ -12220,7 +12221,7 @@ In C++17, use a `[[fallthrough]]` annotation:
         write_event_log();
         [[fallthrough]];        // C++17
     case Error:
-        display_error_window(); // Bad
+        display_error_window();
         break;
     }
 
