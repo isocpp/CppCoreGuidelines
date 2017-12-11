@@ -5968,6 +5968,7 @@ To prevent slicing, because the normal copy operations will copy only the base p
 ##### Example
 
     class B { // GOOD: base class suppresses copying
+    public:
         B(const B&) = delete;
         B& operator=(const B&) = delete;
         virtual unique_ptr<B> clone() { return /* B object */; }
@@ -17868,6 +17869,7 @@ If you intend for a class to match a concept, verifying that early saves users p
 ##### Example
 
     class X {
+    public:
         X() = delete;
         X(const X&) = default;
         X(X&&) = default;
