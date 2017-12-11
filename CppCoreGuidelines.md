@@ -6089,6 +6089,8 @@ A `unique_ptr` can be moved, but not copied. To achieve that its copy operations
         auto pi3 {make()};  // OK, move: the result of make() is an rvalue
     }
 
+Note that deleted methods should be public.
+
 ##### Enforcement
 
 The elimination of a default operation is (should be) based on the desired semantics of the class. Consider such classes suspect, but maintain a "positive list" of classes where a human has asserted that the semantics is correct.
