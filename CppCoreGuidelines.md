@@ -16288,7 +16288,7 @@ The ability to specify a meaningful semantics is a defining characteristic of a 
                      && has_multiply<T>
                      && has_divide<T>;
 
-    template<Number N> auto algo(const N& a, const N& b) // use two numbers
+    template<Number N> auto algo(const N& a, const N& b)
     {
         // ...
         return a + b;
