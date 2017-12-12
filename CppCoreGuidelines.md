@@ -13840,7 +13840,7 @@ This implies that we cannot safely refer to local objects in `use()` from the th
 
 ##### Note
 
-Make "immortal threads" globals, put them in an enclosing scope, or put them on the on the free store rather than `detach()`.
+Make "immortal threads" globals, put them in an enclosing scope, or put them on the free store rather than `detach()`.
 [don't `detach`](#Rconc-detached_thread).
 
 ##### Note
