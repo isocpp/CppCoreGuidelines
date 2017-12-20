@@ -16315,7 +16315,7 @@ Concepts with multiple operations have far lower chance of accidentally matching
 * Flag uses of `enable_if` that appears to simulate single-operation `concepts`.
 
 
-### <a name="RT-operations"></a>T.21: Require a complete set of operations for a concept
+### <a name="Rt-complete"></a>T.21: Require a complete set of operations for a concept
 
 ##### Reason
 
