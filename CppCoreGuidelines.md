@@ -2997,9 +2997,9 @@ Such older advice is now obsolete; it does not add value, and it interferes with
     vector<int> g(const vector<int>& vx)
     {
         // ...
-        f() = vx;   // prevented by the "const"
+        fct() = vx;   // prevented by the "const"
         // ...
-        return f(); // expensive copy: move semantics suppressed by the "const"
+        return fct(); // expensive copy: move semantics suppressed by the "const"
     }
 
 The argument for adding `const` to a return value is that it prevents (very rare) accidental access to a temporary.
