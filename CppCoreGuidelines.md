@@ -19690,6 +19690,7 @@ Type safety profile summary:
 * <a name="Pro-type-avoidcasts"></a>Type.1: [Avoid casts](#Res-casts):  
 <a name="Pro-type-reinterpretcast">a. </a>Don't use `reinterpret_cast`; A strict version of [Avoid casts](#Res-casts) and [prefer named casts](#Res-casts-named).  
 <a name="Pro-type-arithmeticcast">b. </a>Don't use `static_cast` for arithmetic types; A strict version of [Avoid casts](#Res-casts) and [prefer named casts](#Res-casts-named).  
+Except for Windows API related types (like ``LRESULT`` <-> ``LONG`` related casts) as those always require C style casts or ``static_cast`` otherwise Microsoft's Compiler flips out and gives ``error C2440`` because it cant convert one of their base types to another type that an specific Windows API function requires.
 <a name="Pro-type-identitycast">c. </a>Don't cast between pointer types where the source type and the target type are the same; A strict version of [Avoid casts](#Res-casts).
 <a name="Pro-type-implicitpointercast">d. </a>Don't cast between pointer types when the conversion could be implicit; A strict version of [Avoid casts](#Res-casts).
 * <a name="Pro-type-downcast"></a>Type.2: Don't use `static_cast` to downcast:
