@@ -20,3 +20,5 @@ layout: default
 9. Refresh the http://isocpp.github.io/CppCoreGuidelines/ to verify that the
 build succeeded. If not, check your email! If the page fails to build, you'll 
 get a mail explaining why. 
+
+Note the index on the gh-pages is updated manually.
