@@ -480,14 +480,16 @@ What is expressed in code has defined semantics and can (in principle) be checke
 The first declaration of `month` is explicit about returning a `Month` and about not modifying the state of the `Date` object.
 The second version leaves the reader guessing and opens more possibilities for uncaught bugs.
 
-##### Example
+##### Example; bad
+
+This loop is a restricted form of `std::find`:
 
     void f(vector<string>& v)
     {
         string val;
         cin >> val;
         // ...
-        int index = -1;                    // bad
+        int index = -1;                    // bad, plus should use gsl::index
         for (int i = 0; i < v.size(); ++i) {
             if (v[i] == val) {
                 index = i;
@@ -497,7 +499,8 @@ The second version leaves the reader guessing and opens more possibilities for u
         // ...
     }
 
-That loop is a restricted form of `std::find`.
+##### Example; good
+
 A much clearer expression of intent would be:
 
     void f(vector<string>& v)
@@ -579,7 +582,7 @@ Unless the intent of some code is stated (e.g., in names or comments), it is imp
 
 ##### Example
 
-    int i = 0;
+    gsl::index i = 0;
     while (i < v.size()) {
         // ... do something with v[i] ...
     }
@@ -1020,7 +1023,7 @@ Time and space that you spend well to achieve a goal (e.g., speed of development
         X x;
         x.ch = 'a';
         x.s = string(n);    // give x.s space for *p
-        for (int i = 0; i < x.s.size(); ++i) x.s[i] = buf[i];  // copy buf into x.s
+        for (gsl::index i = 0; i < x.s.size(); ++i) x.s[i] = buf[i];  // copy buf into x.s
         delete[] buf;
         return x;
     }
@@ -3260,7 +3263,7 @@ A `span` represents a range of elements, but how do we manipulate elements of th
         for (int x : s) cout << x << '\n';
 
         // C-style traversal (potentially checked)
-        for (int i = 0; i < s.size(); ++i) cout << s[i] << '\n';
+        for (gsl::index i = 0; i < s.size(); ++i) cout << s[i] << '\n';
 
         // random access (potentially checked)
         s[7] = 9;
@@ -3565,7 +3568,7 @@ The language guarantees that a `T&` refers to an object, so that testing for `nu
         array<wheel, 4> w;
         // ...
     public:
-        wheel& get_wheel(size_t i) { Expects(i < w.size()); return w[i]; }
+        wheel& get_wheel(int i) { Expects(i < w.size()); return w[i]; }
         // ...
     };
 
@@ -9479,7 +9482,7 @@ Arithmetic rules:
 * [ES.104: Don't underflow](#Res-underflow)
 * [ES.105: Don't divide by zero](#Res-zero)
 * [ES.106: Don't try to avoid negative values by using `unsigned`](#Res-nonnegative)
-* [ES.107: Don't use `unsigned` for subscripts](#Res-subscripts)
+* [ES.107: Don't use `unsigned` for subscripts, prefer `gsl::index`](#Res-subscripts)
 
 ### <a name="Res-lib"></a>ES.1: Prefer the standard library to other libraries and to "handcrafted code"
 
@@ -9675,7 +9678,7 @@ Conventional short, local names increase readability:
     template<typename T>    // good
     void print(ostream& os, const vector<T>& v)
     {
-        for (int i = 0; i < v.size(); ++i)
+        for (gsl::index i = 0; i < v.size(); ++i)
             os << v[i] << '\n';
     }
 
@@ -9684,9 +9687,9 @@ An index is conventionally called `i` and there is no hint about the meaning of 
     template<typename Element_type>   // bad: verbose, hard to read
     void print(ostream& target_stream, const vector<Element_type>& current_vector)
     {
-        for (int current_element_index = 0;
-                current_element_index < current_vector.size();
-                ++current_element_index
+        for (gsl::index current_element_index = 0;
+             current_element_index < current_vector.size();
+             ++current_element_index
         )
         target_stream << current_vector[current_element_index] << '\n';
     }
@@ -9861,7 +9864,6 @@ Flag variable and constant declarations with multiple declarators (e.g., `int* p
 Consider:
 
     auto p = v.begin();   // vector<int>::iterator
-    auto s = v.size();
     auto h = t.future();
     auto q = make_unique<int[]>(s);
     auto f = [](int x){ return x + 10; };
@@ -11951,7 +11953,7 @@ Readability. Error prevention. Efficiency.
 
 ##### Example
 
-    for (int i = 0; i < v.size(); ++i)   // bad
+    for (gsl::index i = 0; i < v.size(); ++i)   // bad
             cout << v[i] << '\n';
 
     for (auto p = v.begin(); p != v.end(); ++p)   // bad
@@ -11960,13 +11962,13 @@ Readability. Error prevention. Efficiency.
     for (auto& x : v)    // OK
         cout << x << '\n';
 
-    for (int i = 1; i < v.size(); ++i) // touches two elements: can't be a range-for
+    for (gsl::index i = 1; i < v.size(); ++i) // touches two elements: can't be a range-for
         cout << v[i] + v[i - 1] << '\n';
 
-    for (int i = 0; i < v.size(); ++i) // possible side effect: can't be a range-for
+    for (gsl::index i = 0; i < v.size(); ++i) // possible side effect: can't be a range-for
         cout << f(v, &v[i]) << '\n';
 
-    for (int i = 0; i < v.size(); ++i) { // body messes with loop variable: can't be a range-for
+    for (gsl::index i = 0; i < v.size(); ++i) { // body messes with loop variable: can't be a range-for
         if (i % 2 == 0)
             continue;   // skip even elements
         else
@@ -12003,7 +12005,7 @@ Readability: the complete logic of the loop is visible "up front". The scope of 
 
 ##### Example
 
-    for (int i = 0; i < vec.size(); i++) {
+    for (gsl::index i = 0; i < vec.size(); i++) {
         // do work
     }
 
@@ -12485,11 +12487,13 @@ It is harder to spot the problem in more realistic examples.
 ##### Note
 
 Unfortunately, C++ uses signed integers for array subscripts and the standard library uses unsigned integers for container subscripts.
-This precludes consistency.
+This precludes consistency. Use `gsl::index` for subscripts; [see ES.107](#Res-subscripts).
 
 ##### Enforcement
 
-Compilers already know and sometimes warn.
+* Compilers already know and sometimes warn.
+* (To avoid noise) Do not flag on a mixed signed/unsigned comparison where one of the arguments is a call to container `.size()` and the other is `ptrdiff_t`.
+
 
 ### <a name="Res-unsigned"></a>ES.101: Use unsigned types for bit manipulation
 
@@ -12556,25 +12560,29 @@ is going to be surprising for many programmers.
 ##### Example
 
 The standard library uses unsigned types for subscripts.
-The build-in array uses signed types for subscripts.
+The built-in array uses signed types for subscripts.
 This makes surprises (and bugs) inevitable.
 
     int a[10];
     for (int i = 0; i < 10; ++i) a[i] = i;
     vector<int> v(10);
-    // compares signed to unsigned; some compilers warn
-    for (int i = 0; v.size() < 10; ++i) v[i] = i;
+    // compares signed to unsigned; some compilers warn, but we should not
+    for (gsl::index i = 0; v.size() < 10; ++i) v[i] = i;
 
     int a2[-2];         // error: negative size
 
     // OK, but the number of ints (4294967294) is so large that we should get an exception
     vector<int> v2(-2);
 
+ Use `gsl::index` for subscripts; [see ES.107](#Res-subscripts).
+
 ##### Enforcement
 
 * Flag mixed signed and unsigned arithmetic
 * Flag results of unsigned arithmetic assigned to or printed as signed.
 * Flag unsigned literals (e.g. `-2`) used as container subscripts.
+* (To avoid noise) Do not flag on a mixed signed/unsigned comparison where one of the arguments is a call to container `.size()` and the other is `ptrdiff_t`.
+
 
 ### <a name="Res-overflow"></a>ES.103: Don't overflow
 
@@ -12738,33 +12746,47 @@ For example
 Hard: there is a lot of code using `unsigned` and we don't offer a practical positive number type.
 
 
-### <a name="Res-subscripts"></a>ES.107: Don't use `unsigned` for subscripts
+### <a name="Res-subscripts"></a>ES.107: Don't use `unsigned` for subscripts, prefer `gsl::index`
 
 ##### Reason
 
 To avoid signed/unsigned confusion.
 To enable better optimization.
 To enable better error detection.
+To avoid the pitfalls with `auto` and `int`.
 
 ##### Example, bad
 
-    vector<int> vec {1, 2, 3, 4, 5};
+    vector<int> vec = /*...*/;
 
-    for (int i = 0; i < vec.size(); i += 2)                    // mix int and unsigned
+    for (int i = 0; i < vec.size(); i += 2)                    // may not be big enough
         cout << vec[i] << '\n';
     for (unsigned i = 0; i < vec.size(); i += 2)               // risk wraparound
         cout << vec[i] << '\n';
+    for (auto i = 0; i < vec.size(); i += 2)                   // may not be big enough
+        cout << vec[i] << '\n';
     for (vector<int>::size_type i = 0; i < vec.size(); i += 2) // verbose
         cout << vec[i] << '\n';
-    for (auto i = 0; i < vec.size(); i += 2)                   // mix int and unsigned
+    for (auto i = vec.size()-1; i >= 0; i -= 2)                // bug
+        cout << vec[i] << '\n';
+    for (int i = vec.size()-1; i >= 0; i -= 2)                 // may not be big enough
+        cout << vec[i] << '\n';
+
+##### Example, good
+
+    vector<int> vec = /*...*/;
+
+    for (gsl::index i = 0; i < vec.size(); i += 2)             // ok
+        cout << vec[i] << '\n';
+    for (gsl::index i = vec.size()-1; i >= 0; i -= 2)          // ok
         cout << vec[i] << '\n';
 
 ##### Note
 
 The built-in array uses signed subscripts.
 The standard-library containers use unsigned subscripts.
-Thus, no perfect and fully compatible solution is possible.
-Given the known problems with unsigned and signed/unsigned mixtures, better stick to (signed) integers.
+Thus, no perfect and fully compatible solution is possible (unless and until the standard-library containers change to use signed subscripts someday in the future).
+Given the known problems with unsigned and signed/unsigned mixtures, better stick to (signed) integers of a sufficient size, which is guaranteed by `gsl::index`.
 
 ##### Example
 
@@ -12772,7 +12794,7 @@ Given the known problems with unsigned and signed/unsigned mixtures, better stic
     struct My_container {
     public:
         // ...
-        T& operator[](int i);    // not unsigned
+        T& operator[](gsl::index i);    // not unsigned
         // ...
     };
 
@@ -12790,7 +12812,11 @@ Alternatives for users
 
 ##### Enforcement
 
-Very tricky as long as the standard-library containers get it wrong.
+* Very tricky as long as the standard-library containers get it wrong.
+* (To avoid noise) Do not flag on a mixed signed/unsigned comparison where one of the arguments is a call to container `.size()` and the other is `ptrdiff_t`.
+
+
+
 
 # <a name="S-performance"></a>Per: Performance
 
@@ -14691,7 +14717,7 @@ C++ implementations tend to be optimized based on the assumption that exceptions
     int find_index(vector<string>& vec, const string& x)
     {
         try {
-            for (int i = 0; i < vec.size(); ++i)
+            for (gsl::index i = 0; i < vec.size(); ++i)
                 if (vec[i] == x) throw i;  // found x
         } catch (int i) {
             return i;
