@@ -3,7 +3,7 @@ layout: default
 ---
 # <a name="main"></a>C++ Core Guidelines
 
-December 11, 2017
+December 26, 2017
 
 
 Editors:
@@ -3000,9 +3000,9 @@ Such older advice is now obsolete; it does not add value, and it interferes with
     vector<int> g(const vector<int>& vx)
     {
         // ...
-        f() = vx;   // prevented by the "const"
+        fct() = vx;   // prevented by the "const"
         // ...
-        return f(); // expensive copy: move semantics suppressed by the "const"
+        return fct(); // expensive copy: move semantics suppressed by the "const"
     }
 
 The argument for adding `const` to a return value is that it prevents (very rare) accidental access to a temporary.
@@ -13843,7 +13843,7 @@ This implies that we cannot safely refer to local objects in `use()` from the th
 
 ##### Note
 
-Make "immortal threads" globals, put them in an enclosing scope, or put them on the on the free store rather than `detach()`.
+Make "immortal threads" globals, put them in an enclosing scope, or put them on the free store rather than `detach()`.
 [don't `detach`](#Rconc-detached_thread).
 
 ##### Note
@@ -16302,7 +16302,7 @@ The ability to specify a meaningful semantics is a defining characteristic of a 
 
     int x = 7;
     int y = 9;
-    auto z = algo(x, y);   // z = 18
+    auto z = algo(x, y);   // z = 16
 
     string xx = "7";
     string yy = "9";
@@ -16318,7 +16318,7 @@ Concepts with multiple operations have far lower chance of accidentally matching
 * Flag uses of `enable_if` that appears to simulate single-operation `concepts`.
 
 
-### <a name="RT-operations"></a>T.21: Require a complete set of operations for a concept
+### <a name="Rt-complete"></a>T.21: Require a complete set of operations for a concept
 
 ##### Reason
 
@@ -16404,7 +16404,7 @@ Ideally, that rule should be language supported by giving you comparison operato
 
 ##### Enforcement
 
-* Flag classes the support "odd" subsets of a set of operators, e.g., `==` but not `!=` or `+` but not `-`.
+* Flag classes that support "odd" subsets of a set of operators, e.g., `==` but not `!=` or `+` but not `-`.
   Yes, `std::string` is "odd", but it's too late to change that.
 
 
