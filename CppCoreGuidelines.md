@@ -19898,12 +19898,13 @@ for example, `Expects(p != nullptr)` will become `[[expects: p != nullptr]]`.
 
 ## <a name="SS-utilities"></a>GSL.util: Utilities
 
-* `finally`       // `finally(f)` makes a `final_action{f}` with a destructor that invokes `f`
-* `narrow_cast`   // `narrow_cast<T>(x)` is `static_cast<T>(x)`
-* `narrow`        // `narrow<T>(x)` is `static_cast<T>(x)` if `static_cast<T>(x) == x` or it throws `narrowing_error`
-* `[[implicit]]`  // "Marker" to put on single-argument constructors to explicitly make them non-explicit.
-* `move_owner`    // `p = move_owner(q)` means `p = q` but ???
+* `finally`        // `finally(f)` makes a `final_action{f}` with a destructor that invokes `f`
+* `narrow_cast`    // `narrow_cast<T>(x)` is `static_cast<T>(x)`
+* `narrow`         // `narrow<T>(x)` is `static_cast<T>(x)` if `static_cast<T>(x) == x` or it throws `narrowing_error`
+* `[[implicit]]`   // "Marker" to put on single-argument constructors to explicitly make them non-explicit.
+* `move_owner`     // `p = move_owner(q)` means `p = q` but ???
 * `joining_thread` // a RAII style version of `std::thread` that joins.
+* `index`          // a type to use for all container and array indexing (currently an alias for `ptrdiff_t`)
 
 ## <a name="SS-gsl-concepts"></a>GSL.concept: Concepts
 
