@@ -5678,7 +5678,7 @@ After a copy `x` and `y` can be independent objects (value semantics, the way no
 
     X x;
     X y = x;
-    if (x != y) throw Bad{};
+    if (!(x == y)) throw Bad{};
     x.modify();
     if (x == y) throw Bad{};   // assume value semantics
 
@@ -5703,9 +5703,9 @@ After a copy `x` and `y` can be independent objects (value semantics, the way no
 
     X2 x;
     X2 y = x;
-    if (x != y) throw Bad{};
+    if (!(x == y)) throw Bad{};
     x.modify();
-    if (x != y) throw Bad{};  // assume pointer semantics
+    if (!(x == y)) throw Bad{};  // assume pointer semantics
 
 ##### Note
 
