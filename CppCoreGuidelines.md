@@ -1,6 +1,6 @@
 # <a name="main"></a>C++ Core Guidelines
 
-December 11, 2017
+December 29, 2017
 
 
 Editors:
@@ -12492,7 +12492,7 @@ This precludes consistency. Use `gsl::index` for subscripts; [see ES.107](#Res-s
 ##### Enforcement
 
 * Compilers already know and sometimes warn.
-* (To avoid noise) Do not flag on a mixed signed/unsigned comparison where one of the arguments is a call to container `.size()` and the other is `ptrdiff_t`.
+* (To avoid noise) Do not flag on a mixed signed/unsigned comparison where one of the arguments is `sizeof` or a call to container `.size()` and the other is `ptrdiff_t`.
 
 
 ### <a name="Res-unsigned"></a>ES.101: Use unsigned types for bit manipulation
@@ -12581,7 +12581,7 @@ This makes surprises (and bugs) inevitable.
 * Flag mixed signed and unsigned arithmetic
 * Flag results of unsigned arithmetic assigned to or printed as signed.
 * Flag unsigned literals (e.g. `-2`) used as container subscripts.
-* (To avoid noise) Do not flag on a mixed signed/unsigned comparison where one of the arguments is a call to container `.size()` and the other is `ptrdiff_t`.
+* (To avoid noise) Do not flag on a mixed signed/unsigned comparison where one of the arguments is `sizeof` or a call to container `.size()` and the other is `ptrdiff_t`.
 
 
 ### <a name="Res-overflow"></a>ES.103: Don't overflow
@@ -12813,7 +12813,7 @@ Alternatives for users
 ##### Enforcement
 
 * Very tricky as long as the standard-library containers get it wrong.
-* (To avoid noise) Do not flag on a mixed signed/unsigned comparison where one of the arguments is a call to container `.size()` and the other is `ptrdiff_t`.
+* (To avoid noise) Do not flag on a mixed signed/unsigned comparison where one of the arguments is `sizeof` or a call to container `.size()` and the other is `ptrdiff_t`.
 
 
 
