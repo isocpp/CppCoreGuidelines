@@ -6852,6 +6852,25 @@ Since each implementation derived from its interface as well as its implementati
 
 As mentioned, this is just one way to construct a dual hierarchy.
 
+The implementation hierarchy can be used directly, rather than through the abstract interface.
+
+    void work_with_shape(Shape&);
+
+    int user()
+    {
+        Impl::Smiley my_smiley{ /* args */ };   // create concrete shape
+        // ...
+        my_smiley.some_member();        // use implementation class directly
+        // ...
+        work_with_shape(my_smiley);     // use implementation through abstract interface
+        // ...
+    }
+
+This can be useful when the implementation class has members that are not offered in the abstract interface
+or if direct use of a member offers optimization oppertunities (e.g., if an implementation member function is `final`)
+
+##### Note
+
 Another (related) technique for separating interface and implementation is [Pimpl](#Ri-pimpl).
 
 ##### Note
