@@ -13094,7 +13094,82 @@ Type violations, weak types (e.g. `void*`s), and low-level code (e.g., manipulat
 
 ### <a name="Rper-Comp"></a>Per.11: Move computation from run time to compile time
 
-???
+##### Reason
+
+To decrease code size and run time.
+To avoid data races by using constants.
+To catch errors at compiler time (and thus eliminate the need for error-handling code).
+
+##### Example
+
+    double square(double d) { return d*d; }
+    static double s2 = square(2);    // old-style: dynamic initialization
+
+    constexpr double ntimes(double d, int n)   // assume 0<=n>
+    {
+            double m = 1;
+            while (n--) m*=d;
+            return m;
+    }
+    constexpr double s3 {ntimes(2,3)};  // modern-style: compile-time initialization
+
+Code like the initialization of `s2` isn't uncommon, especially for initialization that's a bit more complicated than `square()`.
+However, compared to the initialization of `s3` there are two problems:
+
+* we suffer the overhead of a function call at run time
+* `s2` just might be accessed by another thread before the initialization happens.
+
+Note: you can't have a data race on a constant.
+
+##### Example
+
+Consider a popular technique for providing a handle for storing small objects in the handle itself and larger ones on the heap.
+
+    constexpr int on_stack_max = 20;
+
+    template<typename T>
+    struct Scoped {     // store a T in Scoped
+            // ...
+        T obj;
+    };  
+
+    template<typename T>
+    struct On_heap {    // store a T in on the free store
+            // ...
+            T* objp;
+    }; 
+
+    template<typename T>
+    using Handle = typename std::conditional<(sizeof(T)<=on_stack_max),
+						Scoped<T>,		// first alternative
+						On_heap<T>		// second alternative
+					>::type;
+
+    void f()
+    {
+        Handle<double> v1;				    // the double goes on the stack
+	    Handle<std::array<double,200>> v2;	// the array goes on the free store
+	    // ...
+    }
+
+Assume that `Scoped` and `On_heap` provide compatible user interfaces.
+Here we compute the optimal type to use at compile time.
+There are similar techniques for selecting the optimal function to call.
+
+##### Note
+
+The ideal is {not} to try execute everything at compile time.
+Obviously, most computations depend on inputs so they can't be moved to compile time,
+but beyond that logical constraint is the fact that complex compile-time computation can seriously increase compile times
+and complicate debugging.
+It is even possible to slow down code by compile-time computation.
+This is admittedly rare, but by factoring out a general computation into separate optimal sub-calculations it is possible to render the instruction cache less effective.
+
+##### Enforcement
+
+* Look for simple functions that might be constexpr (but are not).
+* Look for functions called with all constant-expression arguments.
+* Look for macros that could be constexpr.
 
 ### <a name="Rper-alias"></a>Per.12: Eliminate redundant aliases
 
