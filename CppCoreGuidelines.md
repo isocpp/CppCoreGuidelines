@@ -10049,11 +10049,6 @@ This cannot trivially be rewritten to initialize `i` and `j` with initializers.
 Note that for types with a default constructor, attempting to postpone initialization simply leads to a default initialization followed by an assignment.
 A popular reason for such examples is "efficiency", but a compiler that can detect whether we made a used-before-set error can also eliminate any redundant double initialization.
 
-At the cost of repeating `cond` we could write:
-
-    widget i = (cond) ? f1() : f3();
-    widget j = (cond) ? f2() : f4();
-
 Assuming that there is a logical connection between `i` and `j`, that connection should probably be expressed in code:
 
     pair<widget, widget> make_related_widgets(bool x)
@@ -10061,25 +10056,13 @@ Assuming that there is a logical connection between `i` and `j`, that connection
         return (x) ? {f1(), f2()} : {f3(), f4() };
     }
 
-    auto init = make_related_widgets(cond);
-    widget i = init.first;
-    widget j = init.second;
+    auto [i, j] = make_related_widgets(cond);    // C++17
+    
+##### Note
 
-Obviously, what we really would like is a construct that initialized n variables from a `tuple`. For example:
-
-    auto [i, j] = make_related_widgets(cond);    // C++17, not C++14
-
-Today, we might approximate that using `tie()`:
-
-    widget i;       // bad: uninitialized variable
-    widget j;
-    tie(i, j) = make_related_widgets(cond);
-
-This may be seen as an example of the *immediately initialize from input* exception below.
-
-Creating optimal and equivalent code from all of these examples should be well within the capabilities of modern C++ compilers
-(but don't make performance claims without measuring; a compiler may very well not generate optimal code for every example and
-there may be language rules preventing some optimization that you would have liked in a particular case).
+Complex initialization has been popular with clever programmers for decades.
+It has also been a major source of errors and complexity.
+Many such errors are introduced during maintenance years after the initial implementation.
 
 ##### Example
 
@@ -10103,12 +10086,6 @@ This rule covers member variables.
 The compiler will flag the uninitialized `cm3` because it is a `const`, but it will not catch the lack of initialization of `m3`.
 Usually, a rare spurious member initialization is worth the absence of errors from lack of initialization and often an optimizer
 can eliminate a redundant initialization (e.g., an initialization that occurs immediately before an assignment).
-
-##### Note
-
-Complex initialization has been popular with clever programmers for decades.
-It has also been a major source of errors and complexity.
-Many such errors are introduced during maintenance years after the initial implementation.
 
 ##### Exception
 
