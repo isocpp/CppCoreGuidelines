@@ -12430,6 +12430,23 @@ For example:
 
 This invokes `istream`'s `operator bool()`.
 
+##### Note
+
+Explicit comparison of an integer to `0` is in general not redundant.
+The reason is that (as opposed to pointers and Booleans) an integer often have more than two resonable values.
+Furthermore `0` (zero) is often used to indicate success.
+Consequently, it is best to be specific about the comparison.
+
+    void f(int i)
+    {
+        if (i)          // suspect
+        // ...
+        if (i==success) // possibly better
+        // ...
+    }
+
+Always remember that an integer can have more that two values.
+
 ##### Example, bad
 
 It has been noted that
@@ -12442,7 +12459,7 @@ Being verbose and writing
 
     if(strcmp(p1, p2) != 0) { ... }   // are the two C-style strings equal? (mistake!)
 
-would not save you.
+would not in itself save you.
 
 ##### Note
 
