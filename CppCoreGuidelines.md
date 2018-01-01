@@ -13365,6 +13365,7 @@ Making `surface_readings` be `const` (with respect to this function) allow reaso
 
 Immutable data can be safely and efficiently shared.
 No locking is needed: You can't have a data race on a constant.
+See also [CP.mess: Message Passing](#SScp-messs) and [CP.31: prefer pass by value](#C#Rconc-data-by-value).
 
 ##### Enforcement
 
