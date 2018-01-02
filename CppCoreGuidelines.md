@@ -15863,7 +15863,7 @@ Templates can also be used for meta-programming; that is, programs that compose 
 A central notion in generic programming is "concepts"; that is, requirements on template arguments presented as compile-time predicates.
 "Concepts" are defined in an ISO Technical specification: [concepts](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2015/n4553.pdf).
 A draft of a set of standard-library concepts can be found in another ISO TS: [ranges](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/n4569.pdf)
-Currently (July 2016), concepts are supported only in GCC 6.1.
+Concepts are supported only in GCC 6.1.
 Consequently, we comment out uses of concepts in examples; that is, we use them as formalized comments only.
 If you use GCC 6.1, you can uncomment them.
 
@@ -16020,7 +16020,7 @@ is to efficiently generalize operations/algorithms over a set of types with simi
 
 The `requires` in the comments are uses of `concepts`.
 "Concepts" are defined in an ISO Technical specification: [concepts](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2015/n4553.pdf).
-Currently (July 2016), concepts are supported only in GCC 6.1.
+Concepts are supported only in GCC 6.1.
 Consequently, we comment out uses of concepts in examples; that is, we use them as formalized comments only.
 If you use GCC 6.1, you can uncomment them.
 
@@ -16213,7 +16213,7 @@ or equivalently and more succinctly:
 
 "Concepts" are defined in an ISO Technical specification: [concepts](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2015/n4553.pdf).
 A draft of a set of standard-library concepts can be found in another ISO TS: [ranges](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/n4569.pdf)
-Currently (July 2016), concepts are supported only in GCC 6.1.
+Concepts are supported only in GCC 6.1.
 Consequently, we comment out uses of concepts in examples; that is, we use them as formalized comments only.
 If you use GCC 6.1, you can uncomment them:
 
