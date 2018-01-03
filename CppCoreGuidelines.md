@@ -1,6 +1,6 @@
 # <a name="main"></a>C++ Core Guidelines
 
-Janualy 1, 2018
+January 1, 2018
 
 
 Editors:
@@ -6867,7 +6867,7 @@ The implementation hierarchy can be used directly, rather than through the abstr
     }
 
 This can be useful when the implementation class has members that are not offered in the abstract interface
-or if direct use of a member offers optimization oppertunities (e.g., if an implementation member function is `final`)
+or if direct use of a member offers optimization opportunities (e.g., if an implementation member function is `final`)
 
 ##### Note
 
@@ -10076,7 +10076,7 @@ Assuming that there is a logical connection between `i` and `j`, that connection
     }
 
     auto [i, j] = make_related_widgets(cond);    // C++17
-    
+
 ##### Note
 
 Complex initialization has been popular with clever programmers for decades.
@@ -12433,15 +12433,15 @@ This invokes `istream`'s `operator bool()`.
 ##### Note
 
 Explicit comparison of an integer to `0` is in general not redundant.
-The reason is that (as opposed to pointers and Booleans) an integer often have more than two resonable values.
+The reason is that (as opposed to pointers and Booleans) an integer often has more than two reasonable values.
 Furthermore `0` (zero) is often used to indicate success.
 Consequently, it is best to be specific about the comparison.
 
     void f(int i)
     {
-        if (i)          // suspect
+        if (i)            // suspect
         // ...
-        if (i==success) // possibly better
+        if (i == success) // possibly better
         // ...
     }
 
@@ -13115,20 +13115,20 @@ Type violations, weak types (e.g. `void*`s), and low-level code (e.g., manipulat
 
 To decrease code size and run time.
 To avoid data races by using constants.
-To catch errors at compiler time (and thus eliminate the need for error-handling code).
+To catch errors at compile time (and thus eliminate the need for error-handling code).
 
 ##### Example
 
     double square(double d) { return d*d; }
     static double s2 = square(2);    // old-style: dynamic initialization
 
-    constexpr double ntimes(double d, int n)   // assume 0<=n>
+    constexpr double ntimes(double d, int n)   // assume 0 <= n
     {
             double m = 1;
-            while (n--) m*=d;
+            while (n--) m *= d;
             return m;
     }
-    constexpr double s3 {ntimes(2,3)};  // modern-style: compile-time initialization
+    constexpr double s3 {ntimes(2, 3)};  // modern-style: compile-time initialization
 
 Code like the initialization of `s2` isn't uncommon, especially for initialization that's a bit more complicated than `square()`.
 However, compared to the initialization of `s3` there are two problems:
@@ -13148,25 +13148,25 @@ Consider a popular technique for providing a handle for storing small objects in
     struct Scoped {     // store a T in Scoped
             // ...
         T obj;
-    };  
+    };
 
     template<typename T>
-    struct On_heap {    // store a T in on the free store
+    struct On_heap {    // store a T on the free store
             // ...
             T* objp;
-    }; 
+    };
 
     template<typename T>
-    using Handle = typename std::conditional<(sizeof(T)<=on_stack_max),
-						Scoped<T>,		// first alternative
-						On_heap<T>		// second alternative
-					>::type;
+    using Handle = typename std::conditional<(sizeof(T) <= on_stack_max),
+                        Scoped<T>,      // first alternative
+                        On_heap<T>      // second alternative
+                   >::type;
 
     void f()
     {
-        Handle<double> v1;				    // the double goes on the stack
-	    Handle<std::array<double,200>> v2;	// the array goes on the free store
-	    // ...
+        Handle<double> v1;                   // the double goes on the stack
+        Handle<std::array<double, 200>> v2;  // the array goes on the free store
+        // ...
     }
 
 Assume that `Scoped` and `On_heap` provide compatible user interfaces.
@@ -13476,7 +13476,7 @@ Making `surface_readings` be `const` (with respect to this function) allow reaso
 
 Immutable data can be safely and efficiently shared.
 No locking is needed: You can't have a data race on a constant.
-See also [CP.mess: Message Passing](#SScp-messs) and [CP.31: prefer pass by value](#C#Rconc-data-by-value).
+See also [CP.mess: Message Passing](#SScp-mess) and [CP.31: prefer pass by value](#C#Rconc-data-by-value).
 
 ##### Enforcement
 
@@ -18651,7 +18651,7 @@ Use `gsl::span` for non-owning references into a container.
 
 Comparing the performance of a fixed-sized array allocated on the stack against a `vector` with its elements on the free store is bogus.
 You could just as well compare a `std::array` on the stack against the result of a `malloc()` accessed through a pointer.
-For most code, even the difference between stack allocation and free-store allocation doesn't matter, but the convenieance and safety of `vector` does.
+For most code, even the difference between stack allocation and free-store allocation doesn't matter, but the convenience and safety of `vector` does.
 People working with code for which that difference matters are quite capable of choosing between `array` and `vector`.
 
 ##### Enforcement
