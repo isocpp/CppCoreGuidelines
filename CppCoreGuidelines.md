@@ -5657,9 +5657,11 @@ After a copy `x` and `y` can be independent objects (value semantics, the way no
     public:
         X();
         X(const X&);     // copy X
-        void modify();   // change the value of X
-        // ...
         ~X() { delete[] p; }
+        void modify();   // change the value of X
+        const T* begin() const { return p; }
+        const T* end() const { return p+sz; }
+        // ...
     private:
         T* p;
         int sz;
@@ -5667,7 +5669,12 @@ After a copy `x` and `y` can be independent objects (value semantics, the way no
 
     bool operator==(const X& a, const X& b)
     {
-        return a.sz == b.sz && equal(a.p, a.p + a.sz, b.p, b.p + b.sz);
+        return equal(begin(a), end(a), begin(b), end(b));
+    }
+
+    bool operator!=(const X& a, const X& b)
+    {
+        return !(a == b);
     }
 
     X::X(const X& a)
@@ -5678,18 +5685,20 @@ After a copy `x` and `y` can be independent objects (value semantics, the way no
 
     X x;
     X y = x;
-    if (x != y) throw Bad{};
+    assert(x == y);
     x.modify();
-    if (x == y) throw Bad{};   // assume value semantics
+    assert(x != y);   // assume value semantics
 
 ##### Example
 
     class X2 {  // OK: pointer semantics
     public:
         X2();
-        X2(const X&) = default; // shallow copy
+        X2(const X2&) = default; // shallow copy
         ~X2() = default;
-        void modify();          // change the value of X
+        void modify();           // change the value of the data pointed to
+        const T* begin() const { return p; }
+        const T* end() const { return p+sz; }
         // ...
     private:
         T* p;
@@ -5698,14 +5707,14 @@ After a copy `x` and `y` can be independent objects (value semantics, the way no
 
     bool operator==(const X2& a, const X2& b)
     {
-        return a.sz == b.sz && a.p == b.p;
+        return equal(begin(a), end(a), begin(b), end(b));
     }
 
     X2 x;
     X2 y = x;
-    if (x != y) throw Bad{};
+    assert(x == y);
     x.modify();
-    if (x != y) throw Bad{};  // assume pointer semantics
+    assert(x == y);  // assume pointer semantics
 
 ##### Note
 
