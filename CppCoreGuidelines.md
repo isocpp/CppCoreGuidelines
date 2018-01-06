@@ -9158,29 +9158,27 @@ be able to destroy a cyclic structure.
     class foo
     {
     public:
-      foo(const std::shared_ptr<bar>& b)
-        : forward_reference{b}
+      explicit foo(const std::shared_ptr<bar>& forward_reference)
+        : forward_reference_(forward_reference)
       { }
     private:
-      std::shared_ptr<bar> forward_reference;
+      std::shared_ptr<bar> forward_reference_;
     };
 
     class bar
     {
     public:
-      void set_back_reference(const std::weak_ptr<foo>& f)
-      {
-        this->back_reference = f;
-      }
+      explicit bar(const std::weak_ptr<foo>& back_reference)
+        : back_reference_(back_reference)
+      { }
       void do_something()
       {
-        std::shared_ptr<foo> shared_back_reference = this->back_reference.lock();
-        if (shared_back_reference) {
+        if (auto shared_back_reference = back_reference_.lock()) {
           // Use *shared_back_reference
         }
       }
     private:
-      std::weak_ptr<foo> back_reference;
+      std::weak_ptr<foo> back_reference_;
     };
 
 ##### Note
