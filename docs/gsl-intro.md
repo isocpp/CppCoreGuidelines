@@ -3,7 +3,7 @@
 
 by Herb Sutter
 
-updated 2017-05-24
+updated 2018-01-08
 
 
 ## Overview: "Is this document a tutorial or a FAQ?"
@@ -277,51 +277,12 @@ Also, `span<T>` lets you distinguish between `.size()` and `.size_bytes()`; make
 > - Prefer `span<T>`'s `.size_bytes()` instead of `.size() * sizeof(T)`.
 
 
+## And a few `span`-related hints
 
-<br><br><br>
-# *** TODO - Other span suggestions and questions back to Bjarne and Neil
+These are not directly related to `span` but can often come up while using `span`.
 
-Bjarne suggested:
+   * Use `byte` everywhere you are handling memory (as opposed to characters or integers). That is, when accessing a chunk of raw memory, use `gsl::span<std::byte>`.
 
-- given an STL style interface ([b:e)), how do I implement it using a span?
+   * Use `narrow()` when you cannot afford to be surprised by a value change during conversion to a smaller range. This includes going between a signed `span` size or index and an unsigned today's-STL-container `.size()`, though the `span` constructors from containers nicely encapsulate many of these conversions.
 
-HS: I couldn't think of an example so I skipped this
-
-- show a use of string_span
-
-HS: I think we're dropping this, so it doesn't need an example, right?
-
-- I would concentrate on span and push not_null(), narrow(), and friends to a separate note.
-
-HS: OK, stopping with the above for now -- what more can we say about span?
-
-- I would be happy to review a rough draft.
-
-HS: Here you go! :)
-
-Neil suggested:
-
--	some guidance on how to deal with standard lib container size_t vs span ptrdiff_t mismatch.
-
-HS: Do you have an example in mind?
-
-
-<br><br><br><br><br>
-# MORE RAW NOTES
-
-I'll continue with more of these, and possibly in a separate note as Bjarne suggests a few lines above, if everyone agrees.
-
-## Neil
-
--	use `byte` everywhere you are handling memory (as opposed to characters or integers)
-
--	use `narrow()` when you cannot afford to be surprised by a value change during conversion to a smaller range (includes going between signed to unsigned)
-
--	use `narrow_cast()` when you are *sure* you won’t be surprised by a value change during conversion to a smaller range
-
-> -	pass `not_null` by value
-
-I suspect this isn't right -- I think it should be "pass `not_null<T>` the same as `T`". For example, `not_null<int*>` should be passed by value, but `not_null<shared_ptr<int>>` should probably be passed by `const&`. 
-
--	use `not_null` on any raw pointer parameter that should never contain nullptr
-
+   * Similarly, use `narrow_cast()` when you are *sure* you won’t be surprised by a value change during conversion to a smaller range
