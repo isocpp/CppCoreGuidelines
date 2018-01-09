@@ -4180,7 +4180,7 @@ Flag classes declared with `struct` if there is a `private` or `protected` membe
 
 Encapsulation.
 Information hiding.
-Minimize the chance of untended access.
+Minimize the chance of unintended access.
 This simplifies maintenance.
 
 ##### Example
