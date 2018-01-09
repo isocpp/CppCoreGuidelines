@@ -59,7 +59,7 @@ dangerous_process_ints(&*remainder, v.end() - remainder); // correct but convolu
 Instead, using `span` encapsulates the pointer and the length:
 
 ~~~cpp
-// BETTER: Read n contiguous ints starting at *p
+// BETTER: Read s.size() contiguous ints starting at s[0]
 void process_ints(span<const int> s);
 ~~~
 
