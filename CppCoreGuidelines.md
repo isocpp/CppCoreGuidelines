@@ -1,6 +1,6 @@
 # <a name="main"></a>C++ Core Guidelines
 
-January 1, 2018
+January 22, 2018
 
 
 Editors:
@@ -5084,7 +5084,7 @@ If you really have to, look at [factory functions](#Rc-factory).
 
 One reason people have used `init()` functions rather than doing the initialization work in a constructor has been to avoid code replication.
 [Delegating constructors](#Rc-delegating) and [default member initialization](#Rc-in-class-initializer) do that better.
-Another reason is been to delay initialization until an object is needed; the solution to that is often [not to declare a variable until it can be properly initialized](#Res-init)
+Another reason has been to delay initialization until an object is needed; the solution to that is often [not to declare a variable until it can be properly initialized](#Res-init)
 
 ##### Enforcement
 
