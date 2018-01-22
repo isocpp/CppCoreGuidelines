@@ -407,6 +407,7 @@ Productinfo
 proto
 ps
 ptr
+ptrdiff
 Ptr
 ptr2
 ptr's
