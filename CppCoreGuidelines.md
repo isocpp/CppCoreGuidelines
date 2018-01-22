@@ -1697,7 +1697,7 @@ Use the ISO Concepts TS style of requirements specification. For example:
 ##### Note
 
 Soon (maybe in 2018), most compilers will be able to check `requires` clauses once the `//` is removed.
-For now, the concept TS is supported only in GCC 6.1 and later.
+Concepts are supported in GCC 6.1 and later.
 
 **See also**: [Generic programming](#SS-GP) and [concepts](#SS-t-concepts).
 
@@ -15891,9 +15891,9 @@ Templates can also be used for meta-programming; that is, programs that compose 
 A central notion in generic programming is "concepts"; that is, requirements on template arguments presented as compile-time predicates.
 "Concepts" are defined in an ISO Technical specification: [concepts](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2015/n4553.pdf).
 A draft of a set of standard-library concepts can be found in another ISO TS: [ranges](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/n4569.pdf)
-Currently (July 2016), concepts are supported only in GCC 6.1.
+Concepts are supported in GCC 6.1 and later.
 Consequently, we comment out uses of concepts in examples; that is, we use them as formalized comments only.
-If you use GCC 6.1, you can uncomment them.
+If you use GCC 6.1 or later, you can uncomment them.
 
 Template use rule summary:
 
@@ -16048,9 +16048,9 @@ is to efficiently generalize operations/algorithms over a set of types with simi
 
 The `requires` in the comments are uses of `concepts`.
 "Concepts" are defined in an ISO Technical specification: [concepts](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2015/n4553.pdf).
-Currently (July 2016), concepts are supported only in GCC 6.1.
+Concepts are supported in GCC 6.1 and later.
 Consequently, we comment out uses of concepts in examples; that is, we use them as formalized comments only.
-If you use GCC 6.1, you can uncomment them.
+If you use GCC 6.1 or later, you can uncomment them.
 
 ##### Enforcement
 
@@ -16241,9 +16241,9 @@ or equivalently and more succinctly:
 
 "Concepts" are defined in an ISO Technical specification: [concepts](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2015/n4553.pdf).
 A draft of a set of standard-library concepts can be found in another ISO TS: [ranges](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/n4569.pdf)
-Currently (July 2016), concepts are supported only in GCC 6.1.
+Concepts are supported in GCC 6.1 and later.
 Consequently, we comment out uses of concepts in examples; that is, we use them as formalized comments only.
-If you use GCC 6.1, you can uncomment them:
+If you use GCC 6.1 or later, you can uncomment them:
 
     template<typename Iter, typename Val>
         requires Input_iterator<Iter>
@@ -16346,9 +16346,9 @@ The shorter versions better match the way we speak. Note that many templates don
 
 "Concepts" are defined in an ISO Technical specification: [concepts](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2015/n4553.pdf).
 A draft of a set of standard-library concepts can be found in another ISO TS: [ranges](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/n4569.pdf)
-Currently (July 2016), concepts are supported only in GCC 6.1.
+Concepts are supported in GCC 6.1 and later.
 Consequently, we comment out uses of concepts in examples; that is, we use them as formalized comments only.
-If you use a compiler that supports concepts (e.g., GCC 6.1), you can remove the `//`.
+If you use a compiler that supports concepts (e.g., GCC 6.1 or later), you can remove the `//`.
 
 ##### Enforcement
 
@@ -16362,7 +16362,7 @@ Concepts are meant to represent fundamental concepts in an application domain (h
 Similarly throwing together a set of syntactic constraints to be used for a the arguments for a single class or algorithm is not what concepts were designed for
 and will not give the full benefits of the mechanism.
 
-Obviously, defining concepts will be most useful for code that can use an implementation (e.g., GCC 6.1),
+Obviously, defining concepts will be most useful for code that can use an implementation (e.g., GCC 6.1 or later),
 but defining concepts is in itself a useful design technique and help catch conceptual errors and clean up the concepts (sic!) of an implementation.
 
 ### <a name="Rt-low"></a>T.20: Avoid "concepts" without meaningful semantics
