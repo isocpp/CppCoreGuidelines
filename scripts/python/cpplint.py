@@ -4091,6 +4091,7 @@ def CheckTrailingSemicolon(filename, clean_lines, linenum, error):
           (func and not Search(r'\boperator\s*\[\s*\]', func.group(1))) or
           Search(r'\b(?:struct|union)\s+alignas\s*$', line_prefix) or
           Search(r'\bdecltype$', line_prefix) or
+          Search(r'\breturn\s*$', line_prefix) or
           Search(r'\s+=\s*$', line_prefix)):
         match = None
     if (match and

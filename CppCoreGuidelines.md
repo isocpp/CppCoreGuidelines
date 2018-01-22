@@ -1,6 +1,6 @@
 # <a name="main"></a>C++ Core Guidelines
 
-December 29, 2017
+January 1, 2018
 
 
 Editors:
@@ -4183,7 +4183,7 @@ Flag classes declared with `struct` if there is a `private` or `protected` membe
 
 Encapsulation.
 Information hiding.
-Minimize the chance of untended access.
+Minimize the chance of unintended access.
 This simplifies maintenance.
 
 ##### Example
@@ -6854,6 +6854,25 @@ Since each implementation derived from its interface as well as its implementati
     Impl::Smiley -> Impl::Circle -> Impl::Shape
 
 As mentioned, this is just one way to construct a dual hierarchy.
+
+The implementation hierarchy can be used directly, rather than through the abstract interface.
+
+    void work_with_shape(Shape&);
+
+    int user()
+    {
+        Impl::Smiley my_smiley{ /* args */ };   // create concrete shape
+        // ...
+        my_smiley.some_member();        // use implementation class directly
+        // ...
+        work_with_shape(my_smiley);     // use implementation through abstract interface
+        // ...
+    }
+
+This can be useful when the implementation class has members that are not offered in the abstract interface
+or if direct use of a member offers optimization opportunities (e.g., if an implementation member function is `final`)
+
+##### Note
 
 Another (related) technique for separating interface and implementation is [Pimpl](#Ri-pimpl).
 
@@ -10051,11 +10070,6 @@ This cannot trivially be rewritten to initialize `i` and `j` with initializers.
 Note that for types with a default constructor, attempting to postpone initialization simply leads to a default initialization followed by an assignment.
 A popular reason for such examples is "efficiency", but a compiler that can detect whether we made a used-before-set error can also eliminate any redundant double initialization.
 
-At the cost of repeating `cond` we could write:
-
-    widget i = (cond) ? f1() : f3();
-    widget j = (cond) ? f2() : f4();
-
 Assuming that there is a logical connection between `i` and `j`, that connection should probably be expressed in code:
 
     pair<widget, widget> make_related_widgets(bool x)
@@ -10063,25 +10077,13 @@ Assuming that there is a logical connection between `i` and `j`, that connection
         return (x) ? {f1(), f2()} : {f3(), f4() };
     }
 
-    auto init = make_related_widgets(cond);
-    widget i = init.first;
-    widget j = init.second;
+    auto [i, j] = make_related_widgets(cond);    // C++17
 
-Obviously, what we really would like is a construct that initialized n variables from a `tuple`. For example:
+##### Note
 
-    auto [i, j] = make_related_widgets(cond);    // C++17, not C++14
-
-Today, we might approximate that using `tie()`:
-
-    widget i;       // bad: uninitialized variable
-    widget j;
-    tie(i, j) = make_related_widgets(cond);
-
-This may be seen as an example of the *immediately initialize from input* exception below.
-
-Creating optimal and equivalent code from all of these examples should be well within the capabilities of modern C++ compilers
-(but don't make performance claims without measuring; a compiler may very well not generate optimal code for every example and
-there may be language rules preventing some optimization that you would have liked in a particular case).
+Complex initialization has been popular with clever programmers for decades.
+It has also been a major source of errors and complexity.
+Many such errors are introduced during maintenance years after the initial implementation.
 
 ##### Example
 
@@ -10105,12 +10107,6 @@ This rule covers member variables.
 The compiler will flag the uninitialized `cm3` because it is a `const`, but it will not catch the lack of initialization of `m3`.
 Usually, a rare spurious member initialization is worth the absence of errors from lack of initialization and often an optimizer
 can eliminate a redundant initialization (e.g., an initialization that occurs immediately before an assignment).
-
-##### Note
-
-Complex initialization has been popular with clever programmers for decades.
-It has also been a major source of errors and complexity.
-Many such errors are introduced during maintenance years after the initial implementation.
 
 ##### Exception
 
@@ -12436,6 +12432,23 @@ For example:
 
 This invokes `istream`'s `operator bool()`.
 
+##### Note
+
+Explicit comparison of an integer to `0` is in general not redundant.
+The reason is that (as opposed to pointers and Booleans) an integer often has more than two reasonable values.
+Furthermore `0` (zero) is often used to indicate success.
+Consequently, it is best to be specific about the comparison.
+
+    void f(int i)
+    {
+        if (i)            // suspect
+        // ...
+        if (i == success) // possibly better
+        // ...
+    }
+
+Always remember that an integer can have more that two values.
+
 ##### Example, bad
 
 It has been noted that
@@ -12448,7 +12461,7 @@ Being verbose and writing
 
     if(strcmp(p1, p2) != 0) { ... }   // are the two C-style strings equal? (mistake!)
 
-would not save you.
+would not in itself save you.
 
 ##### Note
 
@@ -13124,7 +13137,82 @@ Type violations, weak types (e.g. `void*`s), and low-level code (e.g., manipulat
 
 ### <a name="Rper-Comp"></a>Per.11: Move computation from run time to compile time
 
-???
+##### Reason
+
+To decrease code size and run time.
+To avoid data races by using constants.
+To catch errors at compile time (and thus eliminate the need for error-handling code).
+
+##### Example
+
+    double square(double d) { return d*d; }
+    static double s2 = square(2);    // old-style: dynamic initialization
+
+    constexpr double ntimes(double d, int n)   // assume 0 <= n
+    {
+            double m = 1;
+            while (n--) m *= d;
+            return m;
+    }
+    constexpr double s3 {ntimes(2, 3)};  // modern-style: compile-time initialization
+
+Code like the initialization of `s2` isn't uncommon, especially for initialization that's a bit more complicated than `square()`.
+However, compared to the initialization of `s3` there are two problems:
+
+* we suffer the overhead of a function call at run time
+* `s2` just might be accessed by another thread before the initialization happens.
+
+Note: you can't have a data race on a constant.
+
+##### Example
+
+Consider a popular technique for providing a handle for storing small objects in the handle itself and larger ones on the heap.
+
+    constexpr int on_stack_max = 20;
+
+    template<typename T>
+    struct Scoped {     // store a T in Scoped
+            // ...
+        T obj;
+    };
+
+    template<typename T>
+    struct On_heap {    // store a T on the free store
+            // ...
+            T* objp;
+    };
+
+    template<typename T>
+    using Handle = typename std::conditional<(sizeof(T) <= on_stack_max),
+                        Scoped<T>,      // first alternative
+                        On_heap<T>      // second alternative
+                   >::type;
+
+    void f()
+    {
+        Handle<double> v1;                   // the double goes on the stack
+        Handle<std::array<double, 200>> v2;  // the array goes on the free store
+        // ...
+    }
+
+Assume that `Scoped` and `On_heap` provide compatible user interfaces.
+Here we compute the optimal type to use at compile time.
+There are similar techniques for selecting the optimal function to call.
+
+##### Note
+
+The ideal is {not} to try execute everything at compile time.
+Obviously, most computations depend on inputs so they can't be moved to compile time,
+but beyond that logical constraint is the fact that complex compile-time computation can seriously increase compile times
+and complicate debugging.
+It is even possible to slow down code by compile-time computation.
+This is admittedly rare, but by factoring out a general computation into separate optimal sub-calculations it is possible to render the instruction cache less effective.
+
+##### Enforcement
+
+* Look for simple functions that might be constexpr (but are not).
+* Look for functions called with all constant-expression arguments.
+* Look for macros that could be constexpr.
 
 ### <a name="Rper-alias"></a>Per.12: Eliminate redundant aliases
 
@@ -13414,6 +13502,7 @@ Making `surface_readings` be `const` (with respect to this function) allow reaso
 
 Immutable data can be safely and efficiently shared.
 No locking is needed: You can't have a data race on a constant.
+See also [CP.mess: Message Passing](#SScp-mess) and [CP.31: prefer pass by value](#C#Rconc-data-by-value).
 
 ##### Enforcement
 
@@ -18584,6 +18673,13 @@ For a variable-length array, use `std::vector`, which additionally can change it
 
 Use `gsl::span` for non-owning references into a container.
 
+##### Note
+
+Comparing the performance of a fixed-sized array allocated on the stack against a `vector` with its elements on the free store is bogus.
+You could just as well compare a `std::array` on the stack against the result of a `malloc()` accessed through a pointer.
+For most code, even the difference between stack allocation and free-store allocation doesn't matter, but the convenience and safety of `vector` does.
+People working with code for which that difference matters are quite capable of choosing between `array` and `vector`.
+
 ##### Enforcement
 
 * Flag declaration of a C array inside a function or class that also declares an STL container (to avoid excessive noisy warnings on legacy non-STL code). To fix: At least change the C array to a `std::array`.
@@ -20317,10 +20413,6 @@ When declaring a class use the following order
 
 Use the `public` before `protected` before `private` order.
 
-Private types and functions can be placed with private data.
-
-Avoid multiple blocks of declarations of one access (e.g., `public`) dispersed among blocks of declarations with different access (e.g. `private`).
-
 ##### Example
 
     class X {
@@ -20332,9 +20424,33 @@ Avoid multiple blocks of declarations of one access (e.g., `public`) dispersed a
         // implementation details
     };
 
-##### Note
+##### Example
 
-The use of macros to declare groups of members often violates any ordering rules.
+Sometimes, the default order of members conflicts with a desire to separate the public interface from implementation details.
+In such cases, private types and functions can be placed with private data.
+
+    class X {
+    public:
+        // interface
+    protected:
+        // unchecked function for use by derived class implementations
+    private:
+        // implementation details (types, functions, and data)
+    };
+
+##### Example, bad
+
+Avoid multiple blocks of declarations of one access (e.g., `public`) dispersed among blocks of declarations with different access (e.g. `private`).
+
+    class X {   // bad
+    public:
+        void f();
+    public:
+        int g();
+        // ...
+    };
+
+The use of macros to declare groups of members often leads to violation of any ordering rules.
 However, macros obscures what is being expressed anyway.
 
 ##### Enforcement
