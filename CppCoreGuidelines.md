@@ -20232,8 +20232,8 @@ Some styles use very general (not type-specific) prefixes to denote the general 
     //       just generally to say "this is an indirection"
 
     auto cntHits = calc_total_of_hits(/*...*);
-    // note: "cnt" is being used to encode a type, just generally to say
-    //       "this is a count of something"
+    // note: "cnt" is not being used to encode a type,
+    //       just generally to say "this is a count of something"
 
 This is not harmful and does not fall under this guideline because it does not encode type information.
 
