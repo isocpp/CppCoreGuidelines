@@ -5690,9 +5690,9 @@ After a copy `x` and `y` can be independent objects (value semantics, the way no
     class X2 {  // OK: pointer semantics
     public:
         X2();
-        X2(const X&) = default; // shallow copy
+        X2(const X2&) = default; // shallow copy
         ~X2() = default;
-        void modify();          // change the value of X
+        void modify();          // change the pointed-to value
         // ...
     private:
         T* p;
