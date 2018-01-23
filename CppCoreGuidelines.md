@@ -20224,6 +20224,21 @@ Requiring techniques like Hungarian notation to encode a type in a name is neede
 
 ##### Note
 
+Some styles use very general (not type-specific) prefixes to denote the general use of a variable.
+
+    auto p = new User();
+    auto p = make_unique<User>();
+    // note: "p" is not being used to say "raw pointer to type User,"
+    //       just generally to say "this is an indirection"
+
+    auto cntHits = calc_total_of_hits(/*...*);
+    // note: "cnt" is being used to encode a type, just generally to say
+    //       "this is a count of something"
+
+This is not harmful and does not fall under this guideline because it does not encode type information.
+
+##### Note
+
 Some styles distinguishes members from local variable, and/or from global variable.
 
     struct S {
@@ -20231,7 +20246,7 @@ Some styles distinguishes members from local variable, and/or from global variab
         S(int m) :m_{abs(m)} { }
     };
 
-This is not harmful and does not fall under this guideline because it encode type information.
+This is not harmful and does not fall under this guideline because it does not encode type information.
 
 ##### Note
 
@@ -20245,7 +20260,7 @@ For example, by capitalizing type names, but not the names of functions and vari
 
     HashTable<int> index;
 
-This is not harmful and does not fall under this guideline because it encode type information.
+This is not harmful and does not fall under this guideline because it does not encode type information.
 
 ### <a name="Rl-name-length"></a>NL.7: Make the length of a name roughly proportional to the length of its scope
 
