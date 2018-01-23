@@ -20081,7 +20081,7 @@ Naming and layout rules:
 * [NL.2: State intent in comments](#Rl-comments-intent)
 * [NL.3: Keep comments crisp](#Rl-comments-crisp)
 * [NL.4: Maintain a consistent indentation style](#Rl-indent)
-* [NL.5: Don't encode type information in names](#Rl-name-type)
+* [NL.5: Avoid encoding type information in names](#Rl-name-type)
 * [NL.7: Make the length of a name roughly proportional to the length of its scope](#Rl-name-length)
 * [NL.8: Use a consistent naming style](#Rl-name)
 * [NL.9: Use `ALL_CAPS` for macro names only](#Rl-all-caps)
@@ -20188,7 +20188,7 @@ Always indenting the statement after `if (...)`, `for (...)`, and `while (...)` 
 
 Use a tool.
 
-### <a name="Rl-name-type"></a>NL.5: Don't encode type information in names
+### <a name="Rl-name-type"></a>NL.5: Avoid encoding type information in names
 
 ##### Rationale
 
@@ -20201,8 +20201,16 @@ Minimize unintentional conversions.
     void print_int(int i);
     void print_string(const char*);
 
-    print_int(1);   // OK
-    print_int(x);   // conversion to int if x is a double
+    print_int(1);          // repetitive, manual type matching
+    print_string("xyzzy"); // repetitive, manual type matching
+
+##### Example, good
+
+    void print(int i);
+    void print(string_view);    // also works on any stringlike sequence
+
+    print(1);              // clear, automatic type matching
+    print("xyzzy");        // clear, automatic type matching
 
 ##### Note
 
@@ -20212,7 +20220,7 @@ Names with types encoded are either verbose or cryptic.
     prints  // print a C-style string
     printi  // print an int
 
-PS. Hungarian notation is evil (at least in a strongly statically-typed language).
+Requiring techniques like Hungarian notation to encode a type in a name is needed in C, but is generally unnecessary and actively harmful in a strongly statically-typed language like C++, because the annotations get out of date (the warts are just like comments and rot just like them) and they interfere with good use of the language (use the same name and overload resolution instead).
 
 ##### Note
 
@@ -20223,7 +20231,7 @@ Some styles distinguishes members from local variable, and/or from global variab
         S(int m) :m_{abs(m)} { }
     };
 
-This is not evil.
+This is not harmful and does not fall under this guideline because it encode type information.
 
 ##### Note
 
@@ -20231,13 +20239,13 @@ Like C++, some styles distinguishes types from non-types.
 For example, by capitalizing type names, but not the names of functions and variables.
 
     typename<typename T>
-    class Hash_tbl {   // maps string to T
+    class HashTable {   // maps string to T
         // ...
     };
 
-    Hash_tbl<int> index;
+    HashTable<int> index;
 
-This is not evil.
+This is not harmful and does not fall under this guideline because it encode type information.
 
 ### <a name="Rl-name-length"></a>NL.7: Make the length of a name roughly proportional to the length of its scope
 
