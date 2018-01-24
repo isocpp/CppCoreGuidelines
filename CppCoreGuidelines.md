@@ -20207,7 +20207,7 @@ Minimize unintentional conversions.
 ##### Example, good
 
     void print(int i);
-    void print(string_view);    // also works on any stringlike sequence
+    void print(string_view);    // also works on any string-like sequence
 
     print(1);              // clear, automatic type matching
     print("xyzzy");        // clear, automatic type matching
