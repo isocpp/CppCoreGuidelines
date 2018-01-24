@@ -84,6 +84,7 @@ clib
 Cline99
 ClosePort
 cm3
+cnt
 CommonMark
 *compiletime
 composability
@@ -510,6 +511,7 @@ STL
 stmt
 str
 strdup
+stringlike
 strlen
 Str15
 Stroustrup
