@@ -20207,7 +20207,7 @@ Minimize unintentional conversions.
 ##### Example, good
 
     void print(int i);
-    void print(string_view);    // also works on any stringlike sequence
+    void print(string_view);    // also works on any string-like sequence
 
     print(1);              // clear, automatic type matching
     print("xyzzy");        // clear, automatic type matching
@@ -20231,7 +20231,7 @@ Some styles use very general (not type-specific) prefixes to denote the general 
     // note: "p" is not being used to say "raw pointer to type User,"
     //       just generally to say "this is an indirection"
 
-    auto cntHits = calc_total_of_hits(/*...*);
+    auto cntHits = calc_total_of_hits(/*...*/);
     // note: "cnt" is not being used to encode a type,
     //       just generally to say "this is a count of something"
 
