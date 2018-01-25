@@ -8,7 +8,7 @@ Editors:
 * [Bjarne Stroustrup](http://www.stroustrup.com)
 * [Herb Sutter](http://herbsutter.com/)
 
-This document is an early draft. It's known to be incomplet, incorrekt, and has lots of b**a**d **for**~mat~ting.
+This document is an early draft. It's known to be incomplete, incorrekt, and has lots of b**a**d **for**~mat~ting.
 Had it been an open-source (code) project, this would have been release 0.8.
 Copying, use, modification, and creation of derivative works from this project is licensed under an MIT-style license.
 Contributing to this project requires agreeing to a Contributor License. See the accompanying [LICENSE](LICENSE) file for details.
@@ -609,7 +609,7 @@ The last variant makes it clear that we are not interested in the order in which
 A programmer should be familiar with
 
 * [The guideline support library](#S-gsl)
-* [The ISO C++ standard library](#S-stdlib)
+* [The ISO C++ Standard Library](#S-stdlib)
 * Whatever foundation libraries are used for the current project(s)
 
 ##### Note
@@ -978,9 +978,9 @@ However, relying on abstractions that implicitly clean up can be as simple, and 
 
 ##### Note
 
-Enforcing [the lifetime profile](#In.force) eliminates leaks.
+Enforcing [the lifetime profile](#SS-force) eliminates leaks.
 When combined with resource safety provided by [RAII](#Rr-raii), it eliminates the need for "garbage collection" (by generating no garbage).
-Combine this with enforcement of [the type and bounds profiles](#In.force) and you get complete type- and resource-safety, guaranteed by tools.
+Combine this with enforcement of [the type and bounds profiles](#SS-force) and you get complete type- and resource-safety, guaranteed by tools.
 
 ##### Enforcement
 
@@ -1177,7 +1177,7 @@ You need a reason not to use the standard library (or whatever foundational libr
 
 By default use
 
-* The [ISO C++ standard library](#S-stdlib)
+* The [ISO C++ Standard Library](#S-stdlib)
 * The [Guidelines Support Library](#S-gsl)
 
 ##### Note
@@ -1703,7 +1703,7 @@ Use the ISO Concepts TS style of requirements specification. For example:
 Soon (maybe in 2018), most compilers will be able to check `requires` clauses once the `//` is removed.
 Concepts are supported in GCC 6.1 and later.
 
-**See also**: [Generic programming](#SS-GP) and [concepts](#SS-t-concepts).
+**See also**: [Generic programming](#SS-GP) and [concepts](#SS-concepts).
 
 ##### Enforcement
 
@@ -2637,7 +2637,7 @@ If an exception is not supposed to be thrown, the program cannot be assumed to c
 ##### Example
 
 Put `noexcept` on every function written completely in C or in any other language without exceptions.
-The C++ standard library does that implicitly for all functions in the C standard library.
+The C++ Standard Library does that implicitly for all functions in the C Standard Library.
 
 ##### Note
 
@@ -9537,7 +9537,7 @@ Arithmetic rules:
 ##### Reason
 
 Code using a library can be much easier to write than code working directly with language features, much shorter, tend to be of a higher level of abstraction, and the library code is presumably already tested.
-The ISO C++ standard library is among the most widely known and best tested libraries.
+The ISO C++ Standard Library is among the most widely known and best tested libraries.
 It is available as part of all C++ Implementations.
 
 ##### Example
@@ -15043,7 +15043,7 @@ By declaring `compute` to be `noexcept`, we give the compiler and human readers 
 
 ##### Note
 
-Many standard-library functions are `noexcept` including all the standard-library functions "inherited" from the C standard library.
+Many standard-library functions are `noexcept` including all the standard-library functions "inherited" from the C Standard Library.
 
 ##### Example
 
@@ -18041,7 +18041,7 @@ C rule summary:
 
 * [CPL.1: Prefer C++ to C](#Rcpl-C)
 * [CPL.2: If you must use C, use the common subset of C and C++, and compile the C code as C++](#Rcpl-subset)
-* [CPL.3: If you must use C for interfaces, use C++ in the code using such interfaces](#Rcpl-interface)
+* [CPL.3: If you must use C for interfaces, use C++ in the calling code using such interfaces](#Rcpl-interface)
 
 ### <a name="Rcpl-C"></a>CPL.1: Prefer C++ to C
 
@@ -18600,14 +18600,14 @@ So, it is likely that this library section of the guidelines will eventually gro
 
 << ??? We need another level of rule numbering ??? >>
 
-C++ Standard library component summary:
+C++ Standard Library component summary:
 
 * [SL.con: Containers](#SS-con)
 * [SL.str: String](#SS-string)
 * [SL.io: Iostream](#SS-io)
 * [SL.regex: Regex](#SS-regex)
 * [SL.chrono: Time](#SS-chrono)
-* [SL.C: The C standard library](#SS-clib)
+* [SL.C: The C Standard Library](#SS-clib)
 
 Standard-library rule summary:
 
@@ -19249,11 +19249,11 @@ It supports a variety of regular expression pattern conventions.
 outputting time in various units.
 It provides clocks for registering `time_points`.
 
-## <a name="SS-clib"></a>SL.C: The C standard library
+## <a name="SS-clib"></a>SL.C: The C Standard Library
 
 ???
 
-C standard library rule summary:
+C Standard Library rule summary:
 
 * [S.C.1: Don't use setjmp/longjmp](#Rclib-jmp)
 * [???](#???)
@@ -19946,7 +19946,7 @@ Summary of GSL components:
 
 We plan for a "ISO C++ standard style" semi-formal specification of the GSL.
 
-We rely on the ISO C++ standard library and hope for parts of the GSL to be absorbed into the standard library.
+We rely on the ISO C++ Standard Library and hope for parts of the GSL to be absorbed into the standard library.
 
 ## <a name="SS-views"></a>GSL.view: Views
 
@@ -20364,7 +20364,7 @@ This rule applies to non-macro symbolic constants:
 
 ##### Reason
 
-The use of underscores to separate parts of a name is the original C and C++ style and used in the C++ standard library.
+The use of underscores to separate parts of a name is the original C and C++ style and used in the C++ Standard Library.
 If you prefer CamelCase, you have to choose among different flavors of camelCase.
 
 ##### Note
@@ -20765,7 +20765,7 @@ No. The GSL exists only to supply a few types and aliases that are not currently
 
 ### <a name="Faq-gsl-string-view"></a>FAQ.55: If you're using the standard types where available, why is the GSL `string_span` different from the `string_view` in the Library Fundamentals 1 Technical Specification and C++17 Working Paper? Why not just use the committee-approved `string_view`?
 
-The consensus on the taxonomy of views for the C++ standard library was that "view" means "read-only", and "span" means "read/write". The read-only `string_view` was the first such component to complete the standardization process, while `span` and `string_span` are currently being considered for standardization.
+The consensus on the taxonomy of views for the C++ Standard Library was that "view" means "read-only", and "span" means "read/write". The read-only `string_view` was the first such component to complete the standardization process, while `span` and `string_span` are currently being considered for standardization.
 
 ### <a name="Faq-gsl-owner"></a>FAQ.56: Is `owner` the same as the proposed `observer_ptr`?
 
@@ -21013,7 +21013,7 @@ In general, however, avoid concrete base classes (see Item 35). For example, `un
 
 ### <a name="Sd-never-fail"></a>Discussion: Destructors, deallocation, and swap must never fail
 
-Never allow an error to be reported from a destructor, a resource deallocation function (e.g., `operator delete`), or a `swap` function using `throw`. It is nearly impossible to write useful code if these operations can fail, and even if something does go wrong it nearly never makes any sense to retry. Specifically, types whose destructors may throw an exception are flatly forbidden from use with the C++ standard library. Most destructors are now implicitly `noexcept` by default.
+Never allow an error to be reported from a destructor, a resource deallocation function (e.g., `operator delete`), or a `swap` function using `throw`. It is nearly impossible to write useful code if these operations can fail, and even if something does go wrong it nearly never makes any sense to retry. Specifically, types whose destructors may throw an exception are flatly forbidden from use with the C++ Standard Library. Most destructors are now implicitly `noexcept` by default.
 
 ##### Example
 
