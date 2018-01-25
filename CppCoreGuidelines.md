@@ -13028,7 +13028,7 @@ We can do better (in C++98)
 
 Here, we use the compiler's knowledge about the size of the array, the type of elements, and how to compare `double`s.
 
-With C++11 plus [concepts](#???), we can do better still
+With C++11 plus [concepts](#SS-concepts), we can do better still
 
     // Sortable specifies that c must be a
     // random-access sequence of elements comparable with <
@@ -13531,7 +13531,7 @@ Making `surface_readings` be `const` (with respect to this function) allow reaso
 
 Immutable data can be safely and efficiently shared.
 No locking is needed: You can't have a data race on a constant.
-See also [CP.mess: Message Passing](#SScp-mess) and [CP.31: prefer pass by value](#C#Rconc-data-by-value).
+See also [CP.mess: Message Passing](#SScp-mess) and [CP.31: prefer pass by value](#Rconc-data-by-value).
 
 ##### Enforcement
 
@@ -13682,7 +13682,7 @@ Concurrency rule summary:
 * [CP.42: Don't `wait` without a condition](#Rconc-wait)
 * [CP.43: Minimize time spent in a critical section](#Rconc-time)
 * [CP.44: Remember to name your `lock_guard`s and `unique_lock`s](#Rconc-name)
-* [CP.50: Define a `mutex` together with the data it protects](#Rconc-mutex)
+* [CP.50: Define a `mutex` together with the data it guards. Use `synchronized_value<T>` where possible](#Rconc-mutex)
 * ??? when to use a spinlock
 * ??? when to use `try_lock()`
 * ??? when to prefer `lock_guard` over `unique_lock`
@@ -14322,7 +14322,7 @@ Flag all unnamed `lock_guard`s and `unique_lock`s.
 
 
 
-### <a name="Rconc-mutex"></a>P.50: Define a `mutex` together with the data it guards. Use `synchronized_value<T>` where possible
+### <a name="Rconc-mutex"></a>CP.50: Define a `mutex` together with the data it guards. Use `synchronized_value<T>` where possible
 
 ##### Reason
 
