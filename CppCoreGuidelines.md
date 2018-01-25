@@ -1,6 +1,6 @@
 # <a name="main"></a>C++ Core Guidelines
 
-January 22, 2018
+January 25, 2018
 
 
 Editors:
@@ -37,27 +37,27 @@ You can [read an explanation of the scope and structure of this Guide](#S-abstra
 * [R: Resource management](#S-resource)
 * [ES: Expressions and statements](#S-expr)
 * [Per: Performance](#S-performance)
-* [CP: Concurrency](#S-concurrency)
+* [CP: Concurrency and parallelism](#S-concurrency)
 * [E: Error handling](#S-errors)
 * [Con: Constants and immutability](#S-const)
 * [T: Templates and generic programming](#S-templates)
 * [CPL: C-style programming](#S-cpl)
 * [SF: Source files](#S-source)
-* [SL: The Standard library](#S-stdlib)
+* [SL: The Standard Library](#S-stdlib)
 
 Supporting sections:
 
-* [A: Architectural Ideas](#S-A)
-* [N: Non-Rules and myths](#S-not)
+* [A: Architectural ideas](#S-A)
+* [NR: Non-Rules and myths](#S-not)
 * [RF: References](#S-references)
 * [Pro: Profiles](#S-profile)
 * [GSL: Guideline support library](#S-gsl)
-* [NL: Naming and layout](#S-naming)
+* [NL: Naming and layout rules](#S-naming)
 * [FAQ: Answers to frequently asked questions](#S-faq)
 * [Appendix A: Libraries](#S-libraries)
 * [Appendix B: Modernizing code](#S-modernizing)
 * [Appendix C: Discussion](#S-discussion)
-* [Appendix D: Tools support](#S-tools)
+* [Appendix D: Supporting tools](#S-tools)
 * [Glossary](#S-glossary)
 * [To-do: Unclassified proto-rules](#S-unclassified)
 
@@ -1071,7 +1071,7 @@ Something immutable cannot change unexpectedly.
 Sometimes immutability enables better optimization.
 You can't have a data race on a constant.
 
-See [Con: Constants and Immutability](#S-const)
+See [Con: Constants and immutability](#S-const)
 
 ### <a name="Rp-library"></a>P.11: Encapsulate messy constructs, rather than spreading through the code
 
@@ -3902,7 +3902,7 @@ Declaring a `...` parameter is sometimes useful for techniques that don't involv
 * Issue a diagnostic for using `va_list`, `va_start`, or `va_arg`.
 * Issue a diagnostic for passing an argument to a vararg parameter of a function that does not offer an overload for a more specific type in the position of the vararg. To fix: Use a different function, or `[[suppress(types)]]`.
 
-# <a name="S-class"></a>C: Classes and Class Hierarchies
+# <a name="S-class"></a>C: Classes and class hierarchies
 
 A class is a user-defined type, for which a programmer can define the representation, operations, and interfaces.
 Class hierarchies are used to organize related classes into hierarchical structures.
@@ -9445,7 +9445,7 @@ The fix is simple -- take a local copy of the pointer to "keep a ref count" for 
 
 * (Simple) Warn if a pointer or reference obtained from a smart pointer variable (`Unique_ptr` or `Shared_ptr`) that is nonlocal, or that is local but potentially aliased, is used in a function call. If the smart pointer is a `Shared_ptr` then suggest taking a local copy of the smart pointer and obtain a pointer or reference from that instead.
 
-# <a name="S-expr"></a>ES: Expressions and Statements
+# <a name="S-expr"></a>ES: Expressions and statements
 
 Expressions and statements are the lowest and most direct way of expressing actions and computation. Declarations in local scopes are statements.
 
@@ -13302,7 +13302,7 @@ Performance is very sensitive to cache performance and cache algorithms favor si
 
 ???
 
-# <a name="S-concurrency"></a>CP: Concurrency and Parallelism
+# <a name="S-concurrency"></a>CP: Concurrency and parallelism
 
 We often want our computers to do many tasks at the same time (or at least make them appear to do them at the same time).
 The reasons for doing so varies (e.g., wanting to wait for many events using only a single processor, processing many data streams simultaneously, or utilizing many hardware facilities)
@@ -15713,7 +15713,7 @@ The "catch everything" handler ensured that the `std::exception`-handler will ne
 
 Flag all "hiding handlers".
 
-# <a name="S-const"></a>Con: Constants and Immutability
+# <a name="S-const"></a>Con: Constants and immutability
 
 You can't have a race condition on a constant.
 It is easier to reason about a program when many of the objects cannot change their values.
@@ -19270,7 +19270,7 @@ Flag all occurrences of `longjmp`and `setjmp`
 
 
 
-# <a name="S-A"></a>A: Architectural Ideas
+# <a name="S-A"></a>A: Architectural ideas
 
 This section contains ideas about higher-level architectural ideas and libraries.
 
