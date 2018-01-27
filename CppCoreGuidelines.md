@@ -1214,7 +1214,7 @@ Interface rule summary:
 * [I.27: For stable library ABI, consider the Pimpl idiom](#Ri-pimpl)
 * [I.30: Encapsulate rule violations](#Ri-encapsulate)
 
-See also
+**See also**:
 
 * [F: Functions](#S-functions)
 * [C.concrete: Concrete types](#SS-concrete)
@@ -2294,7 +2294,7 @@ Parameter passing expression rules:
 Parameter passing semantic rules:
 
 * [F.22: Use `T*` or `owner<T*>` to designate a single object](#Rf-ptr)
-* [F.23: Use a `not_null<T>` to indicate "null" is not a valid value](#Rf-nullptr)
+* [F.23: Use a `not_null<T>` to indicate that "null" is not a valid value](#Rf-nullptr)
 * [F.24: Use a `span<T>` or a `span_p<T>` to designate a half-open sequence](#Rf-range)
 * [F.25: Use a `zstring` or a `not_null<zstring>` to designate a C-style string](#Rf-zstring)
 * [F.26: Use a `unique_ptr<T>` to transfer ownership where a pointer is needed](#Rf-unique_ptr)
@@ -2304,10 +2304,10 @@ Parameter passing semantic rules:
 
 * [F.42: Return a `T*` to indicate a position (only)](#Rf-return-ptr)
 * [F.43: Never (directly or indirectly) return a pointer or a reference to a local object](#Rf-dangle)
-* [F.44: Return a `T&` when copy is undesirable and "returning no object" isn't an option](#Rf-return-ref)
+* [F.44: Return a `T&` when copy is undesirable and "returning no object" isn't needed](#Rf-return-ref)
 * [F.45: Don't return a `T&&`](#Rf-return-ref-ref)
 * [F.46: `int` is the return type for `main()`](#Rf-main)
-* [F.47: Return `T&` from assignment operators.](#Rf-assignment-op)
+* [F.47: Return `T&` from assignment operators](#Rf-assignment-op)
 
 Other function rules:
 
@@ -2318,7 +2318,9 @@ Other function rules:
 * [F.54: If you capture `this`, capture all variables explicitly (no default capture)](#Rf-this-capture)
 * [F.55: Don't use `va_arg` arguments](#F-varargs)
 
-Functions have strong similarities to lambdas and function objects so see also [C.lambdas: Function objects and lambdas](#SS-lambdas).
+Functions have strong similarities to lambdas and function objects.
+
+**See also**: [C.lambdas: Function objects and lambdas](#SS-lambdas)
 
 ## <a name="SS-fct-def"></a>F.def: Function definitions
 
@@ -2369,12 +2371,12 @@ The shortest code is not always the best for performance or maintainability.
 
 Loop bodies, including lambdas used as loop bodies, rarely need to be named.
 However, large loop bodies (e.g., dozens of lines or dozens of pages) can be a problem.
-The rule [Keep functions short](#Rf-single) implies "Keep loop bodies short."
+The rule [Keep functions short and simple](#Rf-single) implies "Keep loop bodies short."
 Similarly, lambdas used as callback arguments are sometimes non-trivial, yet unlikely to be reusable.
 
 ##### Enforcement
 
-* See [Keep functions short](#Rf-single)
+* See [Keep functions short and simple](#Rf-single)
 * Flag identical and very similar lambdas used in different places.
 
 ### <a name="Rf-logical"></a>F.2: A function should perform a single logical operation
@@ -2730,9 +2732,10 @@ See further in [R.30](#Rr-smartptrparam).
 
 We can catch dangling pointers statically, so we don't need to rely on resource management to avoid violations from dangling pointers.
 
-**See also**: [when to prefer `T*` and when to prefer `T&`](#Rf-ptr-ref).
+**See also**:
 
-**See also**: Discussion of [smart pointer use](#Rr-summary-smartptrs).
+* [Prefer `T*` over `T&` when "no argument" is a valid option](#Rf-ptr-ref).
+* Discussion of [smart pointer use](#Rr-summary-smartptrs).
 
 ##### Enforcement
 
@@ -3318,7 +3321,7 @@ When I call `length(s)` should I test for `s == nullptr` first? Should the imple
 
 Using `unique_ptr` is the cheapest way to pass a pointer safely.
 
-See also [C.50](#Rc-factory) regarding when to return a `shared_ptr` from a factory.
+**See also**: [C.50](#Rc-factory) regarding when to return a `shared_ptr` from a factory.
 
 ##### Example
 
@@ -3996,10 +3999,12 @@ If a class has any `private` data, a user cannot completely initialize an object
 Hence, the class definer will provide a constructor and must specify its meaning.
 This effectively means the definer need to define an invariant.
 
-* See also [define a class with private data as `class`](#Rc-class).
-* See also [Prefer to place the interface first in a class](#Rl-order).
-* See also [minimize exposure of members](#Rc-private).
-* See also [Avoid `protected` data](#Rh-protected).
+**See also**:
+
+* [define a class with private data as `class`](#Rc-class).
+* [Prefer to place the interface first in a class](#Rl-order).
+* [minimize exposure of members](#Rc-private).
+* [Avoid `protected` data](#Rh-protected).
 
 ##### Enforcement
 
@@ -11806,7 +11811,7 @@ This rule is an obvious and well-known language rule, but can be hard to follow.
 It takes good coding style, library support, and static analysis to eliminate violations without major overhead.
 This is a major part of the discussion of [C++'s resource- and type-safety model](#Stroustrup15).
 
-See also
+**See also**:
 
 * Use [RAII](#Rr-raii) to avoid lifetime problems.
 * Use [unique_ptr](#Rf-unique_ptr) to avoid lifetime problems.
@@ -13351,7 +13356,7 @@ Concurrency and parallelism rule summary:
 * [CP.8: Don't try to use `volatile` for synchronization](#Rconc-volatile)
 * [CP.9: Whenever feasible use tools to validate your concurrent code](#Rconc-tools)
 
-See also:
+**See also**:
 
 * [CP.con: Concurrency](#SScp-con)
 * [CP.par: Parallelism](#SScp-par)
@@ -15425,7 +15430,7 @@ Possible (only) for specific versions of this idea: e.g., test for systematic te
 
 If you can't do a good job at recovering, at least you can get out before too much consequential damage is done.
 
-See also [Simulating RAII](#Re-no-throw-raii).
+**See also**: [Simulating RAII](#Re-no-throw-raii).
 
 ##### Note
 
@@ -15468,7 +15473,7 @@ Awkward
 
 Systematic use of any error-handling strategy minimizes the chance of forgetting to handle an error.
 
-See also [Simulating RAII](#Re-no-throw-raii).
+**See also**: [Simulating RAII](#Re-no-throw-raii).
 
 ##### Note
 
@@ -15627,7 +15632,7 @@ Awkward.
 Global state is hard to manage and it is easy to forget to check it.
 When did you last test the return value of `printf()`?
 
-See also [Simulating RAII](#Re-no-throw-raii).
+**See also**: [Simulating RAII](#Re-no-throw-raii).
 
 ##### Example, bad
 
@@ -15828,7 +15833,7 @@ through non-`const` pointers.
 It is the job of the class to ensure such mutation is done only when it makes sense according to the semantics (invariants)
 it offers to its users.
 
-See also [Pimpl](#Ri-pimpl).
+**See also**: [Pimpl](#Ri-pimpl)
 
 ##### Enforcement
 
@@ -17150,7 +17155,8 @@ Templates typically appear in header files so their context dependencies are mor
 Having a template operate only on its arguments would be one way of reducing the number of dependencies to a minimum, but that would generally be unmanageable.
 For example, an algorithm usually uses other algorithms and invoke operations that does not exclusively operate on arguments.
 And don't get us started on macros!
-See also [T.69](#Rt-customization)
+
+**See also**: [T.69](#Rt-customization)
 
 ##### Enforcement
 
@@ -18291,8 +18297,8 @@ However
 * that only works for one file (at one level): Use that technique in a header included with other headers and the vulnerability reappears.
 * a namespace (an "implementation namespace") can protect against many context dependencies.
 * full protection and flexibility require [modules](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/n4592.pdf).
-[See also](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/p0141r0.pdf).
 
+**See also**: [Modules, Componentization, and Transition](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/p0141r0.pdf).
 
 ##### Enforcement
 
@@ -18826,7 +18832,7 @@ Text manipulation is a huge topic.
 This section primarily tries to clarify `std::string`'s relation to `char*`, `zstring`, `string_view`, and `gsl::string_span`.
 The important issue of non-ASCII character sets and encodings (e.g., `wchar_t`, Unicode, and UTF-8) will be covered elsewhere.
 
-See also [regular expressions](#SS-regex).
+**See also**: [regular expressions](#SS-regex)
 
 Here, we use "sequence of characters" or "string" to refer to a sequence of characters meant to be read as text (somehow, eventually).
 We don't consider
@@ -18843,7 +18849,7 @@ String summary:
 * [SL.str.11: Use `gsl::string_span` rather than `std::string_view` when you need to mutate a string](#Rstr-span)
 * [SL.str.12: Use the `s` suffix for string literals meant to be standard-library `string`s](#Rstr-s)
 
-See also
+**See also**:
 
 * [F.24 span](#Rf-range)
 * [F.25 zstring](#Rf-zstring)
@@ -21328,7 +21334,9 @@ To provide statically type-safe manipulation of elements.
 
 ##### Reason
 
-To simplify code and eliminate a need for explicit memory management. To bring an object into a surrounding scope, thereby extending its lifetime. See also [F.20, the general item about "out" output values](#Rf-out).
+To simplify code and eliminate a need for explicit memory management. To bring an object into a surrounding scope, thereby extending its lifetime.
+
+**See also**: [F.20, the general item about "out" output values](#Rf-out)
 
 ##### Example
 
