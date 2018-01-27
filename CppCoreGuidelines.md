@@ -2734,8 +2734,8 @@ We can catch dangling pointers statically, so we don't need to rely on resource 
 
 **See also**:
 
-* [Prefer `T*` over `T&` when "no argument" is a valid option](#Rf-ptr-ref).
-* Discussion of [smart pointer use](#Rr-summary-smartptrs).
+* [Prefer `T*` over `T&` when "no argument" is a valid option](#Rf-ptr-ref)
+* Discussion of [smart pointer use](#Rr-summary-smartptrs)
 
 ##### Enforcement
 
@@ -3192,7 +3192,7 @@ better
 
 **Also**: Assume that a `T*` obtained from a smart pointer to `T` (e.g., `unique_ptr<T>`) points to a single element.
 
-**See also**: [Support library](#S-gsl).
+**See also**: [Support library](#S-gsl)
 
 ##### Enforcement
 
@@ -3282,7 +3282,7 @@ A `span<T>` object does not own its elements and is so small that it can be pass
 
 Passing a `span` object as an argument is exactly as efficient as passing a pair of pointer arguments or passing a pointer and an integer count.
 
-**See also**: [Support library](#S-gsl).
+**See also**: [Support library](#S-gsl)
 
 ##### Enforcement
 
@@ -3313,7 +3313,7 @@ When I call `length(s)` should I test for `s == nullptr` first? Should the imple
 
 `zstring` do not represent ownership.
 
-**See also**: [Support library](#S-gsl).
+**See also**: [Support library](#S-gsl)
 
 ### <a name="Rf-unique_ptr"></a>F.26: Use a `unique_ptr<T>` to transfer ownership where a pointer is needed
 
@@ -3440,7 +3440,7 @@ A reference is often a superior alternative to a pointer [if there is no need to
 
 Do not return a pointer to something that is not in the caller's scope; see [F.43](#Rf-dangle).
 
-**See also**: [discussion of dangling pointer prevention](#???).
+**See also**: [discussion of dangling pointer prevention](#???)
 
 ##### Enforcement
 
@@ -4001,10 +4001,10 @@ This effectively means the definer need to define an invariant.
 
 **See also**:
 
-* [define a class with private data as `class`](#Rc-class).
-* [Prefer to place the interface first in a class](#Rl-order).
-* [minimize exposure of members](#Rc-private).
-* [Avoid `protected` data](#Rh-protected).
+* [define a class with private data as `class`](#Rc-class)
+* [Prefer to place the interface first in a class](#Rl-order)
+* [minimize exposure of members](#Rc-private)
+* [Avoid `protected` data](#Rh-protected)
 
 ##### Enforcement
 
@@ -5322,7 +5322,7 @@ If you really want an implicit conversion from the constructor argument type to 
 
     Complex z = 10.7;   // unsurprising conversion
 
-**See also**: [Discussion of implicit conversions](#Ro-conversion).
+**See also**: [Discussion of implicit conversions](#Ro-conversion)
 
 ##### Enforcement
 
@@ -8658,7 +8658,7 @@ What is `Port`? A handy wrapper that encapsulates the resource:
 
 Where a resource is "ill-behaved" in that it isn't represented as a class with a destructor, wrap it in a class or use [`finally`](#Re-finally)
 
-**See also**: [RAII](#Rr-raii).
+**See also**: [RAII](#Rr-raii)
 
 ### <a name="Rr-use-ptr"></a>R.2: In interfaces, use raw pointers to denote individual objects (only)
 
@@ -11613,7 +11613,7 @@ also known as "No naked `new`!"
 
 There can be code in the `...` part that causes the `delete` never to happen.
 
-**See also**: [R: Resource management](#S-resource).
+**See also**: [R: Resource management](#S-resource)
 
 ##### Enforcement
 
@@ -15008,7 +15008,7 @@ One strategy is to add a `valid()` operation to every resource handle:
 Obviously, this increases the size of the code, doesn't allow for implicit propagation of "exceptions" (`valid()` checks), and `valid()` checks can be forgotten.
 Prefer to use exceptions.
 
-**See also**: [Use of `noexcept`](#Se-noexcept).
+**See also**: [Use of `noexcept`](#Se-noexcept)
 
 ##### Enforcement
 
@@ -15020,7 +15020,7 @@ Prefer to use exceptions.
 
 To avoid interface errors.
 
-**See also**: [precondition rule](#Ri-pre).
+**See also**: [precondition rule](#Ri-pre)
 
 ### <a name="Re-postcondition"></a>E.8: State your postconditions
 
@@ -15028,7 +15028,7 @@ To avoid interface errors.
 
 To avoid interface errors.
 
-**See also**: [postcondition rule](#Ri-post).
+**See also**: [postcondition rule](#Ri-post)
 
 ### <a name="Re-noexcept"></a>E.12: Use `noexcept` when exiting a function because of a `throw` is impossible or unacceptable
 
@@ -15418,7 +15418,7 @@ If we cannot throw an exception, we can simulate this RAII style of resource han
 
 The problem is of course that the caller now has to remember to test the return value.
 
-**See also**: [Discussion](#Sd-???).
+**See also**: [Discussion](#Sd-???)
 
 ##### Enforcement
 
@@ -15430,7 +15430,7 @@ Possible (only) for specific versions of this idea: e.g., test for systematic te
 
 If you can't do a good job at recovering, at least you can get out before too much consequential damage is done.
 
-**See also**: [Simulating RAII](#Re-no-throw-raii).
+**See also**: [Simulating RAII](#Re-no-throw-raii)
 
 ##### Note
 
@@ -15473,7 +15473,7 @@ Awkward
 
 Systematic use of any error-handling strategy minimizes the chance of forgetting to handle an error.
 
-**See also**: [Simulating RAII](#Re-no-throw-raii).
+**See also**: [Simulating RAII](#Re-no-throw-raii)
 
 ##### Note
 
@@ -15617,9 +15617,9 @@ Also, the larger the program becomes the harder it is to apply an error-indicato
 
 We [prefer exception-based error handling](#Re-throw) and recommend [keeping functions short](#Rf-single).
 
-**See also**: [Discussion](#Sd-???).
+**See also**: [Discussion](#Sd-???)
 
-**See also**: [Returning multiple values](#Rf-out-multi).
+**See also**: [Returning multiple values](#Rf-out-multi)
 
 ##### Enforcement
 
@@ -15632,7 +15632,7 @@ Awkward.
 Global state is hard to manage and it is easy to forget to check it.
 When did you last test the return value of `printf()`?
 
-**See also**: [Simulating RAII](#Re-no-throw-raii).
+**See also**: [Simulating RAII](#Re-no-throw-raii)
 
 ##### Example, bad
 
@@ -18296,9 +18296,12 @@ However
 
 * that only works for one file (at one level): Use that technique in a header included with other headers and the vulnerability reappears.
 * a namespace (an "implementation namespace") can protect against many context dependencies.
-* full protection and flexibility require [modules](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/n4592.pdf).
+* full protection and flexibility require modules.
 
-**See also**: [Modules, Componentization, and Transition](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/p0141r0.pdf).
+**See also**:
+
+* [Working Draft, Extensions to C++ for Modules](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/n4592.pdf)
+* [Modules, Componentization, and Transition](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/p0141r0.pdf)
 
 ##### Enforcement
 
