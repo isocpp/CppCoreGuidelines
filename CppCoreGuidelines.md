@@ -2735,7 +2735,7 @@ We can catch dangling pointers statically, so we don't need to rely on resource 
 **See also**:
 
 * [Prefer `T*` over `T&` when "no argument" is a valid option](#Rf-ptr-ref)
-* Discussion of [smart pointer use](#Rr-summary-smartptrs)
+* [Smart pointer rule summary](#Rr-summary-smartptrs)
 
 ##### Enforcement
 
