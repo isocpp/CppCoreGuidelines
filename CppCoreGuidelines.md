@@ -1143,7 +1143,7 @@ See
 * [Concurrency tools](#Rconc-tools)
 * [Testing tools](???)
 
-There are many other kinds of tools, such as source code depositories, build tools, etc.,
+There are many other kinds of tools, such as source code repositories, build tools, etc.,
 but those are beyond the scope of these guidelines.
 
 ##### Note
