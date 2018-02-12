@@ -1,6 +1,6 @@
 # <a name="main"></a>C++ Core Guidelines
 
-January 22, 2018
+January 25, 2018
 
 
 Editors:
@@ -37,27 +37,27 @@ You can [read an explanation of the scope and structure of this Guide](#S-abstra
 * [R: Resource management](#S-resource)
 * [ES: Expressions and statements](#S-expr)
 * [Per: Performance](#S-performance)
-* [CP: Concurrency](#S-concurrency)
+* [CP: Concurrency and parallelism](#S-concurrency)
 * [E: Error handling](#S-errors)
 * [Con: Constants and immutability](#S-const)
 * [T: Templates and generic programming](#S-templates)
 * [CPL: C-style programming](#S-cpl)
 * [SF: Source files](#S-source)
-* [SL: The Standard library](#S-stdlib)
+* [SL: The Standard Library](#S-stdlib)
 
 Supporting sections:
 
-* [A: Architectural Ideas](#S-A)
-* [N: Non-Rules and myths](#S-not)
+* [A: Architectural ideas](#S-A)
+* [NR: Non-Rules and myths](#S-not)
 * [RF: References](#S-references)
 * [Pro: Profiles](#S-profile)
 * [GSL: Guideline support library](#S-gsl)
-* [NL: Naming and layout](#S-naming)
+* [NL: Naming and layout rules](#S-naming)
 * [FAQ: Answers to frequently asked questions](#S-faq)
 * [Appendix A: Libraries](#S-libraries)
 * [Appendix B: Modernizing code](#S-modernizing)
 * [Appendix C: Discussion](#S-discussion)
-* [Appendix D: Tools support](#S-tools)
+* [Appendix D: Supporting tools](#S-tools)
 * [Glossary](#S-glossary)
 * [To-do: Unclassified proto-rules](#S-unclassified)
 
@@ -407,27 +407,28 @@ Recommended information sources can be found in [the references](#S-references).
 * [Enum: Enumerations](#S-enum)
 * [R: Resource management](#S-resource)
 * [ES: Expressions and statements](#S-expr)
+* [Per: Performance](#S-performance)
+* [CP: Concurrency and parallelism](#S-concurrency)
 * [E: Error handling](#S-errors)
 * [Con: Constants and immutability](#S-const)
 * [T: Templates and generic programming](#S-templates)
-* [CP: Concurrency](#S-concurrency)
-* [SL: The Standard library](#S-stdlib)
-* [SF: Source files](#S-source)
 * [CPL: C-style programming](#S-cpl)
-* [Pro: Profiles](#S-profile)
-* [GSL: Guideline support library](#S-gsl)
-* [FAQ: Answers to frequently asked questions](#S-faq)
+* [SF: Source files](#S-source)
+* [SL: The Standard Library](#S-stdlib)
 
 Supporting sections:
 
-* [NL: Naming and layout](#S-naming)
-* [Per: Performance](#S-performance)
-* [N: Non-Rules and myths](#S-not)
+* [A: Architectural ideas](#S-A)
+* [NR: Non-Rules and myths](#S-not)
 * [RF: References](#S-references)
+* [Pro: Profiles](#S-profile)
+* [GSL: Guideline support library](#S-gsl)
+* [NL: Naming and layout rules](#S-naming)
+* [FAQ: Answers to frequently asked questions](#S-faq)
 * [Appendix A: Libraries](#S-libraries)
 * [Appendix B: Modernizing code](#S-modernizing)
 * [Appendix C: Discussion](#S-discussion)
-* [Appendix D: Tools support](#S-tools)
+* [Appendix D: Supporting tools](#S-tools)
 * [Glossary](#S-glossary)
 * [To-do: Unclassified proto-rules](#S-unclassified)
 
@@ -608,7 +609,7 @@ The last variant makes it clear that we are not interested in the order in which
 A programmer should be familiar with
 
 * [The guideline support library](#S-gsl)
-* [The ISO C++ standard library](#S-stdlib)
+* [The ISO C++ Standard Library](#S-stdlib)
 * Whatever foundation libraries are used for the current project(s)
 
 ##### Note
@@ -977,9 +978,9 @@ However, relying on abstractions that implicitly clean up can be as simple, and 
 
 ##### Note
 
-Enforcing [the lifetime profile](#In.force) eliminates leaks.
+Enforcing [the lifetime profile](#SS-force) eliminates leaks.
 When combined with resource safety provided by [RAII](#Rr-raii), it eliminates the need for "garbage collection" (by generating no garbage).
-Combine this with enforcement of [the type and bounds profiles](#In.force) and you get complete type- and resource-safety, guaranteed by tools.
+Combine this with enforcement of [the type and bounds profiles](#SS-force) and you get complete type- and resource-safety, guaranteed by tools.
 
 ##### Enforcement
 
@@ -1071,7 +1072,7 @@ Something immutable cannot change unexpectedly.
 Sometimes immutability enables better optimization.
 You can't have a data race on a constant.
 
-See [Con: Constants and Immutability](#S-const)
+See [Con: Constants and immutability](#S-const)
 
 ### <a name="Rp-library"></a>P.11: Encapsulate messy constructs, rather than spreading through the code
 
@@ -1176,7 +1177,7 @@ You need a reason not to use the standard library (or whatever foundational libr
 
 By default use
 
-* The [ISO C++ standard library](#S-stdlib)
+* The [ISO C++ Standard Library](#S-stdlib)
 * The [Guidelines Support Library](#S-gsl)
 
 ##### Note
@@ -1213,7 +1214,7 @@ Interface rule summary:
 * [I.27: For stable library ABI, consider the Pimpl idiom](#Ri-pimpl)
 * [I.30: Encapsulate rule violations](#Ri-encapsulate)
 
-See also
+**See also**:
 
 * [F: Functions](#S-functions)
 * [C.concrete: Concrete types](#SS-concrete)
@@ -1702,7 +1703,7 @@ Use the ISO Concepts TS style of requirements specification. For example:
 Soon (maybe in 2018), most compilers will be able to check `requires` clauses once the `//` is removed.
 Concepts are supported in GCC 6.1 and later.
 
-**See also**: [Generic programming](#SS-GP) and [concepts](#SS-t-concepts).
+**See also**: [Generic programming](#SS-GP) and [concepts](#SS-concepts).
 
 ##### Enforcement
 
@@ -1828,7 +1829,7 @@ caller, so that its lifetime is handled by the caller. Viewed another way:
 ownership transferring APIs are relatively rare compared to pointer-passing APIs,
 so the default is "no ownership transfer."
 
-**See also**: [Argument passing](#Rf-conventional), [use of smart pointer arguments](#Rr-smartptrparam), and [value return](#Rf-T-return).
+**See also**: [Argument passing](#Rf-conventional), [use of smart pointer arguments](#Rr-smartptrparam), and [value return](#Rf-value-return).
 
 ##### Enforcement
 
@@ -2293,20 +2294,20 @@ Parameter passing expression rules:
 Parameter passing semantic rules:
 
 * [F.22: Use `T*` or `owner<T*>` to designate a single object](#Rf-ptr)
-* [F.23: Use a `not_null<T>` to indicate "null" is not a valid value](#Rf-nullptr)
+* [F.23: Use a `not_null<T>` to indicate that "null" is not a valid value](#Rf-nullptr)
 * [F.24: Use a `span<T>` or a `span_p<T>` to designate a half-open sequence](#Rf-range)
 * [F.25: Use a `zstring` or a `not_null<zstring>` to designate a C-style string](#Rf-zstring)
 * [F.26: Use a `unique_ptr<T>` to transfer ownership where a pointer is needed](#Rf-unique_ptr)
 * [F.27: Use a `shared_ptr<T>` to share ownership](#Rf-shared_ptr)
 
-Value return semantic rules:
+<a name="Rf-value-return"></a>Value return semantic rules:
 
 * [F.42: Return a `T*` to indicate a position (only)](#Rf-return-ptr)
 * [F.43: Never (directly or indirectly) return a pointer or a reference to a local object](#Rf-dangle)
-* [F.44: Return a `T&` when copy is undesirable and "returning no object" isn't an option](#Rf-return-ref)
+* [F.44: Return a `T&` when copy is undesirable and "returning no object" isn't needed](#Rf-return-ref)
 * [F.45: Don't return a `T&&`](#Rf-return-ref-ref)
 * [F.46: `int` is the return type for `main()`](#Rf-main)
-* [F.47: Return `T&` from assignment operators.](#Rf-assignment-op)
+* [F.47: Return `T&` from assignment operators](#Rf-assignment-op)
 
 Other function rules:
 
@@ -2317,7 +2318,9 @@ Other function rules:
 * [F.54: If you capture `this`, capture all variables explicitly (no default capture)](#Rf-this-capture)
 * [F.55: Don't use `va_arg` arguments](#F-varargs)
 
-Functions have strong similarities to lambdas and function objects so see also [C.lambdas: Function objects and lambdas](#SS-lambdas).
+Functions have strong similarities to lambdas and function objects.
+
+**See also**: [C.lambdas: Function objects and lambdas](#SS-lambdas)
 
 ## <a name="SS-fct-def"></a>F.def: Function definitions
 
@@ -2368,12 +2371,12 @@ The shortest code is not always the best for performance or maintainability.
 
 Loop bodies, including lambdas used as loop bodies, rarely need to be named.
 However, large loop bodies (e.g., dozens of lines or dozens of pages) can be a problem.
-The rule [Keep functions short](#Rf-single) implies "Keep loop bodies short."
+The rule [Keep functions short and simple](#Rf-single) implies "Keep loop bodies short."
 Similarly, lambdas used as callback arguments are sometimes non-trivial, yet unlikely to be reusable.
 
 ##### Enforcement
 
-* See [Keep functions short](#Rf-single)
+* See [Keep functions short and simple](#Rf-single)
 * Flag identical and very similar lambdas used in different places.
 
 ### <a name="Rf-logical"></a>F.2: A function should perform a single logical operation
@@ -2636,7 +2639,7 @@ If an exception is not supposed to be thrown, the program cannot be assumed to c
 ##### Example
 
 Put `noexcept` on every function written completely in C or in any other language without exceptions.
-The C++ standard library does that implicitly for all functions in the C standard library.
+The C++ Standard Library does that implicitly for all functions in the C Standard Library.
 
 ##### Note
 
@@ -2729,9 +2732,10 @@ See further in [R.30](#Rr-smartptrparam).
 
 We can catch dangling pointers statically, so we don't need to rely on resource management to avoid violations from dangling pointers.
 
-**See also**: [when to prefer `T*` and when to prefer `T&`](#Rf-ptr-ref).
+**See also**:
 
-**See also**: Discussion of [smart pointer use](#Rr-summary-smartptrs).
+* [Prefer `T*` over `T&` when "no argument" is a valid option](#Rf-ptr-ref)
+* [Smart pointer rule summary](#Rr-summary-smartptrs)
 
 ##### Enforcement
 
@@ -3188,7 +3192,7 @@ better
 
 **Also**: Assume that a `T*` obtained from a smart pointer to `T` (e.g., `unique_ptr<T>`) points to a single element.
 
-**See also**: [Support library](#S-gsl).
+**See also**: [Support library](#S-gsl)
 
 ##### Enforcement
 
@@ -3278,7 +3282,7 @@ A `span<T>` object does not own its elements and is so small that it can be pass
 
 Passing a `span` object as an argument is exactly as efficient as passing a pair of pointer arguments or passing a pointer and an integer count.
 
-**See also**: [Support library](#S-gsl).
+**See also**: [Support library](#S-gsl)
 
 ##### Enforcement
 
@@ -3309,7 +3313,7 @@ When I call `length(s)` should I test for `s == nullptr` first? Should the imple
 
 `zstring` do not represent ownership.
 
-**See also**: [Support library](#S-gsl).
+**See also**: [Support library](#S-gsl)
 
 ### <a name="Rf-unique_ptr"></a>F.26: Use a `unique_ptr<T>` to transfer ownership where a pointer is needed
 
@@ -3317,7 +3321,7 @@ When I call `length(s)` should I test for `s == nullptr` first? Should the imple
 
 Using `unique_ptr` is the cheapest way to pass a pointer safely.
 
-See also [C.50](#Rc-factory) regarding when to return a `shared_ptr` from a factory.
+**See also**: [C.50](#Rc-factory) regarding when to return a `shared_ptr` from a factory.
 
 ##### Example
 
@@ -3436,7 +3440,7 @@ A reference is often a superior alternative to a pointer [if there is no need to
 
 Do not return a pointer to something that is not in the caller's scope; see [F.43](#Rf-dangle).
 
-**See also**: [discussion of dangling pointer prevention](#???).
+**See also**: [discussion of dangling pointer prevention](#???)
 
 ##### Enforcement
 
@@ -3902,7 +3906,7 @@ Declaring a `...` parameter is sometimes useful for techniques that don't involv
 * Issue a diagnostic for using `va_list`, `va_start`, or `va_arg`.
 * Issue a diagnostic for passing an argument to a vararg parameter of a function that does not offer an overload for a more specific type in the position of the vararg. To fix: Use a different function, or `[[suppress(types)]]`.
 
-# <a name="S-class"></a>C: Classes and Class Hierarchies
+# <a name="S-class"></a>C: Classes and class hierarchies
 
 A class is a user-defined type, for which a programmer can define the representation, operations, and interfaces.
 Class hierarchies are used to organize related classes into hierarchical structures.
@@ -3995,10 +3999,12 @@ If a class has any `private` data, a user cannot completely initialize an object
 Hence, the class definer will provide a constructor and must specify its meaning.
 This effectively means the definer need to define an invariant.
 
-* See also [define a class with private data as `class`](#Rc-class).
-* See also [Prefer to place the interface first in a class](#Rl-order).
-* See also [minimize exposure of members](#Rc-private).
-* See also [Avoid `protected` data](#Rh-protected).
+**See also**:
+
+* [define a class with private data as `class`](#Rc-class)
+* [Prefer to place the interface first in a class](#Rl-order)
+* [minimize exposure of members](#Rc-private)
+* [Avoid `protected` data](#Rh-protected)
 
 ##### Enforcement
 
@@ -5316,7 +5322,7 @@ If you really want an implicit conversion from the constructor argument type to 
 
     Complex z = 10.7;   // unsurprising conversion
 
-**See also**: [Discussion of implicit conversions](#Ro-conversion).
+**See also**: [Discussion of implicit conversions](#Ro-conversion)
 
 ##### Enforcement
 
@@ -8652,7 +8658,7 @@ What is `Port`? A handy wrapper that encapsulates the resource:
 
 Where a resource is "ill-behaved" in that it isn't represented as a class with a destructor, wrap it in a class or use [`finally`](#Re-finally)
 
-**See also**: [RAII](#Rr-raii).
+**See also**: [RAII](#Rr-raii)
 
 ### <a name="Rr-use-ptr"></a>R.2: In interfaces, use raw pointers to denote individual objects (only)
 
@@ -9445,7 +9451,7 @@ The fix is simple -- take a local copy of the pointer to "keep a ref count" for 
 
 * (Simple) Warn if a pointer or reference obtained from a smart pointer variable (`Unique_ptr` or `Shared_ptr`) that is nonlocal, or that is local but potentially aliased, is used in a function call. If the smart pointer is a `Shared_ptr` then suggest taking a local copy of the smart pointer and obtain a pointer or reference from that instead.
 
-# <a name="S-expr"></a>ES: Expressions and Statements
+# <a name="S-expr"></a>ES: Expressions and statements
 
 Expressions and statements are the lowest and most direct way of expressing actions and computation. Declarations in local scopes are statements.
 
@@ -9536,7 +9542,7 @@ Arithmetic rules:
 ##### Reason
 
 Code using a library can be much easier to write than code working directly with language features, much shorter, tend to be of a higher level of abstraction, and the library code is presumably already tested.
-The ISO C++ standard library is among the most widely known and best tested libraries.
+The ISO C++ Standard Library is among the most widely known and best tested libraries.
 It is available as part of all C++ Implementations.
 
 ##### Example
@@ -11607,7 +11613,7 @@ also known as "No naked `new`!"
 
 There can be code in the `...` part that causes the `delete` never to happen.
 
-**See also**: [R: Resource management](#S-resource).
+**See also**: [R: Resource management](#S-resource)
 
 ##### Enforcement
 
@@ -11805,7 +11811,7 @@ This rule is an obvious and well-known language rule, but can be hard to follow.
 It takes good coding style, library support, and static analysis to eliminate violations without major overhead.
 This is a major part of the discussion of [C++'s resource- and type-safety model](#Stroustrup15).
 
-See also
+**See also**:
 
 * Use [RAII](#Rr-raii) to avoid lifetime problems.
 * Use [unique_ptr](#Rf-unique_ptr) to avoid lifetime problems.
@@ -13027,7 +13033,7 @@ We can do better (in C++98)
 
 Here, we use the compiler's knowledge about the size of the array, the type of elements, and how to compare `double`s.
 
-With C++11 plus [concepts](#???), we can do better still
+With C++11 plus [concepts](#SS-concepts), we can do better still
 
     // Sortable specifies that c must be a
     // random-access sequence of elements comparable with <
@@ -13302,7 +13308,7 @@ Performance is very sensitive to cache performance and cache algorithms favor si
 
 ???
 
-# <a name="S-concurrency"></a>CP: Concurrency and Parallelism
+# <a name="S-concurrency"></a>CP: Concurrency and parallelism
 
 We often want our computers to do many tasks at the same time (or at least make them appear to do them at the same time).
 The reasons for doing so varies (e.g., wanting to wait for many events using only a single processor, processing many data streams simultaneously, or utilizing many hardware facilities)
@@ -13350,7 +13356,7 @@ Concurrency and parallelism rule summary:
 * [CP.8: Don't try to use `volatile` for synchronization](#Rconc-volatile)
 * [CP.9: Whenever feasible use tools to validate your concurrent code](#Rconc-tools)
 
-See also:
+**See also**:
 
 * [CP.con: Concurrency](#SScp-con)
 * [CP.par: Parallelism](#SScp-par)
@@ -13530,7 +13536,7 @@ Making `surface_readings` be `const` (with respect to this function) allow reaso
 
 Immutable data can be safely and efficiently shared.
 No locking is needed: You can't have a data race on a constant.
-See also [CP.mess: Message Passing](#SScp-mess) and [CP.31: prefer pass by value](#C#Rconc-data-by-value).
+See also [CP.mess: Message Passing](#SScp-mess) and [CP.31: prefer pass by value](#Rconc-data-by-value).
 
 ##### Enforcement
 
@@ -13681,7 +13687,7 @@ Concurrency rule summary:
 * [CP.42: Don't `wait` without a condition](#Rconc-wait)
 * [CP.43: Minimize time spent in a critical section](#Rconc-time)
 * [CP.44: Remember to name your `lock_guard`s and `unique_lock`s](#Rconc-name)
-* [CP.50: Define a `mutex` together with the data it protects](#Rconc-mutex)
+* [CP.50: Define a `mutex` together with the data it guards. Use `synchronized_value<T>` where possible](#Rconc-mutex)
 * ??? when to use a spinlock
 * ??? when to use `try_lock()`
 * ??? when to prefer `lock_guard` over `unique_lock`
@@ -14321,7 +14327,7 @@ Flag all unnamed `lock_guard`s and `unique_lock`s.
 
 
 
-### <a name="Rconc-mutex"></a>P.50: Define a `mutex` together with the data it guards. Use `synchronized_value<T>` where possible
+### <a name="Rconc-mutex"></a>CP.50: Define a `mutex` together with the data it guards. Use `synchronized_value<T>` where possible
 
 ##### Reason
 
@@ -15002,7 +15008,7 @@ One strategy is to add a `valid()` operation to every resource handle:
 Obviously, this increases the size of the code, doesn't allow for implicit propagation of "exceptions" (`valid()` checks), and `valid()` checks can be forgotten.
 Prefer to use exceptions.
 
-**See also**: [Use of `noexcept`](#Se-noexcept).
+**See also**: [Use of `noexcept`](#Se-noexcept)
 
 ##### Enforcement
 
@@ -15014,7 +15020,7 @@ Prefer to use exceptions.
 
 To avoid interface errors.
 
-**See also**: [precondition rule](#Ri-pre).
+**See also**: [precondition rule](#Ri-pre)
 
 ### <a name="Re-postcondition"></a>E.8: State your postconditions
 
@@ -15022,7 +15028,7 @@ To avoid interface errors.
 
 To avoid interface errors.
 
-**See also**: [postcondition rule](#Ri-post).
+**See also**: [postcondition rule](#Ri-post)
 
 ### <a name="Re-noexcept"></a>E.12: Use `noexcept` when exiting a function because of a `throw` is impossible or unacceptable
 
@@ -15042,7 +15048,7 @@ By declaring `compute` to be `noexcept`, we give the compiler and human readers 
 
 ##### Note
 
-Many standard-library functions are `noexcept` including all the standard-library functions "inherited" from the C standard library.
+Many standard-library functions are `noexcept` including all the standard-library functions "inherited" from the C Standard Library.
 
 ##### Example
 
@@ -15412,7 +15418,7 @@ If we cannot throw an exception, we can simulate this RAII style of resource han
 
 The problem is of course that the caller now has to remember to test the return value.
 
-**See also**: [Discussion](#Sd-???).
+**See also**: [Discussion](#Sd-???)
 
 ##### Enforcement
 
@@ -15424,7 +15430,7 @@ Possible (only) for specific versions of this idea: e.g., test for systematic te
 
 If you can't do a good job at recovering, at least you can get out before too much consequential damage is done.
 
-See also [Simulating RAII](#Re-no-throw-raii).
+**See also**: [Simulating RAII](#Re-no-throw-raii)
 
 ##### Note
 
@@ -15467,7 +15473,7 @@ Awkward
 
 Systematic use of any error-handling strategy minimizes the chance of forgetting to handle an error.
 
-See also [Simulating RAII](#Re-no-throw-raii).
+**See also**: [Simulating RAII](#Re-no-throw-raii)
 
 ##### Note
 
@@ -15611,9 +15617,9 @@ Also, the larger the program becomes the harder it is to apply an error-indicato
 
 We [prefer exception-based error handling](#Re-throw) and recommend [keeping functions short](#Rf-single).
 
-**See also**: [Discussion](#Sd-???).
+**See also**: [Discussion](#Sd-???)
 
-**See also**: [Returning multiple values](#Rf-out-multi).
+**See also**: [Returning multiple values](#Rf-out-multi)
 
 ##### Enforcement
 
@@ -15626,7 +15632,7 @@ Awkward.
 Global state is hard to manage and it is easy to forget to check it.
 When did you last test the return value of `printf()`?
 
-See also [Simulating RAII](#Re-no-throw-raii).
+**See also**: [Simulating RAII](#Re-no-throw-raii)
 
 ##### Example, bad
 
@@ -15713,7 +15719,7 @@ The "catch everything" handler ensured that the `std::exception`-handler will ne
 
 Flag all "hiding handlers".
 
-# <a name="S-const"></a>Con: Constants and Immutability
+# <a name="S-const"></a>Con: Constants and immutability
 
 You can't have a race condition on a constant.
 It is easier to reason about a program when many of the objects cannot change their values.
@@ -15827,7 +15833,7 @@ through non-`const` pointers.
 It is the job of the class to ensure such mutation is done only when it makes sense according to the semantics (invariants)
 it offers to its users.
 
-See also [Pimpl](#Ri-pimpl).
+**See also**: [Pimpl](#Ri-pimpl)
 
 ##### Enforcement
 
@@ -17149,7 +17155,8 @@ Templates typically appear in header files so their context dependencies are mor
 Having a template operate only on its arguments would be one way of reducing the number of dependencies to a minimum, but that would generally be unmanageable.
 For example, an algorithm usually uses other algorithms and invoke operations that does not exclusively operate on arguments.
 And don't get us started on macros!
-See also [T.69](#Rt-customization)
+
+**See also**: [T.69](#Rt-customization)
 
 ##### Enforcement
 
@@ -18040,7 +18047,7 @@ C rule summary:
 
 * [CPL.1: Prefer C++ to C](#Rcpl-C)
 * [CPL.2: If you must use C, use the common subset of C and C++, and compile the C code as C++](#Rcpl-subset)
-* [CPL.3: If you must use C for interfaces, use C++ in the code using such interfaces](#Rcpl-interface)
+* [CPL.3: If you must use C for interfaces, use C++ in the calling code using such interfaces](#Rcpl-interface)
 
 ### <a name="Rcpl-C"></a>CPL.1: Prefer C++ to C
 
@@ -18289,9 +18296,12 @@ However
 
 * that only works for one file (at one level): Use that technique in a header included with other headers and the vulnerability reappears.
 * a namespace (an "implementation namespace") can protect against many context dependencies.
-* full protection and flexibility require [modules](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/n4592.pdf).
-[See also](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/p0141r0.pdf).
+* full protection and flexibility require modules.
 
+**See also**:
+
+* [Working Draft, Extensions to C++ for Modules](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/n4592.pdf)
+* [Modules, Componentization, and Transition](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/p0141r0.pdf)
 
 ##### Enforcement
 
@@ -18599,14 +18609,14 @@ So, it is likely that this library section of the guidelines will eventually gro
 
 << ??? We need another level of rule numbering ??? >>
 
-C++ Standard library component summary:
+C++ Standard Library component summary:
 
 * [SL.con: Containers](#SS-con)
 * [SL.str: String](#SS-string)
 * [SL.io: Iostream](#SS-io)
 * [SL.regex: Regex](#SS-regex)
 * [SL.chrono: Time](#SS-chrono)
-* [SL.C: The C standard library](#SS-clib)
+* [SL.C: The C Standard Library](#SS-clib)
 
 Standard-library rule summary:
 
@@ -18825,7 +18835,7 @@ Text manipulation is a huge topic.
 This section primarily tries to clarify `std::string`'s relation to `char*`, `zstring`, `string_view`, and `gsl::string_span`.
 The important issue of non-ASCII character sets and encodings (e.g., `wchar_t`, Unicode, and UTF-8) will be covered elsewhere.
 
-See also [regular expressions](#SS-regex).
+**See also**: [regular expressions](#SS-regex)
 
 Here, we use "sequence of characters" or "string" to refer to a sequence of characters meant to be read as text (somehow, eventually).
 We don't consider
@@ -18842,7 +18852,7 @@ String summary:
 * [SL.str.11: Use `gsl::string_span` rather than `std::string_view` when you need to mutate a string](#Rstr-span)
 * [SL.str.12: Use the `s` suffix for string literals meant to be standard-library `string`s](#Rstr-s)
 
-See also
+**See also**:
 
 * [F.24 span](#Rf-range)
 * [F.25 zstring](#Rf-zstring)
@@ -19248,11 +19258,11 @@ It supports a variety of regular expression pattern conventions.
 outputting time in various units.
 It provides clocks for registering `time_points`.
 
-## <a name="SS-clib"></a>SL.C: The C standard library
+## <a name="SS-clib"></a>SL.C: The C Standard Library
 
 ???
 
-C standard library rule summary:
+C Standard Library rule summary:
 
 * [S.C.1: Don't use setjmp/longjmp](#Rclib-jmp)
 * [???](#???)
@@ -19270,7 +19280,7 @@ Flag all occurrences of `longjmp`and `setjmp`
 
 
 
-# <a name="S-A"></a>A: Architectural Ideas
+# <a name="S-A"></a>A: Architectural ideas
 
 This section contains ideas about higher-level architectural ideas and libraries.
 
@@ -19945,7 +19955,7 @@ Summary of GSL components:
 
 We plan for a "ISO C++ standard style" semi-formal specification of the GSL.
 
-We rely on the ISO C++ standard library and hope for parts of the GSL to be absorbed into the standard library.
+We rely on the ISO C++ Standard Library and hope for parts of the GSL to be absorbed into the standard library.
 
 ## <a name="SS-views"></a>GSL.view: Views
 
@@ -20363,7 +20373,7 @@ This rule applies to non-macro symbolic constants:
 
 ##### Reason
 
-The use of underscores to separate parts of a name is the original C and C++ style and used in the C++ standard library.
+The use of underscores to separate parts of a name is the original C and C++ style and used in the C++ Standard Library.
 If you prefer CamelCase, you have to choose among different flavors of camelCase.
 
 ##### Note
@@ -20764,7 +20774,7 @@ No. The GSL exists only to supply a few types and aliases that are not currently
 
 ### <a name="Faq-gsl-string-view"></a>FAQ.55: If you're using the standard types where available, why is the GSL `string_span` different from the `string_view` in the Library Fundamentals 1 Technical Specification and C++17 Working Paper? Why not just use the committee-approved `string_view`?
 
-The consensus on the taxonomy of views for the C++ standard library was that "view" means "read-only", and "span" means "read/write". The read-only `string_view` was the first such component to complete the standardization process, while `span` and `string_span` are currently being considered for standardization.
+The consensus on the taxonomy of views for the C++ Standard Library was that "view" means "read-only", and "span" means "read/write". The read-only `string_view` was the first such component to complete the standardization process, while `span` and `string_span` are currently being considered for standardization.
 
 ### <a name="Faq-gsl-owner"></a>FAQ.56: Is `owner` the same as the proposed `observer_ptr`?
 
@@ -21012,7 +21022,7 @@ In general, however, avoid concrete base classes (see Item 35). For example, `un
 
 ### <a name="Sd-never-fail"></a>Discussion: Destructors, deallocation, and swap must never fail
 
-Never allow an error to be reported from a destructor, a resource deallocation function (e.g., `operator delete`), or a `swap` function using `throw`. It is nearly impossible to write useful code if these operations can fail, and even if something does go wrong it nearly never makes any sense to retry. Specifically, types whose destructors may throw an exception are flatly forbidden from use with the C++ standard library. Most destructors are now implicitly `noexcept` by default.
+Never allow an error to be reported from a destructor, a resource deallocation function (e.g., `operator delete`), or a `swap` function using `throw`. It is nearly impossible to write useful code if these operations can fail, and even if something does go wrong it nearly never makes any sense to retry. Specifically, types whose destructors may throw an exception are flatly forbidden from use with the C++ Standard Library. Most destructors are now implicitly `noexcept` by default.
 
 ##### Example
 
@@ -21327,7 +21337,9 @@ To provide statically type-safe manipulation of elements.
 
 ##### Reason
 
-To simplify code and eliminate a need for explicit memory management. To bring an object into a surrounding scope, thereby extending its lifetime. See also [F.20, the general item about "out" output values](#Rf-out).
+To simplify code and eliminate a need for explicit memory management. To bring an object into a surrounding scope, thereby extending its lifetime.
+
+**See also**: [F.20, the general item about "out" output values](#Rf-out)
 
 ##### Example
 
