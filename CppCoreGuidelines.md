@@ -10171,7 +10171,7 @@ In the not uncommon case where the input target and the input operation get sepa
 
     int i2 = 0;   // better
     // ...
-    cin >> i;
+    cin >> i2;
 
 A good optimizer should know about input operations and eliminate the redundant operation.
 
