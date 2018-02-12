@@ -191,7 +191,7 @@ You can look at design concepts used to express the rules:
 
 This document is a set of guidelines for using C++ well.
 The aim of this document is to help people to use modern C++ effectively.
-By "modern C++" we mean C++11 and C++14 (and soon C++17).
+By "modern C++" we mean C++17, C++14, and C++11.
 In other words, what would you like your code to look like in 5 years' time, given that you can start now? In 10 years' time?
 
 The guidelines are focused on relatively high-level issues, such as interfaces, resource management, memory management, and concurrency.
@@ -228,7 +228,7 @@ We plan to modify and extend this document as our understanding improves and the
 
 # <a name="S-introduction"></a>In: Introduction
 
-This is a set of core guidelines for modern C++, C++14, taking likely future enhancements and ISO Technical Specifications (TSs) into account.
+This is a set of core guidelines for modern C++, C++17, taking likely future enhancements and ISO Technical Specifications (TSs) into account.
 The aim is to help C++ programmers to write simpler, more efficient, more maintainable code.
 
 Introduction summary:
@@ -246,7 +246,7 @@ All C++ programmers. This includes [programmers who might consider C](#S-cpl).
 
 ## <a name="SS-aims"></a>In.aims: Aims
 
-The purpose of this document is to help developers to adopt modern C++ (C++11, C++14, and soon C++17) and to achieve a more uniform style across code bases.
+The purpose of this document is to help developers to adopt modern C++ (C++11, C++14, and C++17) and to achieve a more uniform style across code bases.
 
 We do not suffer the delusion that every one of these rules can be effectively applied to every code base. Upgrading old systems is hard. However, we do believe that a program that uses a rule is less error-prone and more maintainable than one that does not. Often, rules also lead to faster/easier initial development.
 As far as we can tell, these rules lead to code that performs as well or better than older, more conventional techniques; they are meant to follow the zero-overhead principle ("what you don't use, you don't pay for" or "when you use an abstraction mechanism appropriately, you get at least as good performance as if you had handcoded using lower-level language constructs").
@@ -576,7 +576,7 @@ In such cases, control their (dis)use with an extension of these Coding Guidelin
 
 ##### Enforcement
 
-Use an up-to-date C++ compiler (currently C++11 or C++14) with a set of options that do not accept extensions.
+Use an up-to-date C++ compiler (currently C++11, C++14, and C++17) with a set of options that do not accept extensions.
 
 ### <a name="Rp-what"></a>P.3: Express intent
 
