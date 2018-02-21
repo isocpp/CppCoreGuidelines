@@ -4081,8 +4081,9 @@ The language requires operators `=`, `()`, `[]`, and `->` to be members.
 An overload set may have some members that do not directly access `private` data:
 
     class Foobar {
+    public:
         void foo(int x)    { /* manipulate private data */ }
-        void foo(double x) { foo(std::round(x)); }
+        void foo(double x) { foo(static_cast<int>(std::round(x))); }
         // ...
     private:
         // ...
