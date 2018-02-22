@@ -4082,8 +4082,8 @@ An overload set may have some members that do not directly access `private` data
 
     class Foobar {
     public:
-        void foo(int x)    { /* manipulate private data */ }
-        void foo(double x) { foo(narrow_cast<int>(std::round(x))); }
+        void foo(long x)    { /* manipulate private data */ }
+        void foo(double x) { foo(std::lround(x)); }
         // ...
     private:
         // ...
