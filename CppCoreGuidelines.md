@@ -12508,7 +12508,7 @@ The opposite condition is most easily expressed using a negation:
 
     // These all mean "if `p` is `nullptr`"
     if (!p) { ... }           // good
-    if (p == 0) { ... }       // redundant `!= 0`; bad: don't use `0` for pointers
+    if (p == 0) { ... }       // redundant `== 0`; bad: don't use `0` for pointers
     if (p == nullptr) { ... } // redundant `== nullptr`, not recommended
 
 ##### Enforcement
