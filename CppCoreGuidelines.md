@@ -3,7 +3,7 @@ layout: default
 ---
 # <a name="main"></a>C++ Core Guidelines
 
-February 12, 2018
+February 26, 2018
 
 
 Editors:
@@ -1018,10 +1018,10 @@ Time and space that you spend well to achieve a goal (e.g., speed of development
 
     X waste(const char* p)
     {
-        if (p == nullptr) throw Nullptr_error{};
+        if (!p) throw Nullptr_error{};
         int n = strlen(p);
         auto buf = new char[n];
-        if (buf == nullptr) throw Allocation_error{};
+        if (!buf) throw Allocation_error{};
         for (int i = 0; i < n; ++i) buf[i] = p[i];
         // ... manipulate buffer ...
         X x;
@@ -1502,7 +1502,7 @@ Ideally, that `Expects(x >= 0)` should be part of the interface of `sqrt()` but 
 
 ##### Note
 
-Prefer a formal specification of requirements, such as `Expects(p != nullptr);`.
+Prefer a formal specification of requirements, such as `Expects(p);`.
 If that is infeasible, use English text in comments, such as `// the sequence [p:q) is ordered using <`.
 
 ##### Note
@@ -3217,7 +3217,7 @@ Consider:
 
     int length(Record* p);
 
-When I call `length(p)` should I test for `p == nullptr` first? Should the implementation of `length()` test for `p == nullptr`?
+When I call `length(p)` should I check if `p` is `nullptr` first? Should the implementation of `length()` check if `p` is `nullptr`?
 
     // it is the caller's job to make sure p != nullptr
     int length(not_null<Record*> p);
@@ -3304,7 +3304,7 @@ Consider:
 
     int length(const char* p);
 
-When I call `length(s)` should I test for `s == nullptr` first? Should the implementation of `length()` test for `p == nullptr`?
+When I call `length(s)` should I check if `s` is `nullptr` first? Should the implementation of `length()` check if `p` is `nullptr`?
 
     // the implementor of length() must assume that p == nullptr is possible
     int length(zstring p);
@@ -3392,7 +3392,7 @@ Sometimes having `nullptr` as an alternative to indicated "no object" is useful,
 
     string zstring_to_string(zstring p) // zstring is a char*; that is a C-style string
     {
-        if (p == nullptr) return string{};    // p might be nullptr; remember to check
+        if (!p) return string{};    // p might be nullptr; remember to check
         return string{p};
     }
 
@@ -3425,7 +3425,7 @@ Returning a `T*` to transfer ownership is a misuse.
 
     Node* find(Node* t, const string& s)  // find s in a binary tree of Nodes
     {
-        if (t == nullptr || t->name == s) return t;
+        if (!t || t->name == s) return t;
         if ((auto p = find(t->left, s))) return p;
         if ((auto p = find(t->right, s))) return p;
         return nullptr;
@@ -4084,8 +4084,9 @@ The language requires operators `=`, `()`, `[]`, and `->` to be members.
 An overload set may have some members that do not directly access `private` data:
 
     class Foobar {
-        void foo(int x)    { /* manipulate private data */ }
-        void foo(double x) { foo(std::round(x)); }
+    public:
+        void foo(long x)    { /* manipulate private data */ }
+        void foo(double x) { foo(std::lround(x)); }
         // ...
     private:
         // ...
@@ -4412,7 +4413,7 @@ Constructor rules:
 * [C.40: Define a constructor if a class has an invariant](#Rc-ctor)
 * [C.41: A constructor should create a fully initialized object](#Rc-complete)
 * [C.42: If a constructor cannot construct a valid object, throw an exception](#Rc-throw)
-* [C.43: Ensure that a value type class has a default constructor](#Rc-default0)
+* [C.43: Ensure that a copyable (value type) class has a default constructor](#Rc-default0)
 * [C.44: Prefer default constructors to be simple and non-throwing](#Rc-default00)
 * [C.45: Don't define a default constructor that only initializes data members; use member initializers instead](#Rc-default)
 * [C.46: By default, declare single-argument constructors `explicit`](#Rc-explicit)
@@ -5025,7 +5026,7 @@ Leaving behind an invalid object is asking for trouble.
         X2(const string& name)
             :f{fopen(name.c_str(), "r")}
         {
-            if (f == nullptr) throw runtime_error{"could not open" + name};
+            if (!f) throw runtime_error{"could not open" + name};
             // ...
         }
 
@@ -5099,17 +5100,16 @@ Another reason has been to delay initialization until an object is needed; the s
 
 ???
 
-### <a name="Rc-default0"></a>C.43: Ensure that a value type class has a default constructor
+### <a name="Rc-default0"></a>C.43: Ensure that a copyable (value type) class has a default constructor
 
 ##### Reason
 
 Many language and library facilities rely on default constructors to initialize their elements, e.g. `T a[10]` and `std::vector<T> v(10)`.
-A default constructor often simplifies the task of defining a suitable [moved-from state](#???).
+A default constructor often simplifies the task of defining a suitable [moved-from state](#???) for a type that is also copyable.
 
 ##### Note
 
-We have not (yet) formally defined [value type](#SS-concrete), but think of it as a class that behaves much as an `int`:
-it can be copied using `=` and usually compared using `==`.
+A [value type](#SS-concrete) is a class that is copyable (and usually also comparable).
 It is closely related to the notion of Regular type from [EoP](http://elementsofprogramming.com/) and [the Palo Alto TR](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2012/n3351.pdf).
 
 ##### Example
@@ -5181,41 +5181,47 @@ Assuming that you want initialization, an explicit default initialization can he
         int i {};   // default initialize (to 0)
     };
 
-##### Example
+##### Notes
 
-There are classes that simply don't have a reasonable default.
+Classes that don't have a reasonable default construction are usually not copyable either, so they don't fall under this guideline.
 
-A class designed to be useful only as a base does not need a default constructor because it cannot be constructed by itself:
+For example, a base class is not a value type (base classes should not be copyable) and so does not necessarily need a default constructor:
 
-    struct Shape {  // pure interface: all members are pure virtual functions
-            void draw() = 0;
-            void rotate(int) = 0;
-            // ...
+    // Shape is an abstract base class, not a copyable value type.
+    // It may or may not need a default constructor.
+    struct Shape {
+        virtual void draw() = 0;
+        virtual void rotate(int) = 0;
+        // =delete copy/move functions
+        // ...
     };
 
-A class that must acquire a resource during construction:
+A class that must acquire a caller-provided resource during construction often cannot have a default constructor, but it does not fall under this guideline because such a class is usually not copyable anyway:
 
+    // std::lock_guard is not a copyable value type.
+    // It does not have a default constructor.
     lock_guard g {mx};  // guard the mutex mx
     lock_guard g2;      // error: guarding nothing
 
-##### Note
-
 A class that has a "special state" that must be handled separately from other states by member functions or users causes extra work
-(and most likely more errors). For example
+(and most likely more errors). Such a type can naturally use the special state as a default constructed value, whether or not it is copyable:
 
+    // std::ofstream is not a copyable value type.
+    // It does happen to have a default constructor
+    // that goes along with a special "not open" state.
     ofstream out {"Foobar"};
     // ...
     out << log(time, transaction);
 
-If `Foobar` couldn't be opened for writing and `out` wasn't set to throw exceptions upon errors, the output operations become no-ops.
-The implementation must take care of that case, and users must remember to test for success.
+Similar special-state types that are copyable, such as copyable smart pointers that have the special state "==nullptr", should use the special state as their default constructed value.
 
-Pointers, even smart pointers, that can point to nothing (null pointers) are an example of this.
-Having a default constructor is not a panacea; ideally it defaults to a meaningful state such as `std::string`s `""` and `std::vector`s `{}`.
+However, it is preferable to have a default constructor default to a meaningful state such as `std::string`s `""` and `std::vector`s `{}`.
 
 ##### Enforcement
 
-* Flag classes that are copyable by `=` or comparable with `==` without a default constructor
+* Flag classes that are copyable by `=` without a default constructor
+* Flag classes that are comparable with `==` but not copyable
+
 
 ### <a name="Rc-default00"></a>C.44: Prefer default constructors to be simple and non-throwing
 
@@ -10647,7 +10653,7 @@ Requires messy cast-and-macro-laden code to get working right.
         for (;;) {
             // treat the next var as a char*; no checking: a cast in disguise
             char* p = va_arg(ap, char*);
-            if (p == nullptr) break;
+            if (!p) break;
             cerr << p << ' ';
         }
 
@@ -11870,7 +11876,7 @@ There are many approaches to dealing with this potential problem:
 
     void f1(int* p) // deal with nullptr
     {
-        if (p == nullptr) {
+        if (!p) {
             // deal with nullptr (allocate, return, throw, make p point to something, whatever
         }
         int x = *p;
@@ -11885,7 +11891,7 @@ There are two potential problems with testing for `nullptr`:
 
     void f2(int* p) // state that p is not supposed to be nullptr
     {
-        assert(p != nullptr);
+        assert(p);
         int x = *p;
     }
 
@@ -11893,7 +11899,7 @@ This would carry a cost only when the assertion checking was enabled and would g
 This would work even better if/when C++ gets direct support for contracts:
 
     void f3(int* p) // state that p is not supposed to be nullptr
-        [[expects: p != nullptr]]
+        [[expects: p]]
     {
         int x = *p;
     }
@@ -12506,7 +12512,7 @@ The opposite condition is most easily expressed using a negation:
 
     // These all mean "if `p` is `nullptr`"
     if (!p) { ... }           // good
-    if (p == 0) { ... }       // redundant `!= 0`; bad: don't use `0` for pointers
+    if (p == 0) { ... }       // redundant `== 0`; bad: don't use `0` for pointers
     if (p == nullptr) { ... } // redundant `== nullptr`, not recommended
 
 ##### Enforcement
@@ -15451,7 +15457,7 @@ In such cases, "crashing" is simply leaving error handling to the next level of 
     {
         // ...
         p = static_cast<X*>(malloc(n, X));
-        if (p == nullptr) abort();     // abort if memory is exhausted
+        if (!p) abort();     // abort if memory is exhausted
         // ...
     }
 
@@ -19438,7 +19444,7 @@ Of course many simple functions will naturally have just one `return` because of
 
     int index(const char* p)
     {
-        if (p == nullptr) return -1;  // error indicator: alternatively "throw nullptr_error{}"
+        if (!p) return -1;  // error indicator: alternatively "throw nullptr_error{}"
         // ... do a lookup to find the index for p
         return i;
     }
@@ -19448,7 +19454,7 @@ If we applied the rule, we'd get something like
     int index2(const char* p)
     {
         int i;
-        if (p == nullptr)
+        if (!p)
             i = -1;  // error indicator
         else {
             // ... do a lookup to find the index for p
@@ -20031,7 +20037,7 @@ Use `not_null<zstring>` for C-style strings that cannot be `nullptr`. ??? Do we 
 These assertions are currently macros (yuck!) and must appear in function definitions (only)
 pending standard committee decisions on contracts and assertion syntax.
 See [the contract proposal](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/p0380r1.pdf); using the attribute syntax,
-for example, `Expects(p != nullptr)` will become `[[expects: p != nullptr]]`.
+for example, `Expects(p)` will become `[[expects: p]]`.
 
 ## <a name="SS-utilities"></a>GSL.util: Utilities
 
