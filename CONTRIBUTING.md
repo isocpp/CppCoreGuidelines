@@ -80,6 +80,17 @@ Please use 4-space indentation to trigger code parsing, rather than [fenced code
             std::cout << "This is code.\n";
         }
 
+#### Coding style
+
+Please use [Stroustrup](http://www.stroustrup.com/Programming/PPP-style.pdf) style for naming, like so:
+
+    This is some document text, with an example below:
+
+    class Foo_bar
+    {
+        void do_something(int arg);
+    };
+
 #### Document style decisions
 
 We've discussed and made decisions on a number of document style. Please do not open PRs that revisit these stylistic points:

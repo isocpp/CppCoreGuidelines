@@ -20270,11 +20270,11 @@ Like C++, some styles distinguishes types from non-types.
 For example, by capitalizing type names, but not the names of functions and variables.
 
     typename<typename T>
-    class HashTable {   // maps string to T
+    class Hash_table {   // maps string to T
         // ...
     };
 
-    HashTable<int> index;
+    Hash_table<int> index;
 
 This is not harmful and does not fall under this guideline because it does not encode type information.
 
