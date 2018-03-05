@@ -10854,13 +10854,13 @@ Access into an array with known bounds using a constant as a subscript can be va
 
     void f(span<int> a) // BETTER: use span in the function declaration
     {
-        if (a.length() < 2) return;
+        if (a.size() < 2) return;
 
         int n = a[0];      // OK
 
         span<int> q = a.subspan(1); // OK
 
-        if (a.length() < 6) return;
+        if (a.size() < 6) return;
 
         a[4] = 1;          // OK
 
@@ -10997,8 +10997,8 @@ If you want to pass an array, say so:
         int a[5];
         span<int> av = a;
 
-        g(av.data(), av.length());   // OK, if you have no choice
-        g1(a);                       // OK -- no decay here, instead use implicit span ctor
+        g(av.data(), av.size());   // OK, if you have no choice
+        g1(a);                     // OK -- no decay here, instead use implicit span ctor
     }
 
 ##### Enforcement
