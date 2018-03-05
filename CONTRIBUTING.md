@@ -88,7 +88,7 @@ Please use [Stroustrup](http://www.stroustrup.com/Programming/PPP-style.pdf) sty
 
     class Foo_bar
     {
-        void do_something(int arg_0);
+        void do_something(int arg);
     };
 
 #### Document style decisions
