@@ -1,6 +1,6 @@
 # <a name="main"></a>C++ Core Guidelines
 
-February 26, 2018
+March 9, 2018
 
 
 Editors:
@@ -20159,7 +20159,7 @@ Code says what is done, not what is supposed to be done. Often intent can be sta
 
 ##### Note
 
-If the comment and the code disagrees, both are likely to be wrong.
+If the comment and the code disagree, both are likely to be wrong.
 
 ### <a name="Rl-comments-crisp"></a>NL.3: Keep comments crisp
 
