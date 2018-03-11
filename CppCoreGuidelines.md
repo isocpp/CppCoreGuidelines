@@ -697,7 +697,7 @@ Or better still just use the type system and replace `Int` with `int32_t`.
     void read(int* p, int n);   // read max n integers into *p
 
     int a[100];
-    read(a, 1000);    // bad
+    read(a, 1000);    // bad, off the end
 
 better
 
