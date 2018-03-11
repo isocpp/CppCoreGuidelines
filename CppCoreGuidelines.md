@@ -10514,7 +10514,7 @@ It nicely encapsulates local initialization, including cleaning up scratch varia
 ##### Example, bad
 
     widget x;   // should be const, but:
-    for (auto i = 2; i <= N; ++i) {             // this could be some
+    for (auto i = 2; i <= N; ++i) {          // this could be some
         x += some_obj.do_something_with(i);  // arbitrarily long code
     }                                        // needed to initialize x
     // from here, x should be const, but we can't say so in code in this style
