@@ -1584,7 +1584,7 @@ Consider a famous security bug:
     {
         char buffer[MAX];
         // ...
-        memset(buffer, 0, MAX);
+        memset(buffer, 0, sizeof(buffer));
     }
 
 There was no postcondition stating that the buffer should be cleared and the optimizer eliminated the apparently redundant `memset()` call:
@@ -1593,7 +1593,7 @@ There was no postcondition stating that the buffer should be cleared and the opt
     {
         char buffer[MAX];
         // ...
-        memset(buffer, 0, MAX);
+        memset(buffer, 0, sizeof(buffer));
         Ensures(buffer[0] == 0);
     }
 
