@@ -3105,7 +3105,7 @@ To compare, if we passed out all values as return values, we would something lik
     pair<istream&, string> get_string(istream& is);  // not recommended
     {
         string s;
-        cin >> s;
+        is >> s;
         return {is, s};
     }
 
