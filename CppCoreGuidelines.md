@@ -6717,7 +6717,7 @@ The importance of keeping the two kinds of inheritance increases
         virtual void redraw();
 
         // ...
-    public:
+    private:
         Point cent;
         Color col;
     };
