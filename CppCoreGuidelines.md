@@ -5304,10 +5304,6 @@ Using in-class member initializers lets the compiler generate the function for y
 
 To avoid unintended conversions.
 
-##### Note
-
-Copy and move constructors should not be made explicit because they do not perform conversions. Explicit copy/move constructors make passing and returning by value difficult.
-
 ##### Example, bad
 
     class String {
@@ -5333,6 +5329,10 @@ If you really want an implicit conversion from the constructor argument type to 
     Complex z = 10.7;   // unsurprising conversion
 
 **See also**: [Discussion of implicit conversions](#Ro-conversion)
+
+##### Note
+
+Copy and move constructors should not be made explicit because they do not perform conversions. Explicit copy/move constructors make passing and returning by value difficult.
 
 ##### Enforcement
 
