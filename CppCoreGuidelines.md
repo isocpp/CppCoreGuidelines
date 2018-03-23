@@ -4483,11 +4483,16 @@ For example, a class with a (pointer, size) pair of member and a destructor that
 
 ##### Reason
 
+The *special member functions* are the default constructor, copy constructor,
+copy assignment operator, move constructor, move assignment operator, and
+destructor.
+
 The semantics of the special functions are closely related, so if one needs to be declared, the odds are that others need consideration too.
 
-Declaring any special member function, even as `=default` or `=delete`, will
-suppress the implicit declaration of a move constructor and move assignment
-operator. Declaring a move constructor or move assignment operator, even as
+Declaring any special member function except a default constructor,
+even as `=default` or `=delete`, will suppress the implicit declaration
+of a move constructor and move assignment operator.
+Declaring a move constructor or move assignment operator, even as
 `=default` or `=delete`, will cause an implicitly generated copy constructor
 or implicitly generated copy assignment operator to be defined as deleted.
 So as soon as any of the special functions is declared, the others should
@@ -4528,7 +4533,7 @@ If you don't want a default operation, suppress it with `=delete`.
 ##### Example, good
 
 When a destructor needs to be declared just to make it `virtual`, it can be
-defined as defaulted. To avoid suppressing the implicit move operations they
+defined as defaulted. To avoid suppressing the implicit move operations
 they must also be declared, and then to avoid the class becoming move-only
 (and not copyable) the copy operations must be declared:
 
