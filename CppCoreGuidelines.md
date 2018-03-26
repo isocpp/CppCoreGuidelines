@@ -15273,6 +15273,10 @@ of - typically better still - a `const` reference:
 
 Most handlers do not modify their exception and in general we [recommend use of `const`](#Res-const).
 
+##### Note
+
+To rethrow a caught exception use `throw;` not `throw e;`. Using `throw e;` would throw a new copy of `e` (sliced to the static type `std::exception`) instead of rethrowing the original exception of type `std::runtime_error`. (But keep [Don't try to catch every exception in every function](https://github.com/isocpp/CppCoreGuidelines/blob/master/CppCoreGuidelines.md#Re-not-always) and [Minimize the use of explicit `try`/`catch`](https://github.com/isocpp/CppCoreGuidelines/blob/master/CppCoreGuidelines.md#Re-catch) in mind.)
+
 ##### Enforcement
 
 Flag by-value exceptions if their types are part of a hierarchy (could require whole-program analysis to be perfect).
