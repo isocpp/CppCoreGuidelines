@@ -4483,7 +4483,21 @@ For example, a class with a (pointer, size) pair of member and a destructor that
 
 ##### Reason
 
-The semantics of the special functions are closely related, so if one needs to be non-default, the odds are that others need modification too.
+The *special member functions* are the default constructor, copy constructor,
+copy assignment operator, move constructor, move assignment operator, and
+destructor.
+
+The semantics of the special functions are closely related, so if one needs to be declared, the odds are that others need consideration too.
+
+Declaring any special member function except a default constructor,
+even as `=default` or `=delete`, will suppress the implicit declaration
+of a move constructor and move assignment operator.
+Declaring a move constructor or move assignment operator, even as
+`=default` or `=delete`, will cause an implicitly generated copy constructor
+or implicitly generated copy assignment operator to be defined as deleted.
+So as soon as any of the special functions is declared, the others should
+all be declared to avoid unwanted effects like turning all potential moves
+into more expensive copies, or making a class move-only.
 
 ##### Example, bad
 
@@ -4515,6 +4529,39 @@ This is known as "the rule of five" or "the rule of six", depending on whether y
 
 If you want a default implementation of a default operation (while defining another), write `=default` to show you're doing so intentionally for that function.
 If you don't want a default operation, suppress it with `=delete`.
+
+##### Example, good
+
+When a destructor needs to be declared just to make it `virtual`, it can be
+defined as defaulted. To avoid suppressing the implicit move operations
+they must also be declared, and then to avoid the class becoming move-only
+(and not copyable) the copy operations must be declared:
+
+    class AbstractBase {
+    public:
+      virtual ~AbstractBase() = default;
+      AbstractBase(const AbstractBase&) = default;
+      AbstractBase& operator=(const AbstractBase&) = default;
+      AbstractBase(AbstractBase&&) = default;
+      AbstractBase& operator=(AbstractBase&&) = default;
+    };
+
+Alternatively to prevent slicing as per [C.67](#Rc-copy-virtual),
+the copy and move operations can all be deleted:
+
+    class ClonableBase {
+    public:
+      virtual unique_ptr<ClonableBase> clone() const;
+      virtual ~ClonableBase() = default;
+      ClonableBase(const ClonableBase&) = delete;
+      ClonableBase& operator=(const ClonableBase&) = delete;
+      ClonableBase(ClonableBase&&) = delete;
+      ClonableBase& operator=(ClonableBase&&) = delete;
+    };
+
+Defining only the move operations or only the copy operations would have the
+same effect here, but stating the intent explicitly for each special member
+makes it more obvious to the reader.
 
 ##### Note
 
