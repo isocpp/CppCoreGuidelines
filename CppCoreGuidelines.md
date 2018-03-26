@@ -15141,7 +15141,7 @@ A user-defined type is unlikely to clash with other people's exceptions.
             my_code();
             // ...
         }
-        catch(Bufferpool_exhausted) {
+        catch(const Bufferpool_exhausted&) {
             // ...
         }
     }
@@ -15187,7 +15187,7 @@ The standard-library classes derived from `exception` should be used only as bas
             my_code();
             // ...
         }
-        catch(runtime_error) {   // runtime_error means "input buffer too small"
+        catch(const runtime_error&) {   // runtime_error means "input buffer too small"
             // ...
         }
     }
