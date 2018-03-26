@@ -1,9 +1,10 @@
 ---
 layout: default
 ---
+
 # <a name="main"></a>C++ Core Guidelines
 
-February 26, 2018
+March 26, 2018
 
 
 Editors:
@@ -700,7 +701,7 @@ Or better still just use the type system and replace `Int` with `int32_t`.
     void read(int* p, int n);   // read max n integers into *p
 
     int a[100];
-    read(a, 1000);    // bad
+    read(a, 1000);    // bad, off the end
 
 better
 
@@ -1587,7 +1588,7 @@ Consider a famous security bug:
     {
         char buffer[MAX];
         // ...
-        memset(buffer, 0, MAX);
+        memset(buffer, 0, sizeof(buffer));
     }
 
 There was no postcondition stating that the buffer should be cleared and the optimizer eliminated the apparently redundant `memset()` call:
@@ -1596,7 +1597,7 @@ There was no postcondition stating that the buffer should be cleared and the opt
     {
         char buffer[MAX];
         // ...
-        memset(buffer, 0, MAX);
+        memset(buffer, 0, sizeof(buffer));
         Ensures(buffer[0] == 0);
     }
 
@@ -3108,7 +3109,7 @@ To compare, if we passed out all values as return values, we would something lik
     pair<istream&, string> get_string(istream& is);  // not recommended
     {
         string s;
-        cin >> s;
+        is >> s;
         return {is, s};
     }
 
@@ -4486,7 +4487,21 @@ For example, a class with a (pointer, size) pair of member and a destructor that
 
 ##### Reason
 
-The semantics of the special functions are closely related, so if one needs to be non-default, the odds are that others need modification too.
+The *special member functions* are the default constructor, copy constructor,
+copy assignment operator, move constructor, move assignment operator, and
+destructor.
+
+The semantics of the special functions are closely related, so if one needs to be declared, the odds are that others need consideration too.
+
+Declaring any special member function except a default constructor,
+even as `=default` or `=delete`, will suppress the implicit declaration
+of a move constructor and move assignment operator.
+Declaring a move constructor or move assignment operator, even as
+`=default` or `=delete`, will cause an implicitly generated copy constructor
+or implicitly generated copy assignment operator to be defined as deleted.
+So as soon as any of the special functions is declared, the others should
+all be declared to avoid unwanted effects like turning all potential moves
+into more expensive copies, or making a class move-only.
 
 ##### Example, bad
 
@@ -4518,6 +4533,39 @@ This is known as "the rule of five" or "the rule of six", depending on whether y
 
 If you want a default implementation of a default operation (while defining another), write `=default` to show you're doing so intentionally for that function.
 If you don't want a default operation, suppress it with `=delete`.
+
+##### Example, good
+
+When a destructor needs to be declared just to make it `virtual`, it can be
+defined as defaulted. To avoid suppressing the implicit move operations
+they must also be declared, and then to avoid the class becoming move-only
+(and not copyable) the copy operations must be declared:
+
+    class AbstractBase {
+    public:
+      virtual ~AbstractBase() = default;
+      AbstractBase(const AbstractBase&) = default;
+      AbstractBase& operator=(const AbstractBase&) = default;
+      AbstractBase(AbstractBase&&) = default;
+      AbstractBase& operator=(AbstractBase&&) = default;
+    };
+
+Alternatively to prevent slicing as per [C.67](#Rc-copy-virtual),
+the copy and move operations can all be deleted:
+
+    class ClonableBase {
+    public:
+      virtual unique_ptr<ClonableBase> clone() const;
+      virtual ~ClonableBase() = default;
+      ClonableBase(const ClonableBase&) = delete;
+      ClonableBase& operator=(const ClonableBase&) = delete;
+      ClonableBase(ClonableBase&&) = delete;
+      ClonableBase& operator=(ClonableBase&&) = delete;
+    };
+
+Defining only the move operations or only the copy operations would have the
+same effect here, but stating the intent explicitly for each special member
+makes it more obvious to the reader.
 
 ##### Note
 
@@ -5332,6 +5380,10 @@ If you really want an implicit conversion from the constructor argument type to 
     Complex z = 10.7;   // unsurprising conversion
 
 **See also**: [Discussion of implicit conversions](#Ro-conversion)
+
+##### Note
+
+Copy and move constructors should not be made explicit because they do not perform conversions. Explicit copy/move constructors make passing and returning by value difficult.
 
 ##### Enforcement
 
@@ -6720,7 +6772,7 @@ The importance of keeping the two kinds of inheritance increases
         virtual void redraw();
 
         // ...
-    public:
+    private:
         Point cent;
         Color col;
     };
@@ -10517,7 +10569,7 @@ It nicely encapsulates local initialization, including cleaning up scratch varia
 ##### Example, bad
 
     widget x;   // should be const, but:
-    for (auto i = 2; i <= N; ++i) {             // this could be some
+    for (auto i = 2; i <= N; ++i) {          // this could be some
         x += some_obj.do_something_with(i);  // arbitrarily long code
     }                                        // needed to initialize x
     // from here, x should be const, but we can't say so in code in this style
@@ -10857,13 +10909,13 @@ Access into an array with known bounds using a constant as a subscript can be va
 
     void f(span<int> a) // BETTER: use span in the function declaration
     {
-        if (a.length() < 2) return;
+        if (a.size() < 2) return;
 
         int n = a[0];      // OK
 
         span<int> q = a.subspan(1); // OK
 
-        if (a.length() < 6) return;
+        if (a.size() < 6) return;
 
         a[4] = 1;          // OK
 
@@ -11000,8 +11052,8 @@ If you want to pass an array, say so:
         int a[5];
         span<int> av = a;
 
-        g(av.data(), av.length());   // OK, if you have no choice
-        g1(a);                       // OK -- no decay here, instead use implicit span ctor
+        g(av.data(), av.size());   // OK, if you have no choice
+        g1(a);                     // OK -- no decay here, instead use implicit span ctor
     }
 
 ##### Enforcement
@@ -15140,7 +15192,7 @@ A user-defined type is unlikely to clash with other people's exceptions.
             my_code();
             // ...
         }
-        catch(Bufferpool_exhausted) {
+        catch(const Bufferpool_exhausted&) {
             // ...
         }
     }
@@ -15186,7 +15238,7 @@ The standard-library classes derived from `exception` should be used only as bas
             my_code();
             // ...
         }
-        catch(runtime_error) {   // runtime_error means "input buffer too small"
+        catch(const runtime_error&) {   // runtime_error means "input buffer too small"
             // ...
         }
     }
@@ -15224,6 +15276,10 @@ of - typically better still - a `const` reference:
     catch (const exception& e) { /* ... */ }
 
 Most handlers do not modify their exception and in general we [recommend use of `const`](#Res-const).
+
+##### Note
+
+To rethrow a caught exception use `throw;` not `throw e;`. Using `throw e;` would throw a new copy of `e` (sliced to the static type `std::exception`) instead of rethrowing the original exception of type `std::runtime_error`. (But keep [Don't try to catch every exception in every function](https://github.com/isocpp/CppCoreGuidelines/blob/master/CppCoreGuidelines.md#Re-not-always) and [Minimize the use of explicit `try`/`catch`](https://github.com/isocpp/CppCoreGuidelines/blob/master/CppCoreGuidelines.md#Re-catch) in mind.)
 
 ##### Enforcement
 
@@ -20162,7 +20218,7 @@ Code says what is done, not what is supposed to be done. Often intent can be sta
 
 ##### Note
 
-If the comment and the code disagrees, both are likely to be wrong.
+If the comment and the code disagree, both are likely to be wrong.
 
 ### <a name="Rl-comments-crisp"></a>NL.3: Keep comments crisp
 
