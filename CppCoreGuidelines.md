@@ -5330,6 +5330,10 @@ If you really want an implicit conversion from the constructor argument type to 
 
 **See also**: [Discussion of implicit conversions](#Ro-conversion)
 
+##### Note
+
+Copy and move constructors should not be made explicit because they do not perform conversions. Explicit copy/move constructors make passing and returning by value difficult.
+
 ##### Enforcement
 
 (Simple) Single-argument constructors should be declared `explicit`. Good single argument non-`explicit` constructors are rare in most code based. Warn for all that are not on a "positive list".
