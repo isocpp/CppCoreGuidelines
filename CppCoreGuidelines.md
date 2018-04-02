@@ -18207,7 +18207,7 @@ Source file rule summary:
 * [SF.8: Use `#include` guards for all `.h` files](#Rs-guards)
 * [SF.9: Avoid cyclic dependencies among source files](#Rs-cycles)
 * [SF.10: Avoid dependencies on implicitly `#include`d names](#Rs-implicit)
-* [SF.11: Header files should be self-sufficient](#Rs-sufficient)
+* [SF.11: Header files should be self-contained](#Rs-contained)
 
 * [SF.20: Use `namespace`s to express logical structure](#Rs-namespace)
 * [SF.21: Don't use an unnamed (anonymous) namespace in a header](#Rs-unnamed)
@@ -18615,13 +18615,13 @@ This rule against implicit inclusion is not meant to prevent such deliberate agg
 Enforcement would require some knowledge about what in a header is meant to be "exported" to users and what is there to enable implementation.
 No really good solution is possible until we have modules.
 
-### <a name="Rs-sufficient"></a>SF.11: Header files should be self-sufficient
+### <a name="Rs-contained"></a>SF.11: Header files should be self-contained
 
 ##### Reason
 
 Usability, headers should be simple to use.
-Headers should encpsulate the functionality they provide.
-Avoid clients of a header having to manage its dependencies.
+Headers should encapsulate the functionality they provide.
+Avoid clients of a header having to manage that header's dependencies.
 
 ##### Example
 
@@ -18634,7 +18634,7 @@ Failing to follow this results in difficult to diagnose errors for clients of a 
 
 ##### Enforcement
 
-A test should verify that each header file can be included by itself and sucesfully compile.
+A test should verify that each header file can be included by itself and successfully compile.
 
 ### <a name="Rs-namespace"></a>SF.20: Use `namespace`s to express logical structure
 
