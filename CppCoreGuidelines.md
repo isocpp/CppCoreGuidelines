@@ -5379,7 +5379,7 @@ If you really want an implicit conversion from the constructor argument type to 
 
 ##### Note
 
-Copy and move constructors should not be made explicit because they do not perform conversions. Explicit copy/move constructors make passing and returning by value difficult.
+Copy and move constructors should not be made `explicit` because they do not perform conversions. Explicit copy/move constructors make passing and returning by value difficult.
 
 ##### Enforcement
 
