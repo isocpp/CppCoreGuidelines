@@ -18619,7 +18619,7 @@ No really good solution is possible until we have modules.
 
 ##### Reason
 
-Usability, headers should be simple to use and work when included by themselves.
+Usability, headers should be simple to use and work when included on their own.
 Headers should encapsulate the functionality they provide.
 Avoid clients of a header having to manage that header's dependencies.
 
