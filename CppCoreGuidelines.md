@@ -144,7 +144,7 @@ You can sample rules for specific language features:
 [when to use](#SS-lambdas)
 * operator:
 [conventional](#Ro-conventional) --
-[avoid conversion operators](#Ro-conventional) --
+[avoid conversion operators](#Ro-conversion) --
 [and lambdas](#Ro-lambda)
 * `public`, `private`, and `protected`:
 [information hiding](#Rc-private) --
