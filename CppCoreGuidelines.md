@@ -18634,7 +18634,7 @@ Failing to follow this results in difficult to diagnose errors for clients of a 
 
 ##### Enforcement
 
-A test should verify that each header file can be included by itself and successfully compile.
+A test should verify that the header file itself compiles or that a cpp file which only includes the header file compiles.
 
 ### <a name="Rs-namespace"></a>SF.20: Use `namespace`s to express logical structure
 
