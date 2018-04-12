@@ -16410,7 +16410,7 @@ Hard.
 
     vector<string> v;
     auto& x = v.front();     // bad
-    String& s = v.begin();   // good (String is a GSL concept)
+    String& s = v.front();   // good (String is a GSL concept)
 
 ##### Enforcement
 
