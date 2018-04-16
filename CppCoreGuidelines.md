@@ -1,6 +1,6 @@
 # <a name="main"></a>C++ Core Guidelines
 
-March 26, 2018
+April 16, 2018
 
 
 Editors:
@@ -17534,8 +17534,8 @@ Templating a class hierarchy that has many functions, especially many virtual fu
         // ...
     };
 
-    vector<int> vi;
-    vector<string> vs;
+    Vector<int> vi;
+    Vector<string> vs;
 
 It is probably a dumb idea to define a `sort` as a member function of a container, but it is not unheard of and it makes a good example of what not to do.
 
