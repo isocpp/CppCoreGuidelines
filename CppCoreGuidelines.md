@@ -16408,7 +16408,7 @@ Hard.
 
 ##### Example (using TS concepts)
 
-    vector<string> v;
+    vector<string> v{ "abc", "xyz" };
     auto& x = v.front();     // bad
     String& s = v.front();   // good (String is a GSL concept)
 
