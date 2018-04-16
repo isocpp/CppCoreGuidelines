@@ -1,10 +1,9 @@
 ---
 layout: default
 ---
-
 # <a name="main"></a>C++ Core Guidelines
 
-March 26, 2018
+April 16, 2018
 
 
 Editors:
@@ -12,7 +11,7 @@ Editors:
 * [Bjarne Stroustrup](http://www.stroustrup.com)
 * [Herb Sutter](http://herbsutter.com/)
 
-This document is an early draft. It's known to be incomplet, incorrekt, and has lots of b**a**d **for**~mat~ting.
+This is a living document under continuous improvement.
 Had it been an open-source (code) project, this would have been release 0.8.
 Copying, use, modification, and creation of derivative works from this project is licensed under an MIT-style license.
 Contributing to this project requires agreeing to a Contributor License. See the accompanying [LICENSE](LICENSE) file for details.
@@ -25,7 +24,7 @@ The list of contributors is [here](#SS-ack).
 
 Problems:
 
-* The sets of rules have not been thoroughly checked for completeness, consistency, or enforceability.
+* The sets of rules have not been completely checked for completeness, consistency, or enforceability.
 * Triple question marks (???) mark known missing information
 * Update reference sections; many pre-C++11 sources are too old.
 * For a more-or-less up-to-date to-do list see: [To-do: Unclassified proto-rules](#S-unclassified)
@@ -148,7 +147,7 @@ You can sample rules for specific language features:
 [when to use](#SS-lambdas)
 * operator:
 [conventional](#Ro-conventional) --
-[avoid conversion operators](#Ro-conventional) --
+[avoid conversion operators](#Ro-conversion) --
 [and lambdas](#Ro-lambda)
 * `public`, `private`, and `protected`:
 [information hiding](#Rc-private) --
@@ -2289,7 +2288,7 @@ Parameter passing expression rules:
 * [F.15: Prefer simple and conventional ways of passing information](#Rf-conventional)
 * [F.16: For "in" parameters, pass cheaply-copied types by value and others by reference to `const`](#Rf-in)
 * [F.17: For "in-out" parameters, pass by reference to non-`const`](#Rf-inout)
-* [F.18: For "consume" parameters, pass by `X&&` and `std::move` the parameter](#Rf-consume)
+* [F.18: For "will-move-from" parameters, pass by `X&&` and `std::move` the parameter](#Rf-consume)
 * [F.19: For "forward" parameters, pass by `TP&&` and only `std::forward` the parameter](#Rf-forward)
 * [F.20: For "out" output values, prefer return values to output parameters](#Rf-out)
 * [F.21: To return multiple "out" values, prefer returning a tuple or struct](#Rf-out-multi)
@@ -2839,7 +2838,7 @@ For advanced uses (only), where you really need to optimize for rvalues passed t
 
 * If the function is going to unconditionally move from the argument, take it by `&&`. See [F.18](#Rf-consume).
 * If the function is going to keep a copy of the argument, in addition to passing by `const&` (for lvalues),
-  add an overload that passes the parameter by `&&` (for rvalues) and in the body `std::move`s it to its destination. Essentially this overloads a "consume"; see [F.18](#Rf-consume).
+  add an overload that passes the parameter by `&&` (for rvalues) and in the body `std::move`s it to its destination. Essentially this overloads a "will-move-from"; see [F.18](#Rf-consume).
 * In special cases, such as multiple "input + copy" parameters, consider using perfect forwarding. See [F.19](#Rf-forward).
 
 ##### Example
@@ -2849,7 +2848,7 @@ For advanced uses (only), where you really need to optimize for rvalues passed t
     // suffix is input-only but not as cheap as an int, pass by const&
     string& concatenate(string&, const string& suffix);
 
-    void sink(unique_ptr<widget>);  // input only, and consumes the widget
+    void sink(unique_ptr<widget>);  // input only, and moves ownership of the widget
 
 Avoid "esoteric techniques" such as:
 
@@ -2922,7 +2921,7 @@ A bad logic error can happen if the writer of `g()` incorrectly assumes the size
 * (Moderate) ((Foundation)) Warn about functions regarding reference to non-`const` parameters that do *not* write to them.
 * (Simple) ((Foundation)) Warn when a non-`const` parameter being passed by reference is `move`d.
 
-### <a name="Rf-consume"></a>F.18: For "consume" parameters, pass by `X&&` and `std::move` the parameter
+### <a name="Rf-consume"></a>F.18: For "will-move-from" parameters, pass by `X&&` and `std::move` the parameter
 
 ##### Reason
 
@@ -3197,6 +3196,8 @@ better
 **Also**: Assume that a `T*` obtained from a smart pointer to `T` (e.g., `unique_ptr<T>`) points to a single element.
 
 **See also**: [Support library](#S-gsl)
+
+**See also**: [Do not pass an array as a single pointer](#Ri-array)
 
 ##### Enforcement
 
@@ -4225,7 +4226,7 @@ For example:
         // ...
     private:
         double magnitude;
-        double unit;    // 1 is meters, 1000 is kilometers, 0.0001 is millimeters, etc.
+        double unit;    // 1 is meters, 1000 is kilometers, 0.001 is millimeters, etc.
     };
 
 ##### Note
@@ -5383,7 +5384,7 @@ If you really want an implicit conversion from the constructor argument type to 
 
 ##### Note
 
-Copy and move constructors should not be made explicit because they do not perform conversions. Explicit copy/move constructors make passing and returning by value difficult.
+Copy and move constructors should not be made `explicit` because they do not perform conversions. Explicit copy/move constructors make passing and returning by value difficult.
 
 ##### Enforcement
 
@@ -6160,7 +6161,7 @@ A `unique_ptr` can be moved, but not copied. To achieve that its copy operations
         auto pi3 {make()};  // OK, move: the result of make() is an rvalue
     }
 
-Note that deleted methods should be public.
+Note that deleted functions should be public.
 
 ##### Enforcement
 
@@ -7562,7 +7563,7 @@ Contrast with [C.147](#Rh-ptr-cast), where failure is an error, and should not b
 
 ##### Example
 
-The example below describes the `add` method of a `Shape_owner` that takes ownership of constructed `Shape` objects. The objects are also sorted into views, according to their geometric attributes.
+The example below describes the `add` function of a `Shape_owner` that takes ownership of constructed `Shape` objects. The objects are also sorted into views, according to their geometric attributes.
 In this example, `Shape` does not inherit from `Geometric_attributes`. Only its subclasses do.
 
     void add(Shape* const item)
@@ -9351,7 +9352,7 @@ Using `unique_ptr` in this way both documents and enforces the function call's o
 
 ##### Example
 
-    void sink(unique_ptr<widget>); // consumes the widget
+    void sink(unique_ptr<widget>); // takes ownership of the widget
 
     void uses(widget*);            // just uses the widget
 
@@ -16410,9 +16411,9 @@ Hard.
 
 ##### Example (using TS concepts)
 
-    vector<string> v;
+    vector<string> v{ "abc", "xyz" };
     auto& x = v.front();     // bad
-    String& s = v.begin();   // good (String is a GSL concept)
+    String& s = v.front();   // good (String is a GSL concept)
 
 ##### Enforcement
 
@@ -17536,8 +17537,8 @@ Templating a class hierarchy that has many functions, especially many virtual fu
         // ...
     };
 
-    vector<int> vi;
-    vector<string> vs;
+    Vector<int> vi;
+    Vector<string> vs;
 
 It is probably a dumb idea to define a `sort` as a member function of a container, but it is not unheard of and it makes a good example of what not to do.
 
@@ -17568,7 +17569,7 @@ Assume that `Apple` and `Pear` are two kinds of `Fruit`s.
     void maul(Fruit* p)
     {
         *p = Pear{};     // put a Pear into *p
-        p[1] = Pear{};   // put a Pear into p[2]
+        p[1] = Pear{};   // put a Pear into p[1]
     }
 
     Apple aa [] = { an_apple, another_apple };   // aa contains Apples (obviously!)
@@ -17582,7 +17583,7 @@ If `sizeof(Apple) != sizeof(Pear)` the access to `aa[1]` will not be aligned to 
 We have a type violation and possibly (probably) a memory corruption.
 Never write such code.
 
-Note that `maul()` violates the a `T*` points to an individual object [Rule](#???).
+Note that `maul()` violates the a [`T*` points to an individual object rule](#Rf-ptr).
 
 **Alternative**: Use a proper (templatized) container:
 
@@ -17598,7 +17599,7 @@ Note that `maul()` violates the a `T*` points to an individual object [Rule](#??
 
     Apple& a0 = &va[0];   // a Pear?
 
-Note that the assignment in `maul2()` violated the no-slicing [Rule](#???).
+Note that the assignment in `maul2()` violated the [no-slicing rule](#Res-slice).
 
 ##### Enforcement
 
@@ -17769,7 +17770,7 @@ The syntax and techniques needed are pretty horrendous.
 ##### Reason
 
 Template metaprogramming is hard to get right, slows down compilation, and is often very hard to maintain.
-However, there are real-world examples where template metaprogramming provides better performance that any alternative short of expert-level assembly code.
+However, there are real-world examples where template metaprogramming provides better performance than any alternative short of expert-level assembly code.
 Also, there are real-world examples where template metaprogramming expresses the fundamental ideas better than run-time code.
 For example, if you really need AST manipulation at compile time (e.g., for optional matrix operation folding) there may be no other way in C++.
 
@@ -18211,6 +18212,7 @@ Source file rule summary:
 * [SF.8: Use `#include` guards for all `.h` files](#Rs-guards)
 * [SF.9: Avoid cyclic dependencies among source files](#Rs-cycles)
 * [SF.10: Avoid dependencies on implicitly `#include`d names](#Rs-implicit)
+* [SF.11: Header files should be self-contained](#Rs-contained)
 
 * [SF.20: Use `namespace`s to express logical structure](#Rs-namespace)
 * [SF.21: Don't use an unnamed (anonymous) namespace in a header](#Rs-unnamed)
@@ -18617,6 +18619,27 @@ This rule against implicit inclusion is not meant to prevent such deliberate agg
 
 Enforcement would require some knowledge about what in a header is meant to be "exported" to users and what is there to enable implementation.
 No really good solution is possible until we have modules.
+
+### <a name="Rs-contained"></a>SF.11: Header files should be self-contained
+
+##### Reason
+
+Usability, headers should be simple to use and work when included on their own.
+Headers should encapsulate the functionality they provide.
+Avoid clients of a header having to manage that header's dependencies.
+
+##### Example
+
+    #include "helpers.h"
+    // helpers.h depends on std::string and includes <string>
+
+##### Note
+
+Failing to follow this results in difficult to diagnose errors for clients of a header.
+
+##### Enforcement
+
+A test should verify that the header file itself compiles or that a cpp file which only includes the header file compiles.
 
 ### <a name="Rs-namespace"></a>SF.20: Use `namespace`s to express logical structure
 
@@ -20160,7 +20183,7 @@ Naming and layout rules:
 * [NL.7: Make the length of a name roughly proportional to the length of its scope](#Rl-name-length)
 * [NL.8: Use a consistent naming style](#Rl-name)
 * [NL.9: Use `ALL_CAPS` for macro names only](#Rl-all-caps)
-* [NL.10: Avoid CamelCase](#Rl-camel)
+* [NL.10: Prefer `underscore_style` names](#Rl-camel)
 * [NL.11: Make literals readable](#Rl-literals)
 * [NL.15: Use spaces sparingly](#Rl-space)
 * [NL.16: Use a conventional class member declaration order](#Rl-order)
@@ -20434,12 +20457,11 @@ This rule applies to non-macro symbolic constants:
 * Flag macros with lower-case letters
 * Flag `ALL_CAPS` non-macro names
 
-### <a name="Rl-camel"></a>NL.10: Avoid CamelCase
+### <a name="Rl-camel"></a>NL.10: Prefer `underscore_style` names
 
 ##### Reason
 
 The use of underscores to separate parts of a name is the original C and C++ style and used in the C++ Standard Library.
-If you prefer CamelCase, you have to choose among different flavors of camelCase.
 
 ##### Note
 
@@ -21495,7 +21517,7 @@ More information on many topics about C++ can be found on the [Standard C++ Foun
 * *address*: a value that allows us to find an object in a computer's memory.
 * *algorithm*: a procedure or formula for solving a problem; a finite series of computational steps to produce a result.
 * *alias*: an alternative way of referring to an object; often a name, pointer, or reference.
-* *API*: Application Programming Interface, a set of methods that form the communication between various software components. Contrast with ABI.
+* *API*: Application Programming Interface, a set of functions that form the communication between various software components. Contrast with ABI.
 * *application*: a program or a collection of programs that is considered an entity by its users.
 * *approximation*: something (e.g., a value or a design) that is close to the perfect or ideal (value or design).
   Often an approximation is a result of trade-offs among ideals.
