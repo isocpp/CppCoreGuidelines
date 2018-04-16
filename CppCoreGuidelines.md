@@ -20180,7 +20180,7 @@ Naming and layout rules:
 * [NL.7: Make the length of a name roughly proportional to the length of its scope](#Rl-name-length)
 * [NL.8: Use a consistent naming style](#Rl-name)
 * [NL.9: Use `ALL_CAPS` for macro names only](#Rl-all-caps)
-* [NL.10: Avoid CamelCase](#Rl-camel)
+* [NL.10: Prefer `underscore_style` names](#Rl-camel)
 * [NL.11: Make literals readable](#Rl-literals)
 * [NL.15: Use spaces sparingly](#Rl-space)
 * [NL.16: Use a conventional class member declaration order](#Rl-order)
@@ -20454,12 +20454,11 @@ This rule applies to non-macro symbolic constants:
 * Flag macros with lower-case letters
 * Flag `ALL_CAPS` non-macro names
 
-### <a name="Rl-camel"></a>NL.10: Avoid CamelCase
+### <a name="Rl-camel"></a>NL.10: Prefer `underscore_style` names
 
 ##### Reason
 
 The use of underscores to separate parts of a name is the original C and C++ style and used in the C++ Standard Library.
-If you prefer CamelCase, you have to choose among different flavors of camelCase.
 
 ##### Note
 
