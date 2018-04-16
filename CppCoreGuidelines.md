@@ -6158,7 +6158,7 @@ A `unique_ptr` can be moved, but not copied. To achieve that its copy operations
         auto pi3 {make()};  // OK, move: the result of make() is an rvalue
     }
 
-Note that deleted methods should be public.
+Note that deleted functions should be public.
 
 ##### Enforcement
 
@@ -7560,7 +7560,7 @@ Contrast with [C.147](#Rh-ptr-cast), where failure is an error, and should not b
 
 ##### Example
 
-The example below describes the `add` method of a `Shape_owner` that takes ownership of constructed `Shape` objects. The objects are also sorted into views, according to their geometric attributes.
+The example below describes the `add` function of a `Shape_owner` that takes ownership of constructed `Shape` objects. The objects are also sorted into views, according to their geometric attributes.
 In this example, `Shape` does not inherit from `Geometric_attributes`. Only its subclasses do.
 
     void add(Shape* const item)
@@ -21515,7 +21515,7 @@ More information on many topics about C++ can be found on the [Standard C++ Foun
 * *address*: a value that allows us to find an object in a computer's memory.
 * *algorithm*: a procedure or formula for solving a problem; a finite series of computational steps to produce a result.
 * *alias*: an alternative way of referring to an object; often a name, pointer, or reference.
-* *API*: Application Programming Interface, a set of methods that form the communication between various software components. Contrast with ABI.
+* *API*: Application Programming Interface, a set of functions that form the communication between various software components. Contrast with ABI.
 * *application*: a program or a collection of programs that is considered an entity by its users.
 * *approximation*: something (e.g., a value or a design) that is close to the perfect or ideal (value or design).
   Often an approximation is a result of trade-offs among ideals.
