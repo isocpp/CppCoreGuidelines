@@ -17534,15 +17534,13 @@ Templating a class hierarchy that has many functions, especially many virtual fu
         // ...
     };
 
-    vector<int> vi;
-    vector<string> vs;
+    Vector<int> vi;
+    Vector<string> vs;
 
 It is probably a dumb idea to define a `sort` as a member function of a container, but it is not unheard of and it makes a good example of what not to do.
 
-Given this, the compiler cannot know if `vector<int>::sort()` is called, so it must generate code for it.
-Similar for `vector<string>::sort()`.
-Unless those two functions are called that's code bloat.
-Imagine what this would do to a class hierarchy with dozens of member functions and dozens of derived classes with many instantiations.
+In this example, `Vector<int>::sort` and `Vector<string>::sort` might not be used, but most likely the compiler will instantiate all methods of the whole class hierarchy, even the ones that are not used, slowing down compilation.
+Imagine what this would do to a class hierarchy with dozens of virtual member functions and dozens of derived classes with many instantiations.
 
 ##### Note
 
