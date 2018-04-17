@@ -19175,13 +19175,13 @@ Direct expression of an idea minimizes mistakes.
 
     auto pp1 = make_pair("Tokyo", 9.00);         // {C-style string,double} intended?
     pair<string, double> pp2 = {"Tokyo", 9.00};  // a bit verbose
-    auto pp3 = make_pair("Tokyo"s, 9.00);        // {std::string,double}    // C++17
+    auto pp3 = make_pair("Tokyo"s, 9.00);        // {std::string,double}    // C++14
     pair pp4 = {"Tokyo"s, 9.00};                 // {std::string,double}    // C++17
 
 
 ##### Note
 
-C++17
+C++14
 
 ##### Enforcement
 
