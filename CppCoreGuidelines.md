@@ -14782,7 +14782,7 @@ The rules are designed to help avoid several kinds of errors:
 * Resource leaks (including memory leaks)
 * Bounds errors
 * Lifetime errors (e.g., accessing an object after is has been `delete`d)
-* Complexity errors (logical errors make likely by overly complex expression of ideas)
+* Complexity errors (logical errors made likely by overly complex expression of ideas)
 * Interface errors (e.g., an unexpected value is passed through an interface)
 
 Error-handling rule summary:
