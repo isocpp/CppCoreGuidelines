@@ -15245,7 +15245,7 @@ The standard-library classes derived from `exception` should be used only as bas
 
 ##### Enforcement
 
-Catch `throw` and `catch` of a built-in type. Maybe warn about `throw` and `catch` using an standard-library `exception` type. Obviously, exceptions derived from the `std::exception` hierarchy is fine.
+Catch `throw` and `catch` of a built-in type. Maybe warn about `throw` and `catch` using a standard-library `exception` type. Obviously, exceptions derived from the `std::exception` hierarchy are fine.
 
 ### <a name="Re-exception-ref"></a>E.15: Catch exceptions from a hierarchy by reference
 
