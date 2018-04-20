@@ -12673,7 +12673,7 @@ This makes surprises (and bugs) inevitable.
     for (int i = 0; i < 10; ++i) a[i] = i;
     vector<int> v(10);
     // compares signed to unsigned; some compilers warn, but we should not
-    for (gsl::index i = 0; v.size() < 10; ++i) v[i] = i;
+    for (gsl::index i = 0; i < v.size(); ++i) v[i] = i;
 
     int a2[-2];         // error: negative size
 
