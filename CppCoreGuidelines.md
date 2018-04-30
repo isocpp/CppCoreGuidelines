@@ -5292,7 +5292,7 @@ Being able to set a value to "the default" without operations that might fail si
 
 This is nice and general, but setting a `Vector0` to empty after an error involves an allocation, which may fail.
 Also, having a default `Vector` represented as `{new T[0], 0, 0}` seems wasteful.
-For example, `Vector0 v(100)` costs 100 allocations.
+For example, `Vector0<int> v[100]` costs 100 allocations.
 
 ##### Example
 
