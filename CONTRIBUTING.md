@@ -87,8 +87,7 @@ We've discussed and made decisions on a number of document style. Please do not 
 - The CppCoreGuidelines.md file is a single GH-flavored Markdown file. It is not split into separate chapters.
 - We do not use syntax highlighting in the Core Guidelines. See PRs #33, #96, #328, and #779. If you want syntax highlighting you
 can either view the "pretty" version at http://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines or do your own post-processing.
-- We're sticking with the ASCII character set (outside of the joke at the beginning of the document.) We do not use Unicode em-dashes, 
-Unicode spaces, or pretty quotes. Lots of people edit this file with their various text editors. ASCII is simple and universally understood. 
+- We're sticking with the ASCII character set. We do not use Unicode em-dashes, Unicode spaces, or pretty quotes. Lots of people edit this file with their various text editors. ASCII is simple and universally understood. 
 
 ### Miscellaneous
 
