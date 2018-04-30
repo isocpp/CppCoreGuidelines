@@ -5066,7 +5066,7 @@ Leaving behind an invalid object is asking for trouble.
 ##### Example
 
     class X2 {
-        FILE* f;   // call init() before any other function
+        FILE* f;
         // ...
     public:
         X2(const string& name)
@@ -5090,7 +5090,7 @@ Leaving behind an invalid object is asking for trouble.
 ##### Example, bad
 
     class X3 {     // bad: the constructor leaves a non-valid object behind
-        FILE* f;   // call init() before any other function
+        FILE* f;   // call is_valid() before any other function
         bool valid;
         // ...
     public:
