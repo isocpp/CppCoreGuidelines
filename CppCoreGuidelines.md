@@ -14145,7 +14145,7 @@ If the string is short (say 10 characters), the call of `modify1` can be surpris
 essentially all the cost is in the `thread` switch. If the string is long (say 1,000,000 characters), copying it twice
 is probably not a good idea.
 
-Note that this argument has nothing to do with `sync` as such. It applies equally to considerations about whether to use
+Note that this argument has nothing to do with `async` as such. It applies equally to considerations about whether to use
 message passing or shared memory.
 
 ##### Enforcement
