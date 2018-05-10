@@ -14167,7 +14167,7 @@ safe way to ensure proper deletion.
 
 ##### Note
 
-* A static object (e.g. a global) can be shared because it is not owned in the sense that some thread is responsible for it's deletion.
+* A static object (e.g. a global) can be shared because it is not owned in the sense that some thread is responsible for its deletion.
 * An object on free store that is never to be deleted can be shared.
 * An object owned by one thread can be safely shared with another as long as that second thread doesn't outlive the owner.
 
