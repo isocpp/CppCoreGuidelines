@@ -1,0 +1,9 @@
+scripts/build
+scripts/nodesjs/build
+node_modules
+_site
+scripts/python/__pycache__
+scripts/python/*.pyc
+
+# VS Code
+.vs/
