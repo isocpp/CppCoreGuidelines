@@ -1,6 +1,3 @@
----
-layout: default
----
 # <a name="main"></a>C++ Core Guidelines
 
 April 16, 2018

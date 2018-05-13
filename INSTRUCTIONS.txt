@@ -4,20 +4,15 @@ How to update the gh-pages at http://isocpp.github.io/CppCoreGuidelines/
 2. Update date in CppCoreGuidelines.md (and commit & push if updated)
 3. git checkout gh-pages
 4. git checkout master -- CppCoreGuidelines.md
-5. Add the following three lines to the top of CppCoreGuidelines.md:
 
----
-layout: default
----
-
-6. Replace all instances of {{ with {{ "{{" }}
+5. Replace all instances of {{ with {{ "{{" }}
    This escapes the Liquid Template tag which has format {{ liquid }} 
    If you're lucky enough to use vi, your command is: %s/{{/{{ "{{" }}/g
    Remember to save the file!
 
-7. git commit -a -m "message"
-8. git push
-9. Refresh the http://isocpp.github.io/CppCoreGuidelines/ to verify that the
+6. git commit -a -m "message"
+7. git push
+8. Refresh the http://isocpp.github.io/CppCoreGuidelines/ to verify that the
 build succeeded. If not, check your email! If the page fails to build, you'll 
 get a mail explaining why. 
 
