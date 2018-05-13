@@ -35,16 +35,21 @@
 
 /** same style for highlighted, non-highlight */
 .cpp.hljs {
-    overflow-x: unset;
-    padding: unset;
+  overflow-x: unset;
+}
+
+/** override poole.css */
+pre code {
+  /* same as hljs */
+  padding: 0.5em;
 }
 
 /** highlight js change colors (overrides style) */
 .hljs-comment {
-    color: #008000;
+  color: #008000;
 }
 .hljs-meta {
-    color: #2b91af;
+  color: #2b91af;
 }
 
 .zip_download_link {
