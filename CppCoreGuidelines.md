@@ -8753,7 +8753,7 @@ Use `zstring` rather than `char*` to indicate that you rely on that convention.
 ##### Note
 
 Many current uses of pointers to a single element could be references.
-However, where `nullptr` is a possible value, a reference may not be an reasonable alternative.
+However, where `nullptr` is a possible value, a reference may not be a reasonable alternative.
 
 ##### Enforcement
 
