@@ -13160,7 +13160,7 @@ needed information back to the caller. Therefore, the standard library also offe
     template <class ForwardIterator, class T>
     ForwardIterator lower_bound(ForwardIterator first, ForwardIterator last, const T& val);
 
-`lower_bound` returns an iterator to the first match if any, otherwise `last`.
+`lower_bound` returns an iterator to the first match if any, otherwise to the first element greater than `val`, or `last` if no such element is found.
 
 However, `lower_bound` still doesn't return enough information for all uses, so the standard library also offers
 
