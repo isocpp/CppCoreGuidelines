@@ -122,7 +122,7 @@ Syntax: cpplint.py [--verbose=#] [--output=emacs|eclipse|vs7|junit]
       likely to be false positives.
 
     quiet
-      Supress output other than linting errors, such as information about
+      Suppress output other than linting errors, such as information about
       which files have been processed and excluded.
 
     filter=-x,+y,...
@@ -632,7 +632,7 @@ _repository = None
 # Files to exclude from linting. This is set by the --exclude flag.
 _excludes = None
 
-# Whether to supress PrintInfo messages
+# Whether to suppress PrintInfo messages
 _quiet = False
 
 # The allowed line length of files.
@@ -746,7 +746,7 @@ def IsErrorSuppressedByNolint(category, linenum):
     category: str, the category of the error.
     linenum: int, the current line number.
   Returns:
-    bool, True iff the error should be suppressed due to a NOLINT comment or
+    bool, True if the error should be suppressed due to a NOLINT comment or
     global suppression.
   """
   return (_global_error_suppressions.get(category, False) or
@@ -6382,13 +6382,13 @@ def ParseArguments(args):
       try:
         _valid_extensions = set(val.split(','))
       except ValueError:
-          PrintUsage('Extensions must be comma seperated list.')
+          PrintUsage('Extensions must be comma separated list.')
     elif opt == '--headers':
       global _header_extensions
       try:
           _header_extensions = set(val.split(','))
       except ValueError:
-        PrintUsage('Extensions must be comma seperated list.')
+        PrintUsage('Extensions must be comma separated list.')
     elif opt == '--recursive':
       recursive = True
     elif opt == '--quiet':
