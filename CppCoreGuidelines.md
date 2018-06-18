@@ -2310,6 +2310,7 @@ Parameter passing semantic rules:
 * [F.45: Don't return a `T&&`](#Rf-return-ref-ref)
 * [F.46: `int` is the return type for `main()`](#Rf-main)
 * [F.47: Return `T&` from assignment operators](#Rf-assignment-op)
+* [F.48: Don't `return std::move(local)`](#Rf-return-move-local)
 
 Other function rules:
 
@@ -3685,6 +3686,34 @@ This was primarily to avoid code of the form `(a = b) = c` -- such code is not c
 
 This should be enforced by tooling by checking the return type (and return
 value) of any assignment operator.
+
+
+### <a name="Rf-return-move-local"></a>F.48: Don't `return std::move(local)`
+
+##### Reason
+
+With guaranteed copy elision, it is now almost always a pessimization to expressly use `std::move` in a return statement.
+
+##### Example; bad
+
+    S f()
+    {
+      S result;
+      return std::move(result);
+    }
+
+##### Example; good
+
+    S f()
+    {
+      S result;
+      return result;
+    }
+
+##### Enforcement
+
+This should be enforced by tooling by checking the return expression .
+
 
 ### <a name="Rf-capture-vs-overload"></a>F.50: Use a lambda when a function won't do (to capture local variables, or to write a local function)
 
