@@ -2290,7 +2290,7 @@ Parameter passing expression rules:
 * [F.18: For "will-move-from" parameters, pass by `X&&` and `std::move` the parameter](#Rf-consume)
 * [F.19: For "forward" parameters, pass by `TP&&` and only `std::forward` the parameter](#Rf-forward)
 * [F.20: For "out" output values, prefer return values to output parameters](#Rf-out)
-* [F.21: To return multiple "out" values, prefer returning a tuple or struct](#Rf-out-multi)
+* [F.21: To return multiple "out" values, prefer returning a struct or tuple](#Rf-out-multi)
 * [F.60: Prefer `T*` over `T&` when "no argument" is a valid option](#Rf-ptr-ref)
 
 Parameter passing semantic rules:
@@ -3038,13 +3038,14 @@ The argument against is prevents (very frequent) use of move semantics.
 * Flag reference to non-`const` parameters that are not read before being written to and are a type that could be cheaply returned; they should be "out" return values.
 * Flag returning a `const` value. To fix: Remove `const` to return a non-`const` value instead.
 
-### <a name="Rf-out-multi"></a>F.21: To return multiple "out" values, prefer returning a tuple or struct
+### <a name="Rf-out-multi"></a>F.21: To return multiple "out" values, prefer returning a struct or tuple
 
 ##### Reason
 
 A return value is self-documenting as an "output-only" value.
 Note that C++ does have multiple return values, by convention of using a `tuple` (including `pair`),
 possibly with the extra convenience of `tie` at the call site.
+Prefer using a named struct where there are semantics to the returned value. Otherwise, a nameless `tuple` is useful in generic code.
 
 ##### Example
 
