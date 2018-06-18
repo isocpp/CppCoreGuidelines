@@ -8566,9 +8566,9 @@ The default is the easiest to read and write.
     enum class Direction : char { n, s, e, w,
                                   ne, nw, se, sw };  // underlying type saves space
 
-    enum class Web_color : int { red   = 0xFF0000,
-                                 green = 0x00FF00,
-                                 blue  = 0x0000FF };  // underlying type is redundant
+    enum class Web_color : int32_t { red   = 0xFF0000,
+                                     green = 0x00FF00,
+                                     blue  = 0x0000FF };  // underlying type is redundant
 
 ##### Note
 
