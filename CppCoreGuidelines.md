@@ -1312,6 +1312,10 @@ You cannot have a race condition on immutable data.
 
 **References**: See the [rules for calling functions](#SS-call).
 
+##### Note
+
+The rule is "avoid", not "don't use." Of course there will be (rare) exceptions, such as `cin`, `cout`, and `cerr`.
+
 ##### Enforcement
 
 (Simple) Report all non-`const` variables declared at namespace scope.
