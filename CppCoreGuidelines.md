@@ -2116,11 +2116,13 @@ This will force every derived class to compute a center -- even if that's non-tr
 
     class Shape {    // better: Shape is a pure interface
     public:
-        virtual Point center() const = 0;   // pure virtual function
+        virtual Point center() const = 0;   // pure virtual functions
         virtual void draw() const = 0;
         virtual void rotate(int) = 0;
         // ...
         // ... no data members ...
+        // ...
+        virtual ~Shape() = 0;
     };
 
 ##### Enforcement
