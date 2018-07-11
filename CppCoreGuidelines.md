@@ -978,7 +978,7 @@ However, relying on abstractions that implicitly clean up can be as simple, and 
 
 ##### Note
 
-Enforcing [the lifetime profile](#SS-force) eliminates leaks.
+Enforcing [the lifetime safety profile](#SS-lifetime) eliminates leaks.
 When combined with resource safety provided by [RAII](#Rr-raii), it eliminates the need for "garbage collection" (by generating no garbage).
 Combine this with enforcement of [the type and bounds profiles](#SS-force) and you get complete type- and resource-safety, guaranteed by tools.
 
@@ -12026,7 +12026,7 @@ Remember that there are other ways of getting an invalid pointer.
 
 ##### Enforcement
 
-This rule is part of the [lifetime profile](#Pro.lifetime)
+This rule is part of the [lifetime safety profile](#SS-lifetime)
 
 * Flag a dereference of a pointer that points to an object that has gone out of scope
 * Flag a dereference of a pointer that may have been invalidated by assigning a `nullptr`
