@@ -51,7 +51,7 @@ Supporting sections:
 * [NR: Non-Rules and myths](#S-not)
 * [RF: References](#S-references)
 * [Pro: Profiles](#S-profile)
-* [GSL: Guideline support library](#S-gsl)
+* [GSL: Guidelines support library](#S-gsl)
 * [NL: Naming and layout rules](#S-naming)
 * [FAQ: Answers to frequently asked questions](#S-faq)
 * [Appendix A: Libraries](#S-libraries)
@@ -422,7 +422,7 @@ Supporting sections:
 * [NR: Non-Rules and myths](#S-not)
 * [RF: References](#S-references)
 * [Pro: Profiles](#S-profile)
-* [GSL: Guideline support library](#S-gsl)
+* [GSL: Guidelines support library](#S-gsl)
 * [NL: Naming and layout rules](#S-naming)
 * [FAQ: Answers to frequently asked questions](#S-faq)
 * [Appendix A: Libraries](#S-libraries)
@@ -517,7 +517,7 @@ A well-designed library expresses intent (what is to be done, rather than just h
 
 A C++ programmer should know the basics of the standard library, and use it where appropriate.
 Any programmer should know the basics of the foundation libraries of the project being worked on, and use them appropriately.
-Any programmer using these guidelines should know the [guideline support library](#S-gsl), and use it appropriately.
+Any programmer using these guidelines should know the [guidelines support library](#S-gsl), and use it appropriately.
 
 ##### Example
 
@@ -608,7 +608,7 @@ The last variant makes it clear that we are not interested in the order in which
 
 A programmer should be familiar with
 
-* [The guideline support library](#S-gsl)
+* [The guidelines support library](#S-gsl)
 * [The ISO C++ Standard Library](#S-stdlib)
 * Whatever foundation libraries are used for the current project(s)
 
@@ -1812,7 +1812,7 @@ However, that is less elegant and often less efficient than returning the object
 so use smart pointers only if reference semantics are needed.
 
 **Alternative**: Sometimes older code can't be modified because of ABI compatibility requirements or lack of resources.
-In that case, mark owning pointers using `owner` from the [guideline support library](#S-gsl):
+In that case, mark owning pointers using `owner` from the [guidelines support library](#S-gsl):
 
     owner<X*> compute(args)    // It is now clear that ownership is transferred
     {
@@ -1862,7 +1862,7 @@ By stating the intent in source, implementers and tools can provide better diagn
 
 ##### Note
 
-`not_null` is defined in the [guideline support library](#S-gsl).
+`not_null` is defined in the [guidelines support library](#S-gsl).
 
 ##### Note
 
@@ -11209,7 +11209,7 @@ A key example is basic narrowing:
 
 ##### Note
 
-The guideline support library offers a `narrow_cast` operation for specifying that narrowing is acceptable and a `narrow` ("narrow if") that throws an exception if a narrowing would throw away information:
+The guidelines support library offers a `narrow_cast` operation for specifying that narrowing is acceptable and a `narrow` ("narrow if") that throws an exception if a narrowing would throw away information:
 
     i = narrow_cast<int>(d);   // OK (you asked for it): narrowing: i becomes 7
     i = narrow<int>(d);        // OK: throws narrowing_error
@@ -20052,14 +20052,14 @@ Once completely enforced through a combination of style rules, static analysis, 
 * avoids undefined behavior by enforcing a key C++ language rule
 
 
-# <a name="S-gsl"></a>GSL: Guideline support library
+# <a name="S-gsl"></a>GSL: Guidelines support library
 
 The GSL is a small library of facilities designed to support this set of guidelines.
 Without these facilities, the guidelines would have to be far more restrictive on language details.
 
 The Core Guidelines support library is defined in namespace `gsl` and the names may be aliases for standard library or other well-known library names. Using the (compile-time) indirection through the `gsl` namespace allows for experimentation and for local variants of the support facilities.
 
-The GSL is header only, and can be found at [GSL: Guideline support library](https://github.com/Microsoft/GSL).
+The GSL is header only, and can be found at [GSL: Guidelines support library](https://github.com/Microsoft/GSL).
 The support library facilities are designed to be extremely lightweight (zero-overhead) so that they impose no overhead compared to using conventional alternatives.
 Where desirable, they can be "instrumented" with additional functionality (e.g., checks) for tasks such as debugging.
 
@@ -20872,7 +20872,7 @@ Avoid other HTML tags and other extensions.
 
 Note: We are not yet consistent with this style.
 
-### <a name="Faq-gsl"></a>FAQ.50: What is the GSL (guideline support library)?
+### <a name="Faq-gsl"></a>FAQ.50: What is the GSL (guidelines support library)?
 
 The GSL is the small set of types and aliases specified in these guidelines. As of this writing, their specification herein is too sparse; we plan to add a WG21-style interface specification to ensure that different implementations agree, and to propose as a contribution for possible standardization, subject as usual to whatever the committee decides to accept/improve/alter/reject.
 
@@ -20888,7 +20888,7 @@ We are reluctant to bless one particular implementation because we do not want t
 
 Because we want to use them immediately, and because they are temporary in that we want to retire them as soon as types that fill the same needs exist in the standard library.
 
-### <a name="Faq-gsl-iso"></a>FAQ.54: Has the GSL (guideline support library) been approved by the ISO C++ standards committee?
+### <a name="Faq-gsl-iso"></a>FAQ.54: Has the GSL (guidelines support library) been approved by the ISO C++ standards committee?
 
 No. The GSL exists only to supply a few types and aliases that are not currently in the standard library. If the committee decides on standardized versions (of these or other types that fill the same need) then they can be removed from the GSL.
 
