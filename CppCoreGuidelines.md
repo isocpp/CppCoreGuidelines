@@ -11824,7 +11824,7 @@ For built-in types, the construction notation protects against narrowing and rei
         int y1 = int(ch);     // OK, but redundant
         int y2 = int(d);      // bad: double->int narrowing; use a cast if you need to
         int y3 = int(p);      // bad: pointer to->int; use a reinterpret_cast if you really need to
-        int y4 = int(lng);    // bad: long->int narrowing; use a cast if you need to
+        int y4 = int(lng);    // bad: long long->int narrowing; use a cast if you need to
 
         int z1 = (int)ch;     // OK, but redundant
         int z2 = (int)d;      // bad: double->int narrowing; use a cast if you need to
@@ -15902,7 +15902,7 @@ Example:
     void f(int* p);   // old code: f() does not modify `*p`
     void f(const int* p) { f(const_cast<int*>(p)); } // wrapper
 
-Note that this wrapper solution is a patch that should be used only when the declaration of `f()` cannot be be modified,
+Note that this wrapper solution is a patch that should be used only when the declaration of `f()` cannot be modified,
 e.g. because it is in a library that you cannot modify.
 
 ##### Note
