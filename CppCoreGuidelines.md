@@ -10953,7 +10953,7 @@ Access into an array with known bounds using a constant as a subscript can be va
 
         a[4] = 1;          // OK
 
-        a[count - 1] = 2;  // OK
+        a[a.size() - 1] = 2;  // OK
 
         use(a.data(), 3);  // OK
     }
