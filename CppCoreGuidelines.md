@@ -10953,7 +10953,7 @@ Access into an array with known bounds using a constant as a subscript can be va
 
         a[4] = 1;          // OK
 
-        a[count - 1] = 2;  // OK
+        a[a.size() - 1] = 2;  // OK
 
         use(a.data(), 3);  // OK
     }
@@ -11824,7 +11824,7 @@ For built-in types, the construction notation protects against narrowing and rei
         int y1 = int(ch);     // OK, but redundant
         int y2 = int(d);      // bad: double->int narrowing; use a cast if you need to
         int y3 = int(p);      // bad: pointer to->int; use a reinterpret_cast if you really need to
-        int y4 = int(lng);    // bad: long->int narrowing; use a cast if you need to
+        int y4 = int(lng);    // bad: long long->int narrowing; use a cast if you need to
 
         int z1 = (int)ch;     // OK, but redundant
         int z2 = (int)d;      // bad: double->int narrowing; use a cast if you need to
@@ -15902,7 +15902,7 @@ Example:
     void f(int* p);   // old code: f() does not modify `*p`
     void f(const int* p) { f(const_cast<int*>(p)); } // wrapper
 
-Note that this wrapper solution is a patch that should be used only when the declaration of `f()` cannot be be modified,
+Note that this wrapper solution is a patch that should be used only when the declaration of `f()` cannot be modified,
 e.g. because it is in a library that you cannot modify.
 
 ##### Note
@@ -16244,7 +16244,7 @@ It also avoids brittle or inefficient workarounds. Convention: That's the way th
     };
 
     Container c(10, sizeof(double));
-    ((double*) c.elem)[] = 9.9;
+    ((double*) c.elem)[7] = 9.9;
 
 This doesn't directly express the intent of the programmer and hides the structure of the program from the type system and optimizer.
 
