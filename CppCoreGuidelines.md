@@ -6053,7 +6053,7 @@ This `Vector2` is not just inefficient, but since a vector copy requires allocat
 A *polymorphic class* is a class that defines or inherits at least one virtual function. It is likely that it will be used as a base class for other derived classes with polymorphic behavior. If it is accidentally passed by value, with the implicitly generated copy constructor and assignment, we risk slicing: only the base portion of a derived object will be copied, and the polymorphic behavior will be corrupted.
 
 ##### Example, bad
-    
+
     class B { // BAD: polymorphic base class doesn't suppress copying
     public:
         virtual char m() { return 'B'; }
@@ -6065,11 +6065,11 @@ A *polymorphic class* is a class that defines or inherits at least one virtual f
         char m() override { return 'D'; }
         // ...
     };
-    
+
     void f(B& b) {
         auto b2 = b; // oops, slices the object; b2.m() will return 'B'
     }
- 
+
     D d;
     f(d);
 
@@ -6090,9 +6090,9 @@ A *polymorphic class* is a class that defines or inherits at least one virtual f
     };
 
     void f(B& b) {
-        auto b2 = b; // ok, compiler will detect inadvertant copying, and protest
+        auto b2 = b; // ok, compiler will detect inadvertent copying, and protest
     }
- 
+
     D d;
     f(d);
 
@@ -7023,7 +7023,7 @@ Copying a polymorphic class is discouraged due to the slicing problem, see [C.67
         virtual ~D() override;
     };
 
-Generally, it is recommended to use smart pointers to represent ownership (see [R.20](#Rr-owner)). However, because of language rules, the covariant return type cannot be a smart pointer: `D::clone` can't return a `unique_ptr<D>` while `B::clone` returns `unique_ptr<B>`. Therefore, you either need to consistently return `unique_ptr<B>` in all overrides, or use `owner<>` utility from the [Guidelines Support Library](#SS-views). 
+Generally, it is recommended to use smart pointers to represent ownership (see [R.20](#Rr-owner)). However, because of language rules, the covariant return type cannot be a smart pointer: `D::clone` can't return a `unique_ptr<D>` while `B::clone` returns `unique_ptr<B>`. Therefore, you either need to consistently return `unique_ptr<B>` in all overrides, or use `owner<>` utility from the [Guidelines Support Library](#SS-views).
 
 
 
