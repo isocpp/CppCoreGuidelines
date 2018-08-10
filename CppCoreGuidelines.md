@@ -7366,7 +7366,7 @@ However, misuses are (or at least have been) far more common.
 Flag uses of `final`.
 
 
-## <a name="Rh-virtual-default-arg"></a>C.140: Do not provide different default arguments for a virtual function and an overrider
+### <a name="Rh-virtual-default-arg"></a>C.140: Do not provide different default arguments for a virtual function and an overrider
 
 ##### Reason
 
