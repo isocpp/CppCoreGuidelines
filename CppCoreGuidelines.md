@@ -66,8 +66,8 @@ You can sample rules for specific language features:
 * assignment:
 [regular types](#Rc-regular) --
 [prefer initialization](#Rc-initialize) --
-[copy](#Rc-copy-semantics) --
-[move](#Rc-move-semantics) --
+[copy](#Rc-copy-semantic) --
+[move](#Rc-move-semantic) --
 [other operations](#Rc-matched) --
 [default](#Rc-eqdefault)
 * `class`:
