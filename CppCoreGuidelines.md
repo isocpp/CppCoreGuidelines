@@ -12051,8 +12051,15 @@ Statements control the flow of control (except for function calls and exception 
     void use(int n)
     {
         switch (n) {   // good
-        case 0:   // ...
-        case 7:   // ...
+        case 0:
+            // ...
+            break;
+        case 7:
+            // ...
+            break;
+        default:
+            // ...
+            break;
         }
     }
 
