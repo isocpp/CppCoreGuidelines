@@ -4468,7 +4468,7 @@ Copy and move rules:
 * [C.64: A move operation should move and leave its source in a valid state](#Rc-move-semantic)
 * [C.65: Make move assignment safe for self-assignment](#Rc-move-self)
 * [C.66: Make move operations `noexcept`](#Rc-move-noexcept)
-* [C.67: A base class should suppress copying, and provide a virtual `clone` instead if "copying" is desired](#Rc-copy-virtual)
+* [C.67: A polymorphic class should suppress copying](#Rc-copy-virtual)
 
 Other default operations rules:
 
@@ -6046,59 +6046,68 @@ This `Vector2` is not just inefficient, but since a vector copy requires allocat
 
 (Simple) A move operation should be marked `noexcept`.
 
-### <a name="Rc-copy-virtual"></a>C.67: A base class should suppress copying, and provide a virtual `clone` instead if "copying" is desired
+### <a name="Rc-copy-virtual"></a>C.67: A polymorphic class should suppress copying
 
 ##### Reason
 
-To prevent slicing, because the normal copy operations will copy only the base portion of a derived object.
+A *polymorphic class* is a class that defines or inherits at least one virtual function. It is likely that it will be used as a base class for other derived classes with polymorphic behavior. If it is accidentally passed by value, with the implicitly generated copy constructor and assignment, we risk slicing: only the base portion of a derived object will be copied, and the polymorphic behavior will be corrupted.
 
 ##### Example, bad
 
-    class B { // BAD: base class doesn't suppress copying
-        int data;
+    class B { // BAD: polymorphic base class doesn't suppress copying
+    public:
+        virtual char m() { return 'B'; }
         // ... nothing about copy operations, so uses default ...
     };
 
     class D : public B {
-        string more_data; // add a data member
+    public:
+        char m() override { return 'D'; }
         // ...
     };
 
-    auto d = make_unique<D>();
+    void f(B& b) {
+        auto b2 = b; // oops, slices the object; b2.m() will return 'B'
+    }
 
-    // oops, slices the object; gets only d.data but drops d.more_data
-    auto b = make_unique<B>(d);
+    D d;
+    f(d);
 
 ##### Example
 
-    class B { // GOOD: base class suppresses copying
+    class B { // GOOD: polymorphic class suppresses copying
     public:
         B(const B&) = delete;
         B& operator=(const B&) = delete;
-        virtual unique_ptr<B> clone() { return /* B object */; }
+        virtual char m() { return 'B'; }
         // ...
     };
 
     class D : public B {
-        string more_data; // add a data member
-        unique_ptr<B> clone() override { return /* D object */; }
+    public:
+        char m() override { return 'D'; }
         // ...
     };
 
-    auto d = make_unique<D>();
-    auto b = d.clone(); // ok, deep clone
+    void f(B& b) {
+        auto b2 = b; // ok, compiler will detect inadvertent copying, and protest
+    }
+
+    D d;
+    f(d);
 
 ##### Note
 
-It's good to return a smart pointer, but unlike with raw pointers the return type cannot be covariant (for example, `D::clone` can't return a `unique_ptr<D>`. Don't let this tempt you into returning an owning raw pointer; this is a minor drawback compared to the major robustness benefit delivered by the owning smart pointer.
+If you need to create deep copies of polymorphic objects, use `clone()` functions: see [C.130](#Rh-copy).
 
 ##### Exception
 
-If you need covariant return types, return an `owner<derived*>`. See [C.130](#Rh-copy).
+Classes that represent exception objects need both to be polymorphic and copy-constructible.
 
 ##### Enforcement
 
-A class with any virtual function should not have a copy constructor or copy assignment operator (compiler-generated or handwritten).
+* Flag a polymorphic class with a non-deleted copy operation.
+* Flag an assignment of polymorphic class objects.
 
 ## C.other: Other default operation rules
 
@@ -6496,7 +6505,7 @@ Designing rules for classes in a hierarchy summary:
 * [C.127: A class with a virtual function should have a virtual or protected destructor](#Rh-dtor)
 * [C.128: Virtual functions should specify exactly one of `virtual`, `override`, or `final`](#Rh-override)
 * [C.129: When designing a class hierarchy, distinguish between implementation inheritance and interface inheritance](#Rh-kind)
-* [C.130: Redefine or prohibit copying for a base class; prefer a virtual `clone` function instead](#Rh-copy)
+* [C.130: For making deep copies of polymorphic classes prefer a virtual `clone` function to copy constructor](#Rh-copy)
 * [C.131: Avoid trivial getters and setters](#Rh-get)
 * [C.132: Don't make a function `virtual` without reason](#Rh-virtual)
 * [C.133: Avoid `protected` data](#Rh-protected)
@@ -6991,35 +7000,32 @@ at the cost of the functionality being available only to users of the hierarchy.
 * ???
 
 
-### <a name="Rh-copy"></a>C.130: Redefine or prohibit copying for a base class; prefer a virtual `clone` function instead
+### <a name="Rh-copy"></a>C.130: For making deep copies of polymorphic classes prefer a virtual `clone` function to copy constructor
 
 ##### Reason
 
-Copying a base is usually slicing. If you really need copy semantics, copy deeply: Provide a virtual `clone` function that will copy the actual most-derived type and return an owning pointer to the new object, and then in derived classes return the derived type (use a covariant return type).
+Copying a polymorphic class is discouraged due to the slicing problem, see [C.67](#Rc-copy-virtual). If you really need copy semantics, copy deeply: Provide a virtual `clone` function that will copy the actual most-derived type and return an owning pointer to the new object, and then in derived classes return the derived type (use a covariant return type).
 
 ##### Example
 
-    class Base {
+    class B {
     public:
-        virtual owner<Base*> clone() = 0;
-        virtual ~Base() = 0;
+        virtual owner<B*> clone() = 0;
+        virtual ~B() = 0;
 
-        Base(const Base&) = delete;
-        Base& operator=(const Base&) = delete;
+        B(const B&) = delete;
+        B& operator=(const B&) = delete;
     };
 
-    class Derived : public Base {
+    class D : public B {
     public:
-        owner<Derived*> clone() override;
-        virtual ~Derived() override;
+        owner<D*> clone() override;
+        virtual ~D() override;
     };
 
-Note that because of language rules, the covariant return type cannot be a smart pointer. See also [C.67](#Rc-copy-virtual).
+Generally, it is recommended to use smart pointers to represent ownership (see [R.20](#Rr-owner)). However, because of language rules, the covariant return type cannot be a smart pointer: `D::clone` can't return a `unique_ptr<D>` while `B::clone` returns `unique_ptr<B>`. Therefore, you either need to consistently return `unique_ptr<B>` in all overrides, or use `owner<>` utility from the [Guidelines Support Library](#SS-views).
 
-##### Enforcement
 
-* Flag a class with a virtual function and a non-user-defined copy operation.
-* Flag an assignment of base class objects (objects of a class from which another has been derived).
 
 ### <a name="Rh-get"></a>C.131: Avoid trivial getters and setters
 
