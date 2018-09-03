@@ -7790,7 +7790,7 @@ Overload rule summary:
 * [C.161: Use nonmember functions for symmetric operators](#Ro-symmetric)
 * [C.162: Overload operations that are roughly equivalent](#Ro-equivalent)
 * [C.163: Overload only for operations that are roughly equivalent](#Ro-equivalent-2)
-* [C.164: Avoid conversion operators](#Ro-conversion)
+* [C.164: Avoid implicit conversion operators](#Ro-conversion)
 * [C.165: Use `using` for customization points](#Ro-custom)
 * [C.166: Overload unary `&` only as part of a system of smart pointers and references](#Ro-address-of)
 * [C.167: Use an operator for an operation with its conventional meaning](#Ro-overload)
@@ -7899,7 +7899,7 @@ Be particularly careful about common and popular names, such as `open`, `move`, 
 
 ???
 
-### <a name="Ro-conversion"></a>C.164: Avoid conversion operators
+### <a name="Ro-conversion"></a>C.164: Avoid implicit conversion operators
 
 ##### Reason
 
@@ -7912,27 +7912,37 @@ By "serious need" we mean a reason that is fundamental in the application domain
 and frequently needed. Do not introduce implicit conversions (through conversion operators or non-`explicit` constructors)
 just to gain a minor convenience.
 
-##### Example, bad
+##### Example
 
-    class String {   // handle ownership and access to a sequence of characters
+    struct S1 {
+        string s;
         // ...
-        String(czstring p); // copy from *p to *(this->elem)
-        // ...
-        operator zstring() { return elem; }
-        // ...
+        operator char*() { return s.data(); }  // BAD, likely to cause surprises
     };
 
-    void user(zstring p)
+    struct S2 {
+        string s;
+        // ...
+        explicit operator char*() { return s.data(); }  
+    };
+
+    void f(S1 s1, S2 s2)
     {
-        if (*p == "") {
-            String s {"Trouble ahead!"};
-            // ...
-            p = s;
-        }
-        // use p
+        char* x1 = s1;     // OK, but can cause surprises in many contexts
+        char* x2 = s2;     // error (and that's usually a good thing)
+        char* x3 = static_cats<char*>(s2); // we can be explicit (on your head be it)
     }
 
-The string allocated for `s` and assigned to `p` is destroyed before it can be used.
+The surprising and potentially damaging implicit conversion can occur is arbitrarily hard-to spot contexts, e.g.,
+
+    S1 ff();
+
+    char* g()
+    {
+        return ff();
+    }
+   
+The string returned by `ff()` is destroyed before the returned pointer into it can be used.
 
 ##### Enforcement
 
