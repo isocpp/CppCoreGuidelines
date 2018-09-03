@@ -3629,7 +3629,7 @@ Assume that `F` returns by value:
     auto&& wrapper(F f)
     {
         log_call(typeid(f)); // or whatever instrumentation
-        return f();          // BAD: eturns a reference to a temporary
+        return f();          // BAD: returns a reference to a temporary
     }
 
 Better:
@@ -4624,6 +4624,24 @@ Compilers enforce much of this rule and ideally warn about any violation.
 ##### Note
 
 Relying on an implicitly generated copy operation in a class with a destructor is deprecated.
+
+##### Note
+
+Writing the six special member functions can be error prone.
+Note their argument types:
+
+class X {
+public:
+    // ...
+    virtual ~X() = default;            // destructor (virtual if X is meant to be a base class)
+    X(const X&) = default;             // copy constructor
+    X& operator=(const X&) = default;  // copy assignment
+    X(X&&) = default;                  // move constructor
+    X& operator=(X&&) = default;       // move assignment
+};
+
+A minor mistake(such as a misspelling, leaving out a `const`, using `&` instead ot `&&`, or leaving out a special function) can lead to errors or warnings.
+To avoid the tedium and the possibility of errors, try to follow the [rule of zero](#Rc-zero).
 
 ##### Enforcement
 
@@ -10715,7 +10733,7 @@ Also, `#` and `##` encoutages the definition and use of macros:
     #define CAT(a,b) a ## b
     #define STRINGIFY(a) #a
 
-    void f(int x, int y))
+    void f(int x, int y)
     {
         string CAT(x,y) = "asdf";   // BAD: hard for tools to handle (and ugly)
         string sx2 = STRINGIFY(x);
@@ -10737,7 +10755,7 @@ There are workarounds for low-level string manipulation using macros. For exampl
         }
     }
 
-    void f(int x, int y))
+    void f(int x, int y)
     {
         string sx = stringify<x>();
         // ...
