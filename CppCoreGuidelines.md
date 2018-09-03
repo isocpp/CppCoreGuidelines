@@ -10333,7 +10333,7 @@ Don't consider simple variables that are targets for input operations exceptions
 
 In the not uncommon case where the input target and the input operation get separated (as they should not) the possibility of used-before-set opens up.
 
-    int i2 = 0;   // better, assimin that zero is an acceptable value for i2
+    int i2 = 0;   // better, assuming that zero is an acceptable value for i2
     // ...
     cin >> i2;
 
@@ -17410,9 +17410,8 @@ This limits use and typically increases code size.
     List<int> lst1;
     List<int, My_allocator> lst2;
 
-    ???
-
-This looks innocent enough, but ???
+This looks innocent enough, but now `Link` formaly depends on the allocator (eventhough it doesn't use the allocator). This forces redundant instantiations that can be surprisingly costly in some real-world scenarios. 
+Typically, the solution is to make what would have been a nested class non-local, with its own minimal set of template parameters.
 
     template<typename T>
     struct Link {
@@ -17437,7 +17436,9 @@ This looks innocent enough, but ???
     List<int> lst1;
     List<int, My_allocator> lst2;
 
-    ???
+Some people found the idea that the `Link` no longer was hidden inside the list scary, so we named the technique
+[SCARY](http://www.open-std.org/jtc1/sc22/WG21/docs/papers/2009/n2911.pdf).From that academic paper: 
+"The acronym SCARY describes assignments and initializations that are Seemingly erroneous (appearing Constrained by conflicting generic parameters), but Actually work with the Right implementation (unconstrained bY the conflict due to minimized dependencies."
 
 ##### Enforcement
 
