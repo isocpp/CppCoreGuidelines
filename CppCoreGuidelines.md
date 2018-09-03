@@ -1,6 +1,6 @@
 # <a name="main"></a>C++ Core Guidelines
 
-August 13, 2018
+September 2, 2018
 
 
 Editors:
@@ -187,7 +187,7 @@ You can look at design concepts used to express the rules:
 
 This document is a set of guidelines for using C++ well.
 The aim of this document is to help people to use modern C++ effectively.
-By "modern C++" we mean C++17, C++14, and C++11.
+By "modern C++" we mean effective use of the ISO C++ standard (currently C++17, but almost all of our recommendations also apply to C++14 and C++11).
 In other words, what would you like your code to look like in 5 years' time, given that you can start now? In 10 years' time?
 
 The guidelines are focused on relatively high-level issues, such as interfaces, resource management, memory management, and concurrency.
@@ -224,7 +224,7 @@ We plan to modify and extend this document as our understanding improves and the
 
 # <a name="S-introduction"></a>In: Introduction
 
-This is a set of core guidelines for modern C++, C++17, C++14, and C++11, taking likely future enhancements and ISO Technical Specifications (TSs) into account.
+This is a set of core guidelines for modern C++ (currently C++17) taking likely future enhancements and ISO Technical Specifications (TSs) into account.
 The aim is to help C++ programmers to write simpler, more efficient, more maintainable code.
 
 Introduction summary:
@@ -242,7 +242,7 @@ All C++ programmers. This includes [programmers who might consider C](#S-cpl).
 
 ## <a name="SS-aims"></a>In.aims: Aims
 
-The purpose of this document is to help developers to adopt modern C++ (C++17, C++14, and C++11) and to achieve a more uniform style across code bases.
+The purpose of this document is to help developers to adopt modern C++ (currently C++17) and to achieve a more uniform style across code bases.
 
 We do not suffer the delusion that every one of these rules can be effectively applied to every code base. Upgrading old systems is hard. However, we do believe that a program that uses a rule is less error-prone and more maintainable than one that does not. Often, rules also lead to faster/easier initial development.
 As far as we can tell, these rules lead to code that performs as well or better than older, more conventional techniques; they are meant to follow the zero-overhead principle ("what you don't use, you don't pay for" or "when you use an abstraction mechanism appropriately, you get at least as good performance as if you had handcoded using lower-level language constructs").
@@ -4630,15 +4630,15 @@ Relying on an implicitly generated copy operation in a class with a destructor i
 Writing the six special member functions can be error prone.
 Note their argument types:
 
-class X {
-public:
-    // ...
-    virtual ~X() = default;            // destructor (virtual if X is meant to be a base class)
-    X(const X&) = default;             // copy constructor
-    X& operator=(const X&) = default;  // copy assignment
-    X(X&&) = default;                  // move constructor
-    X& operator=(X&&) = default;       // move assignment
-};
+    class X {
+    public:
+        // ...
+        virtual ~X() = default;            // destructor (virtual if X is meant to be a base class)
+        X(const X&) = default;             // copy constructor
+        X& operator=(const X&) = default;  // copy assignment
+        X(X&&) = default;                  // move constructor
+        X& operator=(X&&) = default;       // move assignment
+    };
 
 A minor mistake(such as a misspelling, leaving out a `const`, using `&` instead ot `&&`, or leaving out a special function) can lead to errors or warnings.
 To avoid the tedium and the possibility of errors, try to follow the [rule of zero](#Rc-zero).
@@ -10097,7 +10097,7 @@ Avoid `auto` for initializer lists and in cases where you know exactly which typ
 ##### Example
 
     auto lst = { 1, 2, 3 };   // lst is an initializer list
-    auto x{1};   // x is an int (after correction of the C++14 standard; initializer_list in C++11)
+    auto x{1};   // x is an int (in C++17; initializer_list in C++11)
 
 ##### Note
 
@@ -13550,7 +13550,7 @@ in mind:
   you the performance gains you need
 
 It is also important to note that concurrency in C++ is an unfinished
-story. C++11 introduced many core concurrency primitives, C++14 improved on
+story. C++11 introduced many core concurrency primitives, C++14 and C++17 improved on
 them, and it seems that there is much interest in making the writing of
 concurrent programs in C++ even easier. We expect some of the library-related
 guidance here to change significantly over time.
@@ -19334,9 +19334,6 @@ Direct expression of an idea minimizes mistakes.
     pair pp4 = {"Tokyo"s, 9.00};                 // {std::string,double}    // C++17
 
 
-##### Note
-
-C++14
 
 ##### Enforcement
 
@@ -19877,7 +19874,7 @@ Reference sections:
 
 * [RF.rules: Coding rules](#SS-rules)
 * [RF.books: Books with coding guidelines](#SS-books)
-* [RF.C++: C++ Programming (C++11/C++14)](#SS-Cplusplus)
+* [RF.C++: C++ Programming (C++11/C++14/C++17)](#SS-Cplusplus)
 * [RF.web: Websites](#SS-web)
 * [RS.video: Videos about "modern C++"](#SS-vid)
 * [RF.man: Manuals](#SS-man)
@@ -19979,7 +19976,7 @@ A textbook for beginners and relative novices.
 
 * ISO C++ Standard C++11.
 * ISO C++ Standard C++14.
-* [ISO C++ Standard C++17 CD](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/n4606.pdf). Committee Draft.
+* [ISO C++ Standard C++17](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/n4606.pdf). Committee Draft.
 * [Palo Alto "Concepts" TR](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2012/n3351.pdf).
 * [ISO C++ Concepts TS](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2015/n4553.pdf).
 * [WG21 Ranges report](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/n4569.pdf). Draft.
