@@ -10333,7 +10333,7 @@ Don't consider simple variables that are targets for input operations exceptions
 
 In the not uncommon case where the input target and the input operation get separated (as they should not) the possibility of used-before-set opens up.
 
-    int i2 = 0;   // better
+    int i2 = 0;   // better, assimin that zero is an acceptable value for i2
     // ...
     cin >> i2;
 
@@ -10341,8 +10341,7 @@ A good optimizer should know about input operations and eliminate the redundant 
 
 ##### Example
 
-Using an `uninitialized` or sentinel value is a symptom of a problem and not a
-solution:
+Using a value representing "uninitialized" is a symptom of a problem and not a solution:
 
     widget i = uninit;  // bad
     widget j = uninit;
