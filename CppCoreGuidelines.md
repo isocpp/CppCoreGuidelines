@@ -10675,6 +10675,51 @@ This innocuous-looking macro makes a single lower case `c` instead of a `C` into
 
 This rule does not ban the use of macros for "configuration control" use in `#ifdef`s, etc.
 
+In the future, modules are likely to eliminate the need for macros in configuration control.
+
+##### Note
+
+This rule is meant to also discourage use of `#` for stringification and `##` for concatenation.
+As usual for macros, there are uses that are "mostly harmless", but even these can create problems for tools,
+such as auto completers, static analysers, and debuggers.
+Often the desire to use fancy macros is a sign of an overly complex design.
+Also, `#` and `##` encoutages the definition and use of macros:
+
+    #define CAT(a,b) a ## b
+    #define STRINGIFY(a) #a
+
+    void f(int x, int y))
+    {
+        string CAT(x,y) = "asdf";   // BAD: hard for tools to handle (and ugly)
+        string sx2 = STRINGIFY(x);
+        // ...
+    }
+
+There are workarounds for low-level string manipulation using macros. For example:
+
+    string s = "asdf" "lkjh";   // ordinary string literal concatenation
+
+    enum E { a,b };
+
+    template<int x>
+    constexpr const char* stringify()
+    {
+        switch (x) {
+        case a: return "a";
+        case b: return "b";
+        }
+    }
+
+    void f(int x, int y))
+    {
+        string sx = stringify<x>();
+        // ...
+    }
+
+This is not as convenient as a macro to define, but as easy to use, has zero overhead, and is typed and scoped.
+
+In the future, static reflection is likely to eleminate the last needs for the preprocessor for program text manipulation.
+
 ##### Enforcement
 
 Scream when you see a macro that isn't just used for source control (e.g., `#ifdef`)
