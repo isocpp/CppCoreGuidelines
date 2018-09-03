@@ -5000,6 +5000,23 @@ If a destructor uses operations that may fail, it can catch exceptions and in so
 
 A destructor (either user-defined or compiler-generated) is implicitly declared `noexcept` (independently of what code is in its body) if all of the members of its class have `noexcept` destructors. By explicitly marking destructors `noexcept`, an author guards against the destructor becoming implicitly `noexcept(false)` through the addition or modification of a class member.
 
+##### Example
+
+Not all destructors are noexcept by default; one throwing member poisons the whole class hierarchy
+
+    struct X {
+        Details x;  // happens to have a throwing destructor
+        // ...
+        ~X() { }    // implicitly noexcept(false); aka can throw
+    };
+
+So, if in doubt, declare a destructor noexcept.
+
+##### Note
+
+Why not then declare all destrouctors noexcept?
+Because that would in many cases -- especially simple cases -- be distracting clutter.
+
 ##### Enforcement
 
 (Simple) A destructor should be declared `noexcept` if it could throw.
