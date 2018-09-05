@@ -2496,7 +2496,7 @@ We can refactor:
         // ???
     }
 
-    double funct1_tau(double val, int flag1, int flag2)
+    double func1_tau(double val, int flag1, int flag2)
     {
         // ???
     }
