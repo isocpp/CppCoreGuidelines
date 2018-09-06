@@ -64,6 +64,7 @@ Boehm
 bool
 buf
 bufmax
+bY
 C1
 C11
 C2
@@ -89,6 +90,7 @@ cm3
 cnt
 CommonMark
 *compiletime
+completers
 componentization
 composability
 composable
@@ -517,6 +519,7 @@ STL
 stmt
 str
 strdup
+stringification
 stringlike
 strlen
 Str15

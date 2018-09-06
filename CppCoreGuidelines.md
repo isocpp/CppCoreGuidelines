@@ -3607,13 +3607,13 @@ A `&&` is a magnet for temporary objects.
 
 A returned rvalue reference goes out of scope at the end of the full expression to which it is returned:
 
-    auto&& x = max(0,1);    // OK, so far
-    foo(x);                 // Unfefined behavior
+    auto&& x = max(0, 1);   // OK, so far
+    foo(x);                 // Undefined behavior
 
 This kind of use is a frequent source of bugs, often incorrectly reported as a compiler bug.
 An implementer of a function should avoid setting such traps for users.
 
-The [lifetipe safety profile](#SS-lifetime) will (when completely implemented) catch such problems.
+The [lifetime safety profile](#SS-lifetime) will (when completely implemented) catch such problems.
 
 
 ##### Example
@@ -4640,7 +4640,7 @@ Note their argument types:
         X& operator=(X&&) = default;       // move assignment
     };
 
-A minor mistake(such as a misspelling, leaving out a `const`, using `&` instead ot `&&`, or leaving out a special function) can lead to errors or warnings.
+A minor mistake (such as a misspelling, leaving out a `const`, using `&` instead of `&&`, or leaving out a special function) can lead to errors or warnings.
 To avoid the tedium and the possibility of errors, try to follow the [rule of zero](#Rc-zero).
 
 ##### Enforcement
@@ -5032,7 +5032,7 @@ So, if in doubt, declare a destructor noexcept.
 
 ##### Note
 
-Why not then declare all destrouctors noexcept?
+Why not then declare all destructors noexcept?
 Because that would in many cases -- especially simple cases -- be distracting clutter.
 
 ##### Enforcement
@@ -7941,14 +7941,14 @@ just to gain a minor convenience.
     struct S2 {
         string s;
         // ...
-        explicit operator char*() { return s.data(); }  
+        explicit operator char*() { return s.data(); }
     };
 
     void f(S1 s1, S2 s2)
     {
         char* x1 = s1;     // OK, but can cause surprises in many contexts
         char* x2 = s2;     // error (and that's usually a good thing)
-        char* x3 = static_cats<char*>(s2); // we can be explicit (on your head be it)
+        char* x3 = static_cast<char*>(s2); // we can be explicit (on your head be it)
     }
 
 The surprising and potentially damaging implicit conversion can occur is arbitrarily hard-to spot contexts, e.g.,
@@ -7959,7 +7959,7 @@ The surprising and potentially damaging implicit conversion can occur is arbitra
     {
         return ff();
     }
-   
+
 The string returned by `ff()` is destroyed before the returned pointer into it can be used.
 
 ##### Enforcement
@@ -10725,16 +10725,16 @@ In the future, modules are likely to eliminate the need for macros in configurat
 
 This rule is meant to also discourage use of `#` for stringification and `##` for concatenation.
 As usual for macros, there are uses that are "mostly harmless", but even these can create problems for tools,
-such as auto completers, static analysers, and debuggers.
+such as auto completers, static analyzers, and debuggers.
 Often the desire to use fancy macros is a sign of an overly complex design.
-Also, `#` and `##` encoutages the definition and use of macros:
+Also, `#` and `##` encourages the definition and use of macros:
 
-    #define CAT(a,b) a ## b
+    #define CAT(a, b) a ## b
     #define STRINGIFY(a) #a
 
     void f(int x, int y)
     {
-        string CAT(x,y) = "asdf";   // BAD: hard for tools to handle (and ugly)
+        string CAT(x, y) = "asdf";   // BAD: hard for tools to handle (and ugly)
         string sx2 = STRINGIFY(x);
         // ...
     }
@@ -10743,7 +10743,7 @@ There are workarounds for low-level string manipulation using macros. For exampl
 
     string s = "asdf" "lkjh";   // ordinary string literal concatenation
 
-    enum E { a,b };
+    enum E { a, b };
 
     template<int x>
     constexpr const char* stringify()
@@ -10762,7 +10762,7 @@ There are workarounds for low-level string manipulation using macros. For exampl
 
 This is not as convenient as a macro to define, but as easy to use, has zero overhead, and is typed and scoped.
 
-In the future, static reflection is likely to eleminate the last needs for the preprocessor for program text manipulation.
+In the future, static reflection is likely to eliminate the last needs for the preprocessor for program text manipulation.
 
 ##### Enforcement
 
@@ -17410,7 +17410,7 @@ This limits use and typically increases code size.
     List<int> lst1;
     List<int, My_allocator> lst2;
 
-This looks innocent enough, but now `Link` formaly depends on the allocator (eventhough it doesn't use the allocator). This forces redundant instantiations that can be surprisingly costly in some real-world scenarios. 
+This looks innocent enough, but now `Link` formally depends on the allocator (even though it doesn't use the allocator). This forces redundant instantiations that can be surprisingly costly in some real-world scenarios.
 Typically, the solution is to make what would have been a nested class non-local, with its own minimal set of template parameters.
 
     template<typename T>
