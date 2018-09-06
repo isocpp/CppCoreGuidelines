@@ -7951,7 +7951,7 @@ just to gain a minor convenience.
         char* x3 = static_cast<char*>(s2); // we can be explicit (on your head be it)
     }
 
-The surprising and potentially damaging implicit conversion can occur is arbitrarily hard-to spot contexts, e.g.,
+The surprising and potentially damaging implicit conversion can occur in arbitrarily hard-to spot contexts, e.g.,
 
     S1 ff();
 
