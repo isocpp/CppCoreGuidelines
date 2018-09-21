@@ -20165,7 +20165,7 @@ Accessing through a pointer that doesn't point to anything is a major source of 
 and very hard to avoid in many traditional C or C++ styles of programming.
 For example, a pointer may be uninitialized, the `nullptr`, point beyond the range of an array, or to a deleted object.
 
-[See the current design specification here.](https://github.com/isocpp/CppCoreGuidelines/docs/Lifetime.pdf)
+[See the current design specification here.](https://github.com/isocpp/CppCoreGuidelines/blob/master/docs/Lifetime.pdf)
 
 Lifetime safety profile summary:
 
