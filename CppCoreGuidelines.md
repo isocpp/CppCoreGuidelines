@@ -6968,7 +6968,7 @@ First we devise a hierarchy of interface classes:
         // ...
     };
 
-    class Circle : public Shape {   // pure interface
+    class Circle : public virtual Shape {   // pure interface
     public:
         virtual int radius() = 0;
         // ...
@@ -6976,7 +6976,7 @@ First we devise a hierarchy of interface classes:
 
 To make this interface useful, we must provide its implementation classes (here, named equivalently, but in the `Impl` namespace):
 
-    class Impl::Shape : public Shape { // implementation
+    class Impl::Shape : public virtual ::Shape { // implementation
     public:
         // constructors, destructor
         // ...
@@ -6994,7 +6994,7 @@ To make this interface useful, we must provide its implementation classes (here,
 Now `Shape` is a poor example of a class with an implementation,
 but bear with us because this is just a simple example of a technique aimed at more complex hierarchies.
 
-    class Impl::Circle : public Circle, public Impl::Shape {   // implementation
+    class Impl::Circle : public virtual ::Circle, public Impl::Shape {   // implementation
     public:
         // constructors, destructor
 
@@ -7004,12 +7004,12 @@ but bear with us because this is just a simple example of a technique aimed at m
 
 And we could extend the hierarchies by adding a Smiley class (:-)):
 
-    class Smiley : public Circle { // pure interface
+    class Smiley : public virtual Circle { // pure interface
     public:
         // ...
     };
 
-    class Impl::Smiley : public Smiley, public Impl::Circle {   // implementation
+    class Impl::Smiley : public virtual ::Smiley, public Impl::Circle {   // implementation
     public:
         // constructors, destructor
         // ...
