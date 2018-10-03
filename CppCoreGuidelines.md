@@ -20326,7 +20326,7 @@ Most of the concepts below are defined in [the Ranges TS](http://www.open-std.or
 
 ### <a name="SS-gsl-smartptrconcepts"></a>GSL.ptr: Smart pointer concepts
 
-See [Lifetimes paper](https://github.com/isocpp/CppCoreGuidelines/blob/master/docs/Lifetimes%20I%20and%20II%20-%20v0.9.1.pdf).
+See [Lifetime paper](https://github.com/isocpp/CppCoreGuidelines/blob/master/docs/Lifetime.pdf).
 
 # <a name="S-naming"></a>NL: Naming and layout rules
 
