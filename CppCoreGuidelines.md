@@ -10508,7 +10508,7 @@ The C++17 rules are somewhat less surprising:
     auto x2 = {7};  // x2 is an initializer_list<int> with an element 7
 
     auto x11 {7, 8};    // error: two initializers
-    auto x22 = {7, 8};  // x2 is an initializer_list<int> with elements 7 and 8
+    auto x22 = {7, 8};  // x22 is an initializer_list<int> with elements 7 and 8
 
 So use `={...}` if you really want an `initializer_list<T>`
 
