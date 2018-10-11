@@ -4877,7 +4877,7 @@ The default copy operation will just copy the `p1.p` into `p2.p` leading to a do
 
     void use(Smart_ptr3<int> p1)
     {
-        auto p2 = p1;   // error: double deletion
+        auto p2 = p1;   // OK: no double deletion
     }
 
 ##### Note
