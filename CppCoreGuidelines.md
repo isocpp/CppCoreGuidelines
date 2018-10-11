@@ -4143,6 +4143,8 @@ An overload set may have some members that do not directly access `private` data
         // ...
     };
 
+##### Exception
+
 Similarly, a set of functions may be designed to be used in a chain:
 
     x.scale(0.5).rotate(45).set_color(Color::red);
