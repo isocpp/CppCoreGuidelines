@@ -2485,7 +2485,7 @@ Consider:
         return finalize(intermediate, 0.);
     }
 
-This is too complex (and long).
+This is too complex.
 How would you know if all possible alternatives have been correctly handled?
 Yes, it breaks other rules also.
 
