@@ -10480,12 +10480,13 @@ For containers, there is a tradition for using `{...}` for a list of elements an
 
 ##### Note
 
-`{}`-initializers do not allow narrowing conversions.
+`{}`-initializers do not allow narrowing conversions (and that is usually a good thing).
 
 ##### Example
 
     int x {7.9};   // error: narrowing
     int y = 7.9;   // OK: y becomes 7. Hope for a compiler warning
+    int z = gsl::narrow_cast<int>(7.9);  // OK: you asked for it
 
 ##### Note
 
@@ -10501,6 +10502,9 @@ For containers, there is a tradition for using `{...}` for a list of elements an
         // ...
     };
 
+For that reason, `{}`-initialization is often called "uniform initialization"
+(though there unfortunately are a few irregularities left).
+
 ##### Note
 
 Initialization of a variable declared using `auto` with a single value, e.g., `{v}`, had surprising results until C++17.
@@ -10512,9 +10516,22 @@ The C++17 rules are somewhat less surprising:
     auto x11 {7, 8};    // error: two initializers
     auto x22 = {7, 8};  // x22 is an initializer_list<int> with elements 7 and 8
 
-So use `={...}` if you really want an `initializer_list<T>`
+Use `={...}` if you really want an `initializer_list<T>`
 
     auto fib10 = {1, 1, 2, 3, 5, 8, 13, 21, 34, 55};   // fib10 is a list
+
+##### Note
+
+`={}` gives copy initialization whereas `{}` coves direct ititialization.
+Like the distinction between copy-initialization and direct-initialization itself, this can lead to surprises.
+`{}` accepts `explicit` constructors; `={}` does not`. For example:
+
+    struct Z { explicit Z() {} };
+
+	Z z1{};     //OK: direct initialization, so we use explicit constructor
+	Z z2 = {};  // error: copy initialization, so we cannot use the explicit constructor
+
+Use plain `{}`-initialization unless you specifically wants to disable explicit constructors.
 
 ##### Note
 
@@ -18999,6 +19016,16 @@ If you have a good reason to use another container, use that instead. For exampl
 * If `vector` suits your needs but you don't need the container to be variable size, use `array` instead.
 
 * If you want a dictionary-style lookup container that guarantees O(K) or O(log N) lookups, the container will be larger (more than a few KB) and you perform frequent inserts so that the overhead of maintaining a sorted `vector` is infeasible, go ahead and use an `unordered_map` or `map` instead.
+
+##### Note
+
+To initialize a vector with a number of elements, use `()`-initialization.
+To initialize a vector with a list of elements, use `{}`-initialization.
+
+    vector<int> v1(20);  // v1 has 20 elements with the value 0 (vector<int>{})
+    vector<int> v2 {20}; // v2 has 1 element with the value 20
+
+[Prefer the {}-initializer syntax](#Res-list).
 
 ##### Enforcement
 
