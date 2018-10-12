@@ -5560,7 +5560,7 @@ An initialization explicitly states that initialization, rather than assignment,
     class A {   // Good
         string s1;
     public:
-        A(const char* p) : s1{p} { }    // GOOD: directly construct
+        A(czstring p) : s1{p} { }    // GOOD: directly construct (and the C-sting is explicitly named)
         // ...
     };
 
@@ -5580,7 +5580,7 @@ An initialization explicitly states that initialization, rather than assignment,
         // ...
     };
 
-##### Note:
+##### Example, better still
 
 Instead of those `const char*`s we could `gsl::string_span or (in C++17) `std::string_view`
 as [a more general way to present arguments to a function](#Rstr-view):
@@ -21761,7 +21761,8 @@ More information on many topics about C++ can be found on the [Standard C++ Foun
   Sometimes complexity is used to (simply) mean an estimate of the number of operations needed to execute an algorithm.
 * *computation*: the execution of some code, usually taking some input and producing some output.
 * *concept*: (1) a notion, and idea; (2) a set of requirements, usually for a template argument.
-* *concrete class*: class for which objects can be created.
+* *concrete class*: class for which objects can be created using usian construction syntax (e.g., on the stack) and the resulting object behaves much like an `int` as it comes to copying, comparison, and such
+(as opposed to a base class in a hierarchy).
 * *constant*: a value that cannot be changed (in a given scope); not mutable.
 * *constructor*: an operation that initializes ("constructs") an object.
   Typically a constructor establishes an invariant and often acquires resources needed for an object to be used (which are then typically released by a destructor).
