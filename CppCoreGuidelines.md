@@ -5560,7 +5560,7 @@ An initialization explicitly states that initialization, rather than assignment,
     class A {   // Good
         string s1;
     public:
-        A() : s1{"Hello, "} { }    // GOOD: directly construct
+        A(const char* p) : s1{p} { }    // GOOD: directly construct
         // ...
     };
 
@@ -5569,7 +5569,7 @@ An initialization explicitly states that initialization, rather than assignment,
     class B {   // BAD
         string s1;
     public:
-        B() { s1 = "Hello, "; }   // BAD: default constructor followed by assignment
+        B(const char* p) { s1 = p; }   // BAD: default constructor followed by assignment
         // ...
     };
 
@@ -5577,6 +5577,18 @@ An initialization explicitly states that initialization, rather than assignment,
         int* p;
     public:
         C() { cout << *p; p = new int{10}; }   // accidental use before initialized
+        // ...
+    };
+
+##### Note:
+
+Instead of those `const char*`s we could `gsl::string_span or (in C++17) `std::string_view`
+as [a more general way to present arguments to a function](#Rstr-view):
+
+    class D {   // Good
+        string s1;
+    public:
+        A(string_view v) : s1{v} { }    // GOOD: directly construct
         // ...
     };
 
