@@ -4425,8 +4425,8 @@ In particular, if a concrete type has an assignment also give it an equals opera
 
 ##### Note
 
-Handles for resources that cannot be cloned, e.g., a `scoped_lock` for a `mutex`, resemble concrete types in that they are most often be stack_allocated.
-However, objects of suct types typically cannot be copied (instead, they can usually be moved),
+Handles for resources that cannot be cloned, e.g., a `scoped_lock` for a `mutex`, resemble concrete types in that they are most often are stack_allocated.
+However, objects of such types typically cannot be copied (instead, they can usually be moved),
 so they can't be `regular`; instead, they tend to be `semiregular`.
 Often, such types are referred to as "move-only types".
 
