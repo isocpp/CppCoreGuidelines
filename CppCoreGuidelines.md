@@ -4392,6 +4392,7 @@ The allocation/deallocation overhead is not (that's just the most common case).
 We can use a base class as the interface of a scoped object of a derived class.
 This is done where dynamic allocation is prohibited (e.g. hard-real-time) and to provide a stable interface to some kinds of plug-ins.
 
+
 ##### Enforcement
 
 ???
@@ -4421,6 +4422,13 @@ Regular types are easier to understand and reason about than types that are not 
     if (b1 == b2) error("No!");
 
 In particular, if a concrete type has an assignment also give it an equals operator so that `a = b` implies `a == b`.
+
+##### Note
+
+Handles for resources that cannot be cloned, e.g., a `scoped_lock` for a `mutex`, resemble concrete types in that they are most often be stack_allocated.
+However, objects of suct types typically cannot be copied (instead, they can usually be moved),
+so they can't be `regular`; instead, they tend to be `semiregular`.
+Often, such types are referred to as "move-only types".
 
 ##### Enforcement
 
