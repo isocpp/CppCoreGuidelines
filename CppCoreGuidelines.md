@@ -6547,11 +6547,166 @@ Summary of container rules:
 * [C.102: Give a container move operations](#Rcon-move)
 * [C.103: Give a container an initializer list constructor](#Rcon-init)
 * [C.104: Give a container a default constructor that sets it to empty](#Rcon-empty)
-* [C.105: Give a constructor and `Extent` constructor](#Rcon-val)
 * ???
-* [C.109: If a resource handle has pointer semantics, provide `*` and `->`](#rcon-ptr)
+* [C.109: If a resource handle has pointer semantics, provide `*` and `->`](#Rcon-ptr)
 
 **See also**: [Resources](#S-resource)
+
+
+### <a name="Rcon-stl"></a>C.100: Follow the STL when defining a container
+
+##### Reason
+
+The STL containers are familiar to most C++ programmers and a fundamentally sound design.
+
+##### Note
+
+There are of course other fundamentally sound design styles and sometimes reasons to depart from
+the style of the standard library, but in the absence of a solid reason to differ, it is simpler
+and easier for both implementers and users to follow the standard.
+
+In particular, `std::vector` and `std::map` provide useful relatively simple models.
+
+##### Example
+
+    // simplified (e.g., no allocators):
+
+    template<typename T>
+    class Sorted_vector {
+        using value_type = T;
+        // ... iterator types ...
+
+        Sorted_vector() = default;
+        Sorted_vector(initializer_list<T>);    // initializer-list constructor: sort and store
+        Sorted_vector(const Sorted_vector&) = default;
+        Sorted_vector(Sorted_vector&&) = default;
+        Sorted_vector& operator=(const Sorted_vector&) = default;   // copy assignment
+        Sorted_vector& operator=(Sorted_vector&&) = default;        // move assignment
+        ~Sorted_vector() = default;
+
+        Sorted_vector(const std::vector<T>& v);   // store and sort
+        Sorted_vector(std::vector<T>&& v);        // sort and "steal representation"
+
+        const T& operator[](int i) { return rep[i]; }
+        // no non-const direct access to preserve order
+
+        void push_back(const T&);   // insert in the righ place (not necessarily at back)
+        void push_back(T&&);        // insert in the righ place (not necessarily at back)
+
+        // ... cbegin(), cend() ...
+    private:
+        std::vector<T> rep;  // use a std::vector to hold elements
+    };
+
+    template<typename T> bool operator==(const T&);
+    template<typename T> bool operator!=(const T&);
+    // ...
+
+Here, the STL style is followed, but incompletely.
+That's not uncommon.
+Provide only as much functionality as makes sense for a specific container.
+The key is to define the conventional constructors, assignments, destructors, and iterators
+(as meaningful for the specific container) with their conventional semantics.
+From that base, the container can be expanded as needed.
+Here, special constructors from `std::vector` were added.
+
+##### Enforcement
+
+???
+
+### <a name="Rcon-val"></a>C.101: Give a container value semantics
+
+##### Reason
+
+Regular objects are simpler to think and reason about than irregular ones.
+Familiarity.
+
+##### Note
+
+If meaningful, make a container `Regular` (the concept).
+In particular, ensure that an object compared equal to its copy.
+
+##### Example
+
+    void f(const Sorted_vector<string>& v)
+    {
+        Sorted_vector<string> v2 {v};
+        if (v!=v2)
+            cout << "insanity rules!\n";
+        // ...
+    }
+
+##### Enforcement
+
+???
+
+### <a name="Rcon-move"></a>C.102: Give a container move operations
+
+##### Reason
+
+Containers tend to get large; without a a move constructor and a copy constructor an object can be
+expensive to move around, thus tempting people to pass pointers to it around and gettimg into
+resource management problems.
+
+##### Example
+
+    Sorted_vector<int> read_sorted(istream& is)
+    {
+        vector<int> v;
+        cin >> v;   // assume we have a read operation for vectors
+        Sorted_vector<int> sv = v;  // sorts
+        return sv;
+    }
+
+    A user can reasonably assume that returning a standard-like container is cheap.
+
+##### Enforcement
+
+???
+
+### <a name="Rcon-init"></a>C.103: Give a container an initializer list constructor
+
+##### Reason
+
+People expect to be able to initialize a container with a set of values.
+Familiarity.
+
+##### Example
+
+    Sotrted_vector<int> sv {1,3,-1,7,0,0};   // Sorted_vector sorts elements as needed
+
+##### Enforcement
+
+???
+
+### <a name="Rcon-empty"></a>C.104: Give a container a default constructor that sets it to empty
+
+##### Reason
+
+To make it `Regular`.
+
+##### Example
+
+    vector<Sorted_sequence<string>> vs(100);    // 100 Sorted_sequences each with the value ""
+
+##### Enforcement
+
+???
+
+### <a name="Rcon-ptr"></a>C.109: If a resource handle has pointer semantics, provide `*` and `->`
+
+##### Reason
+
+That's what is expected from pointers.
+Familiarity.
+
+##### Example
+
+    ???
+
+##### Enforcement
+
+???
 
 ## <a name="SS-lambdas"></a>C.lambdas: Function objects and lambdas
 
