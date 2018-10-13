@@ -314,6 +314,12 @@ The rules are not value-neutral.
 They are meant to make code simpler and more correct/safer than most existing C++ code, without loss of performance.
 They are meant to inhibit perfectly valid C++ code that correlates with errors, spurious complexity, and poor performance.
 
+The rules are not precise to the point where a person (or machine) can follow them blindly.
+The enforcement parts try to be that, but we would rather leave a rule or a definition a bit vague
+and open to interpretation than to specify something precisely and wrong.
+Sometimes, precision comes only with time and experience.
+Design is not (yet) a form of Math.
+
 The rules are not perfect.
 A rule can do harm by prohibiting something that is useful in a given situation.
 A rule can do harm by failing to prohibit something that enables a serious error in a given situation.
