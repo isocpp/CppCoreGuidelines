@@ -77,7 +77,9 @@ CaMelcAse
 CaMeLcAsEvArIaBlE
 Cargill
 Cargill92
+cbegin
 CComPtr
+cend
 cerr
 chrono
 cin
@@ -591,6 +593,7 @@ UTF
 util
 v's
 v1
+v2
 va
 ValueType
 vararg

@@ -316,7 +316,7 @@ They are meant to inhibit perfectly valid C++ code that correlates with errors, 
 
 The rules are not precise to the point where a person (or machine) can follow them blindly.
 The enforcement parts try to be that, but we would rather leave a rule or a definition a bit vague
-and open to interpretation than to specify something precisely and wrong.
+and open to interpretation than specify something precisely and wrong.
 Sometimes, precision comes only with time and experience.
 Design is not (yet) a form of Math.
 
@@ -4431,7 +4431,7 @@ In particular, if a concrete type has an assignment also give it an equals opera
 
 ##### Note
 
-Handles for resources that cannot be cloned, e.g., a `scoped_lock` for a `mutex`, resemble concrete types in that they are most often are stack_allocated.
+Handles for resources that cannot be cloned, e.g., a `scoped_lock` for a `mutex`, resemble concrete types in that they most often are stack-allocated.
 However, objects of such types typically cannot be copied (instead, they can usually be moved),
 so they can't be `regular`; instead, they tend to be `semiregular`.
 Often, such types are referred to as "move-only types".
@@ -5596,7 +5596,7 @@ An initialization explicitly states that initialization, rather than assignment,
 
 ##### Example, better still
 
-Instead of those `const char*`s we could `gsl::string_span or (in C++17) `std::string_view`
+Instead of those `const char*`s we could use `gsl::string_span or (in C++17) `std::string_view`
 as [a more general way to present arguments to a function](#Rstr-view):
 
     class D {   // Good
@@ -6587,11 +6587,11 @@ In particular, `std::vector` and `std::map` provide useful relatively simple mod
         Sorted_vector(const std::vector<T>& v);   // store and sort
         Sorted_vector(std::vector<T>&& v);        // sort and "steal representation"
 
-        const T& operator[](int i) { return rep[i]; }
+        const T& operator[](int i) const { return rep[i]; }
         // no non-const direct access to preserve order
 
-        void push_back(const T&);   // insert in the righ place (not necessarily at back)
-        void push_back(T&&);        // insert in the righ place (not necessarily at back)
+        void push_back(const T&);   // insert in the right place (not necessarily at back)
+        void push_back(T&&);        // insert in the right place (not necessarily at back)
 
         // ... cbegin(), cend() ...
     private:
@@ -6624,14 +6624,14 @@ Familiarity.
 ##### Note
 
 If meaningful, make a container `Regular` (the concept).
-In particular, ensure that an object compared equal to its copy.
+In particular, ensure that an object compares equal to its copy.
 
 ##### Example
 
     void f(const Sorted_vector<string>& v)
     {
         Sorted_vector<string> v2 {v};
-        if (v!=v2)
+        if (v != v2)
             cout << "insanity rules!\n";
         // ...
     }
@@ -6644,8 +6644,8 @@ In particular, ensure that an object compared equal to its copy.
 
 ##### Reason
 
-Containers tend to get large; without a a move constructor and a copy constructor an object can be
-expensive to move around, thus tempting people to pass pointers to it around and gettimg into
+Containers tend to get large; without a move constructor and a copy constructor an object can be
+expensive to move around, thus tempting people to pass pointers to it around and getting into
 resource management problems.
 
 ##### Example
@@ -6673,7 +6673,7 @@ Familiarity.
 
 ##### Example
 
-    Sotrted_vector<int> sv {1,3,-1,7,0,0};   // Sorted_vector sorts elements as needed
+    Sorted_vector<int> sv {1, 3, -1, 7, 0, 0}; // Sorted_vector sorts elements as needed
 
 ##### Enforcement
 
@@ -10703,14 +10703,14 @@ Use `={...}` if you really want an `initializer_list<T>`
 
 ##### Note
 
-`={}` gives copy initialization whereas `{}` coves direct ititialization.
+`={}` gives copy initialization whereas `{}` gives direct initialization.
 Like the distinction between copy-initialization and direct-initialization itself, this can lead to surprises.
 `{}` accepts `explicit` constructors; `={}` does not`. For example:
 
     struct Z { explicit Z() {} };
 
-	Z z1{};     //OK: direct initialization, so we use explicit constructor
-	Z z2 = {};  // error: copy initialization, so we cannot use the explicit constructor
+    Z z1{};     // OK: direct initialization, so we use explicit constructor
+    Z z2 = {};  // error: copy initialization, so we cannot use the explicit constructor
 
 Use plain `{}`-initialization unless you specifically wants to disable explicit constructors.
 
@@ -21930,7 +21930,7 @@ More information on many topics about C++ can be found on the [Standard C++ Foun
   Sometimes complexity is used to (simply) mean an estimate of the number of operations needed to execute an algorithm.
 * *computation*: the execution of some code, usually taking some input and producing some output.
 * *concept*: (1) a notion, and idea; (2) a set of requirements, usually for a template argument.
-* *concrete class*: class for which objects can be created using usian construction syntax (e.g., on the stack) and the resulting object behaves much like an `int` as it comes to copying, comparison, and such
+* *concrete class*: class for which objects can be created using usual construction syntax (e.g., on the stack) and the resulting object behaves much like an `int` as it comes to copying, comparison, and such
 (as opposed to a base class in a hierarchy).
 * *constant*: a value that cannot be changed (in a given scope); not mutable.
 * *constructor*: an operation that initializes ("constructs") an object.
