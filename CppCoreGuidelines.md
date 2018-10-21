@@ -8781,7 +8781,9 @@ Convenience of use and avoidance of errors.
 
     Day& operator++(Day& d)
     {
-        return d = (d == Day::sun) ? Day::mon : static_cast<Day>(static_cast<int>(d)+1);
+        if (d == Day::sun) return Day::mon;
+        int tomorrow = static_cast<int>(d) + 1;
+        return static_cast<Day>(tomorrow);
     }
 
     Day today = Day::sat;
