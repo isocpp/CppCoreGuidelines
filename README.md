@@ -7,7 +7,7 @@ The [C++ Core Guidelines](CppCoreGuidelines.md) are a collaborative effort led b
 person-years of discussion and design across a number of organizations. Their design encourages general applicability and broad adoption but
 they can be freely copied and modified to meet your organization's needs.
 
-## Getting started
+## Getting started-->
 
 The guidelines themselves are found at [CppCoreGuidelines](CppCoreGuidelines.md). The document is in [GH-flavored MarkDown](https://github.github.com/gfm/). It is intentionally kept simple, mostly in ASCII, to allow automatic post-processing such as language translation and reformatting. The editors maintain one
 [version formatted for browsing](http://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines). Note that it is manually integrated and can be slightly older than the version in the master branch.
@@ -16,7 +16,7 @@ The Guidelines are a constantly evolving document without a strict "release" cad
 
 Many of the guidelines make use of the header-only Guidelines Support Library. One implementation is available at [GSL: Guidelines Support Library](https://github.com/Microsoft/GSL).
 
-## Background and scope
+## Background and scope-->
 
 The aim of the guidelines is to help people to use modern C++ effectively. By "modern C++" we mean C++11, C++14, and C++17. In other
 words, what would you like your code to look like in 5 years' time, given that you can start now? In 10 years' time?
@@ -43,7 +43,7 @@ We do not expect you to memorize all the rules before trying to write code.
 
 The rules are meant for gradual introduction into a code base. We plan to build tools for that and hope others will too.
 
-## Contributions and LICENSE
+## Contributions and LICENSE-->
 
 Comments and suggestions for improvements are most welcome. We plan to modify and extend this document as our understanding improves and the
 language and the set of available libraries improve. More details are found at [CONTRIBUTING](./CONTRIBUTING.md) and [LICENSE](./LICENSE) .
