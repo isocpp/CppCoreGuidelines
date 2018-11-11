@@ -11043,7 +11043,7 @@ If you are forced to use macros, use long names and supposedly unique prefixes (
 
 Warn against short macro names.
 
-### <a name="Res-ellipses"></a> ES.34: Don't define a (C-style) variadic function
+### <a name="Res-ellipses"></a>ES.34: Don't define a (C-style) variadic function
 
 ##### Reason
 
@@ -13354,8 +13354,7 @@ If your program spends most of its time waiting for the web or for a human, opti
 Put another way: If your program spends 4% of its processing time doing
 computation A and 40% of its time doing computation B, a 50% improvement on A is
 only as impactful as a 5% improvement on B. (If you don't even know how much
-time is spent on A or B, see <a href="#Rper-reason">Per.1</a> and <a
-href="#Rper-Knuth">Per.2</a>.)
+time is spent on A or B, see [Per.1](#Rper-reason) and [Per.2](#Rper-Knuth).)
 
 ### <a name="Rper-simple"></a>Per.4: Don't assume that complicated code is necessarily faster than simple code
 
@@ -15644,7 +15643,7 @@ Most handlers do not modify their exception and in general we [recommend use of 
 
 ##### Note
 
-To rethrow a caught exception use `throw;` not `throw e;`. Using `throw e;` would throw a new copy of `e` (sliced to the static type `std::exception`) instead of rethrowing the original exception of type `std::runtime_error`. (But keep [Don't try to catch every exception in every function](https://github.com/isocpp/CppCoreGuidelines/blob/master/CppCoreGuidelines.md#Re-not-always) and [Minimize the use of explicit `try`/`catch`](https://github.com/isocpp/CppCoreGuidelines/blob/master/CppCoreGuidelines.md#Re-catch) in mind.)
+To rethrow a caught exception use `throw;` not `throw e;`. Using `throw e;` would throw a new copy of `e` (sliced to the static type `std::exception`) instead of rethrowing the original exception of type `std::runtime_error`. (But keep [Don't try to catch every exception in every function](#Re-not-always) and [Minimize the use of explicit `try`/`catch`](#Re-catch) in mind.)
 
 ##### Enforcement
 
@@ -20351,13 +20350,13 @@ which cover other unsafe operations that allow bounds violations.
 
 Bounds safety profile summary:
 
-* <a href="Pro-bounds-arithmetic"></a>Bounds.1: Don't use pointer arithmetic. Use `span` instead:
+* <a name="Pro-bounds-arithmetic"></a>Bounds.1: Don't use pointer arithmetic. Use `span` instead:
 [Pass pointers to single objects (only)](#Ri-array) and [Keep pointer arithmetic simple](#Res-ptr).
-* <a href="Pro-bounds-arrayindex"></a>Bounds.2: Only index into arrays using constant expressions:
+* <a name="Pro-bounds-arrayindex"></a>Bounds.2: Only index into arrays using constant expressions:
 [Pass pointers to single objects (only)](#Ri-array) and [Keep pointer arithmetic simple](#Res-ptr).
-* <a href="Pro-bounds-decay"></a>Bounds.3: No array-to-pointer decay:
+* <a name="Pro-bounds-decay"></a>Bounds.3: No array-to-pointer decay:
 [Pass pointers to single objects (only)](#Ri-array) and [Keep pointer arithmetic simple](#Res-ptr).
-* <a href="Pro-bounds-stdlib"></a>Bounds.4: Don't use standard-library functions and types that are not bounds-checked:
+* <a name="Pro-bounds-stdlib"></a>Bounds.4: Don't use standard-library functions and types that are not bounds-checked:
 [Use the standard library in a type-safe manner](#Rsl-bounds).
 
 ##### Impact
@@ -20379,7 +20378,7 @@ For example, a pointer may be uninitialized, the `nullptr`, point beyond the ran
 
 Lifetime safety profile summary:
 
-* <a href="Pro-lifetime-invalid-deref"></a>Lifetime.1: Don't dereference a possibly invalid pointer:
+* <a name="Pro-lifetime-invalid-deref"></a>Lifetime.1: Don't dereference a possibly invalid pointer:
 [detect or avoid](#Res-deref).
 
 ##### Impact
@@ -21186,7 +21185,7 @@ This section covers answers to frequently asked questions about these guidelines
 
 ### <a name="Faq-aims"></a>FAQ.1: What do these guidelines aim to achieve?
 
-See the <a href="#S-abstract">top of this page</a>. This is an open-source project to maintain modern authoritative guidelines for writing C++ code using the current C++ Standard (as of this writing, C++14). The guidelines are designed to be modern, machine-enforceable wherever possible, and open to contributions and forking so that organizations can easily incorporate them into their own corporate coding guidelines.
+See the [top of this page](#S-abstract). This is an open-source project to maintain modern authoritative guidelines for writing C++ code using the current C++ Standard (as of this writing, C++14). The guidelines are designed to be modern, machine-enforceable wherever possible, and open to contributions and forking so that organizations can easily incorporate them into their own corporate coding guidelines.
 
 ### <a name="Faq-announced"></a>FAQ.2: When and where was this work first announced?
 
