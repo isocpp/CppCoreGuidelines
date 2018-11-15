@@ -11,7 +11,7 @@ Editors:
 This is a living document under continuous improvement.
 Had it been an open-source (code) project, this would have been release 0.8.
 Copying, use, modification, and creation of derivative works from this project is licensed under an MIT-style license.
-Contributing to this project requires agreeing to a Contributor License. See the accompanying [LICENSE](LICENSE) file for details.
+Contributing to this project requires agreeing to a Contributor License. See the accompanying [LICENSE](https://github.com/isocpp/CppCoreGuidelines/blob/master/LICENSE) file for details.
 We make this project available to "friendly users" to use, copy, modify, and derive from, hoping for constructive input.
 
 Comments and suggestions for improvements are most welcome.
@@ -120,7 +120,7 @@ You can sample rules for specific language features:
 [for-initializer](#Res-for-init) --
 [empty body](#Res-empty) --
 [loop variable](#Res-loop-counter) --
-[loop variable type ???](#Res-???)
+[loop variable type ???](#???)
 * function:
 [naming](#Rf-package) --
 [single operation](#Rf-logical) --
@@ -1146,9 +1146,9 @@ Run a static analyzer to verify that your code follows the guidelines you want i
 
 See
 
-* [Static analysis tools](???)
+* [Static analysis tools](#???)
 * [Concurrency tools](#Rconc-tools)
-* [Testing tools](???)
+* [Testing tools](#???)
 
 There are many other kinds of tools, such as source code repositories, build tools, etc.,
 but those are beyond the scope of these guidelines.
@@ -1934,7 +1934,7 @@ This `draw2()` passes the same amount of information to `draw()`, but makes the 
 ##### Exception
 
 Use `zstring` and `czstring` to represent a C-style, zero-terminated strings.
-But when doing so, use `string_span` from the [GSL](#GSL) to prevent range errors.
+But when doing so, use `string_span` from the [GSL](#S-gsl) to prevent range errors.
 
 ##### Enforcement
 
@@ -3450,7 +3450,7 @@ Importantly, that does not imply a transfer of ownership of the pointed-to objec
 ##### Note
 
 Positions can also be transferred by iterators, indices, and references.
-A reference is often a superior alternative to a pointer [if there is no need to use `nullptr`](#Rf-ptr-ref) or [if the object referred to should not change](???).
+A reference is often a superior alternative to a pointer [if there is no need to use `nullptr`](#Rf-ptr-ref) or [if the object referred to should not change](#???).
 
 ##### Note
 
@@ -11640,7 +11640,7 @@ Casts are widely (mis) used. Modern C++ has rules and constructs that eliminate 
 * Force the elimination of C-style casts, except on a function with a `[[nodiscard]]` return
 * Warn if there are many functional style casts (there is an obvious problem in quantifying 'many')
 * The [type profile](#Pro-type-reinterpretcast) bans `reinterpret_cast`.
-* Warn against [identity casts](#Pro-type-identitycast) between pointer types, where the source and target types are the same (#Pro-type-identitycast)
+* Warn against [identity casts](#Pro-type-identitycast) between pointer types, where the source and target types are the same
 * Warn if a pointer cast could be [implicit](#Pro-type-implicitpointercast)
 
 ### <a name="Res-casts-named"></a>ES.49: If you must use a cast, use a named cast
@@ -11964,7 +11964,7 @@ The language already knows the common cases where objects can be moved from, esp
 
 Never write `std::move()` just because you've heard "it's more efficient."
 In general, don't believe claims of "efficiency" without data (???).
-In general, don't complicate your code without reason (??)
+In general, don't complicate your code without reason (???)
 
 ##### Example, bad
 
@@ -12236,7 +12236,7 @@ This is a major part of the discussion of [C++'s resource- and type-safety model
 * Use [unique_ptr](#Rf-unique_ptr) to avoid lifetime problems.
 * Use [shared_ptr](#Rf-shared_ptr) to avoid lifetime problems.
 * Use [references](#Rf-ptr-ref) when `nullptr` isn't a possibility.
-* Use [not_null](#Rf-not_null) to catch unexpected `nullptr` early.
+* Use [not_null](#Rf-nullptr) to catch unexpected `nullptr` early.
 * Use the [bounds profile](#SS-bounds) to avoid range errors.
 
 
@@ -15433,7 +15433,7 @@ One strategy is to add a `valid()` operation to every resource handle:
 Obviously, this increases the size of the code, doesn't allow for implicit propagation of "exceptions" (`valid()` checks), and `valid()` checks can be forgotten.
 Prefer to use exceptions.
 
-**See also**: [Use of `noexcept`](#Se-noexcept)
+**See also**: [Use of `noexcept`](#Sd-noexcept)
 
 ##### Enforcement
 
@@ -15607,7 +15607,7 @@ The standard-library classes derived from `exception` should be used only as bas
         }
     }
 
-**See also**: [Discussion](#Sd-???)
+**See also**: [Discussion](#???)
 
 ##### Enforcement
 
@@ -15847,7 +15847,7 @@ If we cannot throw an exception, we can simulate this RAII style of resource han
 
 The problem is of course that the caller now has to remember to test the return value.
 
-**See also**: [Discussion](#Sd-???)
+**See also**: [Discussion](#???)
 
 ##### Enforcement
 
@@ -16048,7 +16048,7 @@ Also, the larger the program becomes the harder it is to apply an error-indicato
 
 We [prefer exception-based error handling](#Re-throw) and recommend [keeping functions short](#Rf-single).
 
-**See also**: [Discussion](#Sd-???)
+**See also**: [Discussion](#???)
 
 **See also**: [Returning multiple values](#Rf-out-multi)
 
@@ -16383,8 +16383,8 @@ Concept definition rule summary:
 * [T.24: Use tag classes or traits to differentiate concepts that differ only in semantics](#Rt-tag)
 * [T.25: Avoid complementary constraints](#Rt-not)
 * [T.26: Prefer to define concepts in terms of use-patterns rather than simple syntax](#Rt-use)
-* [T.30: Use concept negation (`!C<T>`) sparingly to express a minor difference](#Rt-not)
-* [T.31: Use concept disjunction (`C1<T> || C2<T>`) sparingly to express alternatives](#Rt-or)
+* [T.30: Use concept negation (`!C<T>`) sparingly to express a minor difference ???](#???)
+* [T.31: Use concept disjunction (`C1<T> || C2<T>`) sparingly to express alternatives ???](#???)
 * ???
 
 Template interface rule summary:
@@ -16417,7 +16417,7 @@ Template and hierarchy rule summary:
 * [T.82: Linearize a hierarchy when virtual functions are undesirable](#Rt-linear)
 * [T.83: Do not declare a member function template virtual](#Rt-virtual)
 * [T.84: Use a non-template core implementation to provide an ABI-stable interface](#Rt-abi)
-* [T.??: ????](#Rt-???)
+* [T.??: ????](#???)
 
 Variadic template rule summary:
 
@@ -16425,7 +16425,7 @@ Variadic template rule summary:
 * [T.101: ??? How to pass arguments to a variadic template ???](#Rt-variadic-pass)
 * [T.102: ??? How to process arguments to a variadic template ???](#Rt-variadic-process)
 * [T.103: Don't use variadic templates for homogeneous argument lists](#Rt-variadic-not)
-* [T.??: ????](#Rt-???)
+* [T.??: ????](#???)
 
 Metaprogramming rule summary:
 
@@ -16435,7 +16435,7 @@ Metaprogramming rule summary:
 * [T.123: Use `constexpr` functions to compute values at compile time](#Rt-fct)
 * [T.124: Prefer to use standard-library TMP facilities](#Rt-std-tmp)
 * [T.125: If you need to go beyond the standard-library TMP facilities, use an existing library](#Rt-lib)
-* [T.??: ????](#Rt-???)
+* [T.??: ????](#???)
 
 Other template rules summary:
 
@@ -16445,7 +16445,7 @@ Other template rules summary:
 * [T.143: Don't write unintentionally nongeneric code](#Rt-nongeneric)
 * [T.144: Don't specialize function templates](#Rt-specialize-function)
 * [T.150: Check that a class matches a concept using `static_assert`](#Rt-check-class)
-* [T.??: ????](#Rt-???)
+* [T.??: ????](#???)
 
 ## <a name="SS-GP"></a>T.gp: Generic programming
 
@@ -16645,7 +16645,7 @@ See the reference to more specific rules.
 ## <a name="SS-concepts"></a>T.concepts: Concept rules
 
 Concepts is a facility for specifying requirements for template arguments.
-It is an [ISO technical specification](#Ref-conceptsTS), but currently supported only by GCC.
+It is an [ISO technical specification](#SS-man), but currently supported only by GCC.
 Concepts are, however, crucial in the thinking about generic programming and the basis of much work on future C++ libraries
 (standard and other).
 
@@ -16732,7 +16732,7 @@ Flag template type arguments without concepts
 
 ##### Reason
 
- "Standard" concepts (as provided by the [GSL](#S-GSL) and the [Ranges TS](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/n4569.pdf), and hopefully soon the ISO standard itself)
+ "Standard" concepts (as provided by the [GSL](#S-gsl) and the [Ranges TS](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/n4569.pdf), and hopefully soon the ISO standard itself)
 saves us the work of thinking up our own concepts, are better thought out than we can manage to do in a hurry, and improves interoperability.
 
 ##### Note
@@ -17518,7 +17518,7 @@ Because that's the best we can do without direct concept support.
 
 ##### Note
 
-Beware of [complementary constraints](# T.25).
+Beware of [complementary constraints](#Rt-not).
 Faking concept overloading using `enable_if` sometimes forces us to use that error-prone design technique.
 
 ##### Enforcement
@@ -17867,7 +17867,7 @@ or a traditional traits template to be specialized on the user's type.
 If you intend to call your own helper function `helper(t)` with a value `t` that depends on a template type parameter,
 put it in a `::detail` namespace and qualify the call as `detail::helper(t);`.
 An unqualified call becomes a customization point where any function `helper` in the namespace of `t`'s type can be invoked;
-this can cause problems like [unintentionally invoking unconstrained function templates](#Rt-unconstrained-adl).
+this can cause problems like [unintentionally invoking unconstrained function templates](#Rt-visible).
 
 
 ##### Enforcement
@@ -19749,7 +19749,7 @@ Architectural rule summary:
 
 * [A.1: Separate stable from less stable part of code](#Ra-stable)
 * [A.2: Express potentially reusable parts as a library](#Ra-lib)
-* [A.4: There should be no cycles among libraries](#?Ra-dag)
+* [A.4: There should be no cycles among libraries](#Ra-dag)
 * [???](#???)
 * [???](#???)
 * [???](#???)
@@ -20150,7 +20150,7 @@ Reference sections:
 * [SuttAlex05](#SuttAlex05) Sutter and Alexandrescu: *C++ Coding Standards*. Addison-Wesley 2005. More a set of meta-rules than a set of rules. Pre-C++11.
 * [Stroustrup05](#Stroustrup05) Bjarne Stroustrup: [A rationale for semantically enhanced library languages](http://www.stroustrup.com/SELLrationale.pdf).
   LCSD05. October 2005.
-* [Stroustrup14](#Stroustrup05) Stroustrup: [A Tour of C++](http://www.stroustrup.com/Tour.html).
+* [Stroustrup14](#Stroustrup14) Stroustrup: [A Tour of C++](http://www.stroustrup.com/Tour.html).
   Addison Wesley 2014.
   Each chapter ends with an advice section consisting of a set of recommendations.
 * [Stroustrup13](#Stroustrup13) Stroustrup: [The C++ Programming Language (4th Edition)](http://www.stroustrup.com/4th.html).
@@ -20318,13 +20318,13 @@ Type safety profile summary:
 * <a name="Pro-type-constcast"></a>Type.3: Don't use `const_cast` to cast away `const` (i.e., at all):
 [Don't cast away const](#Res-casts-const).
 * <a name="Pro-type-cstylecast"></a>Type.4: Don't use C-style `(T)expression` or functional `T(expression)` casts:
-Prefer [construction](#Res-construct) or [named casts](#Res-cast-named).
+Prefer [construction](#Res-construct) or [named casts](#Res-casts-named).
 * <a name="Pro-type-init"></a>Type.5: Don't use a variable before it has been initialized:
 [always initialize](#Res-always).
 * <a name="Pro-type-memberinit"></a>Type.6: Always initialize a member variable:
 [always initialize](#Res-always),
 possibly using [default constructors](#Rc-default0) or
-[default member initializers](#Rc-in-class-initializers).
+[default member initializers](#Rc-in-class-initializer).
 * <a name="Pro-type-unon"></a>Type.7: Avoid naked union:
 [Use `variant` instead](#Ru-naked).
 * <a name="Pro-type-varargs"></a>Type.8: Avoid varargs:
@@ -21704,7 +21704,7 @@ Prevent leaks. Leaks can lead to performance degradation, mysterious error, syst
         int sz;
     };
 
-This class is a resource handle. It manages the lifetime of the `T`s. To do so, `Vector` must define or delete [the set of special operations](???) (constructors, a destructor, etc.).
+This class is a resource handle. It manages the lifetime of the `T`s. To do so, `Vector` must define or delete [the set of special operations](#???) (constructors, a destructor, etc.).
 
 ##### Example
 
@@ -22128,6 +22128,10 @@ Alternatively, we will decide that no change is needed and delete the entry.
   \[Meyers96]:        S. Meyers. More Effective C++ (Addison-Wesley, 1996).
 * <a name="Meyers97"></a>
   \[Meyers97]:        S. Meyers. Effective C++ (2nd Edition) (Addison-Wesley, 1997).
+* <a name="Meyers01"></a>
+  \[Meyers01]:        S. Meyers. Effective STL (Addison-Wesley, 2001).
+* <a name="Meyers05"></a>
+  \[Meyers05]:        S. Meyers. Effective C++ (3rd Edition) (Addison-Wesley, 2005).
 * <a name="Meyers15"></a>
   \[Meyers15]:        S. Meyers. Effective Modern C++ (O'Reilly, 2015).
 * <a name="Murray93"></a>
