@@ -21223,6 +21223,8 @@ No. These guidelines are about how to best use Standard C++14 + the Concepts Tec
 
 These coding standards are written using [CommonMark](http://commonmark.org), and `<a>` HTML anchors.
 
+Note: Due to the way GitHub handles HTML anchors, the `<a>` anchors no longer work, these anchors have been left in place to keep old anchor links to [the browsable version of the guidelines](http://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines). All links in the document now refer to the anchors which GitHub automatically generates and which are similarly generated for the browsable version.
+
 We are considering the following extensions from [GitHub Flavored Markdown (GFM)](https://help.github.com/articles/github-flavored-markdown/):
 
 * fenced code blocks (consistently using indented vs. fenced is under discussion)
