@@ -5283,7 +5283,7 @@ However, most realistic `Date` classes have a "first date" (e.g. January 1, 1970
     class Date {
     public:
         Date(int dd, int mm, int yyyy);
-        Date() = default; // [See also](#c45-dont-define-a-default-constructor-that-only-initializes-data-members-use-in-class-member-initializers-instead)
+        Date() = default;
         // ...
     private:
         int dd = 1;
@@ -13173,7 +13173,7 @@ Using `unsigned` doesn't actually eliminate the possibility of negative values.
 These problems with such (perfectly legal) constructs are hard to spot in real code and are the source of many real-world errors.
 Consider:
 
-    unsigned area(unsigned height, unsigned width) { return height*width; } // [see also](#i6-prefer-expects-for-expressing-preconditions)
+    unsigned area(unsigned height, unsigned width) { return height*width; }
     // ...
     int height;
     cin >> height;
