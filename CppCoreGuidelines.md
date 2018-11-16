@@ -18547,15 +18547,19 @@ You can call C from C++:
 
 ##### Example
 
-You can call C++ from C:
+You can call C++ from C, if needed do not forget to convert the error management for C compilers may expect `noexcept` functions:
 
     // in C:
     X call_f(struct Y*, int);
 
     // in C++:
-    extern "C" X call_f(Y* p, int i)
+    extern "C" X call_f(Y* p, int i) noexcept
     {
-        return p->f(i);   // possibly a virtual function call
+        try {
+            return p->f(i);   // possibly a virtual function call
+        } catch(...) {
+            errno = CPPCODEERROR;
+        }
     }
 
 ##### Enforcement
