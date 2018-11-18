@@ -10,7 +10,7 @@ they can be freely copied and modified to meet your organization's needs.
 We encourage contributions to the C++ Core Guidelines in a number of ways:
 - **Individual feedback** Are you a developer who is passionate about your code? Join the discussion in 
 [Issues](https://github.com/isocpp/CppCoreGuidelines/issues). We want to know which rules resonate with you and which don't. Were any rules
-inordinately difficult to apply? Does your compiler vendor's Guideline Support Library (e.g., 
+inordinately difficult to apply? Does your compiler vendor's Guidelines Support Library (e.g., 
 [Microsoft's implementation of the GSL](https://github.com/microsoft/gsl)) suit your needs in adopting these guidelines?
 - **Organizational adoption** While the guidelines are designed to be broadly adoptable they are also intended to be modified to fit your
 organization's particular needs. We encourage your organization to fork this repo and create your own copy of these guidelines with changes 
@@ -87,8 +87,7 @@ We've discussed and made decisions on a number of document style. Please do not 
 - The CppCoreGuidelines.md file is a single GH-flavored Markdown file. It is not split into separate chapters.
 - We do not use syntax highlighting in the Core Guidelines. See PRs #33, #96, #328, and #779. If you want syntax highlighting you
 can either view the "pretty" version at http://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines or do your own post-processing.
-- We're sticking with the ASCII character set (outside of the joke at the beginning of the document.) We do not use Unicode em-dashes, 
-Unicode spaces, or pretty quotes. Lots of people edit this file with their various text editors. ASCII is simple and universally understood. 
+- We're sticking with the ASCII character set. We do not use Unicode em-dashes, Unicode spaces, or pretty quotes. Lots of people edit this file with their various text editors. ASCII is simple and universally understood. 
 
 ### Miscellaneous
 

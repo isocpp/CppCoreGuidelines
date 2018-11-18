@@ -1,5 +1,5 @@
 
-# Using the Guideline Support Library (GSL): A Tutorial and FAQ
+# Using the Guidelines Support Library (GSL): A Tutorial and FAQ
 
 by Herb Sutter
 
