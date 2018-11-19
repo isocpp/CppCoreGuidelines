@@ -1506,7 +1506,8 @@ The function can also be written in such a way that it will accept any time dura
 ##### Enforcement
 
 * (Simple) Report the use of `void*` as a parameter or return type.
-* (Hard to do well) Look for member functions with many built-in type arguments.
+* (Simple) Report the use of more than one `bool` parameter.
+* (Hard to do well) Look for functions that use too many primitive type arguments.
 
 ### <a name="Ri-pre"></a>I.5: State preconditions (if any)
 
