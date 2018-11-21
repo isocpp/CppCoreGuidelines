@@ -1391,18 +1391,18 @@ Very hard in general.
 
 ##### Reason
 
-Types are the simplest and best documentation, improving legibility due to their well-defined meaning, and are checked at compile time.
+Types are the simplest and best documentation, improve legibility due to their well-defined meaning, and are checked at compile time.
 Also, precisely typed code is often optimized better.
 
 ##### Example, don't
 
 Consider:
 
-    void pass(void* data);    // weak and under qualified typing is suspicious
+    void pass(void* data);    // weak and under qualified type void* is suspicious
 
 Callers are unsure what types are allowed and if the data may
 be mutated as `const` is not specified. Note all pointer types
- impliclty convert to void* so it is easy for callers to provide this value.
+impliclty convert to void*, so it is easy for callers to provide this value.
 
 The callee must `static_cast` data to an unverified type to use it.
 That is error-prone and verbose.
@@ -1420,7 +1420,7 @@ Consider:
 
     draw_rect(p.x, p.y, 10, 20); // what units are 10 and 20 in?
 
-It is clear that the caller is describing a rect, but it is unclear what parts they relate to. Also, an `int` can carry values of many units, so we must guess about their meaning.
+It is clear that the caller is describing a rect, but it is unclear what parts they relate to. Also, an `int` can carry values of many units, so we must guess their meaning.
 
 Comments and parameter names can help, but we could be explicit:
 
