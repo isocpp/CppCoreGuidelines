@@ -18547,13 +18547,28 @@ You can call C from C++:
 
 ##### Example
 
-You can call C++ from C, if needed do not forget to convert the error management for C compilers may expect `noexcept` functions:
+You can call C++ from C:
 
     // in C:
     X call_f(struct Y*, int);
 
     // in C++:
-    extern "C" X call_f(Y* p, int i) noexcept
+    extern "C" X call_f(Y* p, int i)
+    {
+        return p->f(i);   // possibly a virtual function call
+    }
+
+##### Example
+
+Consider who will use your C interface. C, as language, has no support for exceptions. Many compilers allow to compile C enabling exception propagation, but from inside the language it will not be possible to handle those errors. It may not be a problem if the C code will be called by C++, but it can be problematic if the error handling is supposed to be done by C or another language.
+
+You can consider to remap exceptions in another kind of error reporting, as example:
+
+    // in C:
+    X call_f(struct Y*, int);
+
+    // in C++:
+    extern "C" X call_f(Y* p, int i)
     {
         try {
             return p->f(i);   // possibly a virtual function call
