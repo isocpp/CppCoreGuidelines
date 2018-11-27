@@ -5683,13 +5683,13 @@ To avoid repetition and accidental differences.
         Month m;
         int y;
     public:
-        Date(int ii, Month mm, year yy)
-            :i{ii}, m{mm}, y{yy}
-            { if (!valid(i, m, y)) throw Bad_date{}; }
+        Date(int dd, Month mm, year yy)
+            :d{dd}, m{mm}, y{yy}
+            { if (!valid(d, m, y)) throw Bad_date{}; }
 
-        Date(int ii, Month mm)
-            :i{ii}, m{mm} y{current_year()}
-            { if (!valid(i, m, y)) throw Bad_date{}; }
+        Date(int dd, Month mm)
+            :d{dd}, m{mm} y{current_year()}
+            { if (!valid(d, m, y)) throw Bad_date{}; }
         // ...
     };
 
@@ -5702,12 +5702,12 @@ The common action gets tedious to write and may accidentally not be common.
         Month m;
         int y;
     public:
-        Date2(int ii, Month mm, year yy)
-            :i{ii}, m{mm}, y{yy}
-            { if (!valid(i, m, y)) throw Bad_date{}; }
+        Date2(int dd, Month mm, year yy)
+            :d{dd}, m{mm}, y{yy}
+            { if (!valid(d, m, y)) throw Bad_date{}; }
 
-        Date2(int ii, Month mm)
-            :Date2{ii, mm, current_year()} {}
+        Date2(int dd, Month mm)
+            :Date2{dd, mm, current_year()} {}
         // ...
     };
 
