@@ -1391,18 +1391,23 @@ Very hard in general.
 
 ##### Reason
 
-Types are the simplest and best documentation, have well-defined meaning, and are guaranteed to be checked at compile time.
+Types are the simplest and best documentation, improve legibility due to their well-defined meaning, and are checked at compile time.
 Also, precisely typed code is often optimized better.
 
 ##### Example, don't
 
 Consider:
 
-    void pass(void* data);    // void* is suspicious
+    void pass(void* data);    // weak and under qualified type void* is suspicious
 
-Now the callee must cast the data pointer (back) to a correct type to use it. That is error-prone and often verbose.
-Avoid `void*`, especially in interfaces.
-Consider using a `variant` or a pointer to base instead.
+Callers are unsure what types are allowed and if the data may
+be mutated as `const` is not specified. Note all pointer types
+impliclty convert to void*, so it is easy for callers to provide this value.
+
+The callee must `static_cast` data to an unverified type to use it.
+That is error-prone and verbose.
+
+Only use `const void*` for passing in data in designs that are undescribable in C++. Consider using a `variant` or a pointer to base instead.
 
 **Alternative**: Often, a template parameter can eliminate the `void*` turning it into a `T*` or `T&`.
 For generic code these `T`s can be general or concept constrained template parameters.
@@ -1411,12 +1416,12 @@ For generic code these `T`s can be general or concept constrained template param
 
 Consider:
 
-    void draw_rect(int, int, int, int);   // great opportunities for mistakes
+    draw_rect(100, 200, 100, 500); // what do the numbers specify?
 
-    draw_rect(p.x, p.y, 10, 20);          // what does 10, 20 mean?
+    draw_rect(p.x, p.y, 10, 20); // what units are 10 and 20 in?
 
-An `int` can carry arbitrary forms of information, so we must guess about the meaning of the four `int`s.
-Most likely, the first two are an `x`,`y` coordinate pair, but what are the last two?
+It is clear that the caller is describing a rect, but it is unclear what parts they relate to. Also, an `int` can carry values of many units, so we must guess their meaning.
+
 Comments and parameter names can help, but we could be explicit:
 
     void draw_rectangle(Point top_left, Point bottom_right);
@@ -1427,6 +1432,26 @@ Comments and parameter names can help, but we could be explicit:
 
 Obviously, we cannot catch all errors through the static type system
 (e.g., the fact that a first argument is supposed to be a top-left point is left to convention (naming and comments)).
+
+##### Example, bad
+
+Consider:
+
+    set_settings(true, false, 42); // what do the numbers specify?
+
+The parameter types and their values do not communicate what settings are being specified or what those values mean. 
+
+This design is more explicit, safe and legible:
+
+    alarm_settings s{};
+    s.enabled = true;
+    s.displayMode = alarm_settings::mode::spinning_light;
+    s.frequency = alarm_settings::every_10_seconds;
+    set_settings(s);
+
+For the case of a set of boolean values consider using a flags enum; a pattern that expresses a set of boolean values.
+
+    enable_lamp_options(lamp_option::on | lamp_option::animate_state_transitions);
 
 ##### Example, bad
 
@@ -1481,7 +1506,8 @@ The function can also be written in such a way that it will accept any time dura
 ##### Enforcement
 
 * (Simple) Report the use of `void*` as a parameter or return type.
-* (Hard to do well) Look for member functions with many built-in type arguments.
+* (Simple) Report the use of more than one `bool` parameter.
+* (Hard to do well) Look for functions that use too many primitive type arguments.
 
 ### <a name="Ri-pre"></a>I.5: State preconditions (if any)
 
