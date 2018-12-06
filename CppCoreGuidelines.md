@@ -1402,12 +1402,12 @@ Consider:
 
 Callers are unsure what types are allowed and if the data may
 be mutated as `const` is not specified. Note all pointer types
-impliclty convert to void*, so it is easy for callers to provide this value.
+implicitly convert to void*, so it is easy for callers to provide this value.
 
 The callee must `static_cast` data to an unverified type to use it.
 That is error-prone and verbose.
 
-Only use `const void*` for passing in data in designs that are undescribable in C++. Consider using a `variant` or a pointer to base instead.
+Only use `const void*` for passing in data in designs that are indescribable in C++. Consider using a `variant` or a pointer to base instead.
 
 **Alternative**: Often, a template parameter can eliminate the `void*` turning it into a `T*` or `T&`.
 For generic code these `T`s can be general or concept constrained template parameters.
@@ -1420,7 +1420,7 @@ Consider:
 
     draw_rect(p.x, p.y, 10, 20); // what units are 10 and 20 in?
 
-It is clear that the caller is describing a rect, but it is unclear what parts they relate to. Also, an `int` can carry values of many units, so we must guess their meaning.
+It is clear that the caller is describing a rectangle, but it is unclear what parts they relate to. Also, an `int` can carry arbitrary forms of information, including values of many units, so we must guess about the meaning of the four `int`s. Most likely, the first two are an `x`,`y` coordinate pair, but what are the last two?
 
 Comments and parameter names can help, but we could be explicit:
 
