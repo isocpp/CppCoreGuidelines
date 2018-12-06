@@ -4406,7 +4406,7 @@ You need a reason (use cases) for using a hierarchy.
         Point1 p12 {p11};    // a copy
 
         auto p21 = make_unique<Point2>(1, 2);   // make an object on the free store
-        auto p22 = p21.clone();                 // make a copy
+        auto p22 = p21->clone();                // make a copy
         // ...
     }
 
