@@ -12126,7 +12126,15 @@ In the rare cases where the slicing was deliberate the code can be surprising.
     class Circle : public Shape { /* ... */ Point c; int r; };
 
     Circle c {{0, 0}, 42};
-    Shape s {c};    // copy Shape part of Circle
+    Shape s {c};    // copy construct only the Shape part of Circle
+    s = c;          // or copy assign only the Shape part of Circle
+
+    void assign(const shape& src, shape& dest) {
+        dest = src;
+    }
+    Circle c2 {{1,1}, 43};
+    assign( c, c2);   // oops, not the whole state is transferred
+    assert( c == c2); // if we supply copying, we should also provide comparison,
 
 The result will be meaningless because the center and radius will not be copied from `c` into `s`.
 The first defense against this is to [define the base class `Shape` not to allow this](#Rc-copy-virtual).
