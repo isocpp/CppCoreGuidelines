@@ -12129,7 +12129,7 @@ In the rare cases where the slicing was deliberate the code can be surprising.
     Shape s {c};    // copy construct only the Shape part of Circle
     s = c;          // or copy assign only the Shape part of Circle
 
-    void assign(const shape& src, shape& dest) {
+    void assign(const Shape& src, Shape& dest) {
         dest = src;
     }
     Circle c2 {{1,1}, 43};
