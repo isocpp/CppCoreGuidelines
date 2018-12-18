@@ -18640,7 +18640,7 @@ Examples are `.hh`, `.C`, and `.cxx`. Use such names equivalently.
 In this document, we refer to `.h` and `.cpp` as a shorthand for header and implementation files,
 even though the actual extension may be different.
 
-Your IDE (if you use one) may have strong opinions about suffices.
+Your IDE (if you use one) may have strong opinions about suffixes.
 
 ##### Example
 
