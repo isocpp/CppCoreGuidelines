@@ -12132,9 +12132,9 @@ In the rare cases where the slicing was deliberate the code can be surprising.
     void assign(const Shape& src, Shape& dest) {
         dest = src;
     }
-    Circle c2 {{1,1}, 43};
-    assign( c, c2);   // oops, not the whole state is transferred
-    assert( c == c2); // if we supply copying, we should also provide comparison,
+    Circle c2 {{1, 1}, 43};
+    assign(c, c2);   // oops, not the whole state is transferred
+    assert(c == c2); // if we supply copying, we should also provide comparison,
                       //   but this will likely return false
 
 The result will be meaningless because the center and radius will not be copied from `c` into `s`.
