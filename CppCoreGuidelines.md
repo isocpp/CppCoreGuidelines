@@ -8608,7 +8608,7 @@ Saving programmers from having to write such code is one reason for including `v
             i = e.i;
             break;
         case Tag::text:
-            new(&s)(e.s);   // placement new: explicit construct
+            new(&s) string(e.s);   // placement new: explicit construct
             type = e.type;
         }
 
