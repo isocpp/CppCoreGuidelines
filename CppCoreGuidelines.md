@@ -19187,7 +19187,12 @@ People working with code for which that difference matters are quite capable of 
 
 ##### Reason
 
-`vector` and `array` are the only standard containers that offer the fastest general-purpose access (random access, including being vectorization-friendly), the fastest default access pattern (begin-to-end or end-to-begin is prefetcher-friendly), and the lowest space overhead (contiguous layout has zero per-element overhead, which is cache-friendly).
+`vector` and `array` are the only standard containers that offer the following advantages:
+
+* the fastest general-purpose access (random access, including being vectorization-friendly);
+* the fastest default access pattern (begin-to-end or end-to-begin is prefetcher-friendly);
+* the lowest space overhead (contiguous layout has zero per-element overhead, which is cache-friendly).
+
 Usually you need to add and remove elements from the container, so use `vector` by default; if you don't need to modify the container's size, use `array`.
 
 Even when other containers seem more suited, such a `map` for O(log N) lookup performance or a `list` for efficient insertion in the middle, a `vector` will usually still perform better for containers up to a few KB in size.
