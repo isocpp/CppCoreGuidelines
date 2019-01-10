@@ -10054,9 +10054,9 @@ Readability. Minimize resource retention.
 * Flag loop variables declared before the loop and not used after the loop
 * (hard) Flag loop variables declared before the loop and used after the loop for an unrelated purpose.
 
-##### C++17 example
+##### C++17 and C++20 example
 
-Note: C++17 also adds `if` and `switch` initializer statements. These require C++17 support.
+Note: C++17 and C++20 also add `if`, `switch`, and range-`for` initializer statements. These require C++17 and C++20 support.
 
     map<int, string> mymap;
 
@@ -10066,7 +10066,7 @@ Note: C++17 also adds `if` and `switch` initializer statements. These require C+
         // ...
     } // result is destroyed here
 
-##### C++17 enforcement (if using a C++17 compiler)
+##### C++17 and C++20 enforcement (if using a C++17 or C++20 compiler)
 
 * Flag selection/loop variables declared before the body and not used after the body
 * (hard) Flag selection/loop variables declared before the body and used after the body for an unrelated purpose.
