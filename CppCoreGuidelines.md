@@ -11308,7 +11308,7 @@ Use a `span`:
 
     void f2(array<int, 10> arr, int pos) // A2: Add local span and use that
     {
-        span<int> a = {arr, pos};
+        span<int> a = {arr.data(), pos};
         a[pos / 2] = 1; // OK
         a[pos - 1] = 2; // OK
     }
