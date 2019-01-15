@@ -20376,7 +20376,7 @@ Bounds safety profile summary:
 Bounds safety implies that access to an object - notably arrays - does not access beyond the object's memory allocation.
 This eliminates a large class of insidious and hard-to-find errors, including the (in)famous "buffer overflow" errors.
 This closes security loopholes as well as a prominent source of memory corruption (when writing out of bounds).
-Even an out-of-bounds access is "just a read", it can lead to invariant violations (when the accessed isn't of the assumed type)
+Even if an out-of-bounds access is "just a read", it can lead to invariant violations (when the accessed isn't of the assumed type)
 and "mysterious values."
 
 
