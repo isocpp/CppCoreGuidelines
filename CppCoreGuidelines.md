@@ -6439,7 +6439,7 @@ Asymmetric treatment of operands is surprising and a source of errors where conv
 If a class has a failure state, like `double`'s `NaN`, there is a temptation to make a comparison against the failure state throw.
 The alternative is to make two failure states compare equal and any valid state compare false against the failure state.
 
-#### Note
+##### Note
 
 This rule applies to all the usual comparison operators: `!=`, `<`, `<=`, `>`, and `>=`.
 
@@ -6488,7 +6488,7 @@ It is really hard to write a foolproof and useful `==` for a hierarchy.
 
 Of course there are ways of making `==` work in a hierarchy, but the naive approaches do not scale
 
-#### Note
+##### Note
 
 This rule applies to all the usual comparison operators: `!=`, `<`, `<=`, `>`, and `>=`.
 
