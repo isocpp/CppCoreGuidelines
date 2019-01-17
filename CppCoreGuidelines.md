@@ -5768,7 +5768,7 @@ It is simple and efficient. If you want to optimize for rvalues, provide an over
         {
             // GOOD: no need to check for self-assignment (other than performance)
             auto tmp = x;
-            std::swap(*this, tmp);
+            swap(tmp); // see C.83
             return *this;
         }
         // ...
