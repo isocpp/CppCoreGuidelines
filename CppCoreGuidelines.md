@@ -1,6 +1,6 @@
 # <a name="main"></a>C++ Core Guidelines
 
-December 7, 2018
+January 3, 2019
 
 
 Editors:
@@ -487,7 +487,7 @@ What is expressed in code has defined semantics and can (in principle) be checke
 The first declaration of `month` is explicit about returning a `Month` and about not modifying the state of the `Date` object.
 The second version leaves the reader guessing and opens more possibilities for uncaught bugs.
 
-##### Example; bad
+##### Example, bad
 
 This loop is a restricted form of `std::find`:
 
@@ -506,7 +506,7 @@ This loop is a restricted form of `std::find`:
         // ...
     }
 
-##### Example; good
+##### Example, good
 
 A much clearer expression of intent would be:
 
@@ -2601,25 +2601,6 @@ it just guarantees that the function can be evaluated at compile time for consta
 
 ##### Note
 
-`constexpr` functions are pure: they can have no side effects.
-
-    int dcount = 0;
-    constexpr int double(int v)
-    {
-        ++dcount;   // error: attempted side effect from constexpr function
-        return v + v;
-    }
-
-This is usually a very good thing.
-
-When given a non-constant argument, a `constexpr` function can throw.
-If you consider exiting by throwing a side effect, a `constexpr` function isn't completely pure;
-if not, this is not an issue.
-??? A question for the committee: can a constructor for an exception thrown by a `constexpr` function modify state?
-"No" would be a nice answer that matches most practice.
-
-##### Note
-
 Don't try to make all functions `constexpr`.
 Most computation is best done at run time.
 
@@ -2795,16 +2776,6 @@ Pure functions are easier to reason about, sometimes easier to optimize (and eve
     template<class T>
     auto square(T t) { return t * t; }
 
-##### Note
-
-`constexpr` functions are pure.
-
-When given a non-constant argument, a `constexpr` function can throw.
-If you consider exiting by throwing a side effect, a `constexpr` function isn't completely pure;
-if not, this is not an issue.
-??? A question for the committee: can a constructor for an exception thrown by a `constexpr` function modify state?
-"No" would be a nice answer that matches most practice.
-
 ##### Enforcement
 
 Not possible.
@@ -2917,10 +2888,10 @@ If you need the notion of an optional value, use a pointer, `std::optional`, or 
 
 ##### Enforcement
 
-* (Simple) ((Foundation)) Warn when a parameter being passed by value has a size greater than `4 * sizeof(int)`.
+* (Simple) ((Foundation)) Warn when a parameter being passed by value has a size greater than `2 * sizeof(void*)`.
   Suggest using a reference to `const` instead.
-* (Simple) ((Foundation)) Warn when a `const` parameter being passed by reference has a size less than `3 * sizeof(int)`. Suggest passing by value instead.
-* (Simple) ((Foundation)) Warn when a `const` parameter being passed by reference is `move`d.
+* (Simple) ((Foundation)) Warn when a parameter passed by reference to `const` has a size less than `2 * sizeof(void*)`. Suggest passing by value instead.
+* (Simple) ((Foundation)) Warn when a parameter passed by reference to `const` is `move`d.
 
 ### <a name="Rf-inout"></a>F.17: For "in-out" parameters, pass by reference to non-`const`
 
@@ -3116,7 +3087,7 @@ With C++11 we can write this, putting the results directly in existing local var
     tie(iter, success) = my_set.insert("Hello");   // normal return value
     if (success) do_something_with(iter);
 
-With C++17 we should be able to use "structured bindings" to declare and initialize the multiple variables:
+With C++17 we are able to use "structured bindings" to declare and initialize the multiple variables:
 
     if (auto [ iter, success ] = my_set.insert("Hello"); success) do_something_with(iter);
 
@@ -3746,7 +3717,7 @@ value) of any assignment operator.
 
 With guaranteed copy elision, it is now almost always a pessimization to expressly use `std::move` in a return statement.
 
-##### Example; bad
+##### Example, bad
 
     S f()
     {
@@ -3754,7 +3725,7 @@ With guaranteed copy elision, it is now almost always a pessimization to express
       return std::move(result);
     }
 
-##### Example; good
+##### Example, good
 
     S f()
     {
@@ -4225,11 +4196,11 @@ This is especially important for [overloaded operators](#Ro-namespace).
 
 Mixing a type definition and the definition of another entity in the same declaration is confusing and unnecessary.
 
-##### Example; bad
+##### Example, bad
 
     struct Data { /*...*/ } data{ /*...*/ };
 
-##### Example; good
+##### Example, good
 
     struct Data { /*...*/ };
     Data data{ /*...*/ };
@@ -4497,7 +4468,7 @@ Destructor rules:
 * [C.31: All resources acquired by a class must be released by the class's destructor](#Rc-dtor-release)
 * [C.32: If a class has a raw pointer (`T*`) or reference (`T&`), consider whether it might be owning](#Rc-dtor-ptr)
 * [C.33: If a class has an owning pointer member, define or `=delete` a destructor](#Rc-dtor-ptr2)
-* [C.35: A base class with a virtual function needs a virtual destructor](#Rc-dtor-virtual)
+* [C.35: A base class destructor should be either public and virtual, or protected and nonvirtual](#Rc-dtor-virtual)
 * [C.36: A destructor may not fail](#Rc-dtor-fail)
 * [C.37: Make destructors `noexcept`](#Rc-dtor-noexcept)
 
@@ -4952,7 +4923,7 @@ See [this in the Discussion section](#Sd-dtor).
 
 ##### Example, bad
 
-    struct Base {  // BAD: no virtual destructor
+    struct Base {  // BAD: implicitly has a public nonvirtual destructor
         virtual void f();
     };
 
@@ -4975,7 +4946,7 @@ If the interface allows destroying, it should be safe to do so.
 
 ##### Note
 
-A destructor must be nonprivate or it will prevent using the type :
+A destructor must be nonprivate or it will prevent using the type:
 
     class X {
         ~X();   // private destructor
@@ -4991,6 +4962,7 @@ A destructor must be nonprivate or it will prevent using the type :
 ##### Exception
 
 We can imagine one case where you could want a protected virtual destructor: When an object of a derived type (and only of such a type) should be allowed to destroy *another* object (not itself) through a pointer to base. We haven't seen such a case in practice, though.
+
 
 ##### Enforcement
 
@@ -5797,7 +5769,7 @@ It is simple and efficient. If you want to optimize for rvalues, provide an over
         {
             // GOOD: no need to check for self-assignment (other than performance)
             auto tmp = x;
-            std::swap(*this, tmp);
+            swap(tmp); // see C.83
             return *this;
         }
         // ...
@@ -6467,7 +6439,7 @@ Asymmetric treatment of operands is surprising and a source of errors where conv
 If a class has a failure state, like `double`'s `NaN`, there is a temptation to make a comparison against the failure state throw.
 The alternative is to make two failure states compare equal and any valid state compare false against the failure state.
 
-#### Note
+##### Note
 
 This rule applies to all the usual comparison operators: `!=`, `<`, `<=`, `>`, and `>=`.
 
@@ -6516,7 +6488,7 @@ It is really hard to write a foolproof and useful `==` for a hierarchy.
 
 Of course there are ways of making `==` work in a hierarchy, but the naive approaches do not scale
 
-#### Note
+##### Note
 
 This rule applies to all the usual comparison operators: `!=`, `<`, `<=`, `>`, and `>=`.
 
@@ -8608,7 +8580,7 @@ Saving programmers from having to write such code is one reason for including `v
             i = e.i;
             break;
         case Tag::text:
-            new(&s)(e.s);   // placement new: explicit construct
+            new(&s) string(e.s);   // placement new: explicit construct
             type = e.type;
         }
 
@@ -10083,9 +10055,9 @@ Readability. Minimize resource retention.
 * Flag loop variables declared before the loop and not used after the loop
 * (hard) Flag loop variables declared before the loop and used after the loop for an unrelated purpose.
 
-##### C++17 example
+##### C++17 and C++20 example
 
-Note: C++17 also adds `if` and `switch` initializer statements. These require C++17 support.
+Note: C++17 and C++20 also add `if`, `switch`, and range-`for` initializer statements. These require C++17 and C++20 support.
 
     map<int, string> mymap;
 
@@ -10095,7 +10067,7 @@ Note: C++17 also adds `if` and `switch` initializer statements. These require C+
         // ...
     } // result is destroyed here
 
-##### C++17 enforcement (if using a C++17 compiler)
+##### C++17 and C++20 enforcement (if using a C++17 or C++20 compiler)
 
 * Flag selection/loop variables declared before the body and not used after the body
 * (hard) Flag selection/loop variables declared before the body and used after the body for an unrelated purpose.
@@ -10178,11 +10150,11 @@ Check length of local and non-local names. Also take function length into accoun
 
 Code clarity and readability. Too-similar names slow down comprehension and increase the likelihood of error.
 
-##### Example; bad
+##### Example, bad
 
     if (readable(i1 + l1 + ol + o1 + o0 + ol + o1 + I0 + l0)) surprise();
 
-##### Example; bad
+##### Example, bad
 
 Do not declare a non-type with the same name as a type in the same scope. This removes the need to disambiguate with a keyword such as `struct` or `enum`. It also removes a source of errors, as `struct X` can implicitly declare `X` if lookup fails.
 
@@ -11337,7 +11309,7 @@ Use a `span`:
 
     void f2(array<int, 10> arr, int pos) // A2: Add local span and use that
     {
-        span<int> a = {arr, pos};
+        span<int> a = {arr.data(), pos};
         a[pos / 2] = 1; // OK
         a[pos - 1] = 2; // OK
     }
@@ -12126,7 +12098,16 @@ In the rare cases where the slicing was deliberate the code can be surprising.
     class Circle : public Shape { /* ... */ Point c; int r; };
 
     Circle c {{ "{{" }}0, 0}, 42};
-    Shape s {c};    // copy Shape part of Circle
+    Shape s {c};    // copy construct only the Shape part of Circle
+    s = c;          // or copy assign only the Shape part of Circle
+
+    void assign(const Shape& src, Shape& dest) {
+        dest = src;
+    }
+    Circle c2 {{ "{{" }}1, 1}, 43};
+    assign(c, c2);   // oops, not the whole state is transferred
+    assert(c == c2); // if we supply copying, we should also provide comparison,
+                      //   but this will likely return false
 
 The result will be meaningless because the center and radius will not be copied from `c` into `s`.
 The first defense against this is to [define the base class `Shape` not to allow this](#Rc-copy-virtual).
@@ -13079,7 +13060,7 @@ This makes surprises (and bugs) inevitable.
 
 * Flag mixed signed and unsigned arithmetic
 * Flag results of unsigned arithmetic assigned to or printed as signed.
-* Flag unsigned literals (e.g. `-2`) used as container subscripts.
+* Flag negative literals (e.g. `-2`) used as container subscripts.
 * (To avoid noise) Do not flag on a mixed signed/unsigned comparison where one of the arguments is `sizeof` or a call to container `.size()` and the other is `ptrdiff_t`.
 
 
@@ -13153,14 +13134,14 @@ The result is undefined and probably a crash.
 
 This also applies to `%`.
 
-##### Example; bad
+##### Example, bad
 
     double divide(int a, int b) {
         // BAD, should be checked (e.g., in a precondition)
         return a / b;
     }
 
-##### Example; good
+##### Example, good
 
     double divide(int a, int b) {
         // good, address via precondition (and replace with contracts once C++ gets them)
@@ -15129,7 +15110,7 @@ Sometimes C++ code allocates the `volatile` memory and shares it with "elsewhere
     static volatile long vl;
     please_use_this(&vl);   // escape a reference to this to "elsewhere" (not C++)
 
-##### Example; bad
+##### Example, bad
 
 `volatile` local variables are nearly always wrong -- how can they be shared with other languages or hardware if they're ephemeral?
 The same applies almost as strongly to member variables, for the same reason.
@@ -16225,7 +16206,7 @@ Note that function parameter is a local variable so changes to it are local.
 A member function should be marked `const` unless it changes the object's observable state.
 This gives a more precise statement of design intent, better readability, more errors caught by the compiler, and sometimes more optimization opportunities.
 
-##### Example; bad
+##### Example, bad
 
     class Point {
         int x, y;
@@ -18631,7 +18612,7 @@ Examples are `.hh`, `.C`, and `.cxx`. Use such names equivalently.
 In this document, we refer to `.h` and `.cpp` as a shorthand for header and implementation files,
 even though the actual extension may be different.
 
-Your IDE (if you use one) may have strong opinions about suffices.
+Your IDE (if you use one) may have strong opinions about suffixes.
 
 ##### Example
 
@@ -19207,7 +19188,12 @@ People working with code for which that difference matters are quite capable of 
 
 ##### Reason
 
-`vector` and `array` are the only standard containers that offer the fastest general-purpose access (random access, including being vectorization-friendly), the fastest default access pattern (begin-to-end or end-to-begin is prefetcher-friendly), and the lowest space overhead (contiguous layout has zero per-element overhead, which is cache-friendly).
+`vector` and `array` are the only standard containers that offer the following advantages:
+
+* the fastest general-purpose access (random access, including being vectorization-friendly);
+* the fastest default access pattern (begin-to-end or end-to-begin is prefetcher-friendly);
+* the lowest space overhead (contiguous layout has zero per-element overhead, which is cache-friendly).
+
 Usually you need to add and remove elements from the container, so use `vector` by default; if you don't need to modify the container's size, use `array`.
 
 Even when other containers seem more suited, such a `map` for O(log N) lookup performance or a `list` for efficient insertion in the middle, a `vector` will usually still perform better for containers up to a few KB in size.
@@ -20391,7 +20377,7 @@ Bounds safety profile summary:
 Bounds safety implies that access to an object - notably arrays - does not access beyond the object's memory allocation.
 This eliminates a large class of insidious and hard-to-find errors, including the (in)famous "buffer overflow" errors.
 This closes security loopholes as well as a prominent source of memory corruption (when writing out of bounds).
-Even an out-of-bounds access is "just a read", it can lead to invariant violations (when the accessed isn't of the assumed type)
+Even if an out-of-bounds access is "just a read", it can lead to invariant violations (when the accessed isn't of the assumed type)
 and "mysterious values."
 
 
