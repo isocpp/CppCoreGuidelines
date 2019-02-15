@@ -3327,7 +3327,7 @@ When I call `length(s)` should I check if `s` is `nullptr` first? Should the imp
 
 ##### Note
 
-`zstring` do not represent ownership.
+`zstring` does not represent ownership.
 
 **See also**: [Support library](#S-gsl)
 
