@@ -21814,7 +21814,7 @@ The `string`s of `v` are destroyed upon exit from `bad()` and so is `v` itself. 
 
 ##### Enforcement
 
-Most compilers already warn about simple cases and has the information to do more. Consider any pointer returned from a function suspect. Use containers, resource handles, and views (e.g., `span` known not to be resource handles) to lower the number of cases to be examined. For starters, consider every class with a destructor as resource handle.
+Most compilers already warn about simple cases and have the information to do more. Consider any pointer returned from a function suspect. Use containers, resource handles, and views (e.g., `span` known not to be resource handles) to lower the number of cases to be examined. For starters, consider every class with a destructor as resource handle.
 
 ### <a name="Cr-templates"></a>Discussion: Use templates to express containers (and other resource handles)
 
