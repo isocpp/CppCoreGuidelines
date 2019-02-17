@@ -21443,7 +21443,7 @@ In summary, no post-construction technique is perfect. The worst techniques dodg
 
 ### <a name="Sd-dtor"></a>Discussion: Make base class destructors public and virtual, or protected and nonvirtual
 
-Should destruction behave virtually? That is, should destruction through a pointer to a `base` class be allowed? If yes, then `base`'s destructor must be public in order to be callable, and virtual otherwise calling it results in undefined behavior. Otherwise, it should be protected so that only derived classes can invoke it in their own destructors, and nonvirtual since it doesn't need to behave virtually virtual.
+Should destruction behave virtually? That is, should destruction through a pointer to a `base` class be allowed? If yes, then `base`'s destructor must be public in order to be callable, and virtual otherwise calling it results in undefined behavior. Otherwise, it should be protected so that only derived classes can invoke it in their own destructors, and nonvirtual since it doesn't need to behave virtually.
 
 ##### Example
 
