@@ -7204,7 +7204,7 @@ There are now two hierarchies:
 * interface: Smiley -> Circle -> Shape
 * implementation: Impl::Smiley -> Impl::Circle -> Impl::Shape
 
-Since each implementation derived from its interface as well as its implementation base class we get a lattice (DAG):
+Since each implementation is derived from its interface as well as its implementation base class we get a lattice (DAG):
 
     Smiley     ->         Circle     ->  Shape
       ^                     ^               ^
