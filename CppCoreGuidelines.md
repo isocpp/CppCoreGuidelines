@@ -20726,7 +20726,7 @@ This is not harmful and does not fall under this guideline because it does not e
 
 ##### Note
 
-Some styles distinguishes members from local variable, and/or from global variable.
+Some styles distinguish members from local variable, and/or from global variable.
 
     struct S {
         int m_;
@@ -20737,7 +20737,7 @@ This is not harmful and does not fall under this guideline because it does not e
 
 ##### Note
 
-Like C++, some styles distinguishes types from non-types.
+Like C++, some styles distinguish types from non-types.
 For example, by capitalizing type names, but not the names of functions and variables.
 
     typename<typename T>
