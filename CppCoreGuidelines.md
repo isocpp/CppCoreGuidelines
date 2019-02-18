@@ -21916,7 +21916,7 @@ The Microsoft compiler's C++ code analysis contains a set of rules specifically 
 # <a name="S-glossary"></a>Glossary
 
 A relatively informal definition of terms used in the guidelines
-(based of the glossary in [Programming: Principles and Practice using C++](http://www.stroustrup.com/programming.html))
+(based off the glossary in [Programming: Principles and Practice using C++](http://www.stroustrup.com/programming.html))
 
 More information on many topics about C++ can be found on the [Standard C++ Foundation](https://isocpp.org)'s site.
 
