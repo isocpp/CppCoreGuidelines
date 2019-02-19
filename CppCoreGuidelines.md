@@ -6901,7 +6901,7 @@ Such as on an ABI (link) boundary.
     };
 
 A user can now use `D1`s and `D2`s interchangeably through the interface provided by `Device`.
-Furthermore, we can update `D1` and `D2` in a ways that are not binary compatible with older versions as long as all access goes through `Device`.
+Furthermore, we can update `D1` and `D2` in ways that are not binary compatible with older versions as long as all access goes through `Device`.
 
 ##### Enforcement
 
@@ -7020,8 +7020,8 @@ We want to eliminate two particular classes of errors:
 
 ##### Reason
 
-Implementation details in an interface makes the interface brittle;
-that is, makes its users vulnerable to having to recompile after changes in the implementation.
+Implementation details in an interface make the interface brittle;
+that is, make its users vulnerable to having to recompile after changes in the implementation.
 Data in a base class increases the complexity of implementing the base and can lead to replication of code.
 
 ##### Note
