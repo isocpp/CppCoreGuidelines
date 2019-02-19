@@ -13548,7 +13548,7 @@ However, `lower_bound` still doesn't return enough information for all uses, so 
 `equal_range` returns a `pair` of iterators specifying the first and one beyond last match.
 
     auto r = equal_range(begin(c), end(c), 7);
-    for (auto p = r.first(); p != r.second(), ++p)
+    for (auto p = r.first; p != r.second; ++p)
         cout << *p << '\n';
 
 Obviously, these three interfaces are implemented by the same basic code.
