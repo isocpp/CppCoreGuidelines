@@ -9789,7 +9789,7 @@ The following should not pass code review:
         f(*g_p);
 
         // BAD: same reason, just passing it as a "this" pointer
-         g_p->func();
+        g_p->func();
     }
 
 The fix is simple -- take a local copy of the pointer to "keep a ref count" for your call tree:
