@@ -10209,7 +10209,7 @@ Flag all uses of ALL CAPS. For older code, accept ALL CAPS for macro names and f
 
 ##### Reason
 
-One-declaration-per line increases readability and avoids mistakes related to
+One declaration per line increases readability and avoids mistakes related to
 the C/C++ grammar. It also leaves room for a more descriptive end-of-line
 comment.
 
