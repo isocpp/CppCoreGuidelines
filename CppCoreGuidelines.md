@@ -12071,7 +12071,7 @@ The result of doing so is undefined.
 
 ##### Example, bad
 
-    void f(int n)
+    void f()
     {
         int a1[7];
         int a2[9];
