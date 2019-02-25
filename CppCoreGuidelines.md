@@ -12060,8 +12060,8 @@ This example not only violates the [no naked `new` rule](#Res-new) as in the pre
 
 ##### Enforcement
 
-* if the `new` and the `delete` is in the same scope, mistakes can be flagged.
-* if the `new` and the `delete` are in a constructor/destructor pair, mistakes can be flagged.
+* If the `new` and the `delete` is in the same scope, mistakes can be flagged.
+* If the `new` and the `delete` are in a constructor/destructor pair, mistakes can be flagged.
 
 ### <a name="Res-arr2"></a>ES.62: Don't compare pointers into different arrays
 
