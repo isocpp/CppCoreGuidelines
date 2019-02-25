@@ -11852,7 +11852,7 @@ State that `cache` is mutable even for a `const` object:
         mutable Cache cache;
     };
 
-An alternative solution would to store a pointer to the `cache`:
+An alternative solution would be to store a pointer to the `cache`:
 
     class X {   // OK, but slightly messier solution
     public:
