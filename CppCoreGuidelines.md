@@ -11715,9 +11715,9 @@ If the variable is actually declared `const`, the result of "casting away `const
 
 ##### Example, bad
 
-    void f(const int& i)
+    void f(const int& x)
     {
-        const_cast<int&>(i) = 42;   // BAD
+        const_cast<int&>(x) = 42;   // BAD
     }
 
     static int i = 0;
