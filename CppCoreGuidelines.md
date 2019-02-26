@@ -10257,7 +10257,7 @@ or:
 
     int a = 7, b = 9, c, d = 10, e = 3;
 
-In a long list of declarators is is easy to overlook an uninitialized variable.
+In a long list of declarators it is easy to overlook an uninitialized variable.
 
 ##### Enforcement
 
