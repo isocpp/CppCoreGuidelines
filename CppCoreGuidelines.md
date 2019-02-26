@@ -12020,7 +12020,7 @@ Direct resource management in application code is error-prone and tedious.
 
 ##### Note
 
-Also known as "No naked `new`!"
+Also known as the rule of "No naked `new`!"
 
 ##### Example, bad
 
