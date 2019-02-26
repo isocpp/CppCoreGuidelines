@@ -10713,7 +10713,7 @@ Like the distinction between copy-initialization and direct-initialization itsel
     Z z1{};     // OK: direct initialization, so we use explicit constructor
     Z z2 = {};  // error: copy initialization, so we cannot use the explicit constructor
 
-Use plain `{}`-initialization unless you specifically wants to disable explicit constructors.
+Use plain `{}`-initialization unless you specifically want to disable explicit constructors.
 
 ##### Note
 
