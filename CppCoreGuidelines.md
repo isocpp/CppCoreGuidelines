@@ -8584,9 +8584,9 @@ Saving programmers from having to write such code is one reason for including `v
             break;
         case Tag::text:
             new(&s) string(e.s);   // placement new: explicit construct
-            type = e.type;
         }
 
+        type = e.type;
         return *this;
     }
 
