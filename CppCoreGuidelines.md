@@ -5023,7 +5023,7 @@ If a destructor uses operations that may fail, it can catch exceptions and in so
 
 ##### Enforcement
 
-(Simple) A destructor should be declared `noexcept` if it could throw.
+(Simple) A destructor should be declared `noexcept(false)` if it could throw.
 
 ### <a name="Rc-dtor-noexcept"></a>C.37: Make destructors `noexcept`
 
