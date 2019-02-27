@@ -1442,7 +1442,7 @@ Consider:
 
     set_settings(true, false, 42); // what do the numbers specify?
 
-The parameter types and their values do not communicate what settings are being specified or what those values mean. 
+The parameter types and their values do not communicate what settings are being specified or what those values mean.
 
 This design is more explicit, safe and legible:
 
@@ -3609,7 +3609,7 @@ Flag functions where no `return` expression could yield `nullptr`
 It's asking to return a reference to a destroyed temporary object.
 A `&&` is a magnet for temporary objects.
 
-##### Example 
+##### Example
 
 A returned rvalue reference goes out of scope at the end of the full expression to which it is returned:
 
@@ -12060,8 +12060,8 @@ This example not only violates the [no naked `new` rule](#Res-new) as in the pre
 
 ##### Enforcement
 
-* if the `new` and the `delete` is in the same scope, mistakes can be flagged.
-* if the `new` and the `delete` are in a constructor/destructor pair, mistakes can be flagged.
+* If the `new` and the `delete` are in the same scope, mistakes can be flagged.
+* If the `new` and the `delete` are in a constructor/destructor pair, mistakes can be flagged.
 
 ### <a name="Res-arr2"></a>ES.62: Don't compare pointers into different arrays
 
@@ -17662,7 +17662,7 @@ Typically, the solution is to make what would have been a nested class non-local
     List<int, My_allocator> lst2;
 
 Some people found the idea that the `Link` no longer was hidden inside the list scary, so we named the technique
-[SCARY](http://www.open-std.org/jtc1/sc22/WG21/docs/papers/2009/n2911.pdf).From that academic paper: 
+[SCARY](http://www.open-std.org/jtc1/sc22/WG21/docs/papers/2009/n2911.pdf).From that academic paper:
 "The acronym SCARY describes assignments and initializations that are Seemingly erroneous (appearing Constrained by conflicting generic parameters), but Actually work with the Right implementation (unconstrained bY the conflict due to minimized dependencies."
 
 ##### Enforcement
