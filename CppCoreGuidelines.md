@@ -6599,8 +6599,8 @@ In particular, `std::vector` and `std::map` provide useful relatively simple mod
         std::vector<T> rep;  // use a std::vector to hold elements
     };
 
-    template<typename T> bool operator==(const T&);
-    template<typename T> bool operator!=(const T&);
+    template<typename T> bool operator==(const Sorted_vector<T>&, const Sorted_vector<T>&);
+    template<typename T> bool operator!=(const Sorted_vector<T>&, const Sorted_vector<T>&);
     // ...
 
 Here, the STL style is followed, but incompletely.
