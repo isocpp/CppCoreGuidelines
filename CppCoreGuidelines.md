@@ -12856,7 +12856,7 @@ The loop control up front should enable correct reasoning about what is happenin
     for (int i = 0; i < 10; ++i) {
         if (skip) { skip = false; continue; }
         //
-        if (/* something */) skip = true;  // Better: using two variable for two concepts.
+        if (/* something */) skip = true;  // Better: using two variables for two concepts.
         //
     }
 
