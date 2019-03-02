@@ -12634,7 +12634,7 @@ Often, a loop that requires a `break` is a good candidate for a function (algori
 
     ???
 
-Often. a loop that uses `continue` can equivalently and as clearly be expressed by an `if`-statement.
+Often, a loop that uses `continue` can equivalently and as clearly be expressed by an `if`-statement.
 
     ???
 
