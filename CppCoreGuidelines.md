@@ -13843,7 +13843,7 @@ There are several ways that this example could be made safe for a multi-threaded
 Code that is never run in a multi-threaded environment.
 
 Be careful: there are many examples where code that was "known" to never run in a multi-threaded program
-was run as part of a multi-threaded program. Often years later.
+was run as part of a multi-threaded program, often years later.
 Typically, such programs lead to a painful effort to remove data races.
 Therefore, code that is never intended to run in a multi-threaded environment should be clearly labeled as such and ideally come with compile or run-time enforcement mechanisms to catch those usage bugs early.
 
