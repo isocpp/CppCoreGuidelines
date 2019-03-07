@@ -1,6 +1,6 @@
 # <a name="main"></a>C++ Core Guidelines
 
-January 3, 2019
+March 7, 2019
 
 
 Editors:
@@ -9390,7 +9390,8 @@ Use `span` to preserve size information.
 
     void f(int[]);          // not recommended
     
-    void f(int*);           // not recommended for multiple objects (a pointer should point to a single object, do not subscript)
+    void f(int*);           // not recommended for multiple objects
+                            // (a pointer should point to a single object, do not subscript)
 
     void f(gsl::span<int>); // good, recommended
 
