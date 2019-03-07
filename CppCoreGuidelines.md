@@ -3809,7 +3809,7 @@ There is not a choice when a set of functions are used to do a semantically equi
 
 ##### Enforcement
 
-    ???
+* Warn on an overload set where the overloads have a common prefix of parameters (e.g., `f(int)`, `f(int, const string&)`, `f(int, const string&, double)`). (Note: Review this enforcement if it's too noisy in practice.)
 
 ### <a name="Rf-reference-capture"></a>F.52: Prefer capturing by reference in lambdas that will be used locally, including passed to algorithms
 
