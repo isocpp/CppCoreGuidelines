@@ -8486,7 +8486,7 @@ And, talking about "invisible", this code produced no output:
 
 Wrap a `union` in a class together with a type field.
 
-The soon-to-be-standard `variant` type (to be found in `<variant>`) does that for you:
+The C++17 `variant` type (found in `<variant>`) does that for you:
 
     variant<int, double> v;
     v = 123;        // v holds an int
