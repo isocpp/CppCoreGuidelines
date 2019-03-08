@@ -15106,7 +15106,7 @@ Unless you are writing the lowest level code manipulating hardware directly, con
 
 ##### Example
 
-Usually C++ code receives `volatile` memory that is owned Elsewhere (hardware or another language):
+Usually C++ code receives `volatile` memory that is owned elsewhere (hardware or another language):
 
     int volatile* vi = get_hardware_memory_location();
         // note: we get a pointer to someone else's memory here
