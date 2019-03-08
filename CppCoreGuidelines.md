@@ -15152,8 +15152,8 @@ Error handling involves:
 
 * Detecting an error
 * Transmitting information about an error to some handler code
-* Preserve the state of a program in a valid state
-* Avoid resource leaks
+* Preserving a valid state of the program
+* Avoiding resource leaks
 
 It is not possible to recover from all errors. If recovery from an error is not possible, it is important to quickly "get out" in a well-defined way. A strategy for error handling must be simple, or it becomes a source of even worse errors.  Untested and rarely executed error-handling code is itself the source of many bugs.
 
