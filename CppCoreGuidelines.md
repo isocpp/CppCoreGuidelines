@@ -16082,7 +16082,15 @@ When did you last test the return value of `printf()`?
 
 ##### Example, bad
 
-    ???
+    int last_err;
+
+    void f(int n)
+    {
+        // ...
+        p = static_cast<X*>(malloc(n * sizeof(X)));
+        if (!p) last_err = -1;     // error if memory is exhausted
+        // ...
+    }
 
 ##### Note
 
