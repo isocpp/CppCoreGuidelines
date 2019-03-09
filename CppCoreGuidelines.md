@@ -16837,7 +16837,7 @@ If you use a compiler that supports concepts (e.g., GCC 6.1 or later), you can r
 
 Defining good concepts is non-trivial.
 Concepts are meant to represent fundamental concepts in an application domain (hence the name "concepts").
-Similarly throwing together a set of syntactic constraints to be used for a the arguments for a single class or algorithm is not what concepts were designed for
+Similarly throwing together a set of syntactic constraints to be used for the arguments for a single class or algorithm is not what concepts were designed for
 and will not give the full benefits of the mechanism.
 
 Obviously, defining concepts will be most useful for code that can use an implementation (e.g., GCC 6.1 or later),
