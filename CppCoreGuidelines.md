@@ -16748,7 +16748,7 @@ Flag template type arguments without concepts
 ##### Reason
 
  "Standard" concepts (as provided by the [GSL](#S-GSL) and the [Ranges TS](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/n4569.pdf), and hopefully soon the ISO standard itself)
-saves us the work of thinking up our own concepts, are better thought out than we can manage to do in a hurry, and improves interoperability.
+save us the work of thinking up our own concepts, are better thought out than we can manage to do in a hurry, and improve interoperability.
 
 ##### Note
 
