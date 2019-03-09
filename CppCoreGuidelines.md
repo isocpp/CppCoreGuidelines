@@ -16368,7 +16368,7 @@ Templates can also be used for meta-programming; that is, programs that compose 
 
 A central notion in generic programming is "concepts"; that is, requirements on template arguments presented as compile-time predicates.
 "Concepts" are defined in an ISO Technical specification: [concepts](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2015/n4553.pdf).
-A draft of a set of standard-library concepts can be found in another ISO TS: [ranges](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/n4569.pdf)
+A draft of a set of standard-library concepts can be found in another ISO TS: [ranges](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/n4569.pdf).
 Concepts are supported in GCC 6.1 and later.
 Consequently, we comment out uses of concepts in examples; that is, we use them as formalized comments only.
 If you use GCC 6.1 or later, you can uncomment them.
@@ -16718,7 +16718,7 @@ or equivalently and more succinctly:
 ##### Note
 
 "Concepts" are defined in an ISO Technical specification: [concepts](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2015/n4553.pdf).
-A draft of a set of standard-library concepts can be found in another ISO TS: [ranges](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/n4569.pdf)
+A draft of a set of standard-library concepts can be found in another ISO TS: [ranges](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/n4569.pdf).
 Concepts are supported in GCC 6.1 and later.
 Consequently, we comment out uses of concepts in examples; that is, we use them as formalized comments only.
 If you use GCC 6.1 or later, you can uncomment them:
@@ -16823,7 +16823,7 @@ The shorter versions better match the way we speak. Note that many templates don
 ##### Note
 
 "Concepts" are defined in an ISO Technical specification: [concepts](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2015/n4553.pdf).
-A draft of a set of standard-library concepts can be found in another ISO TS: [ranges](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/n4569.pdf)
+A draft of a set of standard-library concepts can be found in another ISO TS: [ranges](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/n4569.pdf).
 Concepts are supported in GCC 6.1 and later.
 Consequently, we comment out uses of concepts in examples; that is, we use them as formalized comments only.
 If you use a compiler that supports concepts (e.g., GCC 6.1 or later), you can remove the `//`.
