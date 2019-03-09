@@ -16256,7 +16256,7 @@ e.g. because it is in a library that you cannot modify.
 
 A `const` member function can modify the value of an object that is `mutable` or accessed through a pointer member.
 A common use is to maintain a cache rather than repeatedly do a complicated computation.
-For example, here is a `Date` that caches (mnemonizes) its string representation to simplify repeated uses:
+For example, here is a `Date` that caches (memoizes) its string representation to simplify repeated uses:
 
     class Date {
     public:
