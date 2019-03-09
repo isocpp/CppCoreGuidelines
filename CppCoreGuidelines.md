@@ -15891,7 +15891,7 @@ In such cases, "crashing" is simply leaving error handling to the next level of 
     void f(int n)
     {
         // ...
-        p = static_cast<X*>(calloc(n, sizeof(X)));
+        p = static_cast<X*>(malloc(n * sizeof(X)));
         if (!p) abort();     // abort if memory is exhausted
         // ...
     }
