@@ -16831,7 +16831,7 @@ If you use a compiler that supports concepts (e.g., GCC 6.1 or later), you can r
 ##### Enforcement
 
 * Not feasible in the short term when people convert from the `<typename T>` and `<class T`> notation.
-* Later, flag declarations that first introduces a typename and then constrains it with a simple, single-type-argument concept.
+* Later, flag declarations that first introduce a typename and then constrain it with a simple, single-type-argument concept.
 
 ## <a name="SS-concepts-def"></a>T.concepts.def: Concept definition rules
 
