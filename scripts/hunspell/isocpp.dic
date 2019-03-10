@@ -304,6 +304,7 @@ memcmp
 memmove
 memoization
 memoized
+memoizes
 memset
 metameta
 metaprogram
