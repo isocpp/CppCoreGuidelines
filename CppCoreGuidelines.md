@@ -15787,7 +15787,7 @@ Better:
 
     void f(int n)
     {
-        void* p = malloc(1, n);
+        void* p = malloc(n);
         auto _ = finally([p] { free(p); });
         // ...
     }
@@ -15891,7 +15891,7 @@ In such cases, "crashing" is simply leaving error handling to the next level of 
     void f(int n)
     {
         // ...
-        p = static_cast<X*>(malloc(n, X));
+        p = static_cast<X*>(malloc(n * sizeof(X)));
         if (!p) abort();     // abort if memory is exhausted
         // ...
     }
