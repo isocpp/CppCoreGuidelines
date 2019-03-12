@@ -17314,7 +17314,7 @@ Note that using non-local, non-dependent names (such as `debug` and `cerr`) also
 
 ##### Note
 
-It can be hard to decide which properties of a type is essential and which are not.
+It can be hard to decide which properties of a type are essential and which are not.
 
 ##### Enforcement
 
