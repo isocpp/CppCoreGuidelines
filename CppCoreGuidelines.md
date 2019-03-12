@@ -17299,8 +17299,8 @@ On the other hand, there is nothing in the fundamental idea of sorting that says
 ##### Note
 
 If we require every operation used to be listed among the requirements, the interface becomes unstable:
-Every time we change the debug facilities, the usage data gathering, testing support, error reporting, etc.
-The definition of the template would need change and every use of the template would have to be recompiled.
+Every time we change the debug facilities, the usage data gathering, testing support, error reporting, etc.,
+the definition of the template would need change and every use of the template would have to be recompiled.
 This is cumbersome, and in some environments infeasible.
 
 Conversely, if we use an operation in the implementation that is not guaranteed by concept checking,
