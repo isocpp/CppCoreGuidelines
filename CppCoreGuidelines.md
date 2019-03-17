@@ -13750,17 +13750,16 @@ Performance is very sensitive to cache performance and cache algorithms favor si
 
 # <a name="S-concurrency"></a>CP: Concurrency and parallelism
 
-We often want our computers to do many tasks at the same time (or at least make them appear to do them at the same time).
-The reasons for doing so varies (e.g., wanting to wait for many events using only a single processor, processing many data streams simultaneously, or utilizing many hardware facilities)
-and so does the basic facilities for expressing concurrency and parallelism.
-Here, we articulate a few general principles and rules for using the ISO standard C++ facilities for expressing basic concurrency and parallelism.
+We often want our computers to do many tasks at the same time (or at least appear to do them at the same time).
+The reasons for doing so vary (e.g., waiting for many events using only a single processor, processing many data streams simultaneously, or utilizing many hardware facilities)
+and so do the basic facilities for expressing concurrency and parallelism.
+Here, we articulate principles and rules for using the ISO standard C++ facilities for expressing basic concurrency and parallelism.
 
-The core machine support for concurrent and parallel programming is the thread.
-Threads allow you to run multiple instances of your program independently, while sharing
-the same memory. Concurrent programming is tricky for many reasons, most
-importantly that it is undefined behavior to read data in one thread after it
-was written by another thread, if there is no proper synchronization between
-those threads. Making existing single-threaded code execute concurrently can be
+Threads are the machine-level foundation for concurrent and parallel programming.
+Threads allow running multiple sections of a program independently, while sharing
+the same memory. Concurrent programming is tricky,
+because protecting shared data between threads is easier said than done.
+Making existing single-threaded code execute concurrently can be
 as trivial as adding `std::async` or `std::thread` strategically, or it can
 necessitate a full rewrite, depending on whether the original code was written
 in a thread-friendly way.
@@ -13768,16 +13767,16 @@ in a thread-friendly way.
 The concurrency/parallelism rules in this document are designed with three goals
 in mind:
 
-* To help you write code that is amenable to being used in a threaded
+* To help in writing code that is amenable to being used in a threaded
   environment
 * To show clean, safe ways to use the threading primitives offered by the
   standard library
 * To offer guidance on what to do when concurrency and parallelism aren't giving
-  you the performance gains you need
+  the performance gains needed
 
 It is also important to note that concurrency in C++ is an unfinished
 story. C++11 introduced many core concurrency primitives, C++14 and C++17 improved on
-them, and it seems that there is much interest in making the writing of
+them, and there is much interest in making the writing of
 concurrent programs in C++ even easier. We expect some of the library-related
 guidance here to change significantly over time.
 
