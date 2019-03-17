@@ -9884,7 +9884,7 @@ Statement rules:
 * [ES.77: Minimize the use of `break` and `continue` in loops](#Res-continue)
 * [ES.78: Always end a non-empty `case` with a `break`](#Res-break)
 * [ES.79: Use `default` to handle common cases (only)](#Res-default)
-* [ES.84: Don't (try to) declare a local variable with no name](#Res-noname)
+* [ES.84: Don't try to declare a local variable with no name](#Res-noname)
 * [ES.85: Make empty statements visible](#Res-empty)
 * [ES.86: Avoid modifying loop control variables inside the body of raw for-loops](#Res-loop-counter)
 * [ES.87: Don't add redundant `==` or `!=` to conditions](#Res-if)
@@ -12789,13 +12789,12 @@ Flag `switch`-statements over an enumeration that don't handle all enumerators a
 This may yield too many false positives in some code bases; if so, flag only `switch`es that handle most but not all cases
 (that was the strategy of the very first C++ compiler).
 
-### <a name="Res-noname"></a>ES.84: Don't (try to) declare a local variable with no name
+### <a name="Res-noname"></a>ES.84: Don't try to declare a local variable with no name
 
 ##### Reason
 
 There is no such thing.
 What looks to a human like a variable without a name is to the compiler a statement consisting of a temporary that immediately goes out of scope.
-To avoid unpleasant surprises.
 
 ##### Example, bad
 
@@ -12808,7 +12807,6 @@ To avoid unpleasant surprises.
 This declares an unnamed `lock` object that immediately goes out of scope at the point of the semicolon.
 This is not an uncommon mistake.
 In particular, this particular example can lead to hard-to find race conditions.
-There are exceedingly clever uses of this "idiom", but they are far rarer than the mistakes.
 
 ##### Note
 
@@ -12816,7 +12814,7 @@ Unnamed function arguments are fine.
 
 ##### Enforcement
 
-Flag statements that are just a temporary
+Flag statements that are just a temporary.
 
 ### <a name="Res-empty"></a>ES.85: Make empty statements visible
 
