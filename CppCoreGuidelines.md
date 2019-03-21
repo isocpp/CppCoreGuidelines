@@ -7013,7 +7013,7 @@ We want to eliminate two particular classes of errors:
 
 ##### Enforcement
 
-* Compare names in base and derived classes and flag uses of the same name that does not override.
+* Compare virtual function names in base and derived classes and flag uses of the same name that does not override.
 * Flag overrides with neither `override` nor `final`.
 * Flag function declarations that use more than one of `virtual`, `override`, and `final`.
 
