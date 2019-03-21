@@ -1,4 +1,4 @@
-# <a name="main"></a>C++ Core Guidelines
+d# <a name="main"></a>C++ Core Guidelines
 
 March 7, 2019
 
@@ -2708,6 +2708,7 @@ low-level functions.
 ##### Note
 
 Destructors, `swap` functions, move operations, and default constructors should never throw.
+See also [C.44](#Rc-default00).
 
 ##### Enforcement
 
