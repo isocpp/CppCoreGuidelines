@@ -1,4 +1,4 @@
-d# <a name="main"></a>C++ Core Guidelines
+# <a name="main"></a>C++ Core Guidelines
 
 March 7, 2019
 
