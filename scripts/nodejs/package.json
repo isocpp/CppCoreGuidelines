@@ -7,6 +7,7 @@
         "remark": "^4.2.2",
         "remark-lint": "^4.0.2",
         "remark-lint-sentence-newline": "^2.0.0",
-        "remark-validate-links": "^4.1.0"
+        "remark-validate-links": "^4.1.0",
+        "showdown" : "^1.9.0"
     }
 }

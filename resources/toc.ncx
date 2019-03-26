@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE ncx PUBLIC "-//NISO//DTD ncx 2005-1//EN"
+"http://www.daisy.org/z3986/2005/ncx-2005-1.dtd">
+ 
+<ncx version="2005-1" xml:lang="en" xmlns="http://www.daisy.org/z3986/2005/ncx/">
+ 
+  <head>
+<!-- The following four metadata items are required for all NCX documents,
+including those conforming to the relaxed constraints of OPS 2.0 -->
+ 
+    <meta name="dtb:uid" content="123456789X"/> <!-- same as in .opf -->
+    <meta name="dtb:depth" content="1"/> <!-- 1 or higher -->
+    <meta name="dtb:totalPageCount" content="0"/> <!-- must be 0 -->
+    <meta name="dtb:maxPageNumber" content="0"/> <!-- must be 0 -->
+  </head>
+ 
+  <docTitle>
+    <text>C++ Core Guidelines</text>
+  </docTitle>
+ 
+  <docAuthor>
+    <text>Stroustrup, Bjarne</text>
+    <text>Sutter, Herb</text>
+  </docAuthor>
+
+<navMap>
+
+    <navPoint class="toc" id="table" playOrder="1">
+        <navLabel><text>Table of Contents</text></navLabel>
+        <content src="toc.html" /> 
+    </navPoint>
+    <navPoint class="titlepage" id="L1T" playOrder="2">
+        <navLabel><text>In: Introduction</text></navLabel>
+        <content src="CppCoreGuidelines.md.html#S-introduction" /> 
+    </navPoint>
+    <navPoint class="book" id="level1-book1" playOrder="3">
+        <navLabel><text>P: Philosophy</text></navLabel>
+        <content src="CppCoreGuidelines.md.html#S-philosophy" />
+    </navPoint>
+    <navPoint class="book" id="level1-book2" playOrder="4">
+        <navLabel><text>I: Interfaces</text></navLabel>
+        <content src="CppCoreGuidelines.md.html#S-interfaces" />
+    </navPoint>
+    <navPoint class="book" id="level1-book3" playOrder="5">
+        <navLabel><text>F: Functions</text></navLabel>
+        <content src="CppCoreGuidelines.md.html#S-functions" />
+    </navPoint>
+    <navPoint class="book" id="level1-book4" playOrder="6">
+        <navLabel><text>C: Classes and class hierarchies</text></navLabel>
+        <content src="CppCoreGuidelines.md.html#S-class" />
+    </navPoint>
+    <navPoint class="book" id="level1-book5" playOrder="7">
+        <navLabel><text>Enum: Enumerations</text></navLabel>
+        <content src="CppCoreGuidelines.md.html#S-enum" />
+    </navPoint>
+    <navPoint class="book" id="level1-book6" playOrder="8">
+        <navLabel><text>R: Resource management</text></navLabel>
+        <content src="CppCoreGuidelines.md.html#S-resource" />
+    </navPoint>
+    <navPoint class="book" id="level1-book7" playOrder="9">
+        <navLabel><text>ES: Expressions and statements</text></navLabel>
+        <content src="CppCoreGuidelines.md.html#S-expr" />
+    </navPoint>
+    <navPoint class="book" id="level1-book8" playOrder="10">
+        <navLabel><text>Per: Performance</text></navLabel>
+        <content src="CppCoreGuidelines.md.html#S-performance" />
+    </navPoint>
+    <navPoint class="book" id="level1-book9" playOrder="11">
+        <navLabel><text>CP: Concurrency and parallelism</text></navLabel>
+        <content src="CppCoreGuidelines.md.html#S-concurrency" />
+    </navPoint>
+    <navPoint class="book" id="level1-book10" playOrder="12">
+        <navLabel><text>E: Error handling</text></navLabel>
+        <content src="CppCoreGuidelines.md.html#S-errors" />
+    </navPoint>
+    <navPoint class="book" id="level1-book11" playOrder="13">
+        <navLabel><text>Con: Constants and immutability</text></navLabel>
+        <content src="CppCoreGuidelines.md.html#S-const" />
+    </navPoint>
+    <navPoint class="book" id="level1-book12" playOrder="14">
+        <navLabel><text>T: Templates and generic programming</text></navLabel>
+        <content src="CppCoreGuidelines.md.html#S-templates" />
+    </navPoint>
+    <navPoint class="book" id="level1-book13" playOrder="15">
+        <navLabel><text>CPL: C-style programming</text></navLabel>
+        <content src="CppCoreGuidelines.md.html#S-cpl" />
+    </navPoint>
+    <navPoint class="book" id="level1-book14" playOrder="16">
+        <navLabel><text>SF: Source files</text></navLabel>
+        <content src="CppCoreGuidelines.md.html#S-source" />
+    </navPoint>
+    <navPoint class="book" id="level1-book15" playOrder="17">
+        <navLabel><text>SL: The Standard Library</text></navLabel>
+        <content src="CppCoreGuidelines.md.html#S-stdlib" />
+    </navPoint>
+    <navPoint class="book" id="level1-book16" playOrder="18">
+        <navLabel><text>A: Architectural ideas</text></navLabel>
+        <content src="CppCoreGuidelines.md.html#S-A" />
+    </navPoint>
+    <navPoint class="book" id="level1-book17" playOrder="19">
+        <navLabel><text>NR: Non-Rules and myths</text></navLabel>
+        <content src="CppCoreGuidelines.md.html#S-not" />
+    </navPoint>
+    <navPoint class="book" id="level1-book18" playOrder="20">
+        <navLabel><text>RF: References</text></navLabel>
+        <content src="CppCoreGuidelines.md.html#S-references" />
+    </navPoint>
+    <navPoint class="book" id="level1-book19" playOrder="21">
+        <navLabel><text>Pro: Profiles</text></navLabel>
+        <content src="CppCoreGuidelines.md.html#S-profile" />
+    </navPoint>
+    <navPoint class="book" id="level1-book20" playOrder="22">
+        <navLabel><text>GSL: Guidelines support library</text></navLabel>
+        <content src="CppCoreGuidelines.md.html#S-gsl" />
+    </navPoint>
+    <navPoint class="book" id="level1-book21" playOrder="23">
+        <navLabel><text>NL: Naming and layout rules</text></navLabel>
+        <content src="CppCoreGuidelines.md.html#S-naming" />
+    </navPoint>
+    <navPoint class="book" id="level1-book22" playOrder="24">
+        <navLabel><text>FAQ: Answers to frequently asked questions</text></navLabel>
+        <content src="CppCoreGuidelines.md.html#S-faq" />
+    </navPoint>
+    <navPoint class="book" id="level1-book23" playOrder="25">
+        <navLabel><text>Appendix A: Libraries</text></navLabel>
+        <content src="CppCoreGuidelines.md.html#S-libraries" />
+    </navPoint>
+    <navPoint class="book" id="level1-book24" playOrder="26">
+        <navLabel><text>Appendix B: Modernizing code</text></navLabel>
+        <content src="CppCoreGuidelines.md.html#S-modernizing" />
+    </navPoint>
+    <navPoint class="book" id="level1-book25" playOrder="27">
+        <navLabel><text>Appendix C: Discussion</text></navLabel>
+        <content src="CppCoreGuidelines.md.html#S-discussion" />
+    </navPoint>
+    <navPoint class="book" id="level1-book26" playOrder="28">
+        <navLabel><text>Appendix D: Supporting tools</text></navLabel>
+        <content src="CppCoreGuidelines.md.html#S-tools" />
+    </navPoint>
+    <navPoint class="book" id="level1-book27" playOrder="29">
+        <navLabel><text>Glossary</text></navLabel>
+        <content src="CppCoreGuidelines.md.html#S-glossary" />
+    </navPoint>
+    <navPoint class="book" id="level1-book28" playOrder="30">
+        <navLabel><text>To-do: Unclassified proto-rules</text></navLabel>
+        <content src="CppCoreGuidelines.md.html#S-unclassified" />
+    </navPoint>
+
+
+</navMap>
+
+</ncx>

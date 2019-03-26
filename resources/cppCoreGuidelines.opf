@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<package version="2.0" xmlns="http://www.idpf.org/2007/opf" unique-identifier="BookId">
+ 
+  <metadata xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:opf="http://www.idpf.org/2007/opf">
+    <dc:title>C++ Core Guidelines</dc:title>
+    <dc:language>en</dc:language>
+    <dc:identifier id="BookId" opf:scheme="ISBN">123456789X</dc:identifier>
+    <dc:creator opf:file-as="isocpp" opf:role="aut">isocpp</dc:creator>
+    <dc:subject>Reference</dc:subject>
+    <dc:date>2019-03-28</dc:date>
+    <dc:description>The C++ Core Guidelines are a collaborative effort 
+      led by Bjarne Stroustrup, much like the C++ language itself. 
+      They are the result of many person-years of discussion and 
+      design across a number of organizations. Their design encourages 
+      general applicability and broad adoption but they can be freely 
+      copied and modified to meet your organization's needs.</dc:description>
+    <meta name="cover" content="cover-image" />
+  </metadata>
+ 
+  <manifest>
+    <item id="tc" href="toc.html" media-type="application/xhtml+xml"/>
+    <item id="book" href="CppCoreGuidelines.md.html" media-type="application/xhtml+xml"/>
+    <item id="stylesheet" href="style.css" media-type="text/css"/>
+    <item id="ncx" href="toc.ncx" media-type="application/x-dtbncx+xml"/>  
+    <item id="cover-image" href="cover.jpg" media-type="image/jpeg" />
+  </manifest>
+ 
+  <!-- Each itemref references the id of a document designated in the manifest. The order of the itemref elements organizes the associated content files into the linear reading order of the publication.  -->
+  <spine toc="ncx">
+    <itemref idref="tc" />
+    <itemref idref="book" />
+  </spine>
+ 
+  <!-- The Kindle reading system supports two special guide items which are both mandatory.
+  type="toc" [mandatory]: a link to the HTML table of contents
+  type="text" [mandatory]: a link to where the content of the book starts (typically after the front matter) -->
+  <guide>
+    <reference type="toc" title="Table of Contents" href="toc.html"/>
+    <reference type="text" title="Beginning" href="toc.html"></reference>
+  </guide>
+ 
+</package>

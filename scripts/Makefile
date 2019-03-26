@@ -8,6 +8,7 @@ MAKEFLAGS += --no-builtin-rules
 BUILD_DIR=build
 SOURCEFILE = CppCoreGuidelines.md
 SOURCEPATH = ../$(SOURCEFILE)
+RESOURCES = ../resources
 
 .PHONY: default
 default: all
@@ -126,3 +127,53 @@ splitfile: $(SOURCEPATH) ./python/md-split.py
 # requires npm (nodejs package manager)
 nodejs/node_modules/%: nodejs/package.json
 	@cd nodejs; npm install
+
+
+# AZW file generation
+#$(BUILD_DIR)/$(SOURCEFILE).azw : $(BUILD_DIR)/$(SOURCEFILE).fixed
+.PHONY: azw
+azw: 
+	cp ../LICENSE	$(BUILD_DIR)
+	cp ../param-passing-normal.png  $(BUILD_DIR)
+	cp ../param-passing-advanced.png $(BUILD_DIR)
+	cp ../cpp_core_guidelines_logo_text.png $(BUILD_DIR)
+	#
+	node ./nodejs/convert_md_html.js \
+		$(BUILD_DIR)/$(SOURCEFILE).fixed \
+		$(BUILD_DIR)/$(SOURCEFILE).html
+	#
+	./kindlegen $(BUILD_DIR)/$(SOURCEFILE).html -c2 \
+	        -o $(SOURCEFILE).azw
+
+
+
+
+.PHONY: azw2
+azw2: 
+	cp ../LICENSE	$(BUILD_DIR)
+	cp ../param-passing-normal.png  $(BUILD_DIR)
+	cp ../param-passing-advanced.png $(BUILD_DIR)
+	cp $(RESOURCES)/cover.jpg $(BUILD_DIR)
+	cp $(RESOURCES)/cppCoreGuidelines.opf $(BUILD_DIR)
+	cp $(RESOURCES)/style.css $(BUILD_DIR)
+	cp $(RESOURCES)/toc.html $(BUILD_DIR)
+	cp $(RESOURCES)/toc.ncx $(BUILD_DIR)
+	#
+	node ./nodejs/convert_md_html.js \
+		$(BUILD_DIR)/$(SOURCEFILE).fixed \
+		$(BUILD_DIR)/$(SOURCEFILE).html
+	#
+	zip -D $(BUILD_DIR)/$(SOURCEFILE).zip \
+		$(BUILD_DIR)/CppCoreGuidelines.md.html \
+		$(BUILD_DIR)/LICENSE \
+		$(BUILD_DIR)/cover.jpg \
+		$(BUILD_DIR)/cppCoreGuidelines.opf \
+		$(BUILD_DIR)/param-passing-advanced.png \
+		$(BUILD_DIR)/param-passing-normal.png \
+		$(BUILD_DIR)/style.css \
+		$(BUILD_DIR)/toc.html \
+		$(BUILD_DIR)/toc.ncx
+	# 
+	mv $(BUILD_DIR)/$(SOURCEFILE).zip $(BUILD_DIR)/$(SOURCEFILE).epub
+	#
+	./kindlegen $(BUILD_DIR)/$(SOURCEFILE).epub -o $(SOURCEFILE).azw
