@@ -130,7 +130,6 @@ nodejs/node_modules/%: nodejs/package.json
 
 
 # AZW file generation
-# $(BUILD_DIR)/$(SOURCEFILE).azw : $(BUILD_DIR)/$(SOURCEFILE).fixed
 .PHONY: ebook
 ebook: 
 	#mkdir $(BUILD_DIR)/META-INF
@@ -167,3 +166,6 @@ ebook:
 	mv $(BUILD_DIR)/$(SOURCEFILE).zip $(BUILD_DIR)/$(SOURCEFILE).epub
 	#
 	./kindlegen $(BUILD_DIR)/$(SOURCEFILE).epub -o $(SOURCEFILE).azw
+
+
+
