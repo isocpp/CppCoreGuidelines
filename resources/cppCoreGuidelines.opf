@@ -20,9 +20,13 @@
   <manifest>
     <item id="tc" href="toc.html" media-type="application/xhtml+xml"/>
     <item id="book" href="CppCoreGuidelines.md.html" media-type="application/xhtml+xml"/>
-    <item id="stylesheet" href="style.css" media-type="text/css"/>
+    <item id="stylesheet_custom" href="custom.css" media-type="text/css"/>
+    <item id="stylesheet_poole" href="poole.css" media-type="text/css"/>
     <item id="ncx" href="toc.ncx" media-type="application/x-dtbncx+xml"/>  
     <item id="cover-image" href="cover.jpg" media-type="image/jpeg" />
+    <item id="license" href="LICENSE" media-type="text/plain" />
+    <item id="img1" media-type="image/png" href="param-passing-advanced.png"/>
+    <item id="img2" media-type="image/png" href="param-passing-normal.png"/>
   </manifest>
  
   <!-- Each itemref references the id of a document designated in the manifest. The order of the itemref elements organizes the associated content files into the linear reading order of the publication.  -->
@@ -40,3 +44,7 @@
   </guide>
  
 </package>
+
+
+
+
