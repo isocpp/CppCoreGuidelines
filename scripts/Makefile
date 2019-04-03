@@ -132,18 +132,18 @@ nodejs/node_modules/%: nodejs/package.json
 # AZW file generation
 .PHONY: ebook
 ebook: 
-	#mkdir $(BUILD_DIR)/META-INF
-	cp ../LICENSE	$(BUILD_DIR)
-	cp ../param-passing-normal.png  $(BUILD_DIR)
-	cp ../param-passing-advanced.png $(BUILD_DIR)
-	cp $(RESOURCES)/mimetype $(BUILD_DIR)
-	cp $(RESOURCES)/cover.jpg $(BUILD_DIR)
-	cp $(RESOURCES)/container.xml $(BUILD_DIR)/META-INF/
-	cp $(RESOURCES)/cppCoreGuidelines.opf $(BUILD_DIR)
-	cp $(RESOURCES)/custom.css $(BUILD_DIR)
-	cp $(RESOURCES)/poole.css $(BUILD_DIR)
-	cp $(RESOURCES)/toc.html $(BUILD_DIR)
-	cp $(RESOURCES)/toc.ncx $(BUILD_DIR)
+	node nodejs/file_op.js mkdir $(BUILD_DIR)/META-INF
+	node nodejs/file_op.js cp ../LICENSE	$(BUILD_DIR)
+	node nodejs/file_op.js cp ../param-passing-normal.png  $(BUILD_DIR)
+	node nodejs/file_op.js cp ../param-passing-advanced.png $(BUILD_DIR)
+	node nodejs/file_op.js cp $(RESOURCES)/mimetype $(BUILD_DIR)
+	node nodejs/file_op.js cp $(RESOURCES)/cover.jpg $(BUILD_DIR)
+	node nodejs/file_op.js cp $(RESOURCES)/container.xml $(BUILD_DIR)/META-INF/
+	node nodejs/file_op.js cp $(RESOURCES)/cppCoreGuidelines.opf $(BUILD_DIR)
+	node nodejs/file_op.js cp $(RESOURCES)/custom.css $(BUILD_DIR)
+	node nodejs/file_op.js cp $(RESOURCES)/poole.css $(BUILD_DIR)
+	node nodejs/file_op.js cp $(RESOURCES)/toc.html $(BUILD_DIR)
+	node nodejs/file_op.js cp $(RESOURCES)/toc.ncx $(BUILD_DIR)
 	#
 	node ./nodejs/convert_md_html.js \
 		$(BUILD_DIR)/$(SOURCEFILE).fixed \
