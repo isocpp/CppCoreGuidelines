@@ -12693,7 +12693,7 @@ In rare cases if fallthrough is deemed appropriate, be explicit and use the `[[f
         break;
     case Warning:
         write_event_log();
-        [[fallthrough]];        // C++17 (and legal but ignored since C++11)
+        [[fallthrough]];
     case Error:
         display_error_window();
         break;
