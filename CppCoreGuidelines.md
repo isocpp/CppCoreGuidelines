@@ -13879,9 +13879,9 @@ Local static variables are a common source of data races.
         int sz = read_vec(fs, buf, max);            // read from fs into buf
         gsl::span<double> s {buf};
         // ...
-        auto h1 = async([&]{ sort(par, s); });     // spawn a task to sort
+        auto h1 = async([&]{ sort(std::execution::par, s); });     // spawn a task to sort
         // ...
-        auto h2 = async([&]{ return find_all(buf, sz, pat); });   // spawn a task to find matches
+        auto h2 = async([&]{ return find_all(buf, sz, pattern); });   // spawn a task to find matches
         // ...
     }
 
