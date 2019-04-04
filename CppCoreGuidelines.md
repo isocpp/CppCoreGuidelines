@@ -12656,8 +12656,8 @@ If you really need to break out a loop, a `break` is typically better than alter
 
 ##### Reason
 
- Accidentally leaving out a `break` is a fairly common bug.
- A deliberate fallthrough is a maintenance hazard.
+Accidentally leaving out a `break` is a fairly common bug.
+A deliberate fallthrough can be a maintenance hazard and should be rare and explicit.
 
 ##### Example
 
@@ -12673,36 +12673,6 @@ If you really need to break out a loop, a `break` is typically better than alter
         break;
     }
 
-It is easy to overlook the fallthrough. Be explicit:
-
-    switch (eventType) {
-    case Information:
-        update_status_bar();
-        break;
-    case Warning:
-        write_event_log();
-        // fallthrough
-    case Error:
-        display_error_window();
-        break;
-    }
-
-In C++17, use a `[[fallthrough]]` annotation:
-
-    switch (eventType) {
-    case Information:
-        update_status_bar();
-        break;
-    case Warning:
-        write_event_log();
-        [[fallthrough]];        // C++17
-    case Error:
-        display_error_window();
-        break;
-    }
-
-##### Note
-
 Multiple case labels of a single statement is OK:
 
     switch (x) {
@@ -12713,9 +12683,28 @@ Multiple case labels of a single statement is OK:
         break;
     }
 
+##### Exceptions
+
+In rare cases if fallthrough is deemed appropriate, be explicit and use the `[[fallthrough]]` annotation:
+
+    switch (eventType) {
+    case Information:
+        update_status_bar();
+        break;
+    case Warning:
+        write_event_log();
+        [[fallthrough]];        // C++17 (and legal but ignored since C++11)
+    case Error:
+        display_error_window();
+        break;
+    }
+
+##### Note
+
 ##### Enforcement
 
-Flag all fallthroughs from non-empty `case`s.
+Flag all implicit fallthroughs from non-empty `case`s.
+
 
 ### <a name="Res-default"></a>ES.79: Use `default` to handle common cases (only)
 
