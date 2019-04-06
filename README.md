@@ -5,7 +5,7 @@
 
 This project is kept only to release the kindle and epub version of the [C++ Core Guidelines](CppCoreGuidelines.md). 
 
-Please check out the [releases](releases) section to get the latest version of the C++ Core Guidelines in epub or kindle format. 
+Please check out the [releases](/releases) section to get the latest version of the C++ Core Guidelines in epub or kindle format. 
 
 Now I have only a proper kindle version (azw file), but in the near future my plan is to release a working epub version of the guidelines. 
 
