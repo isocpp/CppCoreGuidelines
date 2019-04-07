@@ -20062,7 +20062,7 @@ and errors (when we didn't deal correctly with semi-constructed objects consiste
             return data != nullptr;
         }
     
-        bool Cleanup()
+        void Cleanup()
         {
             if (data) free(data);
             data = nullptr;
