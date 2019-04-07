@@ -20075,7 +20075,7 @@ and errors (when we didn't deal correctly with semi-constructed objects consiste
         puts("Error, invlaid picture");
     }
     // now have a invalid picture object instance.
-    
+
 ##### Example, good
 
     class Picture
