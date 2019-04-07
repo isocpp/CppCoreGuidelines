@@ -20037,7 +20037,7 @@ and errors (when we didn't deal correctly with semi-constructed objects consiste
         int my;
         char * data;
     public:
-        Picture(int x, int y) 
+        Picture(int x, int y)
         {
             mx = x,
             my = y;
