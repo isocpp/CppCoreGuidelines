@@ -20029,9 +20029,93 @@ Following this rule leads to weaker invariants,
 more complicated code (having to deal with semi-constructed objects),
 and errors (when we didn't deal correctly with semi-constructed objects consistently).
 
-##### Example
+##### Example, bad
 
-    ???
+    class Picture
+    {
+        int mx, my;
+        char * data;
+    public:
+        Picture( int x, int y ) 
+        {
+            mx = x,
+            my = y;
+            data = nullptr;
+        }
+    
+        ~Picture()
+        {
+            Cleanup();
+        }
+    
+        bool Init()
+        {
+            // invariant checks
+            if( mx <= 0 || my <= 0 || mx % 2 != 0 || my % 2 != 0 ) {
+                return false;
+            }
+            if( data ) {
+                return false;
+            }
+            data = (char*)malloc( x*y*sizeof(int) );
+            return data != nullptr;
+        }
+    
+        bool Cleanup()
+        {
+            if(data) free(data);
+            data = nullptr;
+        }
+    };
+    
+    Picture picture( 3, 5 ); // not ready-to-use picture here
+    // this will fail..
+    if( !picture.Init() ) {
+        puts( "Error, invlaid picture");
+    }
+    // now have a invalid picture object instance.
+    
+##### Example, good
+
+    class Picture
+    {
+        int mx, my;
+        vector<char> data;
+    
+        inline int check_size( int s )
+        {
+            // invariant check
+            if( s <= 0  || s % 2 != 0 ) {
+                throw std::invalid_argument( "wrong size for picture" );
+            }
+            return s;
+        }
+    
+    public:
+        Picture( int x, int y )
+            : mx( check_size(x) )
+            , my( check_size(y) )
+            // now we know x and y have a valid size
+            , data( mx * my * sizeof(int) ) // will throw std::bad_alloc on error
+        {
+            // picture is ready-to-use
+        }
+        ~Picture() = default; // nothing to do here.
+    };
+    
+    try {
+        Picture picture( 3, 5 );
+        // not reach here...
+    } catch( std::exception const & ex ) {
+        puts( ex.what() );
+    }
+    
+    try {
+        Picture picture( 4, 8 );
+        // picture is ready-to-use here...
+    } catch( std::exception const & ex ) {
+        puts( ex.what() );
+    }
 
 ##### Alternative
 
