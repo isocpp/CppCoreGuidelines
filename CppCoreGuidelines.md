@@ -20033,7 +20033,7 @@ and errors (when we didn't deal correctly with semi-constructed objects consiste
 
     class Picture
     {
-        int mx; 
+        int mx;
         int my;
         char * data;
     public:
