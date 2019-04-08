@@ -20052,7 +20052,7 @@ and errors (when we didn't deal correctly with semi-constructed objects consiste
         bool Init()
         {
             // invariant checks
-            if (mx <= 0 || my <= 0 || mx % 2 != 0 || my % 2 != 0) {
+            if (mx <= 0 || my <= 0) {
                 return false;
             }
             if (data) {
@@ -20069,10 +20069,10 @@ and errors (when we didn't deal correctly with semi-constructed objects consiste
         }
     };
     
-    Picture picture(3, 5); // not ready-to-use picture here
+    Picture picture(100, 0); // not ready-to-use picture here
     // this will fail..
     if (!picture.Init()) {
-        puts("Error, invlaid picture");
+        puts("Error, invalid picture");
     }
     // now have a invalid picture object instance.
 
@@ -20080,21 +20080,19 @@ and errors (when we didn't deal correctly with semi-constructed objects consiste
 
     class Picture
     {
-        int mx;
-        int my;
+        size_t mx;
+        size_t my;
         vector<char> data;
     
-        inline int check_size(int s)
+        inline size_t check_size(size_t s)
         {
             // invariant check
-            if (s <= 0  || s % 2 != 0) {
-                throw std::invalid_argument("wrong size for picture");
-            }
+            Expects(s > 0);
             return s;
         }
     
     public:
-        Picture(int x, int y)
+        Picture(size_t x, size_t y) // even more better would be a class Size2D as one single parameter
             : mx(check_size(x))
             , my(check_size(y))
             // now we know x and y have a valid size
@@ -20102,22 +20100,14 @@ and errors (when we didn't deal correctly with semi-constructed objects consiste
         {
             // picture is ready-to-use
         }
-        ~Picture() = default; // nothing to do here.
+        // compiler generated dtor does the job. (also see C.21)
     };
     
-    try {
-        Picture picture(3, 5);
-        // not reach here...
-    } catch(std::exception const & ex) {
-        puts(ex.what());
-    }
+    Picture picture(100, 100);
+    // picture is ready-to-use here...
     
-    try {
-        Picture picture(4, 8);
-        // picture is ready-to-use here...
-    } catch(std::exception const & ex) {
-        puts(ex.what());
-    }
+    Picture picture(100, 0); // not a valid size, exception will be thrown
+    // not reach here...
 
 ##### Alternative
 
