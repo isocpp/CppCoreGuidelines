@@ -20092,7 +20092,7 @@ and errors (when we didn't deal correctly with semi-constructed objects consiste
         }
     
     public:
-        Picture(size_t x, size_t y) // even more better would be a class Size2D as one single parameter
+        Picture(size_t x, size_t y) // even more better would be a class for a 2D Size as one single parameter
             : mx(check_size(x))
             , my(check_size(y))
             // now we know x and y have a valid size
