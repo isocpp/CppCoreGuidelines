@@ -20104,10 +20104,10 @@ and errors (when we didn't deal correctly with semi-constructed objects consiste
         // compiler generated dtor does the job. (also see C.21)
     };
     
-    Picture picture(100, 100);
+    Picture picture1(100, 100);
     // picture is ready-to-use here...
     
-    Picture picture(100, 0); // not a valid size, exception will be thrown
+    Picture picture2(100, 0); // not a valid size, exception will be thrown
     // not reach here...
 
 ##### Alternative
