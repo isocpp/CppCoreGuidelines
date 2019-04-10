@@ -9390,7 +9390,7 @@ Use `span` to preserve size information.
 ##### Example
 
     void f(int[]);          // not recommended
-    
+
     void f(int*);           // not recommended for multiple objects
                             // (a pointer should point to a single object, do not subscript)
 
@@ -20858,7 +20858,7 @@ Often, you don't have a choice and must follow an established style for [consist
 The need for consistency beats personal taste.
 
 This is a recommendation for [when you have no constraints or better ideas](#S-naming).
-Thus rule was added after many requests for guidance.
+This rule was added after many requests for guidance.
 
 ##### Example
 
@@ -20902,7 +20902,7 @@ Too much space makes the text larger and distracts.
 Some IDEs have their own opinions and add distracting space.
 
 This is a recommendation for [when you have no constraints or better ideas](#S-naming).
-Thus rule was added after many requests for guidance.
+This rule was added after many requests for guidance.
 
 ##### Note
 
@@ -20956,7 +20956,7 @@ When declaring a class use the following order
 Use the `public` before `protected` before `private` order.
 
 This is a recommendation for [when you have no constraints or better ideas](#S-naming).
-Thus rule was added after many requests for guidance.
+This rule was added after many requests for guidance.
 
 ##### Example
 
@@ -21013,7 +21013,7 @@ This is the original C and C++ layout. It preserves vertical space well. It dist
 In the context of C++, this style is often called "Stroustrup".
 
 This is a recommendation for [when you have no constraints or better ideas](#S-naming).
-Thus rule was added after many requests for guidance.
+This rule was added after many requests for guidance.
 
 ##### Example
 
@@ -21089,7 +21089,7 @@ The use in expressions argument doesn't hold for references.
 ##### Note
 
 This is a recommendation for [when you have no constraints or better ideas](#S-naming).
-Thus rule was added after many requests for guidance.
+This rule was added after many requests for guidance.
 
 ##### Enforcement
 
@@ -21188,7 +21188,7 @@ but they also confuse more people, especially novices relying on teaching materi
 As ever, remember that the aim of these naming and layout rules is consistency and that aesthetics vary immensely.
 
 This is a recommendation for [when you have no constraints or better ideas](#S-naming).
-Thus rule was added after many requests for guidance.
+This rule was added after many requests for guidance.
 
 ##### Enforcement
 
