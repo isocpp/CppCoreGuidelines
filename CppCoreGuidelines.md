@@ -20084,7 +20084,7 @@ and errors (when we didn't deal correctly with semi-constructed objects consiste
         size_t my;
         vector<char> data;
     
-        inline size_t check_size(size_t s)
+        static size_t check_size(size_t s)
         {
             // invariant check
             Expects(s > 0);
@@ -20107,7 +20107,9 @@ and errors (when we didn't deal correctly with semi-constructed objects consiste
     Picture picture1(100, 100);
     // picture is ready-to-use here...
     
-    Picture picture2(100, 0); // not a valid size, exception will be thrown
+    // not a valid size for y,
+    // default contract violation behavior will call std::terminate then
+    Picture picture2(100, 0);
     // not reach here...
 
 ##### Alternative
