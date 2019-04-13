@@ -13796,16 +13796,17 @@ Concurrency and parallelism rule summary:
 
 ##### Reason
 
-It is hard to be certain that concurrency isn't used now or will be sometime in the future.
+It's hard to be certain that concurrency isn't used now or won't be used be sometime in the future.
 Code gets reused.
-Libraries using threads may be used from some other part of the program.
-Note that this applies most urgently to library code and least urgently to stand-alone applications.
-However, thanks to the magic of cut-and-paste, code fragments can turn up in unexpected places.
+Libraries not using threads may be used from some other part of a program that does use threads.
+Note that this rule applies most urgently to library code and least urgently to stand-alone applications.
+However, over time, code fragments can turn up in unexpected places.
 
-##### Example
+##### Example, bad
 
     double cached_computation(double x)
     {
+        // bad: these two statics cause data races in multi-threaded usage
         static double cached_x = 0.0;
         static double cached_result = COMPUTATION_OF_ZERO;
         double result;
@@ -13818,12 +13819,13 @@ However, thanks to the magic of cut-and-paste, code fragments can turn up in une
         return result;
     }
 
-Although `cached_computation` works perfectly in a single-threaded environment, in a multi-threaded environment the two `static` variables result in data races and thus undefined behavior.
+This example uses a simplistic caching strategy that avoids an expensive `computation` call when consecutive `cached_computation` calls are made with identical `x` parameters.
+Although `cached_computation` works as intended in a single-threaded environment, its two `static` variables result in data races and thus undefined behavior in a multi-threaded environment.
 
 There are several ways that this example could be made safe for a multi-threaded environment:
 
 * Delegate concurrency concerns upwards to the caller.
-* Mark the `static` variables as `thread_local` (which might make caching less effective).
+* Mark the `static` variables as `thread_local` (which would prevent cache hit performance gains across thread boundaries).
 * Implement concurrency control, for example, protecting the two `static` variables with a `static` lock (which might reduce performance).
 * Have the caller provide the memory to be used for the cache, thereby delegating both memory allocation and concurrency concerns upwards to the caller.
 * Refuse to build and/or run in a multi-threaded environment.
