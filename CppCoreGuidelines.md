@@ -7087,9 +7087,9 @@ The importance of keeping the two kinds of inheritance increases
 Problems:
 
 * As the hierarchy grows and more data is added to `Shape`, the constructors gets harder to write and maintain.
-* Why calculate the center for the `Triangle`? we may never us it.
+* Why calculate the center for the `Triangle`? we may never use it.
 * Add a data member to `Shape` (e.g., drawing style or canvas)
-and all derived classes and all users needs to be reviewed, possibly changes, and probably recompiled.
+and all classes derived from `Shape` and all code using `Shape` will need to be reviewed, possibly changed, and probably recompiled.
 
 The implementation of `Shape::move()` is an example of implementation inheritance:
 we have defined `move()` once and for all for all derived classes.
@@ -7113,7 +7113,7 @@ This Shape hierarchy can be rewritten using interface inheritance:
         // ...
     };
 
-Note that a pure interface rarely have constructors: there is nothing to construct.
+Note that a pure interface rarely has constructors: there is nothing to construct.
 
     class Circle : public Shape {
     public:
@@ -7134,7 +7134,7 @@ For example, `center` has to be implemented by every class derived from `Shape`.
 
 ##### Example, dual hierarchy
 
-How can we gain the benefit of the stable hierarchies from implementation hierarchies and the benefit of implementation reuse from implementation inheritance.
+How can we gain the benefit of stable hierarchies from implementation hierarchies and the benefit of implementation reuse from implementation inheritance?
 One popular technique is dual hierarchies.
 There are many ways of implementing the idea of dual hierarchies; here, we use a multiple-inheritance variant.
 
