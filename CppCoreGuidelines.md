@@ -11664,7 +11664,7 @@ The named casts are:
 * `reinterpret_cast`
 * `dynamic_cast`
 * `std::move`         // `move(x)` is an rvalue reference to `x`
-* `std::forward`      // `forward(x)` is an rvalue reference to `x`
+* `std::forward`      // `forward<T>(x)` is an rvalue or an lvalue reference to `x` depending on `T`
 * `gsl::narrow_cast`  // `narrow_cast<T>(x)` is `static_cast<T>(x)`
 * `gsl::narrow`       // `narrow<T>(x)` is `static_cast<T>(x)` if `static_cast<T>(x) == x` or it throws `narrowing_error`
 
