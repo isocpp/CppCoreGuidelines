@@ -13796,7 +13796,7 @@ Concurrency and parallelism rule summary:
 
 ##### Reason
 
-It's hard to be certain that concurrency isn't used now or won't be used be sometime in the future.
+It's hard to be certain that concurrency isn't used now or won't be used sometime in the future.
 Code gets reused.
 Libraries not using threads may be used from some other part of a program that does use threads.
 Note that this rule applies most urgently to library code and least urgently to stand-alone applications.
