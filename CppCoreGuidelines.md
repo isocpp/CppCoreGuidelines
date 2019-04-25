@@ -20030,9 +20030,88 @@ Following this rule leads to weaker invariants,
 more complicated code (having to deal with semi-constructed objects),
 and errors (when we didn't deal correctly with semi-constructed objects consistently).
 
-##### Example
+##### Example, bad
 
-    ???
+    class Picture
+    {
+        int mx;
+        int my;
+        char * data;
+    public:
+        Picture(int x, int y)
+        {
+            mx = x,
+            my = y;
+            data = nullptr;
+        }
+    
+        ~Picture()
+        {
+            Cleanup();
+        }
+    
+        bool Init()
+        {
+            // invariant checks
+            if (mx <= 0 || my <= 0) {
+                return false;
+            }
+            if (data) {
+                return false;
+            }
+            data = (char*) malloc(x*y*sizeof(int));
+            return data != nullptr;
+        }
+    
+        void Cleanup()
+        {
+            if (data) free(data);
+            data = nullptr;
+        }
+    };
+    
+    Picture picture(100, 0); // not ready-to-use picture here
+    // this will fail..
+    if (!picture.Init()) {
+        puts("Error, invalid picture");
+    }
+    // now have a invalid picture object instance.
+
+##### Example, good
+
+    class Picture
+    {
+        size_t mx;
+        size_t my;
+        vector<char> data;
+    
+        static size_t check_size(size_t s)
+        {
+            // invariant check
+            Expects(s > 0);
+            return s;
+        }
+    
+    public:
+        // even more better would be a class for a 2D Size as one single parameter
+        Picture(size_t x, size_t y)
+            : mx(check_size(x))
+            , my(check_size(y))
+            // now we know x and y have a valid size
+            , data(mx * my * sizeof(int)) // will throw std::bad_alloc on error
+        {
+            // picture is ready-to-use
+        }
+        // compiler generated dtor does the job. (also see C.21)
+    };
+    
+    Picture picture1(100, 100);
+    // picture is ready-to-use here...
+    
+    // not a valid size for y,
+    // default contract violation behavior will call std::terminate then
+    Picture picture2(100, 0);
+    // not reach here...
 
 ##### Alternative
 
