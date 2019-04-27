@@ -10644,7 +10644,7 @@ For initializers of moderate complexity, including for `const` variables, consid
 
 ##### Enforcement
 
-* Flag declarations with default initialization that are not assigned to before they are first read.
+* Flag declarations with default initialization that are assigned to before they are first read.
 * Flag any complicated computation after an uninitialized variable and before its use.
 
 ### <a name="Res-list"></a>ES.23: Prefer the `{}` initializer syntax
