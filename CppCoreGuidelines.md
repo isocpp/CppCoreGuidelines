@@ -13348,16 +13348,16 @@ Elaborately optimized code is usually larger and harder to change than unoptimiz
 
 ##### Reason
 
-Optimizing a non-performance-critical part of a program has no effect on system performance.
+Optimizing a non-performance-critical part of a program does not affect system performance.
 
 ##### Note
 
-If your program spends most of its time waiting for the web or for a human, optimization of in-memory computation is probably useless.
+If your program spends most of its time waiting for the web or a human, optimization of in-memory computation is probably useless.
 
 Put another way: If your program spends 4% of its processing time doing
-computation A and 40% of its time doing computation B, a 50% improvement on A is
-only as impactful as a 5% improvement on B. (If you don't even know how much
-time is spent on A or B, see <a href="#Rper-reason">Per.1</a> and <a
+computation A and 40% of its time doing computation B, a 50% improvement on A
+impacts performance only as much as a 5% improvement on B. If you don't even know
+the relative performance of A and B, see <a href="#Rper-reason">Per.1</a> and <a
 href="#Rper-Knuth">Per.2</a>.)
 
 ### <a name="Rper-simple"></a>Per.4: Don't assume that complicated code is necessarily faster than simple code
