@@ -13819,13 +13819,10 @@ However, over time, code fragments can turn up in unexpected places.
         return result;
     }
 
-This example uses a simplistic caching strategy that avoids an expensive `computation` call when consecutive `cached_computation` calls are made with identical `x` parameters.
-Although `cached_computation` works as intended in a single-threaded environment, its two `static` variables result in data races and thus undefined behavior in a multi-threaded environment.
-
 There are several ways that this example could be made safe for a multi-threaded environment:
 
 * Delegate concurrency concerns upwards to the caller.
-* Mark the `static` variables as `thread_local` (which would prevent cache hit performance gains across thread boundaries).
+* Mark the `static` variables as `thread_local` (which might make caching less effective).
 * Implement concurrency control, for example, protecting the two `static` variables with a `static` lock (which might reduce performance).
 * Have the caller provide the memory to be used for the cache, thereby delegating both memory allocation and concurrency concerns upwards to the caller.
 * Refuse to build and/or run in a multi-threaded environment.
