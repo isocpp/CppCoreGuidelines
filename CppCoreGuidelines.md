@@ -2825,6 +2825,8 @@ Advanced parameter passing:
 ![Advanced parameter passing table](./param-passing-advanced.png "Advanced parameter passing")
 
 Use the advanced techniques only after demonstrating need, and document that need in a comment.
+Note that the guidelines do not provide a complete decision procedure on how to write a function.
+In many situations, there will be multiple ways to write a function that is in accordance with the guidelines.
 
 ### <a name="Rf-in"></a>F.16: For "in" parameters, pass cheaply-copied types by value and others by reference to `const`
 
@@ -2847,9 +2849,9 @@ When copying is cheap, nothing beats the simplicity and safety of copying, and f
 
 For advanced uses (only), where you really need to optimize for rvalues passed to "input-only" parameters:
 
-* If the function is going to unconditionally move from the argument, take it by `&&`. See [F.18](#Rf-consume).
+* If the function is going to unconditionally move from the argument, take it by `&&`. See [F.18](#Rf-consume). You may also provide a `const &` overload that copies the argument rather than moves it, although this is not required.
 * If the function is going to keep a copy of the argument, in addition to passing by `const&` (for lvalues),
-  add an overload that passes the parameter by `&&` (for rvalues) and in the body `std::move`s it to its destination. Essentially this overloads a "will-move-from"; see [F.18](#Rf-consume).
+  add an overload that passes the parameter by `&&` (for rvalues) and in the body `std::move`s it to its destination. Essentially this overloads a "will-move-from"; see [F.18](#Rf-consume). It also could be appropriate to remove the `const&` overload and only keep the `&&` overload.
 * In special cases, such as multiple "input + copy" parameters, consider using perfect forwarding. See [F.19](#Rf-forward).
 
 ##### Example
@@ -2949,6 +2951,10 @@ It's efficient and eliminates bugs at the call site: `X&&` binds to rvalues, whi
 Note that the `std::move(v)` makes it possible for `store_somewhere()` to leave `v` in a moved-from state.
 [That could be dangerous](#Rc-move-semantic).
 
+
+##### Note
+
+You may also provide an overload that takes the argument by `const X&` and copies the value rather than move it. However, this is not required, and in some cases may not be possible.
 
 ##### Exception
 
