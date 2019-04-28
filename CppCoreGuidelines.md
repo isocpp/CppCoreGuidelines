@@ -15340,7 +15340,7 @@ RAII ("Resource Acquisition Is Initialization") is the simplest, most systematic
 
 ##### Example
 
-    void f1(int i)   // Bad: possibly leak
+    void f1(int i)   // Bad: possible leak
     {
         int* p = new int[12];
         // ...
@@ -15361,9 +15361,9 @@ We could carefully release the resource before the throw:
         // ...
     }
 
-This is verbose. In larger code with multiple possible `throw`s explicit releases become repetitive and error-prone.
+This is verbose. In larger code with multiple possible `throw`s, explicit releases become repetitive and error-prone.
 
-    void f3(int i)   // OK: resource management done by a handle (but see below)
+    void f3(int i)   // OK: resource management via handle (but see below)
     {
         auto p = make_unique<int[]>(12);
         // ...
@@ -15373,7 +15373,7 @@ This is verbose. In larger code with multiple possible `throw`s explicit release
 
 Note that this works even when the `throw` is implicit because it happened in a called function:
 
-    void f4(int i)   // OK: resource management done by a handle (but see below)
+    void f4(int i)   // OK: resource management via handle (but see below)
     {
         auto p = make_unique<int[]>(12);
         // ...
@@ -15381,9 +15381,9 @@ Note that this works even when the `throw` is implicit because it happened in a 
         // ...
     }
 
-Unless you really need pointer semantics, use a local resource object:
+Unless you need pointer semantics, use a local resource object:
 
-    void f5(int i)   // OK: resource management done by local object
+    void f5(int i)   // OK: resource management via local object
     {
         vector<int> v(12);
         // ...
@@ -15395,17 +15395,17 @@ That's even simpler and safer, and often more efficient.
 
 ##### Note
 
-If there is no obvious resource handle and for some reason defining a proper RAII object/handle is infeasible,
-as a last resort, cleanup actions can be represented by a [`final_action`](#Re-finally) object.
+Sometimes, there is no distinct resource handle and for some reason defining a proper RAII object/handle is infeasible.
+As a last resort, represent cleanup actions with a [`final_action`](#Re-finally) object.
 
 ##### Note
 
-But what do we do if we are writing a program where exceptions cannot be used?
-First challenge that assumption; there are many anti-exceptions myths around.
+But what do we do if we are writing a program where we can't use exceptions?
+First, challenge that assumption; there are many anti-exceptions myths around.
 We know of only a few good reasons:
 
 * We are on a system so small that the exception support would eat up most of our 2K memory.
-* We are in a hard-real-time system and we don't have tools that guarantee us that an exception is handled within the required time.
+* We are in a hard-real-time system, and we don't have tools that guarantee handling an exception within the required time.
 * We are in a system with tons of legacy code using lots of pointers in difficult-to-understand ways
   (in particular without a recognizable ownership strategy) so that exceptions could cause leaks.
 * Our implementation of the C++ exception mechanisms is unreasonably poor
@@ -15414,7 +15414,7 @@ Complain to your implementation purveyor; if no user complains, no improvement w
 * We get fired if we challenge our manager's ancient wisdom.
 
 Only the first of these reasons is fundamental, so whenever possible, use exceptions to implement RAII, or design your RAII objects to never fail.
-When exceptions cannot be used, simulate RAII.
+When we can't use exceptions, simulate RAII.
 That is, systematically check that objects are valid after construction and still release all resources in the destructor.
 One strategy is to add a `valid()` operation to every resource handle:
 
@@ -15433,7 +15433,7 @@ One strategy is to add a `valid()` operation to every resource handle:
         // ...
     } // destructors clean up as usual
 
-Obviously, this increases the size of the code, doesn't allow for implicit propagation of "exceptions" (`valid()` checks), and `valid()` checks can be forgotten.
+This approach increases the size of the code, doesn't allow for implicit propagation of "exceptions" (`valid()` checks), and `valid()` checks can be forgotten.
 Prefer to use exceptions.
 
 **See also**: [Use of `noexcept`](#Se-noexcept)
