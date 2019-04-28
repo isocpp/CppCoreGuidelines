@@ -1137,8 +1137,8 @@ This is a variant of the [subset of superset principle](#R0) that underlies thes
 
 ##### Reason
 
-There are many things that are done better "by machine".
-Computers don't tire or get bored by repetitive tasks.
+Many things are done better "by machine."
+Computers don't tire or get bored with repetitive tasks.
 We typically have better things to do than repeatedly do routine tasks.
 
 ##### Example
@@ -1158,7 +1158,7 @@ but those are beyond the scope of these guidelines.
 
 ##### Note
 
-Be careful not to become dependent on over-elaborate or over-specialized tool chains.
+Be careful not to become dependent on over-elaborate or over-specialized toolchains.
 Those can make your otherwise portable code non-portable.
 
 
