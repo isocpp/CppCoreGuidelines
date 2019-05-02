@@ -2952,10 +2952,6 @@ Note that the `std::move(v)` makes it possible for `store_somewhere()` to leave 
 [That could be dangerous](#Rc-move-semantic).
 
 
-##### Note
-
-You may also provide an overload that takes the argument by `const X&` and copies the value rather than move it. However, this is not required, and in some cases may not be possible.
-
 ##### Exception
 
 Unique owner types that are move-only and cheap-to-move, such as `unique_ptr`, can also be passed by value which is simpler to write and achieves the same effect. Passing by value does generate one extra (cheap) move operation, but prefer simplicity and clarity first.
