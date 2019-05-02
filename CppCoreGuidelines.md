@@ -13820,6 +13820,8 @@ However, over time, code fragments can turn up in unexpected places.
         return result;
     }
 
+Although `cached_computation` works perfectly in a single-threaded environment, in a multi-threaded environment the two `static` variables result in data races and thus undefined behavior.
+
 There are several ways that this example could be made safe for a multi-threaded environment:
 
 * Delegate concurrency concerns upwards to the caller.
