@@ -1,6 +1,6 @@
 # <a name="main"></a>C++ Core Guidelines
 
-March 7, 2019
+May 2, 2019
 
 
 Editors:
@@ -2708,6 +2708,7 @@ low-level functions.
 ##### Note
 
 Destructors, `swap` functions, move operations, and default constructors should never throw.
+See also [C.44](#Rc-default00).
 
 ##### Enforcement
 
@@ -3149,7 +3150,7 @@ For example:
                                         // to people who know measure()
     auto [x, y] = measure(obj4);        // don't; it's likely to be confusing
 
-The overly-generic `pair` and `tuple` should be used only when the value returned represents to independent entities rather than an abstraction.
+The overly-generic `pair` and `tuple` should be used only when the value returned represents independent entities rather than an abstraction.
 
 Another example, use a specific type along the lines of `variant<T, error_code>`, rather than using the generic `tuple`.
 
@@ -6064,7 +6065,7 @@ The one-in-a-million argument against `if (this == &a) return *this;` tests from
 
 ##### Note
 
-There is no known general way of avoiding a `if (this == &a) return *this;` test for a move assignment and still get a correct answer (i.e., after `x = x` the value of `x` is unchanged).
+There is no known general way of avoiding an `if (this == &a) return *this;` test for a move assignment and still get a correct answer (i.e., after `x = x` the value of `x` is unchanged).
 
 ##### Note
 
@@ -7012,7 +7013,7 @@ We want to eliminate two particular classes of errors:
 
 ##### Enforcement
 
-* Compare names in base and derived classes and flag uses of the same name that does not override.
+* Compare virtual function names in base and derived classes and flag uses of the same name that does not override.
 * Flag overrides with neither `override` nor `final`.
 * Flag function declarations that use more than one of `virtual`, `override`, and `final`.
 
@@ -7085,10 +7086,10 @@ The importance of keeping the two kinds of inheritance increases
 
 Problems:
 
-* As the hierarchy grows and more data is added to `Shape`, the constructors gets harder to write and maintain.
-* Why calculate the center for the `Triangle`? we may never us it.
+* As the hierarchy grows and more data is added to `Shape`, the constructors get harder to write and maintain.
+* Why calculate the center for the `Triangle`? we may never use it.
 * Add a data member to `Shape` (e.g., drawing style or canvas)
-and all derived classes and all users needs to be reviewed, possibly changes, and probably recompiled.
+and all classes derived from `Shape` and all code using `Shape` will need to be reviewed, possibly changed, and probably recompiled.
 
 The implementation of `Shape::move()` is an example of implementation inheritance:
 we have defined `move()` once and for all for all derived classes.
@@ -7112,7 +7113,7 @@ This Shape hierarchy can be rewritten using interface inheritance:
         // ...
     };
 
-Note that a pure interface rarely have constructors: there is nothing to construct.
+Note that a pure interface rarely has constructors: there is nothing to construct.
 
     class Circle : public Shape {
     public:
@@ -7133,7 +7134,7 @@ For example, `center` has to be implemented by every class derived from `Shape`.
 
 ##### Example, dual hierarchy
 
-How can we gain the benefit of the stable hierarchies from implementation hierarchies and the benefit of implementation reuse from implementation inheritance.
+How can we gain the benefit of stable hierarchies from implementation hierarchies and the benefit of implementation reuse from implementation inheritance?
 One popular technique is dual hierarchies.
 There are many ways of implementing the idea of dual hierarchies; here, we use a multiple-inheritance variant.
 
@@ -9389,7 +9390,7 @@ Use `span` to preserve size information.
 ##### Example
 
     void f(int[]);          // not recommended
-    
+
     void f(int*);           // not recommended for multiple objects
                             // (a pointer should point to a single object, do not subscript)
 
@@ -9884,7 +9885,7 @@ Statement rules:
 * [ES.77: Minimize the use of `break` and `continue` in loops](#Res-continue)
 * [ES.78: Always end a non-empty `case` with a `break`](#Res-break)
 * [ES.79: Use `default` to handle common cases (only)](#Res-default)
-* [ES.84: Don't (try to) declare a local variable with no name](#Res-noname)
+* [ES.84: Don't try to declare a local variable with no name](#Res-noname)
 * [ES.85: Make empty statements visible](#Res-empty)
 * [ES.86: Avoid modifying loop control variables inside the body of raw for-loops](#Res-loop-counter)
 * [ES.87: Don't add redundant `==` or `!=` to conditions](#Res-if)
@@ -10646,15 +10647,20 @@ For initializers of moderate complexity, including for `const` variables, consid
 * Flag declarations with default initialization that are assigned to before they are first read.
 * Flag any complicated computation after an uninitialized variable and before its use.
 
-### <a name="Res-list"></a>ES.23: Prefer the `{}` initializer syntax
+### <a name="Res-list"></a>ES.23: Prefer the `{}`-initializer syntax
 
 ##### Reason
 
-The rules for `{}` initialization are simpler, more general, less ambiguous, and safer than for other forms of initialization.
+Prefer `{}`. The rules for `{}` initialization are simpler, more general, less ambiguous, and safer than for other forms of initialization.
+
+Use `=` only when you are sure that there can be no narrowing conversions. For built-in arithmetic types, use `=` only with `auto`.
+
+Avoid `()` initialization, which allows parsing ambiguities.
 
 ##### Example
 
     int x {f(99)};
+    int y = x;
     vector<int> v = {1, 2, 3, 4, 5, 6};
 
 ##### Exception
@@ -10662,11 +10668,14 @@ The rules for `{}` initialization are simpler, more general, less ambiguous, and
 For containers, there is a tradition for using `{...}` for a list of elements and `(...)` for sizes:
 
     vector<int> v1(10);    // vector of 10 elements with the default value 0
-    vector<int> v2 {10};   // vector of 1 element with the value 10
+    vector<int> v2{10};    // vector of 1 element with the value 10
+
+    vector<int> v3(1, 2);  // vector of 1 element with the value 2
+    vector<int> v4{1, 2};  // vector of 2 element with the values 1 and 2
 
 ##### Note
 
-`{}`-initializers do not allow narrowing conversions (and that is usually a good thing).
+`{}`-initializers do not allow narrowing conversions (and that is usually a good thing) and allow explicit constructors (which is fine, we're intentionally initializing a new variable).
 
 ##### Example
 
@@ -10676,7 +10685,7 @@ For containers, there is a tradition for using `{...}` for a list of elements an
 
 ##### Note
 
-`{}` initialization can be used for all initialization; other forms of initialization can't:
+`{}` initialization can be used for nearly all initialization; other forms of initialization can't:
 
     auto p = new vector<int> {1, 2, 3, 4, 5};   // initialized vector
     D::D(int a, int b) :m{a, b} {   // member initializer (e.g., m might be a pair)
@@ -10697,7 +10706,7 @@ Initialization of a variable declared using `auto` with a single value, e.g., `{
 The C++17 rules are somewhat less surprising:
 
     auto x1 {7};        // x1 is an int with the value 7
-    auto x2 = {7};  // x2 is an initializer_list<int> with an element 7
+    auto x2 = {7};      // x2 is an initializer_list<int> with an element 7
 
     auto x11 {7, 8};    // error: two initializers
     auto x22 = {7, 8};  // x22 is an initializer_list<int> with elements 7 and 8
@@ -10719,10 +10728,6 @@ Like the distinction between copy-initialization and direct-initialization itsel
 
 Use plain `{}`-initialization unless you specifically want to disable explicit constructors.
 
-##### Note
-
-Old habits die hard, so this rule is hard to apply consistently, especially as there are so many cases where `=` is innocent.
-
 ##### Example
 
     template<typename T>
@@ -10740,10 +10745,8 @@ Old habits die hard, so this rule is hard to apply consistently, especially as t
 
 ##### Enforcement
 
-Tricky.
-
-* Don't flag uses of `=` for simple initializers.
-* Look for `=` after `auto` has been seen.
+* Flag uses of `=` to initialize arithmetic types where narrowing occurs.
+* Flag uses of `()` initialization syntax that are actually declarations. (Many compilers should warn on this already.)
 
 ### <a name="Res-unique"></a>ES.24: Use a `unique_ptr<T>` to hold pointers
 
@@ -11375,6 +11378,7 @@ Use a range-`for`:
     void f3()
     {
         int arr[COUNT];
+        int i = 0;
         for (auto& e : arr)
              e = i++;
     }
@@ -11662,7 +11666,7 @@ The named casts are:
 * `reinterpret_cast`
 * `dynamic_cast`
 * `std::move`         // `move(x)` is an rvalue reference to `x`
-* `std::forward`      // `forward(x)` is an rvalue reference to `x`
+* `std::forward`      // `forward<T>(x)` is an rvalue or an lvalue reference to `x` depending on `T`
 * `gsl::narrow_cast`  // `narrow_cast<T>(x)` is `static_cast<T>(x)`
 * `gsl::narrow`       // `narrow<T>(x)` is `static_cast<T>(x)` if `static_cast<T>(x) == x` or it throws `narrowing_error`
 
@@ -12655,8 +12659,8 @@ If you really need to break out a loop, a `break` is typically better than alter
 
 ##### Reason
 
- Accidentally leaving out a `break` is a fairly common bug.
- A deliberate fallthrough is a maintenance hazard.
+Accidentally leaving out a `break` is a fairly common bug.
+A deliberate fallthrough can be a maintenance hazard and should be rare and explicit.
 
 ##### Example
 
@@ -12672,36 +12676,6 @@ If you really need to break out a loop, a `break` is typically better than alter
         break;
     }
 
-It is easy to overlook the fallthrough. Be explicit:
-
-    switch (eventType) {
-    case Information:
-        update_status_bar();
-        break;
-    case Warning:
-        write_event_log();
-        // fallthrough
-    case Error:
-        display_error_window();
-        break;
-    }
-
-In C++17, use a `[[fallthrough]]` annotation:
-
-    switch (eventType) {
-    case Information:
-        update_status_bar();
-        break;
-    case Warning:
-        write_event_log();
-        [[fallthrough]];        // C++17
-    case Error:
-        display_error_window();
-        break;
-    }
-
-##### Note
-
 Multiple case labels of a single statement is OK:
 
     switch (x) {
@@ -12712,9 +12686,28 @@ Multiple case labels of a single statement is OK:
         break;
     }
 
+##### Exceptions
+
+In rare cases if fallthrough is deemed appropriate, be explicit and use the `[[fallthrough]]` annotation:
+
+    switch (eventType) {
+    case Information:
+        update_status_bar();
+        break;
+    case Warning:
+        write_event_log();
+        [[fallthrough]];
+    case Error:
+        display_error_window();
+        break;
+    }
+
+##### Note
+
 ##### Enforcement
 
-Flag all fallthroughs from non-empty `case`s.
+Flag all implicit fallthroughs from non-empty `case`s.
+
 
 ### <a name="Res-default"></a>ES.79: Use `default` to handle common cases (only)
 
@@ -12789,13 +12782,12 @@ Flag `switch`-statements over an enumeration that don't handle all enumerators a
 This may yield too many false positives in some code bases; if so, flag only `switch`es that handle most but not all cases
 (that was the strategy of the very first C++ compiler).
 
-### <a name="Res-noname"></a>ES.84: Don't (try to) declare a local variable with no name
+### <a name="Res-noname"></a>ES.84: Don't try to declare a local variable with no name
 
 ##### Reason
 
 There is no such thing.
 What looks to a human like a variable without a name is to the compiler a statement consisting of a temporary that immediately goes out of scope.
-To avoid unpleasant surprises.
 
 ##### Example, bad
 
@@ -12808,7 +12800,6 @@ To avoid unpleasant surprises.
 This declares an unnamed `lock` object that immediately goes out of scope at the point of the semicolon.
 This is not an uncommon mistake.
 In particular, this particular example can lead to hard-to find race conditions.
-There are exceedingly clever uses of this "idiom", but they are far rarer than the mistakes.
 
 ##### Note
 
@@ -12816,7 +12807,7 @@ Unnamed function arguments are fine.
 
 ##### Enforcement
 
-Flag statements that are just a temporary
+Flag statements that are just a temporary.
 
 ### <a name="Res-empty"></a>ES.85: Make empty statements visible
 
@@ -13750,17 +13741,16 @@ Performance is very sensitive to cache performance and cache algorithms favor si
 
 # <a name="S-concurrency"></a>CP: Concurrency and parallelism
 
-We often want our computers to do many tasks at the same time (or at least make them appear to do them at the same time).
-The reasons for doing so varies (e.g., wanting to wait for many events using only a single processor, processing many data streams simultaneously, or utilizing many hardware facilities)
-and so does the basic facilities for expressing concurrency and parallelism.
-Here, we articulate a few general principles and rules for using the ISO standard C++ facilities for expressing basic concurrency and parallelism.
+We often want our computers to do many tasks at the same time (or at least appear to do them at the same time).
+The reasons for doing so vary (e.g., waiting for many events using only a single processor, processing many data streams simultaneously, or utilizing many hardware facilities)
+and so do the basic facilities for expressing concurrency and parallelism.
+Here, we articulate principles and rules for using the ISO standard C++ facilities for expressing basic concurrency and parallelism.
 
-The core machine support for concurrent and parallel programming is the thread.
-Threads allow you to run multiple instances of your program independently, while sharing
-the same memory. Concurrent programming is tricky for many reasons, most
-importantly that it is undefined behavior to read data in one thread after it
-was written by another thread, if there is no proper synchronization between
-those threads. Making existing single-threaded code execute concurrently can be
+Threads are the machine-level foundation for concurrent and parallel programming.
+Threads allow running multiple sections of a program independently, while sharing
+the same memory. Concurrent programming is tricky,
+because protecting shared data between threads is easier said than done.
+Making existing single-threaded code execute concurrently can be
 as trivial as adding `std::async` or `std::thread` strategically, or it can
 necessitate a full rewrite, depending on whether the original code was written
 in a thread-friendly way.
@@ -13768,16 +13758,16 @@ in a thread-friendly way.
 The concurrency/parallelism rules in this document are designed with three goals
 in mind:
 
-* To help you write code that is amenable to being used in a threaded
+* To help in writing code that is amenable to being used in a threaded
   environment
 * To show clean, safe ways to use the threading primitives offered by the
   standard library
 * To offer guidance on what to do when concurrency and parallelism aren't giving
-  you the performance gains you need
+  the performance gains needed
 
 It is also important to note that concurrency in C++ is an unfinished
 story. C++11 introduced many core concurrency primitives, C++14 and C++17 improved on
-them, and it seems that there is much interest in making the writing of
+them, and there is much interest in making the writing of
 concurrent programs in C++ even easier. We expect some of the library-related
 guidance here to change significantly over time.
 
@@ -13809,16 +13799,17 @@ Concurrency and parallelism rule summary:
 
 ##### Reason
 
-It is hard to be certain that concurrency isn't used now or will be sometime in the future.
+It's hard to be certain that concurrency isn't used now or won't be used sometime in the future.
 Code gets reused.
-Libraries using threads may be used from some other part of the program.
-Note that this applies most urgently to library code and least urgently to stand-alone applications.
-However, thanks to the magic of cut-and-paste, code fragments can turn up in unexpected places.
+Libraries not using threads may be used from some other part of a program that does use threads.
+Note that this rule applies most urgently to library code and least urgently to stand-alone applications.
+However, over time, code fragments can turn up in unexpected places.
 
-##### Example
+##### Example, bad
 
     double cached_computation(double x)
     {
+        // bad: these two statics cause data races in multi-threaded usage
         static double cached_x = 0.0;
         static double cached_result = COMPUTATION_OF_ZERO;
         double result;
@@ -13886,15 +13877,15 @@ Local static variables are a common source of data races.
 
 ##### Example, bad:
 
-    void f(fstream&  fs, regex pat)
+    void f(fstream&  fs, regex pattern)
     {
         array<double, max> buf;
         int sz = read_vec(fs, buf, max);            // read from fs into buf
         gsl::span<double> s {buf};
         // ...
-        auto h1 = async([&]{ sort(par, s); });     // spawn a task to sort
+        auto h1 = async([&]{ sort(std::execution::par, s); });     // spawn a task to sort
         // ...
-        auto h2 = async([&]{ return find_all(buf, sz, pat); });   // spawn a task to find matches
+        auto h2 = async([&]{ return find_all(buf, sz, pattern); });   // spawn a task to find matches
         // ...
     }
 
@@ -14774,7 +14765,7 @@ Flag all unnamed `lock_guard`s and `unique_lock`s.
 It should be obvious to a reader that the data is to be guarded and how. This decreases the chance of the wrong mutex being locked, or the mutex not being locked.
 
 Using a `synchronized_value<T>` ensures that the data has a mutex, and the right mutex is locked when the data is accessed.
-See the [WG21 proposal](http://wg21.link/p0290)) to add `synchronized_value` to a future TS or revision of the C++ standard.
+See the [WG21 proposal](http://wg21.link/p0290) to add `synchronized_value` to a future TS or revision of the C++ standard.
 
 ##### Example
 
@@ -14818,7 +14809,7 @@ This section looks at passing messages so that a programmer doesn't have to do e
 Message passing rules summary:
 
 * [CP.60: Use a `future` to return a value from a concurrent task](#Rconc-future)
-* [CP.61: Use a `async()` to spawn a concurrent task](#Rconc-async)
+* [CP.61: Use an `async()` to spawn a concurrent task](#Rconc-async)
 * message queues
 * messaging libraries
 
@@ -14846,7 +14837,7 @@ There is no explicit locking and both correct (value) return and error (exceptio
 
 ???
 
-### <a name="Rconc-async"></a>CP.61: Use a `async()` to spawn a concurrent task
+### <a name="Rconc-async"></a>CP.61: Use an `async()` to spawn a concurrent task
 
 ##### Reason
 
@@ -15106,7 +15097,7 @@ Unless you are writing the lowest level code manipulating hardware directly, con
 
 ##### Example
 
-Usually C++ code receives `volatile` memory that is owned Elsewhere (hardware or another language):
+Usually C++ code receives `volatile` memory that is owned elsewhere (hardware or another language):
 
     int volatile* vi = get_hardware_memory_location();
         // note: we get a pointer to someone else's memory here
@@ -15152,8 +15143,8 @@ Error handling involves:
 
 * Detecting an error
 * Transmitting information about an error to some handler code
-* Preserve the state of a program in a valid state
-* Avoid resource leaks
+* Preserving a valid state of the program
+* Avoiding resource leaks
 
 It is not possible to recover from all errors. If recovery from an error is not possible, it is important to quickly "get out" in a well-defined way. A strategy for error handling must be simple, or it becomes a source of even worse errors.  Untested and rarely executed error-handling code is itself the source of many bugs.
 
@@ -15304,7 +15295,7 @@ To use an object it must be in a valid state (defined formally or informally by 
 
 ##### Note
 
-An [invariant](#Rc-struct) is logical condition for the members of an object that a constructor must establish for the public member functions to assume.
+An [invariant](#Rc-struct) is a logical condition for the members of an object that a constructor must establish for the public member functions to assume.
 
 ##### Enforcement
 
@@ -15352,7 +15343,7 @@ RAII ("Resource Acquisition Is Initialization") is the simplest, most systematic
 
 ##### Example
 
-    void f1(int i)   // Bad: possibly leak
+    void f1(int i)   // Bad: possible leak
     {
         int* p = new int[12];
         // ...
@@ -15787,7 +15778,7 @@ Better:
 
     void f(int n)
     {
-        void* p = malloc(1, n);
+        void* p = malloc(n);
         auto _ = finally([p] { free(p); });
         // ...
     }
@@ -15891,7 +15882,7 @@ In such cases, "crashing" is simply leaving error handling to the next level of 
     void f(int n)
     {
         // ...
-        p = static_cast<X*>(malloc(n, X));
+        p = static_cast<X*>(malloc(n * sizeof(X)));
         if (!p) abort();     // abort if memory is exhausted
         // ...
     }
@@ -16082,7 +16073,15 @@ When did you last test the return value of `printf()`?
 
 ##### Example, bad
 
-    ???
+    int last_err;
+
+    void f(int n)
+    {
+        // ...
+        p = static_cast<X*>(malloc(n * sizeof(X)));
+        if (!p) last_err = -1;     // error if memory is exhausted
+        // ...
+    }
 
 ##### Note
 
@@ -16235,7 +16234,7 @@ If it doesn't now, it might do so later without forcing recompilation.
 
 ##### Note
 
-There are code/libraries that are offer functions that declare a`T*` even though
+There are code/libraries that offer functions that declare a`T*` even though
 those function do not modify that `T`.
 This is a problem for people modernizing code.
 You can
@@ -16256,7 +16255,7 @@ e.g. because it is in a library that you cannot modify.
 
 A `const` member function can modify the value of an object that is `mutable` or accessed through a pointer member.
 A common use is to maintain a cache rather than repeatedly do a complicated computation.
-For example, here is a `Date` that caches (mnemonizes) its string representation to simplify repeated uses:
+For example, here is a `Date` that caches (memoizes) its string representation to simplify repeated uses:
 
     class Date {
     public:
@@ -16748,7 +16747,7 @@ Flag template type arguments without concepts
 ##### Reason
 
  "Standard" concepts (as provided by the [GSL](#S-GSL) and the [Ranges TS](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/n4569.pdf), and hopefully soon the ISO standard itself)
-saves us the work of thinking up our own concepts, are better thought out than we can manage to do in a hurry, and improves interoperability.
+save us the work of thinking up our own concepts, are better thought out than we can manage to do in a hurry, and improve interoperability.
 
 ##### Note
 
@@ -16831,13 +16830,13 @@ If you use a compiler that supports concepts (e.g., GCC 6.1 or later), you can r
 ##### Enforcement
 
 * Not feasible in the short term when people convert from the `<typename T>` and `<class T`> notation.
-* Later, flag declarations that first introduces a typename and then constrains it with a simple, single-type-argument concept.
+* Later, flag declarations that first introduce a typename and then constrain it with a simple, single-type-argument concept.
 
 ## <a name="SS-concepts-def"></a>T.concepts.def: Concept definition rules
 
 Defining good concepts is non-trivial.
 Concepts are meant to represent fundamental concepts in an application domain (hence the name "concepts").
-Similarly throwing together a set of syntactic constraints to be used for a the arguments for a single class or algorithm is not what concepts were designed for
+Similarly throwing together a set of syntactic constraints to be used for the arguments for a single class or algorithm is not what concepts were designed for
 and will not give the full benefits of the mechanism.
 
 Obviously, defining concepts will be most useful for code that can use an implementation (e.g., GCC 6.1 or later),
@@ -17057,7 +17056,7 @@ and the precise general semantics for all nodes is hard to pin down in the early
 A "concept" that is incomplete or without a well-specified semantics can still be useful.
 For example, it allows for some checking during initial experimentation.
 However, it should not be assumed to be stable.
-Each new use case may require such an incomplete concepts to be improved.
+Each new use case may require such an incomplete concept to be improved.
 
 ##### Enforcement
 
@@ -17299,8 +17298,8 @@ On the other hand, there is nothing in the fundamental idea of sorting that says
 ##### Note
 
 If we require every operation used to be listed among the requirements, the interface becomes unstable:
-Every time we change the debug facilities, the usage data gathering, testing support, error reporting, etc.
-The definition of the template would need change and every use of the template would have to be recompiled.
+Every time we change the debug facilities, the usage data gathering, testing support, error reporting, etc.,
+the definition of the template would need change and every use of the template would have to be recompiled.
 This is cumbersome, and in some environments infeasible.
 
 Conversely, if we use an operation in the implementation that is not guaranteed by concept checking,
@@ -17314,7 +17313,7 @@ Note that using non-local, non-dependent names (such as `debug` and `cerr`) also
 
 ##### Note
 
-It can be hard to decide which properties of a type is essential and which are not.
+It can be hard to decide which properties of a type are essential and which are not.
 
 ##### Enforcement
 
@@ -19767,9 +19766,9 @@ This section contains ideas about higher-level architectural ideas and libraries
 
 Architectural rule summary:
 
-* [A.1: Separate stable from less stable part of code](#Ra-stable)
+* [A.1: Separate stable code from less stable code](#Ra-stable)
 * [A.2: Express potentially reusable parts as a library](#Ra-lib)
-* [A.4: There should be no cycles among libraries](#?Ra-dag)
+* [A.4: There should be no cycles among libraries](#Ra-dag)
 * [???](#???)
 * [???](#???)
 * [???](#???)
@@ -19777,9 +19776,9 @@ Architectural rule summary:
 * [???](#???)
 * [???](#???)
 
-### <a name="Ra-stable"></a>A.1: Separate stable from less stable part of code
+### <a name="Ra-stable"></a>A.1: Separate stable code from less stable code
 
-???
+Isolating less stable code facilitates its unit testing, interface improvement, refactoring, and eventual deprecation.
 
 ### <a name="Ra-lib"></a>A.2: Express potentially reusable parts as a library
 
@@ -19788,15 +19787,15 @@ Architectural rule summary:
 ##### Note
 
 A library is a collection of declarations and definitions maintained, documented, and shipped together.
-A library could be a set of headers (a "header only library") or a set of headers plus a set of object files.
-A library can be statically or dynamically linked into a program, or it may be `#include`d
+A library could be a set of headers (a "header-only library") or a set of headers plus a set of object files.
+You can statically or dynamically link a library into a program, or you can `#include` a header-only library.
 
 
 ### <a name="Ra-dag"></a>A.4: There should be no cycles among libraries
 
 ##### Reason
 
-* A cycle implies complication of the build process.
+* A cycle complicates the build process.
 * Cycles are hard to understand and may introduce indeterminism (unspecified behavior).
 
 ##### Note
@@ -20034,9 +20033,88 @@ Following this rule leads to weaker invariants,
 more complicated code (having to deal with semi-constructed objects),
 and errors (when we didn't deal correctly with semi-constructed objects consistently).
 
-##### Example
+##### Example, bad
 
-    ???
+    class Picture
+    {
+        int mx;
+        int my;
+        char * data;
+    public:
+        Picture(int x, int y)
+        {
+            mx = x,
+            my = y;
+            data = nullptr;
+        }
+    
+        ~Picture()
+        {
+            Cleanup();
+        }
+    
+        bool Init()
+        {
+            // invariant checks
+            if (mx <= 0 || my <= 0) {
+                return false;
+            }
+            if (data) {
+                return false;
+            }
+            data = (char*) malloc(x*y*sizeof(int));
+            return data != nullptr;
+        }
+    
+        void Cleanup()
+        {
+            if (data) free(data);
+            data = nullptr;
+        }
+    };
+    
+    Picture picture(100, 0); // not ready-to-use picture here
+    // this will fail..
+    if (!picture.Init()) {
+        puts("Error, invalid picture");
+    }
+    // now have a invalid picture object instance.
+
+##### Example, good
+
+    class Picture
+    {
+        size_t mx;
+        size_t my;
+        vector<char> data;
+    
+        static size_t check_size(size_t s)
+        {
+            // invariant check
+            Expects(s > 0);
+            return s;
+        }
+    
+    public:
+        // even more better would be a class for a 2D Size as one single parameter
+        Picture(size_t x, size_t y)
+            : mx(check_size(x))
+            , my(check_size(y))
+            // now we know x and y have a valid size
+            , data(mx * my * sizeof(int)) // will throw std::bad_alloc on error
+        {
+            // picture is ready-to-use
+        }
+        // compiler generated dtor does the job. (also see C.21)
+    };
+    
+    Picture picture1(100, 100);
+    // picture is ready-to-use here...
+    
+    // not a valid size for y,
+    // default contract violation behavior will call std::terminate then
+    Picture picture2(100, 0);
+    // not reach here...
 
 ##### Alternative
 
@@ -20370,13 +20448,13 @@ which cover other unsafe operations that allow bounds violations.
 
 Bounds safety profile summary:
 
-* <a href="Pro-bounds-arithmetic"></a>Bounds.1: Don't use pointer arithmetic. Use `span` instead:
+* <a name="Pro-bounds-arithmetic"></a>Bounds.1: Don't use pointer arithmetic. Use `span` instead:
 [Pass pointers to single objects (only)](#Ri-array) and [Keep pointer arithmetic simple](#Res-ptr).
-* <a href="Pro-bounds-arrayindex"></a>Bounds.2: Only index into arrays using constant expressions:
+* <a name="Pro-bounds-arrayindex"></a>Bounds.2: Only index into arrays using constant expressions:
 [Pass pointers to single objects (only)](#Ri-array) and [Keep pointer arithmetic simple](#Res-ptr).
-* <a href="Pro-bounds-decay"></a>Bounds.3: No array-to-pointer decay:
+* <a name="Pro-bounds-decay"></a>Bounds.3: No array-to-pointer decay:
 [Pass pointers to single objects (only)](#Ri-array) and [Keep pointer arithmetic simple](#Res-ptr).
-* <a href="Pro-bounds-stdlib"></a>Bounds.4: Don't use standard-library functions and types that are not bounds-checked:
+* <a name="Pro-bounds-stdlib"></a>Bounds.4: Don't use standard-library functions and types that are not bounds-checked:
 [Use the standard library in a type-safe manner](#Rsl-bounds).
 
 ##### Impact
@@ -20398,7 +20476,7 @@ For example, a pointer may be uninitialized, the `nullptr`, point beyond the ran
 
 Lifetime safety profile summary:
 
-* <a href="Pro-lifetime-invalid-deref"></a>Lifetime.1: Don't dereference a possibly invalid pointer:
+* <a name="Pro-lifetime-invalid-deref"></a>Lifetime.1: Don't dereference a possibly invalid pointer:
 [detect or avoid](#Res-deref).
 
 ##### Impact
@@ -20863,7 +20941,7 @@ Often, you don't have a choice and must follow an established style for [consist
 The need for consistency beats personal taste.
 
 This is a recommendation for [when you have no constraints or better ideas](#S-naming).
-Thus rule was added after many requests for guidance.
+This rule was added after many requests for guidance.
 
 ##### Example
 
@@ -20907,7 +20985,7 @@ Too much space makes the text larger and distracts.
 Some IDEs have their own opinions and add distracting space.
 
 This is a recommendation for [when you have no constraints or better ideas](#S-naming).
-Thus rule was added after many requests for guidance.
+This rule was added after many requests for guidance.
 
 ##### Note
 
@@ -20961,7 +21039,7 @@ When declaring a class use the following order
 Use the `public` before `protected` before `private` order.
 
 This is a recommendation for [when you have no constraints or better ideas](#S-naming).
-Thus rule was added after many requests for guidance.
+This rule was added after many requests for guidance.
 
 ##### Example
 
@@ -21018,7 +21096,7 @@ This is the original C and C++ layout. It preserves vertical space well. It dist
 In the context of C++, this style is often called "Stroustrup".
 
 This is a recommendation for [when you have no constraints or better ideas](#S-naming).
-Thus rule was added after many requests for guidance.
+This rule was added after many requests for guidance.
 
 ##### Example
 
@@ -21094,7 +21172,7 @@ The use in expressions argument doesn't hold for references.
 ##### Note
 
 This is a recommendation for [when you have no constraints or better ideas](#S-naming).
-Thus rule was added after many requests for guidance.
+This rule was added after many requests for guidance.
 
 ##### Enforcement
 
@@ -21193,7 +21271,7 @@ but they also confuse more people, especially novices relying on teaching materi
 As ever, remember that the aim of these naming and layout rules is consistency and that aesthetics vary immensely.
 
 This is a recommendation for [when you have no constraints or better ideas](#S-naming).
-Thus rule was added after many requests for guidance.
+This rule was added after many requests for guidance.
 
 ##### Enforcement
 
