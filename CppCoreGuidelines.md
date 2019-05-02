@@ -9839,7 +9839,7 @@ Declaration rules:
 * [ES.20: Always initialize an object](#Res-always)
 * [ES.21: Don't introduce a variable (or constant) before you need to use it](#Res-introduce)
 * [ES.22: Don't declare a variable until you have a value to initialize it with](#Res-init)
-* [ES.23: Avoid the `()`-initializer syntax](#Res-list)
+* [ES.23: Prefer the `{}`-initializer syntax](#Res-list)
 * [ES.24: Use a `unique_ptr<T>` to hold pointers](#Res-unique)
 * [ES.25: Declare an object `const` or `constexpr` unless you want to modify its value later on](#Res-const)
 * [ES.26: Don't use a variable for two unrelated purposes](#Res-recycle)
@@ -10647,7 +10647,7 @@ For initializers of moderate complexity, including for `const` variables, consid
 * Flag declarations with default initialization that are assigned to before they are first read.
 * Flag any complicated computation after an uninitialized variable and before its use.
 
-### <a name="Res-list"></a>ES.23: Avoid the `()`-initializer syntax
+### <a name="Res-list"></a>ES.23: Prefer the `{}`-initializer syntax
 
 ##### Reason
 
