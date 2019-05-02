@@ -15341,7 +15341,7 @@ RAII ("Resource Acquisition Is Initialization") is the simplest, most systematic
 
 ##### Example
 
-    void f1(int i)   // Bad: possibly leak
+    void f1(int i)   // Bad: possible leak
     {
         int* p = new int[12];
         // ...
