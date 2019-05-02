@@ -9839,7 +9839,7 @@ Declaration rules:
 * [ES.20: Always initialize an object](#Res-always)
 * [ES.21: Don't introduce a variable (or constant) before you need to use it](#Res-introduce)
 * [ES.22: Don't declare a variable until you have a value to initialize it with](#Res-init)
-* [ES.23: Prefer the `{}`-initializer syntax](#Res-list)
+* [ES.23: Avoid the `()`-initializer syntax](#Res-list)
 * [ES.24: Use a `unique_ptr<T>` to hold pointers](#Res-unique)
 * [ES.25: Declare an object `const` or `constexpr` unless you want to modify its value later on](#Res-const)
 * [ES.26: Don't use a variable for two unrelated purposes](#Res-recycle)
@@ -10647,15 +10647,20 @@ For initializers of moderate complexity, including for `const` variables, consid
 * Flag declarations with default initialization that are assigned to before they are first read.
 * Flag any complicated computation after an uninitialized variable and before its use.
 
-### <a name="Res-list"></a>ES.23: Prefer the `{}` initializer syntax
+### <a name="Res-list"></a>ES.23: Avoid the `()`-initializer syntax
 
 ##### Reason
 
-The rules for `{}` initialization are simpler, more general, less ambiguous, and safer than for other forms of initialization.
+Prefer `{}`. The rules for `{}` initialization are simpler, more general, less ambiguous, and safer than for other forms of initialization.
+
+Use `=` only when you are sure that there can be no narrowing conversions. For built-in arithmetic types, use `=` only with `auto`.
+
+Avoid `()` initialization, which allows parsing ambiguities.
 
 ##### Example
 
     int x {f(99)};
+    int y = x;
     vector<int> v = {1, 2, 3, 4, 5, 6};
 
 ##### Exception
@@ -10663,7 +10668,10 @@ The rules for `{}` initialization are simpler, more general, less ambiguous, and
 For containers, there is a tradition for using `{...}` for a list of elements and `(...)` for sizes:
 
     vector<int> v1(10);    // vector of 10 elements with the default value 0
-    vector<int> v2 {10};   // vector of 1 element with the value 10
+    vector<int> v2{10};    // vector of 1 element with the value 10
+
+    vector<int> v3(1,2);   // vector of 1 element with the value 2
+    vector<int> v4{1,2};   // vector of 2 element with the values 1 and 2
 
 ##### Note
 
@@ -10677,7 +10685,7 @@ For containers, there is a tradition for using `{...}` for a list of elements an
 
 ##### Note
 
-`{}` initialization can be used for all initialization; other forms of initialization can't:
+`{}` initialization can be used for nearly all initialization; other forms of initialization can't:
 
     auto p = new vector<int> {1, 2, 3, 4, 5};   // initialized vector
     D::D(int a, int b) :m{a, b} {   // member initializer (e.g., m might be a pair)
@@ -10698,7 +10706,7 @@ Initialization of a variable declared using `auto` with a single value, e.g., `{
 The C++17 rules are somewhat less surprising:
 
     auto x1 {7};        // x1 is an int with the value 7
-    auto x2 = {7};  // x2 is an initializer_list<int> with an element 7
+    auto x2 = {7};      // x2 is an initializer_list<int> with an element 7
 
     auto x11 {7, 8};    // error: two initializers
     auto x22 = {7, 8};  // x22 is an initializer_list<int> with elements 7 and 8
@@ -10720,10 +10728,6 @@ Like the distinction between copy-initialization and direct-initialization itsel
 
 Use plain `{}`-initialization unless you specifically want to disable explicit constructors.
 
-##### Note
-
-Old habits die hard, so this rule is hard to apply consistently, especially as there are so many cases where `=` is innocent.
-
 ##### Example
 
     template<typename T>
@@ -10741,10 +10745,8 @@ Old habits die hard, so this rule is hard to apply consistently, especially as t
 
 ##### Enforcement
 
-Tricky.
-
-* Don't flag uses of `=` for simple initializers.
-* Look for `=` after `auto` has been seen.
+* Flag uses of `=` to initialize arithmetic types where narrowing occurs.
+* Flag uses of `()` initialization syntax that are actually declarations. (Many compilers should warn on this already.)
 
 ### <a name="Res-unique"></a>ES.24: Use a `unique_ptr<T>` to hold pointers
 
