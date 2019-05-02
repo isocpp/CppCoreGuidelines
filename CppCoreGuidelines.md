@@ -10670,8 +10670,8 @@ For containers, there is a tradition for using `{...}` for a list of elements an
     vector<int> v1(10);    // vector of 10 elements with the default value 0
     vector<int> v2{10};    // vector of 1 element with the value 10
 
-    vector<int> v3(1,2);   // vector of 1 element with the value 2
-    vector<int> v4{1,2};   // vector of 2 element with the values 1 and 2
+    vector<int> v3(1, 2);  // vector of 1 element with the value 2
+    vector<int> v4{1, 2};  // vector of 2 element with the values 1 and 2
 
 ##### Note
 
