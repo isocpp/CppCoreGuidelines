@@ -17536,7 +17536,8 @@ Because that's the best we can do without direct concept support.
     }
 
     // Equivalent to:
-    void f(Integral v)
+    template <Integral T>
+    void f(T v)
     {
         // ...
     }
