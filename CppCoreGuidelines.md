@@ -17528,7 +17528,19 @@ Because that's the best we can do without direct concept support.
 
 ##### Example
 
-    enable_if<???>
+    template <typename T>
+    enable_if_t<is_integral_v<T>> 
+    f(T v)
+    {
+        // ...
+    }
+
+    // Equivalent to:
+    template <Integral T>
+    void f(T v)
+    {
+        // ...
+    }
 
 ##### Note
 
