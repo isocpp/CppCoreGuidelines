@@ -17529,7 +17529,7 @@ Because that's the best we can do without direct concept support.
 ##### Example
 
     template <typename T>
-    enable_if_t<is_integral_v<T>> 
+    enable_if_t<is_integral_v<T>>
     f(T v)
     {
         // ...
