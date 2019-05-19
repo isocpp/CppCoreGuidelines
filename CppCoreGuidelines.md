@@ -5598,7 +5598,7 @@ An initialization explicitly states that initialization, rather than assignment,
 
 ##### Example, better still
 
-Instead of those `const char*`s we could use `gsl::string_span or (in C++17) `std::string_view`
+Instead of those `const char*`s we could use `gsl::string_span` or (in C++17) `std::string_view`
 as [a more general way to present arguments to a function](#Rstr-view):
 
     class D {   // Good
