@@ -1055,8 +1055,8 @@ There are several more performance bugs and gratuitous complication.
         for (int i = 0; i < strlen(s); ++i) s[i] = tolower(s[i]);
     }
 
-For those who already see it, this is actually an example from production code.
-For those who don't, we can see that in our condition we have `i < strlen(s)`. This expression will be computed every loop, which means that `strlen` must walk an unchanging string every loop to discover it's length. Better to cache the length outside the loop and not incur that cost each iteration.
+This is actually an example from production code.
+We can see that in our condition we have `i < strlen(s)`. This expression will be evaluated on every iteration of the loop, which means that `strlen` must walk through string every loop to discover its length. While the string contents are changing, it's assumed that `toLower` will not affect the length of the string, so it's better to cache the length outside the loop and not incur that cost each iteration.
 
 ##### Note
 
