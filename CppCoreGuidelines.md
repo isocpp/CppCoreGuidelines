@@ -1962,8 +1962,8 @@ This `draw2()` passes the same amount of information to `draw()`, but makes the 
 
 ##### Exception
 
-Use `zstring` and `czstring` to represent a C-style, zero-terminated strings.
-But when doing so, use `string_span` from the [GSL](#GSL) to prevent range errors.
+Use `zstring` and `czstring` to represent C-style, zero-terminated strings.
+But when doing so, use `std::string_view` or `string_span` from the [GSL](#GSL) to prevent range errors.
 
 ##### Enforcement
 
