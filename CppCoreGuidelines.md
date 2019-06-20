@@ -2176,10 +2176,6 @@ Different compilers implement different binary layouts for classes, exception ha
 
 ##### Exception
 
-You can carefully craft an interface using a few carefully selected higher-level C++ types. See ???.
-
-##### Exception
-
 Common ABIs are emerging on some platforms freeing you from the more draconian restrictions.
 
 ##### Note
