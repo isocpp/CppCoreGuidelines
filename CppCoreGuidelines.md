@@ -3308,6 +3308,8 @@ Passing a `span` object as an argument is exactly as efficient as passing a pair
 C-style strings are ubiquitous. They are defined by convention: zero-terminated arrays of characters.
 We must distinguish C-style strings from a pointer to a single character or an old-fashioned pointer to an array of characters.
 
+If you don't need null termination, use `string_view`.
+
 ##### Example
 
 Consider:
