@@ -13221,7 +13221,7 @@ For example
 
 ##### Enforcement
 
-Hard: there is a lot of code using `unsigned` and we don't offer a practical positive number type.
+See ES.100 Enforcements.
 
 
 ### <a name="Res-subscripts"></a>ES.107: Don't use `unsigned` for subscripts, prefer `gsl::index`
