@@ -10717,7 +10717,7 @@ Use `={...}` if you really want an `initializer_list<T>`
 
 `={}` gives copy initialization whereas `{}` gives direct initialization.
 Like the distinction between copy-initialization and direct-initialization itself, this can lead to surprises.
-`{}` accepts `explicit` constructors; `={}` does not`. For example:
+`{}` accepts `explicit` constructors; `={}` does not. For example:
 
     struct Z { explicit Z() {} };
 
