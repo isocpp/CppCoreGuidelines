@@ -18603,7 +18603,7 @@ Source file rule summary:
 * [SF.9: Avoid cyclic dependencies among source files](#Rs-cycles)
 * [SF.10: Avoid dependencies on implicitly `#include`d names](#Rs-implicit)
 * [SF.11: Header files should be self-contained](#Rs-contained)
-* [SF.12: Use the quoted or angle bracket form of `#include`  to identify the scope of dependencies](#Rs-incscope)
+* [SF.12: Use the quoted or angle bracket form of `#include` to identify the scope of dependencies](#Rs-incscope)
 
 * [SF.20: Use `namespace`s to express logical structure](#Rs-namespace)
 * [SF.21: Don't use an unnamed (anonymous) namespace in a header](#Rs-unnamed)
@@ -19052,7 +19052,7 @@ Library creators should put their headers in a folder and have clients include t
 
 ##### Enforcement
 
-A test should verify that the headers referenced are found via INCLUDES for the `<>` form and in the directory next to the including file for `""`.
+A test should verify that the headers referenced are found via the list of directories searched for include files for the `<>` form and in the directory next to the including file for `""`.
 
 ### <a name="Rs-namespace"></a>SF.20: Use `namespace`s to express logical structure
 
