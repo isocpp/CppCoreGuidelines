@@ -19032,21 +19032,21 @@ Failing to follow this results in difficult to diagnose errors for clients of a 
 
 A test should verify that the header file itself compiles or that a cpp file which only includes the header file compiles.
 
-### <a name="Rs-incscope"></a>SF.12: Use the quoted or angle bracket form of `#include`  to identify the scope of dependencies
+### <a name="Rs-incscope"></a>SF.12: Use the quoted or angle bracket form of `#include` to identify the scope of dependencies
 
 ##### Reason
 
 To understand dependencies it is important to know where included files come from. Given the different search algorithms, 
-the angle form (`<>`) identifies global scope, the quoted (`""`), files within the project (files co-located with use of the include statement).
+the angle form (`<>`) identifies global scope, the quoted (`""`), files within the project (in the same directory as the including source file).
 
 ##### Example
 
-    #include <string>       // From the standard library, referenced via INCLUDES, use the <> form
+    #include <string>       // From the standard library, referenced via include directories, use the <> form
     #include "helpers.h"    // A peer of the file including it, use "" form
 
 ##### Note
 
-Failing to follow this results in difficult to diagnose errors due to picking up the wrong file by incorrectly specifying the scope when it is included.
+Failing to follow this results in difficult to diagnose errors when the wrong file is found due to the incorrectly specified include scope.
 
 Library creators should put their headers in a folder and have clients include those files using the relative path `#include <some_library/common.h>`
 
