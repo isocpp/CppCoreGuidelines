@@ -19042,7 +19042,7 @@ the angle form (`<>`) identifies global scope, the quoted (`""`), files within t
 ##### Example
 
     #include <string>       // From the standard library, referenced via include directories, use the <> form
-    #include "helpers.h"    // A peer of the file including it, use "" form
+    #include "helpers.h"    // In the same directory, use "" form
 
 ##### Note
 
