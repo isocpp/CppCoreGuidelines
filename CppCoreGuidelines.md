@@ -6658,7 +6658,7 @@ resource management problems.
         return sv;
     }
 
-    A user can reasonably assume that returning a standard-like container is cheap.
+A user can reasonably assume that returning a standard-like container is cheap.
 
 ##### Enforcement
 
