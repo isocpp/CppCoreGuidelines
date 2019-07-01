@@ -8473,7 +8473,7 @@ So far, so good, but we can easily misuse the `union`:
     cout << v.x << '\n';    // BAD, undefined behavior: v holds a double, but we read it as an int
 
 Note that the type error happened without any explicit cast.
-When we tested that program the last value printed was `1683627180` which it the integer value for the bit pattern for `987.654`.
+When we tested that program the last value printed was `1683627180` which is the integer value for the bit pattern for `987.654`.
 What we have here is an "invisible" type error that happens to give a result that could easily look innocent.
 
 And, talking about "invisible", this code produced no output:
