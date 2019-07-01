@@ -7904,12 +7904,12 @@ Avoid resource leaks.
 
 ##### Reason
 
- `make_unique` gives a more concise statement of the construction.
+`make_unique` gives a more concise statement of the construction.
 It also ensures exception safety in complex expressions.
 
 ##### Example
 
-    unique_ptr<Foo> p {new<Foo>{7}};   // OK: but repetitive
+    unique_ptr<Foo> p {new Foo{7}};    // OK: but repetitive
 
     auto q = make_unique<Foo>(7);      // Better: no repetition of Foo
 
@@ -7935,14 +7935,14 @@ It also ensures exception safety in complex expressions.
 
 ##### Reason
 
- `make_shared` gives a more concise statement of the construction.
+`make_shared` gives a more concise statement of the construction.
 It also gives an opportunity to eliminate a separate allocation for the reference counts, by placing the `shared_ptr`'s use counts next to its object.
 
 ##### Example
 
     void test() {
         // OK: but repetitive; and separate allocations for the Bar and shared_ptr's use count
-        shared_ptr<Bar> p {new<Bar>{7}};
+        shared_ptr<Bar> p {new Bar{7}};
 
         auto q = make_shared<Bar>(7);   // Better: no repetition of Bar; one object
     }
