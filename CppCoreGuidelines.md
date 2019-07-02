@@ -9119,7 +9119,7 @@ Some interfaces cannot be simply annotated with `owner` because they need to rem
 ##### Note
 
 `owner<T*>` has no default semantics beyond `T*`. It can be used without changing any code using it and without affecting ABIs.
-It is simply a indicator to programmers and analysis tools.
+It is simply an indicator to programmers and analysis tools.
 For example, if an `owner<T*>` is a member of a class, that class better have a destructor that `delete`s it.
 
 ##### Example, bad
