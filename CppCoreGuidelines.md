@@ -6658,7 +6658,7 @@ resource management problems.
         return sv;
     }
 
-A user can reasonably assume that returning a standard-like container is cheap.
+    A user can reasonably assume that returning a standard-like container is cheap.
 
 ##### Enforcement
 
@@ -7904,12 +7904,12 @@ Avoid resource leaks.
 
 ##### Reason
 
-`make_unique` gives a more concise statement of the construction.
+ `make_unique` gives a more concise statement of the construction.
 It also ensures exception safety in complex expressions.
 
 ##### Example
 
-    unique_ptr<Foo> p {new Foo{7}};    // OK: but repetitive
+    unique_ptr<Foo> p {new<Foo>{7}};   // OK: but repetitive
 
     auto q = make_unique<Foo>(7);      // Better: no repetition of Foo
 
@@ -7935,14 +7935,14 @@ It also ensures exception safety in complex expressions.
 
 ##### Reason
 
-`make_shared` gives a more concise statement of the construction.
+ `make_shared` gives a more concise statement of the construction.
 It also gives an opportunity to eliminate a separate allocation for the reference counts, by placing the `shared_ptr`'s use counts next to its object.
 
 ##### Example
 
     void test() {
         // OK: but repetitive; and separate allocations for the Bar and shared_ptr's use count
-        shared_ptr<Bar> p {new Bar{7}};
+        shared_ptr<Bar> p {new<Bar>{7}};
 
         auto q = make_shared<Bar>(7);   // Better: no repetition of Bar; one object
     }
@@ -8473,7 +8473,7 @@ So far, so good, but we can easily misuse the `union`:
     cout << v.x << '\n';    // BAD, undefined behavior: v holds a double, but we read it as an int
 
 Note that the type error happened without any explicit cast.
-When we tested that program the last value printed was `1683627180` which is the integer value for the bit pattern for `987.654`.
+When we tested that program the last value printed was `1683627180` which it the integer value for the bit pattern for `987.654`.
 What we have here is an "invisible" type error that happens to give a result that could easily look innocent.
 
 And, talking about "invisible", this code produced no output:
@@ -8727,7 +8727,7 @@ Switching on an enumeration is common and the compiler can warn against unusual 
         }
     }
 
-Such off-by-one `switch`-statements are often the results of an added enumerator and insufficient testing.
+Such off-by-one switch`statements are often the results of an added enumerator and insufficient testing.
 
 ##### Enforcement
 
@@ -10717,7 +10717,7 @@ Use `={...}` if you really want an `initializer_list<T>`
 
 `={}` gives copy initialization whereas `{}` gives direct initialization.
 Like the distinction between copy-initialization and direct-initialization itself, this can lead to surprises.
-`{}` accepts `explicit` constructors; `={}` does not. For example:
+`{}` accepts `explicit` constructors; `={}` does not`. For example:
 
     struct Z { explicit Z() {} };
 
@@ -20623,9 +20623,6 @@ Most of the concepts below are defined in [the Ranges TS](http://www.open-std.or
 * `String`   // ???
 * `Number`   // ???
 * `Sortable`
-* `Pointer`  // A type with `*`, `->`, `==`, and default construction (default construction is assumed to set the singular "null" value); see [smart pointers](#SS-gsl-smartptrconcepts)
-* `Unique_ptr`  // A type that matches `Pointer`, has move (not copy), and matches the Lifetime profile criteria for a `unique` owner type; see [smart pointers](#SS-gsl-smartptrconcepts)
-* `Shared_ptr`   // A type that matches `Pointer`, has copy, and matches the Lifetime profile criteria for a `shared` owner type; see [smart pointers](#SS-gsl-smartptrconcepts)
 * `EqualityComparable`   // ???Must we suffer CaMelcAse???
 * `Convertible`
 * `Common`
@@ -20643,7 +20640,9 @@ Most of the concepts below are defined in [the Ranges TS](http://www.open-std.or
 
 ### <a name="SS-gsl-smartptrconcepts"></a>GSL.ptr: Smart pointer concepts
 
-See [Lifetime paper](https://github.com/isocpp/CppCoreGuidelines/blob/master/docs/Lifetime.pdf).
+* `Pointer`  // A type with `*`, `->`, `==`, and default construction (default construction is assumed to set the singular "null" value)
+* `Unique_ptr`  // A type that matches `Pointer`, is movable, and is not copyable
+* `Shared_ptr`   // A type that matches `Pointer`, and is copyable
 
 # <a name="S-naming"></a>NL: Naming and layout rules
 
