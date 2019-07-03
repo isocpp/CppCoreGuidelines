@@ -7909,7 +7909,7 @@ It also ensures exception safety in complex expressions.
 
 ##### Example
 
-    unique_ptr<Foo> p {new Foo{7}};   // OK: but repetitive
+    unique_ptr<Foo> p {new Foo{7}};    // OK: but repetitive
 
     auto q = make_unique<Foo>(7);      // Better: no repetition of Foo
 
@@ -8727,7 +8727,7 @@ Switching on an enumeration is common and the compiler can warn against unusual 
         }
     }
 
-Such off-by-one `switch`statements are often the results of an added enumerator and insufficient testing.
+Such off-by-one `switch`-statements are often the results of an added enumerator and insufficient testing.
 
 ##### Enforcement
 
