@@ -5488,7 +5488,7 @@ Copy and move constructors should not be made `explicit` because they do not per
 
 ##### Enforcement
 
-(Simple) Single-argument constructors should be declared `explicit`. Good single argument non-`explicit` constructors are rare in most code based. Warn for all that are not on a "positive list".
+(Simple) Single-argument constructors should be declared `explicit`. Good single argument non-`explicit` constructors are rare in most code bases. Warn for all that are not on a "positive list".
 
 ### <a name="Rc-order"></a>C.47: Define and initialize member variables in the order of member declaration
 
