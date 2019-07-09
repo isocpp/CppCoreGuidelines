@@ -1,8 +1,5 @@
 # This is the configuration for Travis CI, a free github-integrated service that runs this script for each pull request (if configured)
 
-# Be nice to travis, allow docker builds, must not use sudo below
-sudo: false
-
 # provides gcc, clang, make, scons, cmake
 language: c++
 
