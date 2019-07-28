@@ -18530,7 +18530,7 @@ Use a C++ compiler.
 
 ##### Reason
 
-That subset can be compiled with both C and C++ compilers, and when compiled as C++ is better type checked than "pure C."
+That subset can be compiled with both C and C++ compilers, and when compiled as C++ is better type checked than "pure C".
 
 ##### Example
 
