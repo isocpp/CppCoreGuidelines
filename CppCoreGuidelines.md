@@ -19212,7 +19212,7 @@ People working with code for which that difference matters are quite capable of 
 
 Usually you need to add and remove elements from the container, so use `vector` by default; if you don't need to modify the container's size, use `array`.
 
-Even when other containers seem more suited, such a `map` for O(log N) lookup performance or a `list` for efficient insertion in the middle, a `vector` will usually still perform better for containers up to a few KB in size.
+Even when other containers seem more suited, such as `map` for O(log N) lookup performance or a `list` for efficient insertion in the middle, a `vector` will usually still perform better for containers up to a few KB in size.
 
 ##### Note
 
@@ -19331,7 +19331,7 @@ The important issue of non-ASCII character sets and encodings (e.g., `wchar_t`, 
 **See also**: [regular expressions](#SS-regex)
 
 Here, we use "sequence of characters" or "string" to refer to a sequence of characters meant to be read as text (somehow, eventually).
-We don't consider
+We don't consider ???
 
 String summary:
 
@@ -19413,7 +19413,7 @@ Will this code pass a security review?
 
 ##### Note
 
-Do not assume that `string` is slower than lower-level techniques without measurement and remember than not all code is performance critical.
+Do not assume that `string` is slower than lower-level techniques without measurement and remember that not all code is performance critical.
 [Don't optimize prematurely](#Rper-Knuth)
 
 ##### Enforcement
@@ -19688,7 +19688,7 @@ implicit memory management, and `locale` handling.
 
 If you need I/O performance, you can almost always do better than `printf()`.
 
-`gets()` `scanf()` using `s`, and `printf()` using `%s` are security hazards (vulnerable to buffer overflow and generally error-prone).
+`gets()`, `scanf()` using `%s`, and `printf()` using `%s` are security hazards (vulnerable to buffer overflow and generally error-prone).
 In C11, they are replaced by `gets_s()`, `scanf_s()`, and `printf_s()` as safer alternatives, but they are still not type safe.
 
 ##### Enforcement
