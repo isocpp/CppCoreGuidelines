@@ -15644,7 +15644,7 @@ Instead, use a reference:
 
     catch (exception& e) { /* ... */ }
 
-of - typically better still - a `const` reference:
+or - typically better still - a `const` reference:
 
     catch (const exception& e) { /* ... */ }
 
@@ -15917,8 +15917,8 @@ Systematic use of any error-handling strategy minimizes the chance of forgetting
 
 There are several issues to be addressed:
 
-* how do you transmit an error indicator from out of a function?
-* how do you release all resources from a function before doing an error exit?
+* How do you transmit an error indicator from out of a function?
+* How do you release all resources from a function before doing an error exit?
 * What do you use as an error indicator?
 
 In general, returning an error indicator implies returning two values: The result and an error indicator.
