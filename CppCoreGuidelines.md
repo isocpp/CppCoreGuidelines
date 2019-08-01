@@ -10824,7 +10824,7 @@ As an optimization, you may want to reuse a buffer as a scratch pad, but even th
         for (auto& o : objects)
         {
             // First part of the work.
-            generate_first_String(buffer, o);
+            generate_first_string(buffer, o);
             write_to_file(buffer);
 
             // Second part of the work.
@@ -11094,6 +11094,7 @@ Requires messy cast-and-macro-laden code to get working right.
     }
 
 **Alternative**: Overloading. Templates. Variadic templates.
+
     #include <iostream>
 
     void error(int severity)
@@ -11555,16 +11556,16 @@ We also include lossy arithmetic casts, such as from a negative floating point t
     unsigned u = 0;
 
     u = d;                          // BAD
-    u = narrow_cast<unsigned>(d);   // OK (you asked for it): u becomes 0
+    u = narrow_cast<unsigned>(d);   // OK (you asked for it): u becomes 4294967289
     u = narrow<unsigned>(d);        // OK: throws narrowing_error
 
 ##### Enforcement
 
 A good analyzer can detect all narrowing conversions. However, flagging all narrowing conversions will lead to a lot of false positives. Suggestions:
 
-* flag all floating-point to integer conversions (maybe only `float`->`char` and `double`->`int`. Here be dragons! we need data)
-* flag all `long`->`char` (I suspect `int`->`char` is very common. Here be dragons! we need data)
-* consider narrowing conversions for function arguments especially suspect
+* Flag all floating-point to integer conversions (maybe only `float`->`char` and `double`->`int`. Here be dragons! we need data).
+* Flag all `long`->`char` (I suspect `int`->`char` is very common. Here be dragons! we need data).
+* Consider narrowing conversions for function arguments especially suspect.
 
 ### <a name="Res-nullptr"></a>ES.47: Use `nullptr` rather than `0` or `NULL`
 
@@ -11648,11 +11649,11 @@ Casts are widely (mis) used. Modern C++ has rules and constructs that eliminate 
 
 ##### Enforcement
 
-* Force the elimination of C-style casts, except on a function with a `[[nodiscard]]` return
-* Warn if there are many functional style casts (there is an obvious problem in quantifying 'many')
+* Force the elimination of C-style casts, except on a function with a `[[nodiscard]]` return.
+* Warn if there are many functional style casts (there is an obvious problem in quantifying 'many').
 * The [type profile](#Pro-type-reinterpretcast) bans `reinterpret_cast`.
-* Warn against [identity casts](#Pro-type-identitycast) between pointer types, where the source and target types are the same (#Pro-type-identitycast)
-* Warn if a pointer cast could be [implicit](#Pro-type-implicitpointercast)
+* Warn against [identity casts](#Pro-type-identitycast) between pointer types, where the source and target types are the same (#Pro-type-identitycast).
+* Warn if a pointer cast could be [implicit](#Pro-type-implicitpointercast).
 
 ### <a name="Res-casts-named"></a>ES.49: If you must use a cast, use a named cast
 
@@ -12318,7 +12319,7 @@ There are two potential problems with testing for `nullptr`:
 * the test can be redundant and/or relatively expensive
 * it is not obvious if the test is to protect against a violation or part of the required logic.
 
-
+<!-- comment needed for code block after list -->
     void f2(int* p) // state that p is not supposed to be nullptr
     {
         assert(p);
