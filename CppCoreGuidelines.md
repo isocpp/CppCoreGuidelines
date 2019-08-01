@@ -18881,6 +18881,12 @@ Doing so takes away an `#include`r's ability to effectively disambiguate and to 
         copy(/*...*/);    // now overloads local ::copy and std::copy, could be ambiguous
     }
 
+##### Note
+
+An exception is `using namespace std::literals;`. This is necessary to use string literals
+in header files and given [the rules](http://eel.is/c++draft/over.literal) - users are required 
+to name their own UDLs `operator""_x` - they will not collide with the standard library.
+
 ##### Enforcement
 
 Flag `using namespace` at global scope in a header file.
