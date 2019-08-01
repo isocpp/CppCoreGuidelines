@@ -7685,6 +7685,10 @@ You can safely access a named polymorphic object in the scope of its definition,
         d.f();   // OK
     }
 
+##### See also
+
+[A polymorphic class should suppress copying](#Rc-copy-virtual)
+
 ##### Enforcement
 
 Flag all slicing.
