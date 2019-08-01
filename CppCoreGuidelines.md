@@ -5892,7 +5892,7 @@ After a copy `x` and `y` can be independent objects (value semantics, the way no
 
 ##### Note
 
-Prefer copy semantics unless you are building a "smart pointer". Value semantics is the simplest to reason about and what the standard-library facilities expect.
+Prefer value semantics unless you are building a "smart pointer". Value semantics is the simplest to reason about and what the standard-library facilities expect.
 
 ##### Enforcement
 
