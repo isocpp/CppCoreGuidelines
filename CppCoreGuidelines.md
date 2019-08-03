@@ -21506,7 +21506,8 @@ Here is an example of the last option:
         class Token {};
 
     public:
-        // constructor needs to be public so that make_shared can access it. protected access level is gained by requiring a Token.
+        // constructor needs to be public so that make_shared can access it.
+		// protected access level is gained by requiring a Token.
         explicit B(Token) { /* ... */ }  // create an imperfectly initialized object
         virtual void f() = 0;
 
@@ -21530,7 +21531,8 @@ Here is an example of the last option:
         class Token {};
 
     public:
-        // constructor needs to be public so that make_shared can access it. protected access level is gained by requiring a Token.
+        // constructor needs to be public so that make_shared can access it.
+		// protected access level is gained by requiring a Token.
         explicit D(Token) : B{ B::Token{} } {}
         void f() override { /* ...  */ };
 
