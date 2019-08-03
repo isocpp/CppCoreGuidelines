@@ -5663,7 +5663,7 @@ The return type of the factory should normally be `unique_ptr` by default; if so
 
     shared_ptr<D> p = D::create<D>();  // creating a D object
 
-`make_shared` requires that the constructor is public. By requiring a protected `Token` the constructur cannot be publicly called anymore, so we avoid an incompletely constructed object escaping into the wild.
+`make_shared` requires that the constructor is public. By requiring a protected `Token` the constructor cannot be publicly called anymore, so we avoid an incompletely constructed object escaping into the wild.
 By providing the factory function `create()`, we make construction (on the free store) convenient.
 
 ##### Note
