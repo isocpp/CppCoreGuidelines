@@ -5620,7 +5620,11 @@ The return type of the factory should normally be `unique_ptr` by default; if so
 
     class B {
     public:
-        B() { /* ... */ f(); /* ... */ }   // BAD: virtual call in constructor
+        B() {
+            /* ... */
+            f();   // BAD: virtual call in constructor, see Item 49.1 in [SuttAlex05](#SuttAlex05)
+            /* ... */
+        }
 
         virtual void f() = 0;
     };
@@ -21496,7 +21500,11 @@ Here is an example of the last option:
 
     class B {
     public:
-        B() { /* ... */ f(); /* ... */ }   // BAD: virtual call in constructor
+        B() {
+            /* ... */
+            f();   // BAD: virtual call in constructor, see Item 49.1 in [SuttAlex05](#SuttAlex05)
+            /* ... */
+        }
 
         virtual void f() = 0;
     };
@@ -21546,7 +21554,7 @@ Here is an example of the last option:
 This design requires the following discipline:
 
 * Derived classes such as `D` must not expose a publicly callable constructor. Otherwise, `D`'s users could create `D` objects that don't invoke `post_initialize`.
-* Allocation is limited to `operator new`. `B` can, however, override `new` (see Items 45 and 46).
+* Allocation is limited to `operator new`. `B` can, however, override `new` (see Items 45 and 46 in [SuttAlex05](#SuttAlex05)).
 * `D` must define a constructor with the same parameters that `B` selected. Defining several overloads of `create` can assuage this problem, however; and the overloads can even be templated on the argument types.
 
 If the requirements above are met, the design guarantees that `post_initialize` has been called for any fully constructed `B`-derived object. `post_initialize` doesn't need to be virtual; it can, however, invoke virtual functions freely.
