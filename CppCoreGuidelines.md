@@ -5622,7 +5622,7 @@ The return type of the factory should normally be `unique_ptr` by default; if so
     public:
         B() {
             /* ... */
-            f();   // BAD: virtual call in constructor, see Item 49.1 in [SuttAlex05](#SuttAlex05)
+            f(); // BAD: C.82: Don't call virtual functions in constructors and destructors
             /* ... */
         }
 
@@ -21502,7 +21502,7 @@ Here is an example of the last option:
     public:
         B() {
             /* ... */
-            f();   // BAD: virtual call in constructor, see Item 49.1 in [SuttAlex05](#SuttAlex05)
+            f(); // BAD: C.82: Don't call virtual functions in constructors and destructors
             /* ... */
         }
 
