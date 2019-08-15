@@ -19711,7 +19711,8 @@ implicit memory management, and `locale` handling.
 If you need I/O performance, you can almost always do better than `printf()`.
 
 `gets()`, `scanf()` using `%s`, and `printf()` using `%s` are security hazards (vulnerable to buffer overflow and generally error-prone).
-In C11, they are replaced by `gets_s()`, `scanf_s()`, and `printf_s()` as safer alternatives, but they are still not type safe.
+C11 defines some "optional extensions" that do extra checking of their arguments.
+If present in your C library, `gets_s()`, `scanf_s()`, and `printf_s()` may be safer alternatives, but they are still not type safe.
 
 ##### Enforcement
 
