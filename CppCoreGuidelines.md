@@ -20095,7 +20095,7 @@ and errors (when we didn't deal correctly with semi-constructed objects consiste
             if (data) {
                 return false;
             }
-            data = (char*) malloc(x*y*sizeof(int));
+            data = (char*) malloc(mx*my*sizeof(int));
             return data != nullptr;
         }
     
