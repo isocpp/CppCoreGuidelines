@@ -13390,7 +13390,7 @@ Simple code can be very fast. Optimizers sometimes do marvels with simple code
 
 ##### Example, bad
 
-    // intended to be faster, but is actually slower
+    // intended to be faster, but is often slower
 
     vector<uint8_t> v(100000);
 
