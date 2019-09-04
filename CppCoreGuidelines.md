@@ -9120,7 +9120,7 @@ we hope the guidelines will help the development of such tools,
 and we even contributed (and contribute) to the research and development in this area.
 However, it will take time: "legacy code" is generated faster than we can renovate old code, and so it will be for a few years.
 
-This code cannot all be rewritten (ever assuming good code transformation software), especially not soon.
+This code cannot all be rewritten (even assuming good code transformation software), especially not soon.
 This problem cannot be solved (at scale) by transforming all owning pointers to `unique_ptr`s and `shared_ptr`s,
 partly because we need/use owning "raw pointers" as well as simple pointers in the implementation of our fundamental resource handles.
 For example, common `vector` implementations have one owning pointer and two non-owning pointers.
