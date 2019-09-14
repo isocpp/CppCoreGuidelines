@@ -20533,6 +20533,9 @@ Where desirable, they can be "instrumented" with additional functionality (e.g.,
 These Guidelines assume a `variant` type, but this is not currently in GSL.
 Eventually, use [the one voted into C++17](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/p0088r3.html).
 
+Some of the types listed below may not be supported in the library you use due to technical reasons such as limitations in the current versions of C++.
+Therefore, please consult your GSL documentation to find out more.
+
 Summary of GSL components:
 
 * [GSL.view: Views](#SS-views)
