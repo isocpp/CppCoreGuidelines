@@ -14117,7 +14117,7 @@ Concurrency rule summary:
 * [CP.22: Never call unknown code while holding a lock (e.g., a callback)](#Rconc-unknown)
 * [CP.23: Think of a joining `thread` as a scoped container](#Rconc-join)
 * [CP.24: Think of a `thread` as a global container](#Rconc-detach)
-* [CP.25: Prefer `gsl::joining_thread` over `std::thread`](#Rconc-joining_thread)
+* [CP.25: Prefer `gsl::jthread` over `std::thread`](#Rconc-jthread)
 * [CP.26: Don't `detach()` a thread](#Rconc-detached_thread)
 * [CP.31: Pass small amounts of data between threads by value, rather than by reference or pointer](#Rconc-data-by-value)
 * [CP.32: To share ownership between unrelated `thread`s use `shared_ptr`](#Rconc-shared)
@@ -14286,22 +14286,22 @@ If a `thread` joins, we can safely pass pointers to objects in the scope of the 
     void some_fct(int* p)
     {
         int x = 77;
-        joining_thread t0(f, &x);           // OK
-        joining_thread t1(f, p);            // OK
-        joining_thread t2(f, &glob);        // OK
+        jthread t0(f, &x);             // OK
+        jthread t1(f, p);              // OK
+        jthread t2(f, &glob);          // OK
         auto q = make_unique<int>(99);
-        joining_thread t3(f, q.get());      // OK
+        jthread t3(f, q.get());        // OK
         // ...
     }
 
-A `gsl::joining_thread` is a `std::thread` with a destructor that joins and that cannot be `detached()`.
+A `gsl::jthread` is a `std::thread` with a destructor that joins and that cannot be `detached()`.
 By "OK" we mean that the object will be in scope ("live") for as long as a `thread` can use the pointer to it.
 The fact that `thread`s run concurrently doesn't affect the lifetime or ownership issues here;
 these `thread`s can be seen as just a function object called from `some_fct`.
 
 ##### Enforcement
 
-Ensure that `joining_thread`s don't `detach()`.
+Ensure that `jthread`s don't `detach()`.
 After that, the usual lifetime and ownership (for local objects) enforcement applies.
 
 ### <a name="Rconc-detach"></a>CP.24: Think of a `thread` as a global container
@@ -14351,7 +14351,7 @@ of objects with static storage duration, and thus accesses to such objects might
 
 ##### Note
 
-This rule is redundant if you [don't `detach()`](#Rconc-detached_thread) and [use `gsl::joining_thread`](#Rconc-joining_thread).
+This rule is redundant if you [don't `detach()`](#Rconc-detached_thread) and [use `gsl::jthread`](#Rconc-jthread).
 However, converting code to follow those guidelines could be difficult and even impossible for third-party libraries.
 In such cases, the rule becomes essential for lifetime safety and type safety.
 
@@ -14364,11 +14364,11 @@ After that, the usual lifetime and ownership (for global objects) enforcement ap
 
 Flag attempts to pass local variables to a thread that might `detach()`.
 
-### <a name="Rconc-joining_thread"></a>CP.25: Prefer `gsl::joining_thread` over `std::thread`
+### <a name="Rconc-jthread"></a>CP.25: Prefer `gsl::jthread` over `std::thread`
 
 ##### Reason
 
-A `joining_thread` is a thread that joins at the end of its scope.
+A `jthread` is a thread that joins at the end of its scope.
 Detached threads are hard to monitor.
 It is harder to ensure absence of errors in detached threads (and potentially detached threads)
 
@@ -14439,7 +14439,7 @@ Because of old code and third party libraries using `std::thread` this rule can 
 
 Flag uses of `std::thread`:
 
-* Suggest use of `gsl::joining_thread`.
+* Suggest use of `gsl::jthread`.
 * Suggest ["exporting ownership"](#Rconc-detached_thread) to an enclosing scope if it detaches.
 * Seriously warn if it is not obvious whether if joins of detaches.
 
@@ -14474,7 +14474,7 @@ For example:
 
     void heartbeat();
 
-    gsl::joining_thread t(heartbeat);             // heartbeat is meant to run "forever"
+    gsl::jthread t(heartbeat);             // heartbeat is meant to run "forever"
 
 This heartbeat will (barring error, hardware problems, etc.) run for as long as the program does.
 
@@ -14482,12 +14482,12 @@ Sometimes, we need to separate the point of creation from the point of ownership
 
     void heartbeat();
 
-    unique_ptr<gsl::joining_thread> tick_tock {nullptr};
+    unique_ptr<gsl::jthread> tick_tock {nullptr};
 
     void use()
     {
         // heartbeat is meant to run as long as tick_tock lives
-        tick_tock = make_unique<gsl::joining_thread>(heartbeat);
+        tick_tock = make_unique<gsl::jthread>(heartbeat);
         // ...
     }
 
@@ -14611,10 +14611,10 @@ Instead, we could have a set of pre-created worker threads processing the messag
 
     void workers()  // set up worker threads (specifically 4 worker threads)
     {
-        joining_thread w1 {worker};
-        joining_thread w2 {worker};
-        joining_thread w3 {worker};
-        joining_thread w4 {worker};
+        jthread w1 {worker};
+        jthread w2 {worker};
+        jthread w3 {worker};
+        jthread w4 {worker};
     }
 
 ##### Note
@@ -20625,7 +20625,7 @@ for example, `Expects(p)` will become `[[expects: p]]`.
 * `narrow`         // `narrow<T>(x)` is `static_cast<T>(x)` if `static_cast<T>(x) == x` or it throws `narrowing_error`
 * `[[implicit]]`   // "Marker" to put on single-argument constructors to explicitly make them non-explicit.
 * `move_owner`     // `p = move_owner(q)` means `p = q` but ???
-* `joining_thread` // a RAII style version of `std::thread` that joins.
+* `jthread`        // a RAII style version of joinable and interruptible `std::thread`
 * `index`          // a type to use for all container and array indexing (currently an alias for `ptrdiff_t`)
 
 ## <a name="SS-gsl-concepts"></a>GSL.concept: Concepts
