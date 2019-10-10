@@ -4998,7 +4998,7 @@ Many have tried to devise a fool-proof scheme for dealing with failure in destru
 None have succeeded to come up with a general scheme.
 This can be a real practical problem: For example, what about a socket that won't close?
 The writer of a destructor does not know why the destructor is called and cannot "refuse to act" by throwing an exception.
-See [discussion](#Sd-dtor).
+See [discussion](#Sd-never-fail).
 To make the problem worse, many "close/release" operations are not retryable.
 If at all possible, consider failure to close/cleanup a fundamental design error and terminate.
 
