@@ -9890,7 +9890,7 @@ Statement rules:
 * [ES.75: Avoid `do`-statements](#Res-do)
 * [ES.76: Avoid `goto`](#Res-goto)
 * [ES.77: Minimize the use of `break` and `continue` in loops](#Res-continue)
-* [ES.78: Always end a non-empty `case` with a `break`](#Res-break)
+* [ES.78: Don't rely on implicit fallthrough in `switch` statements](#Res-break)
 * [ES.79: Use `default` to handle common cases (only)](#Res-default)
 * [ES.84: Don't try to declare a local variable with no name](#Res-noname)
 * [ES.85: Make empty statements visible](#Res-empty)
@@ -12663,11 +12663,11 @@ If you really need to break out a loop, a `break` is typically better than alter
 
 ???
 
-### <a name="Res-break"></a>ES.78: Always end a non-empty `case` with a `break`
+### <a name="Res-break"></a>ES.78: Don't rely on implicit fallthrough in `switch` statements
 
 ##### Reason
 
-Accidentally leaving out a `break` is a fairly common bug.
+Always end a non-empty `case` with a `break`. Accidentally leaving out a `break` is a fairly common bug.
 A deliberate fallthrough can be a maintenance hazard and should be rare and explicit.
 
 ##### Example
@@ -12692,6 +12692,16 @@ Multiple case labels of a single statement is OK:
     case 'f':
         do_something(x);
         break;
+    }
+
+Return statements in a case label are also OK:
+    switch (x) {
+    case 'a':
+        return 1;
+    case 'b':
+        return 2;
+    case 'c':
+        return 3;
     }
 
 ##### Exceptions
