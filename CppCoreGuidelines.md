@@ -4512,6 +4512,7 @@ Other default operations rules:
 * [C.86: Make `==` symmetric with respect of operand types and `noexcept`](#Rc-eq)
 * [C.87: Beware of `==` on base classes](#Rc-eq-base)
 * [C.89: Make a `hash` `noexcept`](#Rc-hash)
+* [C.90: Rely on constructors and assignment operators, not memset and memcpy](#Rc-memset)
 
 ## <a name="SS-defop"></a>C.defop: Default Operations
 
@@ -6538,6 +6539,40 @@ That tends to work better than "cleverness" for non-specialists.
 ##### Enforcement
 
 * Flag throwing `hash`es.
+
+### <a name="Rc-memset"></a>C.90: Rely on constructors and assignment operators, not `memset` and `memcpy`
+
+##### Reason
+
+The standard C++ mechanism to construct a an instance of a type is to call its constructor. As specified in [C.41: A constructor should create a fully initialized object](#Rc-complete). No additional intialization, such as by `memcpy`, should be required.
+A type will provide a copy constructor and/or copy assignment operator to appropriately make a copy of the class, preserving the type's invariants.  Using memcpy to copy a non-trivially copyable type can result in slicing, or data corruption. 
+
+##### Example, bad
+
+    struct base
+    {
+        virtual void update() = 0;
+    };
+
+    struct derived : public base
+    { 
+        void update() override {}
+    };
+
+    // goodbye v-tables
+    void f (derived& a, derived& b)
+    {
+        memset(&a, 0, sizeof(derived));
+        memcpy(&a, &b, sizeof(derived));
+    }
+
+    // the authors of the class should ensure a proper assignment operator 
+    // exists for the class
+    void g(derived& a, derived& b)
+    {
+        a = {};
+        b = a; 
+    }
 
 ## <a name="SS-containers"></a>C.con: Containers and other resource handles
 
