@@ -6544,7 +6544,7 @@ That tends to work better than "cleverness" for non-specialists.
 
 ##### Reason
 
-The standard C++ mechanism to construct a an instance of a type is to call its constructor. As specified in [C.41: A constructor should create a fully initialized object](#Rc-complete). No additional intialization, such as by `memcpy`, should be required.
+The standard C++ mechanism to construct a an instance of a type is to call its constructor. As specified in [C.41: A constructor should create a fully initialized object](#Rc-complete). No additional initialization, such as by `memcpy`, should be required.
 A type will provide a copy constructor and/or copy assignment operator to appropriately make a copy of the class, preserving the type's invariants.  Using memcpy to copy a non-trivially copyable type can result in slicing, or data corruption. 
 
 ##### Example, bad
@@ -6555,23 +6555,23 @@ A type will provide a copy constructor and/or copy assignment operator to approp
     };
 
     struct derived : public base
-    { 
+    {
         void update() override {}
     };
 
     // goodbye v-tables
-    void f (derived& a, derived& b)
+    void f(derived& a, derived& b)
     {
         memset(&a, 0, sizeof(derived));
         memcpy(&a, &b, sizeof(derived));
     }
 
-    // the authors of the class should ensure a proper assignment operator 
+    // the authors of the class should ensure a proper assignment operator
     // exists for the class
     void g(derived& a, derived& b)
     {
         a = {};
-        b = a; 
+        b = a;
     }
 
 ## <a name="SS-containers"></a>C.con: Containers and other resource handles
