@@ -6544,14 +6544,15 @@ That tends to work better than "cleverness" for non-specialists.
 
 ##### Reason
 
-The standard C++ mechanism to construct a an instance of a type is to call its constructor. As specified in [C.41: A constructor should create a fully initialized object](#Rc-complete). No additional initialization, such as by `memcpy`, should be required.
-A type will provide a copy constructor and/or copy assignment operator to appropriately make a copy of the class, preserving the type's invariants.  Using memcpy to copy a non-trivially copyable type can result in slicing, or data corruption. 
+The standard C++ mechanism to construct an instance of a type is to call its constructor. As specified in guideline [C.41](#Rc-complete): a constructor should create a fully initialized object. No additional initialization, such as by `memcpy`, should be required.
+A type will provide a copy constructor and/or copy assignment operator to appropriately make a copy of the class, preserving the type's invariants.  Using memcpy to copy a non-trivially copyable type has undefined behavior.  Frequently this results in slicing, or data corruption.
 
 ##### Example, bad
 
     struct base
     {
         virtual void update() = 0;
+        std::shared_ptr<int> sp;
     };
 
     struct derived : public base
@@ -6559,20 +6560,16 @@ A type will provide a copy constructor and/or copy assignment operator to approp
         void update() override {}
     };
 
-    // goodbye v-tables
-    void f(derived& a, derived& b)
+    void init(derived& a)
     {
         memset(&a, 0, sizeof(derived));
+    }
+
+    void copy(derived& a, derived& b)
+    {
         memcpy(&a, &b, sizeof(derived));
     }
 
-    // the authors of the class should ensure a proper assignment operator
-    // exists for the class
-    void g(derived& a, derived& b)
-    {
-        a = {};
-        b = a;
-    }
 
 ## <a name="SS-containers"></a>C.con: Containers and other resource handles
 
@@ -18928,7 +18925,7 @@ Doing so takes away an `#include`r's ability to effectively disambiguate and to 
 ##### Note
 
 An exception is `using namespace std::literals;`. This is necessary to use string literals
-in header files and given [the rules](http://eel.is/c++draft/over.literal) - users are required 
+in header files and given [the rules](http://eel.is/c++draft/over.literal) - users are required
 to name their own UDLs `operator""_x` - they will not collide with the standard library.
 
 ##### Enforcement
@@ -20111,12 +20108,12 @@ and errors (when we didn't deal correctly with semi-constructed objects consiste
             my = y;
             data = nullptr;
         }
-    
+
         ~Picture()
         {
             Cleanup();
         }
-    
+
         bool Init()
         {
             // invariant checks
@@ -20129,14 +20126,14 @@ and errors (when we didn't deal correctly with semi-constructed objects consiste
             data = (char*) malloc(mx*my*sizeof(int));
             return data != nullptr;
         }
-    
+
         void Cleanup()
         {
             if (data) free(data);
             data = nullptr;
         }
     };
-    
+
     Picture picture(100, 0); // not ready-to-use picture here
     // this will fail..
     if (!picture.Init()) {
@@ -20151,14 +20148,14 @@ and errors (when we didn't deal correctly with semi-constructed objects consiste
         size_t mx;
         size_t my;
         vector<char> data;
-    
+
         static size_t check_size(size_t s)
         {
             // invariant check
             Expects(s > 0);
             return s;
         }
-    
+
     public:
         // even more better would be a class for a 2D Size as one single parameter
         Picture(size_t x, size_t y)
@@ -20171,10 +20168,10 @@ and errors (when we didn't deal correctly with semi-constructed objects consiste
         }
         // compiler generated dtor does the job. (also see C.21)
     };
-    
+
     Picture picture1(100, 100);
     // picture is ready-to-use here...
-    
+
     // not a valid size for y,
     // default contract violation behavior will call std::terminate then
     Picture picture2(100, 0);
