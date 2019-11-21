@@ -301,6 +301,7 @@ md
 memberinit
 members'
 memcmp
+memcpy
 memmove
 memoization
 memoized
