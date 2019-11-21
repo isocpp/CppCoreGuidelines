@@ -6547,7 +6547,7 @@ That tends to work better than "cleverness" for non-specialists.
 The standard C++ mechanism to construct an instance of a type is to call its constructor. As specified in guideline [C.41](#Rc-complete): a constructor should create a fully initialized object. No additional initialization, such as by `memcpy`, should be required.
 A type will provide a copy constructor and/or copy assignment operator to appropriately make a copy of the class, preserving the type's invariants.  Using memcpy to copy a non-trivially copyable type has undefined behavior.  Frequently this results in slicing, or data corruption.
 
-##### Example, bad
+##### Example, good
 
     struct base
     {
@@ -6560,15 +6560,27 @@ A type will provide a copy constructor and/or copy assignment operator to approp
         void update() override {}
     };
 
+##### Example, bad
+
     void init(derived& a)
     {
         memset(&a, 0, sizeof(derived));
     }
 
+This is type-unsafe and overwrites the vtable.
+
+##### Example, bad
+
     void copy(derived& a, derived& b)
     {
         memcpy(&a, &b, sizeof(derived));
     }
+
+This is also type-unsafe and overwrites the vtable.
+
+##### Enforcement
+
+- Flag passing a non-trivially-copyable type to `memset` or `memcpy`. 
 
 
 ## <a name="SS-containers"></a>C.con: Containers and other resource handles
