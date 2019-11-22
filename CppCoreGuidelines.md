@@ -18603,7 +18603,7 @@ Source file rule summary:
 * [SF.9: Avoid cyclic dependencies among source files](#Rs-cycles)
 * [SF.10: Avoid dependencies on implicitly `#include`d names](#Rs-implicit)
 * [SF.11: Header files should be self-contained](#Rs-contained)
-* [SF.12: Use the quoted or angle bracket form of `#include` to identify the scope of dependencies](#Rs-incscope)
+* [SF.12: Use the quoted or angle bracket form of `#include` to distinguish standard headers from others](#Rs-incscope)
 
 * [SF.20: Use `namespace`s to express logical structure](#Rs-namespace)
 * [SF.21: Don't use an unnamed (anonymous) namespace in a header](#Rs-unnamed)
@@ -19032,27 +19032,29 @@ Failing to follow this results in difficult to diagnose errors for clients of a 
 
 A test should verify that the header file itself compiles or that a cpp file which only includes the header file compiles.
 
-### <a name="Rs-incscope"></a>SF.12: Use the quoted or angle bracket form of `#include` to identify the scope of dependencies
+### <a name="Rs-incscope"></a>SF.12: Use the quoted or angle bracket form of `#include` to distinguish standard headers from others
 
 ##### Reason
 
 To understand dependencies it is important to know where included files come from. Given the different search algorithms, 
-the angle form (`<>`) identifies global scope, the quoted (`""`), files within the project (in the same directory as the including source file).
+the angle form (`<>`) identifies standard headers, the quoted (`""`) everything else.
 
 ##### Example
 
-    #include <string>       // From the standard library, referenced via include directories, use the <> form
-    #include "helpers.h"    // In the same directory, use "" form
+    #include <string>       // From the standard library, use the <> form
+    #include "helpers.h"    // A project specific file, use "" form
 
 ##### Note
 
-Failing to follow this results in difficult to diagnose errors when the wrong file is found due to the incorrectly specified include scope.
+This is specified [here](http://eel.is/c++draft/cpp.include) in the standard.
 
-Library creators should put their headers in a folder and have clients include those files using the relative path `#include <some_library/common.h>`
+Failing to follow this results in difficult to diagnose errors due to picking up the wrong file by incorrectly specifying the scope when it is included.
+
+Library creators should put their headers in a folder and have clients include those files using the relative path `#include "some_library/common.h"`
 
 ##### Enforcement
 
-A test should verify that the headers referenced are found via the list of directories searched for include files for the `<>` form and in the directory next to the including file for `""`.
+A test should verify that the headers referenced via `<>` are from the standard library and those using `""` are not.
 
 ### <a name="Rs-namespace"></a>SF.20: Use `namespace`s to express logical structure
 
