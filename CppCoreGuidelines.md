@@ -2821,6 +2821,8 @@ Advanced parameter passing:
 
 Use the advanced techniques only after demonstrating need, and document that need in a comment.
 
+For passing sequences of characters see [String](#SS-string).
+
 ### <a name="Rf-in"></a>F.16: For "in" parameters, pass cheaply-copied types by value and others by reference to `const`
 
 ##### Reason
