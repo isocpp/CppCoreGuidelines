@@ -1,6 +1,6 @@
 # <a name="main"></a>C++ Core Guidelines
 
-June 17, 2019
+December 8, 2019
 
 
 Editors:
@@ -19243,7 +19243,7 @@ Container rule summary:
 * [SL.con.1: Prefer using STL `array` or `vector` instead of a C array](#Rsl-arrays)
 * [SL.con.2: Prefer using STL `vector` by default unless you have a reason to use a different container](#Rsl-vector)
 * [SL.con.3: Avoid bounds errors](#Rsl-bounds)
-*  ???
+* [SL.con.4: don't use `memset` or `memcpy` for arguments that are not non-trivially-copyable](#Rsl-copy)
 
 ### <a name="Rsl-arrays"></a>SL.con.1: Prefer using STL `array` or `vector` instead of a C array
 
@@ -19394,6 +19394,48 @@ If code is using an unmodified standard library, then there are still workaround
 ??? insert link to a list of banned functions
 
 This rule is part of the [bounds profile](#SS-bounds).
+
+
+### <a name="Rsl-copy"></a>SL.con.4: don't use `memset` or `memcpy` for arguments that are not non-trivially-copyable
+
+##### Reason
+
+Doing so messes the semantics of the objects (e.g., by overwriting a `vptr`).
+
+##### Note
+
+Similarly for (w)memset, (w)memcpy, (w)memmove, and (w)memcmp
+
+##### Example
+
+    struct base {
+        virtual void update() = 0;
+    };
+
+    struct derived : public base { 
+        void update() override {}
+    };
+
+
+    void f (derived& a, derived& b) // goodbye v-tables     
+    {
+        memset(&a, 0, sizeof(derived));
+        memcpy(&a, &b, sizeof(derived));
+        memcmp(&a, &b, sizeof(derived));
+    }
+
+Insted, define proper default initialization, copy, and comparison functions
+
+    void g(derived& a, derived& b)
+    {
+        a = {};    // default initialize
+        b = a;     // copy
+        if (a == b) do_something(a,b);
+    }
+
+##### Enforcement
+
+* Flag the use of those functions for types theat are not trivially copyable
 
 **TODO Notes**:
 
