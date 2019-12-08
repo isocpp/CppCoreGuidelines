@@ -399,6 +399,13 @@ If you don't understand a rule or disagree with it, please visit its **Discussio
 If you feel that a discussion is missing or incomplete, enter an [Issue](https://github.com/isocpp/CppCoreGuidelines/issues)
 explaining your concerns and possibly a corresponding PR.
 
+Examples are written to illustate rules.
+* Examples are not intended to be production quality or to cover all tutorial dimensions.
+For example, many examples are language-technical and use names like `f`, `base`, and `x`.
+* We try to ensure that "good" examples follow the Core Guidelines.
+* Comments are often illustrating rules where they would be unnecessary and/or distracting in "real code."
+* We assume knowledge of the standard library. For example, we use plain `vector` rather tjan `srd::vector`.
+
 This is not a language manual.
 It is meant to be helpful, rather than complete, fully accurate on technical details, or a guide to existing code.
 Recommended information sources can be found in [the references](#S-references).
