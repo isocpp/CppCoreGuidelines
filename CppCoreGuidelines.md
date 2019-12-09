@@ -404,7 +404,7 @@ Examples are written to illustate rules.
 For example, many examples are language-technical and use names like `f`, `base`, and `x`.
 * We try to ensure that "good" examples follow the Core Guidelines.
 * Comments are often illustrating rules where they would be unnecessary and/or distracting in "real code."
-* We assume knowledge of the standard library. For example, we use plain `vector` rather tjan `srd::vector`.
+* We assume knowledge of the standard library. For example, we use plain `vector` rather than `std::vector`.
 
 This is not a language manual.
 It is meant to be helpful, rather than complete, fully accurate on technical details, or a guide to existing code.
@@ -6926,7 +6926,7 @@ Give `Goof` a virtual destructor and all is well.
 
 ##### Enforcement
 
-* Warn on any class that contains data members and also has an overridable (non-`final`) virtual function tht wasn't inherited from a base class.
+* Warn on any class that contains data members and also has an overridable (non-`final`) virtual function that wasn't inherited from a base class.
 
 ### <a name="Rh-separation"></a>C.122: Use abstract classes as interfaces when complete separation of interface and implementation is needed
 
@@ -19979,7 +19979,7 @@ Non-rule summary:
 
 ##### Reason
 
-Th "all declarations on top" rule is a legacy of old programming languages that didn't allow initialization of variables and constants after a statement.
+The "all declarations on top" rule is a legacy of old programming languages that didn't allow initialization of variables and constants after a statement.
 This leads to longer programs and more errors caused by uninitialized and wrongly initialized variables.
 
 ##### Example, bad
@@ -20176,7 +20176,7 @@ Individual classes are rarely a good logical unit of maintenance and distributio
 
 ##### Reason
 
-Splitting initialization into two rule leads to weaker invariants,
+Splitting initialization into two leads to weaker invariants,
 more complicated code (having to deal with semi-constructed objects),
 and errors (when we didn't deal correctly with semi-constructed objects consistently).
 
