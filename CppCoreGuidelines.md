@@ -9850,7 +9850,7 @@ The following should not pass code review:
     void my_code()
     {
         // BAD: passing pointer or reference obtained from a nonlocal smart pointer
-        //      that could be inadvertently reset somewhere inside f or it callees
+        //      that could be inadvertently reset somewhere inside f or its callees
         f(*g_p);
 
         // BAD: same reason, just passing it as a "this" pointer
@@ -12314,7 +12314,7 @@ wrong results, or memory corruption.
 
 This rule is an obvious and well-known language rule, but can be hard to follow.
 It takes good coding style, library support, and static analysis to eliminate violations without major overhead.
-This is a major part of the discussion of [C++'s resource- and type-safety model](#Stroustrup15).
+This is a major part of the discussion of [C++'s model for type- and resource-safety](#Stroustrup15).
 
 **See also**:
 
