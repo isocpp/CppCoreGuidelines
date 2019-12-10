@@ -12702,17 +12702,62 @@ consider `gsl::finally()` as a cleaner and more reliable alternative to `goto ex
 
 ##### Example
 
-    ???
+    switch(x){
+    case 1 :
+        while(/* some condition */){
+            //...
+        break;
+        } //Oops! break switch or break while intended?
+    case 2 :
+        //...
+        break;
+    }
 
 ##### Alternative
 
 Often, a loop that requires a `break` is a good candidate for a function (algorithm), in which case the `break` becomes a `return`.
 
-    ???
+    //BAD: break inside loop
+    void use1(){
+        std::vector<T> vec = {/* initialized with some values */};
+        T value;
+        for(const T item : vec){
+            if(/* some condition*/){
+                value = item;
+                break;
+            }
+        }
+        /* then do something with value */
+    }
+    
+    //GOOD: create a function and return inside loop
+    T search(const std::vector<T> &vec){
+        for(const T &item : vec){
+            if(/* some condition*/) return item;
+        }
+        return T(); //default value
+    }
+    
+    void use2(){
+        std::vector<T> vec = {/* initialized with some values */};
+        T value = search(vec);
+        /* then do something with value */
+    }
 
 Often, a loop that uses `continue` can equivalently and as clearly be expressed by an `if`-statement.
 
-    ???
+    for(int item : vec){ //BAD
+        if(item%2 == 0) continue;
+        if(item == 5) continue;
+        if(item > 10) continue;
+        /* do something with item */
+    }
+    
+    for(int item : vec){ //GOOD
+        if(item%2 != 0 && item != 5 && item <= 10){
+            /* do something with item */
+        }
+    }
 
 ##### Note
 
@@ -12721,7 +12766,7 @@ If you really need to break out a loop, a `break` is typically better than alter
 
 ##### Enforcement
 
-???
+Flag any use of `break` and `continue` inside a loop.
 
 ### <a name="Res-break"></a>ES.78: Don't rely on implicit fallthrough in `switch` statements
 
