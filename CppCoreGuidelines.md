@@ -19250,7 +19250,7 @@ Container rule summary:
 * [SL.con.1: Prefer using STL `array` or `vector` instead of a C array](#Rsl-arrays)
 * [SL.con.2: Prefer using STL `vector` by default unless you have a reason to use a different container](#Rsl-vector)
 * [SL.con.3: Avoid bounds errors](#Rsl-bounds)
-* [SL.con.4: don't use `memset` or `memcpy` for arguments that are not non-trivially-copyable](#Rsl-copy)
+* [SL.con.4: don't use `memset` or `memcpy` for arguments that are not trivially-copyable](#Rsl-copy)
 
 ### <a name="Rsl-arrays"></a>SL.con.1: Prefer using STL `array` or `vector` instead of a C array
 
@@ -19403,7 +19403,7 @@ If code is using an unmodified standard library, then there are still workaround
 This rule is part of the [bounds profile](#SS-bounds).
 
 
-### <a name="Rsl-copy"></a>SL.con.4: don't use `memset` or `memcpy` for arguments that are not non-trivially-copyable
+### <a name="Rsl-copy"></a>SL.con.4: don't use `memset` or `memcpy` for arguments that are not trivially-copyable
 
 ##### Reason
 
@@ -19431,7 +19431,7 @@ Similarly for (w)memset, (w)memcpy, (w)memmove, and (w)memcmp
         memcmp(&a, &b, sizeof(derived));
     }
 
-Insted, define proper default initialization, copy, and comparison functions
+Instead, define proper default initialization, copy, and comparison functions
 
     void g(derived& a, derived& b)
     {
@@ -19442,7 +19442,7 @@ Insted, define proper default initialization, copy, and comparison functions
 
 ##### Enforcement
 
-* Flag the use of those functions for types theat are not trivially copyable
+* Flag the use of those functions for types that are not trivially copyable
 
 **TODO Notes**:
 
