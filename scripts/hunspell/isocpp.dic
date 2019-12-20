@@ -616,7 +616,9 @@ virtuality
 virtuals
 VLAs
 volatile2
+vptr
 vr
+vtable
 vtbls
 vv
 w0

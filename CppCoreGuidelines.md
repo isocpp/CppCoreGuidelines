@@ -399,7 +399,8 @@ If you don't understand a rule or disagree with it, please visit its **Discussio
 If you feel that a discussion is missing or incomplete, enter an [Issue](https://github.com/isocpp/CppCoreGuidelines/issues)
 explaining your concerns and possibly a corresponding PR.
 
-Examples are written to illustate rules.
+Examples are written to illustrate rules.
+
 * Examples are not intended to be production quality or to cover all tutorial dimensions.
 For example, many examples are language-technical and use names like `f`, `base`, and `x`.
 * We try to ensure that "good" examples follow the Core Guidelines.
@@ -6589,8 +6590,7 @@ This is also type-unsafe and overwrites the vtable.
 
 ##### Enforcement
 
-- Flag passing a non-trivially-copyable type to `memset` or `memcpy`. 
-
+* Flag passing a non-trivially-copyable type to `memset` or `memcpy`. 
 
 ## <a name="SS-containers"></a>C.con: Containers and other resource handles
 
@@ -10540,7 +10540,7 @@ Assuming that there is a logical connection between `i` and `j`, that connection
 If the `make_related_widgets` function is otherwise redundant,
 we can eliminate it by using a lambda [ES.28](#Res-lambda-init):
 
-    auto [i, j] = [x]{ return (x) ? pair{f1(),f2()} : pair{f3(),f4()} }();    // C++17
+    auto [i, j] = [x]{ return (x) ? pair{f1(), f2()} : pair{f3(), f4()} }();    // C++17
 
 Using a value representing "uninitialized" is a symptom of a problem and not a solution:
 
@@ -10607,7 +10607,7 @@ However, such examples do tend to leave uninitialized variables accessible, so t
     int buf[max] = {};   // zero all elements; better in some situations
     f.read(buf, max);
 
-Because of the restrictive initialization rules for arrays and `std::array`, they offer the most commoncompelling examples of the need for this exception.
+Because of the restrictive initialization rules for arrays and `std::array`, they offer the most compelling examples of the need for this exception.
 
 When feasible use a library function that is known not to overflow. For example:
 
@@ -19419,12 +19419,12 @@ Similarly for (w)memset, (w)memcpy, (w)memmove, and (w)memcmp
         virtual void update() = 0;
     };
 
-    struct derived : public base { 
+    struct derived : public base {
         void update() override {}
     };
 
 
-    void f (derived& a, derived& b) // goodbye v-tables     
+    void f(derived& a, derived& b) // goodbye v-tables
     {
         memset(&a, 0, sizeof(derived));
         memcpy(&a, &b, sizeof(derived));
@@ -19437,7 +19437,7 @@ Instead, define proper default initialization, copy, and comparison functions
     {
         a = {};    // default initialize
         b = a;     // copy
-        if (a == b) do_something(a,b);
+        if (a == b) do_something(a, b);
     }
 
 ##### Enforcement
@@ -20129,7 +20129,7 @@ If you are in a hard-real-time system where you must guarantee completion of a t
 you need tools to back up such guarantees.
 As far as we know such tools are not available (at least not to most programmers).
 * the exception-handling run-time support takes up too much space
-This can be the case in small (usually embedded systesm).
+This can be the case in small (usually embedded systems).
 However, before abandoning exceptions consider what space consistent error-handling using error-codes would require
 and what failure to catch an error would cost.
 
