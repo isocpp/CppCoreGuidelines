@@ -1,6 +1,6 @@
 # <a name="main"></a>C++ Core Guidelines
 
-June 16, 2019
+December 8, 2019
 
 
 Editors:
@@ -399,6 +399,14 @@ If you don't understand a rule or disagree with it, please visit its **Discussio
 If you feel that a discussion is missing or incomplete, enter an [Issue](https://github.com/isocpp/CppCoreGuidelines/issues)
 explaining your concerns and possibly a corresponding PR.
 
+Examples are written to illustrate rules.
+
+* Examples are not intended to be production quality or to cover all tutorial dimensions.
+For example, many examples are language-technical and use names like `f`, `base`, and `x`.
+* We try to ensure that "good" examples follow the Core Guidelines.
+* Comments are often illustrating rules where they would be unnecessary and/or distracting in "real code."
+* We assume knowledge of the standard library. For example, we use plain `vector` rather than `std::vector`.
+
 This is not a language manual.
 It is meant to be helpful, rather than complete, fully accurate on technical details, or a guide to existing code.
 Recommended information sources can be found in [the references](#S-references).
@@ -477,7 +485,6 @@ What is expressed in code has defined semantics and can (in principle) be checke
 ##### Example
 
     class Date {
-        // ...
     public:
         Month month() const;  // do
         int month();          // don't
@@ -2822,6 +2829,8 @@ Advanced parameter passing:
 
 Use the advanced techniques only after demonstrating need, and document that need in a comment.
 
+For passing sequences of characters see [String](#SS-string).
+
 ### <a name="Rf-in"></a>F.16: For "in" parameters, pass cheaply-copied types by value and others by reference to `const`
 
 ##### Reason
@@ -4078,7 +4087,6 @@ An explicit distinction between interface and implementation improves readabilit
 ##### Example
 
     class Date {
-        // ... some representation ...
     public:
         Date();
         // validate that {yy, mm, dd} is a valid date and initialize
@@ -4087,6 +4095,8 @@ An explicit distinction between interface and implementation improves readabilit
         int day() const;
         Month month() const;
         // ...
+    private:
+        // ... some representation ...
     };
 
 For example, we can now change the representation of a `Date` without affecting its users (recompilation is likely, though).
@@ -4512,6 +4522,7 @@ Other default operations rules:
 * [C.86: Make `==` symmetric with respect of operand types and `noexcept`](#Rc-eq)
 * [C.87: Beware of `==` on base classes](#Rc-eq-base)
 * [C.89: Make a `hash` `noexcept`](#Rc-hash)
+* [C.90: Rely on constructors and assignment operators, not memset and memcpy](#Rc-memset)
 
 ## <a name="SS-defop"></a>C.defop: Default Operations
 
@@ -4998,7 +5009,7 @@ Many have tried to devise a fool-proof scheme for dealing with failure in destru
 None have succeeded to come up with a general scheme.
 This can be a real practical problem: For example, what about a socket that won't close?
 The writer of a destructor does not know why the destructor is called and cannot "refuse to act" by throwing an exception.
-See [discussion](#Sd-dtor).
+See [discussion](#Sd-never-fail).
 To make the problem worse, many "close/release" operations are not retryable.
 If at all possible, consider failure to close/cleanup a fundamental design error and terminate.
 
@@ -5459,7 +5470,6 @@ To avoid unintended conversions.
 ##### Example, bad
 
     class String {
-        // ...
     public:
         String(int);   // BAD
         // ...
@@ -5472,7 +5482,6 @@ To avoid unintended conversions.
 If you really want an implicit conversion from the constructor argument type to the class type, don't use `explicit`:
 
     class Complex {
-        // ...
     public:
         Complex(double d);   // OK: we want a conversion from d to {d, 0}
         // ...
@@ -6101,11 +6110,11 @@ A non-throwing move will be used more efficiently by standard-library and langua
 
     template<typename T>
     class Vector {
-        // ...
+    public:
         Vector(Vector&& a) noexcept :elem{a.elem}, sz{a.sz} { a.sz = 0; a.elem = nullptr; }
         Vector& operator=(Vector&& a) noexcept { elem = a.elem; sz = a.sz; a.sz = 0; a.elem = nullptr; }
         // ...
-    public:
+    private:
         T* elem;
         int sz;
     };
@@ -6116,11 +6125,11 @@ These operations do not throw.
 
     template<typename T>
     class Vector2 {
-        // ...
+    public:
         Vector2(Vector2&& a) { *this = a; }             // just use the copy
         Vector2& operator=(Vector2&& a) { *this = a; }  // just use the copy
         // ...
-    public:
+    private:
         T* elem;
         int sz;
     };
@@ -6356,7 +6365,6 @@ A `swap` can be handy for implementing a number of idioms, from smoothly moving 
 ##### Example, good
 
     class Foo {
-        // ...
     public:
         void swap(Foo& rhs) noexcept
         {
@@ -6541,6 +6549,48 @@ That tends to work better than "cleverness" for non-specialists.
 ##### Enforcement
 
 * Flag throwing `hash`es.
+
+### <a name="Rc-memset"></a>C.90: Rely on constructors and assignment operators, not `memset` and `memcpy`
+
+##### Reason
+
+The standard C++ mechanism to construct an instance of a type is to call its constructor. As specified in guideline [C.41](#Rc-complete): a constructor should create a fully initialized object. No additional initialization, such as by `memcpy`, should be required.
+A type will provide a copy constructor and/or copy assignment operator to appropriately make a copy of the class, preserving the type's invariants.  Using memcpy to copy a non-trivially copyable type has undefined behavior.  Frequently this results in slicing, or data corruption.
+
+##### Example, good
+
+    struct base
+    {
+        virtual void update() = 0;
+        std::shared_ptr<int> sp;
+    };
+
+    struct derived : public base
+    {
+        void update() override {}
+    };
+
+##### Example, bad
+
+    void init(derived& a)
+    {
+        memset(&a, 0, sizeof(derived));
+    }
+
+This is type-unsafe and overwrites the vtable.
+
+##### Example, bad
+
+    void copy(derived& a, derived& b)
+    {
+        memcpy(&a, &b, sizeof(derived));
+    }
+
+This is also type-unsafe and overwrites the vtable.
+
+##### Enforcement
+
+* Flag passing a non-trivially-copyable type to `memset` or `memcpy`. 
 
 ## <a name="SS-containers"></a>C.con: Containers and other resource handles
 
@@ -6876,7 +6926,7 @@ Give `Goof` a virtual destructor and all is well.
 
 ##### Enforcement
 
-* Warn on any class that contains data members and also has an overridable (non-`final`) virtual function.
+* Warn on any class that contains data members and also has an overridable (non-`final`) virtual function that wasn't inherited from a base class.
 
 ### <a name="Rh-separation"></a>C.122: Use abstract classes as interfaces when complete separation of interface and implementation is needed
 
@@ -9094,20 +9144,20 @@ The `unique_ptr` protects against leaks by guaranteeing the deletion of its obje
 
     template<typename T>
     class X {
-        // ...
     public:
         T* p;   // bad: it is unclear whether p is owning or not
         T* q;   // bad: it is unclear whether q is owning or not
+        // ...
     };
 
 We can fix that problem by making ownership explicit:
 
     template<typename T>
     class X2 {
-        // ...
     public:
         owner<T*> p;  // OK: p is owning
         T* q;         // OK: q is not owning
+        // ...
     };
 
 ##### Exception
@@ -9120,7 +9170,7 @@ we hope the guidelines will help the development of such tools,
 and we even contributed (and contribute) to the research and development in this area.
 However, it will take time: "legacy code" is generated faster than we can renovate old code, and so it will be for a few years.
 
-This code cannot all be rewritten (ever assuming good code transformation software), especially not soon.
+This code cannot all be rewritten (even assuming good code transformation software), especially not soon.
 This problem cannot be solved (at scale) by transforming all owning pointers to `unique_ptr`s and `shared_ptr`s,
 partly because we need/use owning "raw pointers" as well as simple pointers in the implementation of our fundamental resource handles.
 For example, common `vector` implementations have one owning pointer and two non-owning pointers.
@@ -9893,7 +9943,7 @@ Statement rules:
 * [ES.75: Avoid `do`-statements](#Res-do)
 * [ES.76: Avoid `goto`](#Res-goto)
 * [ES.77: Minimize the use of `break` and `continue` in loops](#Res-continue)
-* [ES.78: Always end a non-empty `case` with a `break`](#Res-break)
+* [ES.78: Don't rely on implicit fallthrough in `switch` statements](#Res-break)
 * [ES.79: Use `default` to handle common cases (only)](#Res-default)
 * [ES.84: Don't try to declare a local variable with no name](#Res-noname)
 * [ES.85: Make empty statements visible](#Res-empty)
@@ -10487,6 +10537,31 @@ Assuming that there is a logical connection between `i` and `j`, that connection
 
     auto [i, j] = make_related_widgets(cond);    // C++17
 
+If the `make_related_widgets` function is otherwise redundant,
+we can eliminate it by using a lambda [ES.28](#Res-lambda-init):
+
+    auto [i, j] = [x]{ return (x) ? pair{f1(), f2()} : pair{f3(), f4()} }();    // C++17
+
+Using a value representing "uninitialized" is a symptom of a problem and not a solution:
+
+    widget i = uninit;  // bad
+    widget j = uninit;
+
+    // ...
+    use(i);         // possibly used before set
+    // ...
+
+    if (cond) {     // bad: i and j are initialized "late"
+        i = f1();
+        j = f2();
+    }
+    else {
+        i = f3();
+        j = f4();
+    }
+
+Now the compiler cannot even simply detect a used-before-set. Further, we've introduced complexity in the state space for widget: which operations are valid on an `uninit` widget and which are not?
+
 ##### Note
 
 Complex initialization has been popular with clever programmers for decades.
@@ -10532,6 +10607,8 @@ However, such examples do tend to leave uninitialized variables accessible, so t
     int buf[max] = {};   // zero all elements; better in some situations
     f.read(buf, max);
 
+Because of the restrictive initialization rules for arrays and `std::array`, they offer the most compelling examples of the need for this exception.
+
 When feasible use a library function that is known not to overflow. For example:
 
     string s;   // s is default initialized to ""
@@ -10551,27 +10628,6 @@ In the not uncommon case where the input target and the input operation get sepa
 
 A good optimizer should know about input operations and eliminate the redundant operation.
 
-##### Example
-
-Using a value representing "uninitialized" is a symptom of a problem and not a solution:
-
-    widget i = uninit;  // bad
-    widget j = uninit;
-
-    // ...
-    use(i);         // possibly used before set
-    // ...
-
-    if (cond) {     // bad: i and j are initialized "late"
-        i = f1();
-        j = f2();
-    }
-    else {
-        i = f3();
-        j = f4();
-    }
-
-Now the compiler cannot even simply detect a used-before-set. Further, we've introduced complexity in the state space for widget: which operations are valid on an `uninit` widget and which are not?
 
 ##### Note
 
@@ -11984,7 +12040,8 @@ The language already knows the common cases where objects can be moved from, esp
 
 Never write `std::move()` just because you've heard "it's more efficient."
 In general, don't believe claims of "efficiency" without data (???).
-In general, don't complicate your code without reason (??)
+In general, don't complicate your code without reason (??).
+Never write `std::move()` on a const object, it is silently transformed into a copy (see Item 23 in [Meyers15](#Meyers15))
 
 ##### Example, bad
 
@@ -12024,9 +12081,9 @@ The language already knows that a returned value is a temporary object that can 
 
 * Flag use of `std::move(x)` where `x` is an rvalue or the language will already treat it as an rvalue, including `return std::move(local_variable);` and `std::move(f())` on a function that returns by value.
 * Flag functions taking an `S&&` parameter if there is no `const S&` overload to take care of lvalues.
-* Flag a `std::move`s argument passed to a parameter, except when the parameter type is one of the following: an `X&&` rvalue reference; a `T&&` forwarding reference where `T` is a template parameter type; or by value and the type is move-only.
+* Flag a `std::move`s argument passed to a parameter, except when the parameter type is an `X&&` rvalue reference or the type is move-only and the parameter is passed by value.
 * Flag when `std::move` is applied to a forwarding reference (`T&&` where `T` is a template parameter type). Use `std::forward` instead.
-* Flag when `std::move` is applied to other than an rvalue reference. (More general case of the previous rule to cover the non-forwarding cases.)
+* Flag when `std::move` is applied to other than an rvalue reference to non-const. (More general case of the previous rule to cover the non-forwarding cases.)
 * Flag when `std::forward` is applied to an rvalue reference (`X&&` where `X` is a concrete type). Use `std::move` instead.
 * Flag when `std::forward` is applied to other than a forwarding reference. (More general case of the previous rule to cover the non-moving cases.)
 * Flag when an object is potentially moved from and the next operation is a `const` operation; there should first be an intervening non-`const` operation, ideally assignment, to first reset the object's value.
@@ -12666,11 +12723,11 @@ If you really need to break out a loop, a `break` is typically better than alter
 
 ???
 
-### <a name="Res-break"></a>ES.78: Always end a non-empty `case` with a `break`
+### <a name="Res-break"></a>ES.78: Don't rely on implicit fallthrough in `switch` statements
 
 ##### Reason
 
-Accidentally leaving out a `break` is a fairly common bug.
+Always end a non-empty `case` with a `break`. Accidentally leaving out a `break` is a fairly common bug.
 A deliberate fallthrough can be a maintenance hazard and should be rare and explicit.
 
 ##### Example
@@ -12695,6 +12752,16 @@ Multiple case labels of a single statement is OK:
     case 'f':
         do_something(x);
         break;
+    }
+
+Return statements in a case label are also OK:
+    switch (x) {
+    case 'a':
+        return 1;
+    case 'b':
+        return 2;
+    case 'c':
+        return 3;
     }
 
 ##### Exceptions
@@ -13390,7 +13457,7 @@ Simple code can be very fast. Optimizers sometimes do marvels with simple code
 
 ##### Example, bad
 
-    // intended to be faster, but is actually slower
+    // intended to be faster, but is often slower
 
     vector<uint8_t> v(100000);
 
@@ -15660,7 +15727,7 @@ Most handlers do not modify their exception and in general we [recommend use of 
 
 ##### Note
 
-To rethrow a caught exception use `throw;` not `throw e;`. Using `throw e;` would throw a new copy of `e` (sliced to the static type `std::exception`) instead of rethrowing the original exception of type `std::runtime_error`. (But keep [Don't try to catch every exception in every function](https://github.com/isocpp/CppCoreGuidelines/blob/master/CppCoreGuidelines.md#Re-not-always) and [Minimize the use of explicit `try`/`catch`](https://github.com/isocpp/CppCoreGuidelines/blob/master/CppCoreGuidelines.md#Re-catch) in mind.)
+To rethrow a caught exception use `throw;` not `throw e;`. Using `throw e;` would throw a new copy of `e` (sliced to the static type `std::exception`) instead of rethrowing the original exception of type `std::runtime_error`. (But keep [Don't try to catch every exception in every function](#Re-not-always) and [Minimize the use of explicit `try`/`catch`](#Re-catch) in mind.)
 
 ##### Enforcement
 
@@ -17187,7 +17254,7 @@ Complementary constraints are unfortunately common in `enable_if` code:
 ##### Note
 
 Complementary requirements on one requirements is sometimes (wrongly) considered manageable.
-However, for two or more requirements the number of definitions needs can go up exponentially (2,4,9,16,...):
+However, for two or more requirements the number of definitions needs can go up exponentially (2,4,8,16,...):
 
     C1<T> && C2<T>
     !C1<T> && C2<T>
@@ -17454,7 +17521,6 @@ Flag uses where an explicitly specialized type exactly matches the types of the 
 ##### Example
 
     class X {
-            // ...
     public:
         explicit X(int);
         X(const X&);            // copy
@@ -18897,7 +18963,7 @@ Doing so takes away an `#include`r's ability to effectively disambiguate and to 
 ##### Note
 
 An exception is `using namespace std::literals;`. This is necessary to use string literals
-in header files and given [the rules](http://eel.is/c++draft/over.literal) - users are required 
+in header files and given [the rules](http://eel.is/c++draft/over.literal) - users are required
 to name their own UDLs `operator""_x` - they will not collide with the standard library.
 
 ##### Enforcement
@@ -18937,8 +19003,9 @@ Our recommendation is to write in ISO C++: See [rule P.2](#Rp-Cplusplus).
 
 ##### Reason
 
-Cycles complicates comprehension and slows down compilation.
-Complicates conversion to use language-supported modules (when they become available).
+Cycles complicate comprehension and slow down compilation. They also
+complicate conversion to use language-supported modules (when they become
+available).
 
 ##### Note
 
@@ -19183,7 +19250,7 @@ Container rule summary:
 * [SL.con.1: Prefer using STL `array` or `vector` instead of a C array](#Rsl-arrays)
 * [SL.con.2: Prefer using STL `vector` by default unless you have a reason to use a different container](#Rsl-vector)
 * [SL.con.3: Avoid bounds errors](#Rsl-bounds)
-*  ???
+* [SL.con.4: don't use `memset` or `memcpy` for arguments that are not trivially-copyable](#Rsl-copy)
 
 ### <a name="Rsl-arrays"></a>SL.con.1: Prefer using STL `array` or `vector` instead of a C array
 
@@ -19334,6 +19401,48 @@ If code is using an unmodified standard library, then there are still workaround
 ??? insert link to a list of banned functions
 
 This rule is part of the [bounds profile](#SS-bounds).
+
+
+### <a name="Rsl-copy"></a>SL.con.4: don't use `memset` or `memcpy` for arguments that are not trivially-copyable
+
+##### Reason
+
+Doing so messes the semantics of the objects (e.g., by overwriting a `vptr`).
+
+##### Note
+
+Similarly for (w)memset, (w)memcpy, (w)memmove, and (w)memcmp
+
+##### Example
+
+    struct base {
+        virtual void update() = 0;
+    };
+
+    struct derived : public base {
+        void update() override {}
+    };
+
+
+    void f(derived& a, derived& b) // goodbye v-tables
+    {
+        memset(&a, 0, sizeof(derived));
+        memcpy(&a, &b, sizeof(derived));
+        memcmp(&a, &b, sizeof(derived));
+    }
+
+Instead, define proper default initialization, copy, and comparison functions
+
+    void g(derived& a, derived& b)
+    {
+        a = {};    // default initialize
+        b = a;     // copy
+        if (a == b) do_something(a, b);
+    }
+
+##### Enforcement
+
+* Flag the use of those functions for types that are not trivially copyable
 
 **TODO Notes**:
 
@@ -19857,20 +19966,20 @@ The positive arguments for alternatives to these non-rules are listed in the rul
 
 Non-rule summary:
 
-* [NR.1: Don't: All declarations should be at the top of a function](#Rnr-top)
-* [NR.2: Don't: Have only a single `return`-statement in a function](#Rnr-single-return)
-* [NR.3: Don't: Don't use exceptions](#Rnr-no-exceptions)
-* [NR.4: Don't: Place each class declaration in its own source file](#Rnr-lots-of-files)
-* [NR.5: Don't: Don't do substantive work in a constructor; instead use two-phase initialization](#Rnr-two-phase-init)
-* [NR.6: Don't: Place all cleanup actions at the end of a function and `goto exit`](#Rnr-goto-exit)
-* [NR.7: Don't: Make all data members `protected`](#Rnr-protected-data)
+* [NR.1: Don't insist that all declarations should be at the top of a function](#Rnr-top)
+* [NR.2: Don't insist to have only a single `return`-statement in a function](#Rnr-single-return)
+* [NR.3: Don't avoid exceptions](#Rnr-no-exceptions)
+* [NR.4: Don't insist on placing each class declaration in its own source file](#Rnr-lots-of-files)
+* [NR.5: Don't use two-phase initialization](#Rnr-two-phase-init)
+* [NR.6: Don't place all cleanup actions at the end of a function and `goto exit`](#Rnr-goto-exit)
+* [NR.7: Don't make all data members `protected`](#Rnr-protected-data)
 * ???
 
-### <a name="Rnr-top"></a>NR.1: Don't: All declarations should be at the top of a function
+### <a name="Rnr-top"></a>NR.1: Don't insist that all declarations should be at the top of a function
 
-##### Reason (not to follow this rule)
+##### Reason
 
-This rule is a legacy of old programming languages that didn't allow initialization of variables and constants after a statement.
+The "all declarations on top" rule is a legacy of old programming languages that didn't allow initialization of variables and constants after a statement.
 This leads to longer programs and more errors caused by uninitialized and wrongly initialized variables.
 
 ##### Example, bad
@@ -19904,9 +20013,9 @@ Unfortunately, compilers cannot catch all such errors and unfortunately, the bug
 * [Always initialize an object](#Res-always)
 * [ES.21: Don't introduce a variable (or constant) before you need to use it](#Res-introduce)
 
-### <a name="Rnr-single-return"></a>NR.2: Don't: Have only a single `return`-statement in a function
+### <a name="Rnr-single-return"></a>NR.2: Don't insist to have only a single `return`-statement in a function
 
-##### Reason (not to follow this rule)
+##### Reason
 
 The single-return rule can lead to unnecessarily convoluted code and the introduction of extra state variables.
 In particular, the single-return rule makes it harder to concentrate error checking at the top of a function.
@@ -19974,15 +20083,16 @@ Also, this style is a temptation to use the [goto exit](#Rnr-goto-exit) non-rule
 * Keep functions short and simple
 * Feel free to use multiple `return` statements (and to throw exceptions).
 
-### <a name="Rnr-no-exceptions"></a>NR.3: Don't: Don't use exceptions
+### <a name="Rnr-no-exceptions"></a>NR.3: Don't avoid exceptions
 
-##### Reason (not to follow this rule)
+##### Reason
 
-There seem to be three main reasons given for this non-rule:
+There seem to be four main reasons given for not using exceptions:
 
 * exceptions are inefficient
 * exceptions lead to leaks and errors
 * exception performance is not predictable
+* the exception-handling run-time support takes up too much space
 
 There is no way we can settle this issue to the satisfaction of everybody.
 After all, the discussions about exceptions have been going on for 40+ years.
@@ -20018,6 +20128,10 @@ In our opinion, you need RAII to make exception-based error handling simple and 
 If you are in a hard-real-time system where you must guarantee completion of a task in a given time,
 you need tools to back up such guarantees.
 As far as we know such tools are not available (at least not to most programmers).
+* the exception-handling run-time support takes up too much space
+This can be the case in small (usually embedded systems).
+However, before abandoning exceptions consider what space consistent error-handling using error-codes would require
+and what failure to catch an error would cost.
 
 Many, possibly most, problems with exceptions stem from historical needs to interact with messy old code.
 
@@ -20043,11 +20157,11 @@ Remember
 * [RAII](#Re-raii)
 * Contracts/assertions: Use GSL's `Expects` and `Ensures` (until we get language support for contracts)
 
-### <a name="Rnr-lots-of-files"></a>NR.4: Don't: Place each class declaration in its own source file
+### <a name="Rnr-lots-of-files"></a>NR.4: Don't insist on placing each class declaration in its own source file
 
-##### Reason (not to follow this rule)
+##### Reason
 
-The resulting number of files are hard to manage and can slow down compilation.
+The resulting number of files from placing each class in its own file are hard to manage and can slow down compilation.
 Individual classes are rarely a good logical unit of maintenance and distribution.
 
 ##### Example
@@ -20058,11 +20172,11 @@ Individual classes are rarely a good logical unit of maintenance and distributio
 
 * Use namespaces containing logically cohesive sets of classes and functions.
 
-### <a name="Rnr-two-phase-init"></a>NR.5: Don't: Don't do substantive work in a constructor; instead use two-phase initialization
+### <a name="Rnr-two-phase-init"></a>NR.5: Don't use two-phase initialization
 
-##### Reason (not to follow this rule)
+##### Reason
 
-Following this rule leads to weaker invariants,
+Splitting initialization into two leads to weaker invariants,
 more complicated code (having to deal with semi-constructed objects),
 and errors (when we didn't deal correctly with semi-constructed objects consistently).
 
@@ -20080,12 +20194,12 @@ and errors (when we didn't deal correctly with semi-constructed objects consiste
             my = y;
             data = nullptr;
         }
-    
+
         ~Picture()
         {
             Cleanup();
         }
-    
+
         bool Init()
         {
             // invariant checks
@@ -20098,14 +20212,14 @@ and errors (when we didn't deal correctly with semi-constructed objects consiste
             data = (char*) malloc(mx*my*sizeof(int));
             return data != nullptr;
         }
-    
+
         void Cleanup()
         {
             if (data) free(data);
             data = nullptr;
         }
     };
-    
+
     Picture picture(100, 0); // not ready-to-use picture here
     // this will fail..
     if (!picture.Init()) {
@@ -20120,14 +20234,14 @@ and errors (when we didn't deal correctly with semi-constructed objects consiste
         size_t mx;
         size_t my;
         vector<char> data;
-    
+
         static size_t check_size(size_t s)
         {
             // invariant check
             Expects(s > 0);
             return s;
         }
-    
+
     public:
         // even more better would be a class for a 2D Size as one single parameter
         Picture(size_t x, size_t y)
@@ -20140,10 +20254,10 @@ and errors (when we didn't deal correctly with semi-constructed objects consiste
         }
         // compiler generated dtor does the job. (also see C.21)
     };
-    
+
     Picture picture1(100, 100);
     // picture is ready-to-use here...
-    
+
     // not a valid size for y,
     // default contract violation behavior will call std::terminate then
     Picture picture2(100, 0);
@@ -20154,9 +20268,9 @@ and errors (when we didn't deal correctly with semi-constructed objects consiste
 * Always establish a class invariant in a constructor.
 * Don't define an object before it is needed.
 
-### <a name="Rnr-goto-exit"></a>NR.6: Don't: Place all cleanup actions at the end of a function and `goto exit`
+### <a name="Rnr-goto-exit"></a>NR.6: Don't place all cleanup actions at the end of a function and `goto exit`
 
-##### Reason (not to follow this rule)
+##### Reason
 
 `goto` is error-prone.
 This technique is a pre-exception technique for RAII-like resource and error handling.
@@ -20182,9 +20296,9 @@ and spot the bug.
 * Use exceptions and [RAII](#Re-raii)
 * for non-RAII resources, use [`finally`](#Re-finally).
 
-### <a name="Rnr-protected-data"></a>NR.7: Don't: Make all data members `protected`
+### <a name="Rnr-protected-data"></a>NR.7: Don't make all data members `protected`
 
-##### Reason (not to follow this rule)
+##### Reason
 
 `protected` data is a source of errors.
 `protected` data can be manipulated from an unbounded amount of code in various places.
@@ -21749,7 +21863,6 @@ If you define a move constructor, you must also define a move assignment operato
 ##### Example
 
     class X {
-        // ...
     public:
         X(const X&) { /* stuff */ }
 
@@ -21758,6 +21871,8 @@ If you define a move constructor, you must also define a move assignment operato
         X(x&&) noexcept { /* stuff */ }
 
         // BAD: failed to also define a move assignment operator
+
+        // ...
     };
 
     X x1;
@@ -21841,10 +21956,10 @@ Prevent leaks. Leaks can lead to performance degradation, mysterious error, syst
 
     template<class T>
     class Vector {
-    // ...
     private:
         T* elem;   // sz elements on the free store, owned by the class object
         int sz;
+        // ...
     };
 
 This class is a resource handle. It manages the lifetime of the `T`s. To do so, `Vector` must define or delete [the set of special operations](???) (constructors, a destructor, etc.).
@@ -22289,7 +22404,7 @@ Alternatively, we will decide that no change is needed and delete the entry.
 * <a name="Stroustrup15"></a>
   \[Stroustrup15]:    B. Stroustrup, Herb Sutter, and G. Dos Reis: [A brief introduction to C++'s model for type- and resource-safety](https://github.com/isocpp/CppCoreGuidelines/blob/master/docs/Introduction%20to%20type%20and%20resource%20safety.pdf).
 * <a name="SuttHysl04b"></a>
-  \[SuttHysl04b]:     H. Sutter and J. Hyslop. "Collecting Shared Objects" (C/C++ Users Journal, 22(8), August 2004).
+  \[SuttHysl04b]:     H. Sutter and J. Hyslop. [Collecting Shared Objects](https://web.archive.org/web/20120926011837/http://www.drdobbs.com/collecting-shared-objects/184401839) (C/C++ Users Journal, 22(8), August 2004).
 * <a name="SuttAlex05"></a>
   \[SuttAlex05]:      H. Sutter and  A. Alexandrescu. C++ Coding Standards. Addison-Wesley 2005.
 * <a name="Sutter00"></a>
