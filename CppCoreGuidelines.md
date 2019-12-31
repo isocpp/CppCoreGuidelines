@@ -20351,6 +20351,7 @@ Reference sections:
 
 ## <a name="SS-rules"></a>RF.rules: Coding rules
 
+* [AUTOSAR Guidelines for the use of the C++14 language in critical and safety-related systems v17.10](https://www.autosar.org/fileadmin/user_upload/standards/adaptive/17-10/AUTOSAR_RS_CPP14Guidelines.pdf)
 * [Boost Library Requirements and Guidelines](http://www.boost.org/development/requirements.html).
   ???.
 * [Bloomberg: BDE C++ Coding](https://github.com/bloomberg/bde/wiki/CodingStandards.pdf).
@@ -20370,6 +20371,7 @@ Reference sections:
   Libraries used have to have been approved for mission critical applications.
   Any similarities to this set of guidelines are unsurprising because Bjarne Stroustrup was an author of JSF++.
   Recommended, but note its very specific focus.
+* MISRA C++ 2008: Guidelines for the use of the C++ language in critical systems. (Copies of this document can be found on the Internet, but it is not clear whether they are legally posted. This may limit the usefulness of this document.)
 * [Mozilla Portability Guide](https://developer.mozilla.org/en-US/docs/Mozilla/C%2B%2B_Portability_Guide).
   As the name indicates, this aims for portability across many (old) compilers.
   As such, it is restrictive.
