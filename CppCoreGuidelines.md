@@ -8825,7 +8825,7 @@ Instead use an `enum class`:
 
     Web_color webby = Web_color::blue;
     Print_color(webby);  // Error: cannot convert Web_color to int.
-    Print_color(Product_info::Red);  // Error: cannot convert Product_info to int.
+    Print_color(Product_info::red);  // Error: cannot convert Product_info to int.
 
 ##### Enforcement
 
