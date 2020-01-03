@@ -8821,7 +8821,7 @@ Instead use an `enum class`:
     void Print_color(int color);
 
     enum class Web_color { red = 0xFF0000, green = 0x00FF00, blue = 0x0000FF };
-    enum class Product_info { red = 0, purple = 1, blue = 2 };
+    enum class Product_info { Red = 0, Purple = 1, Blue = 2 };
 
     Web_color webby = Web_color::blue;
     Print_color(webby);  // Error: cannot convert Web_color to int.
