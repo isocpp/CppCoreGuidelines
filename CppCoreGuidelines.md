@@ -14924,8 +14924,38 @@ There is no explicit locking and both correct (value) return and error (exceptio
 
 ##### Example
 
-    ???
+    class Moonphase_error : public std::exception
+    {};
 
+    int fun(int i) noexcept
+    {
+        return i + 2;
+    }
+
+    int fun_ex()
+    {
+        // ...
+        throw Moonphase_error{};
+        // ...
+    }
+
+    void async_example()
+    {
+        auto f = std::async(std::launch::async, fun, 10);
+
+        std::cout << f.get() << '\n';
+
+        try
+        {
+            auto fe = std::async(std::launch::async, fun_ex);
+            auto i = fe.get(); // this call will thow a Moonphase_error exception
+        }
+        catch (const Moonphase_error&)
+        {
+            std::cout << "Moonphase error\n";
+        }
+    }
+    
 ##### Note
 
 Unfortunately, `async()` is not perfect.
