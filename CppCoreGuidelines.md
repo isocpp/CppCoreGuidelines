@@ -15517,7 +15517,7 @@ One strategy is to add a `valid()` operation to every resource handle:
 Obviously, this increases the size of the code, doesn't allow for implicit propagation of "exceptions" (`valid()` checks), and `valid()` checks can be forgotten.
 Prefer to use exceptions.
 
-**See also**: [Use of `noexcept`](#Se-noexcept)
+**See also**: [Use of `noexcept`](#Re-noexcept)
 
 ##### Enforcement
 
