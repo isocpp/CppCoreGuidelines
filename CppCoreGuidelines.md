@@ -20382,7 +20382,7 @@ Reference sections:
   Many of their rules apply generally.
 * [High Integrity C++ Coding Standard](http://www.codingstandard.com/).
 * [llvm](http://llvm.org/docs/CodingStandards.html).
-  Somewhat brief, pre-C++11, and (not unreasonably) adjusted to its domain.
+  Somewhat brief, based on C++14, and (not unreasonably) adjusted to its domain.
 * ???
 
 ## <a name="SS-books"></a>RF.books: Books with coding guidelines
