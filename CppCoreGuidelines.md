@@ -2212,7 +2212,7 @@ interface (widget.h)
         void draw(); // public API that will be forwarded to the implementation
         widget(int); // defined in the implementation file
         ~widget();   // defined in the implementation file, where impl is a complete type
-        widget(widget&&) = default;
+        widget(widget&&); // defined in the implementation file
         widget(const widget&) = delete;
         widget& operator=(widget&&); // defined in the implementation file
         widget& operator=(const widget&) = delete;
@@ -2229,6 +2229,7 @@ implementation (widget.cpp)
     };
     void widget::draw() { pimpl->draw(*this); }
     widget::widget(int n) : pimpl{std::make_unique<impl>(n)} {}
+    widget::widget(widget&&) = default;
     widget::~widget() = default;
     widget& widget::operator=(widget&&) = default;
 
