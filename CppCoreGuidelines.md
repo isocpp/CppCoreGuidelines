@@ -8809,13 +8809,13 @@ To minimize surprises: traditional enums convert to int too readily.
     void Print_color(int color);
 
     enum Web_color { red = 0xFF0000, green = 0x00FF00, blue = 0x0000FF };
-    enum Product_info { Red = 0, Purple = 1, Blue = 2 };
+    enum Product_info { red = 0, purple = 1, blue = 2 };
 
     Web_color webby = Web_color::blue;
 
     // Clearly at least one of these calls is buggy.
     Print_color(webby);
-    Print_color(Product_info::Blue);
+    Print_color(Product_info::blue);
 
 Instead use an `enum class`:
 
@@ -8826,7 +8826,7 @@ Instead use an `enum class`:
 
     Web_color webby = Web_color::blue;
     Print_color(webby);  // Error: cannot convert Web_color to int.
-    Print_color(Product_info::Red);  // Error: cannot convert Product_info to int.
+    Print_color(Product_info::red);  // Error: cannot convert Product_info to int.
 
 ##### Enforcement
 
