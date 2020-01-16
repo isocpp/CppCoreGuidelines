@@ -12718,7 +12718,7 @@ consider `gsl::finally()` as a cleaner and more reliable alternative to `goto ex
 
 Often, a loop that requires a `break` is a good candidate for a function (algorithm), in which case the `break` becomes a `return`.
 
-    //BAD: break inside loop
+    //Original code: break inside loop
     void use1(){
         std::vector<T> vec = {/* initialized with some values */};
         T value;
@@ -12731,7 +12731,7 @@ Often, a loop that requires a `break` is a good candidate for a function (algori
         /* then do something with value */
     }
     
-    //GOOD: create a function and return inside loop
+    //BETTER: create a function and return inside loop
     T search(const std::vector<T> &vec){
         for(const T &item : vec){
             if(/* some condition*/) return item;
@@ -12767,7 +12767,7 @@ If you really need to break out a loop, a `break` is typically better than alter
 
 ##### Enforcement
 
-Flag any use of `break` and `continue` inside a loop.
+???
 
 ### <a name="Res-break"></a>ES.78: Don't rely on implicit fallthrough in `switch` statements
 
