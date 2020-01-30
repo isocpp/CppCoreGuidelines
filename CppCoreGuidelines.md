@@ -14963,8 +14963,30 @@ There is no explicit locking and both correct (value) return and error (exceptio
 
 ##### Example
 
-    ???
+    int read_value(const std::string& filename)
+    {
+        std::ifstream in(filename);
+        in.exceptions(std::ifstream::failbit);
+        int value;
+        in >> value;
+        return value;
+    }
 
+
+    void async_example()
+    {
+        try
+        {
+            auto v1 = std::async(std::launch::async, read_value, "v1.txt"); 
+            auto v2 = std::async(std::launch::async, read_value, "v2.txt");
+            std::cout << v1.get() + v2.get() << '\n';
+        }
+        catch (std::ios_base::failure & fail) 
+        {
+            // handle exception here
+        }
+    }
+    
 ##### Note
 
 Unfortunately, `async()` is not perfect.
