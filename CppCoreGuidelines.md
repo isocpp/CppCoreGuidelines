@@ -11780,7 +11780,7 @@ for example.)
 ##### Reason
 
 It makes a lie out of `const`.
-If the variable is actually declared `const`, the result of "casting away `const`" is undefined behavior.
+If the variable is actually declared `const`, modifying it results in undefined behavior.
 
 ##### Example, bad
 
