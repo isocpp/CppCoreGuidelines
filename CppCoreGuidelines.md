@@ -1346,7 +1346,7 @@ The rule is "avoid", not "don't use." Of course there will be (rare) exceptions,
 ##### Enforcement
 
 (Simple) Report all non-`const` variables declared at namespace scope and global pointers/references to non-const data.
-(??? NM: Obviously we can warn about non-`const` statics ... do we want to?)
+
 
 ### <a name="Ri-singleton"></a>I.3: Avoid singletons
 
@@ -9004,6 +9004,7 @@ Here, we ignore such cases.
   * [R.3: A raw pointer (a `T*`) is non-owning](#Rr-ptr)
   * [R.4: A raw reference (a `T&`) is non-owning](#Rr-ref)
   * [R.5: Prefer scoped objects, don't heap-allocate unnecessarily](#Rr-scoped)
+  * [R.6: Avoid non-`const` global variables](#Rr-global)
 
 * Allocation and deallocation rule summary:
 
