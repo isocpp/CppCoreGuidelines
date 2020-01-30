@@ -1308,6 +1308,14 @@ Non-`const` global variables hide dependencies and make the dependencies subject
 
 Who else might modify `data`?
 
+**Warning**: The initialization of global objects is not totally ordered.
+If you use a global object initialize it with a constant.
+Note that it is possible to get undefined initialization order even for `const` objects.
+
+##### Exception
+
+A global object is often better than a singleton.
+
 ##### Note
 
 Global constants are useful.
@@ -1322,6 +1330,9 @@ Another solution is to define the data as the state of some object and the opera
 **Warning**: Beware of data races: If one thread can access nonlocal data (or data passed by reference) while another thread executes the callee, we can have a data race.
 Every pointer or reference to mutable data is a potential data race.
 
+Using global pointers or references to access and change non-const, and otherwise non-global,
+data isn't a better alternative to non-const global variables since that doesn't solve the issues of hidden dependencies or potential race conditions.
+
 ##### Note
 
 You cannot have a race condition on immutable data.
@@ -1334,7 +1345,8 @@ The rule is "avoid", not "don't use." Of course there will be (rare) exceptions,
 
 ##### Enforcement
 
-(Simple) Report all non-`const` variables declared at namespace scope.
+(Simple) Report all non-`const` variables declared at namespace scope and global pointers/references to non-const data.
+(??? NM: Obviously we can warn about non-`const` statics ... do we want to?)
 
 ### <a name="Ri-singleton"></a>I.3: Avoid singletons
 
@@ -8992,7 +9004,6 @@ Here, we ignore such cases.
   * [R.3: A raw pointer (a `T*`) is non-owning](#Rr-ptr)
   * [R.4: A raw reference (a `T&`) is non-owning](#Rr-ref)
   * [R.5: Prefer scoped objects, don't heap-allocate unnecessarily](#Rr-scoped)
-  * [R.6: Avoid non-`const` global variables](#Rr-global)
 
 * Allocation and deallocation rule summary:
 
@@ -9284,26 +9295,7 @@ Instead, use a local variable:
 
 ### <a name="Rr-global"></a>R.6: Avoid non-`const` global variables
 
-##### Reason
-
-Global variables can be accessed from everywhere so they can introduce surprising dependencies between apparently unrelated objects.
-They are a notable source of errors.
-
-**Warning**: The initialization of global objects is not totally ordered.
-If you use a global object initialize it with a constant.
-Note that it is possible to get undefined initialization order even for `const` objects.
-
-##### Exception
-
-A global object is often better than a singleton.
-
-##### Exception
-
-An immutable (`const`) global does not introduce the problems we try to avoid by banning global objects.
-
-##### Enforcement
-
-(??? NM: Obviously we can warn about non-`const` statics ... do we want to?)
+See [I.2](#Ri-global)
 
 ## <a name="SS-alloc"></a>R.alloc: Allocation and deallocation
 
