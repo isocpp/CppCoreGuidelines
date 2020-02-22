@@ -18743,7 +18743,7 @@ Source file rule summary:
 * [SF.9: Avoid cyclic dependencies among source files](#Rs-cycles)
 * [SF.10: Avoid dependencies on implicitly `#include`d names](#Rs-implicit)
 * [SF.11: Header files should be self-contained](#Rs-contained)
-* [SF.12: Use the quoted or angle bracket form of `#include` to distinguish standard headers from others](#Rs-incscope)
+* [SF.12: Prefer the angle bracket form of `#include` where you can and the quoted form everywhere else](#Rs-incscope)
 
 * [SF.20: Use `namespace`s to express logical structure](#Rs-namespace)
 * [SF.21: Don't use an unnamed (anonymous) namespace in a header](#Rs-unnamed)
@@ -19182,25 +19182,28 @@ A header should include all its dependencies. Be careful about using relative pa
 
 A test should verify that the header file itself compiles or that a cpp file which only includes the header file compiles.
 
-### <a name="Rs-incscope"></a>SF.12: Use the quoted or angle bracket form of `#include` to distinguish standard headers from others
+### <a name="Rs-incscope"></a>SF.12: Prefer the angle bracket form of `#include` where you can and the quoted form everywhere else
 
 ##### Reason
 
-To understand dependencies it is important to know where included files come from. Given the different search algorithms, 
-the angle form (`<>`) identifies standard headers, the quoted (`""`) everything else.
+The [standard](http://eel.is/c++draft/cpp.include) provides flexability for compilers to implement
+the two forms of `#include` selected using the angle (`<>`) or quoted (`""`) syntax. Vendors take
+advantage of this and and use different search algorythms and methods for specifying the include path.
+
+Neveer the less, the gudance is to use the angle form when possible. This supports the fact that the
+standard library headers must be includedthis way, is more likely to create portable code, and enables
+the quoted form for other uses. For example being clear about the locality of the header relative
+to files that includes it or in scearios where the different search algorythm is required.
 
 ##### Example
 
-    #include <string>       // From the standard library, use the <> form
+    #include <string>       // From the standard library, required form
     #include "helpers.h"    // A project specific file, use "" form
 
 ##### Note
-
-This is specified [here](http://eel.is/c++draft/cpp.include) in the standard.
-
 Failing to follow this results in difficult to diagnose errors due to picking up the wrong file by incorrectly specifying the scope when it is included.
 
-Library creators should put their headers in a folder and have clients include those files using the relative path `#include "some_library/common.h"`
+Library creators should put their headers in a folder and have clients include those files using the relative path `#include <some_library/common.h>`
 
 ##### Enforcement
 
