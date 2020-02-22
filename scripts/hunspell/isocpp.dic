@@ -302,6 +302,7 @@ md
 memberinit
 members'
 memcmp
+memcpy
 memmove
 memoization
 memoized
@@ -579,6 +580,7 @@ typesafe
 UB
 u1
 u2
+UDLs
 unaliased
 uncompromised
 underuse
@@ -615,7 +617,9 @@ virtuality
 virtuals
 VLAs
 volatile2
+vptr
 vr
+vtable
 vtbls
 vv
 w0
