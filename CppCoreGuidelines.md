@@ -18743,7 +18743,7 @@ Source file rule summary:
 * [SF.9: Avoid cyclic dependencies among source files](#Rs-cycles)
 * [SF.10: Avoid dependencies on implicitly `#include`d names](#Rs-implicit)
 * [SF.11: Header files should be self-contained](#Rs-contained)
-* [SF.12: Prefer the angle bracket form of `#include` where you can and the quoted form everywhere else](#Rs-incscope)
+* [SF.12: Prefer the angle bracket form of `#include` where you can and the quoted form everywhere else](#Rs-incform)
 
 * [SF.20: Use `namespace`s to express logical structure](#Rs-namespace)
 * [SF.21: Don't use an unnamed (anonymous) namespace in a header](#Rs-unnamed)
@@ -19182,18 +19182,18 @@ A header should include all its dependencies. Be careful about using relative pa
 
 A test should verify that the header file itself compiles or that a cpp file which only includes the header file compiles.
 
-### <a name="Rs-incscope"></a>SF.12: Prefer the angle bracket form of `#include` where you can and the quoted form everywhere else
+### <a name="Rs-incform"></a>SF.12: Prefer the angle bracket form of `#include` where you can and the quoted form everywhere else
 
 ##### Reason
 
 The [standard](http://eel.is/c++draft/cpp.include) provides flexability for compilers to implement
 the two forms of `#include` selected using the angle (`<>`) or quoted (`""`) syntax. Vendors take
-advantage of this and and use different search algorythms and methods for specifying the include path.
+advantage of this and and use different search algorithms and methods for specifying the include path.
 
 Neveer the less, the gudance is to use the angle form when possible. This supports the fact that the
-standard library headers must be includedthis way, is more likely to create portable code, and enables
+standard library headers must be included this way, is more likely to create portable code, and enables
 the quoted form for other uses. For example being clear about the locality of the header relative
-to files that includes it or in scearios where the different search algorythm is required.
+to files that includes it or in scenarios where the different search algorythm is required.
 
 ##### Example
 
@@ -19207,7 +19207,7 @@ Library creators should put their headers in a folder and have clients include t
 
 ##### Enforcement
 
-A test should verify that the headers referenced via `<>` are from the standard library and those using `""` are not.
+A test should identify headers referenced via `""` could be referenced with `<>`.
 
 ### <a name="Rs-namespace"></a>SF.20: Use `namespace`s to express logical structure
 
