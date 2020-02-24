@@ -19190,10 +19190,10 @@ The [standard](http://eel.is/c++draft/cpp.include) provides flexability for comp
 the two forms of `#include` selected using the angle (`<>`) or quoted (`""`) syntax. Vendors take
 advantage of this and and use different search algorithms and methods for specifying the include path.
 
-Neveer the less, the gudance is to use the angle form when possible. This supports the fact that the
+Never the less, the guidance is to use the angle form when possible. This supports the fact that the
 standard library headers must be included this way, is more likely to create portable code, and enables
 the quoted form for other uses. For example being clear about the locality of the header relative
-to files that includes it or in scenarios where the different search algorythm is required.
+to files that includes it or in scenarios where the different search algorithm is required.
 
 ##### Example
 
