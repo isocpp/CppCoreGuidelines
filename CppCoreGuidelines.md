@@ -19186,9 +19186,9 @@ A test should verify that the header file itself compiles or that a cpp file whi
 
 ##### Reason
 
-The [standard](http://eel.is/c++draft/cpp.include) provides flexability for compilers to implement
+The [standard](http://eel.is/c++draft/cpp.include) provides flexibility for compilers to implement
 the two forms of `#include` selected using the angle (`<>`) or quoted (`""`) syntax. Vendors take
-advantage of this and and use different search algorithms and methods for specifying the include path.
+advantage of this and use different search algorithms and methods for specifying the include path.
 
 Never the less, the guidance is to use the angle form when possible. This supports the fact that the
 standard library headers must be included this way, is more likely to create portable code, and enables
