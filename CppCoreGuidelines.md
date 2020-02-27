@@ -18743,6 +18743,7 @@ Source file rule summary:
 * [SF.9: Avoid cyclic dependencies among source files](#Rs-cycles)
 * [SF.10: Avoid dependencies on implicitly `#include`d names](#Rs-implicit)
 * [SF.11: Header files should be self-contained](#Rs-contained)
+* [SF.12: Prefer the angle bracket form of `#include` where you can and the quoted form everywhere else](#Rs-incform)
 
 * [SF.20: Use `namespace`s to express logical structure](#Rs-namespace)
 * [SF.21: Don't use an unnamed (anonymous) namespace in a header](#Rs-unnamed)
@@ -19180,6 +19181,33 @@ A header should include all its dependencies. Be careful about using relative pa
 ##### Enforcement
 
 A test should verify that the header file itself compiles or that a cpp file which only includes the header file compiles.
+
+### <a name="Rs-incform"></a>SF.12: Prefer the angle bracket form of `#include` where you can and the quoted form everywhere else
+
+##### Reason
+
+The [standard](http://eel.is/c++draft/cpp.include) provides flexibility for compilers to implement
+the two forms of `#include` selected using the angle (`<>`) or quoted (`""`) syntax. Vendors take
+advantage of this and use different search algorithms and methods for specifying the include path.
+
+Never the less, the guidance is to use the angle form when possible. This supports the fact that the
+standard library headers must be included this way, is more likely to create portable code, and enables
+the quoted form for other uses. For example being clear about the locality of the header relative
+to files that includes it or in scenarios where the different search algorithm is required.
+
+##### Example
+
+    #include <string>       // From the standard library, required form
+    #include "helpers.h"    // A project specific file, use "" form
+
+##### Note
+Failing to follow this results in difficult to diagnose errors due to picking up the wrong file by incorrectly specifying the scope when it is included.
+
+Library creators should put their headers in a folder and have clients include those files using the relative path `#include <some_library/common.h>`
+
+##### Enforcement
+
+A test should identify headers referenced via `""` could be referenced with `<>`.
 
 ### <a name="Rs-namespace"></a>SF.20: Use `namespace`s to express logical structure
 
