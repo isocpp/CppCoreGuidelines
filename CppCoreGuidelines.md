@@ -4000,7 +4000,7 @@ Class rule summary:
 * [C.4: Make a function a member only if it needs direct access to the representation of a class](#Rc-member)
 * [C.5: Place helper functions in the same namespace as the class they support](#Rc-helper)
 * [C.7: Don't define a class or enum and declare a variable of its type in the same statement](#Rc-standalone)
-* [C.8: Use `class` rather than `struct` if any member is nonpublic](#Rc-class)
+* [C.8: Use `class` rather than `struct` if any member is non-public](#Rc-class)
 * [C.9: Minimize exposure of members](#Rc-private)
 
 Subsections:
@@ -4234,7 +4234,7 @@ Mixing a type definition and the definition of another entity in the same declar
 
 * Flag if the `}` of a class or enumeration definition is not followed by a `;`. The `;` is missing.
 
-### <a name="Rc-class"></a>C.8: Use `class` rather than `struct` if any member is nonpublic
+### <a name="Rc-class"></a>C.8: Use `class` rather than `struct` if any member is non-public
 
 ##### Reason
 
@@ -6896,7 +6896,7 @@ not using this (over)general interface in favor of a particular interface found 
 ##### Enforcement
 
 * Look for classes with lots of members that do nothing but throw.
-* Flag every use of a nonpublic base class `B` where the derived class `D` does not override a virtual function or access a protected member in `B`, and `B` is not one of the following: empty, a template parameter or parameter pack of `D`, a class template specialized with `D`.
+* Flag every use of a non-public base class `B` where the derived class `D` does not override a virtual function or access a protected member in `B`, and `B` is not one of the following: empty, a template parameter or parameter pack of `D`, a class template specialized with `D`.
 
 ### <a name="Rh-abstract"></a>C.121: If a base class is used as an interface, make it a pure abstract class
 
@@ -9952,7 +9952,7 @@ Arithmetic rules:
 * [ES.103: Don't overflow](#Res-overflow)
 * [ES.104: Don't underflow](#Res-underflow)
 * [ES.105: Don't divide by zero](#Res-zero)
-* [ES.106: Don't try to avoid negative values by using `unsigned`](#Res-non-negative)
+* [ES.106: Don't try to avoid negative values by using `unsigned`](#Res-nonnegative)
 * [ES.107: Don't use `unsigned` for subscripts, prefer `gsl::index`](#Res-subscripts)
 
 ### <a name="Res-lib"></a>ES.1: Prefer the standard library to other libraries and to "handcrafted code"
@@ -13276,7 +13276,7 @@ This also applies to `%`.
 * Flag division by an integral value that could be zero
 
 
-### <a name="Res-non-negative"></a>ES.106: Don't try to avoid negative values by using `unsigned`
+### <a name="Res-nonnegative"></a>ES.106: Don't try to avoid negative values by using `unsigned`
 
 ##### Reason
 
@@ -16556,7 +16556,7 @@ Template definition rule summary:
 
 * [T.60: Minimize a template's context dependencies](#Rt-depend)
 * [T.61: Do not over-parameterize members (SCARY)](#Rt-scary)
-* [T.62: Place non-dependent class template members in a non-templated base class](#Rt-non-dependent)
+* [T.62: Place non-dependent class template members in a non-templated base class](#Rt-nondependent)
 * [T.64: Use specialization to provide alternative implementations of class templates](#Rt-specialization)
 * [T.65: Use tag dispatch to provide alternative implementations of functions](#Rt-tag-dispatch)
 * [T.67: Use specialization to provide alternative implementations for irregular types](#Rt-specialization2)
@@ -17823,7 +17823,7 @@ Some people found the idea that the `Link` no longer was hidden inside the list 
 * Flag member types that do not depend on every template argument
 * Flag member functions that do not depend on every template argument
 
-### <a name="Rt-non-dependent"></a>T.62: Place non-dependent class template members in a non-templated base class
+### <a name="Rt-nondependent"></a>T.62: Place non-dependent class template members in a non-templated base class
 
 ##### Reason
 
@@ -21994,7 +21994,7 @@ In many cases, holding properly encapsulated resources using RAII "owning" objec
 
 Prefer compiler-generated (including `=default`) special members; only these can be classified as "trivial", and at least one major standard library vendor heavily optimizes for classes having trivial special members. This is likely to become common practice.
 
-**Exceptions**: When any of the special functions are declared only to make them nonpublic or virtual, but without special semantics, it doesn't imply that the others are needed.
+**Exceptions**: When any of the special functions are declared only to make them non-public or virtual, but without special semantics, it doesn't imply that the others are needed.
 In rare cases, classes that have members of strange types (such as reference members) are an exception because they have peculiar copy semantics.
 In a class holding a reference, you likely need to write the copy constructor and the assignment operator, but the default destructor already does the right thing. (Note that using a reference member is almost always wrong.)
 
