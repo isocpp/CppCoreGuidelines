@@ -1327,7 +1327,7 @@ The rule against global variables applies to namespace scope variables as well.
 **Alternative**: If you use global (more generally namespace scope) data to avoid copying, consider passing the data as an object by reference to `const`.
 Another solution is to define the data as the state of some object and the operations as member functions.
 
-**Warning**: Beware of data races: If one thread can access nonlocal data (or data passed by reference) while another thread executes the callee, we can have a data race.
+**Warning**: Beware of data races: If one thread can access non-local data (or data passed by reference) while another thread executes the callee, we can have a data race.
 Every pointer or reference to mutable data is a potential data race.
 
 Using global pointers or references to access and change non-const, and otherwise non-global,
@@ -1543,9 +1543,9 @@ Consider:
 
     double sqrt(double x);
 
-Here `x` must be nonnegative. The type system cannot (easily and naturally) express that, so we must use other means. For example:
+Here `x` must be non-negative. The type system cannot (easily and naturally) express that, so we must use other means. For example:
 
-    double sqrt(double x); // x must be nonnegative
+    double sqrt(double x); // x must be non-negative
 
 Some preconditions can be expressed as assertions. For example:
 
@@ -1604,7 +1604,7 @@ Once language support becomes available (e.g., see the [contract proposal](http:
 
 ##### Note
 
-No, using `unsigned` is not a good way to sidestep the problem of [ensuring that a value is nonnegative](#Res-nonnegative).
+No, using `unsigned` is not a good way to sidestep the problem of [ensuring that a value is non-negative](#Res-non-negative).
 
 ##### Enforcement
 
@@ -2372,7 +2372,7 @@ Other function rules:
 * [F.50: Use a lambda when a function won't do (to capture local variables, or to write a local function)](#Rf-capture-vs-overload)
 * [F.51: Where there is a choice, prefer default arguments over overloading](#Rf-default-args)
 * [F.52: Prefer capturing by reference in lambdas that will be used locally, including passed to algorithms](#Rf-reference-capture)
-* [F.53: Avoid capturing by reference in lambdas that will be used nonlocally, including returned, stored on the heap, or passed to another thread](#Rf-value-capture)
+* [F.53: Avoid capturing by reference in lambdas that will be used non-locally, including returned, stored on the heap, or passed to another thread](#Rf-value-capture)
 * [F.54: If you capture `this`, capture all variables explicitly (no default capture)](#Rf-this-capture)
 * [F.55: Don't use `va_arg` arguments](#F-varargs)
 
@@ -3873,7 +3873,7 @@ This is a simple three-stage parallel pipeline. Each `stage` object encapsulates
 
 Flag a lambda that captures by reference, but is used other than locally within the function scope or passed to a function by reference. (Note: This rule is an approximation, but does flag passing by pointer as those are more likely to be stored by the callee, writing to a heap location accessed via a parameter, returning the lambda, etc. The Lifetime rules will also provide general rules that flag escaping pointers and references including via lambdas.)
 
-### <a name="Rf-value-capture"></a>F.53: Avoid capturing by reference in lambdas that will be used nonlocally, including returned, stored on the heap, or passed to another thread
+### <a name="Rf-value-capture"></a>F.53: Avoid capturing by reference in lambdas that will be used non-locally, including returned, stored on the heap, or passed to another thread
 
 ##### Reason
 
@@ -4000,7 +4000,7 @@ Class rule summary:
 * [C.4: Make a function a member only if it needs direct access to the representation of a class](#Rc-member)
 * [C.5: Place helper functions in the same namespace as the class they support](#Rc-helper)
 * [C.7: Don't define a class or enum and declare a variable of its type in the same statement](#Rc-standalone)
-* [C.8: Use `class` rather than `struct` if any member is non-public](#Rc-class)
+* [C.8: Use `class` rather than `struct` if any member is nonpublic](#Rc-class)
 * [C.9: Minimize exposure of members](#Rc-private)
 
 Subsections:
@@ -4234,7 +4234,7 @@ Mixing a type definition and the definition of another entity in the same declar
 
 * Flag if the `}` of a class or enumeration definition is not followed by a `;`. The `;` is missing.
 
-### <a name="Rc-class"></a>C.8: Use `class` rather than `struct` if any member is non-public
+### <a name="Rc-class"></a>C.8: Use `class` rather than `struct` if any member is nonpublic
 
 ##### Reason
 
@@ -4493,7 +4493,7 @@ Destructor rules:
 * [C.31: All resources acquired by a class must be released by the class's destructor](#Rc-dtor-release)
 * [C.32: If a class has a raw pointer (`T*`) or reference (`T&`), consider whether it might be owning](#Rc-dtor-ptr)
 * [C.33: If a class has an owning pointer member, define or `=delete` a destructor](#Rc-dtor-ptr2)
-* [C.35: A base class destructor should be either public and virtual, or protected and nonvirtual](#Rc-dtor-virtual)
+* [C.35: A base class destructor should be either public and virtual, or protected and non-virtual](#Rc-dtor-virtual)
 * [C.36: A destructor may not fail](#Rc-dtor-fail)
 * [C.37: Make destructors `noexcept`](#Rc-dtor-noexcept)
 
@@ -4934,7 +4934,7 @@ That would sometimes require non-trivial code changes and may affect ABIs.
 * A class with an `owner<T>` should define its default operations.
 
 
-### <a name="Rc-dtor-virtual"></a>C.35: A base class destructor should be either public and virtual, or protected and nonvirtual
+### <a name="Rc-dtor-virtual"></a>C.35: A base class destructor should be either public and virtual, or protected and non-virtual
 
 ##### Reason
 
@@ -4949,7 +4949,7 @@ See [this in the Discussion section](#Sd-dtor).
 
 ##### Example, bad
 
-    struct Base {  // BAD: implicitly has a public nonvirtual destructor
+    struct Base {  // BAD: implicitly has a public non-virtual destructor
         virtual void f();
     };
 
@@ -4972,7 +4972,7 @@ If the interface allows destroying, it should be safe to do so.
 
 ##### Note
 
-A destructor must be nonprivate or it will prevent using the type:
+A destructor must be non-private or it will prevent using the type:
 
     class X {
         ~X();   // private destructor
@@ -4992,7 +4992,7 @@ We can imagine one case where you could want a protected virtual destructor: Whe
 
 ##### Enforcement
 
-* A class with any virtual functions should have a destructor that is either public and virtual or else protected and nonvirtual.
+* A class with any virtual functions should have a destructor that is either public and virtual or else protected and non-virtual.
 
 ### <a name="Rc-dtor-fail"></a>C.36: A destructor may not fail
 
@@ -6389,7 +6389,7 @@ A `swap` can be handy for implementing a number of idioms, from smoothly moving 
         int m2;
     };
 
-Providing a nonmember `swap` function in the same namespace as your type for callers' convenience.
+Providing a non-member `swap` function in the same namespace as your type for callers' convenience.
 
     void swap(Foo& a, Foo& b)
     {
@@ -6788,7 +6788,7 @@ Summary:
 
 * [F.50: Use a lambda when a function won't do (to capture local variables, or to write a local function)](#Rf-capture-vs-overload)
 * [F.52: Prefer capturing by reference in lambdas that will be used locally, including passed to algorithms](#Rf-reference-capture)
-* [F.53: Avoid capturing by reference in lambdas that will be used nonlocally, including returned, stored on the heap, or passed to another thread](#Rf-value-capture)
+* [F.53: Avoid capturing by reference in lambdas that will be used non-locally, including returned, stored on the heap, or passed to another thread](#Rf-value-capture)
 * [ES.28: Use lambdas for complex initialization, especially of `const` variables](#Res-lambda-init)
 
 ## <a name="SS-hier"></a>C.hier: Class hierarchies (OOP)
@@ -7002,13 +7002,13 @@ Flag abstract classes with constructors.
 
 ##### Reason
 
-A class with a virtual function is usually (and in general) used via a pointer to base. Usually, the last user has to call delete on a pointer to base, often via a smart pointer to base, so the destructor should be public and virtual. Less commonly, if deletion through a pointer to base is not intended to be supported, the destructor should be protected and nonvirtual; see [C.35](#Rc-dtor-virtual).
+A class with a virtual function is usually (and in general) used via a pointer to base. Usually, the last user has to call delete on a pointer to base, often via a smart pointer to base, so the destructor should be public and virtual. Less commonly, if deletion through a pointer to base is not intended to be supported, the destructor should be protected and non-virtual; see [C.35](#Rc-dtor-virtual).
 
 ##### Example, bad
 
     struct B {
         virtual int f() = 0;
-        // ... no user-written destructor, defaults to public nonvirtual ...
+        // ... no user-written destructor, defaults to public non-virtual ...
     };
 
     // bad: derived from a class without a virtual destructor
@@ -7028,7 +7028,7 @@ There are people who don't follow this rule because they plan to use a class onl
 
 ##### Enforcement
 
-* A class with any virtual functions should have a destructor that is either public and virtual or else protected and nonvirtual.
+* A class with any virtual functions should have a destructor that is either public and virtual or else protected and non-virtual.
 * Flag `delete` of a class with a virtual function but no virtual destructor.
 
 ### <a name="Rh-override"></a>C.128: Virtual functions should specify exactly one of `virtual`, `override`, or `final`
@@ -7075,7 +7075,7 @@ It's simple and clear:
 We want to eliminate two particular classes of errors:
 
 * **implicit virtual**: the programmer intended the function to be implicitly virtual and it is (but readers of the code can't tell); or the programmer intended the function to be implicitly virtual but it isn't (e.g., because of a subtle parameter list mismatch); or the programmer did not intend the function to be virtual but it is (because it happens to have the same signature as a virtual in the base class)
-* **implicit override**: the programmer intended the function to be implicitly an overrider and it is (but readers of the code can't tell); or the programmer intended the function to be implicitly an overrider but it isn't (e.g., because of a subtle parameter list mismatch); or the programmer did not intend the function to be an overrider but it is (because it happens to have the same signature as a virtual in the base class -- note this problem arises whether or not the function is explicitly declared virtual, because the programmer may have intended to create either a new virtual function or a new nonvirtual function)
+* **implicit override**: the programmer intended the function to be implicitly an overrider and it is (but readers of the code can't tell); or the programmer intended the function to be implicitly an overrider but it isn't (e.g., because of a subtle parameter list mismatch); or the programmer did not intend the function to be an overrider but it is (because it happens to have the same signature as a virtual in the base class -- note this problem arises whether or not the function is explicitly declared virtual, because the programmer may have intended to create either a new virtual function or a new non-virtual function)
 
 ##### Enforcement
 
@@ -7634,7 +7634,7 @@ Without a using declaration, member functions in the derived class hide the enti
 
 ##### Note
 
-This issue affects both virtual and nonvirtual member functions
+This issue affects both virtual and non-virtual member functions
 
 For variadic bases, C++17 introduced a variadic form of the using-declaration,
 
@@ -8076,7 +8076,7 @@ You cannot overload function objects.
 Overload rule summary:
 
 * [C.160: Define operators primarily to mimic conventional usage](#Ro-conventional)
-* [C.161: Use nonmember functions for symmetric operators](#Ro-symmetric)
+* [C.161: Use non-member functions for symmetric operators](#Ro-symmetric)
 * [C.162: Overload operations that are roughly equivalent](#Ro-equivalent)
 * [C.163: Overload only for operations that are roughly equivalent](#Ro-equivalent-2)
 * [C.164: Avoid implicit conversion operators](#Ro-conversion)
@@ -8111,19 +8111,19 @@ Here, the conventional semantics is maintained: [Copies compare equal](#SS-copy)
 
 ##### Note
 
-Nonmember operators should be either friends or defined in [the same namespace as their operands](#Ro-namespace).
+Non-member operators should be either friends or defined in [the same namespace as their operands](#Ro-namespace).
 [Binary operators should treat their operands equivalently](#Ro-symmetric).
 
 ##### Enforcement
 
 Possibly impossible.
 
-### <a name="Ro-symmetric"></a>C.161: Use nonmember functions for symmetric operators
+### <a name="Ro-symmetric"></a>C.161: Use non-member functions for symmetric operators
 
 ##### Reason
 
 If you use member functions, you need two.
-Unless you use a nonmember function for (say) `==`, `a == b` and `b == a` will be subtly different.
+Unless you use a non-member function for (say) `==`, `a == b` and `b == a` will be subtly different.
 
 ##### Example
 
@@ -9843,7 +9843,7 @@ The following should not pass code review:
 
     void my_code()
     {
-        // BAD: passing pointer or reference obtained from a nonlocal smart pointer
+        // BAD: passing pointer or reference obtained from a non-local smart pointer
         //      that could be inadvertently reset somewhere inside f or its callees
         f(*g_p);
 
@@ -9867,7 +9867,7 @@ The fix is simple -- take a local copy of the pointer to "keep a ref count" for 
 
 ##### Enforcement
 
-* (Simple) Warn if a pointer or reference obtained from a smart pointer variable (`Unique_pointer` or `Shared_pointer`) that is nonlocal, or that is local but potentially aliased, is used in a function call. If the smart pointer is a `Shared_pointer` then suggest taking a local copy of the smart pointer and obtain a pointer or reference from that instead.
+* (Simple) Warn if a pointer or reference obtained from a smart pointer variable (`Unique_pointer` or `Shared_pointer`) that is non-local, or that is local but potentially aliased, is used in a function call. If the smart pointer is a `Shared_pointer` then suggest taking a local copy of the smart pointer and obtain a pointer or reference from that instead.
 
 # <a name="S-expr"></a>ES: Expressions and statements
 
@@ -9884,7 +9884,7 @@ Declaration rules:
 
 * [ES.5: Keep scopes small](#Res-scope)
 * [ES.6: Declare names in for-statement initializers and conditions to limit scope](#Res-cond)
-* [ES.7: Keep common and local names short, and keep uncommon and nonlocal names longer](#Res-name-length)
+* [ES.7: Keep common and local names short, and keep uncommon and non-local names longer](#Res-name-length)
 * [ES.8: Avoid similar-looking names](#Res-name-similar)
 * [ES.9: Avoid `ALL_CAPS` names](#Res-not-CAPS)
 * [ES.10: Declare one name (only) per declaration](#Res-name-one)
@@ -9952,7 +9952,7 @@ Arithmetic rules:
 * [ES.103: Don't overflow](#Res-overflow)
 * [ES.104: Don't underflow](#Res-underflow)
 * [ES.105: Don't divide by zero](#Res-zero)
-* [ES.106: Don't try to avoid negative values by using `unsigned`](#Res-nonnegative)
+* [ES.106: Don't try to avoid negative values by using `unsigned`](#Res-non-negative)
 * [ES.107: Don't use `unsigned` for subscripts, prefer `gsl::index`](#Res-subscripts)
 
 ### <a name="Res-lib"></a>ES.1: Prefer the standard library to other libraries and to "handcrafted code"
@@ -10136,7 +10136,7 @@ Note: C++17 and C++20 also add `if`, `switch`, and range-`for` initializer state
 
 
 
-### <a name="Res-name-length"></a>ES.7: Keep common and local names short, and keep uncommon and nonlocal names longer
+### <a name="Res-name-length"></a>ES.7: Keep common and local names short, and keep uncommon and non-local names longer
 
 ##### Reason
 
@@ -10945,7 +10945,7 @@ The definition of `a2` is C but not C++ and is considered a security risk
 
 ##### Reason
 
-It nicely encapsulates local initialization, including cleaning up scratch variables needed only for the initialization, without needing to create a needless nonlocal yet nonreusable function. It also works for variables that should be `const` but only after some initialization work.
+It nicely encapsulates local initialization, including cleaning up scratch variables needed only for the initialization, without needing to create a needless non-local yet non-reusable function. It also works for variables that should be `const` but only after some initialization work.
 
 ##### Example, bad
 
@@ -13276,7 +13276,7 @@ This also applies to `%`.
 * Flag division by an integral value that could be zero
 
 
-### <a name="Res-nonnegative"></a>ES.106: Don't try to avoid negative values by using `unsigned`
+### <a name="Res-non-negative"></a>ES.106: Don't try to avoid negative values by using `unsigned`
 
 ##### Reason
 
@@ -16556,12 +16556,12 @@ Template definition rule summary:
 
 * [T.60: Minimize a template's context dependencies](#Rt-depend)
 * [T.61: Do not over-parameterize members (SCARY)](#Rt-scary)
-* [T.62: Place non-dependent class template members in a non-templated base class](#Rt-nondependent)
+* [T.62: Place non-dependent class template members in a non-templated base class](#Rt-non-dependent)
 * [T.64: Use specialization to provide alternative implementations of class templates](#Rt-specialization)
 * [T.65: Use tag dispatch to provide alternative implementations of functions](#Rt-tag-dispatch)
 * [T.67: Use specialization to provide alternative implementations for irregular types](#Rt-specialization2)
 * [T.68: Use `{}` rather than `()` within templates to avoid ambiguities](#Rt-cast)
-* [T.69: Inside a template, don't make an unqualified nonmember function call unless you intend it to be a customization point](#Rt-customization)
+* [T.69: Inside a template, don't make an unqualified non-member function call unless you intend it to be a customization point](#Rt-customization)
 
 Template and hierarchy rule summary:
 
@@ -16595,7 +16595,7 @@ Other template rules summary:
 * [T.140: Name all operations with potential for reuse](#Rt-name)
 * [T.141: Use an unnamed lambda if you need a simple function object in one place only](#Rt-lambda)
 * [T.142: Use template variables to simplify notation](#Rt-var)
-* [T.143: Don't write unintentionally nongeneric code](#Rt-nongeneric)
+* [T.143: Don't write unintentionally non-generic code](#Rt-non-generic)
 * [T.144: Don't specialize function templates](#Rt-specialize-function)
 * [T.150: Check that a class matches a concept using `static_assert`](#Rt-check-class)
 * [T.??: ????](#Rt-???)
@@ -16781,7 +16781,7 @@ Examples include type erasure as with `std::shared_ptr`'s deleter (but [don't ov
 
 ##### Note
 
-In a class template, nonvirtual functions are only instantiated if they're used -- but virtual functions are instantiated every time.
+In a class template, non-virtual functions are only instantiated if they're used -- but virtual functions are instantiated every time.
 This can bloat code size, and may overconstrain a generic type by instantiating functionality that is never needed.
 Avoid this, even though the standard-library facets made this mistake.
 
@@ -17823,7 +17823,7 @@ Some people found the idea that the `Link` no longer was hidden inside the list 
 * Flag member types that do not depend on every template argument
 * Flag member functions that do not depend on every template argument
 
-### <a name="Rt-nondependent"></a>T.62: Place non-dependent class template members in a non-templated base class
+### <a name="Rt-non-dependent"></a>T.62: Place non-dependent class template members in a non-templated base class
 
 ##### Reason
 
@@ -17989,7 +17989,7 @@ When `concept`s become widely available such alternatives can be distinguished d
 * flag function-style casts
 
 
-### <a name="Rt-customization"></a>T.69: Inside a template, don't make an unqualified nonmember function call unless you intend it to be a customization point
+### <a name="Rt-customization"></a>T.69: Inside a template, don't make an unqualified non-member function call unless you intend it to be a customization point
 
 ##### Reason
 
@@ -18009,7 +18009,7 @@ There are three major ways to let calling code customize a template.
 
     template<class T>
     void test2(T t)
-        // Call a nonmember function without qualification
+        // Call a non-member function without qualification
     {
         f(t);  // require f(/*T*/) be available in caller's scope or in T's namespace
     }
@@ -18036,7 +18036,7 @@ this can cause problems like [unintentionally invoking unconstrained function te
 
 ##### Enforcement
 
-* In a template, flag an unqualified call to a nonmember function that passes a variable of dependent type when there is a nonmember function of the same name in the template's namespace.
+* In a template, flag an unqualified call to a non-member function that passes a variable of dependent type when there is a non-member function of the same name in the template's namespace.
 
 
 ## <a name="SS-temp-hier"></a>T.temp-hier: Template and hierarchy rules:
@@ -18529,7 +18529,7 @@ Improved readability.
 
 ???
 
-### <a name="Rt-nongeneric"></a>T.143: Don't write unintentionally nongeneric code
+### <a name="Rt-non-generic"></a>T.143: Don't write unintentionally non-generic code
 
 ##### Reason
 
@@ -18746,7 +18746,7 @@ Source file rule summary:
 
 * [SF.20: Use `namespace`s to express logical structure](#Rs-namespace)
 * [SF.21: Don't use an unnamed (anonymous) namespace in a header](#Rs-unnamed)
-* [SF.22: Use an unnamed (anonymous) namespace for all internal/nonexported entities](#Rs-unnamed2)
+* [SF.22: Use an unnamed (anonymous) namespace for all internal/non-exported entities](#Rs-unnamed2)
 
 ### <a name="Rs-file-suffix"></a>SF.1: Use a `.cpp` suffix for code files and `.h` for interface files if your project doesn't already follow another convention
 
@@ -19209,7 +19209,7 @@ It is almost always a bug to mention an unnamed namespace in a header file.
 
 * Flag any use of an anonymous namespace in a header file.
 
-### <a name="Rs-unnamed2"></a>SF.22: Use an unnamed (anonymous) namespace for all internal/nonexported entities
+### <a name="Rs-unnamed2"></a>SF.22: Use an unnamed (anonymous) namespace for all internal/non-exported entities
 
 ##### Reason
 
@@ -21749,9 +21749,9 @@ In summary, no post-construction technique is perfect. The worst techniques dodg
 
 **References**: [\[Alexandrescu01\]](#Alexandrescu01) §3, [\[Boost\]](#Boost), [\[Dewhurst03\]](#Dewhurst03) §75, [\[Meyers97\]](#Meyers97) §46, [\[Stroustrup00\]](#Stroustrup00) §15.4.3, [\[Taligent94\]](#Taligent94)
 
-### <a name="Sd-dtor"></a>Discussion: Make base class destructors public and virtual, or protected and nonvirtual
+### <a name="Sd-dtor"></a>Discussion: Make base class destructors public and virtual, or protected and non-virtual
 
-Should destruction behave virtually? That is, should destruction through a pointer to a `base` class be allowed? If yes, then `base`'s destructor must be public in order to be callable, and virtual otherwise calling it results in undefined behavior. Otherwise, it should be protected so that only derived classes can invoke it in their own destructors, and nonvirtual since it doesn't need to behave virtually.
+Should destruction behave virtually? That is, should destruction through a pointer to a `base` class be allowed? If yes, then `base`'s destructor must be public in order to be callable, and virtual otherwise calling it results in undefined behavior. Otherwise, it should be protected so that only derived classes can invoke it in their own destructors, and non-virtual since it doesn't need to behave virtually.
 
 ##### Example
 
@@ -21771,7 +21771,7 @@ The common case for a base class is that it's intended to have publicly derived 
         // ...
     } // ~pb invokes correct destructor only when ~Base is virtual
 
-In rarer cases, such as policy classes, the class is used as a base class for convenience, not for polymorphic behavior. It is recommended to make those destructors protected and nonvirtual:
+In rarer cases, such as policy classes, the class is used as a base class for convenience, not for polymorphic behavior. It is recommended to make those destructors protected and non-virtual:
 
     class My_policy {
     public:
@@ -21788,20 +21788,20 @@ In rarer cases, such as policy classes, the class is used as a base class for co
 
 This simple guideline illustrates a subtle issue and reflects modern uses of inheritance and object-oriented design principles.
 
-For a base class `Base`, calling code might try to destroy derived objects through pointers to `Base`, such as when using a `unique_ptr<Base>`. If `Base`'s destructor is public and nonvirtual (the default), it can be accidentally called on a pointer that actually points to a derived object, in which case the behavior of the attempted deletion is undefined. This state of affairs has led older coding standards to impose a blanket requirement that all base class destructors must be virtual. This is overkill (even if it is the common case); instead, the rule should be to make base class destructors virtual if and only if they are public.
+For a base class `Base`, calling code might try to destroy derived objects through pointers to `Base`, such as when using a `unique_ptr<Base>`. If `Base`'s destructor is public and non-virtual (the default), it can be accidentally called on a pointer that actually points to a derived object, in which case the behavior of the attempted deletion is undefined. This state of affairs has led older coding standards to impose a blanket requirement that all base class destructors must be virtual. This is overkill (even if it is the common case); instead, the rule should be to make base class destructors virtual if and only if they are public.
 
 To write a base class is to define an abstraction (see Items 35 through 37). Recall that for each member function participating in that abstraction, you need to decide:
 
 * Whether it should behave virtually or not.
 * Whether it should be publicly available to all callers using a pointer to `Base` or else be a hidden internal implementation detail.
 
-As described in Item 39, for a normal member function, the choice is between allowing it to be called via a pointer to `Base` nonvirtually (but possibly with virtual behavior if it invokes virtual functions, such as in the NVI or Template Method patterns), virtually, or not at all. The NVI pattern is a technique to avoid public virtual functions.
+As described in Item 39, for a normal member function, the choice is between allowing it to be called via a pointer to `Base` non-virtually (but possibly with virtual behavior if it invokes virtual functions, such as in the NVI or Template Method patterns), virtually, or not at all. The NVI pattern is a technique to avoid public virtual functions.
 
-Destruction can be viewed as just another operation, albeit with special semantics that make nonvirtual calls dangerous or wrong. For a base class destructor, therefore, the choice is between allowing it to be called via a pointer to `Base` virtually or not at all; "nonvirtually" is not an option. Hence, a base class destructor is virtual if it can be called (i.e., is public), and nonvirtual otherwise.
+Destruction can be viewed as just another operation, albeit with special semantics that make non-virtual calls dangerous or wrong. For a base class destructor, therefore, the choice is between allowing it to be called via a pointer to `Base` virtually or not at all; "non-virtually" is not an option. Hence, a base class destructor is virtual if it can be called (i.e., is public), and non-virtual otherwise.
 
 Note that the NVI pattern cannot be applied to the destructor because constructors and destructors cannot make deep virtual calls. (See Items 39 and 55.)
 
-Corollary: When writing a base class, always write a destructor explicitly, because the implicitly generated one is public and nonvirtual. You can always `=default` the implementation if the default body is fine and you're just writing the function to give it the proper visibility and virtuality.
+Corollary: When writing a base class, always write a destructor explicitly, because the implicitly generated one is public and non-virtual. You can always `=default` the implementation if the default body is fine and you're just writing the function to give it the proper visibility and virtuality.
 
 ##### Exception
 
@@ -21814,9 +21814,9 @@ Consider also this rare case:
 
 Then, even though the destructor has to be public, there can be great pressure to not make it virtual because as the first virtual function it would incur all the run-time type overhead when the added functionality should never be needed.
 
-In this rare case, you could make the destructor public and nonvirtual but clearly document that further-derived objects must not be used polymorphically as `B`'s. This is what was done with `std::unary_function`.
+In this rare case, you could make the destructor public and non-virtual but clearly document that further-derived objects must not be used polymorphically as `B`'s. This is what was done with `std::unary_function`.
 
-In general, however, avoid concrete base classes (see Item 35). For example, `unary_function` is a bundle-of-typedefs that was never intended to be instantiated standalone. It really makes no sense to give it a public destructor; a better design would be to follow this Item's advice and give it a protected nonvirtual destructor.
+In general, however, avoid concrete base classes (see Item 35). For example, `unary_function` is a bundle-of-typedefs that was never intended to be instantiated standalone. It really makes no sense to give it a public destructor; a better design would be to follow this Item's advice and give it a protected non-virtual destructor.
 
 **References**: [\[C++CS\]](#CplusplusCS) Item 50, [\[Cargill92\]](#Cargill92) pp. 77-79, 207, [\[Cline99\]](#Cline99) §21.06, 21.12-13, [\[Henricson97\]](#Henricson97) pp. 110-114, [\[Koenig97\]](#Koenig97) Chapters 4, 11, [\[Meyers97\]](#Meyers97) §14, [\[Stroustrup00\]](#Stroustrup00) §12.4.2, [\[Sutter02\]](#Sutter02) §27, [\[Sutter04\]](#Sutter04) §18
 
