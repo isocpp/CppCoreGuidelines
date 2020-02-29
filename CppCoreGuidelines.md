@@ -503,8 +503,8 @@ This loop is a restricted form of `std::find`:
         string val;
         cin >> val;
         // ...
-        int index = -1;                    // bad, plus should use gsl::index
-        for (int i = 0; i < v.size(); ++i) {
+        int index{ -1 };                    // bad, plus should use gsl::index
+        for (int i{ 0 }; i < v.size(); ++i) {
             if (v[i] == val) {
                 index = i;
                 break;
@@ -596,7 +596,7 @@ Unless the intent of some code is stated (e.g., in names or comments), it is imp
 
 ##### Example
 
-    gsl::index i = 0;
+    gsl::index i{ 0 };
     while (i < v.size()) {
         // ... do something with v[i] ...
     }
@@ -692,8 +692,8 @@ You don't need to write error handlers for errors caught at compile time.
 ##### Example
 
     // Int is an alias used for integers
-    int bits = 0;         // don't: avoidable code
-    for (Int i = 1; i; i <<= 1)
+    int bits{ 0 };         // don't: avoidable code
+    for (Int i{ 1 }; i; i <<= 1)
         ++bits;
     if (bits < 32)
         cerr << "Int too small\n";
@@ -792,7 +792,7 @@ We need to pass the pointer and the number of elements as an integral object:
     {
         vector<int> v(n);
         f4(v);                     // pass a reference, retain ownership
-        f4(span<int>{v});          // pass a view, retain ownership
+        f4(span<int>{ v });          // pass a view, retain ownership
     }
 
 This design carries the number of elements along as an integral part of an object, so that errors are unlikely and dynamic (run-time) checking is always feasible, if not always affordable.
@@ -844,12 +844,12 @@ Avoid errors leading to (possibly unrecognized) wrong results.
 
     void increment1(int* p, int n)    // bad: error-prone
     {
-        for (int i = 0; i < n; ++i) ++p[i];
+        for (int i{ 0 }; i < n; ++i) ++p[i];
     }
 
     void use1(int m)
     {
-        const int n = 10;
+        const int n{ 10 };
         int a[n] = {};
         // ...
         increment1(a, m);   // maybe typo, maybe m <= n is supposed
@@ -869,10 +869,10 @@ We could check earlier and improve the code:
 
     void use2(int m)
     {
-        const int n = 10;
+        const int n{ 10 };
         int a[n] = {};
         // ...
-        increment2({a, m});    // maybe typo, maybe m <= n is supposed
+        increment2({ a, m });    // maybe typo, maybe m <= n is supposed
         // ...
     }
 
@@ -881,7 +881,7 @@ If all we had was a typo so that we meant to use `n` as the bound, the code coul
 
     void use3(int m)
     {
-        const int n = 10;
+        const int n{ 10 };
         int a[n] = {};
         // ...
         increment2(a);   // the number of elements of a need not be repeated
@@ -898,13 +898,13 @@ Don't repeatedly check the same value. Don't pass structured data as strings:
 
     void user1(const string& date)    // manipulate date
     {
-        auto d = extract_date(date);
+        auto d{ extract_date(date) };
         // ...
     }
 
     void user2()
     {
-        Date d = read_date(cin);
+        Date d{ read_date(cin) };
         // ...
         user1(d.to_string());
         // ...
@@ -922,9 +922,10 @@ There are cases where checking early is dumb because you may not ever need the v
         float y;
         float z;
         float e;
+
     public:
-        Jet(float x, float y, float z, float e)
-            :x(x), y(y), z(z), e(e)
+        Jet(float , float y, float z, float e)
+            :x{ x }, y{ y }, z{ z }, e{ e }
         {
             // Should I check here that the values are physically meaningful?
         }
@@ -961,7 +962,7 @@ This is particularly important for long-running programs, but is an essential pi
 
     void f(char* name)
     {
-        FILE* input = fopen(name, "r");
+        FILE* input{ fopen(name, "r") };
         // ...
         if (something) return;   // bad: if something == true, a file handle is leaked
         // ...
@@ -972,7 +973,7 @@ Prefer [RAII](#Rr-raii):
 
     void f(char* name)
     {
-        ifstream input {name};
+        ifstream input{ name };
         // ...
         if (something) return;   // OK: no leak
         // ...
@@ -1022,29 +1023,29 @@ Time and space that you spend well to achieve a goal (e.g., speed of development
         string s;
         char ch2;
 
-        X& operator=(const X& a);
+        X& operator =(const X& a);
         X(const X&);
     };
 
     X waste(const char* p)
     {
         if (!p) throw Nullptr_error{};
-        int n = strlen(p);
-        auto buf = new char[n];
+        int n{ strlen(p) };
+        auto buf{ new char[n] };
         if (!buf) throw Allocation_error{};
-        for (int i = 0; i < n; ++i) buf[i] = p[i];
+        for (int i{ 0 }; i < n; ++i) buf[i] = p[i];
         // ... manipulate buffer ...
         X x;
         x.ch = 'a';
         x.s = string(n);    // give x.s space for *p
-        for (gsl::index i = 0; i < x.s.size(); ++i) x.s[i] = buf[i];  // copy buf into x.s
+        for (gsl::index i{ 0 }; i < x.s.size(); ++i) x.s[i] = buf[i];  // copy buf into x.s
         delete[] buf;
         return x;
     }
 
     void driver()
     {
-        X x = waste("Typical argument");
+        X x{ waste("Typical argument") };
         // ...
     }
 
@@ -1059,7 +1060,7 @@ There are several more performance bugs and gratuitous complication.
 
     void lower(zstring s)
     {
-        for (int i = 0; i < strlen(s); ++i) s[i] = tolower(s[i]);
+        for (int i{ 0 }; i < strlen(s); ++i) s[i] = tolower(s[i]);
     }
 
 This is actually an example from production code.
@@ -1100,9 +1101,9 @@ Messy, low-level code breeds more such code.
 
 ##### Example
 
-    int sz = 100;
-    int* p = (int*) malloc(sizeof(int) * sz);
-    int count = 0;
+    int sz{ 100 };
+    int* p{ (int*) malloc(sizeof(int) * sz) };
+    int count{ 0 };
     // ...
     for (;;) {
         // ... read an int into x, exit loop if end of file is reached ...
@@ -20519,8 +20520,8 @@ A textbook for beginners and relative novices.
 
 ## <a name="SS-vid"></a>RS.video: Videos about "modern C++"
 
-* Bjarne Stroustrup: [C++11 Style](http://channel9.msdn.com/Events/GoingNative/GoingNative-2012/Keynote-Bjarne-Stroustrup-Cpp11-Style). 2012.
-* Bjarne Stroustrup: [The Essence of C++: With Examples in C++84, C++98, C++11, and C++14](http://channel9.msdn.com/Events/GoingNative/2013/Opening-Keynote-Bjarne-Stroustrup). 2013
+* Bjarne Stroustrup: [C++11 Style](http://channel9.msdn.com/Events/GoingNative/GoingNative-2012/Keynote-Bjarne-Stroustrup-Cpp11-Style). 2012.
+* Bjarne Stroustrup: [The Essence of C++: With Examples in C++84, C++98, C++11, and C++14](http://channel9.msdn.com/Events/GoingNative/2013/Opening-Keynote-Bjarne-Stroustrup). 2013
 * All the talks from [CppCon '14](https://isocpp.org/blog/2014/11/cppcon-videos-c9)
 * Bjarne Stroustrup: [The essence of C++](https://www.youtube.com/watch?v=86xWVb4XIyE) at the University of Edinburgh. 2014.
 * Bjarne Stroustrup: [The Evolution of C++ Past, Present and Future](https://www.youtube.com/watch?v=_wzc7a3McOs). CppCon 2016 keynote.
