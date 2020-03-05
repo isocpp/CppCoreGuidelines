@@ -1823,7 +1823,7 @@ We don't consider "performance" a valid reason not to use exceptions.
 
 * Often, explicit error checking and handling consume as much time and space as exception handling.
 * Often, cleaner code yields better performance with exceptions (simplifying the tracing of paths through the program and their optimization).
-* A good rule for performance critical code is to move checking outside the critical part of the code ([checking](#Rper-checking)).
+* A good rule for performance critical code is to move checking outside the [critical](#Rper-critical) part of the code.
 * In the longer term, more regular code gets better optimized.
 * Always carefully [measure](#Rper-measure) before making performance claims.
 
@@ -1982,7 +1982,7 @@ This `draw2()` passes the same amount of information to `draw()`, but makes the 
 ##### Exception
 
 Use `zstring` and `czstring` to represent C-style, zero-terminated strings.
-But when doing so, use `std::string_view` or `string_span` from the [GSL](#GSL) to prevent range errors.
+But when doing so, use `std::string_view` or `string_span` from the [GSL](#S-gsl) to prevent range errors.
 
 ##### Enforcement
 
@@ -12316,7 +12316,7 @@ This is a major part of the discussion of [C++'s model for type- and resource-sa
 * Use [unique_ptr](#Rf-unique_ptr) to avoid lifetime problems.
 * Use [shared_ptr](#Rf-shared_ptr) to avoid lifetime problems.
 * Use [references](#Rf-ptr-ref) when `nullptr` isn't a possibility.
-* Use [not_null](#Rf-not_null) to catch unexpected `nullptr` early.
+* Use [not_null](#Rf-nullptr) to catch unexpected `nullptr` early.
 * Use the [bounds profile](#SS-bounds) to avoid range errors.
 
 
@@ -16536,8 +16536,8 @@ Concept definition rule summary:
 * [T.24: Use tag classes or traits to differentiate concepts that differ only in semantics](#Rt-tag)
 * [T.25: Avoid complementary constraints](#Rt-not)
 * [T.26: Prefer to define concepts in terms of use-patterns rather than simple syntax](#Rt-use)
-* [T.30: Use concept negation (`!C<T>`) sparingly to express a minor difference](#Rt-not)
-* [T.31: Use concept disjunction (`C1<T> || C2<T>`) sparingly to express alternatives](#Rt-or)
+* [T.30: Use concept negation (`!C<T>`) sparingly to express a minor difference](#Rt-???)
+* [T.31: Use concept disjunction (`C1<T> || C2<T>`) sparingly to express alternatives](#Rt-???)
 * ???
 
 Template interface rule summary:
@@ -16798,7 +16798,7 @@ See the reference to more specific rules.
 ## <a name="SS-concepts"></a>T.concepts: Concept rules
 
 Concepts is a facility for specifying requirements for template arguments.
-It is an [ISO Technical Specification](#Ref-conceptsTS), but currently supported only by GCC.
+It is an [ISO Technical Specification](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2015/n4553.pdf), but currently supported only by GCC.
 Concepts are, however, crucial in the thinking about generic programming and the basis of much work on future C++ libraries
 (standard and other).
 
@@ -16885,7 +16885,7 @@ Flag template type arguments without concepts
 
 ##### Reason
 
- "Standard" concepts (as provided by the [GSL](#S-GSL) and the [Ranges TS](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/n4569.pdf), and hopefully soon the ISO standard itself)
+ "Standard" concepts (as provided by the [GSL](#S-gsl) and the [Ranges TS](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/n4569.pdf), and hopefully soon the ISO standard itself)
 save us the work of thinking up our own concepts, are better thought out than we can manage to do in a hurry, and improve interoperability.
 
 ##### Note
@@ -17682,7 +17682,7 @@ Because that's the best we can do without direct concept support.
 
 ##### Note
 
-Beware of [complementary constraints](# T.25).
+Beware of [complementary constraints](#Rt-not).
 Faking concept overloading using `enable_if` sometimes forces us to use that error-prone design technique.
 
 ##### Enforcement
@@ -18031,7 +18031,7 @@ or a traditional traits template to be specialized on the user's type.
 If you intend to call your own helper function `helper(t)` with a value `t` that depends on a template type parameter,
 put it in a `::detail` namespace and qualify the call as `detail::helper(t);`.
 An unqualified call becomes a customization point where any function `helper` in the namespace of `t`'s type can be invoked;
-this can cause problems like [unintentionally invoking unconstrained function templates](#Rt-unconstrained-adl).
+this can cause problems like [unintentionally invoking unconstrained function templates](#Rt-visible).
 
 
 ##### Enforcement
@@ -20654,13 +20654,13 @@ Type safety profile summary:
 * <a name="Pro-type-constcast"></a>Type.3: Don't use `const_cast` to cast away `const` (i.e., at all):
 [Don't cast away const](#Res-casts-const).
 * <a name="Pro-type-cstylecast"></a>Type.4: Don't use C-style `(T)expression` or functional `T(expression)` casts:
-Prefer [construction](#Res-construct) or [named casts](#Res-cast-named).
+Prefer [construction](#Res-construct) or [named casts](#Res-casts-named).
 * <a name="Pro-type-init"></a>Type.5: Don't use a variable before it has been initialized:
 [always initialize](#Res-always).
 * <a name="Pro-type-memberinit"></a>Type.6: Always initialize a member variable:
 [always initialize](#Res-always),
 possibly using [default constructors](#Rc-default0) or
-[default member initializers](#Rc-in-class-initializers).
+[default member initializers](#Rc-in-class-initializer).
 * <a name="Pro-type-unon"></a>Type.7: Avoid naked union:
 [Use `variant` instead](#Ru-naked).
 * <a name="Pro-type-varargs"></a>Type.8: Avoid varargs:
@@ -22481,6 +22481,10 @@ Alternatively, we will decide that no change is needed and delete the entry.
   \[Meyers96]:        S. Meyers. More Effective C++ (Addison-Wesley, 1996).
 * <a name="Meyers97"></a>
   \[Meyers97]:        S. Meyers. Effective C++ (2nd Edition) (Addison-Wesley, 1997).
+* <a name="Meyers01"></a>
+  \[Meyers01]:        S. Meyers. Effective STL (Addison-Wesley, 2001).
+* <a name="Meyers05"></a>
+  \[Meyers05]:        S. Meyers. Effective C++ (3rd Edition) (Addison-Wesley, 2005).
 * <a name="Meyers15"></a>
   \[Meyers15]:        S. Meyers. Effective Modern C++ (O'Reilly, 2015).
 * <a name="Murray93"></a>
