@@ -20332,7 +20332,7 @@ and errors (when we didn't deal correctly with semi-constructed objects consiste
         }
 
     public:
-        // even more better would be a class for a 2D Size as one single parameter
+        // even better would be a class for a 2D Size as one single parameter
         Picture(ptrdiff_t x, ptrdiff_t y)
             : mx(check_size(x))
             , my(check_size(y))
