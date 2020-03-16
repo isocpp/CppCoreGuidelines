@@ -8502,7 +8502,7 @@ But heed the warning: [Avoid "naked" `union`s](#Ru-naked)
         ~Immutable_string()
         {
             if (size >= buffer_size)
-                delete string_ptr;
+                delete[] string_ptr;
         }
 
         const char* get_str() const
