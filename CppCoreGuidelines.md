@@ -11707,7 +11707,7 @@ Casts are widely (mis) used. Modern C++ has rules and constructs that eliminate 
 
 ##### Enforcement
 
-* Force the elimination of C-style casts, except on a function with a `[[nodiscard]]` return.
+* Force the elimination of C-style casts, except when casting a `[[nodiscard]]` function return value to void.
 * Warn if there are many functional style casts (there is an obvious problem in quantifying 'many').
 * The [type profile](#Pro-type-reinterpretcast) bans `reinterpret_cast`.
 * Warn against [identity casts](#Pro-type-identitycast) between pointer types, where the source and target types are the same (#Pro-type-identitycast).
