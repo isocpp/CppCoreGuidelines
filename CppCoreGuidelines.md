@@ -898,7 +898,7 @@ Don't repeatedly check the same value. Don't pass structured data as strings:
 
     void user1(const string& date)    // manipulate date
     {
-        auto d{ extract_date(date) };
+        auto d = extract_date(date);
         // ...
     }
 
@@ -924,7 +924,7 @@ There are cases where checking early is dumb because you may not ever need the v
         float e;
 
     public:
-        Jet(float , float y, float z, float e)
+        Jet(float x, float y, float z, float e)
             :x{ x }, y{ y }, z{ z }, e{ e }
         {
             // Should I check here that the values are physically meaningful?
