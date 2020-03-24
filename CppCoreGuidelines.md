@@ -3135,7 +3135,7 @@ such as `string` and `vector`, that needs to do free store allocations.
 
 To compare, if we passed out all values as return values, we would something like this:
 
-    pair<istream&, string> get_string(istream& is);  // not recommended
+    pair<istream&, string> get_string(istream& is)  // not recommended
     {
         string s;
         is >> s;
