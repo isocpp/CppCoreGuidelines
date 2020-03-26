@@ -20271,17 +20271,20 @@ and errors (when we didn't deal correctly with semi-constructed objects consiste
 
 ##### Example, bad
 
+    // Old conventional style: many problems
+
     class Picture
     {
         int mx;
         int my;
         char * data;
     public:
+        // main problem: constructor does not fully construct
         Picture(int x, int y)
         {
-            mx = x,
+            mx = x;         // also bad: assignment in constructor body rather than in member initializer
             my = y;
-            data = nullptr;
+            data = nullptr; // also bad: constant initialization in constructor rather than in member initializer
         }
 
         ~Picture()
@@ -20289,6 +20292,7 @@ and errors (when we didn't deal correctly with semi-constructed objects consiste
             Cleanup();
         }
 
+        // bad: two-phase initialization
         bool Init()
         {
             // invariant checks
@@ -20298,10 +20302,11 @@ and errors (when we didn't deal correctly with semi-constructed objects consiste
             if (data) {
                 return false;
             }
-            data = (char*) malloc(mx*my*sizeof(int));
+            data = (char*) malloc(mx*my*sizeof(int));   // also bad: owning raw * and malloc
             return data != nullptr;
         }
 
+        // also bad: no reason to make cleanup a separate function
         void Cleanup()
         {
             if (data) free(data);
@@ -20320,11 +20325,11 @@ and errors (when we didn't deal correctly with semi-constructed objects consiste
 
     class Picture
     {
-        ptrdiff_t mx;
-        ptrdiff_t my;
+        int mx;
+        int my;
         vector<char> data;
 
-        static ptrdiff_t check_size(ptrdiff_t size)
+        static int check_size(int size)
         {
             // invariant check
             Expects(size > 0);
@@ -20333,7 +20338,7 @@ and errors (when we didn't deal correctly with semi-constructed objects consiste
 
     public:
         // even better would be a class for a 2D Size as one single parameter
-        Picture(ptrdiff_t x, ptrdiff_t y)
+        Picture(int x, int y)
             : mx(check_size(x))
             , my(check_size(y))
             // now we know x and y have a valid size
@@ -20341,6 +20346,7 @@ and errors (when we didn't deal correctly with semi-constructed objects consiste
         {
             // picture is ready-to-use
         }
+
         // compiler generated dtor does the job. (also see C.21)
     };
 
