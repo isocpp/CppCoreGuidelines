@@ -20320,20 +20320,20 @@ and errors (when we didn't deal correctly with semi-constructed objects consiste
 
     class Picture
     {
-        size_t mx;
-        size_t my;
+        ptrdiff_t mx;
+        ptrdiff_t my;
         vector<char> data;
 
-        static size_t check_size(size_t s)
+        static ptrdiff_t check_size(ptrdiff_t size)
         {
             // invariant check
-            Expects(s > 0);
-            return s;
+            Expects(size > 0);
+            return size;
         }
 
     public:
-        // even more better would be a class for a 2D Size as one single parameter
-        Picture(size_t x, size_t y)
+        // even better would be a class for a 2D Size as one single parameter
+        Picture(ptrdiff_t x, ptrdiff_t y)
             : mx(check_size(x))
             , my(check_size(y))
             // now we know x and y have a valid size
