@@ -8420,7 +8420,7 @@ This is a special case of the rule that [helper functions should be defined in t
 
 ##### Enforcement
 
-* Flag operator definitions that are not it the namespace of their operands
+* Flag operator definitions that are not in the namespace of their operands
 
 ### <a name="Ro-lambda"></a>C.170: If you feel like overloading a lambda, use a generic lambda
 
@@ -9091,7 +9091,7 @@ What is `Port`? A handy wrapper that encapsulates the resource:
 
 Where a resource is "ill-behaved" in that it isn't represented as a class with a destructor, wrap it in a class or use [`finally`](#Re-finally)
 
-**See also**: [RAII](#Rr-raii)
+**See also**: [RAII](#Re-raii)
 
 ### <a name="Rr-use-ptr"></a>R.2: In interfaces, use raw pointers to denote individual objects (only)
 
@@ -11752,7 +11752,7 @@ The C-style cast is dangerous because it can do any kind of conversion, deprivin
 ##### Note
 
 When converting between types with no information loss (e.g. from `float` to
-`double` or `int64` from `int32`), brace initialization may be used instead.
+`double` or from `int32` to `int64`), brace initialization may be used instead.
 
     double d {some_float};
     int64_t i {some_int32};
@@ -16506,7 +16506,7 @@ Templates can also be used for meta-programming; that is, programs that compose 
 
 A central notion in generic programming is "concepts"; that is, requirements on template arguments presented as compile-time predicates.
 "Concepts" are defined in an ISO Technical Specification: [concepts](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2015/n4553.pdf).
-A draft of a set of standard-library concepts can be found in another ISO TS: [ranges](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/n4569.pdf)
+A draft of a set of standard-library concepts can be found in another ISO TS: [ranges](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/n4569.pdf).
 Concepts are supported in GCC 6.1 and later.
 Consequently, we comment out uses of concepts in examples; that is, we use them as formalized comments only.
 If you use GCC 6.1 or later, you can uncomment them.
@@ -17748,7 +17748,7 @@ Templates typically appear in header files so their context dependencies are mor
 ##### Note
 
 Having a template operate only on its arguments would be one way of reducing the number of dependencies to a minimum, but that would generally be unmanageable.
-For example, an algorithm usually uses other algorithms and invoke operations that does not exclusively operate on arguments.
+For example, algorithms usually use other algorithms and invoke operations that do not exclusively operate on arguments.
 And don't get us started on macros!
 
 **See also**: [T.69](#Rt-customization)
@@ -17915,7 +17915,7 @@ This is a simplified version of `std::copy` (ignoring the possibility of non-con
         // use loop calling copy constructors
     }
 
-    template<class Itert>
+    template<class Iter>
     Out copy(Iter first, Iter last, Iter out)
     {
         return copy_helper(first, last, out, typename copy_trait<Iter>::tag{})
