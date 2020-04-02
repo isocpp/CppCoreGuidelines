@@ -18743,7 +18743,7 @@ Source file rule summary:
 * [SF.9: Avoid cyclic dependencies among source files](#Rs-cycles)
 * [SF.10: Avoid dependencies on implicitly `#include`d names](#Rs-implicit)
 * [SF.11: Header files should be self-contained](#Rs-contained)
-* [SF.12: Prefer the angle bracket form of `#include` where you can and the quoted form everywhere else](#Rs-incform)
+* [SF.12: Prefer the quoted form of `#include` for files relative to the including file and the angle bracket form everywhere else](#Rs-incform)
 
 * [SF.20: Use `namespace`s to express logical structure](#Rs-namespace)
 * [SF.21: Don't use an unnamed (anonymous) namespace in a header](#Rs-unnamed)
@@ -19182,7 +19182,7 @@ A header should include all its dependencies. Be careful about using relative pa
 
 A test should verify that the header file itself compiles or that a cpp file which only includes the header file compiles.
 
-### <a name="Rs-incform"></a>SF.12: Prefer the angle bracket form of `#include` where you can and the quoted form everywhere else
+### <a name="Rs-incform"></a>SF.12: Prefer the quoted form of `#include` for files relative to the including file and the angle bracket form everywhere else
 
 ##### Reason
 
@@ -19190,15 +19190,14 @@ The [standard](http://eel.is/c++draft/cpp.include) provides flexibility for comp
 the two forms of `#include` selected using the angle (`<>`) or quoted (`""`) syntax. Vendors take
 advantage of this and use different search algorithms and methods for specifying the include path.
 
-Nevertheless, the guidance is to use the angle form when possible. This supports the fact that the
-standard library headers must be included this way, is more likely to create portable code, and enables
-the quoted form for other uses. For example being clear about the locality of the header relative
-to files that includes it or in scenarios where the different search algorithm is required.
+Nevertheless, the guidance is to use quoted form for including files that exist at a relative path to the file containing the #include statement and to use the angle bracket form everywhere else where possible. This supports being clear about the locality of the header relative to files that includes it or in scenarios where the different search algorithm is required. For example, it makes it easy to determine at a glance whether a header is being included from a local relative file versus a standard library header or an external header from another project.
 
 ##### Example
-
+foo.cpp:
     #include <string>       // From the standard library, required form
-    #include "helpers.h"    // A project specific file, use "" form
+    #include <some_library/common.h>    //A non-local include file from an external library, use the <> form
+    #include "foo.h"    // A local file relative to foo.cpp, use "" form
+    #include "utils/foo_utils.h"    // A local file relative to foo.cpp, use "" form
 
 ##### Note
 Failing to follow this results in difficult to diagnose errors due to picking up the wrong file by incorrectly specifying the scope when it is included.
