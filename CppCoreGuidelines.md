@@ -10314,7 +10314,7 @@ or:
 
 ##### Example
 
-    int a = 7, b = 9, c, d = 10, e = 3;
+    int a = 10, b = 11, c = 12, d, e = 14, f = 15;
 
 In a long list of declarators it is easy to overlook an uninitialized variable.
 
