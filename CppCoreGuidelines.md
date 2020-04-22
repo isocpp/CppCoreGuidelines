@@ -19189,12 +19189,13 @@ The [standard](http://eel.is/c++draft/cpp.include) provides flexibility for comp
 the two forms of `#include` selected using the angle (`<>`) or quoted (`""`) syntax. Vendors take
 advantage of this and use different search algorithms and methods for specifying the include path.
 
-Nevertheless, the guidance is to use the quoted form for including files that exist at a relative path to the file containing the `#include` statement and to use the angle bracket form everywhere else, where possible. This encourages being clear about the locality of the header relative to files that include it, or scenarios where the different search algorithm is required. For example, it makes it easy to understand at a glance whether a header is being included from a local relative file versus a standard library header or an external header from another project.
+Nevertheless, the guidance is to use the quoted form for including files that exist at a relative path to the file containing the `#include` statement and to use the angle bracket form everywhere else, where possible. This encourages being clear about the locality of the header relative to files that include it, or scenarios where the different search algorithm is required. It makes it easy to understand at a glance whether a header is being included from a local relative file versus a standard library header or a header from the alternate search path (e.g. a header from another project or a common set of includes).
 
 ##### Example
+
     // foo.cpp:
     #include <string>                // From the standard library, requires the <> form
-    #include <some_library/common.h> // A file that is not locally relative, included from an external project; use the <> form
+    #include <some_library/common.h> // A file that is not locally relative, included from another project; use the <> form
     #include "foo.h"                 // A file locally relative to foo.cpp, use the "" form
     #include "foo_utils/utils.h"     // A file locally relative to foo.cpp, use "" form
 
