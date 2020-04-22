@@ -4492,7 +4492,7 @@ Destructor rules:
 * [C.30: Define a destructor if a class needs an explicit action at object destruction](#Rc-dtor)
 * [C.31: All resources acquired by a class must be released by the class's destructor](#Rc-dtor-release)
 * [C.32: If a class has a raw pointer (`T*`) or reference (`T&`), consider whether it might be owning](#Rc-dtor-ptr)
-* [C.33: If a class has an owning pointer member, define or `=delete` a destructor](#Rc-dtor-ptr2)
+* [C.33: If a class has an owning pointer member, define a destructor](#Rc-dtor-ptr2)
 * [C.35: A base class destructor should be either public and virtual, or protected and non-virtual](#Rc-dtor-virtual)
 * [C.36: A destructor may not fail](#Rc-dtor-fail)
 * [C.37: Make destructors `noexcept`](#Rc-dtor-noexcept)
@@ -12698,7 +12698,7 @@ consider `gsl::finally()` as a cleaner and more reliable alternative to `goto ex
 
     switch(x){
     case 1 :
-        while(/* some condition */){
+        while (/* some condition */) {
             //...
         break;
         } //Oops! break switch or break while intended?
@@ -12715,8 +12715,8 @@ Often, a loop that requires a `break` is a good candidate for a function (algori
     void use1(){
         std::vector<T> vec = {/* initialized with some values */};
         T value;
-        for(const T item : vec){
-            if(/* some condition*/){
+        for (const T item : vec) {
+            if (/* some condition*/) {
                 value = item;
                 break;
             }
@@ -12725,14 +12725,14 @@ Often, a loop that requires a `break` is a good candidate for a function (algori
     }
     
     //BETTER: create a function and return inside loop
-    T search(const std::vector<T> &vec){
-        for(const T &item : vec){
-            if(/* some condition*/) return item;
+    T search(const std::vector<T> &vec) {
+        for (const T &item : vec) {
+            if (/* some condition*/) return item;
         }
         return T(); //default value
     }
     
-    void use2(){
+    void use2() {
         std::vector<T> vec = {/* initialized with some values */};
         T value = search(vec);
         /* then do something with value */
@@ -12740,15 +12740,15 @@ Often, a loop that requires a `break` is a good candidate for a function (algori
 
 Often, a loop that uses `continue` can equivalently and as clearly be expressed by an `if`-statement.
 
-    for(int item : vec){ //BAD
-        if(item%2 == 0) continue;
-        if(item == 5) continue;
-        if(item > 10) continue;
+    for (int item : vec) { //BAD
+        if (item%2 == 0) continue;
+        if (item == 5) continue;
+        if (item > 10) continue;
         /* do something with item */
     }
     
-    for(int item : vec){ //GOOD
-        if(item%2 != 0 && item != 5 && item <= 10){
+    for (int item : vec) { //GOOD
+        if (item%2 != 0 && item != 5 && item <= 10) {
             /* do something with item */
         }
     }
@@ -14972,21 +14972,20 @@ There is no explicit locking and both correct (value) return and error (exceptio
         return value;
     }
 
-
     void async_example()
     {
         try
         {
-            auto v1 = std::async(std::launch::async, read_value, "v1.txt"); 
+            auto v1 = std::async(std::launch::async, read_value, "v1.txt");
             auto v2 = std::async(std::launch::async, read_value, "v2.txt");
             std::cout << v1.get() + v2.get() << '\n';
         }
-        catch (std::ios_base::failure & fail) 
+        catch (std::ios_base::failure & fail)
         {
             // handle exception here
         }
     }
-    
+
 ##### Note
 
 Unfortunately, `async()` is not perfect.
@@ -19200,6 +19199,7 @@ Nevertheless, the guidance is to use the quoted form for including files that ex
     #include "foo_utils/utils.h"     // A file locally relative to foo.cpp, use "" form
 
 ##### Note
+
 Failing to follow this results in difficult to diagnose errors due to picking up the wrong file by incorrectly specifying the scope when it is included. For example, in a typical case where the `#include ""` search algorithm may search for a file existing at a local relative path first, then using this form to refer to a file that is not locally relative could mean that if a file ever comes into existence at the local relative path (e.g. the including file is moved to a new location), it will now be found ahead of the previous include file and the set of includes will have been changed in an unexpected way.
 
 Library creators should put their headers in a folder and have clients include those files using the relative path `#include <some_library/common.h>`
@@ -20281,9 +20281,11 @@ and errors (when we didn't deal correctly with semi-constructed objects consiste
         // main problem: constructor does not fully construct
         Picture(int x, int y)
         {
-            mx = x;         // also bad: assignment in constructor body rather than in member initializer
+            mx = x;         // also bad: assignment in constructor body
+                            // rather than in member initializer
             my = y;
-            data = nullptr; // also bad: constant initialization in constructor rather than in member initializer
+            data = nullptr; // also bad: constant initialization in constructor
+                            // rather than in member initializer
         }
 
         ~Picture()
@@ -20465,7 +20467,7 @@ Reference sections:
   Libraries used have to have been approved for mission critical applications.
   Any similarities to this set of guidelines are unsurprising because Bjarne Stroustrup was an author of JSF++.
   Recommended, but note its very specific focus.
-* [_MISRA C++ 2008: Guidelines for the use of the C++ language in critical systems_] (https://www.misra.org.uk/Buyonline/tabid/58/Default.aspx).
+* [MISRA C++ 2008: Guidelines for the use of the C++ language in critical systems](https://www.misra.org.uk/Buyonline/tabid/58/Default.aspx).
 * [Mozilla Portability Guide](https://developer.mozilla.org/en-US/docs/Mozilla/C%2B%2B_Portability_Guide).
   As the name indicates, this aims for portability across many (old) compilers.
   As such, it is restrictive.
