@@ -19197,7 +19197,7 @@ Nevertheless, the guidance is to use the quoted form for including files that ex
     #include <string>                // From the standard library, requires the <> form
     #include <some_library/common.h> // A file that is not locally relative, included from another project; use the <> form
     #include "foo.h"                 // A file locally relative to foo.cpp, use the "" form
-    #include "foo_utils/utils.h"     // A file locally relative to foo.cpp, use "" form
+    #include "foo_utils/utils.h"     // A file locally relative to foo.cpp, use the "" form
 
 ##### Note
 
