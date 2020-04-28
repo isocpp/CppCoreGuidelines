@@ -18747,6 +18747,7 @@ Source file rule summary:
 * [SF.20: Use `namespace`s to express logical structure](#Rs-namespace)
 * [SF.21: Don't use an unnamed (anonymous) namespace in a header](#Rs-unnamed)
 * [SF.22: Use an unnamed (anonymous) namespace for all internal/non-exported entities](#Rs-unnamed2)
+* [SF.23: Keep forward declarations independent](#Rs-forward)
 
 ### <a name="Rs-file-suffix"></a>SF.1: Use a `.cpp` suffix for code files and `.h` for interface files if your project doesn't already follow another convention
 
@@ -19253,6 +19254,42 @@ An API class and its members can't live in an unnamed namespace; but any "helper
 ##### Enforcement
 
 * ???
+
+### <a name="#Rs-forward"></a>SF.23: Keep forward declarations independent
+
+##### Reason
+- Reading a forward declaration is easier since all the needed information is on the one line
+- Refactoring is easier because when a class moves namespaces only the lines that forward declare it must be changed. Renaming a namespace is still just a find and replace.
+- Merging is easier because each line is independent
+- Writing is easier because it's easier to decide where to insert (because it doesn't make a difference)
+
+##### Example
+
+Bad
+
+    namespace MyNamespace
+    {
+        namespace InnerNamespace
+        {
+            class C1;
+            class C2;
+        }
+        class C3;
+    }
+
+Good
+
+	namespace MyNamespace::InnerNamespace { class C1; }
+    namespace MyNamespace::InnerNamespace { class C2; }
+    namespace MyNamespace { class C3; }
+
+##### Note
+
+This assumes that namespace names are sufficiently short and nesting is sufficiently shallow to avoid violating any line length limits. If this is not the case, it may indicate namespace names are too long or deeply nested.
+
+##### Enforcement
+
+Warn on namespace blocks that contain more than one forward declaration.
 
 # <a name="S-stdlib"></a>SL: The Standard Library
 
