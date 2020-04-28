@@ -19268,11 +19268,11 @@ An API class and its members can't live in an unnamed namespace; but any "helper
 Bad
 
     namespace MyNamespace {
-        namespace InnerNamespace {
-            class C1;
-            class C2;
-        }
-        class C3;
+    namespace InnerNamespace {
+    class C1;
+    class C2;
+    }
+    class C3;
     }
 
 Good
