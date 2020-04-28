@@ -19255,7 +19255,7 @@ An API class and its members can't live in an unnamed namespace; but any "helper
 
 * ???
 
-### <a name="#Rs-forward"></a>SF.23: Keep forward declarations independent
+### <a name="Rs-forward"></a>SF.23: Keep forward declarations independent
 
 ##### Reason
 - Reading a forward declaration is easier since all the needed information is on the one line
