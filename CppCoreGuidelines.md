@@ -13926,29 +13926,52 @@ However, over time, code fragments can turn up in unexpected places.
 
     double cached_computation(double x)
     {
-        // bad: these two statics cause data races in multi-threaded usage
+        // bad: these statics cause data races in multi-threaded usage
         static double cached_x = 0.0;
         static double cached_result = COMPUTATION_OF_ZERO;
-        double result;
 
-        if (cached_x == x)
-            return cached_result;
-        result = computation(x);
-        cached_x = x;
-        cached_result = result;
-        return result;
+        if (cached_x != x) {
+            cached_x = x;
+            cached_result = computation(x);
+        }
+        return cached_result;
     }
 
 Although `cached_computation` works perfectly in a single-threaded environment, in a multi-threaded environment the two `static` variables result in data races and thus undefined behavior.
 
-There are several ways that this example could be made safe for a multi-threaded environment:
+##### Example, good
 
-* Delegate concurrency concerns upwards to the caller.
-* Mark the `static` variables as `thread_local` (which might make caching less effective).
-* Implement concurrency control, for example, protecting the two `static` variables with a `static` lock (which might reduce performance).
-* Have the caller provide the memory to be used for the cache, thereby delegating both memory allocation and concurrency concerns upwards to the caller.
+    struct ComputationCache {
+        double cached_x = 0.0;
+        double cached_result = COMPUTATION_OF_ZERO;
+
+        double compute(double x) {
+            if (cached_x != x) {
+                cached_x = x;
+                cached_result = computation(x);
+            }
+            return cached_result;
+        }
+    };
+
+Here the cache is stored as member data of a `ComputationCache` object, rather than as shared static state.
+This refactoring essentially delegates the concern upward to the caller: a single-threaded program
+might still choose to have one global `ComputationCache`, while a multi-threaded program might
+have one `ComputationCache` instance per thread, or one per "context" for any definition of "context."
+The refactored function no longer attempts to manage the allocation of `cached_x`. In that sense,
+this is an application of the Single Responsibility Principle.
+
+In this specific example, refactoring for thread-safety also improved reusability in single-threaded
+programs. It's not hard to imagine that a single-threaded program might want two `ComputationCache` instances
+for use in different parts of the program, without having them overwrite each other's cached data.
+
+There are several other ways one might add thread-safety to code written for a standard multi-threaded environment
+(that is, one where the only form of concurrency is `std::thread`):
+
+* Mark the state variables as `thread_local` instead of `static`.
+* Implement concurrency control, for example, protecting access to the two `static` variables with a `static std::mutex`.
 * Refuse to build and/or run in a multi-threaded environment.
-* Provide two implementations, one which is used in single-threaded environments and another which is used in multi-threaded environments.
+* Provide two implementations: one for single-threaded environments and another for multi-threaded environments.
 
 ##### Exception
 
