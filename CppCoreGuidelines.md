@@ -13441,7 +13441,6 @@ Performance rule summary:
 * [Per.17: Declare the most used member of a time-critical struct first](#Rper-struct)
 * [Per.18: Space is time](#Rper-space)
 * [Per.19: Access memory predictably](#Rper-access)
-* [Per.30: Avoid context switches on the critical path](#Rper-context)
 
 ### <a name="Rper-reason"></a>Per.1: Don't optimize without reason
 
@@ -13852,10 +13851,6 @@ Performance is very sensitive to cache performance and cache algorithms favor si
         for (int c = 0; c < cols; ++c)
             sum += matrix[r][c];
 
-### <a name="Rper-context"></a>Per.30: Avoid context switches on the critical path
-
-???
-
 # <a name="S-concurrency"></a>CP: Concurrency and parallelism
 
 We often want our computers to do many tasks at the same time (or at least appear to do them at the same time).
@@ -14230,7 +14225,6 @@ Concurrency rule summary:
 * [CP.26: Don't `detach()` a thread](#Rconc-detached_thread)
 * [CP.31: Pass small amounts of data between threads by value, rather than by reference or pointer](#Rconc-data-by-value)
 * [CP.32: To share ownership between unrelated `thread`s use `shared_ptr`](#Rconc-shared)
-* [CP.40: Minimize context switching](#Rconc-switch)
 * [CP.41: Minimize thread creation and destruction](#Rconc-create)
 * [CP.42: Don't `wait` without a condition](#Rconc-wait)
 * [CP.43: Minimize time spent in a critical section](#Rconc-time)
@@ -14659,21 +14653,6 @@ safe way to ensure proper deletion.
 * A static object (e.g. a global) can be shared because it is not owned in the sense that some thread is responsible for its deletion.
 * An object on free store that is never to be deleted can be shared.
 * An object owned by one thread can be safely shared with another as long as that second thread doesn't outlive the owner.
-
-##### Enforcement
-
-???
-
-
-### <a name="Rconc-switch"></a>CP.40: Minimize context switching
-
-##### Reason
-
-Context switches are expensive.
-
-##### Example
-
-    ???
 
 ##### Enforcement
 
