@@ -19259,10 +19259,10 @@ An API class and its members can't live in an unnamed namespace; but any "helper
 
 ##### Reason
 
-Reading a forward declaration is easier since all the needed information is on the one line
+Reading a forward declaration is easier since all the needed information is on the one line.
 Refactoring is easier because when a class moves namespaces only the lines that forward declare it must be changed. Renaming a namespace is still just a find and replace.
-Merging is easier because each line is independent
-Writing is easier because it's easier to decide where to insert (because it doesn't make a difference)
+Merging is easier because each line is independent.
+Writing is easier because it's easier to decide where to insert (because it doesn't make a difference).
 
 ##### Example
 
@@ -19285,6 +19285,10 @@ Good
 ##### Note
 
 This assumes that namespace names are sufficiently short and nesting is sufficiently shallow to avoid violating any line length limits. If this is not the case, it may indicate namespace names are too long or deeply nested.
+
+##### Note
+
+This is applicable from C++17 onward. Prior to C++17 this namespace nesting syntax was not permitted in declarations.
 
 ##### Enforcement
 
