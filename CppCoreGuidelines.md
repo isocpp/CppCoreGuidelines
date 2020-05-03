@@ -19260,7 +19260,7 @@ An API class and its members can't live in an unnamed namespace; but any "helper
 ##### Reason
 
 Reading a forward declaration is easier since all the needed information is on the one line.
-Refactoring is easier because when a class moves namespaces only the lines that forward declare it must be changed. Renaming a namespace is still just a find and replace.
+Refactoring is easier because when a class moves namespaces only the lines that forward-declare it must be changed. Renaming a namespace is still just a find and replace.
 Merging is easier because each line is independent.
 Writing is easier because it's easier to decide where to insert (because it doesn't make a difference).
 
