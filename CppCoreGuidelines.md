@@ -9551,6 +9551,24 @@ Consider:
 
 The `make_shared()` version mentions `X` only once, so it is usually shorter (as well as faster) than the version with the explicit `new`.
 
+##### Exception
+
+Use explicit `new` when you must hold out-of-scope `weak_ptr` to your `shared_ptr` object to force resource block allocation/deallocation separately from control block. 
+
+Consider: 
+
+    {
+        weak_ptr<X> wp;
+        {
+        	auto sp = make_shared<X>();
+        	wp = sp;
+        }
+        // some long process, sp memory block still not released
+    }
+
+Memory allocated by `make_shared()` in this case will not be released until `wp` is reset or destroyed since its control block is still holding `wp` reference. With explicit `new` resource block can be safely released as soon as `sp` is destroyed.
+
+
 ##### Enforcement
 
 (Simple) Warn if a `shared_ptr` is constructed from the result of `new` rather than `make_shared`.
