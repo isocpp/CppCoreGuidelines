@@ -9558,15 +9558,15 @@ Use explicit `new` when you must hold out-of-scope `weak_ptr` to your `shared_pt
 Consider: 
 
     {
-        weak_ptr<X> wp;
+        weak_ptr<X> weak;
         {
-            auto sp = make_shared<X>();    
-            wp = sp;
+            auto shared = make_shared<X>();
+            weak = shared;
         }
-        // some long process, sp memory block still not released
+        // some long process, destroyed memory block still not released
     }
 
-Memory allocated by `make_shared()` in this case will not be released until `wp` is reset or destroyed since its control block is still holding `wp` reference. With explicit `new` resource block can be safely released as soon as `sp` is destroyed.
+Memory allocated by `make_shared()` in this case will not be released until `weak` is reset or destroyed since its control block is still holding `weak` reference. With explicit `new` resource block can be safely released as soon as `shared` is destroyed.
 
 
 ##### Enforcement
