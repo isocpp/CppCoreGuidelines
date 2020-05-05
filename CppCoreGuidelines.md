@@ -9560,8 +9560,8 @@ Consider:
     {
         weak_ptr<X> wp;
         {
-        	auto sp = make_shared<X>();
-        	wp = sp;
+            auto sp = make_shared<X>();    
+            wp = sp;
         }
         // some long process, sp memory block still not released
     }
