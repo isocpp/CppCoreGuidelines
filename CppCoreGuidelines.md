@@ -5028,7 +5028,7 @@ If at all possible, consider failure to close/cleanup a fundamental design error
 
 ##### Note
 
-Declare a destructor `noexcept`. That will ensure that it either completes normally or terminate the program.
+Declare a destructor `noexcept`. That will ensure that it either completes normally or terminates the program.
 
 ##### Note
 
