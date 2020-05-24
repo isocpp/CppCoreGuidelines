@@ -1778,7 +1778,7 @@ This is a major source of errors.
 
     int printf(const char* ...);    // bad: return negative number if output fails
 
-    template <class F, class ...Args>
+    template<class F, class ...Args>
     // good: throw system_error if unable to start the new thread
     explicit thread(F&& f, Args&&... args);
 
@@ -2299,10 +2299,10 @@ So, we write a class
     public:
         enum Opt { from_line = 1 };
         Istream() { }
-        Istream(zstring p) :owned{true}, inp{new ifstream{p}} {}            // read from file
-        Istream(zstring p, Opt) :owned{true}, inp{new istringstream{p}} {}  // read from command line
+        Istream(zstring p) : owned{true}, inp{new ifstream{p}} {}            // read from file
+        Istream(zstring p, Opt) : owned{true}, inp{new istringstream{p}} {}  // read from command line
         ~Istream() { if (owned) delete inp; }
-        operator istream& () { return *inp; }
+        operator istream&() { return *inp; }
     private:
         bool owned = false;
         istream* inp = &cin;
@@ -2974,7 +2974,7 @@ Unique owner types that are move-only and cheap-to-move, such as `unique_ptr`, c
 
 For example:
 
-    template <class T>
+    template<class T>
     void sink(std::unique_ptr<T> p) {
         // use p ... possibly std::move(p) onward somewhere else
     }   // p gets destroyed
@@ -2995,7 +2995,7 @@ In that case, and only that case, make the parameter `TP&&` where `TP` is a temp
 
 ##### Example
 
-    template <class F, class... Args>
+    template<class F, class... Args>
     inline auto invoke(F f, Args&&... args) {
         return f(forward<Args>(args)...);
     }
@@ -3779,7 +3779,7 @@ Functions can't capture local variables or be defined at local scope; if you nee
     // at statement or expression scope -- a lambda is natural
     vector<work> v = lots_of_work();
     for (int tasknum = 0; tasknum < max; ++tasknum) {
-        pool.run([=, &v]{
+        pool.run([=, &v] {
             /*
             ...
             ... process 1 / max - th of v, the tasknum - th chunk
@@ -4164,7 +4164,7 @@ An overload set may have some members that do not directly access `private` data
 
     class Foobar {
     public:
-        void foo(long x)    { /* manipulate private data */ }
+        void foo(long x) { /* manipulate private data */ }
         void foo(double x) { foo(std::lround(x)); }
         // ...
     private:
@@ -4735,7 +4735,7 @@ Only define a non-default destructor if a class needs to execute code that is no
     template<typename A>
     struct final_action {   // slightly simplified
         A act;
-        final_action(A a) :act{a} {}
+        final_action(A a) : act{a} {}
         ~final_action() { act(); }
     };
 
@@ -6289,7 +6289,7 @@ In a few cases, a default operation is not desirable.
 
 A `unique_ptr` can be moved, but not copied. To achieve that its copy operations are deleted. To avoid copying it is necessary to `=delete` its copy operations from lvalues:
 
-    template <class T, class D = default_delete<T>> class unique_ptr {
+    template<class T, class D = default_delete<T>> class unique_ptr {
     public:
         // ...
         constexpr unique_ptr() noexcept;
@@ -6498,7 +6498,7 @@ It is really hard to write a foolproof and useful `==` for a hierarchy.
 
 `B`'s comparison accepts conversions for its second operand, but not its first.
 
-    class D :B {
+    class D : B {
         char character;
         virtual bool operator==(const D& a) const
         {
@@ -6572,14 +6572,12 @@ A type will provide a copy constructor and/or copy assignment operator to approp
 
 ##### Example, good
 
-    struct base
-    {
+    struct base {
         virtual void update() = 0;
         std::shared_ptr<int> sp;
     };
 
-    struct derived : public base
-    {
+    struct derived : public base {
         void update() override {}
     };
 
@@ -7137,7 +7135,7 @@ The importance of keeping the two kinds of inheritance increases
 
     class Circle : public Shape {
     public:
-        Circle(Point c, int r) :Shape{c}, rad{r} { /* ... */ }
+        Circle(Point c, int r) : Shape{c}, rad{r} { /* ... */ }
 
         // ...
     private:
@@ -7183,7 +7181,7 @@ Note that a pure interface rarely has constructors: there is nothing to construc
 
     class Circle : public Shape {
     public:
-        Circle(Point c, int r, Color c) :cent{c}, rad{r}, col{c} { /* ... */ }
+        Circle(Point c, int r, Color c) : cent{c}, rad{r}, col{c} { /* ... */ }
 
         Point center() const override { return cent; }
         Color color() const override { return col; }
@@ -7638,7 +7636,7 @@ This issue affects both virtual and non-virtual member functions
 
 For variadic bases, C++17 introduced a variadic form of the using-declaration,
 
-    template <class... Ts>
+    template<class... Ts>
     struct Overloader : Ts... {
         using Ts::operator()...; // exposes operator() from every base
     };
@@ -8294,7 +8292,7 @@ Many parts of the C++ semantics assumes its default meaning.
 ##### Example
 
     class Ptr { // a somewhat smart pointer
-        Ptr(X* pp) :p(pp) { /* check */ }
+        Ptr(X* pp) : p(pp) { /* check */ }
         X* operator->() { /* check */ return p; }
         X operator[](int i);
         X operator*();
@@ -9582,8 +9580,7 @@ be able to destroy a cyclic structure.
 
     class bar;
 
-    class foo
-    {
+    class foo {
     public:
       explicit foo(const std::shared_ptr<bar>& forward_reference)
         : forward_reference_(forward_reference)
@@ -9592,8 +9589,7 @@ be able to destroy a cyclic structure.
       std::shared_ptr<bar> forward_reference_;
     };
 
-    class bar
-    {
+    class bar {
     public:
       explicit bar(const std::weak_ptr<foo>& back_reference)
         : back_reference_(back_reference)
@@ -10289,7 +10285,7 @@ A structured binding (C++17) is specifically designed to introduce several varia
 
 ##### Example
 
-    template <class InputIterator, class Predicate>
+    template<class InputIterator, class Predicate>
     bool any_of(InputIterator first, InputIterator last, Predicate pred);
 
 or better using concepts:
@@ -10879,8 +10875,7 @@ As an optimization, you may want to reuse a buffer as a scratch pad, but even th
 
     void write_to_file() {
         std::string buffer;             // to avoid reallocations on every loop iteration
-        for (auto& o : objects)
-        {
+        for (auto& o : objects) {
             // First part of the work.
             generate_first_string(buffer, o);
             write_to_file(buffer);
@@ -11161,7 +11156,7 @@ Requires messy cast-and-macro-laden code to get working right.
         std::exit(severity);
     }
 
-    template <typename T, typename... Ts>
+    template<typename T, typename... Ts>
     constexpr void error(int severity, T head, Ts... tail)
     {
         std::cerr << head;
@@ -12696,7 +12691,7 @@ consider `gsl::finally()` as a cleaner and more reliable alternative to `goto ex
 
 ##### Example
 
-    switch(x){
+    switch(x) {
     case 1 :
         while (/* some condition */) {
             //...
@@ -12712,7 +12707,7 @@ consider `gsl::finally()` as a cleaner and more reliable alternative to `goto ex
 Often, a loop that requires a `break` is a good candidate for a function (algorithm), in which case the `break` becomes a `return`.
 
     //Original code: break inside loop
-    void use1(){
+    void use1() {
         std::vector<T> vec = {/* initialized with some values */};
         T value;
         for (const T item : vec) {
@@ -13500,8 +13495,7 @@ Simple code can be very fast. Optimizers sometimes do marvels with simple code
 
     vector<uint8_t> v(100000);
 
-    for (size_t i = 0; i < v.size(); i += sizeof(uint64_t))
-    {
+    for (size_t i = 0; i < v.size(); i += sizeof(uint64_t)) {
         uint64_t& quad_word = *reinterpret_cast<uint64_t*>(&v[i]);
         quad_word = ~quad_word;
     }
@@ -13637,7 +13631,7 @@ Don't let bad designs "bleed into" your code.
 
 Consider:
 
-    template <class ForwardIterator, class T>
+    template<class ForwardIterator, class T>
     bool binary_search(ForwardIterator first, ForwardIterator last, const T& val);
 
 `binary_search(begin(c), end(c), 7)` will tell you whether `7` is in `c` or not.
@@ -13646,14 +13640,14 @@ However, it will not tell you where that `7` is or whether there are more than o
 Sometimes, just passing the minimal amount of information back (here, `true` or `false`) is sufficient, but a good interface passes
 needed information back to the caller. Therefore, the standard library also offers
 
-    template <class ForwardIterator, class T>
+    template<class ForwardIterator, class T>
     ForwardIterator lower_bound(ForwardIterator first, ForwardIterator last, const T& val);
 
 `lower_bound` returns an iterator to the first match if any, otherwise to the first element greater than `val`, or `last` if no such element is found.
 
 However, `lower_bound` still doesn't return enough information for all uses, so the standard library also offers
 
-    template <class ForwardIterator, class T>
+    template<class ForwardIterator, class T>
     pair<ForwardIterator, ForwardIterator>
     equal_range(ForwardIterator first, ForwardIterator last, const T& val);
 
@@ -15358,7 +15352,7 @@ Note that there is no return value that could contain an error code.
 The `File_handle` constructor might be defined like this:
 
     File_handle::File_handle(const string& name, const string& mode)
-        :f{fopen(name.c_str(), mode.c_str())}
+        : f{fopen(name.c_str(), mode.c_str())}
     {
         if (!f)
             throw runtime_error{"File_handle: could not open " + name + " as " + mode};
@@ -17665,7 +17659,7 @@ Because that's the best we can do without direct concept support.
 
 ##### Example
 
-    template <typename T>
+    template<typename T>
     enable_if_t<is_integral_v<T>>
     f(T v)
     {
@@ -17673,7 +17667,7 @@ Because that's the best we can do without direct concept support.
     }
 
     // Equivalent to:
-    template <Integral T>
+    template<Integral T>
     void f(T v)
     {
         // ...
@@ -21061,7 +21055,7 @@ Some styles distinguish members from local variable, and/or from global variable
 
     struct S {
         int m_;
-        S(int m) :m_{abs(m)} { }
+        S(int m) : m_{abs(m)} { }
     };
 
 This is not harmful and does not fall under this guideline because it does not encode type information.
@@ -21868,7 +21862,7 @@ Never allow an error to be reported from a destructor, a resource deallocation f
 
     class Nefarious {
     public:
-        Nefarious()  { /* code that could throw */ }   // ok
+        Nefarious() { /* code that could throw */ }    // ok
         ~Nefarious() { /* code that could throw */ }   // BAD, should not throw
         // ...
     };
