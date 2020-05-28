@@ -19096,40 +19096,57 @@ Avoid surprises.
 Avoid having to change `#include`s if an `#include`d header changes.
 Avoid accidentally becoming dependent on implementation details and logically separate entities included in a header.
 
-##### Example
+##### Example, fragile
 
-    #include <iostream>
-    using namespace std;
-
-    void use()                  // bad
-    {
-        string s;
-        cin >> s;               // fine
-        getline(cin, s);        // error: getline() not defined
-        if (s == "surprise") {  // error == not defined
-            // ...
-        }
-    }
-
-`<iostream>` exposes the definition of `std::string` ("why?" makes for a fun trivia question),
-but it is not required to do so by transitively including the entire `<string>` header,
-resulting in the popular beginner question "why doesn't `getline(cin,s);` work?"
-or even an occasional "`string`s cannot be compared with `==`).
-
-The solution is to explicitly `#include <string>`:
-
-    #include <iostream>
+    // util.h:
     #include <string>
-    using namespace std;
+
+    class util {
+        std::string m_private;
+    public:
+        void do();
+    };
+
+    // use.cpp:
+    #include "util.h"
 
     void use()
     {
-        string s;
-        cin >> s;               // fine
-        getline(cin, s);        // fine
-        if (s == "surprise") {  // fine
-            // ...
-        }
+        util().do();
+        std::string s;  // fragile
+    }
+
+`util.h` exposes the definition of `std::string`, but it is not required to do so by its mere interface.
+
+##### Example, broken
+
+    // util.h:
+    // << refactored >>
+    class util {
+        char* m_private = nullptr;
+    public:
+        void do();
+    };
+
+    // use.cpp:
+    #include "util.h"
+
+    void use()
+    {
+        util().do();
+        std::string s;  // error: `std::string` not defined
+    }
+
+The solution is to explicitly `#include <string>`:
+
+    // use.cpp:
+    #include "util.h"
+    #include <string>
+
+    void use()
+    {
+        util().do();
+        std::string s;  // fine
     }
 
 ##### Note
