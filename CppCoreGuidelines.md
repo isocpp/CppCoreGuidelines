@@ -14973,7 +14973,7 @@ This section looks at passing messages so that a programmer doesn't have to do e
 Message passing rules summary:
 
 * [CP.60: Use a `future` to return a value from a concurrent task](#Rconc-future)
-* [CP.61: Use an `async()` to spawn a concurrent task](#Rconc-async)
+* [CP.61: Use `async()` to spawn concurrent tasks](#Rconc-async)
 * message queues
 * messaging libraries
 
@@ -15001,12 +15001,13 @@ There is no explicit locking and both correct (value) return and error (exceptio
 
 ???
 
-### <a name="Rconc-async"></a>CP.61: Use an `async()` to spawn a concurrent task
+### <a name="Rconc-async"></a>CP.61: Use `async()` to spawn concurrent tasks
 
 ##### Reason
 
-A `future` preserves the usual function call return semantics for asynchronous tasks.
-There is no explicit locking and both correct (value) return and error (exception) return are handled simply.
+Similar to [R.12](#Rr-immediate-alloc), which tells you to avoid raw owning pointers, you should
+also avoid raw threads and raw promises where possible. Use a factory function such as `std::async`,
+which handles spawning or reusing a thread without exposing raw threads to your own code.
 
 ##### Example
 
@@ -15022,22 +15023,62 @@ There is no explicit locking and both correct (value) return and error (exceptio
     void async_example()
     {
         try {
-            auto v1 = std::async(std::launch::async, read_value, "v1.txt");
-            auto v2 = std::async(std::launch::async, read_value, "v2.txt");
-            std::cout << v1.get() + v2.get() << '\n';
-        }
-        catch (std::ios_base::failure & fail) {
+            std::future<int> f1 = std::async(read_value, "v1.txt");
+            std::future<int> f2 = std::async(read_value, "v2.txt");
+            std::cout << f1.get() + f2.get() << '\n';
+        } catch (const std::ios_base::failure& fail) {
             // handle exception here
         }
     }
 
 ##### Note
 
-Unfortunately, `async()` is not perfect.
-For example, there is no guarantee that a thread pool is used to minimize thread construction.
-In fact, most current `async()` implementations don't.
-However, `async()` is simple and logically correct so until something better comes along
-and unless you really need to optimize for many asynchronous tasks, stick with `async()`.
+Unfortunately, `std::async` is not perfect. For example, it doesn't use a thread pool,
+which means that it may fail due to resource exhaustion, rather than queueing up your tasks
+to be executed later. However, even if you cannot use `std::async`, you should prefer to
+write your own `future`-returning factory function, rather than using raw promises.
+
+##### Example (bad)
+
+This example shows two different ways to succeed at using `std::future`, but to fail
+at avoiding raw `std::thread` management.
+
+    void async_example()
+    {
+        std::promise<int> p1;
+        std::future<int> f1 = p1.get_future();
+        std::thread t1([p1 = std::move(p1)]() mutable {
+            p1.set_value(read_value("v1.txt"));
+        });
+        t1.detach();
+
+        std::packaged_task<int()> pt2(read_value, "v2.txt");
+        std::future<int> f2 = pt2.get_future();
+        std::thread(std::move(pt2)).detach();
+
+        std::cout << f1.get() + f2.get() << '\n';
+    }
+
+##### Example (good)
+
+This example shows one way you could follow the general pattern set by
+`std::async`, in a context where `std::async` itself was unacceptable for
+use in production.
+
+    void async_example(WorkQueue& wq)
+    {
+        std::future<int> f1 = wq.enqueue([]() {
+            return read_value("v1.txt");
+        });
+        std::future<int> f2 = wq.enqueue([]() {
+            return read_value("v2.txt");
+        });
+        std::cout << f1.get() + f2.get() << '\n';
+    }
+
+Any threads spawned to execute the code of `read_value` are hidden behind
+the call to `WorkQueue::enqueue`. The user code deals only with `future`
+objects, never with raw `thread`, `promise`, or `packaged_task` objects.
 
 ##### Enforcement
 
