@@ -15034,7 +15034,7 @@ which handles spawning or reusing a thread without exposing raw threads to your 
 ##### Note
 
 Unfortunately, `std::async` is not perfect. For example, it doesn't use a thread pool,
-which means that it may fail due to resource exhaustion, rather than queueing up your tasks
+which means that it may fail due to resource exhaustion, rather than queuing up your tasks
 to be executed later. However, even if you cannot use `std::async`, you should prefer to
 write your own `future`-returning factory function, rather than using raw promises.
 
@@ -15050,7 +15050,7 @@ at avoiding raw `std::thread` management.
         std::thread t1([p1 = std::move(p1)]() mutable {
             p1.set_value(read_value("v1.txt"));
         });
-        t1.detach();
+        t1.detach(); // evil
 
         std::packaged_task<int()> pt2(read_value, "v2.txt");
         std::future<int> f2 = pt2.get_future();
@@ -19208,6 +19208,8 @@ resulting in the popular beginner question "why doesn't `getline(cin,s);` work?"
 or even an occasional "`string`s cannot be compared with `==`).
 
 The solution is to explicitly `#include <string>`:
+
+##### Example, good
 
     #include <iostream>
     #include <string>
