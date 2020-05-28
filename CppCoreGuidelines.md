@@ -19096,12 +19096,12 @@ Avoid surprises.
 Avoid having to change `#include`s if an `#include`d header changes.
 Avoid accidentally becoming dependent on implementation details and logically separate entities included in a header.
 
-##### Example
+##### Example, bad
 
     #include <iostream>
     using namespace std;
 
-    void use()                  // bad
+    void use()
     {
         string s;
         cin >> s;               // fine
