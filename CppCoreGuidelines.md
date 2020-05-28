@@ -1,6 +1,6 @@
 # <a name="main"></a>C++ Core Guidelines
 
-December 8, 2019
+May 28, 2020
 
 
 Editors:
@@ -915,7 +915,7 @@ The date is validated twice (by the `Date` constructor) and passed as a characte
 ##### Example
 
 Excess checking can be costly.
-There are cases where checking early is dumb because you may not ever need the value, or may only need part of the value that is more easily checked than the whole.  Similarly, don't add validity checks that change the asymptotic behavior of your interface (e.g., don't add a `O(n)` check to an interface with an average complexity of `O(1)`).
+There are cases where checking early is inefficient because you may never need the value, or may only need part of the value that is more easily checked than the whole.  Similarly, don't add validity checks that change the asymptotic behavior of your interface (e.g., don't add a `O(n)` check to an interface with an average complexity of `O(1)`).
 
     class Jet {    // Physics says: e * e < x * x + y * y + z * z
         float x;
@@ -1778,7 +1778,7 @@ This is a major source of errors.
 
     int printf(const char* ...);    // bad: return negative number if output fails
 
-    template <class F, class ...Args>
+    template<class F, class ...Args>
     // good: throw system_error if unable to start the new thread
     explicit thread(F&& f, Args&&... args);
 
@@ -2299,10 +2299,10 @@ So, we write a class
     public:
         enum Opt { from_line = 1 };
         Istream() { }
-        Istream(zstring p) :owned{true}, inp{new ifstream{p}} {}            // read from file
-        Istream(zstring p, Opt) :owned{true}, inp{new istringstream{p}} {}  // read from command line
+        Istream(zstring p) : owned{true}, inp{new ifstream{p}} {}            // read from file
+        Istream(zstring p, Opt) : owned{true}, inp{new istringstream{p}} {}  // read from command line
         ~Istream() { if (owned) delete inp; }
-        operator istream& () { return *inp; }
+        operator istream&() { return *inp; }
     private:
         bool owned = false;
         istream* inp = &cin;
@@ -2958,7 +2958,8 @@ It's efficient and eliminates bugs at the call site: `X&&` binds to rvalues, whi
 
 ##### Example
 
-    void sink(vector<int>&& v) {   // sink takes ownership of whatever the argument owned
+    void sink(vector<int>&& v)  // sink takes ownership of whatever the argument owned
+    {
         // usually there might be const accesses of v here
         store_somewhere(std::move(v));
         // usually no more use of v here; it is moved-from
@@ -2974,8 +2975,9 @@ Unique owner types that are move-only and cheap-to-move, such as `unique_ptr`, c
 
 For example:
 
-    template <class T>
-    void sink(std::unique_ptr<T> p) {
+    template<class T>
+    void sink(std::unique_ptr<T> p)
+    {
         // use p ... possibly std::move(p) onward somewhere else
     }   // p gets destroyed
 
@@ -2995,8 +2997,9 @@ In that case, and only that case, make the parameter `TP&&` where `TP` is a temp
 
 ##### Example
 
-    template <class F, class... Args>
-    inline auto invoke(F f, Args&&... args) {
+    template<class F, class... Args>
+    inline auto invoke(F f, Args&&... args)
+    {
         return f(forward<Args>(args)...);
     }
 
@@ -3722,7 +3725,8 @@ This was primarily to avoid code of the form `(a = b) = c` -- such code is not c
     {
      public:
         ...
-        Foo& operator=(const Foo& rhs) {
+        Foo& operator=(const Foo& rhs)
+        {
           // Copy members.
           ...
           return *this;
@@ -3779,7 +3783,7 @@ Functions can't capture local variables or be defined at local scope; if you nee
     // at statement or expression scope -- a lambda is natural
     vector<work> v = lots_of_work();
     for (int tasknum = 0; tasknum < max; ++tasknum) {
-        pool.run([=, &v]{
+        pool.run([=, &v] {
             /*
             ...
             ... process 1 / max - th of v, the tasknum - th chunk
@@ -3795,7 +3799,7 @@ Generic lambdas offer a concise way to write function templates and so can be us
 
 ##### Enforcement
 
-* Warn on use of a named non-generic lambda (e.g., `auto x = [](int i){ /*...*/; };`) that captures nothing and appears at global scope. Write an ordinary function instead.
+* Warn on use of a named non-generic lambda (e.g., `auto x = [](int i) { /*...*/; };`) that captures nothing and appears at global scope. Write an ordinary function instead.
 
 ### <a name="Rf-default-args"></a>F.51: Where there is a choice, prefer default arguments over overloading
 
@@ -3863,9 +3867,9 @@ This is a simple three-stage parallel pipeline. Each `stage` object encapsulates
 
     void send_packets(buffers& bufs)
     {
-        stage encryptor([] (buffer& b){ encrypt(b); });
-        stage compressor([&](buffer& b){ compress(b); encryptor.process(b); });
-        stage decorator([&](buffer& b){ decorate(b); compressor.process(b); });
+        stage encryptor([](buffer& b) { encrypt(b); });
+        stage compressor([&](buffer& b) { compress(b); encryptor.process(b); });
+        stage decorator([&](buffer& b) { decorate(b); compressor.process(b); });
         for (auto& b : bufs) { decorator.process(b); }
     }  // automatically blocks waiting for pipeline to finish
 
@@ -3887,7 +3891,7 @@ Pointers and references to locals shouldn't outlive their scope. Lambdas that ca
     // Note, that after program exits this scope,
     // local no longer exists, therefore
     // process() call will have undefined behavior!
-    thread_pool.queue_work([&]{ process(local); });
+    thread_pool.queue_work([&] { process(local); });
 
 ##### Example, good
 
@@ -3895,7 +3899,7 @@ Pointers and references to locals shouldn't outlive their scope. Lambdas that ca
     // Want a copy of local.
     // Since a copy of local is made, it will
     // always be available for the call.
-    thread_pool.queue_work([=]{ process(local); });
+    thread_pool.queue_work([=] { process(local); });
 
 ##### Enforcement
 
@@ -3914,11 +3918,12 @@ It's confusing. Writing `[=]` in a member function appears to capture by value, 
         int x = 0;
         // ...
 
-        void f() {
+        void f()
+        {
             int i = 0;
             // ...
 
-            auto lambda = [=]{ use(i, x); };   // BAD: "looks like" copy/value capture
+            auto lambda = [=] { use(i, x); };   // BAD: "looks like" copy/value capture
             // [&] has identical semantics and copies the this pointer under the current rules
             // [=,this] and [&,this] are not much better, and confusing
 
@@ -3929,7 +3934,7 @@ It's confusing. Writing `[=]` in a member function appears to capture by value, 
 
             // ...
 
-            auto lambda2 = [i, this]{ use(i, x); }; // ok, most explicit and least confusing
+            auto lambda2 = [i, this] { use(i, x); }; // ok, most explicit and least confusing
 
             // ...
         }
@@ -3953,7 +3958,8 @@ This is fragile because it cannot generally be enforced to be safe in the langua
 
 ##### Example
 
-    int sum(...) {
+    int sum(...)
+    {
         // ...
         while (/*...*/)
             result += va_arg(list, int); // BAD, assumes it will be passed ints
@@ -3964,7 +3970,8 @@ This is fragile because it cannot generally be enforced to be safe in the langua
     sum(3.14159, 2.71828); // BAD, undefined
 
     template<class ...Args>
-    auto sum(Args... args) { // GOOD, and much more flexible
+    auto sum(Args... args) // GOOD, and much more flexible
+    {
         return (... + args); // note: C++17 "fold expression"
     }
 
@@ -4164,7 +4171,7 @@ An overload set may have some members that do not directly access `private` data
 
     class Foobar {
     public:
-        void foo(long x)    { /* manipulate private data */ }
+        void foo(long x) { /* manipulate private data */ }
         void foo(double x) { foo(std::lround(x)); }
         // ...
     private:
@@ -4492,7 +4499,7 @@ Destructor rules:
 * [C.30: Define a destructor if a class needs an explicit action at object destruction](#Rc-dtor)
 * [C.31: All resources acquired by a class must be released by the class's destructor](#Rc-dtor-release)
 * [C.32: If a class has a raw pointer (`T*`) or reference (`T&`), consider whether it might be owning](#Rc-dtor-ptr)
-* [C.33: If a class has an owning pointer member, define or `=delete` a destructor](#Rc-dtor-ptr2)
+* [C.33: If a class has an owning pointer member, define a destructor](#Rc-dtor-ptr2)
 * [C.35: A base class destructor should be either public and virtual, or protected and non-virtual](#Rc-dtor-virtual)
 * [C.36: A destructor may not fail](#Rc-dtor-fail)
 * [C.37: Make destructors `noexcept`](#Rc-dtor-noexcept)
@@ -4735,7 +4742,7 @@ Only define a non-default destructor if a class needs to execute code that is no
     template<typename A>
     struct final_action {   // slightly simplified
         A act;
-        final_action(A a) :act{a} {}
+        final_action(A a) : act{a} {}
         ~final_action() { act(); }
     };
 
@@ -4747,7 +4754,7 @@ Only define a non-default destructor if a class needs to execute code that is no
 
     void test()
     {
-        auto act = finally([]{ cout << "Exit test\n"; });  // establish exit action
+        auto act = finally([] { cout << "Exit test\n"; });  // establish exit action
         // ...
         if (something) return;   // act done here
         // ...
@@ -5028,7 +5035,7 @@ If at all possible, consider failure to close/cleanup a fundamental design error
 
 ##### Note
 
-Declare a destructor `noexcept`. That will ensure that it either completes normally or terminate the program.
+Declare a destructor `noexcept`. That will ensure that it either completes normally or terminates the program.
 
 ##### Note
 
@@ -5642,7 +5649,8 @@ The return type of the factory should normally be `unique_ptr` by default; if so
 
     class B {
     public:
-        B() {
+        B()
+        {
             /* ... */
             f(); // BAD: C.82: Don't call virtual functions in constructors and destructors
             /* ... */
@@ -6173,7 +6181,8 @@ A *polymorphic class* is a class that defines or inherits at least one virtual f
         // ...
     };
 
-    void f(B& b) {
+    void f(B& b)
+    {
         auto b2 = b; // oops, slices the object; b2.m() will return 'B'
     }
 
@@ -6196,7 +6205,8 @@ A *polymorphic class* is a class that defines or inherits at least one virtual f
         // ...
     };
 
-    void f(B& b) {
+    void f(B& b)
+    {
         auto b2 = b; // ok, compiler will detect inadvertent copying, and protest
     }
 
@@ -6289,7 +6299,7 @@ In a few cases, a default operation is not desirable.
 
 A `unique_ptr` can be moved, but not copied. To achieve that its copy operations are deleted. To avoid copying it is necessary to `=delete` its copy operations from lvalues:
 
-    template <class T, class D = default_delete<T>> class unique_ptr {
+    template<class T, class D = default_delete<T>> class unique_ptr {
     public:
         // ...
         constexpr unique_ptr() noexcept;
@@ -6498,7 +6508,7 @@ It is really hard to write a foolproof and useful `==` for a hierarchy.
 
 `B`'s comparison accepts conversions for its second operand, but not its first.
 
-    class D :B {
+    class D : B {
         char character;
         virtual bool operator==(const D& a) const
         {
@@ -6572,14 +6582,12 @@ A type will provide a copy constructor and/or copy assignment operator to approp
 
 ##### Example, good
 
-    struct base
-    {
+    struct base {
         virtual void update() = 0;
         std::shared_ptr<int> sp;
     };
 
-    struct derived : public base
-    {
+    struct derived : public base {
         void update() override {}
     };
 
@@ -7137,7 +7145,7 @@ The importance of keeping the two kinds of inheritance increases
 
     class Circle : public Shape {
     public:
-        Circle(Point c, int r) :Shape{c}, rad{r} { /* ... */ }
+        Circle(Point c, int r) : Shape{c}, rad{r} { /* ... */ }
 
         // ...
     private:
@@ -7183,7 +7191,7 @@ Note that a pure interface rarely has constructors: there is nothing to construc
 
     class Circle : public Shape {
     public:
-        Circle(Point c, int r, Color c) :cent{c}, rad{r}, col{c} { /* ... */ }
+        Circle(Point c, int r, Color c) : cent{c}, rad{r}, col{c} { /* ... */ }
 
         Point center() const override { return cent; }
         Color color() const override { return col; }
@@ -7638,7 +7646,7 @@ This issue affects both virtual and non-virtual member functions
 
 For variadic bases, C++17 introduced a variadic form of the using-declaration,
 
-    template <class... Ts>
+    template<class... Ts>
     struct Overloader : Ts... {
         using Ts::operator()...; // exposes operator() from every base
     };
@@ -8015,7 +8023,8 @@ It also gives an opportunity to eliminate a separate allocation for the referenc
 
 ##### Example
 
-    void test() {
+    void test()
+    {
         // OK: but repetitive; and separate allocations for the Bar and shared_ptr's use count
         shared_ptr<Bar> p {new Bar{7}};
 
@@ -8294,7 +8303,7 @@ Many parts of the C++ semantics assumes its default meaning.
 ##### Example
 
     class Ptr { // a somewhat smart pointer
-        Ptr(X* pp) :p(pp) { /* check */ }
+        Ptr(X* pp) : p(pp) { /* check */ }
         X* operator->() { /* check */ return p; }
         X operator[](int i);
         X operator*();
@@ -9494,8 +9503,8 @@ Consider:
     {
         X x;
         X* p1 { new X };              // see also ???
-        unique_ptr<T> p2 { new X };   // unique ownership; see also ???
-        shared_ptr<T> p3 { new X };   // shared ownership; see also ???
+        unique_ptr<X> p2 { new X };   // unique ownership; see also ???
+        shared_ptr<X> p3 { new X };   // shared ownership; see also ???
         auto p4 = make_unique<X>();   // unique_ownership, preferable to the explicit use "new"
         auto p5 = make_shared<X>();   // shared ownership, preferable to the explicit use "new"
     }
@@ -9582,8 +9591,7 @@ be able to destroy a cyclic structure.
 
     class bar;
 
-    class foo
-    {
+    class foo {
     public:
       explicit foo(const std::shared_ptr<bar>& forward_reference)
         : forward_reference_(forward_reference)
@@ -9592,8 +9600,7 @@ be able to destroy a cyclic structure.
       std::shared_ptr<bar> forward_reference_;
     };
 
-    class bar
-    {
+    class bar {
     public:
       explicit bar(const std::weak_ptr<foo>& back_reference)
         : back_reference_(back_reference)
@@ -10289,7 +10296,7 @@ A structured binding (C++17) is specifically designed to introduce several varia
 
 ##### Example
 
-    template <class InputIterator, class Predicate>
+    template<class InputIterator, class Predicate>
     bool any_of(InputIterator first, InputIterator last, Predicate pred);
 
 or better using concepts:
@@ -10314,7 +10321,7 @@ or:
 
 ##### Example
 
-    int a = 7, b = 9, c, d = 10, e = 3;
+    int a = 10, b = 11, c = 12, d, e = 14, f = 15;
 
 In a long list of declarators it is easy to overlook an uninitialized variable.
 
@@ -10337,7 +10344,7 @@ Consider:
     auto p = v.begin();   // vector<int>::iterator
     auto h = t.future();
     auto q = make_unique<int[]>(s);
-    auto f = [](int x){ return x + 10; };
+    auto f = [](int x) { return x + 10; };
 
 In each case, we save writing a longish, hard-to-remember type that the compiler already knows but a programmer could get wrong.
 
@@ -10534,7 +10541,7 @@ Assuming that there is a logical connection between `i` and `j`, that connection
 If the `make_related_widgets` function is otherwise redundant,
 we can eliminate it by using a lambda [ES.28](#Res-lambda-init):
 
-    auto [i, j] = [x]{ return (x) ? pair{f1(), f2()} : pair{f3(), f4()} }();    // C++17
+    auto [i, j] = [x] { return (x) ? pair{f1(), f2()} : pair{f3(), f4()} }();    // C++17
 
 Using a value representing "uninitialized" is a symptom of a problem and not a solution:
 
@@ -10877,10 +10884,10 @@ Readability and safety.
 
 As an optimization, you may want to reuse a buffer as a scratch pad, but even then prefer to limit the variable's scope as much as possible and be careful not to cause bugs from data left in a recycled buffer as this is a common source of security bugs.
 
-    void write_to_file() {
+    void write_to_file()
+    {
         std::string buffer;             // to avoid reallocations on every loop iteration
-        for (auto& o : objects)
-        {
+        for (auto& o : objects) {
             // First part of the work.
             generate_first_string(buffer, o);
             write_to_file(buffer);
@@ -10957,7 +10964,7 @@ It nicely encapsulates local initialization, including cleaning up scratch varia
 
 ##### Example, good
 
-    const widget x = [&]{
+    const widget x = [&] {
         widget val;                                // assume that widget has a default constructor
         for (auto i = 2; i <= N; ++i) {            // this could be some
             val += some_obj.do_something_with(i);  // arbitrarily long code
@@ -10967,7 +10974,7 @@ It nicely encapsulates local initialization, including cleaning up scratch varia
 
 ##### Example
 
-    string var = [&]{
+    string var = [&] {
         if (!in) return "";   // default
         string s;
         for (char c : in >> c)
@@ -11161,7 +11168,7 @@ Requires messy cast-and-macro-laden code to get working right.
         std::exit(severity);
     }
 
-    template <typename T, typename... Ts>
+    template<typename T, typename... Ts>
     constexpr void error(int severity, T head, Ts... tail)
     {
         std::cerr << head;
@@ -11804,11 +11811,13 @@ Sometimes, you may be tempted to resort to `const_cast` to avoid code duplicatio
     class Foo {
     public:
         // BAD, duplicates logic
-        Bar& get_bar() {
+        Bar& get_bar()
+        {
             /* complex logic around getting a non-const reference to my_bar */
         }
 
-        const Bar& get_bar() const {
+        const Bar& get_bar() const
+        {
             /* same complex logic around getting a const reference to my_bar */
         }
     private:
@@ -11820,10 +11829,12 @@ Instead, prefer to share implementations. Normally, you can just have the non-`c
     class Foo {
     public:
         // not great, non-const calls const version but resorts to const_cast
-        Bar& get_bar() {
+        Bar& get_bar()
+        {
             return const_cast<Bar&>(static_cast<const Foo&>(*this).get_bar());
         }
-        const Bar& get_bar() const {
+        const Bar& get_bar() const
+        {
             /* the complex logic around getting a const reference to my_bar */
         }
     private:
@@ -12002,7 +12013,8 @@ Explicit `move` is needed to explicitly move an object to another scope, notably
 Usually, a `std::move()` is used as an argument to a `&&` parameter.
 And after you do that, assume the object has been moved from (see [C.64](#Rc-move-semantic)) and don't read its state again until you first set it to a new value.
 
-    void f() {
+    void f()
+    {
         string s1 = "supercalifragilisticexpialidocious";
 
         string s2 = s1;             // ok, takes a copy
@@ -12019,7 +12031,8 @@ And after you do that, assume the object has been moved from (see [C.64](#Rc-mov
 
     void sink(unique_ptr<widget> p);  // pass ownership of p to sink()
 
-    void f() {
+    void f()
+    {
         auto w = make_unique<widget>();
         // ...
         sink(std::move(w));               // ok, give to sink()
@@ -12039,7 +12052,8 @@ Never write `std::move()` on a const object, it is silently transformed into a c
 
 ##### Example, bad
 
-    vector<int> make_vector() {
+    vector<int> make_vector()
+    {
         vector<int> result;
         // ... load result with data
         return std::move(result);       // bad; just write "return result;"
@@ -12058,14 +12072,16 @@ The language already knows that a returned value is a temporary object that can 
 
 ##### Example
 
-    void mover(X&& x) {
+    void mover(X&& x)
+    {
         call_something(std::move(x));         // ok
         call_something(std::forward<X>(x));   // bad, don't std::forward an rvalue reference
         call_something(x);                    // suspicious, why not std::move?
     }
 
     template<class T>
-    void forwarder(T&& t) {
+    void forwarder(T&& t)
+    {
         call_something(std::move(t));         // bad, don't std::move a forwarding reference
         call_something(std::forward<T>(t));   // ok
         call_something(t);                    // suspicious, why not std::forward?
@@ -12174,7 +12190,8 @@ In the rare cases where the slicing was deliberate the code can be surprising.
     Shape s {c};    // copy construct only the Shape part of Circle
     s = c;          // or copy assign only the Shape part of Circle
 
-    void assign(const Shape& src, Shape& dest) {
+    void assign(const Shape& src, Shape& dest)
+    {
         dest = src;
     }
     Circle c2 {{ "{{" }}1, 1}, 43};
@@ -12696,9 +12713,9 @@ consider `gsl::finally()` as a cleaner and more reliable alternative to `goto ex
 
 ##### Example
 
-    switch(x){
+    switch(x) {
     case 1 :
-        while(/* some condition */){
+        while (/* some condition */) {
             //...
         break;
         } //Oops! break switch or break while intended?
@@ -12712,11 +12729,12 @@ consider `gsl::finally()` as a cleaner and more reliable alternative to `goto ex
 Often, a loop that requires a `break` is a good candidate for a function (algorithm), in which case the `break` becomes a `return`.
 
     //Original code: break inside loop
-    void use1(){
+    void use1()
+    {
         std::vector<T> vec = {/* initialized with some values */};
         T value;
-        for(const T item : vec){
-            if(/* some condition*/){
+        for (const T item : vec) {
+            if (/* some condition*/) {
                 value = item;
                 break;
             }
@@ -12725,14 +12743,16 @@ Often, a loop that requires a `break` is a good candidate for a function (algori
     }
     
     //BETTER: create a function and return inside loop
-    T search(const std::vector<T> &vec){
-        for(const T &item : vec){
-            if(/* some condition*/) return item;
+    T search(const std::vector<T> &vec)
+    {
+        for (const T &item : vec) {
+            if (/* some condition*/) return item;
         }
         return T(); //default value
     }
     
-    void use2(){
+    void use2()
+    {
         std::vector<T> vec = {/* initialized with some values */};
         T value = search(vec);
         /* then do something with value */
@@ -12740,15 +12760,15 @@ Often, a loop that requires a `break` is a good candidate for a function (algori
 
 Often, a loop that uses `continue` can equivalently and as clearly be expressed by an `if`-statement.
 
-    for(int item : vec){ //BAD
-        if(item%2 == 0) continue;
-        if(item == 5) continue;
-        if(item > 10) continue;
+    for (int item : vec) { //BAD
+        if (item%2 == 0) continue;
+        if (item == 5) continue;
+        if (item > 10) continue;
         /* do something with item */
     }
     
-    for(int item : vec){ //GOOD
-        if(item%2 != 0 && item != 5 && item <= 10){
+    for (int item : vec) { //GOOD
+        if (item%2 != 0 && item != 5 && item <= 10) {
             /* do something with item */
         }
     }
@@ -13251,20 +13271,23 @@ This also applies to `%`.
 
 ##### Example, bad
 
-    double divide(int a, int b) {
+    double divide(int a, int b)
+    {
         // BAD, should be checked (e.g., in a precondition)
         return a / b;
     }
 
 ##### Example, good
 
-    double divide(int a, int b) {
+    double divide(int a, int b)
+    {
         // good, address via precondition (and replace with contracts once C++ gets them)
         Expects(b != 0);
         return a / b;
     }
 
-    double divide(int a, int b) {
+    double divide(int a, int b)
+    {
         // good, address via check
         return b ? a / b : quiet_NaN<double>();
     }
@@ -13500,8 +13523,7 @@ Simple code can be very fast. Optimizers sometimes do marvels with simple code
 
     vector<uint8_t> v(100000);
 
-    for (size_t i = 0; i < v.size(); i += sizeof(uint64_t))
-    {
+    for (size_t i = 0; i < v.size(); i += sizeof(uint64_t)) {
         uint64_t& quad_word = *reinterpret_cast<uint64_t*>(&v[i]);
         quad_word = ~quad_word;
     }
@@ -13637,7 +13659,7 @@ Don't let bad designs "bleed into" your code.
 
 Consider:
 
-    template <class ForwardIterator, class T>
+    template<class ForwardIterator, class T>
     bool binary_search(ForwardIterator first, ForwardIterator last, const T& val);
 
 `binary_search(begin(c), end(c), 7)` will tell you whether `7` is in `c` or not.
@@ -13646,14 +13668,14 @@ However, it will not tell you where that `7` is or whether there are more than o
 Sometimes, just passing the minimal amount of information back (here, `true` or `false`) is sufficient, but a good interface passes
 needed information back to the caller. Therefore, the standard library also offers
 
-    template <class ForwardIterator, class T>
+    template<class ForwardIterator, class T>
     ForwardIterator lower_bound(ForwardIterator first, ForwardIterator last, const T& val);
 
 `lower_bound` returns an iterator to the first match if any, otherwise to the first element greater than `val`, or `last` if no such element is found.
 
 However, `lower_bound` still doesn't return enough information for all uses, so the standard library also offers
 
-    template <class ForwardIterator, class T>
+    template<class ForwardIterator, class T>
     pair<ForwardIterator, ForwardIterator>
     equal_range(ForwardIterator first, ForwardIterator last, const T& val);
 
@@ -13926,29 +13948,52 @@ However, over time, code fragments can turn up in unexpected places.
 
     double cached_computation(double x)
     {
-        // bad: these two statics cause data races in multi-threaded usage
+        // bad: these statics cause data races in multi-threaded usage
         static double cached_x = 0.0;
         static double cached_result = COMPUTATION_OF_ZERO;
-        double result;
 
-        if (cached_x == x)
-            return cached_result;
-        result = computation(x);
-        cached_x = x;
-        cached_result = result;
-        return result;
+        if (cached_x != x) {
+            cached_x = x;
+            cached_result = computation(x);
+        }
+        return cached_result;
     }
 
 Although `cached_computation` works perfectly in a single-threaded environment, in a multi-threaded environment the two `static` variables result in data races and thus undefined behavior.
 
-There are several ways that this example could be made safe for a multi-threaded environment:
+##### Example, good
 
-* Delegate concurrency concerns upwards to the caller.
-* Mark the `static` variables as `thread_local` (which might make caching less effective).
-* Implement concurrency control, for example, protecting the two `static` variables with a `static` lock (which might reduce performance).
-* Have the caller provide the memory to be used for the cache, thereby delegating both memory allocation and concurrency concerns upwards to the caller.
+    struct ComputationCache {
+        double cached_x = 0.0;
+        double cached_result = COMPUTATION_OF_ZERO;
+
+        double compute(double x) {
+            if (cached_x != x) {
+                cached_x = x;
+                cached_result = computation(x);
+            }
+            return cached_result;
+        }
+    };
+
+Here the cache is stored as member data of a `ComputationCache` object, rather than as shared static state.
+This refactoring essentially delegates the concern upward to the caller: a single-threaded program
+might still choose to have one global `ComputationCache`, while a multi-threaded program might
+have one `ComputationCache` instance per thread, or one per "context" for any definition of "context."
+The refactored function no longer attempts to manage the allocation of `cached_x`. In that sense,
+this is an application of the Single Responsibility Principle.
+
+In this specific example, refactoring for thread-safety also improved reusability in single-threaded
+programs. It's not hard to imagine that a single-threaded program might want two `ComputationCache` instances
+for use in different parts of the program, without having them overwrite each other's cached data.
+
+There are several other ways one might add thread-safety to code written for a standard multi-threaded environment
+(that is, one where the only form of concurrency is `std::thread`):
+
+* Mark the state variables as `thread_local` instead of `static`.
+* Implement concurrency control, for example, protecting access to the two `static` variables with a `static std::mutex`.
 * Refuse to build and/or run in a multi-threaded environment.
-* Provide two implementations, one which is used in single-threaded environments and another which is used in multi-threaded environments.
+* Provide two implementations: one for single-threaded environments and another for multi-threaded environments.
 
 ##### Exception
 
@@ -13975,7 +14020,8 @@ For further information of how to use synchronization well to eliminate data rac
 There are many examples of data races that exist, some of which are running in
 production software at this very moment. One very simple example:
 
-    int get_id() {
+    int get_id()
+    {
       static int id = 1;
       return id++;
     }
@@ -14000,9 +14046,9 @@ Local static variables are a common source of data races.
         int sz = read_vec(fs, buf, max);            // read from fs into buf
         gsl::span<double> s {buf};
         // ...
-        auto h1 = async([&]{ sort(std::execution::par, s); });     // spawn a task to sort
+        auto h1 = async([&] { sort(std::execution::par, s); });     // spawn a task to sort
         // ...
-        auto h2 = async([&]{ return find_all(buf, sz, pattern); });   // spawn a task to find matches
+        auto h2 = async([&] { return find_all(buf, sz, pattern); });   // spawn a task to find matches
         // ...
     }
 
@@ -14101,7 +14147,8 @@ Application concepts are easier to reason about.
 
 ##### Example
 
-    void some_fun() {
+    void some_fun()
+    {
         std::string msg, msg2;
         std::thread publisher([&] { msg = "Hello"; });       // bad: less expressive
                                                              //      and more error-prone
@@ -14793,7 +14840,7 @@ Here, if some other `thread` consumes `thread1`'s notification, `thread2` can wa
     void Sync_queue<T>::get(T& val)
     {
         unique_lock<mutex> lck(mtx);
-        cond.wait(lck, [this]{ return !q.empty(); });    // prevent spurious wakeup
+        cond.wait(lck, [this] { return !q.empty(); });    // prevent spurious wakeup
         val = q.front();
         q.pop_front();
     }
@@ -14926,7 +14973,7 @@ This section looks at passing messages so that a programmer doesn't have to do e
 Message passing rules summary:
 
 * [CP.60: Use a `future` to return a value from a concurrent task](#Rconc-future)
-* [CP.61: Use an `async()` to spawn a concurrent task](#Rconc-async)
+* [CP.61: Use `async()` to spawn concurrent tasks](#Rconc-async)
 * message queues
 * messaging libraries
 
@@ -14954,12 +15001,13 @@ There is no explicit locking and both correct (value) return and error (exceptio
 
 ???
 
-### <a name="Rconc-async"></a>CP.61: Use an `async()` to spawn a concurrent task
+### <a name="Rconc-async"></a>CP.61: Use `async()` to spawn concurrent tasks
 
 ##### Reason
 
-A `future` preserves the usual function call return semantics for asynchronous tasks.
-There is no explicit locking and both correct (value) return and error (exception) return are handled simply.
+Similar to [R.12](#Rr-immediate-alloc), which tells you to avoid raw owning pointers, you should
+also avoid raw threads and raw promises where possible. Use a factory function such as `std::async`,
+which handles spawning or reusing a thread without exposing raw threads to your own code.
 
 ##### Example
 
@@ -14972,28 +15020,65 @@ There is no explicit locking and both correct (value) return and error (exceptio
         return value;
     }
 
-
     void async_example()
     {
-        try
-        {
-            auto v1 = std::async(std::launch::async, read_value, "v1.txt"); 
-            auto v2 = std::async(std::launch::async, read_value, "v2.txt");
-            std::cout << v1.get() + v2.get() << '\n';
-        }
-        catch (std::ios_base::failure & fail) 
-        {
+        try {
+            std::future<int> f1 = std::async(read_value, "v1.txt");
+            std::future<int> f2 = std::async(read_value, "v2.txt");
+            std::cout << f1.get() + f2.get() << '\n';
+        } catch (const std::ios_base::failure& fail) {
             // handle exception here
         }
     }
-    
+
 ##### Note
 
-Unfortunately, `async()` is not perfect.
-For example, there is no guarantee that a thread pool is used to minimize thread construction.
-In fact, most current `async()` implementations don't.
-However, `async()` is simple and logically correct so until something better comes along
-and unless you really need to optimize for many asynchronous tasks, stick with `async()`.
+Unfortunately, `std::async` is not perfect. For example, it doesn't use a thread pool,
+which means that it may fail due to resource exhaustion, rather than queuing up your tasks
+to be executed later. However, even if you cannot use `std::async`, you should prefer to
+write your own `future`-returning factory function, rather than using raw promises.
+
+##### Example (bad)
+
+This example shows two different ways to succeed at using `std::future`, but to fail
+at avoiding raw `std::thread` management.
+
+    void async_example()
+    {
+        std::promise<int> p1;
+        std::future<int> f1 = p1.get_future();
+        std::thread t1([p1 = std::move(p1)]() mutable {
+            p1.set_value(read_value("v1.txt"));
+        });
+        t1.detach(); // evil
+
+        std::packaged_task<int()> pt2(read_value, "v2.txt");
+        std::future<int> f2 = pt2.get_future();
+        std::thread(std::move(pt2)).detach();
+
+        std::cout << f1.get() + f2.get() << '\n';
+    }
+
+##### Example (good)
+
+This example shows one way you could follow the general pattern set by
+`std::async`, in a context where `std::async` itself was unacceptable for
+use in production.
+
+    void async_example(WorkQueue& wq)
+    {
+        std::future<int> f1 = wq.enqueue([]() {
+            return read_value("v1.txt");
+        });
+        std::future<int> f2 = wq.enqueue([]() {
+            return read_value("v2.txt");
+        });
+        std::cout << f1.get() + f2.get() << '\n';
+    }
+
+Any threads spawned to execute the code of `read_value` are hidden behind
+the call to `WorkQueue::enqueue`. The user code deals only with `future`
+objects, never with raw `thread`, `promise`, or `packaged_task` objects.
 
 ##### Enforcement
 
@@ -15252,7 +15337,8 @@ Sometimes C++ code allocates the `volatile` memory and shares it with "elsewhere
 `volatile` local variables are nearly always wrong -- how can they be shared with other languages or hardware if they're ephemeral?
 The same applies almost as strongly to member variables, for the same reason.
 
-    void f() {
+    void f()
+    {
         volatile int i = 0; // bad, volatile local variable
         // etc.
     }
@@ -15359,7 +15445,7 @@ Note that there is no return value that could contain an error code.
 The `File_handle` constructor might be defined like this:
 
     File_handle::File_handle(const string& name, const string& mode)
-        :f{fopen(name.c_str(), mode.c_str())}
+        : f{fopen(name.c_str(), mode.c_str())}
     {
         if (!f)
             throw runtime_error{"File_handle: could not open " + name + " as " + mode};
@@ -15412,7 +15498,8 @@ C++ implementations tend to be optimized based on the assumption that exceptions
         try {
             for (gsl::index i = 0; i < vec.size(); ++i)
                 if (vec[i] == x) throw i;  // found x
-        } catch (int i) {
+        }
+        catch (int i) {
             return i;
         }
         return -1;   // not found
@@ -16293,7 +16380,7 @@ Flag every exception specification.
         catch (Base& b) { /* ... */ }
         catch (Derived& d) { /* ... */ }
         catch (...) { /* ... */ }
-        catch (std::exception& e){ /* ... */ }
+        catch (std::exception& e) { /* ... */ }
     }
 
 If `Derived`is derived from `Base` the `Derived`-handler will never be invoked.
@@ -16360,7 +16447,8 @@ This gives a more precise statement of design intent, better readability, more e
         // ...
     };
 
-    void f(const Point& pt) {
+    void f(const Point& pt)
+    {
         int x = pt.getx();          // ERROR, doesn't compile because getx was not marked const
     }
 
@@ -17666,7 +17754,7 @@ Because that's the best we can do without direct concept support.
 
 ##### Example
 
-    template <typename T>
+    template<typename T>
     enable_if_t<is_integral_v<T>>
     f(T v)
     {
@@ -17674,7 +17762,7 @@ Because that's the best we can do without direct concept support.
     }
 
     // Equivalent to:
-    template <Integral T>
+    template<Integral T>
     void f(T v)
     {
         // ...
@@ -17732,7 +17820,8 @@ Eases tool creation.
     }
 
     template<typename Iter>
-    Iter algo(Iter first, Iter last) {
+    Iter algo(Iter first, Iter last)
+    {
         for (; first != last; ++first) {
             auto x = sqrt(*first); // potentially surprising dependency: which sqrt()?
             helper(first, x);      // potentially surprising dependency:
@@ -19018,7 +19107,8 @@ Doing so takes away an `#include`r's ability to effectively disambiguate and to 
 
     bool copy(/*... some parameters ...*/);    // some function that happens to be named copy
 
-    int main() {
+    int main()
+    {
         copy(/*...*/);    // now overloads local ::copy and std::copy, could be ambiguous
     }
 
@@ -19097,12 +19187,12 @@ Avoid surprises.
 Avoid having to change `#include`s if an `#include`d header changes.
 Avoid accidentally becoming dependent on implementation details and logically separate entities included in a header.
 
-##### Example
+##### Example, bad
 
     #include <iostream>
     using namespace std;
 
-    void use()                  // bad
+    void use()
     {
         string s;
         cin >> s;               // fine
@@ -19118,6 +19208,8 @@ resulting in the popular beginner question "why doesn't `getline(cin,s);` work?"
 or even an occasional "`string`s cannot be compared with `==`).
 
 The solution is to explicitly `#include <string>`:
+
+##### Example, good
 
     #include <iostream>
     #include <string>
@@ -19201,6 +19293,7 @@ to files that includes it or in scenarios where the different search algorithm i
     #include "helpers.h"    // A project specific file, use "" form
 
 ##### Note
+
 Failing to follow this results in difficult to diagnose errors due to picking up the wrong file by incorrectly specifying the scope when it is included.
 
 Library creators should put their headers in a folder and have clients include those files using the relative path `#include <some_library/common.h>`
@@ -20282,9 +20375,11 @@ and errors (when we didn't deal correctly with semi-constructed objects consiste
         // main problem: constructor does not fully construct
         Picture(int x, int y)
         {
-            mx = x;         // also bad: assignment in constructor body rather than in member initializer
+            mx = x;         // also bad: assignment in constructor body
+                            // rather than in member initializer
             my = y;
-            data = nullptr; // also bad: constant initialization in constructor rather than in member initializer
+            data = nullptr; // also bad: constant initialization in constructor
+                            // rather than in member initializer
         }
 
         ~Picture()
@@ -20466,7 +20561,7 @@ Reference sections:
   Libraries used have to have been approved for mission critical applications.
   Any similarities to this set of guidelines are unsurprising because Bjarne Stroustrup was an author of JSF++.
   Recommended, but note its very specific focus.
-* [_MISRA C++ 2008: Guidelines for the use of the C++ language in critical systems_] (https://www.misra.org.uk/Buyonline/tabid/58/Default.aspx).
+* [MISRA C++ 2008: Guidelines for the use of the C++ language in critical systems](https://www.misra.org.uk/Buyonline/tabid/58/Default.aspx).
 * [Mozilla Portability Guide](https://developer.mozilla.org/en-US/docs/Mozilla/C%2B%2B_Portability_Guide).
   As the name indicates, this aims for portability across many (old) compilers.
   As such, it is restrictive.
@@ -21059,7 +21154,7 @@ Some styles distinguish members from local variable, and/or from global variable
 
     struct S {
         int m_;
-        S(int m) :m_{abs(m)} { }
+        S(int m) : m_{abs(m)} { }
     };
 
 This is not harmful and does not fall under this guideline because it does not encode type information.
@@ -21720,7 +21815,8 @@ Here is an example of the last option:
 
     class B {
     public:
-        B() {
+        B()
+        {
             /* ... */
             f(); // BAD: C.82: Don't call virtual functions in constructors and destructors
             /* ... */
@@ -21866,7 +21962,7 @@ Never allow an error to be reported from a destructor, a resource deallocation f
 
     class Nefarious {
     public:
-        Nefarious()  { /* code that could throw */ }   // ok
+        Nefarious() { /* code that could throw */ }    // ok
         ~Nefarious() { /* code that could throw */ }   // BAD, should not throw
         // ...
     };
@@ -21933,7 +22029,8 @@ Consider the following advice and requirements found in the C++ Standard:
 Deallocation functions, including specifically overloaded `operator delete` and `operator delete[]`, fall into the same category, because they too are used during cleanup in general, and during exception handling in particular, to back out of partial work that needs to be undone.
 Besides destructors and deallocation functions, common error-safety techniques rely also on `swap` operations never failing -- in this case, not because they are used to implement a guaranteed rollback, but because they are used to implement a guaranteed commit. For example, here is an idiomatic implementation of `operator=` for a type `T` that performs copy construction followed by a call to a no-fail `swap`:
 
-    T& T::operator=(const T& other) {
+    T& T::operator=(const T& other)
+    {
         auto temp = other;
         swap(temp);
         return *this;
