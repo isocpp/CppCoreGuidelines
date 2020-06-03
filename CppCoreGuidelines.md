@@ -1277,7 +1277,7 @@ What if the connection goes down so that no logging output is produced? See I.??
 Note that non-`const` member functions pass information to other member functions through their object's state.
 
 **Alternative formulation**: An interface should be a function or a set of functions.
-Functions can be template functions and sets of functions can be classes or class templates.
+Functions can be function templates and sets of functions can be classes or class templates.
 
 ##### Enforcement
 
@@ -2663,7 +2663,7 @@ Member functions defined in-class are `inline` by default.
 
 ##### Exception
 
-Template functions (incl. template member functions) are normally defined in headers and therefore inline.
+Function templates (incl. member function templates) are normally defined in headers and therefore inline.
 
 ##### Enforcement
 
@@ -4124,7 +4124,7 @@ For example, we can now change the representation of a `Date` without affecting 
 ##### Note
 
 Using a class in this way to represent the distinction between interface and implementation is of course not the only way.
-For example, we can use a set of declarations of freestanding functions in a namespace, an abstract base class, or a template function with concepts to represent an interface.
+For example, we can use a set of declarations of freestanding functions in a namespace, an abstract base class, or a function template with concepts to represent an interface.
 The most important issue is to explicitly distinguish between an interface and its implementation "details."
 Ideally, and typically, an interface is far more stable than its implementation(s).
 
@@ -8079,7 +8079,7 @@ See [C.146](#Rh-dynamic_cast) and ???
 
 ## <a name="SS-overload"></a>C.over: Overloading and overloaded operators
 
-You can overload ordinary functions, template functions, and operators.
+You can overload ordinary functions, function templates, and operators.
 You cannot overload function objects.
 
 Overload rule summary:
@@ -10335,7 +10335,7 @@ Flag variable and constant declarations with multiple declarators (e.g., `int* p
 
 * Simple repetition is tedious and error-prone.
 * When you use `auto`, the name of the declared entity is in a fixed position in the declaration, increasing readability.
-* In a template function declaration the return type can be a member type.
+* In a function template declaration the return type can be a member type.
 
 ##### Example
 
@@ -17943,7 +17943,7 @@ Some people found the idea that the `Link` no longer was hidden inside the list 
 ##### Note
 
 A more general version of this rule would be
-"If a template class member depends on only N template parameters out of M, place it in a base class with only N parameters."
+"If a class template member depends on only N template parameters out of M, place it in a base class with only N parameters."
 For N == 1, we have a choice of a base class of a class in the surrounding scope as in [T.61](#Rt-scary).
 
 ??? What about constants? class statics?
