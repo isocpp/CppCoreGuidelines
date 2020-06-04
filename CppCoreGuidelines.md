@@ -10688,7 +10688,7 @@ Readability. Limit the scope in which a variable can be used. Don't risk used-be
 
 ##### Example, bad
 
-    SomeLargeType var;   // ugly CaMeLcAsEvArIaBlE
+    SomeLargeType var;
 
     if (cond)   // some non-trivial condition
         Set(&var);
@@ -20956,7 +20956,7 @@ Most of the concepts below are defined in [the Ranges TS](http://www.open-std.or
 * `String`   // ???
 * `Number`   // ???
 * `Sortable`
-* `EqualityComparable`   // ???Must we suffer CaMelcAse???
+* `EqualityComparable`
 * `Convertible`
 * `Common`
 * `Boolean`
