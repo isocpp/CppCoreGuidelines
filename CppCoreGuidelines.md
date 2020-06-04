@@ -2663,7 +2663,7 @@ Member functions defined in-class are `inline` by default.
 
 ##### Exception
 
-Function templates (incl. member function templates) are normally defined in headers and therefore inline.
+Function templates (including member functions of class templates `A<T>::function()` and member function templates `A::function<T>()`) are normally defined in headers and therefore inline.
 
 ##### Enforcement
 
