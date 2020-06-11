@@ -10972,16 +10972,6 @@ It nicely encapsulates local initialization, including cleaning up scratch varia
         return val;
     }();
 
-##### Example
-
-    string var = [&] {
-        if (!in) return "";   // default
-        string s;
-        for (char c : in >> c)
-            s += toupper(c);
-        return s;
-    }(); // note ()
-
 If at all possible, reduce the conditions to a simple set of alternatives (e.g., an `enum`) and don't mix up selection and initialization.
 
 ##### Enforcement
