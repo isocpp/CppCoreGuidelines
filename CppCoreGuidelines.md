@@ -1747,7 +1747,7 @@ Make the interface precisely specified and compile-time checkable in the (not so
 
 ##### Example
 
-Use the ISO Concepts TS style of requirements specification. For example:
+Use the C++20 style of requirements specification. For example:
 
     template<typename Iter, typename Val>
     // requires InputIterator<Iter> && EqualityComparable<ValueType<Iter>>, Val>
@@ -1758,7 +1758,7 @@ Use the ISO Concepts TS style of requirements specification. For example:
 
 ##### Note
 
-Soon (maybe in 2018), most compilers will be able to check `requires` clauses once the `//` is removed.
+Soon (in C++20), all compilers will be able to check `requires` clauses once the `//` is removed.
 Concepts are supported in GCC 6.1 and later.
 
 **See also**: [Generic programming](#SS-GP) and [concepts](#SS-concepts).
