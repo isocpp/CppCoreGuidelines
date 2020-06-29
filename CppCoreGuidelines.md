@@ -5631,7 +5631,7 @@ as [a more general way to present arguments to a function](#Rstr-view):
     class D {   // Good
         string s1;
     public:
-        A(string_view v) : s1{v} { }    // GOOD: directly construct
+        D(string_view v) : s1{v} { }    // GOOD: directly construct
         // ...
     };
 
