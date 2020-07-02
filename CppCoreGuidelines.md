@@ -6550,7 +6550,7 @@ It's a standard-library requirement.
         using result_type = size_t;
         using argument_type = My_type;
 
-        size_t operator() (const My_type & x) const
+        size_t operator()(const My_type & x) const
         {
             size_t xs = x.s.size();
             if (xs < 4) throw Bad_My_type{};    // "Nobody expects the Spanish inquisition!"
@@ -14523,7 +14523,7 @@ It is harder to ensure absence of errors in detached threads (and potentially de
     void f() { std::cout << "Hello "; }
 
     struct F {
-        void operator()() { std::cout << "parallel world "; }
+        void operator()() const { std::cout << "parallel world "; }
     };
 
     int main()
@@ -14537,7 +14537,7 @@ It is harder to ensure absence of errors in detached threads (and potentially de
     void f() { std::cout << "Hello "; }
 
     struct F {
-        void operator()() { std::cout << "parallel world "; }
+        void operator()() const { std::cout << "parallel world "; }
     };
 
     int main()
