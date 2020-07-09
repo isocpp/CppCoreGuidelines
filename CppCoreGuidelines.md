@@ -20353,6 +20353,8 @@ and errors (when we didn't deal correctly with semi-constructed objects consiste
             Cleanup();
         }
 
+        // ...
+
         // bad: two-phase initialization
         bool Init()
         {
@@ -20409,6 +20411,8 @@ and errors (when we didn't deal correctly with semi-constructed objects consiste
         }
 
         // compiler generated dtor does the job. (also see C.21)
+
+        // ...
     };
 
     Picture picture1(100, 100);
