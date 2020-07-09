@@ -4490,7 +4490,7 @@ By default, C++ treats classes as value-like types, but not all types are value-
 Set of default operations rules:
 
 * [C.20: If you can avoid defining any default operations, do](#Rc-zero)
-* [C.21: If you define or `=delete` any default operation, define or `=delete` them all](#Rc-five)
+* [C.21: If you define or `=delete` any copy, move, or destructor function, define or `=delete` them all](#Rc-five)
 * [C.22: Make default operations consistent](#Rc-matched)
 
 Destructor rules:
@@ -4578,29 +4578,25 @@ This is known as "the rule of zero".
 (Not enforceable) While not enforceable, a good static analyzer can detect patterns that indicate a possible improvement to meet this rule.
 For example, a class with a (pointer, size) pair of member and a destructor that `delete`s the pointer could probably be converted to a `vector`.
 
-### <a name="Rc-five"></a>C.21: If you define or `=delete` any default operation, define or `=delete` them all
+### <a name="Rc-five"></a>C.21: If you define or `=delete` any copy, move, or destructor function, define or `=delete` them all
 
 ##### Reason
 
-The *special member functions* are the default constructor, copy constructor,
-copy assignment operator, move constructor, move assignment operator, and
-destructor.
+The semantics of copy, move, and destruction are closely related, so if one needs to be declared, the odds are that others need consideration too.
 
-The semantics of the special functions are closely related, so if one needs to be declared, the odds are that others need consideration too.
-
-Declaring any special member function except a default constructor,
+Declaring any copy/move/destructor function,
 even as `=default` or `=delete`, will suppress the implicit declaration
 of a move constructor and move assignment operator.
 Declaring a move constructor or move assignment operator, even as
 `=default` or `=delete`, will cause an implicitly generated copy constructor
 or implicitly generated copy assignment operator to be defined as deleted.
-So as soon as any of the special functions is declared, the others should
+So as soon as any of these are declared, the others should
 all be declared to avoid unwanted effects like turning all potential moves
 into more expensive copies, or making a class move-only.
 
 ##### Example, bad
 
-    struct M2 {   // bad: incomplete set of default operations
+    struct M2 {   // bad: incomplete set of copy/move/destructor operations
     public:
         // ...
         // ... no copy or move operations ...
@@ -4622,12 +4618,12 @@ Given that "special attention" was needed for the destructor (here, to deallocat
 
 ##### Note
 
-This is known as "the rule of five" or "the rule of six", depending on whether you count the default constructor.
+This is known as "the rule of five."
 
 ##### Note
 
-If you want a default implementation of a default operation (while defining another), write `=default` to show you're doing so intentionally for that function.
-If you don't want a default operation, suppress it with `=delete`.
+If you want a default implementation (while defining another), write `=default` to show you're doing so intentionally for that function.
+If you don't want a generated default function, suppress it with `=delete`.
 
 ##### Example, good
 
@@ -4672,7 +4668,7 @@ Relying on an implicitly generated copy operation in a class with a destructor i
 
 ##### Note
 
-Writing the six special member functions can be error prone.
+Writing these functions can be error prone.
 Note their argument types:
 
     class X {
@@ -4690,7 +4686,7 @@ To avoid the tedium and the possibility of errors, try to follow the [rule of ze
 
 ##### Enforcement
 
-(Simple) A class should have a declaration (even a `=delete` one) for either all or none of the special functions.
+(Simple) A class should have a declaration (even a `=delete` one) for either all or none of the copy/move/destructor functions.
 
 ### <a name="Rc-matched"></a>C.22: Make default operations consistent
 
