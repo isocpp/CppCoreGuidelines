@@ -19645,7 +19645,7 @@ String summary:
 Note how `>>` and `!=` are provided for `string` (as examples of useful operations) and there are no explicit
 allocations, deallocations, or range checks (`string` takes care of those).
 
-In C++17, we might use `string_view` as the argument, rather than `const string*` to allow more flexibility to callers:
+In C++17, we might use `string_view` as the argument, rather than `const string&` to allow more flexibility to callers:
 
     vector<string> read_until(string_view terminator)   // C++17
     {
