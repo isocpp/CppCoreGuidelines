@@ -9681,7 +9681,7 @@ Any type (including primary template or specialization) that overloads unary `*`
 * If it is copyable, it is recognized as a reference-counted `shared_ptr`.
 * If it is not copyable, it is recognized as a unique `unique_ptr`.
 
-##### Example
+##### Example, bad
 
     // use Boost's intrusive_ptr
     #include <boost/intrusive_ptr.hpp>
