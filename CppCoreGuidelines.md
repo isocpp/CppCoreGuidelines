@@ -1224,7 +1224,7 @@ Interface rule summary:
 * [I.13: Do not pass an array as a single pointer](#Ri-array)
 * [I.22: Avoid complex initialization of global objects](#Ri-global-init)
 * [I.23: Keep the number of function arguments low](#Ri-nargs)
-* [I.24: Avoid adjacent unrelated parameters of the same type](#Ri-unrelated)
+* [I.24: Avoid adjacent parameters of the same type when changing the argument order would change meaning](#Ri-unrelated)
 * [I.25: Prefer abstract classes as interfaces to class hierarchies](#Ri-abstract)
 * [I.26: If you want a cross-compiler ABI, use a C-style subset](#Ri-abi)
 * [I.27: For stable library ABI, consider the Pimpl idiom](#Ri-pimpl)
@@ -2100,7 +2100,7 @@ There are functions that are best expressed with four individual parameters, but
 * Warn when a function declares two iterators (including pointers) of the same type instead of a range or a view.
 * (Not enforceable) This is a philosophical guideline that is infeasible to check directly.
 
-### <a name="Ri-unrelated"></a>I.24: Avoid adjacent unrelated parameters of the same type
+### <a name="Ri-unrelated"></a>I.24: Avoid adjacent parameters of the same type when changing the argument order would change meaning
 
 ##### Reason
 
