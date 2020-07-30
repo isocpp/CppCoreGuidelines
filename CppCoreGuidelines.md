@@ -11842,6 +11842,8 @@ Instead, prefer to put the common code in a common helper function -- and make i
             { /* the complex logic around getting a possibly-const reference to my_bar */ }
     };
 
+Note: Don't do large non-dependent work inside a template, which leads to code bloat. For example, a further improvement would be if all or part of `get_bar_impl` can be non-dependent and factored out into a common non-template function, for a potentially big reduction in code size.
+
 ##### Exception
 
 You may need to cast away `const` when calling `const`-incorrect functions.
