@@ -1,2 +1,7 @@
 include: [CppCoreGuidelines.md]
 exclude: [docs, talks, Gemfile, params.json]
+highlighter: rouge
+markdown: kramdown
+kramdown:
+  input: GFM
+  syntax_highlighter: rouge
