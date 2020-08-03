@@ -484,12 +484,14 @@ What is expressed in code has defined semantics and can (in principle) be checke
 
 ##### Example
 
-    class Date {
-    public:
-        Month month() const;  // do
-        int month();          // don't
-        // ...
-    };
+```cpp
+class Date {
+public:
+    Month month() const;  // do
+    int month();          // don't
+    // ...
+};
+```
 
 The first declaration of `month` is explicit about returning a `Month` and about not modifying the state of the `Date` object.
 The second version leaves the reader guessing and opens more possibilities for uncaught bugs.
@@ -498,20 +500,22 @@ The second version leaves the reader guessing and opens more possibilities for u
 
 This loop is a restricted form of `std::find`:
 
-    void f(vector<string>& v)
-    {
-        string val;
-        cin >> val;
-        // ...
-        int index = -1;                    // bad, plus should use gsl::index
-        for (int i = 0; i < v.size(); ++i) {
-            if (v[i] == val) {
-                index = i;
-                break;
-            }
+```cpp
+void f(vector<string>& v)
+{
+    string val;
+    cin >> val;
+    // ...
+    int index = -1;                    // bad, plus should use gsl::index
+    for (int i = 0; i < v.size(); ++i) {
+        if (v[i] == val) {
+            index = i;
+            break;
         }
-        // ...
     }
+    // ...
+}
+```
 
 ##### Example, good
 
