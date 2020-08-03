@@ -540,9 +540,11 @@ Any programmer using these guidelines should know the [guidelines support librar
 
 ##### Example
 
-    change_speed(double s);   // bad: what does s signify?
-    // ...
-    change_speed(2.3);
+```cpp
+change_speed(double s);   // bad: what does s signify?
+// ...
+change_speed(2.3);
+```
 
 A better approach is to be explicit about the meaning of the double (new speed or delta on old speed?) and the unit used:
 
