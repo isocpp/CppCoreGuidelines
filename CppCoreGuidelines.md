@@ -1,6 +1,6 @@
 # <a name="main"></a>C++ Core Guidelines
 
-July 3, 2020
+August 3, 2020
 
 
 Editors:
@@ -16187,25 +16187,27 @@ This can be messy:
     {
         Gadget g1 = make_gadget(17);
         if (!g1.valid()) {
-                return {0, g1_error};
+            return {0, g1_error};
         }
 
-        Gadget g2 = make_gadget(17);
+        Gadget g2 = make_gadget(31);
         if (!g2.valid()) {
-                cleanup(g1);
-                return {0, g2_error};
+            cleanup(g1);
+            return {0, g2_error};
         }
 
         // ...
 
         if (all_foobar(g1, g2)) {
-            cleanup(g1);
             cleanup(g2);
+            cleanup(g1);
             return {0, foobar_error};
+        }
+
         // ...
 
-        cleanup(g1);
         cleanup(g2);
+        cleanup(g1);
         return {res, 0};
     }
 
@@ -16215,31 +16217,35 @@ A not uncommon technique is to gather cleanup at the end of the function to avoi
     std::pair<int, error_indicator> user()
     {
         error_indicator err = 0;
+        int res = 0;
 
         Gadget g1 = make_gadget(17);
         if (!g1.valid()) {
-                err = g1_error;
-                goto exit;
+            err = g1_error;
+            goto g1_exit;
         }
 
         {
-        Gadget g2 = make_gadget(17);
-        if (!g2.valid()) {
+            Gadget g2 = make_gadget(31);
+            if (!g2.valid()) {
                 err = g2_error;
-                goto exit;
+                goto g2_exit;
+            }
+
+            if (all_foobar(g1, g2)) {
+                err = foobar_error;
+                goto g2_exit;
+            }
+
+            // ...
+
+        g2_exit:
+            if (g2.valid()) cleanup(g2);
         }
 
-        if (all_foobar(g1, g2)) {
-            err = foobar_error;
-            goto exit;
-        }
-        // ...
-        }
-
-    exit:
-      if (g1.valid()) cleanup(g1);
-      if (g2.valid()) cleanup(g2);
-      return {res, err};
+    g1_exit:
+        if (g1.valid()) cleanup(g1);
+        return {res, err};
     }
 
 The larger the function, the more tempting this technique becomes.
