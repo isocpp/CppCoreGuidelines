@@ -521,14 +521,16 @@ void f(vector<string>& v)
 
 A much clearer expression of intent would be:
 
-    void f(vector<string>& v)
-    {
-        string val;
-        cin >> val;
-        // ...
-        auto p = find(begin(v), end(v), val);  // better
-        // ...
-    }
+```cpp
+void f(vector<string>& v)
+{
+    string val;
+    cin >> val;
+    // ...
+    auto p = find(begin(v), end(v), val);  // better
+    // ...
+}
+```
 
 A well-designed library expresses intent (what is to be done, rather than just how something is being done) far better than direct use of language features.
 
