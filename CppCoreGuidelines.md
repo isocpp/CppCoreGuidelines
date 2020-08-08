@@ -13202,8 +13202,8 @@ Incrementing a value beyond a maximum value can lead to memory corruption and un
     int a[10];
     a[10] = 7;   // bad, array bounds overflow
 
-    for (int n = 0; n<=10; ++n)
-        a[n] = 9; // bad, array bounds overflow
+    for (int n = 0; n <= 10; ++n)
+        a[n] = 9;   // bad, array bounds overflow
 
 ##### Example, bad
 
