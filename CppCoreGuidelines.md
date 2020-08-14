@@ -19306,6 +19306,7 @@ Nevertheless, the guidance is to use the quoted form for including files that ex
     #include <some_library/common.h> // A file that is not locally relative, included from another library; use the <> form
     #include "foo.h"                 // A file locally relative to foo.cpp in the same project, use the "" form
     #include "foo_utils/utils.h"     // A file locally relative to foo.cpp in the same project, use the "" form
+    #include <component_b/bar.h>     // A file in the same project located via a search path, use the <> form
 
 ##### Note
 
