@@ -19296,7 +19296,13 @@ The [standard](http://eel.is/c++draft/cpp.include) provides flexibility for comp
 the two forms of `#include` selected using the angle (`<>`) or quoted (`""`) syntax. Vendors take
 advantage of this and use different search algorithms and methods for specifying the include path.
 
-Nevertheless, the guidance is to use the quoted form for including files that exist at a relative path to the file containing the `#include` statement (from within the same component or project) and to use the angle bracket form everywhere else, where possible. This encourages being clear about the locality of the file relative to files that include it, or scenarios where the different search algorithm is required. It makes it easy to understand at a glance whether a header is being included from a local relative file versus a standard library header or a header from the alternate search path (e.g. a header from another library or a common set of includes).
+Nevertheless, the guidance is to use the quoted form for including files that exist at a relative path
+to the file containing the `#include` statement (from within the same component or project) and to use
+the angle bracket form everywhere else, where possible. This encourages being clear about the locality
+of the file relative to files that include it, or scenarios where the different search algorithm is
+required. It makes it easy to understand at a glance whether a header is being included from a local
+relative file versus a standard library header or a header from the alternate search path (e.g. a header
+from another library or a common set of includes).
 
 ##### Example
 
@@ -19309,9 +19315,15 @@ Nevertheless, the guidance is to use the quoted form for including files that ex
 
 ##### Note
 
-Failing to follow this results in difficult to diagnose errors due to picking up the wrong file by incorrectly specifying the scope when it is included. For example, in a typical case where the `#include ""` search algorithm might search for a file existing at a local relative path first, then using this form to refer to a file that is not locally relative could mean that if a file ever comes into existence at the local relative path (e.g. the including file is moved to a new location), it will now be found ahead of the previous include file and the set of includes will have been changed in an unexpected way.
+Failing to follow this results in difficult to diagnose errors due to picking up the wrong file by
+incorrectly specifying the scope when it is included. For example, in a typical case where the `#include ""`
+search algorithm might search for a file existing at a local relative path first, then using this form to refer
+to a file that is not locally relative could mean that if a file ever comes into existence at the
+local relative path (e.g. the including file is moved to a new location), it will now be found ahead
+of the previous include file and the set of includes will have been changed in an unexpected way.
 
-Library creators should put their headers in a folder and have clients include those files using the relative path `#include <some_library/common.h>`
+Library creators should put their headers in a folder and have clients include those files using the
+relative path `#include <some_library/common.h>`
 
 ##### Enforcement
 
