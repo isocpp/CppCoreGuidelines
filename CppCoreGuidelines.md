@@ -9018,8 +9018,7 @@ Here, we ignore such cases.
 
   * [R.10: Avoid `malloc()` and `free()`](#Rr-mallocfree)
   * [R.11: Avoid calling `new` and `delete` explicitly](#Rr-newdelete)
-  * [R.12: Immediately give the result of an explicit resource allocation to a manager object](#Rr-immediate-alloc)
-  * [R.13: Perform at most one explicit resource allocation in a single expression statement](#Rr-single-alloc)
+  * [R.12: Instead of manual resource allocation, use factory functions that return RAII objects](#Rr-immediate-alloc)
   * [R.14: Avoid `[]` parameters, prefer `span`](#Rr-ap)
   * [R.15: Always overload matched allocation/deallocation pairs](#Rr-pair)
 
@@ -9373,73 +9372,75 @@ If you have a naked `new`, you probably need a naked `delete` somewhere, so you 
 
 (Simple) Warn on any explicit use of `new` and `delete`. Suggest using `make_unique` instead.
 
-### <a name="Rr-immediate-alloc"></a>R.12: Immediately give the result of an explicit resource allocation to a manager object
+### <a name="Rr-immediate-alloc"></a>R.12: Instead of manual resource allocation, use factory functions that return RAII objects
 
 ##### Reason
 
 If you don't, an exception or a return may lead to a leak.
 
-##### Example, bad
+##### Example
 
-    void f(const string& name)
+    void bad(const char *name)
     {
-        FILE* f = fopen(name, "r");            // open the file
-        vector<char> buf(1024);
-        auto _ = finally([f] { fclose(f); });  // remember to close the file
+        FILE *f = fopen(name, "r");
+        std::vector<char> buf(1024);
         // ...
     }
 
-The allocation of `buf` may fail and leak the file handle.
+If `buf`'s constructor throws, then `FILE *f` will not be `fclose`d — a resource leak.
+Prefer to use an RAII object such as `std::ifstream`.
+
+    void good(const char *name)
+    {
+        std::ifstream myfile(name);
+        std::vector<char> buf(1024);
+        // ...
+    }
 
 ##### Example
 
-    void f(const string& name)
+    void bad() {
+        return func(
+            std::shared_ptr<Widget>(new Widget(a, b)),
+            std::shared_ptr<Gadget>(new Gadget(c, d))
+        );
+    }
+
+Prior to C++17, it was possible for this code to evaluate `new Widget(a, b)`,
+followed by `new Gadget(c, d)`, followed by the constructors of both `shared_ptr`s.
+If either `new Gadget` or the constructor of the first `shared_ptr` were to throw
+an exception, an allocation would be leaked.
+
+`shared_ptr<Widget>` is an RAII type, but `Widget*` is not; therefore we should
+not be making a direct call to `new`, which returns `Widget*`. The best solution
+is to use the factory function `std::make_shared`, which returns an RAII object
+without ever exposing the non-RAII type `Widget*` to our code.
+
+    void good() {
+        return func(
+            std::make_shared<Widget>(a, b),
+            std::make_shared<Gadget>(c, d)
+        );
+    }
+
+If there is no factory wrapper for your RAII type yet, write one!
+
+    void bad(const char *name)
     {
-        ifstream f{name};   // open the file
-        vector<char> buf(1024);
+        FILE *f = fopen(name, "r");  // bad
+        AutoFclosingFile myfile(f);
         // ...
     }
 
-The use of the file handle (in `ifstream`) is simple, efficient, and safe.
+    void good(const char *name)
+    {
+        AutoFclosingFile myfile = my::open_file(name, "r");
+        // ...
+    }
 
 ##### Enforcement
 
 * Flag explicit allocations used to initialize pointers (problem: how many direct resource allocations can we recognize?)
-
-### <a name="Rr-single-alloc"></a>R.13: Perform at most one explicit resource allocation in a single expression statement
-
-##### Reason
-
-If you perform two explicit resource allocations in one statement, you could leak resources because the order of evaluation of many subexpressions, including function arguments, is unspecified.
-
-##### Example
-
-    void fun(shared_ptr<Widget> sp1, shared_ptr<Widget> sp2);
-
-This `fun` can be called like this:
-
-    // BAD: potential leak
-    fun(shared_ptr<Widget>(new Widget(a, b)), shared_ptr<Widget>(new Widget(c, d)));
-
-This is exception-unsafe because the compiler may reorder the two expressions building the function's two arguments.
-In particular, the compiler can interleave execution of the two expressions:
-Memory allocation (by calling `operator new`) could be done first for both objects, followed by attempts to call the two `Widget` constructors.
-If one of the constructor calls throws an exception, then the other object's memory will never be released!
-
-This subtle problem has a simple solution: Never perform more than one explicit resource allocation in a single expression statement.
-For example:
-
-    shared_ptr<Widget> sp1(new Widget(a, b)); // Better, but messy
-    fun(sp1, new Widget(c, d));
-
-The best solution is to avoid explicit allocation entirely use factory functions that return owning objects:
-
-    fun(make_shared<Widget>(a, b), make_shared<Widget>(c, d)); // Best
-
-Write your own factory wrapper if there is not one already.
-
-##### Enforcement
-
 * Flag expressions with multiple explicit resource allocations (problem: how many direct resource allocations can we recognize?)
 
 ### <a name="Rr-ap"></a>R.14: Avoid `[]` parameters, prefer `span`
