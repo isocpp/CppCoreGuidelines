@@ -1457,7 +1457,7 @@ In the following example, it is not clear from the interface what `time_to_blink
 
     void use()
     {
-        blink_led(1500ms);
+        blink_led(1500ms);  // good -- the unit is explicit (std::chrono_literals: c++14).
     }
 
 The function can also be written in such a way that it will accept any time duration unit.
