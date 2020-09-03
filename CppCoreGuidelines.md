@@ -5945,7 +5945,8 @@ The standard-library containers handle self-assignment elegantly and efficiently
 
 ##### Note
 
-The default assignment generated from members that handle self-assignment correctly handles self-assignment.
+If your members handle self-assignment correctly, then the default assignment generated
+for your class will handle self-assignment correctly.
 
     struct Bar {
         vector<pair<int, int>> v;
@@ -5971,25 +5972,29 @@ You can handle self-assignment by explicitly testing for self-assignment, but of
 
     Foo& Foo::operator=(const Foo& a)   // OK, but there is a cost
     {
-        if (this == &a) return *this;
-        s = a.s;
-        i = a.i;
+        if (this != &a) {
+            s = a.s;
+            i = a.i;
+        }
         return *this;
     }
 
-This is obviously safe and apparently efficient.
-However, what if we do one self-assignment per million assignments?
-That's about a million redundant tests (but since the answer is essentially always the same, the computer's branch predictor will guess right essentially every time).
-Consider:
+The code we are skipping with the test would actually work fine even for self-assignment;
+so the extra test is not buying us any correctness, only speed. And whatever speed we gain
+in the rare case of self-assignment may well be lost again, in that same case, due to
+branch misprediction.
 
-    Foo& Foo::operator=(const Foo& a)   // simpler, and probably much better
+Furthermore, while the code above is technically safe, careless maintenance
+(such as swapping the order of members `s` and `i` or changing the type of `i`) may cause it
+to lose the strong exception guarantee. To preserve correctness, we would do better
+to use the "copy and swap" idiom:
+
+    Foo& Foo::operator=(const Foo& a)   // OK, simplest and best
     {
-        s = a.s;
-        i = a.i;
+        Foo copy(a);
+        this->swap(copy);
         return *this;
     }
-
-`std::string` is safe for self-assignment and so are `int`. All the cost is carried by the (rare) case of self-assignment.
 
 ##### Enforcement
 
@@ -6051,12 +6056,12 @@ After `y = std::move(x)` the value of `y` should be the value `x` had and `x` sh
 
 ##### Note
 
-Ideally, that moved-from should be the default value of the type.
-Ensure that unless there is an exceptionally good reason not to.
+Ideally, that moved-from state should be the same as the default-constructed state.
+Ensure that, unless there is an exceptionally good reason not to.
 However, not all types have a default value and for some types establishing the default value can be expensive.
 The standard requires only that the moved-from object can be destroyed.
 Often, we can easily and cheaply do better: The standard library assumes that it is possible to assign to a moved-from object.
-Always leave the moved-from object in some (necessarily specified) valid state.
+Always leave the moved-from object in some (not necessarily specified) valid state.
 
 ##### Note
 
@@ -6070,7 +6075,7 @@ Unless there is an exceptionally strong reason not to, make `x = std::move(y); y
 
 ##### Reason
 
-If `x = x` changes the value of `x`, people will be surprised and bad errors may occur. However, people don't usually directly write a self-assignment that turn into a move, but it can occur. However, `std::swap` is implemented using move operations so if you accidentally do `swap(a, b)` where `a` and `b` refer to the same object, failing to handle self-move could be a serious and subtle error.
+If `x = std::move(x)` changes the value of `x`, people will be surprised and bad errors may occur. People don't usually directly write a self-assignment that turn into a move, but it can occur. `std::swap` is implemented using move operations so if you accidentally do `swap(a, b)` where `a` and `b` refer to the same object, failing to handle self-move could be a serious and subtle error.
 
 ##### Example
 
@@ -6084,42 +6089,45 @@ If `x = x` changes the value of `x`, people will be surprised and bad errors may
 
     Foo& Foo::operator=(Foo&& a) noexcept  // OK, but there is a cost
     {
-        if (this == &a) return *this;  // this line is redundant
-        s = std::move(a.s);
-        i = a.i;
+        if (this != &a) {
+            s = std::move(a.s);
+            i = a.i;
+        }
         return *this;
     }
 
-The one-in-a-million argument against `if (this == &a) return *this;` tests from the discussion of [self-assignment](#Rc-copy-self) is even more relevant for self-move.
+Here, the test `(this != &a)` is not redundant, because the standard library does not guarantee the result
+of `s = std::move(a.s)` when `s` and `a.s` are the same object. In practice, both libc++ and libstdc++
+will set `s` to the empty string. So, if you want `foo = std::move(foo)` to be a no-op, you must either write
+special-case code to handle the self-assignment case, or use the copy-and-swap idiom.
 
-##### Note
+Prefer to use the copy-and-swap idiom:
 
-There is no known general way of avoiding an `if (this == &a) return *this;` test for a move assignment and still get a correct answer (i.e., after `x = x` the value of `x` is unchanged).
-
-##### Note
-
-The ISO standard guarantees only a "valid but unspecified" state for the standard-library containers. Apparently this has not been a problem in about 10 years of experimental and production use. Please contact the editors if you find a counter example. The rule here is more caution and insists on complete safety.
+    Foo& Foo::operator=(Foo&& a) noexcept  // OK, simplest and best
+    {
+        Foo copy(std::move(a));
+        this->swap(copy);
+        return *this;
+    }
 
 ##### Example
 
-Here is a way to move a pointer without a test (imagine it as code in the implementation a move assignment):
+Here is a way to move a pointer without a test (imagine it as code in the implementation of move assignment):
 
     // move from other.ptr to this->ptr
-    T* temp = other.ptr;
-    other.ptr = nullptr;
+    T* temp = std::exchange(other.ptr, nullptr);
     delete ptr;
     ptr = temp;
 
 ##### Enforcement
 
-* (Moderate) In the case of self-assignment, a move assignment operator should not leave the object holding pointer members that have been `delete`d or set to `nullptr`.
-* (Not enforceable) Look at the use of standard-library container types (incl. `string`) and consider them safe for ordinary (not life-critical) uses.
+* (Moderate) In the case of self-assignment, a move assignment operator should not leave the object holding pointer members that have been `delete`d.
 
 ### <a name="Rc-move-noexcept"></a>C.66: Make move operations `noexcept`
 
 ##### Reason
 
-A throwing move violates most people's reasonably assumptions.
+A throwing move violates most people's reasonable assumptions.
 A non-throwing move will be used more efficiently by standard-library and language facilities.
 
 ##### Example
@@ -6142,15 +6150,15 @@ These operations do not throw.
     template<typename T>
     class Vector2 {
     public:
-        Vector2(Vector2&& a) { *this = a; }             // just use the copy
-        Vector2& operator=(Vector2&& a) { *this = a; }  // just use the copy
+        Vector2(Vector2&& a) { *this = a; }             // just use the copy assignment operator
+        Vector2& operator=(Vector2&& a) { *this = a; }  // just use the copy assignment operator
         // ...
     private:
         T* elem;
         int sz;
     };
 
-This `Vector2` is not just inefficient, but since a vector copy requires allocation, it can throw.
+This `Vector2` is not just inefficient, but, since a vector copy requires allocation, it can throw.
 
 ##### Enforcement
 
