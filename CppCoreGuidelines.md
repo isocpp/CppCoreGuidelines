@@ -2332,7 +2332,7 @@ Function definition rules:
 * [F.3: Keep functions short and simple](#Rf-single)
 * [F.4: If a function might have to be evaluated at compile time, declare it `constexpr`](#Rf-constexpr)
 * [F.5: If a function is very small and time-critical, declare it inline](#Rf-inline)
-* [F.6: If your function mightnot throw, declare it `noexcept`](#Rf-noexcept)
+* [F.6: If your function might not throw, declare it `noexcept`](#Rf-noexcept)
 * [F.7: For general use, take `T*` or `T&` arguments rather than smart pointers](#Rf-smart)
 * [F.8: Prefer pure functions](#Rf-pure)
 * [F.9: Unused parameters should be unnamed](#Rf-unused)
@@ -2581,7 +2581,7 @@ Small simple functions are easily inlined where the cost of a function call is s
 * Flag functions that are too complex. How complex is too complex?
   You could use cyclomatic complexity. Try "more than 10 logical path through." Count a simple switch as one path.
 
-### <a name="Rf-constexpr"></a>F.4: If a function mighthave to be evaluated at compile time, declare it `constexpr`
+### <a name="Rf-constexpr"></a>F.4: If a function might have to be evaluated at compile time, declare it `constexpr`
 
 ##### Reason
 
@@ -2625,7 +2625,7 @@ Most computation is best done at run time.
 
 ##### Note
 
-Any API that mighteventually depend on high-level run-time configuration or
+Any API that might eventually depend on high-level run-time configuration or
 business logic should not be made `constexpr`. Such customization can not be
 evaluated by the compiler, and any `constexpr` functions that depended upon
 that API would have to be refactored or drop `constexpr`.
@@ -4799,7 +4799,7 @@ For resources represented as classes with a complete set of default operations, 
 ##### Example
 
     class X {
-        ifstream f;   // mightown a file
+        ifstream f;   // might own a file
         // ... no default operations defined or =deleted ...
     };
 
