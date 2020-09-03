@@ -13200,22 +13200,21 @@ Incrementing a value beyond a maximum value can lead to memory corruption and un
 ##### Example, bad
 
     int a[10];
-    a[10] = 7;   // bad
+    a[10] = 7;   // bad, array bounds overflow
 
-    int n = 0;
-    while (n++ < 10)
-        a[n - 1] = 9; // bad (twice)
+    for (int n = 0; n <= 10; ++n)
+        a[n] = 9;   // bad, array bounds overflow
 
 ##### Example, bad
 
     int n = numeric_limits<int>::max();
-    int m = n + 1;   // bad
+    int m = n + 1;   // bad, numeric overflow
 
 ##### Example, bad
 
     int area(int h, int w) { return h * w; }
 
-    auto a = area(10'000'000, 100'000'000);   // bad
+    auto a = area(10'000'000, 100'000'000);   // bad, numeric overflow
 
 ##### Exception
 
