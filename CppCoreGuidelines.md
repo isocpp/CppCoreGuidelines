@@ -2735,8 +2735,12 @@ See also [C.44](#Rc-default00).
 
 ##### Reason
 
-Passing a smart pointer transfers or shares ownership and should only be used when ownership semantics are intended (see [R.30](#Rr-smartptrparam)).
+Passing a smart pointer transfers or shares ownership and should only be used when ownership semantics are intended.
+A function that does not manipulate lifetime should take raw pointers or references instead.
+
 Passing by smart pointer restricts the use of a function to callers that use smart pointers.
+A function that needs a `widget` should be able to accept any `widget` object, not just ones whose lifetimes are managed by a particular kind of smart pointer.
+
 Passing a shared smart pointer (e.g., `std::shared_ptr`) implies a run-time cost.
 
 ##### Example
@@ -2766,24 +2770,45 @@ Passing a shared smart pointer (e.g., `std::shared_ptr`) implies a run-time cost
         // ...
     };
 
-See further in [R.30](#Rr-smartptrparam).
+    // caller
+    shared_ptr<widget> my_widget = /* ... */;
+    f(my_widget);
+
+    widget stack_widget;
+    f(stack_widget); // error
+
+##### Example, good
+
+    // callee
+    void f(widget& w)
+    {
+        // ...
+        use(w);
+        // ...
+    };
+
+    // caller
+    shared_ptr<widget> my_widget = /* ... */;
+    f(*my_widget);
+
+    widget stack_widget;
+    f(stack_widget); // ok -- now this works
 
 ##### Note
 
 We can catch dangling pointers statically, so we don't need to rely on resource management to avoid violations from dangling pointers.
 
-**See also**:
-
-* [Prefer `T*` over `T&` when "no argument" is a valid option](#Rf-ptr-ref)
-* [Smart pointer rule summary](#Rr-summary-smartptrs)
-
 ##### Enforcement
 
-Flag a parameter of a smart pointer type (a type that overloads `operator->` or `operator*`) for which the ownership semantics are not used;
-that is
+* (Simple) Warn if a function takes a parameter of a smart pointer type (that overloads `operator->` or `operator*`) that is copyable but the function only calls any of: `operator*`, `operator->` or `get()`.
+  Suggest using a `T*` or `T&` instead.
+* Flag a parameter of a smart pointer type (a type that overloads `operator->` or `operator*`) that is copyable/movable but never copied/moved from in the function body, and that is never modified, and that is not passed along to another function that could do so. That means the ownership semantics are not used.
+  Suggest using a `T*` or `T&` instead.
 
-* copyable but never copied/moved from or movable but never moved
-* and that is never modified or passed along to another function that could do so.
+**see also**:
+
+* [prefer `t*` over `t&` when "no argument" is a valid option](#rf-ptr-ref)
+* [smart pointer rule summary](#rr-summary-smartptrs)
 
 ### <a name="Rf-pure"></a>F.8: Prefer pure functions
 
@@ -9626,52 +9651,7 @@ You could "temporarily share ownership" simply by using another `shared_ptr`.)
 
 ### <a name="Rr-smartptrparam"></a>R.30: Take smart pointers as parameters only to explicitly express lifetime semantics
 
-##### Reason
-
-Accepting a smart pointer to a `widget` is wrong if the function just needs the `widget` itself.
-It should be able to accept any `widget` object, not just ones whose lifetimes are managed by a particular kind of smart pointer.
-A function that does not manipulate lifetime should take raw pointers or references instead.
-
-##### Example, bad
-
-    // callee
-    void f(shared_ptr<widget>& w)
-    {
-        // ...
-        use(*w); // only use of w -- the lifetime is not used at all
-        // ...
-    };
-
-    // caller
-    shared_ptr<widget> my_widget = /* ... */;
-    f(my_widget);
-
-    widget stack_widget;
-    f(stack_widget); // error
-
-##### Example, good
-
-    // callee
-    void f(widget& w)
-    {
-        // ...
-        use(w);
-        // ...
-    };
-
-    // caller
-    shared_ptr<widget> my_widget = /* ... */;
-    f(*my_widget);
-
-    widget stack_widget;
-    f(stack_widget); // ok -- now this works
-
-##### Enforcement
-
-* (Simple) Warn if a function takes a parameter of a smart pointer type (that overloads `operator->` or `operator*`) that is copyable but the function only calls any of: `operator*`, `operator->` or `get()`.
-  Suggest using a `T*` or `T&` instead.
-* Flag a parameter of a smart pointer type (a type that overloads `operator->` or `operator*`) that is copyable/movable but never copied/moved from in the function body, and that is never modified, and that is not passed along to another function that could do so. That means the ownership semantics are not used.
-  Suggest using a `T*` or `T&` instead.
+See [F.7](#Rf-smart).
 
 ### <a name="Rr-smart"></a>R.31: If you have non-`std` smart pointers, follow the basic pattern from `std`
 
