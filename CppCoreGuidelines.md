@@ -16330,7 +16330,7 @@ For example, see [Stroustrup94](#Stroustrup94).
 
 ##### Note
 
-If no exception can be thrown, use [`noexcept`](#Re-noexcept) or its equivalent `throw()`.
+If no exception can be thrown, use [`noexcept`](#Re-noexcept).
 
 ##### Enforcement
 
