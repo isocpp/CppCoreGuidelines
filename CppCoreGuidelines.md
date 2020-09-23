@@ -1982,7 +1982,7 @@ This `draw2()` passes the same amount of information to `draw()`, but makes the 
 ##### Exception
 
 Use `zstring` and `czstring` to represent C-style, zero-terminated strings.
-But when doing so, use `std::string_view` or `string_span` from the [GSL](#S-gsl) to prevent range errors.
+But when doing so, use `std::string_view` or `span<char>` from the [GSL](#S-gsl) to prevent range errors.
 
 ##### Enforcement
 
@@ -5620,7 +5620,7 @@ An initialization explicitly states that initialization, rather than assignment,
 
 ##### Example, better still
 
-Instead of those `const char*`s we could use `gsl::string_span` or (in C++17) `std::string_view`
+Instead of those `const char*`s we could use C++17 `std::string_view` or `gsl::span<char>`
 as [a more general way to present arguments to a function](#Rstr-view):
 
     class D {   // Good
@@ -9051,7 +9051,7 @@ Whenever you deal with a resource that needs paired acquire/release function cal
 
 Consider:
 
-    void send(X* x, cstring_span destination)
+    void send(X* x, string_view destination)
     {
         auto port = open_port(destination);
         my_mutex.lock();
@@ -9070,7 +9070,7 @@ Further, if any of the code marked `...` throws an exception, then `x` is leaked
 
 Consider:
 
-    void send(unique_ptr<X> x, cstring_span destination)  // x owns the X
+    void send(unique_ptr<X> x, string_view destination)  // x owns the X
     {
         Port port{destination};            // port owns the PortHandle
         lock_guard<mutex> guard{my_mutex}; // guard owns the lock
@@ -9086,7 +9086,7 @@ What is `Port`? A handy wrapper that encapsulates the resource:
     class Port {
         PortHandle port;
     public:
-        Port(cstring_span destination) : port{open_port(destination)} { }
+        Port(string_view destination) : port{open_port(destination)} { }
         ~Port() { close_port(port); }
         operator PortHandle() { return port; }
 
@@ -19653,7 +19653,7 @@ Instead, define proper default initialization, copy, and comparison functions
 
 Text manipulation is a huge topic.
 `std::string` doesn't cover all of it.
-This section primarily tries to clarify `std::string`'s relation to `char*`, `zstring`, `string_view`, and `gsl::string_span`.
+This section primarily tries to clarify `std::string`'s relation to `char*`, `zstring`, `string_view`, and `gsl::span<char>`.
 The important issue of non-ASCII character sets and encodings (e.g., `wchar_t`, Unicode, and UTF-8) will be covered elsewhere.
 
 **See also**: [regular expressions](#SS-regex)
@@ -19664,13 +19664,13 @@ We don't consider ???
 String summary:
 
 * [SL.str.1: Use `std::string` to own character sequences](#Rstr-string)
-* [SL.str.2: Use `std::string_view` or `gsl::string_span` to refer to character sequences](#Rstr-view)
+* [SL.str.2: Use `std::string_view` or `gsl::span<char>` to refer to character sequences](#Rstr-view)
 * [SL.str.3: Use `zstring` or `czstring` to refer to a C-style, zero-terminated, sequence of characters](#Rstr-zstring)
 * [SL.str.4: Use `char*` to refer to a single character](#Rstr-char*)
 * [SL.str.5: Use `std::byte` to refer to byte values that do not necessarily represent characters](#Rstr-byte)
 
 * [SL.str.10: Use `std::string` when you need to perform locale-sensitive string operations](#Rstr-locale)
-* [SL.str.11: Use `gsl::string_span` rather than `std::string_view` when you need to mutate a string](#Rstr-span)
+* [SL.str.11: Use `gsl::span<char>` rather than `std::string_view` when you need to mutate a string](#Rstr-span)
 * [SL.str.12: Use the `s` suffix for string literals meant to be standard-library `string`s](#Rstr-s)
 
 **See also**:
@@ -19708,16 +19708,6 @@ In C++17, we might use `string_view` as the argument, rather than `const string&
         return res;
     }
 
-The `gsl::string_span` is a current alternative offering most of the benefits of `std::string_view` for simple examples:
-
-    vector<string> read_until(string_span terminator)
-    {
-        vector<string> res;
-        for (string s; cin >> s && s != terminator; ) // read a word
-            res.push_back(s);
-        return res;
-    }
-
 ##### Example, bad
 
 Don't use C-style strings for operations that require non-trivial memory management
@@ -19748,18 +19738,18 @@ Do not assume that `string` is slower than lower-level techniques without measur
 
 ???
 
-### <a name="Rstr-view"></a>SL.str.2: Use `std::string_view` or `gsl::string_span` to refer to character sequences
+### <a name="Rstr-view"></a>SL.str.2: Use `std::string_view` or `gsl::span<char>` to refer to character sequences
 
 ##### Reason
 
-`std::string_view` or `gsl::string_span` provides simple and (potentially) safe access to character sequences independently of how
+`std::string_view` or `gsl::span<char>` provides simple and (potentially) safe access to character sequences independently of how
 those sequences are allocated and stored.
 
 ##### Example
 
-    vector<string> read_until(string_span terminator);
+    vector<string> read_until(string_view terminator);
 
-    void user(zstring p, const string& s, string_span ss)
+    void user(zstring p, const string& s, string_view ss)
     {
         auto v1 = read_until(p);
         auto v2 = read_until(s);
@@ -19839,7 +19829,7 @@ The array `arr` is not a C-style string because it is not zero-terminated.
 
 ##### Alternative
 
-See [`zstring`](#Rstr-zstring), [`string`](#Rstr-string), and [`string_span`](#Rstr-view).
+See [`zstring`](#Rstr-zstring), [`string`](#Rstr-string), and [`string_view`](#Rstr-view).
 
 ##### Enforcement
 
@@ -19883,7 +19873,7 @@ C++17
 
 ???
 
-### <a name="Rstr-span"></a>SL.str.11: Use `gsl::string_span` rather than `std::string_view` when you need to mutate a string
+### <a name="Rstr-span"></a>SL.str.11: Use `gsl::span<char>` rather than `std::string_view` when you need to mutate a string
 
 ##### Reason
 
@@ -20914,8 +20904,6 @@ If something is not supposed to be `nullptr`, say so:
 
 * `span<T>`       // `[p:p+n)`, constructor from `{p, q}` and `{p, n}`; `T` is the pointer type
 * `span_p<T>`     // `{p, predicate}` `[p:q)` where `q` is the first element for which `predicate(*p)` is true
-* `string_span`   // `span<char>`
-* `cstring_span`  // `span<const char>`
 
 A `span<T>` refers to zero or more mutable `T`s unless `T` is a `const` type.
 
@@ -21711,9 +21699,9 @@ Because we want to use them immediately, and because they are temporary in that 
 
 No. The GSL exists only to supply a few types and aliases that are not currently in the standard library. If the committee decides on standardized versions (of these or other types that fill the same need) then they can be removed from the GSL.
 
-### <a name="Faq-gsl-string-view"></a>FAQ.55: If you're using the standard types where available, why is the GSL `string_span` different from the `string_view` in the Library Fundamentals 1 Technical Specification and C++17 Working Paper? Why not just use the committee-approved `string_view`?
+### <a name="Faq-gsl-string-view"></a>FAQ.55: If you're using the standard types where available, why is the GSL `span<char>` different from the `string_view` in the Library Fundamentals 1 Technical Specification and C++17 Working Paper? Why not just use the committee-approved `string_view`?
 
-The consensus on the taxonomy of views for the C++ Standard Library was that "view" means "read-only", and "span" means "read/write". The read-only `string_view` was the first such component to complete the standardization process, while `span` and `string_span` are currently being considered for standardization.
+The consensus on the taxonomy of views for the C++ Standard Library was that "view" means "read-only", and "span" means "read/write". If you only need a read-only view of characters that does not need guaranteed bounds-checking and you have C++17, use C++17 `std::string_view`. Otherwise, if you need a read-write view that does not need guaranteed bounds-checking and you have C++20, use C++20 `std::span<char>`. Otherwise, use `gsl::span<char>`.
 
 ### <a name="Faq-gsl-owner"></a>FAQ.56: Is `owner` the same as the proposed `observer_ptr`?
 
@@ -22232,7 +22220,7 @@ Better:
 A checker must consider all "naked pointers" suspicious.
 A checker probably must rely on a human-provided list of resources.
 For starters, we know about the standard-library containers, `string`, and smart pointers.
-The use of `span` and `string_span` should help a lot (they are not resource handles).
+The use of `span` and `string_view` should help a lot (they are not resource handles).
 
 ### <a name="Cr-raw"></a>Discussion: A "raw" pointer or reference is never a resource handle
 
