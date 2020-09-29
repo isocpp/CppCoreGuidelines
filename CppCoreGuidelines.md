@@ -11679,35 +11679,35 @@ In fact, they often disable the general rules for using values.
 Overload resolution and template instantiation usually pick the right function if there is a right function to pick.
 If there is not, maybe there ought to be, rather than applying a local fix (cast).
 
-##### Note
+##### Notes
 
 Casts are necessary in a systems programming language.  For example, how else
 would we get the address of a device register into a pointer?  However, casts
 are seriously overused as well as a major source of errors.
 
-##### Note
-
 If you feel the need for a lot of casts, there might be a fundamental design problem.
 
-##### Exception
+The [type profile](#Pro-type-reinterpretcast) bans `reinterpret_cast` and C-style casts.
 
-Casting to `(void)` is the Standard-sanctioned way to turn off `[[nodiscard]]` warnings. If you are calling a function with a `[[nodiscard]]` return and you deliberately want to discard the result, first think hard about whether that is really a good idea (there is usually a good reason the author of the function or of the return type used `[[nodiscard]]` in the first place), but if you still think it's appropriate and your code reviewer agrees, write `(void)` to turn off the warning.
+Never cast to `(void)` to ignore a `[[nodiscard]]`return value.
+If you deliberately want to discard such a result, first think hard about whether that is really a good idea (there is usually a good reason the author of the function or of the return type used `[[nodiscard]]` in the first place).
+If you still think it's appropriate and your code reviewer agrees, use `std::ignore =` to turn off the warning which is simple, portable, and easy to grep.
 
 ##### Alternatives
 
-Casts are widely (mis) used. Modern C++ has rules and constructs that eliminate the need for casts in many contexts, such as
+Casts are widely (mis)used. Modern C++ has rules and constructs that eliminate the need for casts in many contexts, such as
 
 * Use templates
 * Use `std::variant`
 * Rely on the well-defined, safe, implicit conversions between pointer types
+* Use `std::ignore =" to ignore `[[nodiscard]]` values.
 
 ##### Enforcement
 
-* Force the elimination of C-style casts, except when casting a `[[nodiscard]]` function return value to `void`.
-* Warn if there are many functional style casts (there is an obvious problem in quantifying 'many').
-* The [type profile](#Pro-type-reinterpretcast) bans `reinterpret_cast`.
-* Warn against [identity casts](#Pro-type-identitycast) between pointer types, where the source and target types are the same (#Pro-type-identitycast).
-* Warn if a pointer cast could be [implicit](#Pro-type-implicitpointercast).
+* Flag all C-style casts, including to `void`.
+* Flag functional style casts using `Type(value)`. Use `Type{value}` instead which is not narrowing. (See [ES.64](#Res-construct).)
+* Flag [identity casts](#Pro-type-identitycast) between pointer types, where the source and target types are the same (#Pro-type-identitycast).
+* Flag an explicit pointer cast that could be [implicit](#Pro-type-implicitpointercast).
 
 ### <a name="Res-casts-named"></a>ES.49: If you must use a cast, use a named cast
 
@@ -11767,7 +11767,8 @@ for example.)
 
 ##### Enforcement
 
-* Flag C-style and functional casts.
+* Flag all C-style casts, including to `void`.
+* Flag functional style casts using `Type(value)`. Use `Type{value}` instead which is not narrowing. (See [ES.64](#Res-construct).)
 * The [type profile](#Pro-type-reinterpretcast) bans `reinterpret_cast`.
 * The [type profile](#Pro-type-arithmeticcast) warns when using `static_cast` between arithmetic types.
 
@@ -20774,7 +20775,7 @@ Type safety profile summary:
 * <a name="Pro-type-constcast"></a>Type.3: Don't use `const_cast` to cast away `const` (i.e., at all):
 [Don't cast away const](#Res-casts-const).
 * <a name="Pro-type-cstylecast"></a>Type.4: Don't use C-style `(T)expression` or functional `T(expression)` casts:
-Prefer [construction](#Res-construct) or [named casts](#Res-casts-named).
+Prefer [construction](#Res-construct) or [named casts](#Res-casts-named) or `T{expression}`.
 * <a name="Pro-type-init"></a>Type.5: Don't use a variable before it has been initialized:
 [always initialize](#Res-always).
 * <a name="Pro-type-memberinit"></a>Type.6: Always initialize a member variable:
