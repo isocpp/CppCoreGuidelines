@@ -11806,7 +11806,7 @@ Instead, prefer to put the common code in a common helper function -- and make i
         Bar my_bar;
 
         template<class T>           // good, deduces whether T is const or non-const
-        static auto get_bar_impl(T& t) -> decltype(t.get_bar())
+        static auto& get_bar_impl(T& t)
             { /* the complex logic around getting a possibly-const reference to my_bar */ }
     };
 
