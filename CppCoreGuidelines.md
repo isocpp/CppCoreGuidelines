@@ -8040,25 +8040,7 @@ It also ensures exception safety in complex expressions.
 
 ### <a name="Rh-make_shared"></a>C.151: Use `make_shared()` to construct objects owned by `shared_ptr`s
 
-##### Reason
-
-`make_shared` gives a more concise statement of the construction.
-It also gives an opportunity to eliminate a separate allocation for the reference counts, by placing the `shared_ptr`'s use counts next to its object.
-
-##### Example
-
-    void test()
-    {
-        // OK: but repetitive; and separate allocations for the Bar and shared_ptr's use count
-        shared_ptr<Bar> p {new Bar{7}};
-
-        auto q = make_shared<Bar>(7);   // Better: no repetition of Bar; one object
-    }
-
-##### Enforcement
-
-* Flag the repetitive usage of template specialization list`<Bar>`
-* Flag variables declared to be `shared_ptr<Bar>`
+See [R.22](#Rr-make_shared)
 
 ### <a name="Rh-array"></a>C.152: Never assign a pointer to an array of derived class objects to a pointer to its base
 
@@ -9573,7 +9555,8 @@ This is more efficient:
 
 ##### Reason
 
-If you first make an object and then give it to a `shared_ptr` constructor, you (most likely) do one more allocation (and later deallocation) than if you use `make_shared()` because the reference counts must be allocated separately from the object.
+`make_shared` gives a more concise statement of the construction.
+It also gives an opportunity to eliminate a separate allocation for the reference counts, by placing the `shared_ptr`'s use counts next to its object.
 
 ##### Example
 
