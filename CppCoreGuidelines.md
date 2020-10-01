@@ -9920,7 +9920,7 @@ Arithmetic rules:
 * [ES.102: Use signed types for arithmetic](#Res-signed)
 * [ES.103: Don't overflow](#Res-overflow)
 * [ES.104: Don't underflow](#Res-underflow)
-* [ES.105: Don't divide by zero](#Res-zero)
+* [ES.105: Don't divide by integer zero](#Res-zero)
 * [ES.106: Don't try to avoid negative values by using `unsigned`](#Res-nonnegative)
 * [ES.107: Don't use `unsigned` for subscripts, prefer `gsl::index`](#Res-subscripts)
 
@@ -13213,7 +13213,7 @@ Use unsigned types if you really want modulo arithmetic.
 
 ???
 
-### <a name="Res-zero"></a>ES.105: Don't divide by zero
+### <a name="Res-zero"></a>ES.105: Don't divide by integer zero
 
 ##### Reason
 
@@ -13225,7 +13225,7 @@ This also applies to `%`.
 
 ##### Example, bad
 
-    double divide(int a, int b)
+    int divide(int a, int b)
     {
         // BAD, should be checked (e.g., in a precondition)
         return a / b;
@@ -13233,17 +13233,17 @@ This also applies to `%`.
 
 ##### Example, good
 
-    double divide(int a, int b)
+    int divide(int a, int b)
     {
         // good, address via precondition (and replace with contracts once C++ gets them)
         Expects(b != 0);
         return a / b;
     }
 
-    double divide(int a, int b)
+    double divide(double a, double b)
     {
-        // good, address via check
-        return b ? a / b : quiet_NaN<double>();
+        // good, address via using double instead
+        return a / b;
     }
 
 **Alternative**: For critical applications that can afford some overhead, use a range-checked integer and/or floating-point type.
