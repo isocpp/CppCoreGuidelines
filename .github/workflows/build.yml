@@ -1,0 +1,18 @@
+name: build
+on: [push, pull_request]
+
+env:
+  apt: hunspell
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@master
+
+      - name: Run cd scripts; make -k
+        run: cd scripts; make -k
+      
+      - name: Run cd ..
+        run: cd ..
