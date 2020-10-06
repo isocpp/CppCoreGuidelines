@@ -7940,7 +7940,37 @@ Casting to a reference expresses that you intend to end up with a valid object, 
 
 ##### Example
 
-    ???
+        class Base {
+        public:
+            virtual void f() { }
+        };
+        
+        class Derived : public Base {
+        public:
+            void f() override { }
+        };
+        
+        class NotDerivedFromBase {
+        public:
+            virtual void f() { }
+        };
+        
+        class DerivedFromNotDerivedFromBaseAndFromBase : public NotDerivedFromBase, public Base {
+            void f() override { }
+        };
+        
+        void some_function(NotDerivedFromBase a) {
+          try {
+            Base base = dynamic_cast<Base&>(a);
+          } catch (exception e) {
+            // ...
+          }
+        }
+        
+        void f() {
+          DerivedFromNotDerivedFromBaseAndFromBase some_object = DerivedFromNotDerivedFromBaseAndFromBase();
+          some_function(some_object);
+        }
 
 ##### Enforcement
 
@@ -7975,6 +8005,39 @@ In this example, `Shape` does not inherit from `Geometric_attributes`. Only its 
       {
         view_of_trisyms.emplace_back(trisym);
       }
+    }
+    
+##### Example
+    
+    class Base {
+    public:
+        virtual void f() { }
+    };
+    
+    class Derived : public Base {
+    public:
+        void f() override { }
+    };
+    
+    class NotDerivedFromBase {
+    public:
+        virtual void f() { }
+    };
+    
+    class DerivedFromNotDerivedFromBaseAndFromBase : public NotDerivedFromBase, public Base {
+        void f() override { }
+    };
+    
+    void some_function(NotDerivedFromBase* p) {
+      auto base = dynamic_cast<Base*>(p);
+        if (base == nullptr) {
+          //...
+        }
+    }
+    
+    void f() {
+      NotDerivedFromBase *notDerivedFromBaseP = new NotDerivedFromBase();
+      some_function(notDerivedFromBaseP);
     }
 
 ##### Notes
