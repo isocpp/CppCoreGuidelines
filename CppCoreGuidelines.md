@@ -6428,7 +6428,7 @@ Providing a non-member `swap` function in the same namespace as your type for ca
 
 ##### Enforcement
 
-* (Simple) A class without virtual functions should have a `swap` member function declared.
+* A class managing a resource should have a `swap` member function declared.
 * (Simple) When a class has a `swap` member function, it should be declared `noexcept`.
 
 ### <a name="Rc-swap-fail"></a>C.84: A `swap` function must not fail
