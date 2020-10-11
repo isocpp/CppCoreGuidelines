@@ -7940,35 +7940,18 @@ Casting to a reference expresses that you intend to end up with a valid object, 
 
 ##### Example
 
-        class Base {
-        public:
-            virtual void f() { }
-        };
+        class A { ... };
+
+        class B { ... };
         
-        class Derived : public Base {
-        public:
-            void f() override { }
-        };
+        class C : public A, public B { ... };
         
-        class NotDerivedFromBase {
-        public:
-            virtual void f() { }
-        };
-        
-        class DerivedFromNotDerivedFromBaseAndFromBase : public NotDerivedFromBase, public Base {
-            void f() override { }
-        };
-        
-        void some_function(NotDerivedFromBase a) {
-          try {
-            Base base = dynamic_cast<Base&>(a);
-          } catch (exception e) {
-            // ...
-          }
+        void some_function(B a) {
+          A base = dynamic_cast<A&>(a); // throws std::bad_cast
         }
         
         void f() {
-          DerivedFromNotDerivedFromBaseAndFromBase some_object = DerivedFromNotDerivedFromBaseAndFromBase();
+          C some_object = C();
           some_function(some_object);
         }
 
@@ -8009,35 +7992,20 @@ In this example, `Shape` does not inherit from `Geometric_attributes`. Only its 
     
 ##### Example
     
-    class Base {
-    public:
-        virtual void f() { }
-    };
+    class A { ... };
     
-    class Derived : public Base {
-    public:
-        void f() override { }
-    };
+    class B { ... };
     
-    class NotDerivedFromBase {
-    public:
-        virtual void f() { }
-    };
-    
-    class DerivedFromNotDerivedFromBaseAndFromBase : public NotDerivedFromBase, public Base {
-        void f() override { }
-    };
-    
-    void some_function(NotDerivedFromBase* p) {
-      auto base = dynamic_cast<Base*>(p);
-        if (base == nullptr) {
-          //...
-        }
+    void some_function(B* p) {
+      auto base = dynamic_cast<A*>(p);
+      if (base == nullptr) {
+        // check first, before deref
+      }
     }
     
     void f() {
-      NotDerivedFromBase *notDerivedFromBaseP = new NotDerivedFromBase();
-      some_function(notDerivedFromBaseP);
+      B *p = new B();
+      some_function(p);
     }
 
 ##### Notes
