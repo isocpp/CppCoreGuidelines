@@ -6428,7 +6428,7 @@ Providing a non-member `swap` function in the same namespace as your type for ca
 
 ##### Enforcement
 
-* A class managing a resource should have a `swap` member function declared.
+* Non-trivially copyable value types should provide a member swap or a free swap overload.
 * (Simple) When a class has a `swap` member function, it should be declared `noexcept`.
 
 ### <a name="Rc-swap-fail"></a>C.84: A `swap` function must not fail
