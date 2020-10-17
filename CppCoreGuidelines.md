@@ -18781,7 +18781,7 @@ Source file rule summary:
 * [SF.4: Include `.h` files before other declarations in a file](#Rs-include-order)
 * [SF.5: A `.cpp` file must include the `.h` file(s) that defines its interface](#Rs-consistency)
 * [SF.6: Use `using namespace` directives for transition, for foundation libraries (such as `std`), or within a local scope (only)](#Rs-using)
-* [SF.7: Don't write `using namespace` at global scope in a header file](#Rs-using-directive)
+* [SF.7: Don't create namespace aliases in header files](#Rs-namespace-aliases)
 * [SF.8: Use `#include` guards for all `.h` files](#Rs-guards)
 * [SF.9: Avoid cyclic dependencies among source files](#Rs-cycles)
 * [SF.10: Avoid dependencies on implicitly `#include`d names](#Rs-implicit)
@@ -19038,26 +19038,34 @@ and M functions each containing a `using namespace X`with N lines of code in tot
 
 ##### Note
 
-[Don't write `using namespace` in a header file](#Rs-using-directive).
+[Don't create namespace aliases in header files](#Rs-namespace-aliases).
 
 ##### Enforcement
 
 Flag multiple `using namespace` directives for different namespaces in a single source file.
 
-### <a name="Rs-using-directive"></a>SF.7: Don't write `using namespace` at global scope in a header file
+### <a name="Rs-namespace-aliases"></a>SF.7: Don't create namespace aliases in header files
 
 ##### Reason
 
-Doing so takes away an `#include`r's ability to effectively disambiguate and to use alternatives. It also makes `#include`d headers order-dependent as they might have different meaning when included in different orders.
+Header files should not create namespace aliases with `using namespace` or namespace declarations.
+Doing so takes away an `#include`r's ability to effectively disambiguate and to use alternatives. It also
+makes `#include`d headers order-dependent as they may have different meaning when included in different orders.
 
 ##### Example
 
-    // bad.h
+```cpp
+    // libx.h
     #include <iostream>
     using namespace std; // bad
 
+    namespace libx
+    {
+        using namespace liby; // bad
+    }
+
     // user.cpp
-    #include "bad.h"
+    #include "libx.h"
 
     bool copy(/*... some parameters ...*/);    // some function that happens to be named copy
 
@@ -19065,16 +19073,18 @@ Doing so takes away an `#include`r's ability to effectively disambiguate and to 
     {
         copy(/*...*/);    // now overloads local ::copy and std::copy, could be ambiguous
     }
+```
 
 ##### Note
 
 An exception is `using namespace std::literals;`. This is necessary to use string literals
 in header files and given [the rules](http://eel.is/c++draft/over.literal) - users are required
 to name their own UDLs `operator""_x` - they will not collide with the standard library.
+It is also acceptable to import names into private namespaces (`details`, `impl`).
 
 ##### Enforcement
 
-Flag `using namespace` at global scope in a header file.
+Flag `using namespace` at global scope, or namespace declarations that only include other namespaces in a header file.
 
 ### <a name="Rs-guards"></a>SF.8: Use `#include` guards for all `.h` files
 
