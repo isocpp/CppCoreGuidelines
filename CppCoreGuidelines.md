@@ -20499,7 +20499,7 @@ Reference sections:
 * [GCC Coding Conventions](https://gcc.gnu.org/codingconventions.html).
   C++03 and (reasonably) a bit backwards looking.
 * [Google C++ Style Guide](https://google.github.io/styleguide/cppguide.html).
-  Geared toward C++03 and (also) older code bases. Google experts are now actively collaborating here on helping to improve these Guidelines, and hopefully to merge efforts so these can be a modern common set they could also recommend.
+  Geared toward C++17 and (also) older code bases. Google experts are now actively collaborating here on helping to improve these Guidelines, and hopefully to merge efforts so these can be a modern common set they could also recommend.
 * [JSF++: JOINT STRIKE FIGHTER AIR VEHICLE C++ CODING STANDARDS](http://www.stroustrup.com/JSF-AV-rules.pdf).
   Document Number 2RDU00001 Rev C. December 2005.
   For flight control software.
@@ -20511,7 +20511,7 @@ Reference sections:
   Any similarities to this set of guidelines are unsurprising because Bjarne Stroustrup was an author of JSF++.
   Recommended, but note its very specific focus.
 * [MISRA C++ 2008: Guidelines for the use of the C++ language in critical systems](https://www.misra.org.uk/Buyonline/tabid/58/Default.aspx).
-* [Mozilla Portability Guide](https://developer.mozilla.org/en-US/docs/Mozilla/C%2B%2B_Portability_Guide).
+* [Using C++ in Mozilla Code](https://firefox-source-docs.mozilla.org/code-quality/coding-style/using_cxx_in_firefox_code.html).
   As the name indicates, this aims for portability across many (old) compilers.
   As such, it is restrictive.
 * [Geosoft.no: C++ Programming Style Guidelines](http://geosoft.no/development/cppstyle.html).
