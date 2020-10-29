@@ -368,9 +368,17 @@ Tools that implement these rules shall respect the following syntax to explicitl
 
     [[gsl::suppress(tag)]]
 
-where "tag" is the anchor name of the item where the Enforcement rule appears (e.g., for [C.134](#Rh-public) it is "Rh-public"), the
+and optionally with a message (following usual C++11 standard attribute syntax):
+
+    [[gsl::suppress(tag, justification: "message")]]
+
+where
+
+   - `tag` is the anchor name of the item where the Enforcement rule appears (e.g., for [C.134](#Rh-public) it is "Rh-public"), the
 name of a profile group-of-rules ("type", "bounds", or "lifetime"),
-or a specific rule in a profile ([type.4](#Pro-type-cstylecast), or [bounds.2](#Pro-bounds-arrayindex)).
+or a specific rule in a profile ([type.4](#Pro-type-cstylecast), or [bounds.2](#Pro-bounds-arrayindex))
+
+   - `"message"` is a string literal
 
 ## <a name="SS-struct"></a>In.struct: The structure of this document
 
