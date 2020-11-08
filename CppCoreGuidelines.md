@@ -648,6 +648,38 @@ If two `int`s are meant to be the coordinates of a 2D point, say so:
     draw_line(int, int, int, int);  // obscure
     draw_line(Point, Point);        // clearer
 
+##### Example
+
+Redundant or duplicated code obscures intent and makes it harder to understand the logic. Avoid code duplication.
+
+    void day(bool workday)    // Bad, duplicated code.
+    {
+        if (workday) {
+            breakfast();
+            work();
+            dinner();   
+        }
+        else {
+            breakfast();
+            readABook();
+            dinner();
+        }
+    }
+
+    void day(bool workday)    // Good, no duplicated code.
+    {
+        breakfast();
+
+        if (workday)
+            work();
+        else
+            readABook();
+
+        dinner();
+    }
+
+
+
 ##### Enforcement
 
 Look for common patterns for which there are better alternatives
@@ -657,6 +689,7 @@ Look for common patterns for which there are better alternatives
 * loop variables in too large a scope
 * naked `new` and `delete`
 * functions with many parameters of built-in types
+* remove redundant code
 
 There is a huge scope for cleverness and semi-automated program transformation.
 
