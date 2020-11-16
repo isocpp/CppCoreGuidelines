@@ -3472,7 +3472,7 @@ Sometimes having `nullptr` as an alternative to indicated "no object" is useful,
 
 ##### Note
 
-It is possible, but not valid C++ to construct a reference that is essentially a `nullptr` (e.g., `T* p = nullptr; T& r = (T&)*p;`).
+It is possible, but not valid C++ to construct a reference that is essentially a `nullptr` (e.g., `T* p = nullptr; T& r = *p;`).
 That error is very uncommon.
 
 ##### Note
