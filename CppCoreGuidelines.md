@@ -2818,16 +2818,21 @@ We can catch many common cases of dangling pointers statically (see [lifetime sa
 * [prefer `t*` over `t&` when "no argument" is a valid option](#rf-ptr-ref)
 * [smart pointer rule summary](#rr-summary-smartptrs)
 
-### <a name="Rf-pure"></a>F.8: Prefer pure functions
+### <a name="Rf-pure"></a>F.8: Prefer pure functions over impure functions
 
 ##### Reason
 
-Pure functions are easier to reason about, sometimes easier to optimize (and even parallelize), and sometimes can be memoized.
+Pure functions are easier to reason about than impure ones, sometimes easier to optimize (and even parallelize), and sometimes can be memoized.
 
 ##### Example
 
-    template<class T>
-    auto square(T t) { return t * t; }
+    auto square(double x)
+    {
+        // Avoid side effects here, for example:
+        // - don't do ++global_variable;
+        // - don't do std::cout << "message\n";
+        return x * x;
+    }
 
 ##### Enforcement
 
