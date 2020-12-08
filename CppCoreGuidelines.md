@@ -16569,7 +16569,6 @@ Template definition rule summary:
 * [T.64: Use specialization to provide alternative implementations of class templates](#Rt-specialization)
 * [T.65: Use tag dispatch to provide alternative implementations of functions](#Rt-tag-dispatch)
 * [T.67: Use specialization to provide alternative implementations for irregular types](#Rt-specialization2)
-* [T.68: Use `{}` rather than `()` within templates to avoid ambiguities](#Rt-cast)
 * [T.69: Inside a template, don't make an unqualified non-member function call unless you intend it to be a customization point](#Rt-customization)
 
 Template and hierarchy rule summary:
@@ -18015,29 +18014,6 @@ When `concept`s become widely available such alternatives can be distinguished d
 ##### Enforcement
 
 ???
-
-### <a name="Rt-cast"></a>T.68: Use `{}` rather than `()` within templates to avoid ambiguities
-
-##### Reason
-
- `()` is vulnerable to grammar ambiguities.
-
-##### Example
-
-    template<typename T, typename U>
-    void f(T t, U u)
-    {
-        T v1(x);    // is v1 a function or a variable?
-        T v2 {x};   // variable
-        auto x = T(u);  // construction or cast?
-    }
-
-    f(1, "asdf"); // bad: cast from const char* to int
-
-##### Enforcement
-
-* flag `()` initializers
-* flag function-style casts
 
 
 ### <a name="Rt-customization"></a>T.69: Inside a template, don't make an unqualified non-member function call unless you intend it to be a customization point
