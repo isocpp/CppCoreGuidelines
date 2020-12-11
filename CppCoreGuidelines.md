@@ -14085,12 +14085,11 @@ Application concepts are easier to reason about.
 
 ##### Example
 
-    void some_fun()
+    void some_fun(const std::string& msg)
     {
-        std::string msg, msg2;
-        std::thread publisher([&] { msg = "Hello"; });       // bad: less expressive
-                                                             //      and more error-prone
-        auto pubtask = std::async([&] { msg2 = "Hello"; });  // OK
+        std::thread publisher([=] { std::cout << msg; });      // bad: less expressive
+                                                               //      and more error-prone
+        auto pubtask = std::async([=] { std::cout << msg; });  // OK
         // ...
         publisher.join();
     }
