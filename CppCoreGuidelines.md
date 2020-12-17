@@ -374,11 +374,11 @@ and optionally with a message (following usual C++11 standard attribute syntax):
 
 where
 
-   - `tag` is the anchor name of the item where the Enforcement rule appears (e.g., for [C.134](#Rh-public) it is "Rh-public"), the
+* `tag` is the anchor name of the item where the Enforcement rule appears (e.g., for [C.134](#Rh-public) it is "Rh-public"), the
 name of a profile group-of-rules ("type", "bounds", or "lifetime"),
 or a specific rule in a profile ([type.4](#Pro-type-cstylecast), or [bounds.2](#Pro-bounds-arrayindex))
 
-   - `"message"` is a string literal
+* `"message"` is a string literal
 
 ## <a name="SS-struct"></a>In.struct: The structure of this document
 
@@ -11647,7 +11647,7 @@ Casts are widely (mis)used. Modern C++ has rules and constructs that eliminate t
 * Use templates
 * Use `std::variant`
 * Rely on the well-defined, safe, implicit conversions between pointer types
-* Use `std::ignore =" to ignore `[[nodiscard]]` values.
+* Use `std::ignore =` to ignore `[[nodiscard]]` values.
 
 ##### Enforcement
 
