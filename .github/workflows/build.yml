@@ -1,0 +1,20 @@
+name: build
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@master
+     
+      - name: Install Hunspell
+        run: |
+           sudo apt-get update
+           sudo apt-get install hunspell
+           
+      - name: Run cd scripts; make -k
+        run: cd scripts; make -k
+
+      - name: Run cd ..
+        run: cd ..
