@@ -19046,7 +19046,7 @@ and M functions each containing a `using namespace X`with N lines of code in tot
 
 ##### Note
 
-[Don't write `using namespace` in a header file](#Rs-using-directive).
+[Don't write `using namespace` at global scope in a header file](#Rs-using-directive).
 
 ##### Enforcement
 
