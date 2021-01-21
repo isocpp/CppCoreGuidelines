@@ -9832,6 +9832,7 @@ General rules:
 
 * [ES.1: Prefer the standard library to other libraries and to "handcrafted code"](#Res-lib)
 * [ES.2: Prefer suitable abstractions to direct use of language features](#Res-abstr)
+* [ES.3: Don't repeat yourself, avoid redundant code](#Res-DRY)
 
 Declaration rules:
 
@@ -9975,6 +9976,44 @@ Once the checking for overflow and error handling has been added that code gets 
 ##### Enforcement
 
 Not easy. ??? Look for messy loops, nested loops, long functions, absence of function calls, lack of use of non-built-in types. Cyclomatic complexity?
+
+### <a name="Res-DRY"></a>ES.3: Don't repeat yourself, avoid redundant code
+Duplicated or otherwise redundant code obscures intent and makes it harder to understand the logic. There are several other reasons to avoid redundant code. For example, it makes maintenance harder.
+
+Use standard algorithms where apropriate, instead of writing some own implementation.
+
+**See also**: [SL.1](#Rsl-lib)
+
+
+##### Example
+
+    void func(bool flag)    // Bad, duplicated code.
+    {
+        if (flag) {
+            x();
+            y();
+        }
+        else {
+            x();
+            z();
+        }
+    }
+
+    void func(bool flag)    // Better, no duplicated code.
+    {
+        x();
+
+        if (flag)
+            y();
+        else
+            z();
+    }
+
+
+##### Enforcement
+
+* Use a static analyzer. It will catch at least some redundant constructs.
+* Code review
 
 ## ES.dcl: Declarations
 
