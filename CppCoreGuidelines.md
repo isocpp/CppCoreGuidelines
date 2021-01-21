@@ -18058,16 +18058,16 @@ When `concept`s become widely available such alternatives can be distinguished d
 
 ##### Reason
 
- `()` is vulnerable to grammar ambiguities.
+`()` is vulnerable to grammar ambiguities.
 
 ##### Example
 
     template<typename T, typename U>
     void f(T t, U u)
     {
-        T v1(x);    // is v1 a function or a variable?
-        T v2 {x};   // variable
-        auto x = T(u);  // construction or cast?
+        T v1(T(u));    // mistake: oops, v1 is a function not a variable
+        T v2{u};       // clear:   obviously a variable
+        auto x = T(u); // unclear: construction or cast?
     }
 
     f(1, "asdf"); // bad: cast from const char* to int
