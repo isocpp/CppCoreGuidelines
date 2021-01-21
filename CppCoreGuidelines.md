@@ -9978,12 +9978,12 @@ Once the checking for overflow and error handling has been added that code gets 
 Not easy. ??? Look for messy loops, nested loops, long functions, absence of function calls, lack of use of non-built-in types. Cyclomatic complexity?
 
 ### <a name="Res-DRY"></a>ES.3: Don't repeat yourself, avoid redundant code
-Duplicated or otherwise redundant code obscures intent and makes it harder to understand the logic. There are several other reasons to avoid redundant code. For example, it makes maintenance harder.
+
+Duplicated or otherwise redundant code obscures intent, makes it harder to understand the logic, and makes maintenance harder, among other problems. It often arises from cut-and-paste programming.
 
 Use standard algorithms where apropriate, instead of writing some own implementation.
 
-**See also**: [SL.1](#Rsl-lib)
-
+**See also**: [SL.1](#Rsl-lib), [ES.11](#Res-auto)
 
 ##### Example
 
