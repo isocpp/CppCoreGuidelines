@@ -9981,7 +9981,7 @@ Not easy. ??? Look for messy loops, nested loops, long functions, absence of fun
 
 Duplicated or otherwise redundant code obscures intent, makes it harder to understand the logic, and makes maintenance harder, among other problems. It often arises from cut-and-paste programming.
 
-Use standard algorithms where apropriate, instead of writing some own implementation.
+Use standard algorithms where appropriate, instead of writing some own implementation.
 
 **See also**: [SL.1](#Rsl-lib), [ES.11](#Res-auto)
 
