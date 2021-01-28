@@ -8947,7 +8947,7 @@ Specifying the underlying type is necessary in forward declarations of enumerati
 
     // ....
 
-    enum flags : char { /* ... */ };
+    enum Flags : char { /* ... */ };
 
 
 ##### Enforcement
