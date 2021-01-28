@@ -1233,7 +1233,7 @@ Interface rule summary:
 * [I.22: Avoid complex initialization of global objects](#Ri-global-init)
 * [I.23: Keep the number of function arguments low](#Ri-nargs)
 * [I.24: Avoid adjacent parameters of the same type when changing the argument order would change meaning](#Ri-unrelated)
-* [I.25: Prefer abstract classes as interfaces to class hierarchies](#Ri-abstract)
+* [I.25: Prefer empty abstract classes as interfaces to class hierarchies](#Ri-abstract)
 * [I.26: If you want a cross-compiler ABI, use a C-style subset](#Ri-abi)
 * [I.27: For stable library ABI, consider the Pimpl idiom](#Ri-pimpl)
 * [I.30: Encapsulate rule violations](#Ri-encapsulate)
@@ -2156,11 +2156,11 @@ are often filled in by name at the call site.
 
 (Simple) Warn if two consecutive parameters share the same type.
 
-### <a name="Ri-abstract"></a>I.25: Prefer abstract classes as interfaces to class hierarchies
+### <a name="Ri-abstract"></a>I.25: Prefer empty abstract classes as interfaces to class hierarchies
 
 ##### Reason
 
-Abstract classes are more likely to be stable than base classes with state.
+Abstract classes that are empty (have no nonstatic member data) are more likely to be stable than base classes with state.
 
 ##### Example, bad
 
@@ -2178,7 +2178,7 @@ You just knew that `Shape` would turn up somewhere :-)
         Color col;
     };
 
-This will force every derived class to compute a center -- even if that's non-trivial and the center is never used. Similarly, not every `Shape` has a `Color`, and many `Shape`s are best represented without an outline defined as a sequence of `Point`s. Abstract classes were invented to discourage users from writing such classes:
+This will force every derived class to compute a center -- even if that's non-trivial and the center is never used. Similarly, not every `Shape` has a `Color`, and many `Shape`s are best represented without an outline defined as a sequence of `Point`s. Using an abstract class is better:
 
     class Shape {    // better: Shape is a pure interface
     public:
