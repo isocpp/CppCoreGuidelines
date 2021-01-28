@@ -1,6 +1,6 @@
 # <a name="main"></a>C++ Core Guidelines
 
-August 3, 2020
+January 28, 2021
 
 
 Editors:
@@ -3063,6 +3063,8 @@ If you have multiple values to return, [use a tuple](#Rf-out-multi) or similar m
 ##### Note
 
 A `struct` of many (individually cheap-to-move) elements might be in aggregate expensive to move.
+
+##### Note
 
 It is not recommended to return a `const` value.
 Such older advice is now obsolete; it does not add value, and it interferes with move semantics.
