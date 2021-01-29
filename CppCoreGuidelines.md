@@ -2160,7 +2160,7 @@ are often filled in by name at the call site.
 
 ##### Reason
 
-Abstract classes that are empty (have no nonstatic member data) are more likely to be stable than base classes with state.
+Abstract classes that are empty (have no non-static member data) are more likely to be stable than base classes with state.
 
 ##### Example, bad
 
