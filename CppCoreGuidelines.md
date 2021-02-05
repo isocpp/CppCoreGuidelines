@@ -19083,6 +19083,7 @@ A `.cpp` file is a form of local scope.
 There is little difference in the opportunities for name clashes in an N-line `.cpp` containing a `using namespace X`,
 an N-line function containing a `using namespace X`,
 and M functions each containing a `using namespace X`with N lines of code in total.
+Also note if you `using namespace X;` with internet based APIs, and that namespace contains a function that is the same name as a internet api function for that platform would result in issues as well. A good example is with `bind` to bind a socket handle to a listening port on the internet apis which in turn would conflict with `X::bind` or if `X` is `std` then `std::bind`. `bind` is a good example here because the internet APIs of all platforms I found contains a `bind` in the global scope (Windows, MAC, Linux, etc).
 
 ##### Note
 
@@ -19152,6 +19153,10 @@ Some implementations offer vendor extensions like `#pragma once` as alternative 
 It is not standard and it is not portable.  It injects the hosting machine's filesystem semantics
 into your program, in addition to locking you down to a vendor.
 Our recommendation is to write in ISO C++: See [rule P.2](#Rp-Cplusplus).
+
+You can also use `#pragma once` but fall back to the include guard when not compiling with the
+vendor compilers (g++, clang, MSVC) would work too however it is more typing and it is better to
+always use the include guard only as opposed to `#pragma once`.
 
 ### <a name="Rs-cycles"></a>SF.9: Avoid cyclic dependencies among source files
 
@@ -19785,7 +19790,7 @@ Like any other "plain pointer", a `zstring` should not represent ownership.
 There are billions of lines of C++ "out there", most use `char*` and `const char*` without documenting intent.
 They are used in a wide variety of ways, including to represent ownership and as generic pointers to memory (instead of `void*`).
 It is hard to separate these uses, so this guideline is hard to follow.
-This is one of the major sources of bugs in C and C++ programs, so it is worthwhile to follow this guideline wherever feasible..
+This is one of the major sources of bugs in C and C++ programs, so it is worthwhile to follow this guideline wherever feasible.
 
 ##### Enforcement
 
