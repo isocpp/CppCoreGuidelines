@@ -19083,7 +19083,8 @@ A `.cpp` file is a form of local scope.
 There is little difference in the opportunities for name clashes in an N-line `.cpp` containing a `using namespace X`,
 an N-line function containing a `using namespace X`,
 and M functions each containing a `using namespace X`with N lines of code in total.
-Also note if you `using namespace X;` with internet based APIs, and that namespace contains a function that is the same name as a internet api function for that platform would result in issues as well. A good example is with `bind` to bind a socket handle to a listening port on the internet apis which in turn would conflict with `X::bind` or if `X` is `std` then `std::bind`. `bind` is a good example here because the internet APIs of all platforms I found contains a `bind` in the global scope (Windows, MAC, Linux, etc).
+Also note that conflicts exist with sockets where they got a `bind` and the standard has a `bind` and that can be resolved
+by prefixing the calls to the socket `bind` with `::`.
 
 ##### Note
 
@@ -19153,10 +19154,6 @@ Some implementations offer vendor extensions like `#pragma once` as alternative 
 It is not standard and it is not portable.  It injects the hosting machine's filesystem semantics
 into your program, in addition to locking you down to a vendor.
 Our recommendation is to write in ISO C++: See [rule P.2](#Rp-Cplusplus).
-
-You can also use `#pragma once` but fall back to the include guard when not compiling with the
-vendor compilers (g++, clang, MSVC) would work too however it is more typing and it is better to
-always use the include guard only as opposed to `#pragma once`.
 
 ### <a name="Rs-cycles"></a>SF.9: Avoid cyclic dependencies among source files
 
