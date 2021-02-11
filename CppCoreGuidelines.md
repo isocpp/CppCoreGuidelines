@@ -2152,9 +2152,15 @@ Define a `struct` as the parameter type and name the fields for those parameters
 This tends to make invocations of this clear to future readers, as the parameters
 are often filled in by name at the call site.
 
-##### Enforcement
+##### Note
 
-(Simple) Warn if two consecutive parameters share the same type.
+Only the interface's designer can adequately address the source of violations of this guideline.
+
+##### Enforcement strategy
+
+(Simple) Warn if two consecutive parameters share the same type
+
+We are still looking for a less-simple enforcement.
 
 ### <a name="Ri-abstract"></a>I.25: Prefer empty abstract classes as interfaces to class hierarchies
 
