@@ -17911,10 +17911,15 @@ Some people found the idea that the `Link` no longer was hidden inside the list 
 [SCARY](http://www.open-std.org/jtc1/sc22/WG21/docs/papers/2009/n2911.pdf). From that academic paper:
 "The acronym SCARY describes assignments and initializations that are Seemingly erroneous (appearing Constrained by conflicting generic parameters), but Actually work with the Right implementation (unconstrained bY the conflict due to minimized dependencies)."
 
+##### Note
+
+This also applies to lambdas that don't depend on all of the template parameters.
+
 ##### Enforcement
 
-* Flag member types that do not depend on every template argument
-* Flag member functions that do not depend on every template argument
+* Flag member types that do not depend on every template parameter
+* Flag member functions that do not depend on every template parameter
+* Flag lambdas or variable templates that do not depend on every template parameter
 
 ### <a name="Rt-nondependent"></a>T.62: Place non-dependent class template members in a non-templated base class
 
