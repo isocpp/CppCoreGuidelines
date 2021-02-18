@@ -4669,30 +4669,26 @@ If you don't want a generated default function, suppress it with `=delete`.
 ##### Example, good
 
 When a destructor needs to be declared just to make it `virtual`, it can be
-defined as defaulted. To avoid suppressing the implicit move operations
-they must also be declared, and then to avoid the class becoming move-only
-(and not copyable) the copy operations must be declared:
+defined as defaulted.
 
     class AbstractBase {
     public:
-      virtual ~AbstractBase() = default;
-      AbstractBase(const AbstractBase&) = default;
-      AbstractBase& operator=(const AbstractBase&) = default;
-      AbstractBase(AbstractBase&&) = default;
-      AbstractBase& operator=(AbstractBase&&) = default;
+        virtual ~AbstractBase() = default;
+        // ...
     };
 
-Alternatively to prevent slicing as per [C.67](#Rc-copy-virtual),
-the copy and move operations can all be deleted:
+To prevent slicing as per [C.67](#Rc-copy-virtual),
+`=delete` the copy and move operations and add a `clone`:
 
     class ClonableBase {
     public:
-      virtual unique_ptr<ClonableBase> clone() const;
-      virtual ~ClonableBase() = default;
-      ClonableBase(const ClonableBase&) = delete;
-      ClonableBase& operator=(const ClonableBase&) = delete;
-      ClonableBase(ClonableBase&&) = delete;
-      ClonableBase& operator=(ClonableBase&&) = delete;
+        virtual unique_ptr<ClonableBase> clone() const;
+        virtual ~ClonableBase() = default;
+        ClonableBase(const ClonableBase&) = delete;
+        ClonableBase& operator=(const ClonableBase&) = delete;
+        ClonableBase(ClonableBase&&) = delete;
+        ClonableBase& operator=(ClonableBase&&) = delete;
+        // ... other constructors and functions ...
     };
 
 Defining only the move operations or only the copy operations would have the
