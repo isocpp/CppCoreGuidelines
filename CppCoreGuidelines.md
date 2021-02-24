@@ -2346,7 +2346,7 @@ Function definition rules:
 * [F.3: Keep functions short and simple](#Rf-single)
 * [F.4: If a function might have to be evaluated at compile time, declare it `constexpr`](#Rf-constexpr)
 * [F.5: If a function is very small and time-critical, declare it inline](#Rf-inline)
-* [F.6: If your function might not throw, declare it `noexcept`](#Rf-noexcept)
+* [F.6: If your function must not throw, declare it `noexcept`](#Rf-noexcept)
 * [F.7: For general use, take `T*` or `T&` arguments rather than smart pointers](#Rf-smart)
 * [F.8: Prefer pure functions](#Rf-pure)
 * [F.9: Unused parameters should be unnamed](#Rf-unused)
