@@ -13945,10 +13945,10 @@ Although `cached_computation` works perfectly in a single-threaded environment, 
 ##### Example, good
 
     struct ComputationCache {
-        double cached_x = 0.0;
+        int cached_x = 0;
         double cached_result = COMPUTATION_OF_ZERO;
 
-        double compute(double x) {
+        double compute(int x) {
             if (cached_x != x) {
                 cached_x = x;
                 cached_result = computation(x);
