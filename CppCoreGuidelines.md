@@ -13909,6 +13909,7 @@ Concurrency and parallelism rule summary:
 **See also**:
 
 * [CP.con: Concurrency](#SScp-con)
+* [CP.coro: Coroutines](#SScp-coro)
 * [CP.par: Parallelism](#SScp-par)
 * [CP.mess: Message passing](#SScp-mess)
 * [CP.vec: Vectorization](#SScp-vec)
@@ -14905,6 +14906,74 @@ See the [WG21 proposal](http://wg21.link/p0290) to add `synchronized_value` to a
 ##### Enforcement
 
 ??? Possible?
+
+
+## <a name="SScp-coro"></a>CP.coro: Coroutines
+
+This section focuses on uses of coroutines.
+
+Coroutine rule summary:
+
+* [CP.51: Do not use capturing lambdas that are coroutines](#Rcoro-capture)
+
+### <a name="Rcoro-capture"></a>CP.51: Do not use capturing lambdas that are coroutines
+
+
+##### Reason
+Usage patterns that are correct with normal lambdas are hazardous with coroutine lambdas. The obvious pattern of capturing variables will result in accessing freed memory after the first suspension point, even for refcounted smart pointers and value types.  
+
+A lambda results in a closure object with storage, often on the stack, that will go out of scope at some point.  When the closure object goes out of scope the captures will also go out of scope.  Normal lambdas will have finished executing by this time so it is not a problem.  Coroutine lambdas may resume from suspension after the closure object has destructed and at that point all captures will be use-after-free memory access.
+
+##### Example, Bad
+```cpp
+int value = get_value();
+std::shared_ptr<Foo> sharedFoo = get_foo();
+{
+  const auto lambda = [value, sharedFoo]() -> std::future<void>
+  {
+    co_await something();
+    // "sharedFoo" and "value" have already been destroyed
+    // the "shared" pointer didn't accomplish anything
+  };
+  lambda();
+} // the lambda closure object has now gone out of scope
+```
+
+##### Example, Better
+```cpp
+int value = get_value();
+std::shared_ptr<Foo> sharedFoo = get_foo();
+{
+  const auto lambda = [](auto sharedFoo, auto value) -> std::future<void>  // take as by-value parameter instead of as a capture
+  {
+    co_await something();
+    // sharedFoo and value are still valid at this point
+  };
+  lambda(sharedFoo, value); 
+} // the lambda closure object has now gone out of scope
+```
+
+##### Example, Best
+Use a function for coroutines.
+
+```cpp
+std::future<void> Class::do_something(int value, std::shared_ptr<Foo> sharedFoo)
+{
+  co_await something();
+  // sharedFoo and value are still valid at this point
+}
+
+void SomeOtherFunction()
+{
+  int value = get_value();
+  std::shared_ptr<Foo> sharedFoo = get_foo();
+  do_something(value, sharedFoo); 
+}
+```
+
+##### Enforcement
+
+Flag a lambda that is a coroutine and has a non-empty capture list.
 
 
 ## <a name="SScp-par"></a>CP.par: Parallelism
