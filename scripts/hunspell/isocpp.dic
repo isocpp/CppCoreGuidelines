@@ -106,6 +106,7 @@ constcast
 constexpr
 constness
 copy2
+coro
 CORBA
 cout
 CP
@@ -442,12 +443,14 @@ rcon
 Rcon
 Rconc
 Rconst
+rcoro
 Rcpl
 *realtime
 Rec2
 refactor
 refactored
 refcount
+refcounted
 regex
 Regex
 RegularFunction
@@ -502,6 +505,7 @@ SemiRegular
 Sergey
 Sewell
 SFINAE
+sharedFoo
 sharedness
 sharedptrparam
 'sharedptrparam'
@@ -519,6 +523,7 @@ smartptrs
 SMS
 Sommerlad
 SomeLargeType
+SomeOtherFunction
 specialization2
 spinlock
 splonk
