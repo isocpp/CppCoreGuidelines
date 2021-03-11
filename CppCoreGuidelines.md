@@ -1,6 +1,6 @@
 # <a name="main"></a>C++ Core Guidelines
 
-January 28, 2021
+March 11, 2021
 
 
 Editors:
@@ -13927,10 +13927,10 @@ However, over time, code fragments can turn up in unexpected places.
 
 ##### Example, bad
 
-    double cached_computation(double x)
+    double cached_computation(int x)
     {
         // bad: these statics cause data races in multi-threaded usage
-        static double cached_x = 0.0;
+        static int cached_x = 0.0;
         static double cached_result = COMPUTATION_OF_ZERO;
 
         if (cached_x != x) {
