@@ -83,7 +83,7 @@ def process_code(read_filehandle, text_filehandle, line, linenum, sourcefile, co
     fenced = (line.strip() == '```')
     if fenced:
         try:
-            line = read_filehandle.next()
+            line = read_filehandle.readLine()
             linenum += 1
             text_filehandle.write('\n')
         except StopIteration:
