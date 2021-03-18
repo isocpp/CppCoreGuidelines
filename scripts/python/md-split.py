@@ -114,7 +114,7 @@ def process_code(read_filehandle, text_filehandle, line, linenum, sourcefile, co
                 has_question_marks = True
             linebuffer.append(dedent(line, indent_depth) if not fenced else line)
         try:
-            line = read_filehandle.next()
+            line = read_filehandle.readline()
             linenum += 1
         except StopIteration:
             line = ''
