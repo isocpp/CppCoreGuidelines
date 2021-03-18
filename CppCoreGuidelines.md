@@ -6032,7 +6032,7 @@ Consider:
 
 (Simple) Assignment operators should not contain the pattern `if (this == &a) return *this;` ???
 
-### <a name="Rc-move-assignment"></a>C.63: Make move assignment non-`virtual`, take the parameter by `&&`, and return by non-`const &`
+### <a name="Rc-move-assignment"></a>C.63: Make move assignment non-`virtual`, take the parameter by `&&`, and return by non-`const&`
 
 ##### Reason
 
