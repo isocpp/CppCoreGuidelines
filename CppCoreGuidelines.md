@@ -8344,7 +8344,7 @@ By itself, `cout_my_class` would be OK, but it is not usable/composable with cod
 
 ##### Note
 
-There are strong and vigorous conventions for the meaning most operators, such as
+There are strong and vigorous conventions for the meaning of most operators, such as
 
 * comparisons (`==`, `!=`, `<`, `<=`, `>`, `>=`, and `<=>`),
 * arithmetic operations (`+`, `-`, `*`, `/`, and `%`)
