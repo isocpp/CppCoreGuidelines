@@ -6513,11 +6513,11 @@ The alternative is to make two failure states compare equal and any valid state 
 
 ##### Note
 
-This rule applies to all the usual comparison operators: `!=`, `<`, `<=`, `>`, `>=`, and `<=>`.
+This rule applies to all the usual comparison operators: `!=`, `<`, `<=`, `>`, and `>=`.
 
 ##### Enforcement
 
-* Flag an `operator==()` for which the argument types differ; same for other comparison operators: `!=`, `<`, `<=`, `>`, `>=`, and `<=>`.
+* Flag an `operator==()` for which the argument types differ; same for other comparison operators: `!=`, `<`, `<=`, `>`, and `>=`.
 * Flag member `operator==()`s; same for other comparison operators: `!=`, `<`, `<=`, `>`, and `>=`.
 
 ### <a name="Rc-eq-base"></a>C.87: Beware of `==` on base classes
@@ -6562,11 +6562,11 @@ Of course there are ways of making `==` work in a hierarchy, but the naive appro
 
 ##### Note
 
-This rule applies to all the usual comparison operators: `!=`, `<`, `<=`, `>`, and `>=`.
+This rule applies to all the usual comparison operators: `!=`, `<`, `<=`, `>`, `>=`, and `<=>`.
 
 ##### Enforcement
 
-* Flag a virtual `operator==()`; same for other comparison operators: `!=`, `<`, `<=`, `>`, and `>=`.
+* Flag a virtual `operator==()`; same for other comparison operators: `!=`, `<`, `<=`, `>`, `>=`, and `<=>`.
 
 ### <a name="Rc-hash"></a>C.89: Make a `hash` `noexcept`
 
