@@ -6562,11 +6562,11 @@ Of course there are ways of making `==` work in a hierarchy, but the naive appro
 
 ##### Note
 
-This rule applies to all the usual comparison operators: `!=`, `<`, `<=`, `>`, and `>=`.
+This rule applies to all the usual comparison operators: `!=`, `<`, `<=`, `>`, `>=`, and `<=>`.
 
 ##### Enforcement
 
-* Flag a virtual `operator==()`; same for other comparison operators: `!=`, `<`, `<=`, `>`, and `>=`.
+* Flag a virtual `operator==()`; same for other comparison operators: `!=`, `<`, `<=`, `>`, `>=`, and `<=>`.
 
 ### <a name="Rc-hash"></a>C.89: Make a `hash` `noexcept`
 
@@ -8344,9 +8344,9 @@ By itself, `cout_my_class` would be OK, but it is not usable/composable with cod
 
 ##### Note
 
-There are strong and vigorous conventions for the meaning most operators, such as
+There are strong and vigorous conventions for the meaning of most operators, such as
 
-* comparisons (`==`, `!=`, `<`, `<=`, `>`, and `>=`),
+* comparisons (`==`, `!=`, `<`, `<=`, `>`, `>=`, and `<=>`),
 * arithmetic operations (`+`, `-`, `*`, `/`, and `%`)
 * access operations (`.`, `->`, unary `*`, and `[]`)
 * assignment (`=`)
