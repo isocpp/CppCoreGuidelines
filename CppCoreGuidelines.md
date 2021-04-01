@@ -4420,6 +4420,7 @@ Concrete type rule summary:
 
 * [C.10: Prefer concrete types over class hierarchies](#Rc-concrete)
 * [C.11: Make concrete types regular](#Rc-regular)
+* [C.12: Don't make data members `const` or references](#Rc-constref)
 
 ### <a name="Rc-concrete"></a>C.10: Prefer concrete types over class hierarchies
 
@@ -4508,6 +4509,27 @@ Often, such types are referred to as "move-only types".
 ##### Enforcement
 
 ???
+
+
+### <a name="Rc-constref"></a>C.12: Don't make data members `const` or references
+
+##### Reason
+
+They are not useful, and make types difficult to use by making them either uncopyable or partially uncopyable for subtle reasons.
+
+##### Example; bad
+
+    class bad {
+        const int i;    // bad
+        string& s;      // bad
+        // ...
+    };
+
+##### Enforcement
+
+Flag a data member that is `const`, `&`, or `&&`.
+
+
 
 ## <a name="S-ctor"></a>C.ctor: Constructors, assignments, and destructors
 
