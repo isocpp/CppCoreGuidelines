@@ -2389,6 +2389,7 @@ Other function rules:
 * [F.53: Avoid capturing by reference in lambdas that will be used non-locally, including returned, stored on the heap, or passed to another thread](#Rf-value-capture)
 * [F.54: If you capture `this`, capture all variables explicitly (no default capture)](#Rf-this-capture)
 * [F.55: Don't use `va_arg` arguments](#F-varargs)
+* [F.56: Avoid unnecessary condition nesting](#F-nesting)
 
 Functions have strong similarities to lambdas and function objects.
 
@@ -4033,6 +4034,73 @@ Declaring a `...` parameter is sometimes useful for techniques that don't involv
 
 * Issue a diagnostic for using `va_list`, `va_start`, or `va_arg`.
 * Issue a diagnostic for passing an argument to a vararg parameter of a function that does not offer an overload for a more specific type in the position of the vararg. To fix: Use a different function, or `[[suppress(types)]]`.
+
+
+### <a name="F-nesting"></a>F.56: Avoid unnecessary condition nesting
+
+##### Reason
+
+Shallow nesting of conditions makes the code easier to follow. It also makes the intent clearer.
+Strive to place the essential code at outermost scope, unless this obscures intent.
+
+##### Example
+
+Use a guard-clause to take care of exceptional cases and return early.
+
+    // Bad: Deep nesting
+    void foo() {
+        ...
+        if (x) {
+            computeImportantThings(x);
+        }
+    }
+
+    // Bad: Still a redundant else.
+    void foo() {
+        ...
+        if (!x) {
+            return;
+        }
+        else {
+            computeImportantThings(x);
+        }
+    }
+
+    // Good: Early return, no redundant else
+    void foo() {
+        ...
+        if (!x)
+            return;
+
+        computeImportantThings(x);
+    }
+
+##### Example
+
+    // Bad: Unnecessary nesting of conditions
+    void foo() {
+        ...
+        if(x) {
+            if (y) {
+                computeImportantThings(x);
+            }
+        }
+    }
+
+    // Good: Merge conditions + return early
+    void foo() {
+        ...
+        if (!(x && y))
+            return;
+
+        computeImportantThings(x);
+    }
+
+##### Enforcement
+
+Flag a redundant `else`.
+Flag a functions whose body is simply a conditional statement enclosing a block.
+
 
 # <a name="S-class"></a>C: Classes and class hierarchies
 
