@@ -12594,10 +12594,8 @@ Readability. Error prevention. Efficiency.
         cout << f(v, &v[i]) << '\n';
 
     for (gsl::index i = 0; i < v.size(); ++i) { // body messes with loop variable: can't be a range-for
-        if (i % 2 == 0)
-            continue;   // skip even elements
-
-        cout << v[i] << '\n';
+        if (i % 2 != 0)
+            cout << v[i] << '\n'; // output odd elements
     }
 
 A human or a good static analyzer might determine that there really isn't a side effect on `v` in `f(v, &v[i])` so that the loop can be rewritten.
