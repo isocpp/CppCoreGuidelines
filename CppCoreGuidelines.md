@@ -12596,8 +12596,8 @@ Readability. Error prevention. Efficiency.
     for (gsl::index i = 0; i < v.size(); ++i) { // body messes with loop variable: can't be a range-for
         if (i % 2 == 0)
             continue;   // skip even elements
-        else
-            cout << v[i] << '\n';
+
+        cout << v[i] << '\n';
     }
 
 A human or a good static analyzer might determine that there really isn't a side effect on `v` in `f(v, &v[i])` so that the loop can be rewritten.
@@ -20383,7 +20383,7 @@ In particular, the single-return rule makes it harder to concentrate error check
     {
         if (x < 0)
             return "negative";
-        else if (x > 0)
+        if (x > 0)
             return "positive";
         return "zero";
     }
