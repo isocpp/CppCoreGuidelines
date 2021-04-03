@@ -7736,7 +7736,7 @@ Flag mixed interface and implementation hierarchies.
 
 ##### Reason
 
-Without a using declaration, member functions in the derived class hide the entire inherited overload sets.
+Without a `using` declaration, member functions in the derived class hide the entire inherited overload sets.
 
 ##### Example, bad
 
@@ -10538,7 +10538,7 @@ We often reuse function names from a base class in a derived class:
     };
 
 This is error-prone.
-For example, had we forgotten the using declaration, a call `d.f(1)` would not have found the `int` version of `f`.
+For example, had we forgotten the `using` declaration, a call `d.f(1)` would not have found the `int` version of `f`.
 
 ??? Do we need a specific rule about shadowing/hiding in class hierarchies?
 
