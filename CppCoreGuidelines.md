@@ -4080,7 +4080,7 @@ Use a guard-clause to take care of exceptional cases and return early.
     // Bad: Unnecessary nesting of conditions
     void foo() {
         ...
-        if(x) {
+        if (x) {
             if (y) {
                 computeImportantThings(x);
             }
