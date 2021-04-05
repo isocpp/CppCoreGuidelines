@@ -105,6 +105,7 @@ Const
 constcast
 constexpr
 constness
+constref
 copy2
 coro
 CORBA
@@ -511,6 +512,7 @@ sharedptrparam
 'sharedptrparam'
 setjmp
 SignedIntegral
+signedness
 simpleFunc
 'size'
 sizeof
@@ -596,6 +598,7 @@ u2
 UDLs
 unaliased
 uncompromised
+uncopyable
 underuse
 undetached
 unencapsulated
