@@ -3087,7 +3087,7 @@ Such older advice is now obsolete; it does not add value, and it interferes with
     }
 
 The argument for adding `const` to a return value is that it prevents (very rare) accidental access to a temporary.
-The argument against is prevents (very frequent) use of move semantics.
+The argument against is that it prevents (very frequent) use of move semantics.
 
 ##### Exceptions
 
