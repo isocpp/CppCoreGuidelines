@@ -6570,7 +6570,7 @@ If a `swap` tries to exit with an exception, it's a bad design error and the pro
 ##### Reason
 
 Asymmetric treatment of operands is surprising and a source of errors where conversions are possible.
-`==` is a fundamental operations and programmers should be able to use it without fear of failure.
+`==` is a fundamental operation and programmers should be able to use it without fear of failure.
 
 ##### Example
 
