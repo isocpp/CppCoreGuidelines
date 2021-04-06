@@ -6246,7 +6246,7 @@ Here is a way to move a pointer without a test (imagine it as code in the implem
 
 ##### Reason
 
-A throwing move violates most people's reasonably assumptions.
+A throwing move violates most people's reasonable assumptions.
 A non-throwing move will be used more efficiently by standard-library and language facilities.
 
 ##### Example
