@@ -6350,8 +6350,8 @@ Classes that represent exception objects need both to be polymorphic and copy-co
 
 ## C.other: Other default operation rules
 
-In addition to the operations for which the language offer default implementations,
-there are a few operations that are so foundational that it rules for their definition are needed:
+In addition to the operations for which the language offers default implementations,
+there are a few operations that are so foundational that specific rules for their definition are needed:
 comparisons, `swap`, and `hash`.
 
 ### <a name="Rc-eqdefault"></a>C.80: Use `=default` if you have to be explicit about using the default semantics
