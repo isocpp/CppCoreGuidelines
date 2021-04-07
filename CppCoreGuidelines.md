@@ -8379,7 +8379,7 @@ The problem is that the unqualified and qualified lookups both have uses.
 ##### Reason
 
 The `&` operator is fundamental in C++.
-Many parts of the C++ semantics assumes its default meaning.
+Many parts of the C++ semantics assume its default meaning.
 
 ##### Example
 
