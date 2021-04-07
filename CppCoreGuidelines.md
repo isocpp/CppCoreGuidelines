@@ -8795,7 +8795,7 @@ If you wanted to see the bytes of an `int`, use a (named) cast:
         // ...
     }
 
-Accessing the result of an `reinterpret_cast` to a different type from the objects declared type is defined behavior (even though `reinterpret_cast` is discouraged),
+Accessing the result of a `reinterpret_cast` to a type different from the object's declared type is defined behavior (even though `reinterpret_cast` is discouraged),
 but at least we can see that something tricky is going on.
 
 ##### Note
