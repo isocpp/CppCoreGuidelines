@@ -8132,7 +8132,7 @@ Subscripting the resulting base pointer will lead to invalid object access and p
 
     D a[] = {{1, 2}, {3, 4}, {5, 6}};
     B* p = a;     // bad: a decays to &a[0] which is converted to a B*
-    p[1].x = 7;   // overwrite D[0].y
+    p[1].x = 7;   // overwrite a[0].y
 
     use(a);       // bad: a decays to &a[0] which is converted to a B*
 
