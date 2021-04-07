@@ -8897,7 +8897,7 @@ Such off-by-one `switch`-statements are often the results of an added enumerator
 ##### Enforcement
 
 * Flag `switch`-statements where the `case`s cover most but not all enumerators of an enumeration.
-* Flag `switch`-statements where the `case`s cover a few enumerators of an enumeration, but has no `default`.
+* Flag `switch`-statements where the `case`s cover a few enumerators of an enumeration, but there is no `default`.
 
 
 ### <a name="Renum-class"></a>Enum.3: Prefer class enums over "plain" enums
