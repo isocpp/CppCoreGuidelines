@@ -10149,7 +10149,7 @@ Readability. Minimize resource retention. Avoid accidental misuse of value.
         // ... 200 lines of code without intended use of fn or is ...
     }
 
-This function is by most measure too long anyway, but the point is that the resources used by `fn` and the file handle held by `is`
+This function is by most measures too long anyway, but the point is that the resources used by `fn` and the file handle held by `is`
 are retained for much longer than needed and that unanticipated use of `is` and `fn` could happen later in the function.
 In this case, it might be a good idea to factor out the read:
 
