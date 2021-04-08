@@ -10612,7 +10612,7 @@ Assuming that there is a logical connection between `i` and `j`, that connection
 
     pair<widget, widget> make_related_widgets(bool x)
     {
-        return (x) ? {f1(), f2()} : {f3(), f4() };
+        return (x) ? {f1(), f2()} : {f3(), f4()};
     }
 
     auto [i, j] = make_related_widgets(cond);    // C++17
