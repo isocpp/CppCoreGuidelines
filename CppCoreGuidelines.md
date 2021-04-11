@@ -12579,7 +12579,7 @@ Readability. Error prevention. Efficiency.
 ##### Example
 
     for (gsl::index i = 0; i < v.size(); ++i)   // bad
-            cout << v[i] << '\n';
+        cout << v[i] << '\n';
 
     for (auto p = v.begin(); p != v.end(); ++p)   // bad
         cout << *p << '\n';
