@@ -16491,7 +16491,7 @@ Flag every exception specification.
 
 `catch`-clauses are evaluated in the order they appear and one clause can hide another.
 
-##### Example
+##### Example, bad
 
     void f()
     {
