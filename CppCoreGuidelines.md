@@ -13663,7 +13663,7 @@ This implies added work for the programmer, is error-prone, and deprives the com
     // address data using the order defined by compare_doubles
     qsort(data, 100, sizeof(double), compare_doubles);
 
-From the point of view of interface design is that `qsort` throws away useful information.
+From the point of view of interface design, `qsort` throws away useful information.
 
 We can do better (in C++98)
 
