@@ -14232,7 +14232,7 @@ Application concepts are easier to reason about.
 
 With the exception of `async()`, the standard-library facilities are low-level, machine-oriented, threads-and-lock level.
 This is a necessary foundation, but we have to try to raise the level of abstraction: for productivity, for reliability, and for performance.
-This is a potent argument for using higher level, more applications-oriented libraries (if possibly, built on top of standard-library facilities).
+This is a potent argument for using higher level, more applications-oriented libraries (if possible, built on top of standard-library facilities).
 
 ##### Enforcement
 
