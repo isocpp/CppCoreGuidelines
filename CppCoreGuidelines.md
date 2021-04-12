@@ -13876,7 +13876,7 @@ There are similar techniques for selecting the optimal function to call.
 
 ##### Note
 
-The ideal is {not} to try execute everything at compile time.
+The ideal is *not* to try execute everything at compile time.
 Obviously, most computations depend on inputs so they can't be moved to compile time,
 but beyond that logical constraint is the fact that complex compile-time computation can seriously increase compile times
 and complicate debugging.
