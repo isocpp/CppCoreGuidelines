@@ -16583,8 +16583,8 @@ If it doesn't now, it might do so later without forcing recompilation.
 
 ##### Note
 
-There are code/libraries that offer functions that declare a`T*` even though
-those function do not modify that `T`.
+There are code/libraries that offer functions that declare a `T*` even though
+those functions do not modify that `T`.
 This is a problem for people modernizing code.
 You can
 
