@@ -16656,7 +16656,7 @@ but that should be done only when the called function is supposed to modify the 
 
 ##### Enforcement
 
-* Flag function that does not modify an object passed by  pointer or reference to non-`const`
+* Flag a function that does not modify an object passed by  pointer or reference to non-`const`
 * Flag a function that (using a cast) modifies an object passed by pointer or reference to `const`
 
 ### <a name="Rconst-const"></a>Con.4: Use `const` to define objects with values that do not change after construction
