@@ -17439,7 +17439,7 @@ An incomplete set of constraints can still be very useful:
         detach(p);
     }
 
-So a `Balancer` must supply at least thee operations on a tree `Node`,
+So a `Balancer` must supply at least these operations on a tree `Node`,
 but we are not yet ready to specify detailed semantics because a new kind of balanced tree might require more operations
 and the precise general semantics for all nodes is hard to pin down in the early stages of design.
 
