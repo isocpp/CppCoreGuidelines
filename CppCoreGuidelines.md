@@ -17548,7 +17548,7 @@ version of `f()`, then delete it.
     template<typename T>
     void f() = delete;
 
-The compiler will select the overload and emit an appropriate error.
+The compiler will select the overload, or emit an appropriate error.
 
 ##### Note
 
