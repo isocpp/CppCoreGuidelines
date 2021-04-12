@@ -17264,7 +17264,7 @@ This `Addable` violates the mathematical rule that addition is supposed to be co
 
 ##### Note
 
-The ability to specify a meaningful semantics is a defining characteristic of a true concept, as opposed to a syntactic constraint.
+The ability to specify meaningful semantics is a defining characteristic of a true concept, as opposed to a syntactic constraint.
 
 ##### Example (using TS concepts)
 
