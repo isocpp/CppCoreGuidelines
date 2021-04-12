@@ -14706,7 +14706,7 @@ Flag `detach()`.
 
 ##### Reason
 
-Copying a small amount of data is cheaper to copy and access than to share it using some locking mechanism.
+A small amount of data is cheaper to copy and access than to share it using some locking mechanism.
 Copying naturally gives unique ownership (simplifies code) and eliminates the possibility of data races.
 
 ##### Note
