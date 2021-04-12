@@ -17898,7 +17898,7 @@ That is, it is highly visible.
 
 ##### Note
 
-This rule should not be necessary, but the committee cannot agree to exclude unconstrained templated from ADL.
+This rule should not be necessary, but the committee cannot agree to exclude unconstrained templates from ADL.
 
 Unfortunately this will get many false positives; the standard library violates this widely, by putting many unconstrained templates and types into the single namespace `std`.
 
