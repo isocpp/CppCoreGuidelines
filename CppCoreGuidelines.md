@@ -15291,7 +15291,7 @@ Have strong rules for re-testing in place that covers any change in hardware, op
 
 ##### Reason
 
-With the exception of atomics and a few use standard patterns, lock-free programming is really an expert-only topic.
+With the exception of atomics and a few other standard patterns, lock-free programming is really an expert-only topic.
 Become an expert before shipping lock-free code for others to use.
 
 ##### References
