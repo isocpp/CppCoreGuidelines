@@ -15878,7 +15878,7 @@ Another solution (often better) would be to use a local variable to eliminate ex
 
 ##### Note
 
-If you have local "things" that requires cleanup, but is not represented by an object with a destructor, such cleanup must
+If you have a local "thing" that requires cleanup, but is not represented by an object with a destructor, such cleanup must
 also be done before a `throw`.
 Sometimes, [`finally()`](#Re-finally) can make such unsystematic cleanup a bit more manageable.
 
