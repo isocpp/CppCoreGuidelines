@@ -16461,7 +16461,7 @@ That's OK, but say that we have checked that this cannot happen and `f` is chang
 we now have a crash on our hands unless we change `use()` (and re-test everything).
 The snag is that `f()` might be in a library we do not control and the new exception is not anything that `use()` can do
 anything about or is in any way interested in.
-We can change `use()` to pass `Z` through, but now `use()`'s callers probably needs to be modified.
+We can change `use()` to pass `Z` through, but now `use()`'s callers probably need to be modified.
 This quickly becomes unmanageable.
 Alternatively, we can add a `try`-`catch` to `use()` to map `Z` into an acceptable exception.
 This too, quickly becomes unmanageable.
