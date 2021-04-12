@@ -17296,7 +17296,7 @@ Concepts with multiple operations have far lower chance of accidentally matching
 ##### Enforcement
 
 * Flag single-operation `concepts` when used outside the definition of other `concepts`.
-* Flag uses of `enable_if` that appears to simulate single-operation `concepts`.
+* Flag uses of `enable_if` that appear to simulate single-operation `concepts`.
 
 
 ### <a name="Rt-complete"></a>T.21: Require a complete set of operations for a concept
