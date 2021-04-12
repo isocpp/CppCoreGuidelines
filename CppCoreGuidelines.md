@@ -14320,7 +14320,7 @@ cases that should have been caught but were allowed.
 is a powerful example of dynamic tools: it changes the build and execution of your program to add bookkeeping on memory access,
 absolutely identifying data races in a given execution of your binary.
 The cost for this is both memory (5-10x in most cases) and CPU slowdown (2-20x).
-Dynamic tools like this are best when applied to integration tests, canary pushes, or unittests that operate on multiple threads.
+Dynamic tools like this are best when applied to integration tests, canary pushes, or unit tests that operate on multiple threads.
 Workload matters: When TSAN identifies a problem, it is effectively always an actual data race,
 but it can only identify races seen in a given execution.
 
