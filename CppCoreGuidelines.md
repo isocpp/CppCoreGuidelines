@@ -16360,7 +16360,7 @@ This can be messy:
     }
 
 Simulating RAII can be non-trivial, especially in functions with multiple resources and multiple possible errors.
-A not uncommon technique is to gather cleanup at the end of the function to avoid repetition (note the extra scope around `g2` is undesirable but necessary to make the `goto` version compile):
+A not uncommon technique is to gather cleanup at the end of the function to avoid repetition (note that the extra scope around `g2` is undesirable but necessary to make the `goto` version compile):
 
     std::pair<int, error_indicator> user()
     {
