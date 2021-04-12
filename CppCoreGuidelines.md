@@ -14437,6 +14437,8 @@ Here, the writers of `thread1` and `thread2` are still not agreeing on the order
 In real code, `mutex`es are rarely named to conveniently remind the programmer of an intended relation and intended order of acquisition.
 In real code, `mutex`es are not always conveniently acquired on consecutive lines.
 
+##### Note
+
 In C++17 it's possible to write plain
 
     lock_guard lck1(m1, adopt_lock);
