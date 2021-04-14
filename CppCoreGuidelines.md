@@ -3087,7 +3087,7 @@ Such older advice is now obsolete; it does not add value, and it interferes with
     }
 
 The argument for adding `const` to a return value is that it prevents (very rare) accidental access to a temporary.
-The argument against is prevents (very frequent) use of move semantics.
+The argument against is that it prevents (very frequent) use of move semantics.
 
 ##### Exceptions
 
@@ -3895,7 +3895,7 @@ Unfortunately, there is no simple way to capture by reference to `const` to get 
 
 ##### Example
 
-Here, a large object (a network message) is passed to an iterative algorithm, and is it not efficient or correct to copy the message (which might not be copyable):
+Here, a large object (a network message) is passed to an iterative algorithm, and it is not efficient or correct to copy the message (which might not be copyable):
 
     std::for_each(begin(sockets), end(sockets), [&message](auto& socket)
     {
@@ -4080,7 +4080,7 @@ Use a guard-clause to take care of exceptional cases and return early.
     // Bad: Unnecessary nesting of conditions
     void foo() {
         ...
-        if(x) {
+        if (x) {
             if (y) {
                 computeImportantThings(x);
             }
@@ -4943,7 +4943,7 @@ For resources represented as classes with a complete set of default operations, 
 
 ##### Note
 
-What about a sockets that won't close? A destructor, close, or cleanup operation [should never fail](#Rc-dtor-fail).
+What about a socket that won't close? A destructor, close, or cleanup operation [should never fail](#Rc-dtor-fail).
 If it does nevertheless, we have a problem that has no really good solution.
 For starters, the writer of a destructor does not know why the destructor is called and cannot "refuse to act" by throwing an exception.
 See [discussion](#Sd-never-fail).
@@ -6246,7 +6246,7 @@ Here is a way to move a pointer without a test (imagine it as code in the implem
 
 ##### Reason
 
-A throwing move violates most people's reasonably assumptions.
+A throwing move violates most people's reasonable assumptions.
 A non-throwing move will be used more efficiently by standard-library and language facilities.
 
 ##### Example
@@ -6350,8 +6350,8 @@ Classes that represent exception objects need both to be polymorphic and copy-co
 
 ## C.other: Other default operation rules
 
-In addition to the operations for which the language offer default implementations,
-there are a few operations that are so foundational that it rules for their definition are needed:
+In addition to the operations for which the language offers default implementations,
+there are a few operations that are so foundational that specific rules for their definition are needed:
 comparisons, `swap`, and `hash`.
 
 ### <a name="Rc-eqdefault"></a>C.80: Use `=default` if you have to be explicit about using the default semantics
@@ -6570,7 +6570,7 @@ If a `swap` tries to exit with an exception, it's a bad design error and the pro
 ##### Reason
 
 Asymmetric treatment of operands is surprising and a source of errors where conversions are possible.
-`==` is a fundamental operations and programmers should be able to use it without fear of failure.
+`==` is a fundamental operation and programmers should be able to use it without fear of failure.
 
 ##### Example
 
