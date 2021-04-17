@@ -19469,7 +19469,7 @@ Library creators should put their headers in a folder and have clients include t
 
 ##### Enforcement
 
-A test should identify headers referenced via `""` could be referenced with `<>`.
+A test should identify whether headers referenced via `""` could be referenced with `<>`.
 
 ### <a name="Rs-namespace"></a>SF.20: Use `namespace`s to express logical structure
 
