@@ -19967,7 +19967,7 @@ Like any other "plain pointer", a `zstring` should not represent ownership.
 There are billions of lines of C++ "out there", most use `char*` and `const char*` without documenting intent.
 They are used in a wide variety of ways, including to represent ownership and as generic pointers to memory (instead of `void*`).
 It is hard to separate these uses, so this guideline is hard to follow.
-This is one of the major sources of bugs in C and C++ programs, so it is worthwhile to follow this guideline wherever feasible..
+This is one of the major sources of bugs in C and C++ programs, so it is worthwhile to follow this guideline wherever feasible.
 
 ##### Enforcement
 
