@@ -20310,7 +20310,7 @@ However, a library should not depend on another that depends on it.
 # <a name="S-not"></a>NR: Non-Rules and myths
 
 This section contains rules and guidelines that are popular somewhere, but that we deliberately don't recommend.
-We know full well that there have been times and places where these rules made sense, and we have used them ourselves at times.
+We know perfectly well that there have been times and places where these rules made sense, and we have used them ourselves at times.
 However, in the context of the styles of programming we recommend and support with the guidelines, these "non-rules" would do harm.
 
 Even today, there can be contexts where the rules make sense.
