@@ -20086,7 +20086,7 @@ Direct expression of an idea minimizes mistakes.
 `iostream`s is a type safe, extensible, formatted and unformatted I/O library for streaming I/O.
 It supports multiple (and user extensible) buffering strategies and multiple locales.
 It can be used for conventional I/O, reading and writing to memory (string streams),
-and user-defines extensions, such as streaming across networks (asio: not yet standardized).
+and user-defined extensions, such as streaming across networks (asio: not yet standardized).
 
 Iostream rule summary:
 
