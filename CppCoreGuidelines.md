@@ -21159,7 +21159,7 @@ Most of the concepts below are defined in [the Ranges TS](http://www.open-std.or
 Consistent naming and layout are helpful.
 If for no other reason because it minimizes "my style is better than your style" arguments.
 However, there are many, many, different styles around and people are passionate about them (pro and con).
-Also, most real-world projects includes code from many sources, so standardizing on a single style for all code is often impossible.
+Also, most real-world projects include code from many sources, so standardizing on a single style for all code is often impossible.
 After many requests for guidance from users, we present a set of rules that you might use if you have no better ideas, but the real aim is consistency, rather than any particular rule set.
 IDEs and tools can help (as well as hinder).
 
