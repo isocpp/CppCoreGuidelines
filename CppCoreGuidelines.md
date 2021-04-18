@@ -20873,7 +20873,7 @@ or "static type safety."
 Each profile is designed to eliminate a class of errors.
 Enforcement of "random" rules in isolation is more likely to be disruptive to a code base than delivering a definite improvement.
 
-A "profile" is a set of deterministic and portably enforceable subset rules (i.e., restrictions) that are designed to achieve a specific guarantee.
+A "profile" is a set of deterministic and portably enforceable subset of rules (i.e., restrictions) that are designed to achieve a specific guarantee.
 "Deterministic" means they require only local analysis and could be implemented in a compiler (though they don't need to be).
 "Portably enforceable" means they are like language rules, so programmers can count on different enforcement tools giving the same answer for the same code.
 
