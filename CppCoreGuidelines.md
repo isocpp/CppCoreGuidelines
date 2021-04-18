@@ -20316,7 +20316,7 @@ However, in the context of the styles of programming we recommend and support wi
 Even today, there can be contexts where the rules make sense.
 For example, lack of suitable tool support can make exceptions unsuitable in hard-real-time systems,
 but please don't naïvely trust "common wisdom" (e.g., unsupported statements about "efficiency");
-such "wisdom" might be based on decades-old information or experienced from languages with very different properties than C++
+such "wisdom" might be based on decades-old information or experiences from languages with very different properties than C++
 (e.g., C or Java).
 
 The positive arguments for alternatives to these non-rules are listed in the rules offered as "Alternatives".
