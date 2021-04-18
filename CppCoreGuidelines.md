@@ -21598,7 +21598,7 @@ Avoid multiple blocks of declarations of one access (e.g., `public`) dispersed a
     };
 
 The use of macros to declare groups of members often leads to violation of any ordering rules.
-However, macros obscures what is being expressed anyway.
+However, using macros obscures what is being expressed anyway.
 
 ##### Enforcement
 
