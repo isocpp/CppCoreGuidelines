@@ -20171,7 +20171,7 @@ If input isn't validated, every function must be written to cope with bad data (
 
 It is often (and often correctly) pointed out that the `printf()` family has two advantages compared to `iostream`s:
 flexibility of formatting and performance.
-This has to be weighed against `iostream`s advantages of extensibility to handle user-defined types, resilient against security violations,
+This has to be weighed against `iostream`s advantages of extensibility to handle user-defined types, resilience against security violations,
 implicit memory management, and `locale` handling.
 
 If you need I/O performance, you can almost always do better than `printf()`.
