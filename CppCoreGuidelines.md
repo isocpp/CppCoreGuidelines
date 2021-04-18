@@ -20599,7 +20599,7 @@ and errors (when we didn't deal correctly with semi-constructed objects consiste
     {
         int mx;
         int my;
-        vector<byte> data;
+        vector<int> data;
 
         static int check_size(int size)
         {
