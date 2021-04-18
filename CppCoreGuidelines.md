@@ -20467,7 +20467,7 @@ Consider the major objections to exceptions in turn
 * Exceptions are inefficient:
 Compared to what?
 When comparing make sure that the same set of errors are handled and that they are handled equivalently.
-In particular, do not compare a program that immediately terminate on seeing an error with a program
+In particular, do not compare a program that immediately terminates on seeing an error to a program
 that carefully cleans up resources before logging an error.
 Yes, some systems have poor exception handling implementations; sometimes, such implementations force us to use
 other error-handling approaches, but that's not a fundamental problem with exceptions.
