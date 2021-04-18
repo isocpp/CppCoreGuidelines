@@ -21101,7 +21101,7 @@ Use `not_null<zstring>` for C-style strings that cannot be `nullptr`. ??? Do we 
 
 * `Expects`     // precondition assertion. Currently placed in function bodies. Later, should be moved to declarations.
                 // `Expects(p)` terminates the program unless `p == true`
-                // `Expect` in under control of some options (enforcement, error message, alternatives to terminate)
+                // `Expects` is under control of some options (enforcement, error message, alternatives to terminate)
 * `Ensures`     // postcondition assertion. Currently placed in function bodies. Later, should be moved to declarations.
 
 These assertions are currently macros (yuck!) and must appear in function definitions (only)
