@@ -20485,8 +20485,8 @@ In our opinion, you need RAII to make exception-based error handling simple and 
 If you are in a hard-real-time system where you must guarantee completion of a task in a given time,
 you need tools to back up such guarantees.
 As far as we know such tools are not available (at least not to most programmers).
-* the exception-handling run-time support takes up too much space
-This can be the case in small (usually embedded systems).
+* The exception-handling run-time support takes up too much space.
+This can be the case in small (usually embedded) systems.
 However, before abandoning exceptions consider what space consistent error-handling using error-codes would require
 and what failure to catch an error would cost.
 
