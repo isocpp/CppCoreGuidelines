@@ -20545,7 +20545,7 @@ and errors (when we didn't deal correctly with semi-constructed objects consiste
     {
         int mx;
         int my;
-        char * data;
+        int * data;
     public:
         // main problem: constructor does not fully construct
         Picture(int x, int y)
@@ -20574,7 +20574,7 @@ and errors (when we didn't deal correctly with semi-constructed objects consiste
             if (data) {
                 return false;
             }
-            data = (char*) malloc(mx*my*sizeof(int));   // also bad: owning raw * and malloc
+            data = (int*) malloc(mx*my*sizeof(int));   // also bad: owning raw * and malloc
             return data != nullptr;
         }
 
