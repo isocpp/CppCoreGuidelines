@@ -11773,6 +11773,61 @@ Never cast to `(void)` to ignore a `[[nodiscard]]`return value.
 If you deliberately want to discard such a result, first think hard about whether that is really a good idea (there is usually a good reason the author of the function or of the return type used `[[nodiscard]]` in the first place).
 If you still think it's appropriate and your code reviewer agrees, use `std::ignore =` to turn off the warning which is simple, portable, and easy to grep.
 
+##### Exception for implicit casts<a name="es_48-implicit-cast-exception"></a>
+If you have an object with multiple inheritance and you need to assign the base classes to `void*`, the upcast should be done explicitly. This increases readability of the code and reduces the guesswork in determining which cast could be performed implicitly. See the example below:
+
+    struct base_1
+    {
+        int a;
+    };
+
+    struct base_2
+    {
+        int a;
+    };
+
+    struct base_3
+    {
+        int a;
+        virtual void function_1(){}
+    };
+
+    struct derived_1 : base_1, base_2{};
+    struct derived_2 : base_1, base_3{};
+
+    // The following comments regarding memory layout are only true for compilers that follow the Itanium ABI
+    void test_fn_bad(derived_1* d1, derived_2* d2)
+    {
+        // When the derived object's bases do not contain virtual members, the layout is defined by order of appearance.
+        {
+            void* v1 = d1;
+            void* v2 = static_cast<base_2*>(d1); // cast to base_2 must be explicitly cast.
+            // ... 
+        }
+
+        // Objects with virtual members supercede the order of appearance, so the upcast to base_3 can be implicit.
+        {
+            void* v1 = static_cast<base_1*>(d2); // cast to base_1 must be explicitly cast.
+            void* v2 = d2;
+            // ... 
+        }
+    }
+
+    // The intention is not lost and the code is more cohesive.
+    void test_fn_better(derived_1* d1, derived_2* d2)
+    {
+        {
+            void* v1 = static_cast<base_1*>(d1); // cast to base_1 could be implicit. Could be rewritten as `void* v1 = d1;`
+            void* v2 = static_cast<base_2*>(d1); // cast to base_2 must be explicitly cast.
+            // ... 
+        }
+        {
+            void* v1 = static_cast<base_1*>(d2); // cast to base_1 must be explicitly cast.
+            void* v2 = static_cast<base_3*>(d2); 
+            // ... 
+        }
+    }
+
 ##### Alternatives
 
 Casts are widely (mis)used. Modern C++ has rules and constructs that eliminate the need for casts in many contexts, such as
@@ -11787,7 +11842,7 @@ Casts are widely (mis)used. Modern C++ has rules and constructs that eliminate t
 * Flag all C-style casts, including to `void`.
 * Flag functional style casts using `Type(value)`. Use `Type{value}` instead which is not narrowing. (See [ES.64](#Res-construct).)
 * Flag [identity casts](#Pro-type-identitycast) between pointer types, where the source and target types are the same (#Pro-type-identitycast).
-* Flag an explicit pointer cast that could be [implicit](#Pro-type-implicitpointercast).
+* Flag an explicit pointer cast that could be [implicit](#Pro-type-implicitpointercast), except when upcasting [classes with multiple inheritance](#es_48-implicit-cast-exception).
 
 ### <a name="Res-casts-named"></a>ES.49: If you must use a cast, use a named cast
 
