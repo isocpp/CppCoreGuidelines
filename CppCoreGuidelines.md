@@ -11795,16 +11795,18 @@ If you have an object with multiple inheritance and you need to assign the base 
     struct derived_1 : base_1, base_2{};
     struct derived_2 : base_1, base_3{};
 
+    /*
+    * When base classes do not contain virtual members, they are laid out by order of appearance.
+    * However, bases with virtual members supercede the order of appearance. 
+    */
     void test_fn_bad(derived_1* d1, derived_2* d2)
     {
-        // When base classes do not contain virtual members the layout is defined by order of appearance.
         {
             void* v1 = d1;
             void* v2 = static_cast<base_2*>(d1); // cast to base_2 must be explicitly cast.
             // ...
         }
 
-        // base classes with virtual members supercede the order of appearance.
         {
             void* v1 = static_cast<base_1*>(d2); // cast to base_1 must be explicitly cast.
             void* v2 = d2;
