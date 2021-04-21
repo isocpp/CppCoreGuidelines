@@ -11795,7 +11795,6 @@ If you have an object with multiple inheritance and you need to assign the base 
     struct derived_1 : base_1, base_2{};
     struct derived_2 : base_1, base_3{};
 
-    // The following comments regarding memory layout are only true for compilers that follow the Itanium ABI
     void test_fn_bad(derived_1* d1, derived_2* d2)
     {
         // When the derived object's bases do not contain virtual members, the layout is defined by order of appearance.
