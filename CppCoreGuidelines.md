@@ -11774,6 +11774,7 @@ If you deliberately want to discard such a result, first think hard about whethe
 If you still think it's appropriate and your code reviewer agrees, use `std::ignore =` to turn off the warning which is simple, portable, and easy to grep.
 
 ##### Exception for implicit casts<a name="es_48-implicit-cast-exception"></a>
+
 If you have an object with multiple inheritance and you need to assign the base classes to `void*`, the up cast should be done explicitly. This increases readability of the code and reduces the guesswork in determining which cast could be performed implicitly. 
 
 ###### Example: 
