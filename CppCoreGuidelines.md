@@ -11797,14 +11797,14 @@ If you have an object with multiple inheritance and you need to assign the base 
 
     void test_fn_bad(derived_1* d1, derived_2* d2)
     {
-        // When the derived object's bases do not contain virtual members, the layout is defined by order of appearance.
+        // When the derived object's bases do not contain virtual members the layout is defined by order of appearance.
         {
             void* v1 = d1;
             void* v2 = static_cast<base_2*>(d1); // cast to base_2 must be explicitly cast.
             // ... 
         }
 
-        // Objects with virtual members supercede the order of appearance, so the upcast to base_3 can be implicit.
+        // Objects with virtual members supercede the order of appearance so the upcast to base_3 can be implicit.
         {
             void* v1 = static_cast<base_1*>(d2); // cast to base_1 must be explicitly cast.
             void* v2 = d2;
@@ -11816,13 +11816,13 @@ If you have an object with multiple inheritance and you need to assign the base 
     void test_fn_better(derived_1* d1, derived_2* d2)
     {
         {
-            void* v1 = static_cast<base_1*>(d1); // cast to base_1 could be implicit. Could be rewritten as `void* v1 = d1;`
+            void* v1 = static_cast<base_1*>(d1); // cast to base_1 could be implicit. 
             void* v2 = static_cast<base_2*>(d1); // cast to base_2 must be explicitly cast.
             // ... 
         }
         {
             void* v1 = static_cast<base_1*>(d2); // cast to base_1 must be explicitly cast.
-            void* v2 = static_cast<base_3*>(d2); 
+            void* v2 = static_cast<base_3*>(d2); // cast to base_3 could be implicit.
             // ... 
         }
     }
