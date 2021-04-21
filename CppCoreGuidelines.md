@@ -11774,7 +11774,9 @@ If you deliberately want to discard such a result, first think hard about whethe
 If you still think it's appropriate and your code reviewer agrees, use `std::ignore =` to turn off the warning which is simple, portable, and easy to grep.
 
 ##### Exception for implicit casts<a name="es_48-implicit-cast-exception"></a>
-If you have an object with multiple inheritance and you need to assign the base classes to `void*`, the upcast should be done explicitly. This increases readability of the code and reduces the guesswork in determining which cast could be performed implicitly. See the example below:
+If you have an object with multiple inheritance and you need to assign the base classes to `void*`, the up cast should be done explicitly. This increases readability of the code and reduces the guesswork in determining which cast could be performed implicitly. 
+
+###### Example: 
 
     struct base_1
     {
@@ -11843,7 +11845,7 @@ Casts are widely (mis)used. Modern C++ has rules and constructs that eliminate t
 * Flag all C-style casts, including to `void`.
 * Flag functional style casts using `Type(value)`. Use `Type{value}` instead which is not narrowing. (See [ES.64](#Res-construct).)
 * Flag [identity casts](#Pro-type-identitycast) between pointer types, where the source and target types are the same (#Pro-type-identitycast).
-* Flag an explicit pointer cast that could be [implicit](#Pro-type-implicitpointercast), except when upcasting [classes with multiple inheritance](#es_48-implicit-cast-exception).
+* Flag an explicit pointer cast that could be [implicit](#Pro-type-implicitpointercast), except when up casting [classes with multiple inheritance](#es_48-implicit-cast-exception).
 
 ### <a name="Res-casts-named"></a>ES.49: If you must use a cast, use a named cast
 
