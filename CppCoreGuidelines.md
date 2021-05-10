@@ -1758,7 +1758,7 @@ Make the interface precisely specified and compile-time checkable in the (not so
 Use the C++20 style of requirements specification. For example:
 
     template<typename Iter, typename Val>
-    // requires InputIterator<Iter> && EqualityComparable<ValueType<Iter>>, Val>
+    // requires InputIterator<Iter> && EqualityComparable<ValueType<Iter>, Val>
     Iter find(Iter first, Iter last, Val v)
     {
         // ...
