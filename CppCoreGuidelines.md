@@ -7144,6 +7144,7 @@ A class with a virtual function is usually (and in general) used via a pointer t
     // bad: derived from a class without a virtual destructor
     struct D : B {
         string s {"default"};
+        // ...
     };
 
     void use()
