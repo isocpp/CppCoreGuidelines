@@ -16540,13 +16540,13 @@ Prevents accidental or hard-to-notice change of value.
 
 ##### Exception
 
-Function arguments are rarely mutated, but also rarely declared const.
-To avoid confusion and lots of false positives, don't enforce this rule for function arguments.
+Function parameters passed by value are rarely mutated, but also rarely declared `const`.
+To avoid confusion and lots of false positives, don't enforce this rule for function parameters.
 
     void f(const char* const p); // pedantic
-    void g(const int i);        // pedantic
+    void g(const int i) { ... }  // pedantic
 
-Note that function parameter is a local variable so changes to it are local.
+Note that a function parameter is a local variable so changes to it are local.
 
 ##### Enforcement
 
