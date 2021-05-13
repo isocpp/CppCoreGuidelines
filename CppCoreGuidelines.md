@@ -8132,7 +8132,7 @@ Subscripting the resulting base pointer will lead to invalid object access and p
 
     D a[] = {{1, 2}, {3, 4}, {5, 6}};
     B* p = a;     // bad: a decays to &a[0] which is converted to a B*
-    p[1].x = 7;   // overwrite D[0].y
+    p[1].x = 7;   // overwrite a[0].y
 
     use(a);       // bad: a decays to &a[0] which is converted to a B*
 
@@ -8379,7 +8379,7 @@ The problem is that the unqualified and qualified lookups both have uses.
 ##### Reason
 
 The `&` operator is fundamental in C++.
-Many parts of the C++ semantics assumes its default meaning.
+Many parts of the C++ semantics assume its default meaning.
 
 ##### Example
 
@@ -8795,8 +8795,8 @@ If you wanted to see the bytes of an `int`, use a (named) cast:
         // ...
     }
 
-Accessing the result of an `reinterpret_cast` to a different type from the objects declared type is defined behavior (even though `reinterpret_cast` is discouraged),
-but at least we can see that something tricky is going on.
+Accessing the result of a `reinterpret_cast` to a type different from the object's declared type is defined behavior. (Using `reinterpret_cast` is discouraged,
+but at least we can see that something tricky is going on.)
 
 ##### Note
 
@@ -8897,7 +8897,7 @@ Such off-by-one `switch`-statements are often the results of an added enumerator
 ##### Enforcement
 
 * Flag `switch`-statements where the `case`s cover most but not all enumerators of an enumeration.
-* Flag `switch`-statements where the `case`s cover a few enumerators of an enumeration, but has no `default`.
+* Flag `switch`-statements where the `case`s cover a few enumerators of an enumeration, but there is no `default`.
 
 
 ### <a name="Renum-class"></a>Enum.3: Prefer class enums over "plain" enums
@@ -10149,7 +10149,7 @@ Readability. Minimize resource retention. Avoid accidental misuse of value.
         // ... 200 lines of code without intended use of fn or is ...
     }
 
-This function is by most measure too long anyway, but the point is that the resources used by `fn` and the file handle held by `is`
+This function is by most measures too long anyway, but the point is that the resources used by `fn` and the file handle held by `is`
 are retained for much longer than needed and that unanticipated use of `is` and `fn` could happen later in the function.
 In this case, it might be a good idea to factor out the read:
 
@@ -10612,7 +10612,7 @@ Assuming that there is a logical connection between `i` and `j`, that connection
 
     pair<widget, widget> make_related_widgets(bool x)
     {
-        return (x) ? {f1(), f2()} : {f3(), f4() };
+        return (x) ? {f1(), f2()} : {f3(), f4()};
     }
 
     auto [i, j] = make_related_widgets(cond);    // C++17
@@ -12579,7 +12579,7 @@ Readability. Error prevention. Efficiency.
 ##### Example
 
     for (gsl::index i = 0; i < v.size(); ++i)   // bad
-            cout << v[i] << '\n';
+        cout << v[i] << '\n';
 
     for (auto p = v.begin(); p != v.end(); ++p)   // bad
         cout << *p << '\n';
@@ -13663,7 +13663,7 @@ This implies added work for the programmer, is error-prone, and deprives the com
     // address data using the order defined by compare_doubles
     qsort(data, 100, sizeof(double), compare_doubles);
 
-From the point of view of interface design is that `qsort` throws away useful information.
+From the point of view of interface design, `qsort` throws away useful information.
 
 We can do better (in C++98)
 
@@ -13876,7 +13876,7 @@ There are similar techniques for selecting the optimal function to call.
 
 ##### Note
 
-The ideal is {not} to try execute everything at compile time.
+The ideal is *not* to try execute everything at compile time.
 Obviously, most computations depend on inputs so they can't be moved to compile time,
 but beyond that logical constraint is the fact that complex compile-time computation can seriously increase compile times
 and complicate debugging.
@@ -14179,14 +14179,14 @@ The less sharing you do, the less chance you have to wait on a lock (so performa
 ##### Example
 
     bool validate(const vector<Reading>&);
-    Graph<Temp_node> temperature_gradiants(const vector<Reading>&);
+    Graph<Temp_node> temperature_gradients(const vector<Reading>&);
     Image altitude_map(const vector<Reading>&);
     // ...
 
     void process_readings(const vector<Reading>& surface_readings)
     {
         auto h1 = async([&] { if (!validate(surface_readings)) throw Invalid_data{}; });
-        auto h2 = async([&] { return temperature_gradiants(surface_readings); });
+        auto h2 = async([&] { return temperature_gradients(surface_readings); });
         auto h3 = async([&] { return altitude_map(surface_readings); });
         // ...
         h1.get();
@@ -14232,7 +14232,7 @@ Application concepts are easier to reason about.
 
 With the exception of `async()`, the standard-library facilities are low-level, machine-oriented, threads-and-lock level.
 This is a necessary foundation, but we have to try to raise the level of abstraction: for productivity, for reliability, and for performance.
-This is a potent argument for using higher level, more applications-oriented libraries (if possibly, built on top of standard-library facilities).
+This is a potent argument for using higher level, more applications-oriented libraries (if possible, built on top of standard-library facilities).
 
 ##### Enforcement
 
@@ -14295,7 +14295,7 @@ Use a `mutex` for more complicated examples.
 Experience shows that concurrent code is exceptionally hard to get right
 and that compile-time checking, run-time checks, and testing are less effective at finding concurrency errors
 than they are at finding errors in sequential code.
-Subtle concurrency errors can have dramatically bad effects, including memory corruption and deadlocks.
+Subtle concurrency errors can have dramatically bad effects, including memory corruption, deadlocks, and security vulnerabilities.
 
 ##### Example
 
@@ -14320,7 +14320,7 @@ cases that should have been caught but were allowed.
 is a powerful example of dynamic tools: it changes the build and execution of your program to add bookkeeping on memory access,
 absolutely identifying data races in a given execution of your binary.
 The cost for this is both memory (5-10x in most cases) and CPU slowdown (2-20x).
-Dynamic tools like this are best when applied to integration tests, canary pushes, or unittests that operate on multiple threads.
+Dynamic tools like this are best when applied to integration tests, canary pushes, or unit tests that operate on multiple threads.
 Workload matters: When TSAN identifies a problem, it is effectively always an actual data race,
 but it can only identify races seen in a given execution.
 
@@ -14436,6 +14436,8 @@ Here, the writers of `thread1` and `thread2` are still not agreeing on the order
 
 In real code, `mutex`es are rarely named to conveniently remind the programmer of an intended relation and intended order of acquisition.
 In real code, `mutex`es are not always conveniently acquired on consecutive lines.
+
+##### Note
 
 In C++17 it's possible to write plain
 
@@ -14704,7 +14706,7 @@ Flag `detach()`.
 
 ##### Reason
 
-Copying a small amount of data is cheaper to copy and access than to share it using some locking mechanism.
+A small amount of data is cheaper to copy and access than to share it using some locking mechanism.
 Copying naturally gives unique ownership (simplifies code) and eliminates the possibility of data races.
 
 ##### Note
@@ -15289,7 +15291,7 @@ Have strong rules for re-testing in place that covers any change in hardware, op
 
 ##### Reason
 
-With the exception of atomics and a few use standard patterns, lock-free programming is really an expert-only topic.
+With the exception of atomics and a few other standard patterns, lock-free programming is really an expert-only topic.
 Become an expert before shipping lock-free code for others to use.
 
 ##### References
@@ -15876,7 +15878,7 @@ Another solution (often better) would be to use a local variable to eliminate ex
 
 ##### Note
 
-If you have local "things" that requires cleanup, but is not represented by an object with a destructor, such cleanup must
+If you have a local "thing" that requires cleanup, but is not represented by an object with a destructor, such cleanup must
 also be done before a `throw`.
 Sometimes, [`finally()`](#Re-finally) can make such unsystematic cleanup a bit more manageable.
 
@@ -16191,7 +16193,7 @@ If we cannot throw an exception, we can simulate this RAII style of resource han
         return 0;   // zero indicates "good"
     }
 
-The problem is of course that the caller now has to remember to test the return value.
+The problem is of course that the caller now has to remember to test the return value. To encourage doing so, consider adding a `[[nodiscard]]`.
 
 **See also**: [Discussion](#Sd-???)
 
@@ -16358,7 +16360,7 @@ This can be messy:
     }
 
 Simulating RAII can be non-trivial, especially in functions with multiple resources and multiple possible errors.
-A not uncommon technique is to gather cleanup at the end of the function to avoid repetition (note the extra scope around `g2` is undesirable but necessary to make the `goto` version compile):
+A not uncommon technique is to gather cleanup at the end of the function to avoid repetition (note that the extra scope around `g2` is undesirable but necessary to make the `goto` version compile):
 
     std::pair<int, error_indicator> user()
     {
@@ -16459,7 +16461,7 @@ That's OK, but say that we have checked that this cannot happen and `f` is chang
 we now have a crash on our hands unless we change `use()` (and re-test everything).
 The snag is that `f()` might be in a library we do not control and the new exception is not anything that `use()` can do
 anything about or is in any way interested in.
-We can change `use()` to pass `Z` through, but now `use()`'s callers probably needs to be modified.
+We can change `use()` to pass `Z` through, but now `use()`'s callers probably need to be modified.
 This quickly becomes unmanageable.
 Alternatively, we can add a `try`-`catch` to `use()` to map `Z` into an acceptable exception.
 This too, quickly becomes unmanageable.
@@ -16489,7 +16491,7 @@ Flag every exception specification.
 
 `catch`-clauses are evaluated in the order they appear and one clause can hide another.
 
-##### Example
+##### Example, bad
 
     void f()
     {
@@ -16581,8 +16583,8 @@ If it doesn't now, it might do so later without forcing recompilation.
 
 ##### Note
 
-There are code/libraries that offer functions that declare a`T*` even though
-those function do not modify that `T`.
+There are code/libraries that offer functions that declare a `T*` even though
+those functions do not modify that `T`.
 This is a problem for people modernizing code.
 You can
 
@@ -16654,7 +16656,7 @@ but that should be done only when the called function is supposed to modify the 
 
 ##### Enforcement
 
-* Flag function that does not modify an object passed by  pointer or reference to non-`const`
+* Flag a function that does not modify an object passed by pointer or reference to non-`const`
 * Flag a function that (using a cast) modifies an object passed by pointer or reference to `const`
 
 ### <a name="Rconst-const"></a>Con.4: Use `const` to define objects with values that do not change after construction
@@ -17105,7 +17107,7 @@ or equivalently and more succinctly:
 ##### Note
 
 "Concepts" are defined in an ISO Technical Specification: [concepts](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2015/n4553.pdf).
-A draft of a set of standard-library concepts can be found in another ISO TS: [ranges](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/n4569.pdf)
+A draft of a set of standard-library concepts can be found in another ISO TS: [ranges](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/n4569.pdf).
 Concepts are supported in GCC 6.1 and later.
 Consequently, we comment out uses of concepts in examples; that is, we use them as formalized comments only.
 If you use GCC 6.1 or later, you can uncomment them:
@@ -17210,7 +17212,7 @@ The shorter versions better match the way we speak. Note that many templates don
 ##### Note
 
 "Concepts" are defined in an ISO Technical Specification: [concepts](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2015/n4553.pdf).
-A draft of a set of standard-library concepts can be found in another ISO TS: [ranges](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/n4569.pdf)
+A draft of a set of standard-library concepts can be found in another ISO TS: [ranges](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/n4569.pdf).
 Concepts are supported in GCC 6.1 and later.
 Consequently, we comment out uses of concepts in examples; that is, we use them as formalized comments only.
 If you use a compiler that supports concepts (e.g., GCC 6.1 or later), you can remove the `//`.
@@ -17262,7 +17264,7 @@ This `Addable` violates the mathematical rule that addition is supposed to be co
 
 ##### Note
 
-The ability to specify a meaningful semantics is a defining characteristic of a true concept, as opposed to a syntactic constraint.
+The ability to specify meaningful semantics is a defining characteristic of a true concept, as opposed to a syntactic constraint.
 
 ##### Example (using TS concepts)
 
@@ -17294,7 +17296,7 @@ Concepts with multiple operations have far lower chance of accidentally matching
 ##### Enforcement
 
 * Flag single-operation `concepts` when used outside the definition of other `concepts`.
-* Flag uses of `enable_if` that appears to simulate single-operation `concepts`.
+* Flag uses of `enable_if` that appear to simulate single-operation `concepts`.
 
 
 ### <a name="Rt-complete"></a>T.21: Require a complete set of operations for a concept
@@ -17437,7 +17439,7 @@ An incomplete set of constraints can still be very useful:
         detach(p);
     }
 
-So a `Balancer` must supply at least thee operations on a tree `Node`,
+So a `Balancer` must supply at least these operations on a tree `Node`,
 but we are not yet ready to specify detailed semantics because a new kind of balanced tree might require more operations
 and the precise general semantics for all nodes is hard to pin down in the early stages of design.
 
@@ -17546,7 +17548,7 @@ version of `f()`, then delete it.
     template<typename T>
     void f() = delete;
 
-The compiler will select the overload and emit an appropriate error.
+The compiler will select the overload, or emit an appropriate error.
 
 ##### Note
 
@@ -17563,7 +17565,7 @@ Complementary constraints are unfortunately common in `enable_if` code:
 
 ##### Note
 
-Complementary requirements on one requirements is sometimes (wrongly) considered manageable.
+Complementary requirements on one requirement is sometimes (wrongly) considered manageable.
 However, for two or more requirements the number of definitions needs can go up exponentially (2,4,8,16,...):
 
     C1<T> && C2<T>
@@ -17896,7 +17898,7 @@ That is, it is highly visible.
 
 ##### Note
 
-This rule should not be necessary, but the committee cannot agree to exclude unconstrained templated from ADL.
+This rule should not be necessary, but the committee cannot agree to exclude unconstrained templates from ADL.
 
 Unfortunately this will get many false positives; the standard library violates this widely, by putting many unconstrained templates and types into the single namespace `std`.
 
@@ -19371,7 +19373,7 @@ Avoid accidentally becoming dependent on implementation details and logically se
 `<iostream>` exposes the definition of `std::string` ("why?" makes for a fun trivia question),
 but it is not required to do so by transitively including the entire `<string>` header,
 resulting in the popular beginner question "why doesn't `getline(cin,s);` work?"
-or even an occasional "`string`s cannot be compared with `==`).
+or even an occasional "`string`s cannot be compared with `==`").
 
 The solution is to explicitly `#include <string>`:
 
@@ -19467,7 +19469,7 @@ Library creators should put their headers in a folder and have clients include t
 
 ##### Enforcement
 
-A test should identify headers referenced via `""` could be referenced with `<>`.
+A test should identify whether headers referenced via `""` could be referenced with `<>`.
 
 ### <a name="Rs-namespace"></a>SF.20: Use `namespace`s to express logical structure
 
@@ -19729,7 +19731,7 @@ Such loops can be much faster than individually checked element accesses.
         memcmp(a.data(), b.data(), 10);  // BAD, and contains a length error (length = 10 * sizeof(int))
     }
 
-Also, `std::array<>::fill()` or `std::fill()` or even an empty initializer are better candidate than `memset()`.
+Also, `std::array<>::fill()` or `std::fill()` or even an empty initializer are better candidates than `memset()`.
 
 ##### Example, good
 
@@ -19965,7 +19967,7 @@ Like any other "plain pointer", a `zstring` should not represent ownership.
 There are billions of lines of C++ "out there", most use `char*` and `const char*` without documenting intent.
 They are used in a wide variety of ways, including to represent ownership and as generic pointers to memory (instead of `void*`).
 It is hard to separate these uses, so this guideline is hard to follow.
-This is one of the major sources of bugs in C and C++ programs, so it is worthwhile to follow this guideline wherever feasible..
+This is one of the major sources of bugs in C and C++ programs, so it is worthwhile to follow this guideline wherever feasible.
 
 ##### Enforcement
 
@@ -20084,7 +20086,7 @@ Direct expression of an idea minimizes mistakes.
 `iostream`s is a type safe, extensible, formatted and unformatted I/O library for streaming I/O.
 It supports multiple (and user extensible) buffering strategies and multiple locales.
 It can be used for conventional I/O, reading and writing to memory (string streams),
-and user-defines extensions, such as streaming across networks (asio: not yet standardized).
+and user-defined extensions, such as streaming across networks (asio: not yet standardized).
 
 Iostream rule summary:
 
@@ -20169,7 +20171,7 @@ If input isn't validated, every function must be written to cope with bad data (
 
 It is often (and often correctly) pointed out that the `printf()` family has two advantages compared to `iostream`s:
 flexibility of formatting and performance.
-This has to be weighed against `iostream`s advantages of extensibility to handle user-defined types, resilient against security violations,
+This has to be weighed against `iostream`s advantages of extensibility to handle user-defined types, resilience against security violations,
 implicit memory management, and `locale` handling.
 
 If you need I/O performance, you can almost always do better than `printf()`.
@@ -20308,13 +20310,13 @@ However, a library should not depend on another that depends on it.
 # <a name="S-not"></a>NR: Non-Rules and myths
 
 This section contains rules and guidelines that are popular somewhere, but that we deliberately don't recommend.
-We know full well that there have been times and places where these rules made sense, and we have used them ourselves at times.
+We know perfectly well that there have been times and places where these rules made sense, and we have used them ourselves at times.
 However, in the context of the styles of programming we recommend and support with the guidelines, these "non-rules" would do harm.
 
 Even today, there can be contexts where the rules make sense.
 For example, lack of suitable tool support can make exceptions unsuitable in hard-real-time systems,
 but please don't naïvely trust "common wisdom" (e.g., unsupported statements about "efficiency");
-such "wisdom" might be based on decades-old information or experienced from languages with very different properties than C++
+such "wisdom" might be based on decades-old information or experiences from languages with very different properties than C++
 (e.g., C or Java).
 
 The positive arguments for alternatives to these non-rules are listed in the rules offered as "Alternatives".
@@ -20465,7 +20467,7 @@ Consider the major objections to exceptions in turn
 * Exceptions are inefficient:
 Compared to what?
 When comparing make sure that the same set of errors are handled and that they are handled equivalently.
-In particular, do not compare a program that immediately terminate on seeing an error with a program
+In particular, do not compare a program that immediately terminates on seeing an error to a program
 that carefully cleans up resources before logging an error.
 Yes, some systems have poor exception handling implementations; sometimes, such implementations force us to use
 other error-handling approaches, but that's not a fundamental problem with exceptions.
@@ -20483,8 +20485,8 @@ In our opinion, you need RAII to make exception-based error handling simple and 
 If you are in a hard-real-time system where you must guarantee completion of a task in a given time,
 you need tools to back up such guarantees.
 As far as we know such tools are not available (at least not to most programmers).
-* the exception-handling run-time support takes up too much space
-This can be the case in small (usually embedded systems).
+* The exception-handling run-time support takes up too much space.
+This can be the case in small (usually embedded) systems.
 However, before abandoning exceptions consider what space consistent error-handling using error-codes would require
 and what failure to catch an error would cost.
 
@@ -20543,7 +20545,7 @@ and errors (when we didn't deal correctly with semi-constructed objects consiste
     {
         int mx;
         int my;
-        char * data;
+        int * data;
     public:
         // main problem: constructor does not fully construct
         Picture(int x, int y)
@@ -20572,7 +20574,7 @@ and errors (when we didn't deal correctly with semi-constructed objects consiste
             if (data) {
                 return false;
             }
-            data = (char*) malloc(mx*my*sizeof(int));   // also bad: owning raw * and malloc
+            data = (int*) malloc(mx*my*sizeof(int));   // also bad: owning raw * and malloc
             return data != nullptr;
         }
 
@@ -20597,7 +20599,7 @@ and errors (when we didn't deal correctly with semi-constructed objects consiste
     {
         int mx;
         int my;
-        vector<char> data;
+        vector<int> data;
 
         static int check_size(int size)
         {
@@ -20612,7 +20614,7 @@ and errors (when we didn't deal correctly with semi-constructed objects consiste
             : mx(check_size(x))
             , my(check_size(y))
             // now we know x and y have a valid size
-            , data(mx * my * sizeof(int)) // will throw std::bad_alloc on error
+            , data(mx * my) // will throw std::bad_alloc on error
         {
             // picture is ready-to-use
         }
@@ -20871,7 +20873,7 @@ or "static type safety."
 Each profile is designed to eliminate a class of errors.
 Enforcement of "random" rules in isolation is more likely to be disruptive to a code base than delivering a definite improvement.
 
-A "profile" is a set of deterministic and portably enforceable subset rules (i.e., restrictions) that are designed to achieve a specific guarantee.
+A "profile" is a set of deterministic and portably enforceable subset of rules (i.e., restrictions) that are designed to achieve a specific guarantee.
 "Deterministic" means they require only local analysis and could be implemented in a compiler (though they don't need to be).
 "Portably enforceable" means they are like language rules, so programmers can count on different enforcement tools giving the same answer for the same code.
 
@@ -21042,7 +21044,7 @@ These types allow the user to distinguish between owning and non-owning pointers
 
 These "views" are never owners.
 
-References are never owners (see [R.4](#Rr-ref). Note: References have many opportunities to outlive the objects they refer to (returning a local variable by reference, holding a reference to an element of a vector and doing `push_back`, binding to `std::max(x, y + 1)`, etc. The Lifetime safety profile aims to address those things, but even so `owner<T&>` does not make sense and is discouraged.
+References are never owners (see [R.4](#Rr-ref)). Note: References have many opportunities to outlive the objects they refer to (returning a local variable by reference, holding a reference to an element of a vector and doing `push_back`, binding to `std::max(x, y + 1)`, etc). The Lifetime safety profile aims to address those things, but even so `owner<T&>` does not make sense and is discouraged.
 
 The names are mostly ISO standard-library style (lower case and underscore):
 
@@ -21099,7 +21101,7 @@ Use `not_null<zstring>` for C-style strings that cannot be `nullptr`. ??? Do we 
 
 * `Expects`     // precondition assertion. Currently placed in function bodies. Later, should be moved to declarations.
                 // `Expects(p)` terminates the program unless `p == true`
-                // `Expect` in under control of some options (enforcement, error message, alternatives to terminate)
+                // `Expects` is under control of some options (enforcement, error message, alternatives to terminate)
 * `Ensures`     // postcondition assertion. Currently placed in function bodies. Later, should be moved to declarations.
 
 These assertions are currently macros (yuck!) and must appear in function definitions (only)
@@ -21157,7 +21159,7 @@ Most of the concepts below are defined in [the Ranges TS](http://www.open-std.or
 Consistent naming and layout are helpful.
 If for no other reason because it minimizes "my style is better than your style" arguments.
 However, there are many, many, different styles around and people are passionate about them (pro and con).
-Also, most real-world projects includes code from many sources, so standardizing on a single style for all code is often impossible.
+Also, most real-world projects include code from many sources, so standardizing on a single style for all code is often impossible.
 After many requests for guidance from users, we present a set of rules that you might use if you have no better ideas, but the real aim is consistency, rather than any particular rule set.
 IDEs and tools can help (as well as hinder).
 
@@ -21596,7 +21598,7 @@ Avoid multiple blocks of declarations of one access (e.g., `public`) dispersed a
     };
 
 The use of macros to declare groups of members often leads to violation of any ordering rules.
-However, macros obscures what is being expressed anyway.
+However, using macros obscures what is being expressed anyway.
 
 ##### Enforcement
 
@@ -21983,7 +21985,7 @@ If your design wants virtual dispatch into a derived class from a base class con
 
 * *Pass the buck:* Just document that user code must call the post-initialization function right after constructing an object.
 * *Post-initialize lazily:* Do it during the first call of a member function. A Boolean flag in the base class tells whether or not post-construction has taken place yet.
-* *Use virtual base class semantics:* Language rules dictate that the constructor most-derived class decides which base constructor will be invoked; you can use that to your advantage. (See [\[Taligent94\]](#Taligent94).)
+* *Use virtual base class semantics:* Language rules dictate that the constructor of the most-derived class decides which base constructor will be invoked; you can use that to your advantage. (See [\[Taligent94\]](#Taligent94).)
 * *Use a factory function:* This way, you can easily force a mandatory invocation of a post-constructor function.
 
 Here is an example of the last option:
@@ -22309,7 +22311,7 @@ In a class holding a reference, you likely need to write the copy constructor an
 Resource management rule summary:
 
 * [Provide strong resource safety; that is, never leak anything that you think of as a resource](#Cr-safety)
-* [Never throw while holding a resource not owned by a handle](#Cr-never)
+* [Never return or throw while holding a resource not owned by a handle](#Cr-never)
 * [A "raw" pointer or reference is never a resource handle](#Cr-raw)
 * [Never let a pointer outlive the object it points to](#Cr-outlive)
 * [Use templates to express containers (and other resource handles)](#Cr-templates)
@@ -22345,7 +22347,7 @@ This class is a resource handle. It manages the lifetime of the `T`s. To do so, 
 
 The basic technique for preventing leaks is to have every resource owned by a resource handle with a suitable destructor. A checker can find "naked `new`s". Given a list of C-style allocation functions (e.g., `fopen()`), a checker can also find uses that are not managed by a resource handle. In general, "naked pointers" can be viewed with suspicion, flagged, and/or analyzed. A complete list of resources cannot be generated without human input (the definition of "a resource" is necessarily too general), but a tool can be "parameterized" with a resource list.
 
-### <a name="Cr-never"></a>Discussion: Never throw while holding a resource not owned by a handle
+### <a name="Cr-never"></a>Discussion: Never return or throw while holding a resource not owned by a handle
 
 ##### Reason
 
