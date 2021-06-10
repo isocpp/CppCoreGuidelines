@@ -20613,7 +20613,7 @@ and errors (when we didn't deal correctly with semi-constructed objects consiste
             : mx(check_size(x))
             , my(check_size(y))
             // now we know x and y have a valid size
-            , data(mx*my*sizeof(int)) // will throw std::bad_alloc on error
+            , data(mx * my) // will throw std::bad_alloc on error
         {
             // picture is ready-to-use
         }
