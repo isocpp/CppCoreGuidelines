@@ -11609,9 +11609,8 @@ C++17 tightens up the rules for the order of evaluation, but the order of evalua
     int i = 0;
     f(++i, ++i);
 
-The call will most likely be `f(0, 1)` or `f(1, 0)`, but you don't know which.
-Technically, the behavior is undefined.
-In C++17, this code does not have undefined behavior, but it is still not specified which argument is evaluated first.
+Before C++17, the behavior is undefined, so the behavior could be anything (e.g., `f(2, 2)`).
+Since C++17, this code does not have undefined behavior, but it is still not specified which argument is evaluated first. The call will be `f(1, 2)` or `f(2, 1)`, but you don't know which.
 
 ##### Example
 
