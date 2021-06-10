@@ -4593,6 +4593,12 @@ They are not useful, and make types difficult to use by making them either uncop
         // ...
     };
 
+The `const` and `&` data members make this class "only-sort-of-copyable" -- copy-constructible but not copy-assignable.
+
+##### Note
+
+If you need a member to point to something, use a pointer (raw or smart, and `gsl::not_null` if it should not be null) instead of a reference.
+
 ##### Enforcement
 
 Flag a data member that is `const`, `&`, or `&&`.
