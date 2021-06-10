@@ -8326,7 +8326,7 @@ The string returned by `ff()` is destroyed before the returned pointer into it c
 
 ##### Enforcement
 
-Flag all conversion operators.
+Flag all non-explicit conversion operators.
 
 ### <a name="Ro-custom"></a>C.165: Use `using` for customization points
 
