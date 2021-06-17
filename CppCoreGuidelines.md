@@ -1,6 +1,6 @@
 # <a name="main"></a>C++ Core Guidelines
 
-March 11, 2021
+June 17, 2021
 
 
 Editors:
@@ -6941,7 +6941,7 @@ Class hierarchy rule summary:
 
 Designing rules for classes in a hierarchy summary:
 
-* [C.126: An abstract class typically doesn't need a constructor](#Rh-abstract-ctor)
+* [C.126: An abstract class typically doesn't need a user-written constructor](#Rh-abstract-ctor)
 * [C.127: A class with a virtual function should have a virtual or protected destructor](#Rh-dtor)
 * [C.128: Virtual functions should specify exactly one of `virtual`, `override`, or `final`](#Rh-override)
 * [C.129: When designing a class hierarchy, distinguish between implementation inheritance and interface inheritance](#Rh-kind)
@@ -7114,7 +7114,7 @@ Furthermore, we can update `D1` and `D2` in ways that are not binary compatible 
 
 ## C.hierclass: Designing classes in a hierarchy:
 
-### <a name="Rh-abstract-ctor"></a>C.126: An abstract class typically doesn't need a constructor
+### <a name="Rh-abstract-ctor"></a>C.126: An abstract class typically doesn't need a user-written constructor
 
 ##### Reason
 
@@ -7122,7 +7122,20 @@ An abstract class typically does not have any data for a constructor to initiali
 
 ##### Example
 
-    ???
+    class Shape {
+    public:
+        // no user-written constructor needed in abstract base class
+        virtual Point center() const =0;    // pure virtual
+        virtual void move(Point to) =0;
+        // ... more pure virtual functions...
+        virtual ~Shape() {}                 // destructor
+    };
+
+    class Circle : public Shape {
+    public:
+        Circle(Point p, int rad);           // constructor in derived class
+        Point center() const override { return x; }
+    };
 
 ##### Exception
 
