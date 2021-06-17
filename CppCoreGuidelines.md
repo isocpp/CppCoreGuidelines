@@ -4665,7 +4665,7 @@ Copy and move rules:
 * [C.64: A move operation should move and leave its source in a valid state](#Rc-move-semantic)
 * [C.65: Make move assignment safe for self-assignment](#Rc-move-self)
 * [C.66: Make move operations `noexcept`](#Rc-move-noexcept)
-* [C.67: A polymorphic class should suppress copying](#Rc-copy-virtual)
+* [C.67: A polymorphic class should suppress public copy/move](#Rc-copy-virtual)
 
 Other default operations rules:
 
@@ -4774,12 +4774,13 @@ defined as defaulted.
     };
 
 To prevent slicing as per [C.67](#Rc-copy-virtual),
-`=delete` the copy and move operations and add a `clone`:
+make the copy and move operations protected or `=delete`d, and add a `clone`:
 
     class ClonableBase {
     public:
         virtual unique_ptr<ClonableBase> clone() const;
         virtual ~ClonableBase() = default;
+        CloneableBase() = default;
         ClonableBase(const ClonableBase&) = delete;
         ClonableBase& operator=(const ClonableBase&) = delete;
         ClonableBase(ClonableBase&&) = delete;
@@ -6289,11 +6290,13 @@ This `Vector2` is not just inefficient, but since a vector copy requires allocat
 
 (Simple) A move operation should be marked `noexcept`.
 
-### <a name="Rc-copy-virtual"></a>C.67: A polymorphic class should suppress copying
+### <a name="Rc-copy-virtual"></a>C.67: A polymorphic class should suppress public copy/move
 
 ##### Reason
 
 A *polymorphic class* is a class that defines or inherits at least one virtual function. It is likely that it will be used as a base class for other derived classes with polymorphic behavior. If it is accidentally passed by value, with the implicitly generated copy constructor and assignment, we risk slicing: only the base portion of a derived object will be copied, and the polymorphic behavior will be corrupted.
+
+If the class has no data, `=delete` the copy/move functions. Otherwise, make them protected.
 
 ##### Example, bad
 
@@ -6321,6 +6324,7 @@ A *polymorphic class* is a class that defines or inherits at least one virtual f
 
     class B { // GOOD: polymorphic class suppresses copying
     public:
+        B() = default;
         B(const B&) = delete;
         B& operator=(const B&) = delete;
         virtual char m() { return 'B'; }
@@ -6945,7 +6949,7 @@ Designing rules for classes in a hierarchy summary:
 * [C.127: A class with a virtual function should have a virtual or protected destructor](#Rh-dtor)
 * [C.128: Virtual functions should specify exactly one of `virtual`, `override`, or `final`](#Rh-override)
 * [C.129: When designing a class hierarchy, distinguish between implementation inheritance and interface inheritance](#Rh-kind)
-* [C.130: For making deep copies of polymorphic classes prefer a virtual `clone` function instead of copy construction/assignment](#Rh-copy)
+* [C.130: For making deep copies of polymorphic classes prefer a virtual `clone` function instead of public copy construction/assignment](#Rh-copy)
 * [C.131: Avoid trivial getters and setters](#Rh-get)
 * [C.132: Don't make a function `virtual` without reason](#Rh-virtual)
 * [C.133: Avoid `protected` data](#Rh-protected)
@@ -7469,7 +7473,7 @@ at the cost of the functionality being available only to users of the hierarchy.
 * ???
 
 
-### <a name="Rh-copy"></a>C.130: For making deep copies of polymorphic classes prefer a virtual `clone` function instead of copy construction/assignment
+### <a name="Rh-copy"></a>C.130: For making deep copies of polymorphic classes prefer a virtual `clone` function instead of public copy construction/assignment
 
 ##### Reason
 
@@ -7480,8 +7484,8 @@ Copying a polymorphic class is discouraged due to the slicing problem, see [C.67
     class B {
     public:
         virtual owner<B*> clone() = 0;
+        B() = default;
         virtual ~B() = default;
-
         B(const B&) = delete;
         B& operator=(const B&) = delete;
     };
