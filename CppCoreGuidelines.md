@@ -6355,7 +6355,7 @@ Classes that represent exception objects need both to be polymorphic and copy-co
 
 ##### Enforcement
 
-* Flag a polymorphic class with a non-deleted copy operation.
+* Flag a polymorphic class with a public copy operation.
 * Flag an assignment of polymorphic class objects.
 
 ## C.other: Other default operation rules
