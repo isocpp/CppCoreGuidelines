@@ -7129,8 +7129,8 @@ An abstract class typically does not have any data for a constructor to initiali
     class Shape {
     public:
         // no user-written constructor needed in abstract base class
-        virtual Point center() const =0;    // pure virtual
-        virtual void move(Point to) =0;
+        virtual Point center() const = 0;    // pure virtual
+        virtual void move(Point to) = 0;
         // ... more pure virtual functions...
         virtual ~Shape() {}                 // destructor
     };
