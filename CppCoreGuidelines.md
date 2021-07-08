@@ -4565,6 +4565,10 @@ In particular, if a concrete type is copyable, prefer to also give it an equalit
 
 ##### Note
 
+For structs intended to be shared with C code, defining `operator==` may not be feasible.
+
+##### Note
+
 Handles for resources that cannot be cloned, e.g., a `scoped_lock` for a `mutex`, are concrete types but typically cannot be copied (instead, they can usually be moved),
 so they can't be regular; instead, they tend to be move-only.
 
