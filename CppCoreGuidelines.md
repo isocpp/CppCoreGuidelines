@@ -9822,7 +9822,7 @@ This makes the function's ownership sharing explicit.
     public:
         // WidgetUser will share ownership of the widget
         WidgetUser(std::shared_ptr<widget> w) :
-            m_widget{w} {}
+            m_widget{std::move(w)} {}
         // ...
     private:
         std::shared_ptr<widget> m_widget;
