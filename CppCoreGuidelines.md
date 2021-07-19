@@ -9821,7 +9821,7 @@ This makes the function's ownership sharing explicit.
     {
     public:
         // WidgetUser will share ownership of the widget
-        WidgetUser(std::shared_ptr<widget> w) :
+        explicit WidgetUser(std::shared_ptr<widget> w) noexcept:
             m_widget{std::move(w)} {}
         // ...
     private:
