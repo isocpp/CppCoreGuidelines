@@ -15023,6 +15023,8 @@ This section focuses on uses of coroutines.
 Coroutine rule summary:
 
 * [CP.51: Do not use capturing lambdas that are coroutines](#Rcoro-capture)
+* [CP.52: Do not hold locks or other synchronization primitives across suspension points](#Rcoro-locks)
+* [CP.53: Parameters to coroutines should not be passed by reference](#Rcoro-reference-params)
 
 ### <a name="Rcoro-capture"></a>CP.51: Do not use capturing lambdas that are coroutines
 
@@ -15081,6 +15083,84 @@ Use a function for coroutines.
 
 Flag a lambda that is a coroutine and has a non-empty capture list.
 
+
+### <a name="Rcoro-locks"></a>CP.52: Do not hold locks or other synchronization primitives across suspension points
+
+##### Reason
+
+This is at best a degradation of performance, and at worst it will cause a deadlock. When a suspension point is reached, such as co_await, execution of the current function stops and other code begins to run. It may be a long period of time before the coroutine resumes. For that entire duration the lock will be held and cannot be acquired by other threads to perform work.
+
+##### Example, Bad
+
+    std::mutex g_lock;
+
+    std::future<void> Class::do_something()
+    {
+        std::lock_guard<std::mutex> guard(g_lock);
+        co_await something(); // DANGER: coroutine has suspended execution while holding a lock
+        co_await somethingElse();
+    }
+
+##### Example, Good
+
+    std::mutex g_lock;
+
+    std::future<void> Class::do_something()
+    {
+        {
+            std::lock_guard<std::mutex> guard(g_lock);
+            // modify data protected by lock
+        }
+        co_await something(); // OK: lock has been released before coroutine suspends
+        co_await somethingElse();
+    }
+
+
+##### Note
+
+This pattern can also lead to deadlocks. Some types of waits will allow the current thread to perform additional work until the asynchronous operation has completed. If the thread holding the lock performs work that requires the same lock then it will deadlock because it is trying to acquire a lock that it is already holding.
+
+##### Note
+
+If the coroutine completes on a different thread from the thread that acquired the lock then that is undefined behavior.  Even with an explicit return to the original thread an exception might be thrown before coroutine resumes and the result will be that the lock guard is not destructed.
+
+##### Enforcement
+
+Flag all lock guards that are not destructed before a coroutine suspends.
+
+### <a name="Rcoro-reference-params"></a>CP.53: Parameters to coroutines should not be passed by reference
+
+##### Reason
+
+Once a coroutine reaches the first suspension point, such as a co_await, the synchronous portion returns. After that point any parameters passed by reference are dangling. Any usage beyond that is undefined behavior which may include writing to freed memory.
+
+##### Example, Bad
+
+    std::future<int> Class::do_something(const std::shared_ptr<int>& input)
+    {
+        co_await something();
+        co_return *input + 1; // DANGER: the reference to input is no longer valid and may be freed memory
+    }
+
+##### Example, Good
+
+    std::future<int> Class::do_something(std::shared_ptr<int> input)
+    {
+        co_await something();
+        co_return *input + 1; // input is a copy that is still valid here
+    }
+
+##### Note
+
+This problem does not apply to reference parameters that are only accessed before the first suspension point. Subsequent changes to the function may add or move suspension points which would reintroduce this class of bug. It is safer to always pass by value because the copied parameter will live in the coroutine frame that is safe to access throughout the coroutine.
+
+##### Note
+
+The same danger applies to output parameters.  [F.20: For "out" output values, prefer return values to output parameters](#Rf-out) discourages output parameters.  Coroutines should avoid them entirely.
+
+##### Enforcement
+
+Flag all reference parameters to a coroutine.
 
 ## <a name="SScp-par"></a>CP.par: Parallelism
 
