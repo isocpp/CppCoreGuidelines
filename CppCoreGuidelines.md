@@ -18034,14 +18034,14 @@ This limits use and typically increases code size.
 
 ##### Example, bad
 
-    template<typename T, typename A = std::allocator{}>
+    template<typename T, typename A = std::allocator<T>>
         // requires Regular<T> && Allocator<A>
     class List {
     public:
         struct Link {   // does not depend on A
             T elem;
-            T* pre;
-            T* suc;
+            Link* pre;
+            Link* suc;
         };
 
         using iterator = Link*;
@@ -18062,11 +18062,11 @@ Typically, the solution is to make what would have been a nested class non-local
     template<typename T>
     struct Link {
         T elem;
-        T* pre;
-        T* suc;
+        Link* pre;
+        Link* suc;
     };
 
-    template<typename T, typename A = std::allocator{}>
+    template<typename T, typename A = std::allocator<T>>
         // requires Regular<T> && Allocator<A>
     class List2 {
     public:
@@ -18076,11 +18076,11 @@ Typically, the solution is to make what would have been a nested class non-local
 
         // ...
     private:
-        Link* head;
+        Link<T>* head;
     };
 
-    List<int> lst1;
-    List<int, My_allocator> lst2;
+    List2<int> lst1;
+    List2<int, My_allocator> lst2;
 
 Some people found the idea that the `Link` no longer was hidden inside the list scary, so we named the technique
 [SCARY](http://www.open-std.org/jtc1/sc22/WG21/docs/papers/2009/n2911.pdf). From that academic paper:
