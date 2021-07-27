@@ -15088,7 +15088,9 @@ Flag a lambda that is a coroutine and has a non-empty capture list.
 
 ##### Reason
 
-This is at best a degradation of performance, and at worst it will cause a deadlock. When a suspension point is reached, such as co_await, execution of the current function stops and other code begins to run. It may be a long period of time before the coroutine resumes. For that entire duration the lock will be held and cannot be acquired by other threads to perform work.
+This pattern creates a significant risk of deadlocks.  Some types of waits will allow the current thread to perform additional work until the asynchronous operation has completed. If the thread holding the lock performs work that requires the same lock then it will deadlock because it is trying to acquire a lock that it is already holding.
+
+If the coroutine completes on a different thread from the thread that acquired the lock then that is undefined behavior.  Even with an explicit return to the original thread an exception might be thrown before coroutine resumes and the result will be that the lock guard is not destructed.
 
 ##### Example, Bad
 
@@ -15118,11 +15120,7 @@ This is at best a degradation of performance, and at worst it will cause a deadl
 
 ##### Note
 
-This pattern can also lead to deadlocks. Some types of waits will allow the current thread to perform additional work until the asynchronous operation has completed. If the thread holding the lock performs work that requires the same lock then it will deadlock because it is trying to acquire a lock that it is already holding.
-
-##### Note
-
-If the coroutine completes on a different thread from the thread that acquired the lock then that is undefined behavior.  Even with an explicit return to the original thread an exception might be thrown before coroutine resumes and the result will be that the lock guard is not destructed.
+This pattern is also bad for performance. When a suspension point is reached, such as co_await, execution of the current function stops and other code begins to run. It may be a long period of time before the coroutine resumes. For that entire duration the lock will be held and cannot be acquired by other threads to perform work.
 
 ##### Enforcement
 
