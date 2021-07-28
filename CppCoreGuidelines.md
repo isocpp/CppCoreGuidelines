@@ -15137,7 +15137,9 @@ Once a coroutine reaches the first suspension point, such as a co_await, the syn
     std::future<int> Class::do_something(const std::shared_ptr<int>& input)
     {
         co_await something();
-        co_return *input + 1; // DANGER: the reference to input is no longer valid and may be freed memory
+        
+        // DANGER: the reference to input is no longer valid and may be freed memory
+        co_return *input + 1;
     }
 
 ##### Example, Good
