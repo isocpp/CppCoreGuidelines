@@ -15024,7 +15024,7 @@ Coroutine rule summary:
 
 * [CP.51: Do not use capturing lambdas that are coroutines](#Rcoro-capture)
 * [CP.52: Do not hold locks or other synchronization primitives across suspension points](#Rcoro-locks)
-* [CP.53: Parameters to coroutines should not be passed by reference](#Rcoro-reference-params)
+* [CP.53: Parameters to coroutines should not be passed by reference](#Rcoro-reference-parameters)
 
 ### <a name="Rcoro-capture"></a>CP.51: Do not use capturing lambdas that are coroutines
 
@@ -15126,7 +15126,7 @@ This pattern is also bad for performance. When a suspension point is reached, su
 
 Flag all lock guards that are not destructed before a coroutine suspends.
 
-### <a name="Rcoro-reference-params"></a>CP.53: Parameters to coroutines should not be passed by reference
+### <a name="Rcoro-reference-parameters"></a>CP.53: Parameters to coroutines should not be passed by reference
 
 ##### Reason
 
@@ -15137,7 +15137,7 @@ Once a coroutine reaches the first suspension point, such as a co_await, the syn
     std::future<int> Class::do_something(const std::shared_ptr<int>& input)
     {
         co_await something();
-        
+
         // DANGER: the reference to input is no longer valid and may be freed memory
         co_return *input + 1;
     }
