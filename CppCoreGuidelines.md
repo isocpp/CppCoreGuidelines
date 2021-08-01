@@ -15138,7 +15138,7 @@ Once a coroutine reaches the first suspension point, such as a co_await, the syn
     {
         co_await something();
 
-        // DANGER: the reference to input is no longer valid and may be freed memory
+        // DANGER: the reference to input may no longer be valid and may be freed memory
         co_return *input + 1;
     }
 
@@ -15152,7 +15152,7 @@ Once a coroutine reaches the first suspension point, such as a co_await, the syn
 
 ##### Note
 
-This problem does not apply to reference parameters that are only accessed before the first suspension point. Subsequent changes to the function may add or move suspension points which would reintroduce this class of bug. It is safer to always pass by value because the copied parameter will live in the coroutine frame that is safe to access throughout the coroutine.
+This problem does not apply to reference parameters that are only accessed before the first suspension point. Subsequent changes to the function may add or move suspension points which would reintroduce this class of bug. Some types of coroutines have the suspension point before the first line of code in the coroutine executes, in which case reference parameters are always unsafe.  It is safer to always pass by value because the copied parameter will live in the coroutine frame that is safe to access throughout the coroutine.
 
 ##### Note
 
