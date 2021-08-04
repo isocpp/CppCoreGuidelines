@@ -3,11 +3,9 @@
 //					- Andrew Sutton
 
 /*
-	Basic idea: provide concepts that define the interface(s) to different kinds of graphs so that you can do
-	basic graph operations and algoriths without knowing exactly which kind of graph it is and keep ignorant
-	about implementation details.
+
     
-    Basic design idea: do like the STL
+    
 */
 
 /*
