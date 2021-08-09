@@ -91,7 +91,7 @@ can either view the "pretty" version at http://isocpp.github.io/CppCoreGuideline
 
 ### Update dictionary
 
-Code samples in the guidlines are run through a spelling checker.  Be sure to add new class and variable names to ```scripts/hunspell/isocpp.dic```.
+Code samples in the guidelines are run through a spelling checker.  Be sure to add new class and variable names to ```scripts/hunspell/isocpp.dic```.
 
 ### Miscellaneous
 
