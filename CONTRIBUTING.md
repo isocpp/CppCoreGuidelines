@@ -89,6 +89,10 @@ We've discussed and made decisions on a number of document style. Please do not 
 can either view the "pretty" version at http://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines or do your own post-processing.
 - We're sticking with the ASCII character set. We do not use Unicode em-dashes, Unicode spaces, or pretty quotes. Lots of people edit this file with their various text editors. ASCII is simple and universally understood. 
 
+### Update dictionary
+
+Code samples in the guidelines are run through a spelling checker.  Be sure to add new class and variable names to [scripts/hunspell/isocpp.dic](https://github.com/isocpp/CppCoreGuidelines/blob/master/scripts/hunspell/isocpp.dic).
+
 ### Miscellaneous
 
 To avoid line-ending issues, please set `autocrlf = input` and `whitespace = cr-at-eol` in your git configuration.
