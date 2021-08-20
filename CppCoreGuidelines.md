@@ -1,6 +1,6 @@
 # <a name="main"></a>C++ Core Guidelines
 
-June 17, 2021
+August 19, 2021
 
 
 Editors:
@@ -3091,7 +3091,7 @@ The argument against is that it prevents (very frequent) use of move semantics.
 
 ##### Exceptions
 
-* For non-value types, such as types in an inheritance hierarchy, return the object by `unique_ptr` or `shared_ptr`.
+* For non-concrete types, such as types in an inheritance hierarchy, return the object by `unique_ptr` or `shared_ptr`.
 * If a type is expensive to move (e.g., `array<BigPOD>`), consider allocating it on the free store and return a handle (e.g., `unique_ptr`), or passing it in a reference to non-`const` target object to fill (to be used as an out-parameter).
 * To reuse an object that carries capacity (e.g., `std::string`, `std::vector`) across multiple calls to the function in an inner loop: [treat it as an in/out parameter and pass by reference](#Rf-out-multi).
 
@@ -3750,7 +3750,7 @@ We mention this only because of the persistence of this error in the community.
 
 ##### Reason
 
-The convention for operator overloads (especially on value types) is for
+The convention for operator overloads (especially on concrete types) is for
 `operator=(const T&)` to perform the assignment and then return (non-`const`)
 `*this`.  This ensures consistency with standard-library types and follows the
 principle of "do as the ints do."
@@ -4476,25 +4476,18 @@ Prefer the order `public` members before `protected` members before `private` me
 
 ## <a name="SS-concrete"></a>C.concrete: Concrete types
 
-One ideal for a class is to be a regular type.
-That means roughly "behaves like an `int`." A concrete type is the simplest kind of class.
-A value of regular type can be copied and the result of a copy is an independent object with the same value as the original.
-If a concrete type has both `=` and `==`, `a = b` should result in `a == b` being `true`.
-Concrete classes without assignment and equality can be defined, but they are (and should be) rare.
-The C++ built-in types are regular, and so are standard-library classes, such as `string`, `vector`, and `map`.
-Concrete types are also often referred to as value types to distinguish them from types used as part of a hierarchy.
-
 Concrete type rule summary:
 
 * [C.10: Prefer concrete types over class hierarchies](#Rc-concrete)
 * [C.11: Make concrete types regular](#Rc-regular)
 * [C.12: Don't make data members `const` or references](#Rc-constref)
 
+
 ### <a name="Rc-concrete"></a>C.10: Prefer concrete types over class hierarchies
 
 ##### Reason
 
-A concrete type is fundamentally simpler than a hierarchy:
+A concrete type is fundamentally simpler than a type in a class hierarchy:
 easier to design, easier to implement, easier to use, easier to reason about, smaller, and faster.
 You need a reason (use cases) for using a hierarchy.
 
@@ -4522,7 +4515,7 @@ You need a reason (use cases) for using a hierarchy.
         // ...
     }
 
-If a class can be part of a hierarchy, we (in real code if not necessarily in small examples) must manipulate its objects through pointers or references.
+If a class is part of a hierarchy, we (in real code if not necessarily in small examples) must manipulate its objects through pointers or references.
 That implies more memory overhead, more allocations and deallocations, and more run-time overhead to perform the resulting indirections.
 
 ##### Note
@@ -4541,11 +4534,14 @@ This is done where dynamic allocation is prohibited (e.g. hard-real-time) and to
 
 ???
 
+
 ### <a name="Rc-regular"></a>C.11: Make concrete types regular
 
 ##### Reason
 
 Regular types are easier to understand and reason about than types that are not regular (irregularities requires extra effort to understand and use).
+
+The C++ built-in types are regular, and so are standard-library classes such as `string`, `vector`, and `map`. Concrete classes without assignment and equality can be defined, but they are (and should be) rare.
 
 ##### Example
 
@@ -4565,14 +4561,16 @@ Regular types are easier to understand and reason about than types that are not 
     b2.name = "the other bundle";
     if (b1 == b2) error("No!");
 
-In particular, if a concrete type has an assignment also give it an equals operator so that `a = b` implies `a == b`.
+In particular, if a concrete type is copyable, prefer to also give it an equality comparison operator, and ensure that `a = b` implies `a == b`.
 
 ##### Note
 
-Handles for resources that cannot be cloned, e.g., a `scoped_lock` for a `mutex`, resemble concrete types in that they most often are stack-allocated.
-However, objects of such types typically cannot be copied (instead, they can usually be moved),
-so they can't be `regular`; instead, they tend to be `semiregular`.
-Often, such types are referred to as "move-only types".
+For structs intended to be shared with C code, defining `operator==` may not be feasible.
+
+##### Note
+
+Handles for resources that cannot be cloned, e.g., a `scoped_lock` for a `mutex`, are concrete types but typically cannot be copied (instead, they can usually be moved),
+so they can't be regular; instead, they tend to be move-only.
 
 ##### Enforcement
 
@@ -4645,7 +4643,7 @@ Constructor rules:
 * [C.40: Define a constructor if a class has an invariant](#Rc-ctor)
 * [C.41: A constructor should create a fully initialized object](#Rc-complete)
 * [C.42: If a constructor cannot construct a valid object, throw an exception](#Rc-throw)
-* [C.43: Ensure that a copyable (value type) class has a default constructor](#Rc-default0)
+* [C.43: Ensure that a copyable class has a default constructor](#Rc-default0)
 * [C.44: Prefer default constructors to be simple and non-throwing](#Rc-default00)
 * [C.45: Don't define a default constructor that only initializes data members; use member initializers instead](#Rc-default)
 * [C.46: By default, declare single-argument constructors `explicit`](#Rc-explicit)
@@ -5409,17 +5407,14 @@ Another reason has been to delay initialization until an object is needed; the s
 
 ???
 
-### <a name="Rc-default0"></a>C.43: Ensure that a copyable (value type) class has a default constructor
+### <a name="Rc-default0"></a>C.43: Ensure that a copyable class has a default constructor
 
 ##### Reason
 
+That is, ensure that if a concrete class is copyable it also satisfies the rest of "semiregular."
+
 Many language and library facilities rely on default constructors to initialize their elements, e.g. `T a[10]` and `std::vector<T> v(10)`.
 A default constructor often simplifies the task of defining a suitable [moved-from state](#???) for a type that is also copyable.
-
-##### Note
-
-A [value type](#SS-concrete) is a class that is copyable (and usually also comparable).
-It is closely related to the notion of Regular type from [EoP](http://elementsofprogramming.com/) and [the Palo Alto TR](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2012/n3351.pdf).
 
 ##### Example
 
@@ -5494,9 +5489,9 @@ Assuming that you want initialization, an explicit default initialization can he
 
 Classes that don't have a reasonable default construction are usually not copyable either, so they don't fall under this guideline.
 
-For example, a base class is not a value type (base classes should not be copyable) and so does not necessarily need a default constructor:
+For example, a base class should not be copyable, and so does not necessarily need a default constructor:
 
-    // Shape is an abstract base class, not a copyable value type.
+    // Shape is an abstract base class, not a copyable type.
     // It might or might not need a default constructor.
     struct Shape {
         virtual void draw() = 0;
@@ -5507,7 +5502,7 @@ For example, a base class is not a value type (base classes should not be copyab
 
 A class that must acquire a caller-provided resource during construction often cannot have a default constructor, but it does not fall under this guideline because such a class is usually not copyable anyway:
 
-    // std::lock_guard is not a copyable value type.
+    // std::lock_guard is not a copyable type.
     // It does not have a default constructor.
     lock_guard g {mx};  // guard the mutex mx
     lock_guard g2;      // error: guarding nothing
@@ -5515,7 +5510,7 @@ A class that must acquire a caller-provided resource during construction often c
 A class that has a "special state" that must be handled separately from other states by member functions or users causes extra work
 (and most likely more errors). Such a type can naturally use the special state as a default constructed value, whether or not it is copyable:
 
-    // std::ofstream is not a copyable value type.
+    // std::ofstream is not a copyable type.
     // It does happen to have a default constructor
     // that goes along with a special "not open" state.
     ofstream out {"Foobar"};
@@ -5918,7 +5913,7 @@ Make sure that every member of the derived class is initialized.
 
 ## <a name="SS-copy"></a>C.copy: Copy and move
 
-Value types should generally be copyable, but interfaces in a class hierarchy should not.
+Concrete types should generally be copyable, but interfaces in a class hierarchy should not.
 Resource handles might or might not be copyable.
 Types can be defined to move for logical as well as performance reasons.
 
@@ -6540,7 +6535,7 @@ Providing a non-member `swap` function in the same namespace as your type for ca
 
 ##### Enforcement
 
-* Non-trivially copyable value types should provide a member swap or a free swap overload.
+* Non-trivially copyable types should provide a member swap or a free swap overload.
 * (Simple) When a class has a `swap` member function, it should be declared `noexcept`.
 
 ### <a name="Rc-swap-fail"></a>C.84: A `swap` function must not fail
@@ -12189,7 +12184,7 @@ The language already knows that a returned value is a temporary object that can 
 * Flag a `std::move`s argument passed to a parameter, except when the parameter type is an `X&&` rvalue reference or the type is move-only and the parameter is passed by value.
 * Flag when `std::move` is applied to a forwarding reference (`T&&` where `T` is a template parameter type). Use `std::forward` instead.
 * Flag when `std::move` is applied to other than an rvalue reference to non-const. (More general case of the previous rule to cover the non-forwarding cases.)
-* Flag when `std::forward` is applied to an rvalue reference (`X&&` where `X` is a concrete type). Use `std::move` instead.
+* Flag when `std::forward` is applied to an rvalue reference (`X&&` where `X` is a non-template parameter type). Use `std::move` instead.
 * Flag when `std::forward` is applied to other than a forwarding reference. (More general case of the previous rule to cover the non-moving cases.)
 * Flag when an object is potentially moved from and the next operation is a `const` operation; there should first be an intervening non-`const` operation, ideally assignment, to first reset the object's value.
 
@@ -14186,7 +14181,7 @@ There are other ways you can mitigate the chance of data races:
 
 * Avoid global data
 * Avoid `static` variables
-* More use of value types on the stack (and don't pass pointers around too much)
+* More use of concrete types on the stack (and don't pass pointers around too much)
 * More use of immutable data (literals, `constexpr`, and `const`)
 
 ### <a name="Rconc-data"></a>CP.3: Minimize explicit sharing of writable data
@@ -15028,12 +15023,14 @@ This section focuses on uses of coroutines.
 Coroutine rule summary:
 
 * [CP.51: Do not use capturing lambdas that are coroutines](#Rcoro-capture)
+* [CP.52: Do not hold locks or other synchronization primitives across suspension points](#Rcoro-locks)
+* [CP.53: Parameters to coroutines should not be passed by reference](#Rcoro-reference-parameters)
 
 ### <a name="Rcoro-capture"></a>CP.51: Do not use capturing lambdas that are coroutines
 
 ##### Reason
 
-Usage patterns that are correct with normal lambdas are hazardous with coroutine lambdas. The obvious pattern of capturing variables will result in accessing freed memory after the first suspension point, even for refcounted smart pointers and value types.  
+Usage patterns that are correct with normal lambdas are hazardous with coroutine lambdas. The obvious pattern of capturing variables will result in accessing freed memory after the first suspension point, even for refcounted smart pointers and copyable types.  
 
 A lambda results in a closure object with storage, often on the stack, that will go out of scope at some point.  When the closure object goes out of scope the captures will also go out of scope.  Normal lambdas will have finished executing by this time so it is not a problem.  Coroutine lambdas may resume from suspension after the closure object has destructed and at that point all captures will be use-after-free memory access.
 
@@ -15086,6 +15083,84 @@ Use a function for coroutines.
 
 Flag a lambda that is a coroutine and has a non-empty capture list.
 
+
+### <a name="Rcoro-locks"></a>CP.52: Do not hold locks or other synchronization primitives across suspension points
+
+##### Reason
+
+This pattern creates a significant risk of deadlocks.  Some types of waits will allow the current thread to perform additional work until the asynchronous operation has completed. If the thread holding the lock performs work that requires the same lock then it will deadlock because it is trying to acquire a lock that it is already holding.
+
+If the coroutine completes on a different thread from the thread that acquired the lock then that is undefined behavior.  Even with an explicit return to the original thread an exception might be thrown before coroutine resumes and the result will be that the lock guard is not destructed.
+
+##### Example, Bad
+
+    std::mutex g_lock;
+
+    std::future<void> Class::do_something()
+    {
+        std::lock_guard<std::mutex> guard(g_lock);
+        co_await something(); // DANGER: coroutine has suspended execution while holding a lock
+        co_await somethingElse();
+    }
+
+##### Example, Good
+
+    std::mutex g_lock;
+
+    std::future<void> Class::do_something()
+    {
+        {
+            std::lock_guard<std::mutex> guard(g_lock);
+            // modify data protected by lock
+        }
+        co_await something(); // OK: lock has been released before coroutine suspends
+        co_await somethingElse();
+    }
+
+
+##### Note
+
+This pattern is also bad for performance. When a suspension point is reached, such as co_await, execution of the current function stops and other code begins to run. It may be a long period of time before the coroutine resumes. For that entire duration the lock will be held and cannot be acquired by other threads to perform work.
+
+##### Enforcement
+
+Flag all lock guards that are not destructed before a coroutine suspends.
+
+### <a name="Rcoro-reference-parameters"></a>CP.53: Parameters to coroutines should not be passed by reference
+
+##### Reason
+
+Once a coroutine reaches the first suspension point, such as a co_await, the synchronous portion returns. After that point any parameters passed by reference are dangling. Any usage beyond that is undefined behavior which may include writing to freed memory.
+
+##### Example, Bad
+
+    std::future<int> Class::do_something(const std::shared_ptr<int>& input)
+    {
+        co_await something();
+
+        // DANGER: the reference to input may no longer be valid and may be freed memory
+        co_return *input + 1;
+    }
+
+##### Example, Good
+
+    std::future<int> Class::do_something(std::shared_ptr<int> input)
+    {
+        co_await something();
+        co_return *input + 1; // input is a copy that is still valid here
+    }
+
+##### Note
+
+This problem does not apply to reference parameters that are only accessed before the first suspension point. Subsequent changes to the function may add or move suspension points which would reintroduce this class of bug. Some types of coroutines have the suspension point before the first line of code in the coroutine executes, in which case reference parameters are always unsafe.  It is safer to always pass by value because the copied parameter will live in the coroutine frame that is safe to access throughout the coroutine.
+
+##### Note
+
+The same danger applies to output parameters.  [F.20: For "out" output values, prefer return values to output parameters](#Rf-out) discourages output parameters.  Coroutines should avoid them entirely.
+
+##### Enforcement
+
+Flag all reference parameters to a coroutine.
 
 ## <a name="SScp-par"></a>CP.par: Parallelism
 
@@ -16778,7 +16853,7 @@ Template interface rule summary:
 * [T.42: Use template aliases to simplify notation and hide implementation details](#Rt-alias)
 * [T.43: Prefer `using` over `typedef` for defining aliases](#Rt-using)
 * [T.44: Use function templates to deduce class template argument types (where feasible)](#Rt-deduce)
-* [T.46: Require template arguments to be at least `Regular` or `SemiRegular`](#Rt-regular)
+* [T.46: Require template arguments to be at least semiregular](#Rt-regular)
 * [T.47: Avoid highly visible unconstrained templates with common names](#Rt-visible)
 * [T.48: If your compiler does not support concepts, fake them with `enable_if`](#Rt-concept-def)
 * [T.49: Where possible, avoid type-erasure](#Rt-erasure)
@@ -17843,13 +17918,13 @@ For example:
 
 Flag uses where an explicitly specialized type exactly matches the types of the arguments used.
 
-### <a name="Rt-regular"></a>T.46: Require template arguments to be at least `Regular` or `SemiRegular`
+### <a name="Rt-regular"></a>T.46: Require template arguments to be at least semiregular
 
 ##### Reason
 
- Readability.
- Preventing surprises and errors.
- Most uses support that anyway.
+Readability.
+Preventing surprises and errors.
+Most uses support that anyway.
 
 ##### Example
 
@@ -17874,7 +17949,7 @@ Semiregular requires default constructible.
 
 ##### Enforcement
 
-* Flag types that are not at least `SemiRegular`.
+* Flag types used as template arguments that are not at least semiregular.
 
 ### <a name="Rt-visible"></a>T.47: Avoid highly visible unconstrained templates with common names
 
@@ -18039,14 +18114,14 @@ This limits use and typically increases code size.
 
 ##### Example, bad
 
-    template<typename T, typename A = std::allocator{}>
+    template<typename T, typename A = std::allocator<T>>
         // requires Regular<T> && Allocator<A>
     class List {
     public:
         struct Link {   // does not depend on A
             T elem;
-            T* pre;
-            T* suc;
+            Link* pre;
+            Link* suc;
         };
 
         using iterator = Link*;
@@ -18067,11 +18142,11 @@ Typically, the solution is to make what would have been a nested class non-local
     template<typename T>
     struct Link {
         T elem;
-        T* pre;
-        T* suc;
+        Link* pre;
+        Link* suc;
     };
 
-    template<typename T, typename A = std::allocator{}>
+    template<typename T, typename A = std::allocator<T>>
         // requires Regular<T> && Allocator<A>
     class List2 {
     public:
@@ -18081,11 +18156,11 @@ Typically, the solution is to make what would have been a nested class non-local
 
         // ...
     private:
-        Link* head;
+        Link<T>* head;
     };
 
-    List<int> lst1;
-    List<int, My_allocator> lst2;
+    List2<int> lst1;
+    List2<int, My_allocator> lst2;
 
 Some people found the idea that the `Link` no longer was hidden inside the list scary, so we named the technique
 [SCARY](http://www.open-std.org/jtc1/sc22/WG21/docs/papers/2009/n2911.pdf). From that academic paper:
@@ -20946,10 +21021,11 @@ An implementation of this profile shall recognize the following patterns in sour
 Type safety profile summary:
 
 * <a name="Pro-type-avoidcasts"></a>Type.1: [Avoid casts](#Res-casts):
-<a name="Pro-type-reinterpretcast">a. </a>Don't use `reinterpret_cast`; A strict version of [Avoid casts](#Res-casts) and [prefer named casts](#Res-casts-named).
-<a name="Pro-type-arithmeticcast">b. </a>Don't use `static_cast` for arithmetic types; A strict version of [Avoid casts](#Res-casts) and [prefer named casts](#Res-casts-named).
-<a name="Pro-type-identitycast">c. </a>Don't cast between pointer types where the source type and the target type are the same; A strict version of [Avoid casts](#Res-casts).
-<a name="Pro-type-implicitpointercast">d. </a>Don't cast between pointer types when the conversion could be implicit; A strict version of [Avoid casts](#Res-casts).
+
+  1. <a name="Pro-type-reinterpretcast"></a>Don't use `reinterpret_cast`; A strict version of [Avoid casts](#Res-casts) and [prefer named casts](#Res-casts-named).
+  2. <a name="Pro-type-arithmeticcast"></a>Don't use `static_cast` for arithmetic types; A strict version of [Avoid casts](#Res-casts) and [prefer named casts](#Res-casts-named).
+  3. <a name="Pro-type-identitycast"></a>Don't cast between pointer types where the source type and the target type are the same; A strict version of [Avoid casts](#Res-casts).
+  4. <a name="Pro-type-implicitpointercast"></a>Don't cast between pointer types when the conversion could be implicit; A strict version of [Avoid casts](#Res-casts).
 * <a name="Pro-type-downcast"></a>Type.2: Don't use `static_cast` to downcast:
 [Use `dynamic_cast` instead](#Rh-dynamic_cast).
 * <a name="Pro-type-constcast"></a>Type.3: Don't use `const_cast` to cast away `const` (i.e., at all):
@@ -21160,8 +21236,8 @@ Most of the concepts below are defined in [the Ranges TS](http://www.open-std.or
 * `Boolean`
 * `Integral`
 * `SignedIntegral`
-* `SemiRegular` // ??? Copyable?
-* `Regular`
+* `SemiRegular` // in C++20, `std::semiregular`
+* `Regular`     // in C++20, `std::regular`
 * `TotallyOrdered`
 * `Function`
 * `RegularFunction`
@@ -22572,7 +22648,7 @@ More information on many topics about C++ can be found on the [Standard C++ Foun
 * *argument*: a value passed to a function or a template, in which it is accessed through a parameter.
 * *array*: a homogeneous sequence of elements, usually numbered, e.g., `[0:max)`.
 * *assertion*: a statement inserted into a program to state (assert) that something must always be true at this point in the program.
-* *base class*: a class used as the base of a class hierarchy. Typically a base class has one or more virtual functions.
+* *base class*: a type that is intended to be derived from (e.g., has a non-`final` virtual function), and objects of the type are intended to be used only indirectly (e.g., by pointer). \[In strict terms, "base class" could be defined as "something we derived from" but we are specifying in terms of the class designer's intent.\] Typically a base class has one or more virtual functions.
 * *bit*: the basic unit of information in a computer. A bit can have the value 0 or the value 1.
 * *bug*: an error in a program.
 * *byte*: the basic unit of addressing in most computers. Typically, a byte holds 8 bits.
@@ -22583,8 +22659,7 @@ More information on many topics about C++ can be found on the [Standard C++ Foun
   Sometimes complexity is used to (simply) mean an estimate of the number of operations needed to execute an algorithm.
 * *computation*: the execution of some code, usually taking some input and producing some output.
 * *concept*: (1) a notion, and idea; (2) a set of requirements, usually for a template argument.
-* *concrete class*: class for which objects can be created using usual construction syntax (e.g., on the stack) and the resulting object behaves much like an `int` as it comes to copying, comparison, and such
-(as opposed to a base class in a hierarchy).
+* *concrete type*: a type that is not a base class, and objects of the type are intended to be used directly (not only by pointer/indirection), its size is known, it can typically be allocated anywhere the programmer wants (e.g., stack or statically).
 * *constant*: a value that cannot be changed (in a given scope); not mutable.
 * *constructor*: an operation that initializes ("constructs") an object.
   Typically a constructor establishes an invariant and often acquires resources needed for an object to be used (which are then typically released by a destructor).
@@ -22638,6 +22713,7 @@ More information on many topics about C++ can be found on the [Standard C++ Foun
 * *literal*: a notation that directly specifies a value, such as 12 specifying the integer value "twelve."
 * *loop*: a piece of code executed repeatedly; in C++, typically a for-statement or a `while`-statement.
 * *move*: an operation that transfers a value from one object to another leaving behind a value representing "empty." See also copy.
+* *move-only type*: a concrete type that is movable but not copyable.
 * *mutable*: changeable; the opposite of immutable, constant, and invariable.
 * *object*: (1) an initialized region of memory of a known type which holds a value of that type; (2) a region of memory.
 * *object code*: output from a compiler intended as input for a linker (for the linker to produce executable code).
@@ -22664,14 +22740,14 @@ More information on many topics about C++ can be found on the [Standard C++ Foun
 * *recursion*: the act of a function calling itself; see also iteration.
 * *reference*: (1) a value describing the location of a typed value in memory; (2) a variable holding such a value.
 * *regular expression*: a notation for patterns in character strings.
-* *regular*: a type that behaves similarly to built-in types like `int` and can be compared with `==`.
+* *regular*: a semiregular type that is equality-comparable (see `std::regular` concept). After a copy, the copied object compares equal to the original object. A regular type behaves similarly to built-in types like `int` and can be compared with `==`.
 In particular, an object of a regular type can be copied and the result of a copy is a separate object that compares equal to the original. See also *semiregular type*.
 * *requirement*: (1) a description of the desired behavior of a program or part of a program; (2) a description of the assumptions a function or template makes of its arguments.
 * *resource*: something that is acquired and must later be released, such as a file handle, a lock, or memory. See also handle, owner.
 * *rounding*: conversion of a value to the mathematically nearest value of a less precise type.
 * *RTTI*: Run-Time Type Information. ???
 * *scope*: the region of program text (source code) in which a name can be referred to.
-* *semiregular*: a type that behaves roughly like an built-in type like `int`, but possibly without a `==` operator. See also *regular type*.
+* *semiregular*: a concrete type that is copyable (including movable) and default-constructible (see `std::semiregular` concept). The result of a copy is an independent object with the same value as the original. A semiregular type behaves roughly like an built-in type like `int`, but possibly without a `==` operator. See also *regular type*.
 * *sequence*: elements that can be visited in a linear order.
 * *software*: a collection of pieces of code and associated data; often used interchangeably with program.
 * *source code*: code as produced by a programmer and (in principle) readable by other programmers.
@@ -22695,6 +22771,7 @@ In particular, an object of a regular type can be copied and the result of a cop
 * *unit*: (1) a standard measure that gives meaning to a value (e.g., km for a distance); (2) a distinguished (e.g., named) part of a larger whole.
 * *use case*: a specific (typically simple) use of a program meant to test its functionality and demonstrate its purpose.
 * *value*: a set of bits in memory interpreted according to a type.
+* *value type*: a term some people use to mean a regular or semiregular type.
 * *variable*: a named object of a given type; contains a value unless uninitialized.
 * *virtual function*: a member function that can be overridden in a derived class.
 * *word*: a basic unit of memory in a computer, often the unit used to hold an integer.
