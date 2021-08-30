@@ -11712,7 +11712,7 @@ We also include lossy arithmetic casts, such as from a negative floating point t
     double d = -7.9;
     unsigned u = 0;
 
-    u = d;                          // BAD
+    u = d;                               // BAD
     u = gsl::narrow_cast<unsigned>(d);   // OK (you asked for it): u becomes 4294967289
     u = gsl::narrow<unsigned>(d);        // OK: throws narrowing_error
 
