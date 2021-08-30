@@ -11712,7 +11712,7 @@ We also include lossy arithmetic casts, such as from a negative floating point t
     double d = -7.9;
     unsigned u = 0;
 
-    u = d;                               // BAD
+    u = d;                               // bad: narrowing
     u = gsl::narrow_cast<unsigned>(d);   // OK (you asked for it): u becomes 4294967289
     u = gsl::narrow<unsigned>(d);        // OK: throws narrowing_error
 
@@ -11720,7 +11720,7 @@ We also include lossy arithmetic casts, such as from a negative floating point t
 
 This rule does not apply to values that are used as a condition:
 
-    if (ptr) do_something(ptr);   // OK: ptr is used as a condition
+    if (ptr) do_something(*ptr);   // OK: ptr is used as a condition
     bool b = ptr;                 // bad: narrowing
 
 ##### Enforcement
