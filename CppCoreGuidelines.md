@@ -11721,7 +11721,7 @@ We also include lossy arithmetic casts, such as from a negative floating point t
 This rule does not apply to values that are used as a condition:
 
     if (ptr) do_something(*ptr);   // OK: ptr is used as a condition
-    bool b = ptr;                 // bad: narrowing
+    bool b = ptr;                  // bad: narrowing
 
 ##### Enforcement
 
