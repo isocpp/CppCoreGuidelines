@@ -112,7 +112,7 @@ void dangerous_process_ints(int* p, size_t n) {
 }
 ~~~
 
-A `span` supports range-`for` -- note this is zero-overhead and does not need to perform any range check, because the range-`for` loop is is known by construction not to exceed the range's bounds:
+A `span` supports range-`for` -- note this is zero-overhead and does not need to perform any range check, because the range-`for` loop is known by construction not to exceed the range's bounds:
 
 ~~~cpp
 void process_ints(span<int> s) {
