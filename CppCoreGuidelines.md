@@ -11718,7 +11718,7 @@ We also include lossy arithmetic casts, such as from a negative floating point t
 
 ##### Note
 
-This rule does not apply to values that are used as a condition:
+This rule does not apply to [contextual conversions to bool](https://en.cppreference.com/w/cpp/language/implicit_conversion#Contextual_conversions):
 
     if (ptr) do_something(*ptr);   // OK: ptr is used as a condition
     bool b = ptr;                  // bad: narrowing
