@@ -11704,17 +11704,24 @@ A key example is basic narrowing:
 
 The guidelines support library offers a `narrow_cast` operation for specifying that narrowing is acceptable and a `narrow` ("narrow if") that throws an exception if a narrowing would throw away legal values:
 
-    i = narrow_cast<int>(d);   // OK (you asked for it): narrowing: i becomes 7
-    i = narrow<int>(d);        // OK: throws narrowing_error
+    i = gsl::narrow_cast<int>(d);   // OK (you asked for it): narrowing: i becomes 7
+    i = gsl::narrow<int>(d);        // OK: throws narrowing_error
 
 We also include lossy arithmetic casts, such as from a negative floating point type to an unsigned integral type:
 
     double d = -7.9;
     unsigned u = 0;
 
-    u = d;                          // BAD
-    u = narrow_cast<unsigned>(d);   // OK (you asked for it): u becomes 4294967289
-    u = narrow<unsigned>(d);        // OK: throws narrowing_error
+    u = d;                               // bad: narrowing
+    u = gsl::narrow_cast<unsigned>(d);   // OK (you asked for it): u becomes 4294967289
+    u = gsl::narrow<unsigned>(d);        // OK: throws narrowing_error
+
+##### Note
+
+This rule does not apply to [contextual conversions to bool](https://en.cppreference.com/w/cpp/language/implicit_conversion#Contextual_conversions):
+
+    if (ptr) do_something(*ptr);   // OK: ptr is used as a condition
+    bool b = ptr;                  // bad: narrowing
 
 ##### Enforcement
 
