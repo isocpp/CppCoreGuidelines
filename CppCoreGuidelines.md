@@ -5127,6 +5127,7 @@ We can imagine one case where you could want a protected virtual destructor: Whe
 ##### Enforcement
 
 * A class with any virtual functions should have a destructor that is either public and virtual or else protected and non-virtual.
+* If a class inherits publicly from a base class, the base class should have a destructor that is either public and virtual or else protected and non-virtual.
 
 ### <a name="Rc-dtor-fail"></a>C.36: A destructor must not fail
 
