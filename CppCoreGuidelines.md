@@ -21194,8 +21194,8 @@ A `char*` that points to more than one `char` but is not a C-style string (e.g.,
 * `czstring`   // a `const char*` supposed to be a C-style string; that is, a zero-terminated sequence of `const` `char` or `nullptr`
 
 Logically, those last two aliases are not needed, but we are not always logical, and they make the distinction between a pointer to one `char` and a pointer to a C-style string explicit.
-A sequence of characters that is not assumed to be zero-terminated should be a `char*`, rather than a `zstring`.
-French accent optional.
+A sequence of characters that is not assumed to be zero-terminated should be a `span<char>`, or if that is impossible because of ABI issues a `char*`, rather than a `zstring`.
+
 
 Use `not_null<zstring>` for C-style strings that cannot be `nullptr`. ??? Do we need a name for `not_null<zstring>`? or is its ugliness a feature?
 
