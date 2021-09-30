@@ -8810,12 +8810,12 @@ If you wanted to see the bytes of an `int`, use a (named) cast:
 
     void if_you_must_pun(int& x)
     {
-        auto p = reinterpret_cast<unsigned char*>(&x);
+        auto p = reinterpret_cast<std::byte*>(&x);
         cout << p[0] << '\n';     // OK; better
         // ...
     }
 
-Accessing the result of a `reinterpret_cast` to a type different from the object's declared type is defined behavior. (Using `reinterpret_cast` is discouraged,
+Accessing the result of a `reinterpret_cast` from the object's declared type to `char*`, `unsigned char*`, or `std::byte*` is defined behavior. (Using `reinterpret_cast` is discouraged,
 but at least we can see that something tricky is going on.)
 
 ##### Note
