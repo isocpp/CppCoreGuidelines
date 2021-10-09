@@ -6163,8 +6163,7 @@ After `y = std::move(x)` the value of `y` should be the value `x` had and `x` sh
         int sz;
     };
 
-
-    X::X(X&& a)
+    X::X(X&& a) noexcept
         :p{a.p}, sz{a.sz}  // steal representation
     {
         a.p = nullptr;     // set to "empty"
@@ -6200,45 +6199,34 @@ Unless there is an exceptionally strong reason not to, make `x = std::move(y); y
 
 ##### Reason
 
-If `x = x` changes the value of `x`, people will be surprised and bad errors can occur. However, people don't usually directly write a self-assignment that turn into a move, but it can occur. However, `std::swap` is implemented using move operations so if you accidentally do `swap(a, b)` where `a` and `b` refer to the same object, failing to handle self-move could be a serious and subtle error.
+If `x = std::move(x)` changes the value of `x`, people will be surprised and bad errors can occur. However, people don't usually directly write a self-assignment that turn into a move, but it can occur. However, `std::swap` is implemented using move operations so if you accidentally do `swap(a, b)` where `a` and `b` refer to the same object, failing to handle self-move could be a serious and subtle error.
 
 ##### Example
 
-    class Foo {
-        string s;
-        int i;
-    public:
-        Foo& operator=(Foo&& a);
-        // ...
-    };
+class X {
+public:
+    X();
+    X& operator=(X&& a) noexcept;
+    // ...
+    ~X() { delete[] owning_ptr; }
+private:
+    int* owning_ptr;  // bad, but just for example.  See R.20 
+};
 
-    Foo& Foo::operator=(Foo&& a) noexcept  // OK, but there is a cost
-    {
-        if (this == &a) return *this;  // this line is redundant
-        s = std::move(a.s);
-        i = a.i;
-        return *this;
-    }
+X& X::operator=(X&& a) noexcept
+{
+    auto* temp = a.owning_ptr;
+    a.owning_ptr = nullptr;
+    delete owning_ptr;
+    owning_ptr = temp;
+    return *this;
+}
 
-The one-in-a-million argument against `if (this == &a) return *this;` tests from the discussion of [self-assignment](#Rc-copy-self) is even more relevant for self-move.
+The argument from the discussion of [self-assignment](#Rc-copy-self) against a `if (this == &a) return *this;` test is even more relevant for self-move.
 
 ##### Note
 
-There is no known general way of avoiding an `if (this == &a) return *this;` test for a move assignment and still get a correct answer (i.e., after `x = x` the value of `x` is unchanged).
-
-##### Note
-
-The ISO standard guarantees only a "valid but unspecified" state for the standard-library containers. Apparently this has not been a problem in about 10 years of experimental and production use. Please contact the editors if you find a counter example. The rule here is more caution and insists on complete safety.
-
-##### Example
-
-Here is a way to move a pointer without a test (imagine it as code in the implementation a move assignment):
-
-    // move from other.ptr to this->ptr
-    T* temp = other.ptr;
-    other.ptr = nullptr;
-    delete ptr;
-    ptr = temp;
+The default generated move assignment operator will correctly handle self-assignment if all members correctly handle self-assignment.
 
 ##### Enforcement
 
