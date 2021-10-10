@@ -8062,34 +8062,45 @@ Casting to a reference expresses that you intend to end up with a valid object, 
 
 ##### Example
 
-    struct A // some interface
+    class A // some interface
     {
+    public:
         virtual void f() = 0; // make A polymorphic
     };
 
-    struct B : public A
+    class B : public A
     {
+    public:
         void f() override {}
         void member_fn() {}
+
+        // return pointer to base class
+        static std::shared_ptr<A> create()
+        {
+            return std::make_shared<B>();
+        }
     };
 
-    struct SimilarToB
+    class SimilarToB
     {
+    public:
         void member_fn() {}
     };
 
     // if you can't avoid casting
 
-    A* ptr = new B;
+    auto ptr = B::create();
 
     // bad, cast successful, but no check
-    dynamic_cast<B*>(ptr)->member_fn();
+    dynamic_cast<B*>(ptr.get())->member_fn();
     // bad, cast fails, call of member_fn is undefined behavior.
-    dynamic_cast<SimilarToB*>(ptr)->member_fn();
+    dynamic_cast<SimilarToB*>(ptr.get())->member_fn();
+    // still undefined behavior
+    std::dynamic_pointer_cast<SimilarToB>(ptr)->member_fn();
 
     // better, runtime check
     dynamic_cast<B&>(*ptr).member_fn();
-    // better, instead of undefined behavior, throw std::bad_cast, so you can find the bug.
+    // better, instead of undefined behavior, std::bad_cast is thrown, so you can find the bug.
     dynamic_cast<SimilarToB&>(*ptr).member_fn();
 
 
