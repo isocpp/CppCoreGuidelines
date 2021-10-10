@@ -8105,6 +8105,7 @@ Casting to a reference expresses that you intend to end up with a valid object, 
 
 
 ##### Notes
+
 Compile with -fsanitize=undefined (GCC and Clang) to find undefined behavior.
 
 ##### Enforcement
