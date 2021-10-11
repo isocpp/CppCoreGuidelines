@@ -6203,24 +6203,30 @@ If `x = std::move(x)` changes the value of `x`, people will be surprised and bad
 
 ##### Example
 
-class X {
-public:
-    X();
-    X& operator=(X&& a) noexcept;
-    // ...
-    ~X() { delete[] owning_ptr; }
-private:
-    int* owning_ptr;  // bad, but just for example.  See R.20 
-};
+If all of the members of a type are safe for move assignment, the default generated move assignment operator will be safe too.
 
-X& X::operator=(X&& a) noexcept
-{
-    auto* temp = a.owning_ptr;
-    a.owning_ptr = nullptr;
-    delete owning_ptr;
-    owning_ptr = temp;
-    return *this;
-}
+    Foo& operator=(Foo&& a) = default;
+
+Otherwise, the manually written move assignment operate must be made safe for self-assignement.
+
+    class X {
+    public:
+        X();
+        X& operator=(X&& a) noexcept;
+        // ...
+        ~X() { delete[] owning_ptr; }
+    private:
+        int* owning_ptr;  // bad, but just for example.  See R.20 
+    };
+
+    X& X::operator=(X&& a) noexcept
+    {
+        auto* temp = a.owning_ptr;
+        a.owning_ptr = nullptr;
+        delete owning_ptr;
+        owning_ptr = temp;
+        return *this;
+    }
 
 The argument from the discussion of [self-assignment](#Rc-copy-self) against a `if (this == &a) return *this;` test is even more relevant for self-move.
 
