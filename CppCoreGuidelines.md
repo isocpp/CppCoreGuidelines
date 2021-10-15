@@ -10477,7 +10477,7 @@ When concepts become available, we can (and should) be more specific about the t
 
     std::set<int> values;
     // ...
-    auto [ position, newly_inserted ] = values.insert(5);   // break out the members of the div_t result
+    auto [ position, newly_inserted ] = values.insert(5);   // break out the members of the std::pair
 
 ##### Enforcement
 
