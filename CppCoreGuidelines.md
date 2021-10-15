@@ -3078,13 +3078,12 @@ Such older advice is now obsolete; it does not add value, and it interferes with
 
     const vector<int> fct();    // bad: that "const" is more trouble than it is worth
 
-    void g(const vector<int>& vx)
+    void g(vector<int>& vx)
     {
-        vector<int> vy;
         // ...
         fct() = vx;   // prevented by the "const"
         // ...
-        vy = fct(); // expensive copy: move semantics suppressed by the "const"
+        vx = fct(); // expensive copy: move semantics suppressed by the "const"
         // ...
     }
 
