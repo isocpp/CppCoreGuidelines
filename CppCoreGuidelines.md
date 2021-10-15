@@ -10475,7 +10475,9 @@ When concepts become available, we can (and should) be more specific about the t
 
 ##### Example (C++17)
 
-    auto [ quotient, remainder ] = div(123456, 73);   // break out the members of the div_t result
+    std::set<int> values;
+    // ...
+    auto [ position, newly_inserted ] = values.insert(5);   // break out the members of the div_t result
 
 ##### Enforcement
 
