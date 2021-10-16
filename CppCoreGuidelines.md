@@ -3078,12 +3078,13 @@ Such older advice is now obsolete; it does not add value, and it interferes with
 
     const vector<int> fct();    // bad: that "const" is more trouble than it is worth
 
-    vector<int> g(const vector<int>& vx)
+    void g(vector<int>& vx)
     {
         // ...
         fct() = vx;   // prevented by the "const"
         // ...
-        return fct(); // expensive copy: move semantics suppressed by the "const"
+        vx = fct(); // expensive copy: move semantics suppressed by the "const"
+        // ...
     }
 
 The argument for adding `const` to a return value is that it prevents (very rare) accidental access to a temporary.
