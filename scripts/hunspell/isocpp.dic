@@ -15,7 +15,6 @@
 98's
 à
 a1
-A
 A1
 a2
 A2
@@ -54,7 +53,6 @@ asio
 AST
 async
 AUTOSAR
-B
 'B'
 b2
 BDE
@@ -202,7 +200,6 @@ Foobar
 FOOBAR
 fopen
 fs
-fsanitize
 func
 func1
 fx
@@ -308,7 +305,6 @@ mallocfree
 Mathematizing
 maul2
 md
-member_fn
 memberinit
 members'
 memcmp
@@ -517,7 +513,6 @@ sharedptrparam
 setjmp
 SignedIntegral
 signedness
-SimilarToB
 simpleFunc
 'size'
 sizeof
