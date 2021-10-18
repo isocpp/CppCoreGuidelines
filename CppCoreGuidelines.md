@@ -8063,7 +8063,10 @@ Casting to a reference expresses that you intend to end up with a valid object, 
 
 ##### Example
 
-    ???
+    std::string f(Base& b)
+    {
+        return dynamic_cast<Derived&>(b).to_string();
+    }
 
 ##### Enforcement
 
