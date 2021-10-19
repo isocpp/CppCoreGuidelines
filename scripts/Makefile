@@ -19,7 +19,8 @@ check-references \
 check-notabs \
 hunspell-check \
 cpplint-all \
-check-badchars
+check-badchars \
+build-index
 
 $(BUILD_DIR):
 	@mkdir -p $(BUILD_DIR)
@@ -36,6 +37,12 @@ distclean:
 
 
 #### check markdown
+
+.PHONY: build-index
+build-index: nodejs/node_modules/remark nodejs/remark/.remarkrc-index-page $(SOURCEPATH) $(BUILD_DIR) Makefile
+	echo '##################### Markdown check ##################'
+## run remark, paste output to temporary file
+	cd nodejs; ./node_modules/.bin/remark ../$(SOURCEPATH) --no-color -q --config-path ./remark/.remarkrc-index-page 1> ../$(BUILD_DIR)/$(SOURCEFILE).indexed --frail
 
 ## run remark markdown checker based on configuration in .remarkrc
 .PHONY: check-markdown

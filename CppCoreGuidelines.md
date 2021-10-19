@@ -2,6 +2,7 @@
 
 June 17, 2021
 
+# put-index-page-here
 
 Editors:
 
@@ -183,7 +184,7 @@ You can look at design concepts used to express the rules:
 * postcondition: ???
 * resource: ???
 
-# <a name="S-abstract"></a>Abstract
+# <a name="S-abstract" tags="intro,abstract"></a>Abstract
 
 This document is a set of guidelines for using C++ well.
 The aim of this document is to help people to use modern C++ effectively.
@@ -483,7 +484,7 @@ Philosophical rules are generally not mechanically checkable.
 However, individual rules reflecting these philosophical themes are.
 Without a philosophical basis, the more concrete/specific/checkable rules lack rationale.
 
-### <a name="Rp-direct"></a>P.1: Express ideas directly in code
+### <a name="Rp-direct" tags="code clarity"></a>P.1: Express ideas directly in code
 
 ##### Reason
 
@@ -1248,7 +1249,7 @@ Interface rule summary:
 * [E: Error handling](#S-errors)
 * [T: Templates and generic programming](#S-templates)
 
-### <a name="Ri-explicit"></a>I.1: Make interfaces explicit
+### <a name="Ri-explicit" tags="interfaces"></a>I.1: Make interfaces explicit
 
 ##### Reason
 
@@ -1292,7 +1293,7 @@ Functions can be function templates and sets of functions can be classes or clas
 * (Simple) A function should not make control-flow decisions based on the values of variables declared at namespace scope.
 * (Simple) A function should not write to variables declared at namespace scope.
 
-### <a name="Ri-global"></a>I.2: Avoid non-`const` global variables
+### <a name="Ri-global" tags="interfaces,const"></a>I.2: Avoid non-`const` global variables
 
 ##### Reason
 
@@ -1356,7 +1357,7 @@ The rule is "avoid", not "don't use." Of course there will be (rare) exceptions,
 (Simple) Report all non-`const` variables declared at namespace scope and global pointers/references to non-const data.
 
 
-### <a name="Ri-singleton"></a>I.3: Avoid singletons
+### <a name="Ri-singleton" tags="singleton,global variables"></a>I.3: Avoid singletons
 
 ##### Reason
 
@@ -1417,7 +1418,7 @@ Very hard in general.
 * Look for classes for which only a single object is created (by counting objects or by examining constructors).
 * If a class X has a public static function that contains a function-local static of the class' type X and returns a pointer or reference to it, ban that.
 
-### <a name="Ri-typed"></a>I.4: Make interfaces precisely and strongly typed
+### <a name="Ri-typed" tags="interfaces"></a>I.4: Make interfaces precisely and strongly typed
 
 ##### Reason
 
