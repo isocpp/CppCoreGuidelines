@@ -40,7 +40,7 @@ def main():
     parser.add_argument('codedir',
                         help='where to put codeblocks')
     args = parser.parse_args()
-    
+
     # ensure folder exists
     if not os.path.exists(args.codedir):
         os.makedirs(args.codedir)
@@ -52,9 +52,8 @@ def main():
     code_block_index = 0
     last_header = ''
     linenum = 0
-    with io.open(args.sourcefile, 'r', encoding="utf8") as read_filehandle:
-        with io.open(args.targetfile, 'w', encoding="utf8") as text_filehandle:
-            print(args.sourcefile)
+    with io.open(args.sourcefile, 'r') as read_filehandle:
+        with io.open(args.targetfile, 'w') as text_filehandle:
             for line in read_filehandle:
                 linenum += 1
                 indent_depth = is_code(line)
@@ -120,11 +119,6 @@ def process_code(read_filehandle, text_filehandle, line, linenum, sourcefile, co
         except StopIteration:
             line = ''
             break
-    
-    #getting an "invalid argument" for paths with * in them
-    if sys.platform == "win32": 
-      name = name.replace("*", "star")
-      
     codefile = os.path.join(codedir, '%s%s.cpp' % (name, index))
     if fenced:
         text_filehandle.write('\n')
@@ -153,8 +147,7 @@ def write_with_harness(codefile, sourcefile, start_linenum, linebuffer):
     # add commonly used headers, so that lines can likely compile.
     # This is work in progress, the main issue remains handling class
     # declarations in in-function code differently
-
-    with io.open(codefile, 'w', encoding="utf8") as code_filehandle:
+    with io.open(codefile, 'w') as code_filehandle:
         code_filehandle.write('''\
 #include<stdio.h>      // by md-split
 #include<stdlib.h>     // by md-split
@@ -208,7 +201,7 @@ def get_marker(line):
     return None
 
 def line_length(filename):
-    return sum(1 for line in open(filename, encoding="utf8"))
+    return sum(1 for line in open(filename))
 
 if __name__ == '__main__':
     main()
