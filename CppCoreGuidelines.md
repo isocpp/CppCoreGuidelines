@@ -16080,6 +16080,7 @@ Catch `throw` and `catch` of a built-in type. Maybe warn about `throw` and `catc
 
 ##### Reason
 
+Throwing by value (not by pointer) and catching by reference prevents copying, especially slicing base subobjects.
 
 ##### Example; bad
 
