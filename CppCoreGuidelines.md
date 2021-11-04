@@ -15627,7 +15627,7 @@ Error-handling rule summary:
 * [E.12: Use `noexcept` when exiting a function because of a `throw` is impossible or unacceptable](#Re-noexcept)
 * [E.13: Never throw while being the direct owner of an object](#Re-never-throw)
 * [E.14: Use purpose-designed user-defined types as exceptions (not built-in types)](#Re-exception-types)
-* [E.15: Catch exceptions from a hierarchy by reference](#Re-exception-ref)
+* [E.15: Throw by value, catch exceptions from a hierarchy reference](#Re-exception-ref)
 * [E.16: Destructors, deallocation, and `swap` must never fail](#Re-never-fail)
 * [E.17: Don't try to catch every exception in every function](#Re-not-always)
 * [E.18: Minimize the use of explicit `try`/`catch`](#Re-catch)
@@ -16076,33 +16076,38 @@ The standard-library classes derived from `exception` should be used only as bas
 
 Catch `throw` and `catch` of a built-in type. Maybe warn about `throw` and `catch` using a standard-library `exception` type. Obviously, exceptions derived from the `std::exception` hierarchy are fine.
 
-### <a name="Re-exception-ref"></a>E.15: Catch exceptions from a hierarchy by reference
+### <a name="Re-exception-ref"></a>E.15: Throw by value, catch exceptions from a hierarchy reference
 
 ##### Reason
 
-To prevent slicing.
 
-##### Example
+##### Example; bad
 
     void f()
     {
         try {
             // ...
+            throw new widget{}; // don't: throw by value not by raw pointer
+            // ...
         }
-        catch (exception e) {   // don't: might slice
+        catch (base_class e) {  // don't: might slice
             // ...
         }
     }
 
 Instead, use a reference:
 
-    catch (exception& e) { /* ... */ }
+    catch (base_class& e) { /* ... */ }
 
 or - typically better still - a `const` reference:
 
-    catch (const exception& e) { /* ... */ }
+    catch (const base_class& e) { /* ... */ }
 
 Most handlers do not modify their exception and in general we [recommend use of `const`](#Res-const).
+
+##### Note
+
+Catch by value can be appropriate for a small value type such as an `enum` value.
 
 ##### Note
 
@@ -16110,7 +16115,9 @@ To rethrow a caught exception use `throw;` not `throw e;`. Using `throw e;` woul
 
 ##### Enforcement
 
-Flag by-value exceptions if their types are part of a hierarchy (could require whole-program analysis to be perfect).
+- Flag catching by value of a type that has a virtual function.
+- Flag throwing raw pointers.
+
 
 ### <a name="Re-never-fail"></a>E.16: Destructors, deallocation, and `swap` must never fail
 
