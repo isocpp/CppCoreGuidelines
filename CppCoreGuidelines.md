@@ -7480,17 +7480,24 @@ Copying a polymorphic class is discouraged due to the slicing problem, see [C.67
 
     class B {
     public:
-        virtual owner<B*> clone() = 0;
         B() = default;
         virtual ~B() = default;
-        B(const B&) = delete;
-        B& operator=(const B&) = delete;
+        virtual gsl::owner<B*> clone() const = 0;
+    protected:
+         B(const B&) = default;
+         B& operator=(const B&) = default;
+         B(B&&) = default;
+         B& operator=(B&&) = default;
+        // ...
     };
 
-    class D : public B {
+    class D final : public B {
     public:
-        owner<D*> clone() override;
-        ~D() override;
+        ~D() override {};
+        gsl::owner<D*> clone() const override
+        {
+            return new D{*this};
+        };
     };
 
 Generally, it is recommended to use smart pointers to represent ownership (see [R.20](#Rr-owner)). However, because of language rules, the covariant return type cannot be a smart pointer: `D::clone` can't return a `unique_ptr<D>` while `B::clone` returns `unique_ptr<B>`. Therefore, you either need to consistently return `unique_ptr<B>` in all overrides, or use `owner<>` utility from the [Guidelines Support Library](#SS-views).
