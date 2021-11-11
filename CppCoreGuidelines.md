@@ -7491,7 +7491,7 @@ Copying a polymorphic class is discouraged due to the slicing problem, see [C.67
         // ...
     };
 
-    class D final : public B {
+    class D : public B {
     public:
         ~D() override {};
         gsl::owner<D*> clone() const override
