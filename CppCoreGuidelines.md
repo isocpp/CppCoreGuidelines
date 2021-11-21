@@ -16010,80 +16010,55 @@ Sometimes, [`finally()`](#Re-finally) can make such unsystematic cleanup a bit m
 
 ##### Reason
 
-A user-defined type is unlikely to clash with other people's exceptions.
+A user-defined type can better transmit information about an error to a hanlder.  Information
+can be encoded into the type itself and the type is unlikely to clash with other people's exceptions.
 
 ##### Example
 
-    void my_code()
+    throw 7; // bad
+
+    throw "something bad";  // bad
+
+    throw std::exception{}; // bad - no info
+
+Deriving from '''std::exception''' give the flexibility to catch the specific exception or handle generally through '''std::exception'''
+
+    class MyException : public std::runtime_error
     {
+    public:
+        MyException(const string& msg) : std::runtime_error{msg} {}
         // ...
-        throw Moonphase_error{};
-        // ...
-    }
+    };
 
-    void your_code()
-    {
-        try {
-            // ...
-            my_code();
-            // ...
-        }
-        catch(const Bufferpool_exhausted&) {
-            // ...
-        }
-    }
+    // ...
 
-##### Example, don't
+    throw MyException{"something bad"};  // good
 
-    void my_code()     // Don't
-    {
-        // ...
-        throw 7;       // 7 means "moon in the 4th quarter"
-        // ...
-    }
+    // ...
 
-    void your_code()   // Don't
-    {
-        try {
-            // ...
-            my_code();
-            // ...
-        }
-        catch(int i) {  // i == 7 means "input buffer too small"
-            // ...
-        }
-    }
+Exceptions do not need to be derived from '''std::exception'''.
 
-##### Note
+    class MyCustomError {};  // not derived from std::exception
 
-The standard-library classes derived from `exception` should be used only as base classes or for exceptions that require only "generic" handling. Like built-in types, their use could clash with other people's use of them.
+    // ...
 
-##### Example, don't
+    throw MyCustomError{};  // good - handlers catch this type
 
-    void my_code()   // Don't
-    {
-        // ...
-        throw runtime_error{"moon in the 4th quarter"};
-        // ...
-    }
+Library types derived from std::exception can be used as generic exceptions if
+no useful information can be added at the point of detection.
 
-    void your_code()   // Don't
-    {
-        try {
-            // ...
-            my_code();
-            // ...
-        }
-        catch(const runtime_error&) {   // runtime_error means "input buffer too small"
-            // ...
-        }
-    }
+    throw std::runtime_error("someting bad"); // good
+    // ...
+    throw std::invalid_argument("i is not even"); // good
 
-**See also**: [Discussion](#Sd-???)
+'''enum''' classes are also allowed
+    enum class alert {RED, YELLOW, GREEN};
+
+    throw alert::RED; // good
 
 ##### Enforcement
 
-Catch `throw` and `catch` of a built-in type. Maybe warn about `throw` and `catch` using a standard-library `exception` type. Obviously, exceptions derived from the `std::exception` hierarchy are fine.
+Catch throw of built-in types and std::exception.
 
 ### <a name="Re-exception-ref"></a>E.15: Throw by value, catch exceptions from a hierarchy reference
 
