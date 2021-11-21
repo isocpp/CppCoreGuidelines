@@ -16021,7 +16021,7 @@ can be encoded into the type itself and the type is unlikely to clash with other
 
     throw std::exception{}; // bad - no info
 
-Deriving from '''std::exception''' give the flexibility to catch the specific exception or handle generally through '''std::exception'''
+Deriving from `std::exception` gives the flexibility to catch the specific exception or handle generally through `std::exception`
 
     class MyException : public std::runtime_error
     {
@@ -16034,15 +16034,13 @@ Deriving from '''std::exception''' give the flexibility to catch the specific ex
 
     throw MyException{"something bad"};  // good
 
-    // ...
-
-Exceptions do not need to be derived from '''std::exception'''.
+Exceptions do not need to be derived from `std::exception`.
 
     class MyCustomError {};  // not derived from std::exception
 
     // ...
 
-    throw MyCustomError{};  // good - handlers catch this type
+    throw MyCustomError{};  // good - handlers must catch this type (or ...)
 
 Library types derived from std::exception can be used as generic exceptions if
 no useful information can be added at the point of detection.
@@ -16051,7 +16049,8 @@ no useful information can be added at the point of detection.
     // ...
     throw std::invalid_argument("i is not even"); // good
 
-'''enum''' classes are also allowed
+`enum` classes are also allowed
+
     enum class alert {RED, YELLOW, GREEN};
 
     throw alert::RED; // good
