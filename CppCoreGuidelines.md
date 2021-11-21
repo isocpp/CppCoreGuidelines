@@ -16010,7 +16010,7 @@ Sometimes, [`finally()`](#Re-finally) can make such unsystematic cleanup a bit m
 
 ##### Reason
 
-A user-defined type can better transmit information about an error to a hanlder.  Information
+A user-defined type can better transmit information about an error to a handler.  Information
 can be encoded into the type itself and the type is unlikely to clash with other people's exceptions.
 
 ##### Example
