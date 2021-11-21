@@ -16036,7 +16036,7 @@ Deriving from `std::exception` gives the flexibility to catch the specific excep
 
 Exceptions do not need to be derived from `std::exception`.
 
-    class MyCustomError {};  // not derived from std::exception
+    class MyCustomError final {};  // not derived from std::exception
 
     // ...
 
