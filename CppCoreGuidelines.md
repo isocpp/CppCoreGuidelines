@@ -11773,7 +11773,7 @@ Flag uses of `0` and `NULL` for pointers. The transformation might be helped by 
 
 ##### Reason
 
-Casts are a well-known source of errors. Make some optimizations unreliable.
+Casts are a well-known source of errors and make some optimizations unreliable.
 
 ##### Example, bad
 
