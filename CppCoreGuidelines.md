@@ -2846,15 +2846,28 @@ Not possible.
 
 Readability.
 Suppression of unused parameter warnings.
-If parameters are conditionally unused depending on the translation unit, declare them with the `[[maybe_unused]]` attribute.
 
 ##### Example
 
-    X* find(map<Blob>& m, const string& s, Hint);   // once upon a time, a hint was used
+    X* find(set<Blob>& s, const string& str, Hint);   // once upon a time, a hint was used
 
 ##### Note
 
 Allowing parameters to be unnamed was introduced in the early 1980 to address this problem.
+
+If parameters are conditionally unused depending on the translation unit, declare them with the `[[maybe_unused]]` attribute.
+For example:
+    X* find(set<Blob>& s, const string& str, [[maybe_unused]] Hint h) 
+    { 
+        #if DEBUG
+            // a hint is used only in debug builds
+        #endif
+
+        if constexpr (Blob::MaxSize > 1000)
+        {
+            // a hint is used only if blobs are of a certain size
+        }
+    }
 
 ##### Enforcement
 
