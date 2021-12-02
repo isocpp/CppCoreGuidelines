@@ -2846,6 +2846,7 @@ Not possible.
 
 Readability.
 Suppression of unused parameter warnings.
+If parameters are conditionally unused depending on the translation unit, declare them with the `[[maybe_unused]]` attribute.
 
 ##### Example
 
