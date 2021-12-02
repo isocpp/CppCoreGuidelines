@@ -16042,7 +16042,7 @@ Exceptions do not need to be derived from `std::exception`:
 
     throw MyCustomError{};  // good - handlers must catch this type (or ...)
 
-Library types derived from std::exception can be used as generic exceptions if
+Library types derived from `std::exception` can be used as generic exceptions if
 no useful information can be added at the point of detection:
 
     throw std::runtime_error("someting bad"); // good
@@ -16059,7 +16059,7 @@ no useful information can be added at the point of detection:
 
 ##### Enforcement
 
-Catch throw of built-in types and std::exception.
+Catch `throw` of built-in types and `std::exception`.
 
 ### <a name="Re-exception-ref"></a>E.15: Throw by value, catch exceptions from a hierarchy reference
 
