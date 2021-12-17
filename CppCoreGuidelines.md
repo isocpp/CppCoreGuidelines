@@ -3803,6 +3803,24 @@ With guaranteed copy elision, it is now almost always a pessimization to express
       return result;
     }
 
+##### Exception
+
+Prior to C++20, subobjects of local variables are not considered as move candidates. Therefore, it is acceptable to return a moved subobject of a local variable. 
+
+    std::string f()
+    {
+        auto pp = std::make_pair("Hello, world! I am a long string."s, 1.0);
+        return std::move(pp.first);
+    }
+
+Since structured-bindings denote subobjects, the same applies to structured bindings.
+
+    std::string f()
+    {
+        auto [msg, val] = std::make_pair("Hello, world! I am a long string."s, 1.0);
+        return std::move(msg);
+    }
+
 ##### Enforcement
 
 This should be enforced by tooling by checking the return expression .
