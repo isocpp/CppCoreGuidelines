@@ -701,7 +701,7 @@ You don't need to write error handlers for errors caught at compile time.
 
     // Int is an alias used for integers
     int bits = 0;         // don't: avoidable code
-    for (Int i = 1; i; i <<= 1)
+    for (int i = 1; i; i <<= 1)
         ++bits;
     if (bits < 32)
         cerr << "Int too small\n";
@@ -709,7 +709,7 @@ You don't need to write error handlers for errors caught at compile time.
 This example fails to achieve what it is trying to achieve (because overflow is undefined) and should be replaced with a simple `static_assert`:
 
     // Int is an alias used for integers
-    static_assert(sizeof(Int) >= 4);    // do: compile-time check
+    static_assert(sizeof(int) >= 4);    // do: compile-time check
 
 Or better still just use the type system and replace `Int` with `int32_t`.
 
