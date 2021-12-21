@@ -140,6 +140,7 @@ d2
 D2
 d2's
 dag
+DataRecord
 dcl
 dd
 de
@@ -553,6 +554,7 @@ Stroustrup94
 Stroustrup's
 struct
 structs
+subobjects
 suboperations
 subsetting
 sum1

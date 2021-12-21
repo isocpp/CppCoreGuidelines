@@ -7481,17 +7481,23 @@ Copying a polymorphic class is discouraged due to the slicing problem, see [C.67
 
     class B {
     public:
-        virtual owner<B*> clone() = 0;
         B() = default;
         virtual ~B() = default;
-        B(const B&) = delete;
-        B& operator=(const B&) = delete;
+        virtual gsl::owner<B*> clone() const = 0;
+    protected:
+         B(const B&) = default;
+         B& operator=(const B&) = default;
+         B(B&&) = default;
+         B& operator=(B&&) = default;
+        // ...
     };
 
     class D : public B {
     public:
-        owner<D*> clone() override;
-        ~D() override;
+        gsl::owner<D*> clone() const override
+        {
+            return new D{*this};
+        };
     };
 
 Generally, it is recommended to use smart pointers to represent ownership (see [R.20](#Rr-owner)). However, because of language rules, the covariant return type cannot be a smart pointer: `D::clone` can't return a `unique_ptr<D>` while `B::clone` returns `unique_ptr<B>`. Therefore, you either need to consistently return `unique_ptr<B>` in all overrides, or use `owner<>` utility from the [Guidelines Support Library](#SS-views).
@@ -10450,7 +10456,10 @@ Flag variable and constant declarations with multiple declarators (e.g., `int* p
 
 Consider:
 
-    auto p = v.begin();   // vector<int>::iterator
+    auto p = v.begin();      // vector<DataRecord>::iterator
+    auto z1 = v[3];          // makes copy of DataRecord
+    auto& z2 = v[3];         // avoids copy
+    const auto& z3 = v[3];   // const and avoids copy
     auto h = t.future();
     auto q = make_unique<int[]>(s);
     auto f = [](int x) { return x + 10; };
@@ -11765,7 +11774,7 @@ Flag uses of `0` and `NULL` for pointers. The transformation might be helped by 
 
 ##### Reason
 
-Casts are a well-known source of errors. Make some optimizations unreliable.
+Casts are a well-known source of errors and make some optimizations unreliable.
 
 ##### Example, bad
 
@@ -15628,7 +15637,7 @@ Error-handling rule summary:
 * [E.12: Use `noexcept` when exiting a function because of a `throw` is impossible or unacceptable](#Re-noexcept)
 * [E.13: Never throw while being the direct owner of an object](#Re-never-throw)
 * [E.14: Use purpose-designed user-defined types as exceptions (not built-in types)](#Re-exception-types)
-* [E.15: Catch exceptions from a hierarchy by reference](#Re-exception-ref)
+* [E.15: Throw by value, catch exceptions from a hierarchy reference](#Re-exception-ref)
 * [E.16: Destructors, deallocation, and `swap` must never fail](#Re-never-fail)
 * [E.17: Don't try to catch every exception in every function](#Re-not-always)
 * [E.18: Minimize the use of explicit `try`/`catch`](#Re-catch)
@@ -16077,33 +16086,39 @@ The standard-library classes derived from `exception` should be used only as bas
 
 Catch `throw` and `catch` of a built-in type. Maybe warn about `throw` and `catch` using a standard-library `exception` type. Obviously, exceptions derived from the `std::exception` hierarchy are fine.
 
-### <a name="Re-exception-ref"></a>E.15: Catch exceptions from a hierarchy by reference
+### <a name="Re-exception-ref"></a>E.15: Throw by value, catch exceptions from a hierarchy reference
 
 ##### Reason
 
-To prevent slicing.
+Throwing by value (not by pointer) and catching by reference prevents copying, especially slicing base subobjects.
 
-##### Example
+##### Example; bad
 
     void f()
     {
         try {
             // ...
+            throw new widget{}; // don't: throw by value not by raw pointer
+            // ...
         }
-        catch (exception e) {   // don't: might slice
+        catch (base_class e) {  // don't: might slice
             // ...
         }
     }
 
 Instead, use a reference:
 
-    catch (exception& e) { /* ... */ }
+    catch (base_class& e) { /* ... */ }
 
 or - typically better still - a `const` reference:
 
-    catch (const exception& e) { /* ... */ }
+    catch (const base_class& e) { /* ... */ }
 
 Most handlers do not modify their exception and in general we [recommend use of `const`](#Res-const).
+
+##### Note
+
+Catch by value can be appropriate for a small value type such as an `enum` value.
 
 ##### Note
 
@@ -16111,7 +16126,8 @@ To rethrow a caught exception use `throw;` not `throw e;`. Using `throw e;` woul
 
 ##### Enforcement
 
-Flag by-value exceptions if their types are part of a hierarchy (could require whole-program analysis to be perfect).
+* Flag catching by value of a type that has a virtual function.
+* Flag throwing raw pointers.
 
 ### <a name="Re-never-fail"></a>E.16: Destructors, deallocation, and `swap` must never fail
 
