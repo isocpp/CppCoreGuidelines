@@ -2,8 +2,6 @@
 
 June 17, 2021
 
-# put-index-page-here
-
 Editors:
 
 * [Bjarne Stroustrup](http://www.stroustrup.com)
@@ -45,6 +43,7 @@ You can [read an explanation of the scope and structure of this Guide](#S-abstra
 * [CPL: C-style programming](#S-cpl)
 * [SF: Source files](#S-source)
 * [SL: The Standard Library](#S-stdlib)
+* [Index](#indexpage)
 
 Supporting sections:
 
@@ -22926,3 +22925,8 @@ Alternatively, we will decide that no change is needed and delete the entry.
   \[Sutter04]:        H. Sutter. Exceptional C++ Style (Addison-Wesley, 2004).
 * <a name="Taligent94"></a>
   \[Taligent94]: Taligent's Guide to Designing Programs (Addison-Wesley, 1994).
+
+## <a name="indexpage"></a>Index
+
+# put-index-page-here
+
