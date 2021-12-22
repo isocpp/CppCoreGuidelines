@@ -43,7 +43,7 @@ You can [read an explanation of the scope and structure of this Guide](#S-abstra
 * [CPL: C-style programming](#S-cpl)
 * [SF: Source files](#S-source)
 * [SL: The Standard Library](#S-stdlib)
-* [Index](#indexpage)
+* [Index](#I-index)
 
 Supporting sections:
 
@@ -22926,7 +22926,7 @@ Alternatively, we will decide that no change is needed and delete the entry.
 * <a name="Taligent94"></a>
   \[Taligent94]: Taligent's Guide to Designing Programs (Addison-Wesley, 1994).
 
-## <a name="indexpage"></a>Index
+## <a name="I-index"></a>Index
 
 # put-index-page-here
 

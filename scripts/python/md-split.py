@@ -5,10 +5,15 @@
 
 from __future__ import absolute_import, print_function, unicode_literals
 
+import sys
 import os
 import shutil
 import io
 import argparse
+
+# default text encoding
+ENCODING_INPUT = "utf8"
+ENCODING_OUTPUT = "utf8"
 
 import re, cgi
 TAG_REGEX = re.compile(r'(<!--.*?-->|<[^>]*>)')
@@ -52,8 +57,8 @@ def main():
     code_block_index = 0
     last_header = ''
     linenum = 0
-    with io.open(args.sourcefile, 'r') as read_filehandle:
-        with io.open(args.targetfile, 'w') as text_filehandle:
+    with io.open(args.sourcefile, 'r', encoding=ENCODING_INPUT) as read_filehandle:
+        with io.open(args.targetfile, 'w', encoding=ENCODING_OUTPUT) as text_filehandle:
             for line in read_filehandle:
                 linenum += 1
                 indent_depth = is_code(line)
@@ -147,7 +152,12 @@ def write_with_harness(codefile, sourcefile, start_linenum, linebuffer):
     # add commonly used headers, so that lines can likely compile.
     # This is work in progress, the main issue remains handling class
     # declarations in in-function code differently
-    with io.open(codefile, 'w') as code_filehandle:
+    
+    # windows cannot handle * in filenames
+    if "win" in sys.platform:
+      codefile = codefile.replace("*", "star")
+    
+    with io.open(codefile, 'w', encoding=ENCODING_OUTPUT) as code_filehandle:
         code_filehandle.write('''\
 #include<stdio.h>      // by md-split
 #include<stdlib.h>     // by md-split
@@ -201,7 +211,7 @@ def get_marker(line):
     return None
 
 def line_length(filename):
-    return sum(1 for line in open(filename))
+    return sum(1 for line in open(filename, encoding=ENCODING_INPUT))
 
 if __name__ == '__main__':
     main()

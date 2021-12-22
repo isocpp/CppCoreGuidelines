@@ -22,6 +22,19 @@ cpplint-all \
 check-badchars \
 build-index
 
+#Like all, but skips hunspell
+#which is broken on windows (at least when using msys tools,
+#didn't check cygwin or WSL).  It actually breaks on multi-byte
+#utf8 codepoints.
+
+nospell: \
+check-markdown \
+check-references \
+check-notabs \
+cpplint-all \
+check-badchars \
+build-index
+
 $(BUILD_DIR):
 	@mkdir -p $(BUILD_DIR)
 
