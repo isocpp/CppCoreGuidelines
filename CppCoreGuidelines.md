@@ -2031,7 +2031,7 @@ It is usually best to avoid global (namespace scope) objects altogether.
 * Flag initializers of globals that call non-`constexpr` functions
 * Flag initializers of globals that access `extern` objects
 
-### <a name="Ri-nargs" tags="code clarity,function,arguments"></a>I.23: Keep the number of function arguments low
+### <a name="Ri-nargs" tags="code clarity,function"></a>I.23: Keep the number of function arguments low
 
 ##### Reason
 
@@ -2108,7 +2108,7 @@ There are functions that are best expressed with four individual parameters, but
 * Warn when a function declares two iterators (including pointers) of the same type instead of a range or a view.
 * (Not enforceable) This is a philosophical guideline that is infeasible to check directly.
 
-### <a name="Ri-unrelated" tags="function,arguments"></a>I.24: Avoid adjacent parameters that can be invoked by the same arguments in either order with different meaning
+### <a name="Ri-unrelated" tags="function"></a>I.24: Avoid adjacent parameters that can be invoked by the same arguments in either order with different meaning
 
 ##### Reason
 
@@ -2371,7 +2371,7 @@ Parameter passing semantic rules:
 * [F.26: Use a `unique_ptr<T>` to transfer ownership where a pointer is needed](#Rf-unique_ptr)
 * [F.27: Use a `shared_ptr<T>` to share ownership](#Rf-shared_ptr)
 
-<a name="Rf-value-return"></a>Value return semantic rules:
+<a name="Rf-value-return" tags="value semantics"></a>Value return semantic rules:
 
 * [F.42: Return a `T*` to indicate a position (only)](#Rf-return-ptr)
 * [F.43: Never (directly or indirectly) return a pointer or a reference to a local object](#Rf-dangle)
@@ -2859,11 +2859,11 @@ Allowing parameters to be unnamed was introduced in the early 1980 to address th
 
 Flag named unused parameters.
 
-## <a name="SS-call"></a>F.call: Parameter passing
+## <a name="SS-call" tags="function"></a>F.call: Parameter passing
 
 There are a variety of ways to pass parameters to a function and to return values.
 
-### <a name="Rf-conventional" tags="function,arguments"></a>F.15: Prefer simple and conventional ways of passing information
+### <a name="Rf-conventional" tags="function"></a>F.15: Prefer simple and conventional ways of passing information
 
 ##### Reason
 
@@ -2884,7 +2884,7 @@ Use the advanced techniques only after demonstrating need, and document that nee
 
 For passing sequences of characters see [String](#SS-string).
 
-### <a name="Rf-in"></a>F.16: For "in" parameters, pass cheaply-copied types by value and others by reference to `const`
+### <a name="Rf-in" tags="function,arguments,value semantics"></a>F.16: For "in" parameters, pass cheaply-copied types by value and others by reference to `const`
 
 ##### Reason
 
@@ -2955,7 +2955,7 @@ If you need the notion of an optional value, use a pointer, `std::optional`, or 
 * (Simple) ((Foundation)) Warn when a parameter passed by reference to `const` has a size less than `2 * sizeof(void*)`. Suggest passing by value instead.
 * (Simple) ((Foundation)) Warn when a parameter passed by reference to `const` is `move`d.
 
-### <a name="Rf-inout"></a>F.17: For "in-out" parameters, pass by reference to non-`const`
+### <a name="Rf-inout" tags="function"></a>F.17: For "in-out" parameters, pass by reference to non-`const`
 
 ##### Reason
 
@@ -2990,7 +2990,7 @@ A bad logic error can happen if the writer of `g()` incorrectly assumes the size
 * (Moderate) ((Foundation)) Warn about functions regarding reference to non-`const` parameters that do *not* write to them.
 * (Simple) ((Foundation)) Warn when a non-`const` parameter being passed by reference is `move`d.
 
-### <a name="Rf-consume"></a>F.18: For "will-move-from" parameters, pass by `X&&` and `std::move` the parameter
+### <a name="Rf-consume" tags="function"></a>F.18: For "will-move-from" parameters, pass by `X&&` and `std::move` the parameter
 
 ##### Reason
 
@@ -3027,7 +3027,7 @@ For example:
 * Flag access to moved-from objects.
 * Don't conditionally move from objects
 
-### <a name="Rf-forward"></a>F.19: For "forward" parameters, pass by `TP&&` and only `std::forward` the parameter
+### <a name="Rf-forward" tags="function,template"></a>F.19: For "forward" parameters, pass by `TP&&` and only `std::forward` the parameter
 
 ##### Reason
 
@@ -3049,7 +3049,7 @@ In that case, and only that case, make the parameter `TP&&` where `TP` is a temp
 
 * Flag a function that takes a `TP&&` parameter (where `TP` is a template type parameter name) and does anything with it other than `std::forward`ing it exactly once on every static path.
 
-### <a name="Rf-out"></a>F.20: For "out" output values, prefer return values to output parameters
+### <a name="Rf-out" tags="function,value semantics"></a>F.20: For "out" output values, prefer return values to output parameters
 
 ##### Reason
 
@@ -3114,7 +3114,7 @@ The argument against is that it prevents (very frequent) use of move semantics.
 * Flag reference to non-`const` parameters that are not read before being written to and are a type that could be cheaply returned; they should be "out" return values.
 * Flag returning a `const` value. To fix: Remove `const` to return a non-`const` value instead.
 
-### <a name="Rf-out-multi"></a>F.21: To return multiple "out" values, prefer returning a struct or tuple
+### <a name="Rf-out-multi" tags="function"></a>F.21: To return multiple "out" values, prefer returning a struct or tuple
 
 ##### Reason
 
@@ -3222,7 +3222,7 @@ Another example, use a specific type along the lines of `variant<T, error_code>`
 * Output parameters should be replaced by return values.
   An output parameter is one that the function writes to, invokes a non-`const` member function, or passes on as a non-`const`.
 
-### <a name="Rf-ptr"></a>F.22: Use `T*` or `owner<T*>` to designate a single object
+### <a name="Rf-ptr" tags="pointer,code clarity"></a>F.22: Use `T*` or `owner<T*>` to designate a single object
 
 ##### Reason
 
@@ -3278,7 +3278,7 @@ better
 
 * (Simple) ((Bounds)) Warn for any arithmetic operation on an expression of pointer type that results in a value of pointer type.
 
-### <a name="Rf-nullptr"></a>F.23: Use a `not_null<T>` to indicate that "null" is not a valid value
+### <a name="Rf-nullptr" tags="code clarity"></a>F.23: Use a `not_null<T>` to indicate that "null" is not a valid value
 
 ##### Reason
 
@@ -3316,7 +3316,7 @@ A `not_null<T*>` is assumed not to be the `nullptr`; a `T*` might be the `nullpt
 * (Simple) Error if a raw pointer is sometimes dereferenced after first being tested against `nullptr` (or equivalent) within the function and sometimes is not.
 * (Simple) Warn if a `not_null` pointer is tested against `nullptr` within a function.
 
-### <a name="Rf-range"></a>F.24: Use a `span<T>` or a `span_p<T>` to designate a half-open sequence
+### <a name="Rf-range" tags="span,code clarity"></a>F.24: Use a `span<T>` or a `span_p<T>` to designate a half-open sequence
 
 ##### Reason
 
@@ -3368,7 +3368,7 @@ Passing a `span` object as an argument is exactly as efficient as passing a pair
 
 (Complex) Warn where accesses to pointer parameters are bounded by other parameters that are integral types and suggest they could use `span` instead.
 
-### <a name="Rf-zstring"></a>F.25: Use a `zstring` or a `not_null<zstring>` to designate a C-style string
+### <a name="Rf-zstring" tags="string,C-style string,not_null"></a>F.25: Use a `zstring` or a `not_null<zstring>` to designate a C-style string
 
 ##### Reason
 
@@ -3397,7 +3397,7 @@ When I call `length(s)` should I check if `s` is `nullptr` first? Should the imp
 
 **See also**: [Support library](#S-gsl)
 
-### <a name="Rf-unique_ptr"></a>F.26: Use a `unique_ptr<T>` to transfer ownership where a pointer is needed
+### <a name="Rf-unique_ptr" tags="unique_ptr,pointer,ownership"></a>F.26: Use a `unique_ptr<T>` to transfer ownership where a pointer is needed
 
 ##### Reason
 
@@ -3427,7 +3427,7 @@ You need to pass a pointer rather than an object if what you are transferring is
 
 (Simple) Warn if a function returns a locally allocated raw pointer. Suggest using either `unique_ptr` or `shared_ptr` instead.
 
-### <a name="Rf-shared_ptr"></a>F.27: Use a `shared_ptr<T>` to share ownership
+### <a name="Rf-shared_ptr" tags="shared_ptr,ownership,pointer"></a>F.27: Use a `shared_ptr<T>` to share ownership
 
 ##### Reason
 
@@ -3460,7 +3460,7 @@ Have a single object own the shared object (e.g. a scoped object) and destroy th
 
 (Not enforceable) This is a too complex pattern to reliably detect.
 
-### <a name="Rf-ptr-ref"></a>F.60: Prefer `T*` over `T&` when "no argument" is a valid option
+### <a name="Rf-ptr-ref" tags="nullable,function,argument"></a>F.60: Prefer `T*` over `T&` when "no argument" is a valid option
 
 ##### Reason
 
@@ -3493,7 +3493,7 @@ If you prefer the pointer notation (`->` and/or `*` vs. `.`), `not_null<T*>` pro
 
 * Flag ???
 
-### <a name="Rf-return-ptr"></a>F.42: Return a `T*` to indicate a position (only)
+### <a name="Rf-return-ptr" tags="pointer"></a>F.42: Return a `T*` to indicate a position (only)
 
 ##### Reason
 
@@ -3531,7 +3531,7 @@ Only owners should be deleted.
 * Flag `new`, `malloc()`, etc. assigned to a plain `T*`.
 Only owners should be responsible for deletion.
 
-### <a name="Rf-dangle"></a>F.43: Never (directly or indirectly) return a pointer or a reference to a local object
+### <a name="Rf-dangle" tags="pointer,type safety,data safety"></a>F.43: Never (directly or indirectly) return a pointer or a reference to a local object
 
 ##### Reason
 
@@ -3638,7 +3638,7 @@ It can be detected/prevented with similar techniques.
 * Compilers tend to catch return of reference to locals and could in many cases catch return of pointers to locals.
 * Static analysis can catch many common patterns of the use of pointers indicating positions (thus eliminating dangling pointers)
 
-### <a name="Rf-return-ref"></a>F.44: Return a `T&` when copy is undesirable and "returning no object" isn't needed
+### <a name="Rf-return-ref" tags="reference,type safety"></a>F.44: Return a `T&` when copy is undesirable and "returning no object" isn't needed
 
 ##### Reason
 
@@ -3668,7 +3668,7 @@ The language guarantees that a `T&` refers to an object, so that testing for `nu
 
 Flag functions where no `return` expression could yield `nullptr`
 
-### <a name="Rf-return-ref-ref"></a>F.45: Don't return a `T&&`
+### <a name="Rf-return-ref-ref" tags="rvalue,type safety,function"></a>F.45: Don't return a `T&&`
 
 ##### Reason
 
@@ -3722,7 +3722,7 @@ Better:
 
 Flag any use of `&&` as a return type, except in `std::move` and `std::forward`.
 
-### <a name="Rf-main"></a>F.46: `int` is the return type for `main()`
+### <a name="Rf-main" tags="main"></a>F.46: `int` is the return type for `main()`
 
 ##### Reason
 
@@ -3747,7 +3747,7 @@ We mention this only because of the persistence of this error in the community.
 * The compiler should do it
 * If the compiler doesn't do it, let tools flag it
 
-### <a name="Rf-assignment-op"></a>F.47: Return `T&` from assignment operators
+### <a name="Rf-assignment-op" tags="operators,assignment"></a>F.47: Return `T&` from assignment operators
 
 ##### Reason
 
@@ -3781,7 +3781,7 @@ This should be enforced by tooling by checking the return type (and return
 value) of any assignment operator.
 
 
-### <a name="Rf-return-move-local"></a>F.48: Don't `return std::move(local)`
+### <a name="Rf-return-move-local" tags="move semantics"></a>F.48: Don't `return std::move(local)`
 
 ##### Reason
 
@@ -3808,7 +3808,7 @@ With guaranteed copy elision, it is now almost always a pessimization to express
 This should be enforced by tooling by checking the return expression .
 
 
-### <a name="Rf-capture-vs-overload"></a>F.50: Use a lambda when a function won't do (to capture local variables, or to write a local function)
+### <a name="Rf-capture-vs-overload" tags="function,lambda"></a>F.50: Use a lambda when a function won't do (to capture local variables, or to write a local function)
 
 ##### Reason
 
@@ -3843,7 +3843,7 @@ Generic lambdas offer a concise way to write function templates and so can be us
 
 * Warn on use of a named non-generic lambda (e.g., `auto x = [](int i) { /*...*/; };`) that captures nothing and appears at global scope. Write an ordinary function instead.
 
-### <a name="Rf-default-args"></a>F.51: Where there is a choice, prefer default arguments over overloading
+### <a name="Rf-default-args" tags="lambda"></a>F.51: Where there is a choice, prefer default arguments over overloading
 
 ##### Reason
 
@@ -3878,7 +3878,7 @@ There is not a choice when a set of functions are used to do a semantically equi
 
 * Warn on an overload set where the overloads have a common prefix of parameters (e.g., `f(int)`, `f(int, const string&)`, `f(int, const string&, double)`). (Note: Review this enforcement if it's too noisy in practice.)
 
-### <a name="Rf-reference-capture"></a>F.52: Prefer capturing by reference in lambdas that will be used locally, including passed to algorithms
+### <a name="Rf-reference-capture" tags="lambda"></a>F.52: Prefer capturing by reference in lambdas that will be used locally, including passed to algorithms
 
 ##### Reason
 
@@ -3919,7 +3919,7 @@ This is a simple three-stage parallel pipeline. Each `stage` object encapsulates
 
 Flag a lambda that captures by reference, but is used other than locally within the function scope or passed to a function by reference. (Note: This rule is an approximation, but does flag passing by pointer as those are more likely to be stored by the callee, writing to a heap location accessed via a parameter, returning the lambda, etc. The Lifetime rules will also provide general rules that flag escaping pointers and references including via lambdas.)
 
-### <a name="Rf-value-capture"></a>F.53: Avoid capturing by reference in lambdas that will be used non-locally, including returned, stored on the heap, or passed to another thread
+### <a name="Rf-value-capture" tags="lambda"></a>F.53: Avoid capturing by reference in lambdas that will be used non-locally, including returned, stored on the heap, or passed to another thread
 
 ##### Reason
 
@@ -3948,7 +3948,7 @@ Pointers and references to locals shouldn't outlive their scope. Lambdas that ca
 * (Simple) Warn when capture-list contains a reference to a locally declared variable
 * (Complex) Flag when capture-list contains a reference to a locally declared variable and the lambda is passed to a non-`const` and non-local context
 
-### <a name="Rf-this-capture"></a>F.54: If you capture `this`, capture all variables explicitly (no default capture)
+### <a name="Rf-this-capture" tags="lambda"></a>F.54: If you capture `this`, capture all variables explicitly (no default capture)
 
 ##### Reason
 
@@ -3990,7 +3990,7 @@ This is under active discussion in standardization, and might be addressed in a 
 
 * Flag any lambda capture-list that specifies a default capture and also captures `this` (whether explicitly or via default capture)
 
-### <a name="F-varargs"></a>F.55: Don't use `va_arg` arguments
+### <a name="F-varargs" tags="lambda"></a>F.55: Don't use `va_arg` arguments
 
 ##### Reason
 
@@ -4037,7 +4037,7 @@ Declaring a `...` parameter is sometimes useful for techniques that don't involv
 * Issue a diagnostic for passing an argument to a vararg parameter of a function that does not offer an overload for a more specific type in the position of the vararg. To fix: Use a different function, or `[[suppress(types)]]`.
 
 
-### <a name="F-nesting"></a>F.56: Avoid unnecessary condition nesting
+### <a name="F-nesting" tags="if,code clarity"></a>F.56: Avoid unnecessary condition nesting
 
 ##### Reason
 
@@ -4103,7 +4103,7 @@ Flag a redundant `else`.
 Flag a functions whose body is simply a conditional statement enclosing a block.
 
 
-# <a name="S-class"></a>C: Classes and class hierarchies
+# <a name="S-class" tags="class"></a>C: Classes and class hierarchies
 
 A class is a user-defined type, for which a programmer can define the representation, operations, and interfaces.
 Class hierarchies are used to organize related classes into hierarchical structures.
@@ -4129,7 +4129,7 @@ Subsections:
 * [C.over: Overloading and overloaded operators](#SS-overload)
 * [C.union: Unions](#SS-union)
 
-### <a name="Rc-org"></a>C.1: Organize related data into structures (`struct`s or `class`es)
+### <a name="Rc-org" tags="class"></a>C.1: Organize related data into structures (`struct`s or `class`es)
 
 ##### Reason
 
@@ -4153,7 +4153,7 @@ From a language perspective `class` and `struct` differ only in the default visi
 
 Probably impossible. Maybe a heuristic looking for data items used together is possible.
 
-### <a name="Rc-struct"></a>C.2: Use `class` if the class has an invariant; use `struct` if the data members can vary independently
+### <a name="Rc-struct" tags="class"></a>C.2: Use `class` if the class has an invariant; use `struct` if the data members can vary independently
 
 ##### Reason
 
@@ -4207,7 +4207,7 @@ This effectively means the definer need to define an invariant.
 
 Look for `struct`s with all data private and `class`es with public members.
 
-### <a name="Rc-interface"></a>C.3: Represent the distinction between an interface and an implementation using a class
+### <a name="Rc-interface" tags="class,interfaces,code clarity"></a>C.3: Represent the distinction between an interface and an implementation using a class
 
 ##### Reason
 
@@ -4241,7 +4241,7 @@ Ideally, and typically, an interface is far more stable than its implementation(
 
 ???
 
-### <a name="Rc-member"></a>C.4: Make a function a member only if it needs direct access to the representation of a class
+### <a name="Rc-member" tags="class,member function,interfaces"></a>C.4: Make a function a member only if it needs direct access to the representation of a class
 
 ##### Reason
 
@@ -4303,7 +4303,7 @@ The snag is that many member functions that do not need to touch data members di
 * Ignore functions that are part of an overload set out of which at least one function accesses `private` members.
 * Ignore functions returning `this`.
 
-### <a name="Rc-helper"></a>C.5: Place helper functions in the same namespace as the class they support
+### <a name="Rc-helper" tags="class,namespace,helper functions"></a>C.5: Place helper functions in the same namespace as the class they support
 
 ##### Reason
 
@@ -4331,7 +4331,7 @@ This is especially important for [overloaded operators](#Ro-namespace).
 
 * Flag global functions taking argument types from a single namespace.
 
-### <a name="Rc-standalone"></a>C.7: Don't define a class or enum and declare a variable of its type in the same statement
+### <a name="Rc-standalone" tags="class,data declaration"></a>C.7: Don't define a class or enum and declare a variable of its type in the same statement
 
 ##### Reason
 
@@ -4350,7 +4350,7 @@ Mixing a type definition and the definition of another entity in the same declar
 
 * Flag if the `}` of a class or enumeration definition is not followed by a `;`. The `;` is missing.
 
-### <a name="Rc-class"></a>C.8: Use `class` rather than `struct` if any member is non-public
+### <a name="Rc-class" tags="class"></a>C.8: Use `class` rather than `struct` if any member is non-public
 
 ##### Reason
 
@@ -4384,7 +4384,7 @@ Prefer to place the interface first in a class, [see NL.16](#Rl-order).
 
 Flag classes declared with `struct` if there is a `private` or `protected` member.
 
-### <a name="Rc-private"></a>C.9: Minimize exposure of members
+### <a name="Rc-private" tags="class,class members"></a>C.9: Minimize exposure of members
 
 ##### Reason
 
@@ -4484,7 +4484,7 @@ Concrete type rule summary:
 * [C.12: Don't make data members `const` or references](#Rc-constref)
 
 
-### <a name="Rc-concrete"></a>C.10: Prefer concrete types over class hierarchies
+### <a name="Rc-concrete" tags="class,concrete types"></a>C.10: Prefer concrete types over class hierarchies
 
 ##### Reason
 
@@ -4536,7 +4536,7 @@ This is done where dynamic allocation is prohibited (e.g. hard-real-time) and to
 ???
 
 
-### <a name="Rc-regular"></a>C.11: Make concrete types regular
+### <a name="Rc-regular" tags="class,concrete types"></a>C.11: Make concrete types regular
 
 ##### Reason
 
@@ -4578,7 +4578,7 @@ so they can't be regular; instead, they tend to be move-only.
 ???
 
 
-### <a name="Rc-constref"></a>C.12: Don't make data members `const` or references
+### <a name="Rc-constref" tags="class,member,const,reference"></a>C.12: Don't make data members `const` or references
 
 ##### Reason
 
@@ -4679,12 +4679,12 @@ Other default operations rules:
 * [C.89: Make a `hash` `noexcept`](#Rc-hash)
 * [C.90: Rely on constructors and assignment operators, not memset and memcpy](#Rc-memset)
 
-## <a name="SS-defop"></a>C.defop: Default Operations
+## <a name="SS-defop" tags="class,defaults"></a>C.defop: Default Operations
 
 By default, the language supplies the default operations with their default semantics.
 However, a programmer can disable or replace these defaults.
 
-### <a name="Rc-zero"></a>C.20: If you can avoid defining default operations, do
+### <a name="Rc-zero" tags="class,defaults"></a>C.20: If you can avoid defining default operations, do
 
 ##### Reason
 
@@ -4714,7 +4714,7 @@ This is known as "the rule of zero".
 (Not enforceable) While not enforceable, a good static analyzer can detect patterns that indicate a possible improvement to meet this rule.
 For example, a class with a (pointer, size) pair of member and a destructor that `delete`s the pointer could probably be converted to a `vector`.
 
-### <a name="Rc-five"></a>C.21: If you define or `=delete` any copy, move, or destructor function, define or `=delete` them all
+### <a name="Rc-five" tags="class,defaults,constructors,destructors,copy,value semantics,move semantics"></a>C.21: If you define or `=delete` any copy, move, or destructor function, define or `=delete` them all
 
 ##### Reason
 
@@ -4821,7 +4821,7 @@ To avoid the tedium and the possibility of errors, try to follow the [rule of ze
 
 (Simple) A class should have a declaration (even a `=delete` one) for either all or none of the copy/move/destructor functions.
 
-### <a name="Rc-matched"></a>C.22: Make default operations consistent
+### <a name="Rc-matched" tags="class,defaults,code consistency"></a>C.22: Make default operations consistent
 
 ##### Reason
 
@@ -4850,14 +4850,14 @@ These operations disagree about copy semantics. This will lead to confusion and 
 * (Complex) If a copy/move constructor performs a deep copy of a member variable, then the destructor should modify the member variable.
 * (Complex) If a destructor is modifying a member variable, that member variable should be written in any copy/move constructors or assignment operators.
 
-## <a name="SS-dtor"></a>C.dtor: Destructors
+## <a name="SS-dtor" tags="class,destructors"></a>C.dtor: Destructors
 
 "Does this class need a destructor?" is a surprisingly insightful design question.
 For most classes the answer is "no" either because the class holds no resources or because destruction is handled by [the rule of zero](#Rc-zero);
 that is, its members can take care of themselves as concerns destruction.
 If the answer is "yes", much of the design of the class follows (see [the rule of five](#Rc-five)).
 
-### <a name="Rc-dtor"></a>C.30: Define a destructor if a class needs an explicit action at object destruction
+### <a name="Rc-dtor" tags="class,destructors"></a>C.30: Define a destructor if a class needs an explicit action at object destruction
 
 ##### Reason
 
@@ -4919,7 +4919,7 @@ If the default destructor is needed, but its generation has been suppressed (e.g
 
 Look for likely "implicit resources", such as pointers and references. Look for classes with destructors even though all their data members have destructors.
 
-### <a name="Rc-dtor-release"></a>C.31: All resources acquired by a class must be released by the class's destructor
+### <a name="Rc-dtor-release" tags="class,destructors,resource management"></a>C.31: All resources acquired by a class must be released by the class's destructor
 
 ##### Reason
 
@@ -4976,7 +4976,7 @@ Here `p` refers to `pp` but does not own it.
 * (Hard) Determine if pointer or reference member variables are owners when there is no explicit statement of ownership
   (e.g., look into the constructors).
 
-### <a name="Rc-dtor-ptr"></a>C.32: If a class has a raw pointer (`T*`) or reference (`T&`), consider whether it might be owning
+### <a name="Rc-dtor-ptr" tags="class,ownership"></a>C.32: If a class has a raw pointer (`T*`) or reference (`T&`), consider whether it might be owning
 
 ##### Reason
 
@@ -4995,7 +4995,7 @@ This will aid documentation and analysis.
 
 Look at the initialization of raw member pointers and member references and see if an allocation is used.
 
-### <a name="Rc-dtor-ptr2"></a>C.33: If a class has an owning pointer member, define a destructor
+### <a name="Rc-dtor-ptr2" tags="class,destructors,ownership"></a>C.33: If a class has an owning pointer member, define a destructor
 
 ##### Reason
 
@@ -5069,7 +5069,7 @@ That would sometimes require non-trivial code changes and might affect ABIs.
 * A class with an `owner<T>` should define its default operations.
 
 
-### <a name="Rc-dtor-virtual"></a>C.35: A base class destructor should be either public and virtual, or protected and non-virtual
+### <a name="Rc-dtor-virtual" tags="class,destructor,code consistency"></a>C.35: A base class destructor should be either public and virtual, or protected and non-virtual
 
 ##### Reason
 
@@ -5130,7 +5130,7 @@ We can imagine one case where you could want a protected virtual destructor: Whe
 * A class with any virtual functions should have a destructor that is either public and virtual or else protected and non-virtual.
 * If a class inherits publicly from a base class, the base class should have a destructor that is either public and virtual or else protected and non-virtual.
 
-### <a name="Rc-dtor-fail"></a>C.36: A destructor must not fail
+### <a name="Rc-dtor-fail" tags="class,destructors"></a>C.36: A destructor must not fail
 
 ##### Reason
 
@@ -5184,7 +5184,7 @@ If a destructor uses operations that could fail, it can catch exceptions and in 
 
 (Simple) A destructor should be declared `noexcept` if it could throw.
 
-### <a name="Rc-dtor-noexcept"></a>C.37: Make destructors `noexcept`
+### <a name="Rc-dtor-noexcept" tags="class,destructors,noexcept"></a>C.37: Make destructors `noexcept`
 
 ##### Reason
 
@@ -5215,11 +5215,11 @@ Because that would in many cases -- especially simple cases -- be distracting cl
 
 (Simple) A destructor should be declared `noexcept` if it could throw.
 
-## <a name="SS-ctor"></a>C.ctor: Constructors
+## <a name="SS-ctor" tags="class,constructors"></a>C.ctor: Constructors
 
 A constructor defines how an object is initialized (constructed).
 
-### <a name="Rc-ctor"></a>C.40: Define a constructor if a class has an invariant
+### <a name="Rc-ctor" tags="class,constructors"></a>C.40: Define a constructor if a class has an invariant
 
 ##### Reason
 
@@ -5277,7 +5277,7 @@ Also, the default for `int` would be better done as a [member initializer](#Rc-i
 
 * Flag classes with user-defined copy operations but no constructor (a user-defined copy is a good indicator that the class has an invariant)
 
-### <a name="Rc-complete"></a>C.41: A constructor should create a fully initialized object
+### <a name="Rc-complete" tags="class,constructors"></a>C.41: A constructor should create a fully initialized object
 
 ##### Reason
 
@@ -5320,7 +5320,7 @@ If a valid object cannot conveniently be constructed by a constructor, [use a fa
 If a constructor acquires a resource (to create a valid object), that resource should be [released by the destructor](#Rc-dtor-release).
 The idiom of having constructors acquire resources and destructors release them is called [RAII](#Rr-raii) ("Resource Acquisition Is Initialization").
 
-### <a name="Rc-throw"></a>C.42: If a constructor cannot construct a valid object, throw an exception
+### <a name="Rc-throw" tags="class,constructors,error checking"></a>C.42: If a constructor cannot construct a valid object, throw an exception
 
 ##### Reason
 
@@ -5409,7 +5409,7 @@ Another reason has been to delay initialization until an object is needed; the s
 
 ???
 
-### <a name="Rc-default0"></a>C.43: Ensure that a copyable class has a default constructor
+### <a name="Rc-default0" tags="class,constructors,copy semantics,defaults"></a>C.43: Ensure that a copyable class has a default constructor
 
 ##### Reason
 
@@ -5529,7 +5529,7 @@ However, it is preferable to have a default constructor default to a meaningful 
 * Flag classes that are comparable with `==` but not copyable
 
 
-### <a name="Rc-default00"></a>C.44: Prefer default constructors to be simple and non-throwing
+### <a name="Rc-default00" tags="class,constructors"></a>C.44: Prefer default constructors to be simple and non-throwing
 
 ##### Reason
 
@@ -5577,7 +5577,7 @@ Setting a `Vector1` to empty after detecting an error is trivial.
 
 * Flag throwing default constructors
 
-### <a name="Rc-default"></a>C.45: Don't define a default constructor that only initializes data members; use in-class member initializers instead
+### <a name="Rc-default" tags="class,constructors,defaults,members"></a>C.45: Don't define a default constructor that only initializes data members; use in-class member initializers instead
 
 ##### Reason
 
@@ -5607,7 +5607,7 @@ Using in-class member initializers lets the compiler generate the function for y
 
 (Simple) A default constructor should do more than just initialize member variables with constants.
 
-### <a name="Rc-explicit"></a>C.46: By default, declare single-argument constructors explicit
+### <a name="Rc-explicit", tags="class,constructors"></a>C.46: By default, declare single-argument constructors explicit
 
 ##### Reason
 
