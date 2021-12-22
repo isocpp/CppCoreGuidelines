@@ -183,7 +183,7 @@ You can look at design concepts used to express the rules:
 * postcondition: ???
 * resource: ???
 
-# <a name="S-abstract" tags="intro,abstract"></a>Abstract
+# <a name="S-abstract"></a>Abstract
 
 This document is a set of guidelines for using C++ well.
 The aim of this document is to help people to use modern C++ effectively.
@@ -483,7 +483,7 @@ Philosophical rules are generally not mechanically checkable.
 However, individual rules reflecting these philosophical themes are.
 Without a philosophical basis, the more concrete/specific/checkable rules lack rationale.
 
-### <a name="Rp-direct" tags="code clarity,philosophy"></a>P.1: Express ideas directly in code
+### <a name="Rp-direct" tags="code clarity"></a>P.1: Express ideas directly in code
 
 ##### Reason
 
@@ -4714,7 +4714,7 @@ This is known as "the rule of zero".
 (Not enforceable) While not enforceable, a good static analyzer can detect patterns that indicate a possible improvement to meet this rule.
 For example, a class with a (pointer, size) pair of member and a destructor that `delete`s the pointer could probably be converted to a `vector`.
 
-### <a name="Rc-five" tags="class,defaults,constructors,destructors,copy,value semantics,move semantics"></a>C.21: If you define or `=delete` any copy, move, or destructor function, define or `=delete` them all
+### <a name="Rc-five" tags="class,defaults,constructors,destructors,copy semantics,value semantics,move semantics"></a>C.21: If you define or `=delete` any copy, move, or destructor function, define or `=delete` them all
 
 ##### Reason
 
