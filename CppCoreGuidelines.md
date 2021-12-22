@@ -43,7 +43,6 @@ You can [read an explanation of the scope and structure of this Guide](#S-abstra
 * [CPL: C-style programming](#S-cpl)
 * [SF: Source files](#S-source)
 * [SL: The Standard Library](#S-stdlib)
-* [Index](#I-index)
 
 Supporting sections:
 
@@ -59,6 +58,7 @@ Supporting sections:
 * [Appendix C: Discussion](#S-discussion)
 * [Appendix D: Supporting tools](#S-tools)
 * [Glossary](#S-glossary)
+* [Index](#I-index)
 * [To-do: Unclassified proto-rules](#S-unclassified)
 
 You can sample rules for specific language features:
@@ -483,7 +483,7 @@ Philosophical rules are generally not mechanically checkable.
 However, individual rules reflecting these philosophical themes are.
 Without a philosophical basis, the more concrete/specific/checkable rules lack rationale.
 
-### <a name="Rp-direct" tags="code clarity"></a>P.1: Express ideas directly in code
+### <a name="Rp-direct" tags="code clarity,philosophy"></a>P.1: Express ideas directly in code
 
 ##### Reason
 
@@ -564,7 +564,7 @@ Very hard in general.
 * flag uses of casts (casts neuter the type system)
 * detect code that mimics the standard library (hard)
 
-### <a name="Rp-Cplusplus"></a>P.2: Write in ISO Standard C++
+### <a name="Rp-Cplusplus" tags="code clarity"></a>P.2: Write in ISO Standard C++
 
 ##### Reason
 
@@ -596,7 +596,7 @@ In such cases, control their (dis)use with an extension of these Coding Guidelin
 
 Use an up-to-date C++ compiler (currently C++17, C++14, or C++11) with a set of options that do not accept extensions.
 
-### <a name="Rp-what"></a>P.3: Express intent
+### <a name="Rp-what" tags="code clarity"></a>P.3: Express intent
 
 ##### Reason
 
@@ -660,7 +660,7 @@ Look for common patterns for which there are better alternatives
 
 There is a huge scope for cleverness and semi-automated program transformation.
 
-### <a name="Rp-typesafe"></a>P.4: Ideally, a program should be statically type safe
+### <a name="Rp-typesafe" tags="type safety"></a>P.4: Ideally, a program should be statically type safe
 
 ##### Reason
 
@@ -690,7 +690,7 @@ For example:
 * range errors -- use `span`
 * narrowing conversions -- minimize their use and use `narrow` or `narrow_cast` (from the GSL) where they are necessary
 
-### <a name="Rp-compile-time"></a>P.5: Prefer compile-time checking to run-time checking
+### <a name="Rp-compile-time" tags="code clarity,compile time,static checking,error checking"></a>P.5: Prefer compile-time checking to run-time checking
 
 ##### Reason
 
@@ -734,7 +734,7 @@ better
 * Look for pointer arguments.
 * Look for run-time checks for range violations.
 
-### <a name="Rp-run-time"></a>P.6: What cannot be checked at compile time should be checkable at run time
+### <a name="Rp-run-time", tags="error checking"></a>P.6: What cannot be checked at compile time should be checkable at run time
 
 ##### Reason
 
@@ -841,7 +841,7 @@ How do we transfer both ownership and all information needed for validating use?
 * Flag (pointer, count)-style interfaces (this will flag a lot of examples that can't be fixed for compatibility reasons)
 * ???
 
-### <a name="Rp-early"></a>P.7: Catch run-time errors early
+### <a name="Rp-early", tags="error checking"></a>P.7: Catch run-time errors early
 
 ##### Reason
 
@@ -958,7 +958,7 @@ The physical law for a jet (`e * e < x * x + y * y + z * z`) is not an invariant
 * Look for structured data (objects of classes with invariants) being converted into strings
 * ???
 
-### <a name="Rp-leak"></a>P.8: Don't leak any resources
+### <a name="Rp-leak", tags="error checking,resource management"></a>P.8: Don't leak any resources
 
 ##### Reason
 
@@ -1011,7 +1011,7 @@ Combine this with enforcement of [the type and bounds profiles](#SS-force) and y
 * Look for naked `new` and `delete`
 * Look for known resource allocating functions returning raw pointers (such as `fopen`, `malloc`, and `strdup`)
 
-### <a name="Rp-waste"></a>P.9: Don't waste time or space
+### <a name="Rp-waste", tags="resource management"></a>P.9: Don't waste time or space
 
 ##### Reason
 
@@ -1087,7 +1087,7 @@ Many more specific rules aim at the overall goals of simplicity and elimination 
 * Flag an unused return value from a user-defined non-defaulted postfix `operator++` or `operator--` function. Prefer using the prefix form instead. (Note: "User-defined non-defaulted" is intended to reduce noise. Review this enforcement if it's still too noisy in practice.)
 
 
-### <a name="Rp-mutable"></a>P.10: Prefer immutable data to mutable data
+### <a name="Rp-mutable" tags="value semantics,immutable,mutable"></a>P.10: Prefer immutable data to mutable data
 
 ##### Reason
 
@@ -1098,7 +1098,7 @@ You can't have a data race on a constant.
 
 See [Con: Constants and immutability](#S-const)
 
-### <a name="Rp-library"></a>P.11: Encapsulate messy constructs, rather than spreading through the code
+### <a name="Rp-library" tags="code clarity"></a>P.11: Encapsulate messy constructs, rather than spreading through the code
 
 ##### Reason
 
@@ -1148,7 +1148,7 @@ This is a variant of the [subset of superset principle](#R0) that underlies thes
 * Look for "messy code" such as complex pointer manipulation and casting outside the implementation of abstractions.
 
 
-### <a name="Rp-tools"></a>P.12: Use supporting tools as appropriate
+### <a name="Rp-tools" tags="code clarity"></a>P.12: Use supporting tools as appropriate
 
 ##### Reason
 
@@ -1177,7 +1177,7 @@ Be careful not to become dependent on over-elaborate or over-specialized tool ch
 Those can make your otherwise portable code non-portable.
 
 
-### <a name="Rp-lib"></a>P.13: Use support libraries as appropriate
+### <a name="Rp-lib" tags="libraries"></a>P.13: Use support libraries as appropriate
 
 ##### Reason
 
@@ -1210,7 +1210,7 @@ If no well-designed, well-documented, and well-supported library exists for an i
 maybe you should design and implement it, and then use it.
 
 
-# <a name="S-interfaces"></a>I: Interfaces
+# <a name="S-interfaces" tags="interfaces"></a>I: Interfaces
 
 An interface is a contract between two parts of a program. Precisely stating what is expected of a supplier of a service and a user of that service is essential.
 Having good (easy-to-understand, encouraging efficient use, not error-prone, supporting testing, etc.) interfaces is probably the most important single aspect of code organization.
@@ -1417,7 +1417,7 @@ Very hard in general.
 * Look for classes for which only a single object is created (by counting objects or by examining constructors).
 * If a class X has a public static function that contains a function-local static of the class' type X and returns a pointer or reference to it, ban that.
 
-### <a name="Ri-typed" tags="interfaces"></a>I.4: Make interfaces precisely and strongly typed
+### <a name="Ri-typed" tags="interfaces,type safety"></a>I.4: Make interfaces precisely and strongly typed
 
 ##### Reason
 
@@ -1539,7 +1539,7 @@ The function can also be written in such a way that it will accept any time dura
 * (Simple) Report the use of more than one `bool` parameter.
 * (Hard to do well) Look for functions that use too many primitive type arguments.
 
-### <a name="Ri-pre"></a>I.5: State preconditions (if any)
+### <a name="Ri-pre" tags="preconditions,contracts"></a>I.5: State preconditions (if any)
 
 ##### Reason
 
@@ -1580,7 +1580,7 @@ We don't need to mention it for each member function.
 
 **See also**: The rules for passing pointers. ???
 
-### <a name="Ri-expects"></a>I.6: Prefer `Expects()` for expressing preconditions
+### <a name="Ri-expects" tags="preconditions,contracts"></a>I.6: Prefer `Expects()` for expressing preconditions
 
 ##### Reason
 
@@ -1618,7 +1618,7 @@ No, using `unsigned` is not a good way to sidestep the problem of [ensuring that
 
 (Not enforceable) Finding the variety of ways preconditions can be asserted is not feasible. Warning about those that can be easily identified (`assert()`) has questionable value in the absence of a language facility.
 
-### <a name="Ri-post"></a>I.7: State postconditions
+### <a name="Ri-post" tags="postconditions,contracts"></a>I.7: State postconditions
 
 ##### Reason
 
@@ -1714,7 +1714,7 @@ Postconditions related only to internal state belongs in the definition/implemen
 directly in the general case. Domain specific checkers (like lock-holding
 checkers) exist for many toolchains.
 
-### <a name="Ri-ensures"></a>I.8: Prefer `Ensures()` for expressing postconditions
+### <a name="Ri-ensures" tags="postconditions,contracts"></a>I.8: Prefer `Ensures()` for expressing postconditions
 
 ##### Reason
 
@@ -1747,7 +1747,7 @@ Once language support becomes available (e.g., see the [contract proposal](http:
 
 (Not enforceable) Finding the variety of ways postconditions can be asserted is not feasible. Warning about those that can be easily identified (`assert()`) has questionable value in the absence of a language facility.
 
-### <a name="Ri-concepts"></a>I.9: If an interface is a template, document its parameters using concepts
+### <a name="Ri-concepts" tags="interfaces,concepts"></a>I.9: If an interface is a template, document its parameters using concepts
 
 ##### Reason
 
@@ -1775,7 +1775,7 @@ Concepts are supported in GCC 6.1 and later.
 
 (Not yet enforceable) A language facility is under specification. When the language facility is available, warn if any non-variadic template parameter is not constrained by a concept (in its declaration or mentioned in a `requires` clause).
 
-### <a name="Ri-except"></a>I.10: Use exceptions to signal a failure to perform a required task
+### <a name="Ri-except" tags="exceptions"></a>I.10: Use exceptions to signal a failure to perform a required task
 
 ##### Reason
 
@@ -1842,7 +1842,7 @@ We don't consider "performance" a valid reason not to use exceptions.
 * (Not enforceable) This is a philosophical guideline that is infeasible to check directly.
 * Look for `errno`.
 
-### <a name="Ri-raw"></a>I.11: Never transfer ownership by a raw pointer (`T*`) or reference (`T&`)
+### <a name="Ri-raw" tags="ownership,move semantics"></a>I.11: Never transfer ownership by a raw pointer (`T*`) or reference (`T&`)
 
 ##### Reason
 
@@ -1903,7 +1903,7 @@ so the default is "no ownership transfer."
 * (Simple) Warn on failure to either `reset` or explicitly `delete` an `owner` pointer on every code path.
 * (Simple) Warn if the return value of `new` or a function call with an `owner` return value is assigned to a raw pointer or non-`owner` reference.
 
-### <a name="Ri-nullptr"></a>I.12: Declare a pointer that must not be null as `not_null`
+### <a name="Ri-nullptr" tags="type safety,pointer"></a>I.12: Declare a pointer that must not be null as `not_null`
 
 ##### Reason
 
@@ -1941,7 +1941,7 @@ Note: `length()` is, of course, `std::strlen()` in disguise.
 * (Simple) ((Foundation)) If a function checks a pointer parameter against `nullptr` before access, on all control-flow paths, then warn it should be declared `not_null`.
 * (Complex) If a function with pointer return value ensures it is not `nullptr` on all return paths, then warn the return type should be declared `not_null`.
 
-### <a name="Ri-array"></a>I.13: Do not pass an array as a single pointer
+### <a name="Ri-array" tags="array,pointer,type safety"></a>I.13: Do not pass an array as a single pointer
 
 ##### Reason
 
@@ -1997,7 +1997,7 @@ But when doing so, use `std::string_view` or `span<char>` from the [GSL](#S-gsl)
 * (Simple) ((Bounds)) Warn for any expression that would rely on implicit conversion of an array type to a pointer type. Allow exception for zstring/czstring pointer types.
 * (Simple) ((Bounds)) Warn for any arithmetic operation on an expression of pointer type that results in a value of pointer type. Allow exception for zstring/czstring pointer types.
 
-### <a name="Ri-global-init"></a>I.22: Avoid complex initialization of global objects
+### <a name="Ri-global-init" tags="global variables"></a>I.22: Avoid complex initialization of global objects
 
 ##### Reason
 
@@ -2031,7 +2031,7 @@ It is usually best to avoid global (namespace scope) objects altogether.
 * Flag initializers of globals that call non-`constexpr` functions
 * Flag initializers of globals that access `extern` objects
 
-### <a name="Ri-nargs"></a>I.23: Keep the number of function arguments low
+### <a name="Ri-nargs" tags="code clarity,function,arguments"></a>I.23: Keep the number of function arguments low
 
 ##### Reason
 
@@ -2108,7 +2108,7 @@ There are functions that are best expressed with four individual parameters, but
 * Warn when a function declares two iterators (including pointers) of the same type instead of a range or a view.
 * (Not enforceable) This is a philosophical guideline that is infeasible to check directly.
 
-### <a name="Ri-unrelated"></a>I.24: Avoid adjacent parameters that can be invoked by the same arguments in either order with different meaning
+### <a name="Ri-unrelated" tags="function,arguments"></a>I.24: Avoid adjacent parameters that can be invoked by the same arguments in either order with different meaning
 
 ##### Reason
 
@@ -2162,7 +2162,7 @@ Only the interface's designer can adequately address the source of violations of
 
 We are still looking for a less-simple enforcement.
 
-### <a name="Ri-abstract"></a>I.25: Prefer empty abstract classes as interfaces to class hierarchies
+### <a name="Ri-abstract" tags="interfaces,class></a>I.25: Prefer empty abstract classes as interfaces to class hierarchies
 
 ##### Reason
 
@@ -2201,7 +2201,7 @@ This will force every derived class to compute a center -- even if that's non-tr
 
 (Simple) Warn if a pointer/reference to a class `C` is assigned to a pointer/reference to a base of `C` and the base class contains data members.
 
-### <a name="Ri-abi"></a>I.26: If you want a cross-compiler ABI, use a C-style subset
+### <a name="Ri-abi" tags="type safety,ABI"></a>I.26: If you want a cross-compiler ABI, use a C-style subset
 
 ##### Reason
 
@@ -2219,7 +2219,7 @@ If you use a single compiler, you can use full C++ in interfaces. That might req
 
 (Not enforceable) It is difficult to reliably identify where an interface forms part of an ABI.
 
-### <a name="Ri-pimpl"></a>I.27: For stable library ABI, consider the Pimpl idiom
+### <a name="Ri-pimpl" tags="ABI"></a>I.27: For stable library ABI, consider the Pimpl idiom
 
 ##### Reason
 
@@ -2330,7 +2330,7 @@ Presumably, a bit of checking for potential errors would be added in real code.
 * Hard, it is hard to decide what rule-breaking code is essential
 * Flag rule suppression that enable rule-violations to cross interfaces
 
-# <a name="S-functions"></a>F: Functions
+# <a name="S-functions" tags="function"></a>F: Functions
 
 A function specifies an action or a computation that takes the system from one consistent state to the next. It is the fundamental building block of programs.
 
@@ -2395,11 +2395,11 @@ Functions have strong similarities to lambdas and function objects.
 
 **See also**: [C.lambdas: Function objects and lambdas](#SS-lambdas)
 
-## <a name="SS-fct-def"></a>F.def: Function definitions
+## <a name="SS-fct-def" tags="function"></a>F.def: Function definitions
 
 A function definition is a function declaration that also specifies the function's implementation, the function body.
 
-### <a name="Rf-package"></a>F.1: "Package" meaningful operations as carefully named functions
+### <a name="Rf-package" type="function"></a>F.1: "Package" meaningful operations as carefully named functions
 
 ##### Reason
 
@@ -2452,7 +2452,7 @@ Similarly, lambdas used as callback arguments are sometimes non-trivial, yet unl
 * See [Keep functions short and simple](#Rf-single)
 * Flag identical and very similar lambdas used in different places.
 
-### <a name="Rf-logical"></a>F.2: A function should perform a single logical operation
+### <a name="Rf-logical" tags="function"></a>F.2: A function should perform a single logical operation
 
 ##### Reason
 
@@ -2512,7 +2512,7 @@ If there was a need, we could further templatize `read()` and `print()` on the d
 * Consider "large" functions that don't fit on one editor screen suspicious. Consider factoring such a function into smaller well-named suboperations.
 * Consider functions with 7 or more parameters suspicious.
 
-### <a name="Rf-single"></a>F.3: Keep functions short and simple
+### <a name="Rf-single" tags="function"></a>F.3: Keep functions short and simple
 
 ##### Reason
 
@@ -2596,7 +2596,7 @@ Small simple functions are easily inlined where the cost of a function call is s
 * Flag functions that are too complex. How complex is too complex?
   You could use cyclomatic complexity. Try "more than 10 logical path through." Count a simple switch as one path.
 
-### <a name="Rf-constexpr"></a>F.4: If a function might have to be evaluated at compile time, declare it `constexpr`
+### <a name="Rf-constexpr" tags="function,constexpr"></a>F.4: If a function might have to be evaluated at compile time, declare it `constexpr`
 
 ##### Reason
 
@@ -2650,7 +2650,7 @@ that API would have to be refactored or drop `constexpr`.
 Impossible and unnecessary.
 The compiler gives an error if a non-`constexpr` function is called where a constant is required.
 
-### <a name="Rf-inline"></a>F.5: If a function is very small and time-critical, declare it `inline`
+### <a name="Rf-inline" tags="function,inline"></a>F.5: If a function is very small and time-critical, declare it `inline`
 
 ##### Reason
 
@@ -2684,7 +2684,7 @@ Function templates (including member functions of class templates `A<T>::functio
 
 Flag `inline` functions that are more than three statements and could have been declared out of line (such as class member functions).
 
-### <a name="Rf-noexcept"></a>F.6: If your function must not throw, declare it `noexcept`
+### <a name="Rf-noexcept" tags="function,noexcept"></a>F.6: If your function must not throw, declare it `noexcept`
 
 ##### Reason
 
@@ -2746,7 +2746,7 @@ See also [C.44](#Rc-default00).
 * Flag functions that are not `noexcept`, yet cannot throw.
 * Flag throwing `swap`, `move`, destructors, and default constructors.
 
-### <a name="Rf-smart"></a>F.7: For general use, take `T*` or `T&` arguments rather than smart pointers
+### <a name="Rf-smart" tags="function"></a>F.7: For general use, take `T*` or `T&` arguments rather than smart pointers
 
 ##### Reason
 
@@ -2825,7 +2825,7 @@ We can catch many common cases of dangling pointers statically (see [lifetime sa
 * [prefer `t*` over `t&` when "no argument" is a valid option](#rf-ptr-ref)
 * [smart pointer rule summary](#rr-summary-smartptrs)
 
-### <a name="Rf-pure"></a>F.8: Prefer pure functions
+### <a name="Rf-pure" tags="function"></a>F.8: Prefer pure functions
 
 ##### Reason
 
@@ -2840,7 +2840,7 @@ Pure functions are easier to reason about, sometimes easier to optimize (and eve
 
 Not possible.
 
-### <a name="Rf-unused"></a>F.9: Unused parameters should be unnamed
+### <a name="Rf-unused" tags="function"></a>F.9: Unused parameters should be unnamed
 
 ##### Reason
 
@@ -2863,7 +2863,7 @@ Flag named unused parameters.
 
 There are a variety of ways to pass parameters to a function and to return values.
 
-### <a name="Rf-conventional"></a>F.15: Prefer simple and conventional ways of passing information
+### <a name="Rf-conventional" tags="function,arguments"></a>F.15: Prefer simple and conventional ways of passing information
 
 ##### Reason
 
