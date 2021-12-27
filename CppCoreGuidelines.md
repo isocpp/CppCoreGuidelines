@@ -14180,6 +14180,7 @@ unsigned val;
 
 void f()
 {
+    // code not controlled by a lock
     if (val < 5) {
         // ... other thread can change val here ...
         switch (val) {
