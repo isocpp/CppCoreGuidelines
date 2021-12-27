@@ -14173,12 +14173,13 @@ All data races are nasty.
 Here, we managed to get a data race on data on the stack.
 Not all data races are as easy to spot as this one.
 
-##### Example:
+##### Example, bad:
 
-    // local variables are thread-local and therefore never have a data race
+// define global
+unsigned val;
 
-    unsigned val; // bad: not inited
-
+void f()
+{
     if (val < 5) {
         // ... other thread can change val here ...
         switch (val) {
@@ -14189,8 +14190,9 @@ Not all data races are as easy to spot as this one.
         case 4: // ...
         }
     }
+}
 
-If val had been static it would most likely implemented using a jump table with five entries.
+Now, a compiler that does not know that `val` can change will  most likely implement that `switch` using a jump table with five entries.
 Then, a `val` outside the `[0..4]` range will cause a jump to an address that could be anywhere in the program, and execution would proceed there.
 Really, "all bets are off" if you get a data race.
 Actually, it can be worse still: by looking at the generated code you might be able to determine where the stray jump will go for a given value;
