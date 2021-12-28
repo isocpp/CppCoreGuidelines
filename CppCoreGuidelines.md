@@ -14177,16 +14177,18 @@ Not all data races are as easy to spot as this one.
 
     // code not controlled by a lock
 
-    unsigned val;
-
-    if (val < 5) {
-        // ... other thread can change val here ...
-        switch (val) {
-        case 0: // ...
-        case 1: // ...
-        case 2: // ...
-        case 3: // ...
-        case 4: // ...
+    unsigned val; //  global value
+    void f()
+    {
+        if (val < 5) {
+            // ... other thread can change val here ...
+            switch (val) {
+            case 0: // ...
+            case 1: // ...
+            case 2: // ...
+            case 3: // ...
+            case 4: // ...
+            }
         }
     }
 
@@ -14195,6 +14197,30 @@ Then, a `val` outside the `[0..4]` range will cause a jump to an address that co
 Really, "all bets are off" if you get a data race.
 Actually, it can be worse still: by looking at the generated code you might be able to determine where the stray jump will go for a given value;
 this can be a security risk.
+
+##### Example, better
+A simple strategy to avoid such global races and to guarantee (at least) local code-correctness is:
+1) Make a local copy.
+2) Validate.
+3) Make further processing on the local only.
+That works, because every thread has it's own (functional) stack containing all (thread-)local variables.
+
+    unsigned val; //  global value
+    void f()
+    {
+        auto loc = val;
+        if (loc < 0 || loc > 4)
+            return;
+         // Now loc is always correct and no security risk anymore.
+         switch (loc) {
+            case 0: // ...
+            case 1: // ...
+            case 2: // ...
+            case 3: // ...
+            case 4: // ...
+         }
+     }
+
 
 ##### Enforcement
 
