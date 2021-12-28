@@ -14316,14 +14316,30 @@ This has no effect on synchronization: The data race is still there!
 The C++ mechanism for this is `atomic` types:
 
     atomic<int> free_slots = max_slots; // current source of memory for objects
-
+    void check(int n)
+    {
+        // will throw on error 
+        // ...
+    }
     Pool* use()
     {
-        if (int n = free_slots--) return &pool[n];
+        // Apply the Copy-Validate-Use strategy:
+        // 1. Atomic substraction + local copy:
+        int n = free_slots.fetch_sub(1); // Use atomic operations explicitly
+        // 2. Validate n: 
+        check(n);
+        // 3. Use n:
+        // assumption: once n points to a valid entry, it will never get invalidated.
+        // (still) bad: compilers can't read comments.
+        return &pool[n];
     }
 
-Now the `--` operation is atomic,
-rather than a read-increment-write sequence where another thread might get in-between the individual operations.
+The fetch_sub() operation is atomic, i. e. it combines three operations to a single operation that can't race:
+1) Reading the global
+2) Assigning its current value to a local copy
+3) Decrementing the global 
+
+The standard postfix-increment operator--(int) can be intercepted in all of these operations.
 
 ##### Alternative
 
