@@ -12814,11 +12814,11 @@ consider `gsl::finally()` as a cleaner and more reliable alternative to `goto ex
     switch(x) {
     case 1 :
         while (/* some condition */) {
-            //...
+            // ...
         break;
-        } //Oops! break switch or break while intended?
+        } // Oops! break switch or break while intended?
     case 2 :
-        //...
+        // ...
         break;
     }
 
@@ -12858,14 +12858,14 @@ Often, a loop that requires a `break` is a good candidate for a function (algori
 
 Often, a loop that uses `continue` can equivalently and as clearly be expressed by an `if`-statement.
 
-    for (int item : vec) { //BAD
+    for (int item : vec) {  // BAD
         if (item%2 == 0) continue;
         if (item == 5) continue;
         if (item > 10) continue;
         /* do something with item */
     }
     
-    for (int item : vec) { //GOOD
+    for (int item : vec) {  // GOOD
         if (item%2 != 0 && item != 5 && item <= 10) {
             /* do something with item */
         }
@@ -12953,7 +12953,7 @@ Flag all implicit fallthroughs from non-empty `case`s.
 
 ##### Example
 
-    enum E { a, b, c , d };
+    enum E { a, b, c, d };
 
     void f1(E x)
     {
@@ -13107,10 +13107,10 @@ Helps make style consistent and conventional.
 By definition, a condition in an `if`-statement, `while`-statement, or a `for`-statement selects between `true` and `false`.
 A numeric value is compared to `0` and a pointer value to `nullptr`.
 
-    // These all mean "if `p` is not `nullptr`"
+    // These all mean "if p is not nullptr"
     if (p) { ... }            // good
-    if (p != 0) { ... }       // redundant `!=0`; bad: don't use 0 for pointers
-    if (p != nullptr) { ... } // redundant `!=nullptr`, not recommended
+    if (p != 0) { ... }       // redundant !=0, bad: don't use 0 for pointers
+    if (p != nullptr) { ... } // redundant !=nullptr, not recommended
 
 Often, `if (p)` is read as "if `p` is valid" which is a direct expression of the programmers intent,
 whereas `if (p != nullptr)` would be a long-winded workaround.
@@ -13167,10 +13167,10 @@ would not in itself save you.
 
 The opposite condition is most easily expressed using a negation:
 
-    // These all mean "if `p` is `nullptr`"
+    // These all mean "if p is nullptr"
     if (!p) { ... }           // good
-    if (p == 0) { ... }       // redundant `== 0`; bad: don't use `0` for pointers
-    if (p == nullptr) { ... } // redundant `== nullptr`, not recommended
+    if (p == 0) { ... }       // redundant == 0, bad: don't use 0 for pointers
+    if (p == nullptr) { ... } // redundant == nullptr, not recommended
 
 ##### Enforcement
 
@@ -17479,7 +17479,7 @@ The rule supports the view that a concept should reflect a (mathematically) cohe
     // ... and the other comparison operators ...
 
     Minimal operator+(const Convenient&, const Convenient&);
-    // .. and the other arithmetic operators ...
+    // ... and the other arithmetic operators ...
 
     void f(const Convenient& x, const Convenient& y)
     {
@@ -17950,14 +17950,14 @@ Most uses support that anyway.
         explicit X(int);
         X(const X&);            // copy
         X operator=(const X&);
-        X(X&&) noexcept;                 // move
+        X(X&&) noexcept;        // move
         X& operator=(X&&) noexcept;
         ~X();
         // ... no more constructors ...
     };
 
-    X x {1};    // fine
-    X y = x;      // fine
+    X x {1};              // fine
+    X y = x;              // fine
     std::vector<X> v(10); // error: no default constructor
 
 ##### Note
@@ -18381,7 +18381,7 @@ There are three major ways to let calling code customize a template.
     void test2(T t)
         // Call a non-member function without qualification
     {
-        f(t);  // require f(/*T*/) be available in caller's scope or in T's namespace
+        f(t);     // require f(/*T*/) be available in caller's scope or in T's namespace
     }
 
     template<class T>
@@ -18980,7 +18980,7 @@ You can't partially specialize a function template per language rules. You can f
 
 ##### Reason
 
-If you intend for a class to match a concept, verifying that early saves users pain.
+If you intend for a class to match a concept, verifying that early saves users' pain.
 
 ##### Example
 
@@ -19519,7 +19519,7 @@ For example:
     #include <random>
     #include <vector>
 
-a user can now get that set of declarations with a single `#include`"
+a user can now get that set of declarations with a single `#include`
 
     #include "basic_std_lib.h"
 
@@ -19745,7 +19745,7 @@ For a variable-length array, use `std::vector`, which additionally can change it
 
     int v[SIZE];                        // BAD
 
-    std::array<int, SIZE> w;             // ok
+    std::array<int, SIZE> w;            // ok
 
 ##### Example
 
@@ -22295,7 +22295,7 @@ Never allow an error to be reported from a destructor, a resource deallocation f
 
         void test()
         {
-            std::array<Nefarious, 10> arr; // this line can std::terminate(!)
+            std::array<Nefarious, 10> arr; // this line can std::terminate()
         }
 
     The behavior of arrays is undefined in the presence of destructors that throw because there is no reasonable rollback behavior that could ever be devised. Just think: What code can the compiler generate for constructing an `arr` where, if the fourth object's constructor throws, the code has to give up and in its cleanup mode tries to call the destructors of the already-constructed objects ... and one or more of those destructors throws? There is no satisfactory answer.
