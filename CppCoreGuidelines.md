@@ -1,6 +1,6 @@
 # <a name="main"></a>C++ Core Guidelines
 
-August 19, 2021
+January 3, 2022
 
 
 Editors:
@@ -3078,12 +3078,13 @@ Such older advice is now obsolete; it does not add value, and it interferes with
 
     const vector<int> fct();    // bad: that "const" is more trouble than it is worth
 
-    vector<int> g(const vector<int>& vx)
+    void g(vector<int>& vx)
     {
         // ...
         fct() = vx;   // prevented by the "const"
         // ...
-        return fct(); // expensive copy: move semantics suppressed by the "const"
+        vx = fct(); // expensive copy: move semantics suppressed by the "const"
+        // ...
     }
 
 The argument for adding `const` to a return value is that it prevents (very rare) accidental access to a temporary.
@@ -5127,6 +5128,7 @@ We can imagine one case where you could want a protected virtual destructor: Whe
 ##### Enforcement
 
 * A class with any virtual functions should have a destructor that is either public and virtual or else protected and non-virtual.
+* If a class inherits publicly from a base class, the base class should have a destructor that is either public and virtual or else protected and non-virtual.
 
 ### <a name="Rc-dtor-fail"></a>C.36: A destructor must not fail
 
@@ -7478,17 +7480,23 @@ Copying a polymorphic class is discouraged due to the slicing problem, see [C.67
 
     class B {
     public:
-        virtual owner<B*> clone() = 0;
         B() = default;
         virtual ~B() = default;
-        B(const B&) = delete;
-        B& operator=(const B&) = delete;
+        virtual gsl::owner<B*> clone() const = 0;
+    protected:
+         B(const B&) = default;
+         B& operator=(const B&) = default;
+         B(B&&) = default;
+         B& operator=(B&&) = default;
+        // ...
     };
 
     class D : public B {
     public:
-        owner<D*> clone() override;
-        ~D() override;
+        gsl::owner<D*> clone() const override
+        {
+            return new D{*this};
+        };
     };
 
 Generally, it is recommended to use smart pointers to represent ownership (see [R.20](#Rr-owner)). However, because of language rules, the covariant return type cannot be a smart pointer: `D::clone` can't return a `unique_ptr<D>` while `B::clone` returns `unique_ptr<B>`. Therefore, you either need to consistently return `unique_ptr<B>` in all overrides, or use `owner<>` utility from the [Guidelines Support Library](#SS-views).
@@ -8061,7 +8069,10 @@ Casting to a reference expresses that you intend to end up with a valid object, 
 
 ##### Example
 
-    ???
+    std::string f(Base& b)
+    {
+        return dynamic_cast<Derived&>(b).to_string();
+    }
 
 ##### Enforcement
 
@@ -8809,12 +8820,12 @@ If you wanted to see the bytes of an `int`, use a (named) cast:
 
     void if_you_must_pun(int& x)
     {
-        auto p = reinterpret_cast<unsigned char*>(&x);
+        auto p = reinterpret_cast<std::byte*>(&x);
         cout << p[0] << '\n';     // OK; better
         // ...
     }
 
-Accessing the result of a `reinterpret_cast` to a type different from the object's declared type is defined behavior. (Using `reinterpret_cast` is discouraged,
+Accessing the result of a `reinterpret_cast` from the object's declared type to `char*`, `unsigned char*`, or `std::byte*` is defined behavior. (Using `reinterpret_cast` is discouraged,
 but at least we can see that something tricky is going on.)
 
 ##### Note
@@ -9135,7 +9146,7 @@ Here, we ignore such cases.
   * [R.31: If you have non-`std` smart pointers, follow the basic pattern from `std`](#Rr-smart)
   * [R.32: Take a `unique_ptr<widget>` parameter to express that a function assumes ownership of a `widget`](#Rr-uniqueptrparam)
   * [R.33: Take a `unique_ptr<widget>&` parameter to express that a function reseats the `widget`](#Rr-reseat)
-  * [R.34: Take a `shared_ptr<widget>` parameter to express that a function is part owner](#Rr-sharedptrparam-owner)
+  * [R.34: Take a `shared_ptr<widget>` parameter to express shared ownership](#Rr-sharedptrparam-owner)
   * [R.35: Take a `shared_ptr<widget>&` parameter to express that a function might reseat the shared pointer](#Rr-sharedptrparam)
   * [R.36: Take a `const shared_ptr<widget>&` parameter to express that it might retain a reference count to the object ???](#Rr-sharedptrparam-const)
   * [R.37: Do not pass a pointer or reference obtained from an aliased smart pointer](#Rr-smartptrget)
@@ -9810,7 +9821,7 @@ Using `unique_ptr` in this way both documents and enforces the function call's r
 * (Simple) Warn if a function takes a `Unique_pointer<T>` parameter by lvalue reference and does not either assign to it or call `reset()` on it on at least one code path. Suggest taking a `T*` or `T&` instead.
 * (Simple) ((Foundation)) Warn if a function takes a `Unique_pointer<T>` parameter by reference to `const`. Suggest taking a `const T*` or `const T&` instead.
 
-### <a name="Rr-sharedptrparam-owner"></a>R.34: Take a `shared_ptr<widget>` parameter to express that a function is part owner
+### <a name="Rr-sharedptrparam-owner"></a>R.34: Take a `shared_ptr<widget>` parameter to express shared ownership
 
 ##### Reason
 
@@ -9818,11 +9829,16 @@ This makes the function's ownership sharing explicit.
 
 ##### Example, good
 
-    void share(shared_ptr<widget>);            // share -- "will" retain refcount
-
-    void may_share(const shared_ptr<widget>&); // "might" retain refcount
-
-    void reseat(shared_ptr<widget>&);          // "might" reseat ptr
+    class WidgetUser
+    {
+    public:
+        // WidgetUser will share ownership of the widget
+        explicit WidgetUser(std::shared_ptr<widget> w) noexcept:
+            m_widget{std::move(w)} {}
+        // ...
+    private:
+        std::shared_ptr<widget> m_widget;
+    };
 
 ##### Enforcement
 
@@ -9842,11 +9858,11 @@ This makes the function's reseating explicit.
 
 ##### Example, good
 
-    void share(shared_ptr<widget>);            // share -- "will" retain refcount
-
-    void reseat(shared_ptr<widget>&);          // "might" reseat ptr
-
-    void may_share(const shared_ptr<widget>&); // "might" retain refcount
+    void ChangeWidget(std::shared_ptr<widget>& w)
+    {
+        // This will change the callers widget
+        w = std::make_shared<widget>(widget{});
+    }
 
 ##### Enforcement
 
@@ -10196,7 +10212,10 @@ In this case, it might be a good idea to factor out the read:
 
 ##### Reason
 
-Readability. Minimize resource retention.
+Readability.
+Limit the loop variable visibility to the scope of the loop.
+Avoid using the loop variable for other purposes after the loop.
+Minimize resource retention.
 
 ##### Example
 
@@ -10217,10 +10236,23 @@ Readability. Minimize resource retention.
         }
     }
 
+##### Example, don't
+
+    int j;                            // BAD: j is visible outside the loop
+    for (j = 0; j < 100; ++j) {
+        // ...
+    }
+    // j is still visible here and isn't needed
+
+**See also**: [Don't use a variable for two unrelated purposes](#Res-recycle)
+
 ##### Enforcement
 
-* Flag loop variables declared before the loop and not used after the loop
+* Warn when a variable modified inside the `for`-statement is declared outside the loop and not being used outside the loop.
 * (hard) Flag loop variables declared before the loop and used after the loop for an unrelated purpose.
+
+**Discussion**: Scoping the loop variable to the loop body also helps code optimizers greatly. Recognizing that the induction variable
+is only accessible in the loop body unblocks optimizations such as hoisting, strength reduction, loop-invariant code motion, etc.
 
 ##### C++17 and C++20 example
 
@@ -10238,8 +10270,6 @@ Note: C++17 and C++20 also add `if`, `switch`, and range-`for` initializer state
 
 * Flag selection/loop variables declared before the body and not used after the body
 * (hard) Flag selection/loop variables declared before the body and used after the body for an unrelated purpose.
-
-
 
 ### <a name="Res-name-length"></a>ES.7: Keep common and local names short, and keep uncommon and non-local names longer
 
@@ -10439,7 +10469,10 @@ Flag variable and constant declarations with multiple declarators (e.g., `int* p
 
 Consider:
 
-    auto p = v.begin();   // vector<int>::iterator
+    auto p = v.begin();      // vector<DataRecord>::iterator
+    auto z1 = v[3];          // makes copy of DataRecord
+    auto& z2 = v[3];         // avoids copy
+    const auto& z3 = v[3];   // const and avoids copy
     auto h = t.future();
     auto q = make_unique<int[]>(s);
     auto f = [](int x) { return x + 10; };
@@ -10469,7 +10502,9 @@ When concepts become available, we can (and should) be more specific about the t
 
 ##### Example (C++17)
 
-    auto [ quotient, remainder ] = div(123456, 73);   // break out the members of the div_t result
+    std::set<int> values;
+    // ...
+    auto [ position, newly_inserted ] = values.insert(5);   // break out the members of the std::pair
 
 ##### Enforcement
 
@@ -11699,17 +11734,24 @@ A key example is basic narrowing:
 
 The guidelines support library offers a `narrow_cast` operation for specifying that narrowing is acceptable and a `narrow` ("narrow if") that throws an exception if a narrowing would throw away legal values:
 
-    i = narrow_cast<int>(d);   // OK (you asked for it): narrowing: i becomes 7
-    i = narrow<int>(d);        // OK: throws narrowing_error
+    i = gsl::narrow_cast<int>(d);   // OK (you asked for it): narrowing: i becomes 7
+    i = gsl::narrow<int>(d);        // OK: throws narrowing_error
 
 We also include lossy arithmetic casts, such as from a negative floating point type to an unsigned integral type:
 
     double d = -7.9;
     unsigned u = 0;
 
-    u = d;                          // BAD
-    u = narrow_cast<unsigned>(d);   // OK (you asked for it): u becomes 4294967289
-    u = narrow<unsigned>(d);        // OK: throws narrowing_error
+    u = d;                               // bad: narrowing
+    u = gsl::narrow_cast<unsigned>(d);   // OK (you asked for it): u becomes 4294967289
+    u = gsl::narrow<unsigned>(d);        // OK: throws narrowing_error
+
+##### Note
+
+This rule does not apply to [contextual conversions to bool](https://en.cppreference.com/w/cpp/language/implicit_conversion#Contextual_conversions):
+
+    if (ptr) do_something(*ptr);   // OK: ptr is used as a condition
+    bool b = ptr;                  // bad: narrowing
 
 ##### Enforcement
 
@@ -11745,7 +11787,7 @@ Flag uses of `0` and `NULL` for pointers. The transformation might be helped by 
 
 ##### Reason
 
-Casts are a well-known source of errors. Make some optimizations unreliable.
+Casts are a well-known source of errors and make some optimizations unreliable.
 
 ##### Example, bad
 
@@ -12690,39 +12732,7 @@ Flag actions in `for`-initializers and `for`-increments that do not relate to th
 
 ### <a name="Res-for-init"></a>ES.74: Prefer to declare a loop variable in the initializer part of a `for`-statement
 
-##### Reason
-
-Limit the loop variable visibility to the scope of the loop.
-Avoid using the loop variable for other purposes after the loop.
-
-##### Example
-
-    for (int i = 0; i < 100; ++i) {   // GOOD: i var is visible only inside the loop
-        // ...
-    }
-
-##### Example, don't
-
-    int j;                            // BAD: j is visible outside the loop
-    for (j = 0; j < 100; ++j) {
-        // ...
-    }
-    // j is still visible here and isn't needed
-
-**See also**: [Don't use a variable for two unrelated purposes](#Res-recycle)
-
-##### Example
-
-    for (string s; cin >> s; ) {
-        cout << s << '\n';
-    }
-
-##### Enforcement
-
-Warn when a variable modified inside the `for`-statement is declared outside the loop and not being used outside the loop.
-
-**Discussion**: Scoping the loop variable to the loop body also helps code optimizers greatly. Recognizing that the induction variable
-is only accessible in the loop body unblocks optimizations such as hoisting, strength reduction, loop-invariant code motion, etc.
+See [ES.6](#Res-cond)
 
 ### <a name="Res-do"></a>ES.75: Avoid `do`-statements
 
@@ -14101,7 +14111,7 @@ Unless you do, nothing is guaranteed to work and subtle errors will persist.
 ##### Note
 
 In a nutshell, if two threads can access the same object concurrently (without synchronization), and at least one is a writer (performing a non-`const` operation), you have a data race.
-For further information of how to use synchronization well to eliminate data races, please consult a good book about concurrency.
+For further information of how to use synchronization well to eliminate data races, please consult a good book about concurrency (See [Carefully study the literature](#Rconc-literature)).
 
 ##### Example, bad
 
@@ -15401,7 +15411,7 @@ Become an expert before shipping lock-free code for others to use.
 * Damian Dechev, Peter Pirkelbauer, and Bjarne Stroustrup: Understanding and Effectively Preventing the ABA Problem in Descriptor-based Lock-free Designs. 13th IEEE Computer Society ISORC 2010 Symposium. May 2010.
 * Damian Dechev and Bjarne Stroustrup: Scalable Non-blocking Concurrent Objects for Mission Critical Code. ACM OOPSLA'09. October 2009
 * Damian Dechev, Peter Pirkelbauer, Nicolas Rouquette, and Bjarne Stroustrup: Semantically Enhanced Containers for Concurrent Real-Time Systems. Proc. 16th Annual IEEE International Conference and Workshop on the Engineering of Computer Based Systems (IEEE ECBS). April 2009.
-
+* Maurice Herlihy, Nir Shavit, Victor Luchangco, Michael Spear, "The Art of Multiprocessor Programming", 2nd ed. September 2020
 
 ### <a name="Rconc-double"></a>CP.110: Do not write your own double-checked locking for initialization
 
@@ -15608,7 +15618,7 @@ Error-handling rule summary:
 * [E.12: Use `noexcept` when exiting a function because of a `throw` is impossible or unacceptable](#Re-noexcept)
 * [E.13: Never throw while being the direct owner of an object](#Re-never-throw)
 * [E.14: Use purpose-designed user-defined types as exceptions (not built-in types)](#Re-exception-types)
-* [E.15: Catch exceptions from a hierarchy by reference](#Re-exception-ref)
+* [E.15: Throw by value, catch exceptions from a hierarchy reference](#Re-exception-ref)
 * [E.16: Destructors, deallocation, and `swap` must never fail](#Re-never-fail)
 * [E.17: Don't try to catch every exception in every function](#Re-not-always)
 * [E.18: Minimize the use of explicit `try`/`catch`](#Re-catch)
@@ -16057,33 +16067,39 @@ The standard-library classes derived from `exception` should be used only as bas
 
 Catch `throw` and `catch` of a built-in type. Maybe warn about `throw` and `catch` using a standard-library `exception` type. Obviously, exceptions derived from the `std::exception` hierarchy are fine.
 
-### <a name="Re-exception-ref"></a>E.15: Catch exceptions from a hierarchy by reference
+### <a name="Re-exception-ref"></a>E.15: Throw by value, catch exceptions from a hierarchy reference
 
 ##### Reason
 
-To prevent slicing.
+Throwing by value (not by pointer) and catching by reference prevents copying, especially slicing base subobjects.
 
-##### Example
+##### Example; bad
 
     void f()
     {
         try {
             // ...
+            throw new widget{}; // don't: throw by value not by raw pointer
+            // ...
         }
-        catch (exception e) {   // don't: might slice
+        catch (base_class e) {  // don't: might slice
             // ...
         }
     }
 
 Instead, use a reference:
 
-    catch (exception& e) { /* ... */ }
+    catch (base_class& e) { /* ... */ }
 
 or - typically better still - a `const` reference:
 
-    catch (const exception& e) { /* ... */ }
+    catch (const base_class& e) { /* ... */ }
 
 Most handlers do not modify their exception and in general we [recommend use of `const`](#Res-const).
+
+##### Note
+
+Catch by value can be appropriate for a small value type such as an `enum` value.
 
 ##### Note
 
@@ -16091,7 +16107,8 @@ To rethrow a caught exception use `throw;` not `throw e;`. Using `throw e;` woul
 
 ##### Enforcement
 
-Flag by-value exceptions if their types are part of a hierarchy (could require whole-program analysis to be perfect).
+* Flag catching by value of a type that has a virtual function.
+* Flag throwing raw pointers.
 
 ### <a name="Re-never-fail"></a>E.16: Destructors, deallocation, and `swap` must never fail
 
@@ -21181,8 +21198,8 @@ A `char*` that points to more than one `char` but is not a C-style string (e.g.,
 * `czstring`   // a `const char*` supposed to be a C-style string; that is, a zero-terminated sequence of `const` `char` or `nullptr`
 
 Logically, those last two aliases are not needed, but we are not always logical, and they make the distinction between a pointer to one `char` and a pointer to a C-style string explicit.
-A sequence of characters that is not assumed to be zero-terminated should be a `char*`, rather than a `zstring`.
-French accent optional.
+A sequence of characters that is not assumed to be zero-terminated should be a `span<char>`, or if that is impossible because of ABI issues a `char*`, rather than a `zstring`.
+
 
 Use `not_null<zstring>` for C-style strings that cannot be `nullptr`. ??? Do we need a name for `not_null<zstring>`? or is its ugliness a feature?
 
