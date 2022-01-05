@@ -15618,7 +15618,7 @@ Error-handling rule summary:
 * [E.12: Use `noexcept` when exiting a function because of a `throw` is impossible or unacceptable](#Re-noexcept)
 * [E.13: Never throw while being the direct owner of an object](#Re-never-throw)
 * [E.14: Use purpose-designed user-defined types as exceptions (not built-in types)](#Re-exception-types)
-* [E.15: Throw by value, catch exceptions from a hierarchy reference](#Re-exception-ref)
+* [E.15: Throw by value, catch exceptions from a hierarchy by reference](#Re-exception-ref)
 * [E.16: Destructors, deallocation, and `swap` must never fail](#Re-never-fail)
 * [E.17: Don't try to catch every exception in every function](#Re-not-always)
 * [E.18: Minimize the use of explicit `try`/`catch`](#Re-catch)
@@ -16067,7 +16067,7 @@ The standard-library classes derived from `exception` should be used only as bas
 
 Catch `throw` and `catch` of a built-in type. Maybe warn about `throw` and `catch` using a standard-library `exception` type. Obviously, exceptions derived from the `std::exception` hierarchy are fine.
 
-### <a name="Re-exception-ref"></a>E.15: Throw by value, catch exceptions from a hierarchy reference
+### <a name="Re-exception-ref"></a>E.15: Throw by value, catch exceptions from a hierarchy by reference
 
 ##### Reason
 
