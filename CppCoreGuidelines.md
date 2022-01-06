@@ -2822,8 +2822,8 @@ We can catch many common cases of dangling pointers statically (see [lifetime sa
 
 **see also**:
 
-* [prefer `t*` over `t&` when "no argument" is a valid option](#rf-ptr-ref)
-* [smart pointer rule summary](#rr-summary-smartptrs)
+* [prefer `t*` over `t&` when "no argument" is a valid option](#Rf-ptr-ref)
+* [smart pointer rule summary](#Rr-summary-smartptrs)
 
 ### <a name="Rf-pure"></a>F.8: Prefer pure functions
 
