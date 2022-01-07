@@ -2820,10 +2820,10 @@ We can catch many common cases of dangling pointers statically (see [lifetime sa
 * Flag a parameter of a smart pointer type (a type that overloads `operator->` or `operator*`) that is copyable/movable but never copied/moved from in the function body, and that is never modified, and that is not passed along to another function that could do so. That means the ownership semantics are not used.
   Suggest using a `T*` or `T&` instead.
 
-**see also**:
+**See also**:
 
-* [prefer `t*` over `t&` when "no argument" is a valid option](#Rf-ptr-ref)
-* [smart pointer rule summary](#Rr-summary-smartptrs)
+* [Prefer `T*` over `T&` when "no argument" is a valid option](#Rf-ptr-ref)
+* [Smart pointer rule summary](#Rr-summary-smartptrs)
 
 ### <a name="Rf-pure"></a>F.8: Prefer pure functions
 
