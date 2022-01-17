@@ -187,7 +187,7 @@ You can look at design concepts used to express the rules:
 
 This document is a set of guidelines for using C++ well.
 The aim of this document is to help people to use modern C++ effectively.
-By "modern C++" we mean effective use of the ISO C++ standard (currently C++17, but almost all of our recommendations also apply to C++14 and C++11).
+By "modern C++" we mean effective use of the ISO C++ standard (currently C++20, but almost all of our recommendations also apply to C++17, C++14 and C++11).
 In other words, what would you like your code to look like in 5 years' time, given that you can start now? In 10 years' time?
 
 The guidelines are focused on relatively high-level issues, such as interfaces, resource management, memory management, and concurrency.
@@ -224,7 +224,7 @@ We plan to modify and extend this document as our understanding improves and the
 
 # <a name="S-introduction"></a>In: Introduction
 
-This is a set of core guidelines for modern C++ (currently C++17) taking likely future enhancements and ISO Technical Specifications (TSs) into account.
+This is a set of core guidelines for modern C++ (currently C++20 and C++17) taking likely future enhancements and ISO Technical Specifications (TSs) into account.
 The aim is to help C++ programmers to write simpler, more efficient, more maintainable code.
 
 Introduction summary:
@@ -594,7 +594,7 @@ In such cases, control their (dis)use with an extension of these Coding Guidelin
 
 ##### Enforcement
 
-Use an up-to-date C++ compiler (currently C++17, C++14, or C++11) with a set of options that do not accept extensions.
+Use an up-to-date C++ compiler (currently C++20, C++17, C++14, or C++11) with a set of options that do not accept extensions.
 
 ### <a name="Rp-what"></a>P.3: Express intent
 
