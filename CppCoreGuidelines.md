@@ -594,7 +594,7 @@ In such cases, control their (dis)use with an extension of these Coding Guidelin
 
 ##### Enforcement
 
-Use an up-to-date C++ compiler (currently C++20, C++17, C++14, or C++11) with a set of options that do not accept extensions.
+Use an up-to-date C++ compiler (currently C++20 or C++17) with a set of options that do not accept extensions.
 
 ### <a name="Rp-what"></a>P.3: Express intent
 
@@ -1766,7 +1766,7 @@ Use the C++20 style of requirements specification. For example:
 
 ##### Note
 
-Soon (in C++20), all compilers will be able to check `requires` clauses once the `//` is removed.
+Compilers that support C++20 are able to check `requires` clauses once the `//` is removed.
 Concepts are supported in GCC 6.1 and later.
 
 **See also**: [Generic programming](#SS-GP) and [concepts](#SS-concepts).
@@ -21916,7 +21916,7 @@ This section covers answers to frequently asked questions about these guidelines
 
 ### <a name="Faq-aims"></a>FAQ.1: What do these guidelines aim to achieve?
 
-See the <a href="#S-abstract">top of this page</a>. This is an open-source project to maintain modern authoritative guidelines for writing C++ code using the current C++ Standard (as of this writing, C++14). The guidelines are designed to be modern, machine-enforceable wherever possible, and open to contributions and forking so that organizations can easily incorporate them into their own corporate coding guidelines.
+See the <a href="#S-abstract">top of this page</a>. This is an open-source project to maintain modern authoritative guidelines for writing C++ code using the current C++ Standard. The guidelines are designed to be modern, machine-enforceable wherever possible, and open to contributions and forking so that organizations can easily incorporate them into their own corporate coding guidelines.
 
 ### <a name="Faq-announced"></a>FAQ.2: When and where was this work first announced?
 
