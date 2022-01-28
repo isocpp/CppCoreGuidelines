@@ -21920,11 +21920,11 @@ Because `isocpp` is the Standard C++ Foundation; the committee's repositories ar
 
 ### <a name="Faq-cpp98"></a>FAQ.8: Will there be a C++98 version of these Guidelines? a C++11 version?
 
-No. These guidelines are about how to best use Standard C++14 (and, if you have an implementation available, the Concepts Technical Specification) and write code assuming you have a modern conforming compiler.
+No. These guidelines are about how to best use modern standard C++ and write code assuming you have a modern conforming compiler.
 
 ### <a name="Faq-language-extensions"></a>FAQ.9: Do these guidelines propose new language features?
 
-No. These guidelines are about how to best use Standard C++14 + the Concepts Technical Specification, and they limit themselves to recommending only those features.
+No. These guidelines are about how to best use modern Standard C++, and they limit themselves to recommending only those features.
 
 ### <a name="Faq-markdown"></a>FAQ.10: What version of Markdown do these guidelines use?
 
