@@ -2849,24 +2849,21 @@ Suppression of unused parameter warnings.
 
 ##### Example
 
-    X* find(set<Blob>& s, const string& str, Hint);   // once upon a time, a hint was used
+    widget* find(const set<widget>& s, const widget& w, Hint);   // once upon a time, a hint was used
 
 ##### Note
 
 Allowing parameters to be unnamed was introduced in the early 1980 to address this problem.
 
-If parameters are conditionally unused depending on the translation unit, declare them with the `[[maybe_unused]]` attribute.
+If parameters are conditionally unused, declare them with the `[[maybe_unused]]` attribute.
 For example:
 
-    X* find(set<Blob>& s, const string& str, [[maybe_unused]] Hint h)
+    template <typename Value>
+    Value* find(const set<Value>& s, const Value& v, [[maybe_unused]] Hint h)
     {
-        #if DEBUG
-            // a hint is used only in debug builds
-        #endif
-
-        if constexpr (Blob::MaxSize > 1000)
+        if constexpr (sizeof(Value) > CacheSize)
         {
-            // a hint is used only if blobs are of a certain size
+            // a hint is used only if Value is of a certain size
         }
     }
 
