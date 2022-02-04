@@ -7,3 +7,6 @@ scripts/python/*.pyc
 
 # VS Code
 .vs/
+
+# MacOS-specific
+.DS_Store
