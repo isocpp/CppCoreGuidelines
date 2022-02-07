@@ -12912,6 +12912,7 @@ Multiple case labels of a single statement is OK:
     }
 
 Return statements in a case label are also OK:
+
     switch (x) {
     case 'a':
         return 1;
