@@ -2849,11 +2849,23 @@ Suppression of unused parameter warnings.
 
 ##### Example
 
-    X* find(map<Blob>& m, const string& s, Hint);   // once upon a time, a hint was used
+    widget* find(const set<widget>& s, const widget& w, Hint);   // once upon a time, a hint was used
 
 ##### Note
 
 Allowing parameters to be unnamed was introduced in the early 1980 to address this problem.
+
+If parameters are conditionally unused, declare them with the `[[maybe_unused]]` attribute.
+For example:
+
+    template <typename Value>
+    Value* find(const set<Value>& s, const Value& v, [[maybe_unused]] Hint h)
+    {
+        if constexpr (sizeof(Value) > CacheSize)
+        {
+            // a hint is used only if Value is of a certain size
+        }
+    }
 
 ##### Enforcement
 
