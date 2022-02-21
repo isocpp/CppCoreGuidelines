@@ -19595,7 +19595,26 @@ It is almost always a bug to mention an unnamed namespace in a header file.
 
 ##### Example
 
-    ???
+    // file foo.h:
+    namespace
+    {
+        const double x = 1.234;  // bad
+
+        double foo(double y)     // bad
+        {
+            return y + x;
+        } 
+    }
+
+    namespace Foo
+    {
+        inline constexpr double x = 1.234; // good
+
+        inline double foo(double y)        // good
+        {
+            return y + x;
+        }
+    }
 
 ##### Enforcement
 
