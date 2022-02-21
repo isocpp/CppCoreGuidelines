@@ -19603,7 +19603,7 @@ It is almost always a bug to mention an unnamed namespace in a header file.
         double foo(double y)     // bad
         {
             return y + x;
-        } 
+        }
     }
 
     namespace Foo
