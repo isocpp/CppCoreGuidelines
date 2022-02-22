@@ -1432,7 +1432,7 @@ Consider:
 
 Callers are unsure what types are allowed and if the data may
 be mutated as `const` is not specified. Note all pointer types
-implicitly convert to void*, so it is easy for callers to provide this value.
+implicitly convert to `void*`, so it is easy for callers to provide this value.
 
 The callee must `static_cast` data to an unverified type to use it.
 That is error-prone and verbose.
@@ -1479,7 +1479,7 @@ This design is more explicit, safe and legible:
     s.frequency = alarm_settings::every_10_seconds;
     set_settings(s);
 
-For the case of a set of boolean values consider using a flags enum; a pattern that expresses a set of boolean values.
+For the case of a set of boolean values consider using a flags `enum`; a pattern that expresses a set of boolean values.
 
     enable_lamp_options(lamp_option::on | lamp_option::animate_state_transitions);
 
