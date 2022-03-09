@@ -4485,7 +4485,7 @@ Prefer the order `public` members before `protected` members before `private` me
 ##### Enforcement
 
 * [Flag protected data](#Rh-protected).
-* Flag mixtures of `public` and private `data`
+* Flag mixtures of `public` and `private` data
 
 ## <a name="SS-concrete"></a>C.concrete: Concrete types
 
