@@ -1758,22 +1758,17 @@ Make the interface precisely specified and compile-time checkable in the (not so
 Use the C++20 style of requirements specification. For example:
 
     template<typename Iter, typename Val>
-    // requires InputIterator<Iter> && EqualityComparable<ValueType<Iter>, Val>
+      requires input_iterator<Iter> && equality_comparable_with<iter_value_t<Iter>, Val>
     Iter find(Iter first, Iter last, Val v)
     {
         // ...
     }
 
-##### Note
-
-Compilers that support C++20 are able to check `requires` clauses once the `//` is removed.
-Concepts are supported in GCC 6.1 and later.
-
 **See also**: [Generic programming](#SS-GP) and [concepts](#SS-concepts).
 
 ##### Enforcement
 
-(Not yet enforceable) A language facility is under specification. When the language facility is available, warn if any non-variadic template parameter is not constrained by a concept (in its declaration or mentioned in a `requires` clause).
+Warn if any non-variadic template parameter is not constrained by a concept (in its declaration or mentioned in a `requires` clause).
 
 ### <a name="Ri-except"></a>I.10: Use exceptions to signal a failure to perform a required task
 
@@ -2077,10 +2072,11 @@ To really reduce the number of arguments, we need to bundle the arguments into h
 
 Grouping arguments into "bundles" is a general technique to reduce the number of arguments and to increase the opportunities for checking.
 
-Alternatively, we could use concepts (as defined by the ISO TS) to define the notion of three types that must be usable for merging:
+Alternatively, we could use a standard library concept to define the notion of three types that must be usable for merging:
 
-    Mergeable{In1, In2, Out}
-    OutputIterator merge(In1 r1, In2 r2, Out result);
+    template<class In1, class In2, class Out>
+      requires mergeable<In1, In2, Out>
+    Out merge(In1 r1, In2 r2, Out result);
 
 ##### Example
 
@@ -10441,7 +10437,7 @@ A structured binding (C++17) is specifically designed to introduce several varia
 
 or better using concepts:
 
-    bool any_of(InputIterator first, InputIterator last, Predicate pred);
+    bool any_of(input_iterator auto first, input_iterator auto last, predicate auto pred);
 
 ##### Example
 
@@ -10507,10 +10503,10 @@ Avoid `auto` for initializer lists and in cases where you know exactly which typ
 
 ##### Note
 
-When concepts become available, we can (and should) be more specific about the type we are deducing:
+As of C++20, we can (and should) use concepts to be more specific about the type we are deducing:
 
     // ...
-    ForwardIterator p = algo(x, y, z);
+    forward_iterator auto p = algo(x, y, z);
 
 ##### Example (C++17)
 
@@ -13713,11 +13709,11 @@ We can do better (in C++98)
 
 Here, we use the compiler's knowledge about the size of the array, the type of elements, and how to compare `double`s.
 
-With C++11 plus [concepts](#SS-concepts), we can do better still
+With C++20, we can do better still
 
-    // Sortable specifies that c must be a
+    // sortable specifies that c must be a
     // random-access sequence of elements comparable with <
-    void sort(Sortable& c);
+    void sort(sortable auto& c);
 
     sort(c);
 
@@ -13727,10 +13723,10 @@ They implicitly rely on the element type having less-than (`<`) defined.
 To complete the interface, we need a second version that accepts a comparison criteria:
 
     // compare elements of c using p
-    void sort(Sortable& c, Predicate<Value_type<Sortable>> p);
+    template<random_access_range R, class C> requires sortable<R, C>
+    void sort(R&& r, C c);
 
-The standard-library specification of `sort` offers those two versions,
-but the semantics is expressed in English rather than code using concepts.
+The standard-library specification of `sort` offers those two versions, and more.
 
 ##### Note
 
@@ -16817,11 +16813,7 @@ In C++, these requirements are expressed by compile-time predicates called conce
 Templates can also be used for meta-programming; that is, programs that compose code at compile time.
 
 A central notion in generic programming is "concepts"; that is, requirements on template arguments presented as compile-time predicates.
-"Concepts" are defined in an ISO Technical Specification: [concepts](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2015/n4553.pdf).
-A draft of a set of standard-library concepts can be found in another ISO TS: [ranges](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/n4569.pdf).
-Concepts are supported in GCC 6.1 and later.
-Consequently, we comment out uses of concepts in examples; that is, we use them as formalized comments only.
-If you use GCC 6.1 or later, you can uncomment them.
+"Concepts" were standardized in C++20, although they were first made available, in slightly older syntax, in GCC 6.1.
 
 Template use rule summary:
 
@@ -16927,7 +16919,7 @@ Generality. Reuse. Efficiency. Encourages consistent definition of user types.
 Conceptually, the following requirements are wrong because what we want of `T` is more than just the very low-level concepts of "can be incremented" or "can be added":
 
     template<typename T>
-        // requires Incrementable<T>
+        requires Incrementable<T>
     T sum1(vector<T>& v, T s)
     {
         for (auto x : v) s += x;
@@ -16935,7 +16927,7 @@ Conceptually, the following requirements are wrong because what we want of `T` i
     }
 
     template<typename T>
-        // requires Simple_number<T>
+        requires Simple_number<T>
     T sum2(vector<T>& v, T s)
     {
         for (auto x : v) s = s + x;
@@ -16948,7 +16940,7 @@ And, in this case, missed an opportunity for a generalization.
 ##### Example
 
     template<typename T>
-        // requires Arithmetic<T>
+        requires Arithmetic<T>
     T sum(vector<T>& v, T s)
     {
         for (auto x : v) s += x;
@@ -16971,14 +16963,6 @@ We aim to minimize requirements on template arguments, but the absolutely minima
 
 Templates can be used to express essentially everything (they are Turing complete), but the aim of generic programming (as expressed using templates)
 is to efficiently generalize operations/algorithms over a set of types with similar semantic properties.
-
-##### Note
-
-The `requires` in the comments are uses of `concepts`.
-"Concepts" are defined in an ISO Technical Specification: [concepts](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2015/n4553.pdf).
-Concepts are supported in GCC 6.1 and later.
-Consequently, we comment out uses of concepts in examples; that is, we use them as formalized comments only.
-If you use GCC 6.1 or later, you can uncomment them.
 
 ##### Enforcement
 
@@ -17150,9 +17134,8 @@ See the reference to more specific rules.
 
 ## <a name="SS-concepts"></a>T.concepts: Concept rules
 
-Concepts is a facility for specifying requirements for template arguments.
-It is an [ISO Technical Specification](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2015/n4553.pdf), but currently supported only by GCC.
-Concepts are, however, crucial in the thinking about generic programming and the basis of much work on future C++ libraries
+Concepts is a C++20 facility for specifying requirements for template arguments.
+They are crucial in the thinking about generic programming and the basis of much work on future C++ libraries
 (standard and other).
 
 This section assumes concept support
@@ -17190,8 +17173,8 @@ Specifying concepts for template arguments is a powerful design tool.
 ##### Example
 
     template<typename Iter, typename Val>
-    //    requires Input_iterator<Iter>
-    //             && Equality_comparable<Value_type<Iter>, Val>
+        requires input_iterator<Iter>
+                 && equality_comparable_with<iter_value_t<Iter>, Val>
     Iter find(Iter b, Iter e, Val v)
     {
         // ...
@@ -17199,24 +17182,8 @@ Specifying concepts for template arguments is a powerful design tool.
 
 or equivalently and more succinctly:
 
-    template<Input_iterator Iter, typename Val>
-    //    requires Equality_comparable<Value_type<Iter>, Val>
-    Iter find(Iter b, Iter e, Val v)
-    {
-        // ...
-    }
-
-##### Note
-
-"Concepts" are defined in an ISO Technical Specification: [concepts](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2015/n4553.pdf).
-A draft of a set of standard-library concepts can be found in another ISO TS: [ranges](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/n4569.pdf).
-Concepts are supported in GCC 6.1 and later.
-Consequently, we comment out uses of concepts in examples; that is, we use them as formalized comments only.
-If you use GCC 6.1 or later, you can uncomment them:
-
-    template<typename Iter, typename Val>
-        requires Input_iterator<Iter>
-               && Equality_comparable<Value_type<Iter>, Val>
+    template<input_iterator Iter, typename Val>
+        requires equality_comparable_with<iter_value_t<Iter>, Val>
     Iter find(Iter b, Iter e, Val v)
     {
         // ...
@@ -17228,7 +17195,7 @@ Plain `typename` (or `auto`) is the least constraining concept.
 It should be used only rarely when nothing more than "it's a type" can be assumed.
 This is typically only needed when (as part of template metaprogramming code) we manipulate pure expression trees, postponing type checking.
 
-**References**: TC++PL4, Palo Alto TR, Sutton
+**References**: TC++PL4
 
 ##### Enforcement
 
@@ -17238,26 +17205,26 @@ Flag template type arguments without concepts
 
 ##### Reason
 
- "Standard" concepts (as provided by the [GSL](#S-gsl) and the [Ranges TS](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/n4569.pdf), and hopefully soon the ISO standard itself)
+ "Standard" concepts (as provided by the [GSL](#S-gsl) and the ISO standard itself)
 save us the work of thinking up our own concepts, are better thought out than we can manage to do in a hurry, and improve interoperability.
 
 ##### Note
 
 Unless you are creating a new generic library, most of the concepts you need will already be defined by the standard library.
 
-##### Example (using TS concepts)
+##### Example
 
     template<typename T>
-        // don't define this: Sortable is in the GSL
+        // don't define this: sortable is in <iterator>
     concept Ordered_container = Sequence<T> && Random_access<Iterator<T>> && Ordered<Value_type<T>>;
 
-    void sort(Ordered_container& s);
+    void sort(Ordered_container auto& s);
 
-This `Ordered_container` is quite plausible, but it is very similar to the `Sortable` concept in the GSL (and the Range TS).
+This `Ordered_container` is quite plausible, but it is very similar to the `sortable` concept in the standard library.
 Is it better? Is it right? Does it accurately reflect the standard's requirements for `sort`?
-It is better and simpler just to use `Sortable`:
+It is better and simpler just to use `sortable`:
 
-    void sort(Sortable& s);   // better
+    void sort(sortable auto& s);   // better
 
 ##### Note
 
@@ -17280,11 +17247,11 @@ Hard.
 
  `auto` is the weakest concept. Concept names convey more meaning than just `auto`.
 
-##### Example (using TS concepts)
+##### Example
 
     vector<string> v{ "abc", "xyz" };
-    auto& x = v.front();     // bad
-    String& s = v.front();   // good (String is a GSL concept)
+    auto& x = v.front();        // bad
+    String auto& s = v.front(); // good (String is a GSL concept)
 
 ##### Enforcement
 
@@ -17296,28 +17263,20 @@ Hard.
 
 Readability. Direct expression of an idea.
 
-##### Example (using TS concepts)
+##### Example
 
-To say "`T` is `Sortable`":
+To say "`T` is `sortable`":
 
     template<typename T>       // Correct but verbose: "The parameter is
-    //    requires Sortable<T>   // of type T which is the name of a type
-    void sort(T&);             // that is Sortable"
+        requires sortable<T>   // of type T which is the name of a type
+    void sort(T&);             // that is sortable"
 
-    template<Sortable T>       // Better (assuming support for concepts): "The parameter is of type T
+    template<sortable T>       // Better: "The parameter is of type T
     void sort(T&);             // which is Sortable"
 
-    void sort(Sortable&);      // Best (assuming support for concepts): "The parameter is Sortable"
+    void sort(sortable auto&); // Best: "The parameter is Sortable"
 
 The shorter versions better match the way we speak. Note that many templates don't need to use the `template` keyword.
-
-##### Note
-
-"Concepts" are defined in an ISO Technical Specification: [concepts](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2015/n4553.pdf).
-A draft of a set of standard-library concepts can be found in another ISO TS: [ranges](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/n4569.pdf).
-Concepts are supported in GCC 6.1 and later.
-Consequently, we comment out uses of concepts in examples; that is, we use them as formalized comments only.
-If you use a compiler that supports concepts (e.g., GCC 6.1 or later), you can remove the `//`.
 
 ##### Enforcement
 
@@ -17331,7 +17290,7 @@ Concepts are meant to represent fundamental concepts in an application domain (h
 Similarly throwing together a set of syntactic constraints to be used for the arguments for a single class or algorithm is not what concepts were designed for
 and will not give the full benefits of the mechanism.
 
-Obviously, defining concepts will be most useful for code that can use an implementation (e.g., GCC 6.1 or later),
+Obviously, defining concepts is most useful for code that can use an implementation (e.g., C++20 or later)
 but defining concepts is in itself a useful design technique and help catch conceptual errors and clean up the concepts (sic!) of an implementation.
 
 ### <a name="Rt-low"></a>T.20: Avoid "concepts" without meaningful semantics
@@ -17342,12 +17301,14 @@ Concepts are meant to express semantic notions, such as "a number", "a range" of
 Simple constraints, such as "has a `+` operator" and "has a `>` operator" cannot be meaningfully specified in isolation
 and should be used only as building blocks for meaningful concepts, rather than in user code.
 
-##### Example, bad (using TS concepts)
+##### Example, bad
 
     template<typename T>
-    concept Addable = has_plus<T>;    // bad; insufficient
+    // bad; insufficient
+    concept Addable = requires(T a, T b) { a+b; };
 
-    template<Addable N> auto algo(const N& a, const N& b) // use two numbers
+    template<Addable N>
+    auto algo(const N& a, const N& b) // use two numbers
     {
         // ...
         return a + b;
@@ -17368,16 +17329,14 @@ This `Addable` violates the mathematical rule that addition is supposed to be co
 
 The ability to specify meaningful semantics is a defining characteristic of a true concept, as opposed to a syntactic constraint.
 
-##### Example (using TS concepts)
+##### Example
 
     template<typename T>
     // The operators +, -, *, and / for a number are assumed to follow the usual mathematical rules
-    concept Number = has_plus<T>
-                     && has_minus<T>
-                     && has_multiply<T>
-                     && has_divide<T>;
+    concept Number = requires(T a, T b) { a+b; a-b; a*b; a/b; };
 
-    template<Number N> auto algo(const N& a, const N& b)
+    template<Number N>
+    auto algo(const N& a, const N& b)
     {
         // ...
         return a + b;
@@ -17413,9 +17372,9 @@ Helps implementers and maintainers.
 
 This is a specific variant of the general rule that [a concept must make semantic sense](#Rt-low).
 
-##### Example, bad (using TS concepts)
+##### Example, bad
 
-    template<typename T> concept Subtractable = requires(T a, T, b) { a-b; };
+    template<typename T> concept Subtractable = requires(T a, T b) { a-b; };
 
 This makes no semantic sense.
 You need at least `+` to make `-` meaningful and useful.
@@ -17499,17 +17458,17 @@ A meaningful/useful concept has a semantic meaning.
 Expressing these semantics in an informal, semi-formal, or formal way makes the concept comprehensible to readers and the effort to express it can catch conceptual errors.
 Specifying semantics is a powerful design tool.
 
-##### Example (using TS concepts)
+##### Example
 
     template<typename T>
         // The operators +, -, *, and / for a number are assumed to follow the usual mathematical rules
         // axiom(T a, T b) { a + b == b + a; a - a == 0; a * (b + c) == a * b + a * c; /*...*/ }
         concept Number = requires(T a, T b) {
-            {a + b} -> T;   // the result of a + b is convertible to T
-            {a - b} -> T;
-            {a * b} -> T;
-            {a / b} -> T;
-        }
+            {a + b} -> convertible_to<T>;
+            {a - b} -> convertible_to<T>;
+            {a * b} -> convertible_to<T>;
+            {a / b} -> convertible_to<T>;
+        };
 
 ##### Note
 
@@ -17528,18 +17487,18 @@ Once language support is available, the `//` in front of the axiom can be remove
 
 The GSL concepts have well-defined semantics; see the Palo Alto TR and the Ranges TS.
 
-##### Exception (using TS concepts)
+##### Exception
 
 Early versions of a new "concept" still under development will often just define simple sets of constraints without a well-specified semantics.
 Finding good semantics can take effort and time.
 An incomplete set of constraints can still be very useful:
 
     // balancer for a generic binary tree
-    template<typename Node> concept bool Balancer = requires(Node* p) {
+    template<typename Node> concept Balancer = requires(Node* p) {
         add_fixup(p);
         touch(p);
         detach(p);
-    }
+    };
 
 So a `Balancer` must supply at least these operations on a tree `Node`,
 but we are not yet ready to specify detailed semantics because a new kind of balanced tree might require more operations
@@ -17560,13 +17519,15 @@ Each new use case might require such an incomplete concept to be improved.
 
 Otherwise they cannot be distinguished automatically by the compiler.
 
-##### Example (using TS concepts)
+##### Example
 
     template<typename I>
-    concept bool Input_iter = requires(I iter) { ++iter; };
+    // Note: input_iterator is defined in <iterator>
+    concept Input_iter = requires(I iter) { ++iter; };
 
     template<typename I>
-    concept bool Fwd_iter = Input_iter<I> && requires(I iter) { iter++; }
+    // Note: forward_iterator is defined in <iterator>
+    concept Fwd_iter = Input_iter<I> && requires(I iter) { iter++; };
 
 The compiler can determine refinement based on the sets of required operations (here, suffix `++`).
 This decreases the burden on implementers of these types since
@@ -17584,23 +17545,25 @@ To disambiguate them, see [T.24](#Rt-tag).
 
 Two concepts requiring the same syntax but having different semantics leads to ambiguity unless the programmer differentiates them.
 
-##### Example (using TS concepts)
+##### Example
 
     template<typename I>    // iterator providing random access
-    concept bool RA_iter = ...;
+    // Note: random_access_iterator is defined in <iterator>
+    concept RA_iter = ...;
 
     template<typename I>    // iterator providing random access to contiguous data
-    concept bool Contiguous_iter =
-        RA_iter<I> && is_contiguous<I>::value;  // using is_contiguous trait
+    // Note: contiguous_iterator is defined in <iterator>
+    concept Contiguous_iter =
+        RA_iter<I> && is_contiguous_v<I>;  // using is_contiguous trait
 
 The programmer (in a library) must define `is_contiguous` (a trait) appropriately.
 
 Wrapping a tag class into a concept leads to a simpler expression of this idea:
 
-    template<typename I> concept Contiguous = is_contiguous<I>::value;
+    template<typename I> concept Contiguous = is_contiguous_v<I>;
 
     template<typename I>
-    concept bool Contiguous_iter = RA_iter<I> && Contiguous<I>;
+    concept Contiguous_iter = RA_iter<I> && Contiguous<I>;
 
 The programmer (in a library) must define `is_contiguous` (a trait) appropriately.
 
@@ -17622,7 +17585,7 @@ Prefer the standard-library ones.
 Clarity. Maintainability.
 Functions with complementary requirements expressed using negation are brittle.
 
-##### Example (using TS concepts)
+##### Example
 
 Initially, people will try to define functions with complementary requirements:
 
@@ -17688,21 +17651,21 @@ Now the opportunities for errors multiply.
 The definition is more readable and corresponds directly to what a user has to write.
 Conversions are taken into account. You don't have to remember the names of all the type traits.
 
-##### Example (using TS concepts)
+##### Example
 
 You might be tempted to define a concept `Equality` like this:
 
     template<typename T> concept Equality = has_equal<T> && has_not_equal<T>;
 
-Obviously, it would be better and easier just to use the standard `EqualityComparable`,
+Obviously, it would be better and easier just to use the standard `equality_comparable`,
 but - just as an example - if you had to define such a concept, prefer:
 
     template<typename T> concept Equality = requires(T a, T b) {
-        bool == { a == b }
-        bool == { a != b }
+        { a == b } -> std::convertible_to<bool>;
+        { a != b } -> std::convertible_to<bool>;
         // axiom { !(a == b) == (a != b) }
         // axiom { a = b; => a == b }  // => means "implies"
-    }
+    };
 
 as opposed to defining two meaningless concepts `has_equal` and `has_not_equal` just as helpers in the definition of `Equality`.
 By "meaningless" we mean that we cannot specify the semantics of `has_equal` in isolation.
@@ -17725,22 +17688,22 @@ However, the interface to a template is a critical concept - a contract between 
 Function objects can carry more information through an interface than a "plain" pointer to function.
 In general, passing function objects gives better performance than passing pointers to functions.
 
-##### Example (using TS concepts)
+##### Example
 
     bool greater(double x, double y) { return x > y; }
     sort(v, greater);                                    // pointer to function: potentially slow
     sort(v, [](double x, double y) { return x > y; });   // function object
-    sort(v, std::greater<>);                             // function object
+    sort(v, std::greater{});                             // function object
 
     bool greater_than_7(double x) { return x > 7; }
     auto x = find_if(v, greater_than_7);                 // pointer to function: inflexible
     auto y = find_if(v, [](double x) { return x > 7; }); // function object: carries the needed data
     auto z = find_if(v, Greater_than<double>(7));        // function object: carries the needed data
 
-You can, of course, generalize those functions using `auto` or (when and where available) concepts. For example:
+You can, of course, generalize those functions using `auto` or concepts. For example:
 
-    auto y1 = find_if(v, [](Ordered x) { return x > 7; }); // require an ordered type
-    auto z1 = find_if(v, [](auto x) { return x > 7; });    // hope that the type has a >
+    auto y1 = find_if(v, [](totally_ordered auto x) { return x > 7; }); // require an ordered type
+    auto z1 = find_if(v, [](auto x) { return x > 7; });                 // hope that the type has a >
 
 ##### Note
 
@@ -17762,11 +17725,11 @@ The performance argument depends on compiler and optimizer technology.
 
 Keep interfaces simple and stable.
 
-##### Example (using TS concepts)
+##### Example
 
 Consider, a `sort` instrumented with (oversimplified) simple debug support:
 
-    void sort(Sortable& s)  // sort sequence s
+    void sort(sortable auto& s)  // sort sequence s
     {
         if (debug) cerr << "enter sort( " << s <<  ")\n";
         // ...
@@ -17775,7 +17738,7 @@ Consider, a `sort` instrumented with (oversimplified) simple debug support:
 
 Should this be rewritten to:
 
-    template<Sortable S>
+    template<sortable S>
         requires Streamable<S>
     void sort(S& s)  // sort sequence s
     {
@@ -17784,7 +17747,7 @@ Should this be rewritten to:
         if (debug) cerr << "exit sort( " << s <<  ")\n";
     }
 
-After all, there is nothing in `Sortable` that requires `iostream` support.
+After all, there is nothing in `sortable` that requires `iostream` support.
 On the other hand, there is nothing in the fundamental idea of sorting that says anything about debugging.
 
 ##### Note
@@ -18687,7 +18650,7 @@ If you feel the need to hide your template metaprogramming in macros, you have p
 
 ##### Reason
 
-Until concepts become generally available, we need to emulate them using TMP.
+Where C++20 is not available, we need to emulate them using TMP.
 Use cases that require concepts (e.g. overloading based on concepts) are among the most common (and simple) uses of TMP.
 
 ##### Example
@@ -18704,9 +18667,9 @@ Use cases that require concepts (e.g. overloading based on concepts) are among t
 
 Such code is much simpler using concepts:
 
-    void advance(RandomAccessIterator p, int n) { p += n; }
+    void advance(random_access_iterator auto p, int n) { p += n; }
 
-    void advance(ForwardIterator p, int n) { assert(n >= 0); while (n--) ++p;}
+    void advance(forward_iterator auto p, int n) { assert(n >= 0); while (n--) ++p;}
 
 ##### Enforcement
 
@@ -19842,7 +19805,7 @@ Also, `std::array<>::fill()` or `std::fill()` or even an empty initializer are b
         array<int, 10> a, b, c{};       // c is initialized to zero
         a.fill(0);
         fill(b.begin(), b.end(), 0);    // std::fill()
-        fill(b, 0);                     // std::fill() + Ranges TS
+        fill(b, 0);                     // std::ranges::fill()
 
         if ( a == b ) {
           // ...
@@ -21228,27 +21191,25 @@ These concepts (type predicates) are borrowed from
 Andrew Sutton's Origin library,
 the Range proposal,
 and the ISO WG21 Palo Alto TR.
-They are likely to be very similar to what will become part of the ISO C++ standard.
-The notation is that of the ISO WG21 [Concepts TS](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2015/n4553.pdf).
-Most of the concepts below are defined in [the Ranges TS](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/n4569.pdf).
+Many of them are very similar to what became part of the ISO C++ standard in C++20.
 
-* `Range`
-* `String`   // ???
-* `Number`   // ???
-* `Sortable`
-* `EqualityComparable`
-* `Convertible`
-* `Common`
+* `String`
+* `Number`
 * `Boolean`
-* `Integral`
-* `SignedIntegral`
-* `SemiRegular` // in C++20, `std::semiregular`
-* `Regular`     // in C++20, `std::regular`
-* `TotallyOrdered`
-* `Function`
-* `RegularFunction`
-* `Predicate`
-* `Relation`
+* `Range`              // in C++20, `std::ranges::range`
+* `Sortable`           // in C++20, `std::sortable`
+* `EqualityComparable` // in C++20, `std::equality_comparable`
+* `Convertible`        // in C++20, `std::convertible_to`
+* `Common`             // in C++20, `std::common_with`
+* `Integral`           // in C++20, `std::integral`
+* `SignedIntegral`     // in C++20, `std::signed_integral`
+* `SemiRegular`        // in C++20, `std::semiregular`
+* `Regular`            // in C++20, `std::regular`
+* `TotallyOrdered`     // in C++20, `std::totally_ordered`
+* `Function`           // in C++20, `std::invocable`
+* `RegularFunction`    // in C++20, `std::regular_invocable`
+* `Predicate`          // in C++20, `std::predicate`
+* `Relation`           // in C++20, `std::relation`
 * ...
 
 ### <a name="SS-gsl-smartptrconcepts"></a>GSL.ptr: Smart pointer concepts
