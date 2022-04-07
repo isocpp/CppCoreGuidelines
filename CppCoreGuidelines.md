@@ -3749,6 +3749,7 @@ Declaring `main` (the one global `main` of a program) `void` limits portability.
 ##### Note
 
 We mention this only because of the persistence of this error in the community.
+Note that despite its non-void return type, the main function does not require an explicit return statement.
 
 ##### Enforcement
 
