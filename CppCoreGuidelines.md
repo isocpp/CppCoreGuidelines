@@ -19571,7 +19571,7 @@ It is almost always a bug to mention an unnamed namespace in a header file.
 
     namespace Foo
     {
-        inline constexpr double x = 1.234; // good
+        const double x = 1.234; // good
 
         inline double foo(double y)        // good
         {
