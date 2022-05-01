@@ -140,6 +140,7 @@ d2
 D2
 d2's
 dag
+DataRecord
 dcl
 dd
 de
@@ -224,6 +225,7 @@ gx
 handcoded
 Henricson
 Henricson97
+Herlihy
 hh
 hier
 hierclass
@@ -293,6 +295,7 @@ Lomow
 longjmp
 LSP
 lst
+Luchangco
 lvalue
 lvalues
 m1
@@ -340,6 +343,8 @@ Murray93
 mutex
 mutexes
 mx
+MyCustomError
+MyException
 myMap
 MyMap
 myset
@@ -355,6 +360,7 @@ Naumann
 ness
 newdelete
 nh
+Nir
 NL
 nodiscard
 noexcept
@@ -506,6 +512,7 @@ SemiRegular
 Sergey
 Sewell
 SFINAE
+Shavit
 sharedFoo
 sharedness
 sharedptrparam
@@ -553,6 +560,7 @@ Stroustrup94
 Stroustrup's
 struct
 structs
+subobjects
 suboperations
 subsetting
 sum1
