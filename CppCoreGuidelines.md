@@ -4642,7 +4642,7 @@ Destructor rules:
 
 * [C.30: Define a destructor if a class needs an explicit action at object destruction](#Rc-dtor)
 * [C.31: All resources acquired by a class must be released by the class's destructor](#Rc-dtor-release)
-* [C.32: If a class has a raw pointer (`T*`) or reference (`T&`), consider whether it might be owning](#Rc-dtor-ptr)
+* [C.32: If a class has a raw pointer (`T*`), consider whether it might be owning](#Rc-dtor-ptr)
 * [C.33: If a class has an owning pointer member, define a destructor](#Rc-dtor-ptr2)
 * [C.35: A base class destructor should be either public and virtual, or protected and non-virtual](#Rc-dtor-virtual)
 * [C.36: A destructor must not fail](#Rc-dtor-fail)
@@ -4985,7 +4985,7 @@ Here `p` refers to `pp` but does not own it.
 * (Hard) Determine if pointer or reference member variables are owners when there is no explicit statement of ownership
   (e.g., look into the constructors).
 
-### <a name="Rc-dtor-ptr"></a>C.32: If a class has a raw pointer (`T*`) or reference (`T&`), consider whether it might be owning
+### <a name="Rc-dtor-ptr"></a>C.32: If a class has a raw pointer (`T*`), consider whether it might be owning
 
 ##### Reason
 
@@ -4993,16 +4993,23 @@ There is a lot of code that is non-specific about ownership.
 
 ##### Example
 
-    ???
+    class LegacyClass
+    {
+        Foo* m_owningPtr;
+        Bar* m_observerPtr;
+    }
+
+The only way to determine ownership may be to dig through the code to look for
+allocations.  If a pointer is owning, document it as owning.
 
 ##### Note
 
-If the `T*` or `T&` is owning, mark it `owning`. If the `T*` is not owning, consider marking it `ptr`.
-This will aid documentation and analysis.
+Ownership should be clear in new code (and refactored legacy code) according to [R.20](#Rr-owner) for owned
+resources and [R.3](#Rr-ptr) for non-owned resources.
 
 ##### Enforcement
 
-Look at the initialization of raw member pointers and member references and see if an allocation is used.
+Look at the initialization of raw member pointers and see if an allocation is used.
 
 ### <a name="Rc-dtor-ptr2"></a>C.33: If a class has an owning pointer member, define a destructor
 
