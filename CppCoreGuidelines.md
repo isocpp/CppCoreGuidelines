@@ -4997,6 +4997,7 @@ There is a lot of code that is non-specific about ownership.
     {
         Foo* m_owningPtr;
         Bar* m_observerPtr;
+        // ...
     }
 
 The only way to determine ownership may be to dig through the code to look for
