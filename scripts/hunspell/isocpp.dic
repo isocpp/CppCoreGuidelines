@@ -286,6 +286,7 @@ Lakos
 Lakos96
 Lavavej
 LCSD05
+LegacyClass
 lifecycle
 *life-time
 linearization
@@ -301,6 +302,8 @@ lvalues
 m1
 m2
 m3
+m_owningPtr;
+m_observerPtr;
 macros2
 malloc
 mallocfree
