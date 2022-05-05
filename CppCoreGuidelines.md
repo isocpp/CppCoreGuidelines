@@ -52,7 +52,7 @@ Supporting sections:
 * [RF: References](#S-references)
 * [Pro: Profiles](#S-profile)
 * [GSL: Guidelines support library](#S-gsl)
-* [NL: Naming and layout rules](#S-naming)
+* [NL: Naming and layout suggestions](#S-naming)
 * [FAQ: Answers to frequently asked questions](#S-faq)
 * [Appendix A: Libraries](#S-libraries)
 * [Appendix B: Modernizing code](#S-modernizing)
@@ -445,7 +445,7 @@ Supporting sections:
 * [RF: References](#S-references)
 * [Pro: Profiles](#S-profile)
 * [GSL: Guidelines support library](#S-gsl)
-* [NL: Naming and layout rules](#S-naming)
+* [NL: Naming and layout suggestions](#S-naming)
 * [FAQ: Answers to frequently asked questions](#S-faq)
 * [Appendix A: Libraries](#S-libraries)
 * [Appendix B: Modernizing code](#S-modernizing)
@@ -21238,7 +21238,7 @@ Many of them are very similar to what became part of the ISO C++ standard in C++
 * `Unique_pointer`  // A type that matches `Pointer`, is movable, and is not copyable
 * `Shared_pointer`   // A type that matches `Pointer`, and is copyable
 
-# <a name="S-naming"></a>NL: Naming and layout rules
+# <a name="S-naming"></a>NL: Naming and layout suggestions (if you don't already have one)
 
 Consistent naming and layout are helpful.
 If for no other reason because it minimizes "my style is better than your style" arguments.
