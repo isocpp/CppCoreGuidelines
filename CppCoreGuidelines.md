@@ -21238,7 +21238,7 @@ Many of them are very similar to what became part of the ISO C++ standard in C++
 * `Unique_pointer`  // A type that matches `Pointer`, is movable, and is not copyable
 * `Shared_pointer`   // A type that matches `Pointer`, and is copyable
 
-# <a name="S-naming"></a>NL: Naming and layout suggestions (if you don't already have one)
+# <a name="S-naming"></a>NL: Naming and layout suggestions
 
 Consistent naming and layout are helpful.
 If for no other reason because it minimizes "my style is better than your style" arguments.
