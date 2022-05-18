@@ -6966,6 +6966,7 @@ Designing rules for classes in a hierarchy summary:
 * [C.138: Create an overload set for a derived class and its bases with `using`](#Rh-using)
 * [C.139: Use `final` on classes sparingly](#Rh-final)
 * [C.140: Do not provide different default arguments for a virtual function and an overrider](#Rh-virtual-default-arg)
+* [C.141: Define a class as `final` if it has a public non-virtual destructor](#Rc-dtor-final)
 
 Accessing objects in a hierarchy rule summary:
 
@@ -7853,10 +7854,13 @@ One example is a performance-critical AST hierarchy in a compiler or language an
 New derived classes are not added every year and only by library implementers.
 However, misuses are (or at least have been) far more common.
 
+##### Note
+
+[A class with a public non-virtual destructor should be final](#Rc-dtor-final). So, the use of non-virtual interfaces may lead to some restrictions.
+
 ##### Enforcement
 
-Flag uses of `final` on classes.
-
+Flag uses of `final` on classes with virtual destructor.
 
 ### <a name="Rh-virtual-default-arg"></a>C.140: Do not provide different default arguments for a virtual function and an overrider
 
@@ -7886,6 +7890,101 @@ That can cause confusion: An overrider does not inherit default arguments.
 ##### Enforcement
 
 Flag default arguments on virtual functions if they differ between base and derived declarations.
+
+### <a name="Rc-dtor-final"></a>C.141: Define a class as `final` if it has a public non-virtual destructor
+
+##### Reason
+
+[A non-virtual destructor of base class should be protected](#Rc-dtor-virtual). So, the derived class is not allowed if a non-virtual destructor is public.
+
+##### Discussion
+
+See [this in the Discussion section](#Sd-dtor).
+
+##### Example, bad
+
+Non-virtual destructor of base class is public.
+
+    class Point {
+    public:
+        Point(int x, int y) {/*...*/}
+        // ...
+    };
+    
+    enum Color {Red};
+
+    class Colored_point : public Point {
+    public:
+        Colored_point(int x, int y, Color color) : Point(x, y) {/*...*/}
+        // ...
+    };
+    
+    std::unique_ptr<Point> create()
+    {
+        return std::make_unique<Colored_point>(10, 10, Color::Red); // Undefined behavior is here.
+    }
+
+So, it is possible to store an address of the `Colored_point` instance into `unique_ptr<Point>` and produce undefined behavior at the destruction moment.
+
+##### Note
+
+Sometime it is required to allow a user to manage the lifetime of both, a base class and derived one. At the same time, the use of vtable is impossible due to performance and/or memory consumption reason, which leads to the use of non-virtual destructors in the class hierarchy.
+
+Such situations can be resolved by extra derived classes that produces finalized branches in the class hierarchy. Declare the entire implementation as a hierarchy of base classes with protected non-virtual destructors. Declare the public interface classes as a final one that has public non-virtual destructor and derived from the corresponded implementation base class.
+
+##### Example
+
+A base class is used to allow inheritance.
+
+    class Point_impl {
+    public:
+        Point_impl(int x, int y) {/*...*/}
+    protected:
+        ~Point_impl() = default; // prevent destruction by pointer to this class.
+        // ...
+    };
+    
+    class Point final : public Point_impl { // Prevent inheritance.
+    public:
+        using Point_impl::Point_impl;
+        // default public ~Point() allows destruction.
+    };
+    
+    enum Color {Red};
+
+    class Colored_point_impl : public Point_impl {
+    public:
+        Colored_point_impl(int x, int y, Color color) : Point_impl(x, y) {/*...*/}
+    protected:
+        ~Colored_point_impl() = default;
+        // ...
+    };
+    
+    class Colored_point final : public Colored_point_impl {
+    public:
+        using Colored_point_impl::Colored_point_impl;
+        // default public ~Colored_point() allows destruction.
+    };
+    
+    std::unique_ptr<Point> create_point()
+    {
+        // Compilation error: could not convert from `unique_ptr<Colored_point>` to
+        // `unique_ptr<Point>`
+        return std::make_unique<Colored_point>(10, 10, Color::Red);
+        return nullptr;
+    }
+
+    std::unique_ptr<Point_impl> create_point_base()
+    {
+        // Compilation error: `Point_impl::~Point_impl()` is protected within this context
+        return std::make_unique<Colored_point>(10, 10, Color::Red);
+    }
+
+Now the protected destructors prevent incorrect object destruction. `unique_ptr<Point>` is not able to handle the `Colored_point` instance by design. So, the undefined behavior is not produced here.
+
+##### Enforcement
+
+(Simple) A class should be declared as `final` if it has a public non-virtual destructor.
 
 ## C.hier-access: Accessing objects in a hierarchy
 
