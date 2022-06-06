@@ -52,7 +52,7 @@ Supporting sections:
 * [RF: References](#S-references)
 * [Pro: Profiles](#S-profile)
 * [GSL: Guidelines support library](#S-gsl)
-* [NL: Naming and layout rules](#S-naming)
+* [NL: Naming and layout suggestions](#S-naming)
 * [FAQ: Answers to frequently asked questions](#S-faq)
 * [Appendix A: Libraries](#S-libraries)
 * [Appendix B: Modernizing code](#S-modernizing)
@@ -445,7 +445,7 @@ Supporting sections:
 * [RF: References](#S-references)
 * [Pro: Profiles](#S-profile)
 * [GSL: Guidelines support library](#S-gsl)
-* [NL: Naming and layout rules](#S-naming)
+* [NL: Naming and layout suggestions](#S-naming)
 * [FAQ: Answers to frequently asked questions](#S-faq)
 * [Appendix A: Libraries](#S-libraries)
 * [Appendix B: Modernizing code](#S-modernizing)
@@ -3230,6 +3230,39 @@ Another example, use a specific type along the lines of `variant<T, error_code>`
 * Output parameters should be replaced by return values.
   An output parameter is one that the function writes to, invokes a non-`const` member function, or passes on as a non-`const`.
 
+### <a name="Rf-ptr-ref"></a>F.60: Prefer `T*` over `T&` when "no argument" is a valid option
+
+##### Reason
+
+A pointer (`T*`) can be a `nullptr` and a reference (`T&`) cannot, there is no valid "null reference".
+Sometimes having `nullptr` as an alternative to indicated "no object" is useful, but if it is not, a reference is notationally simpler and might yield better code.
+
+##### Example
+
+    string zstring_to_string(zstring p) // zstring is a char*; that is a C-style string
+    {
+        if (!p) return string{};    // p might be nullptr; remember to check
+        return string{p};
+    }
+
+    void print(const vector<int>& r)
+    {
+        // r refers to a vector<int>; no check needed
+    }
+
+##### Note
+
+It is possible, but not valid C++ to construct a reference that is essentially a `nullptr` (e.g., `T* p = nullptr; T& r = *p;`).
+That error is very uncommon.
+
+##### Note
+
+If you prefer the pointer notation (`->` and/or `*` vs. `.`), `not_null<T*>` provides the same guarantee as `T&`.
+
+##### Enforcement
+
+* Flag ???
+
 ### <a name="Rf-ptr"></a>F.22: Use `T*` or `owner<T*>` to designate a single object
 
 ##### Reason
@@ -3467,39 +3500,6 @@ Have a single object own the shared object (e.g. a scoped object) and destroy th
 ##### Enforcement
 
 (Not enforceable) This is a too complex pattern to reliably detect.
-
-### <a name="Rf-ptr-ref"></a>F.60: Prefer `T*` over `T&` when "no argument" is a valid option
-
-##### Reason
-
-A pointer (`T*`) can be a `nullptr` and a reference (`T&`) cannot, there is no valid "null reference".
-Sometimes having `nullptr` as an alternative to indicated "no object" is useful, but if it is not, a reference is notationally simpler and might yield better code.
-
-##### Example
-
-    string zstring_to_string(zstring p) // zstring is a char*; that is a C-style string
-    {
-        if (!p) return string{};    // p might be nullptr; remember to check
-        return string{p};
-    }
-
-    void print(const vector<int>& r)
-    {
-        // r refers to a vector<int>; no check needed
-    }
-
-##### Note
-
-It is possible, but not valid C++ to construct a reference that is essentially a `nullptr` (e.g., `T* p = nullptr; T& r = *p;`).
-That error is very uncommon.
-
-##### Note
-
-If you prefer the pointer notation (`->` and/or `*` vs. `.`), `not_null<T*>` provides the same guarantee as `T&`.
-
-##### Enforcement
-
-* Flag ???
 
 ### <a name="Rf-return-ptr"></a>F.42: Return a `T*` to indicate a position (only)
 
@@ -21246,7 +21246,7 @@ Many of them are very similar to what became part of the ISO C++ standard in C++
 * `Unique_pointer`  // A type that matches `Pointer`, is movable, and is not copyable
 * `Shared_pointer`   // A type that matches `Pointer`, and is copyable
 
-# <a name="S-naming"></a>NL: Naming and layout rules
+# <a name="S-naming"></a>NL: Naming and layout suggestions
 
 Consistent naming and layout are helpful.
 If for no other reason because it minimizes "my style is better than your style" arguments.
