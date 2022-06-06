@@ -4993,11 +4993,10 @@ There is a lot of code that is non-specific about ownership.
 
 ##### Example
 
-    class LegacyClass
+    class legacy_class
     {
-        Foo* m_owningPtr;
-        Bar* m_observerPtr;
-        // ...
+        foo* m_owning;
+        bar* m_observer;
     }
 
 The only way to determine ownership may be to dig through the code to look for
