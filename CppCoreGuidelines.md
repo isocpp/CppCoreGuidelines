@@ -1,6 +1,6 @@
 # <a name="main"></a>C++ Core Guidelines
 
-January 3, 2022
+June 13, 2022
 
 
 Editors:
@@ -15629,7 +15629,7 @@ Error-handling rule summary:
 * [E.13: Never throw while being the direct owner of an object](#Re-never-throw)
 * [E.14: Use purpose-designed user-defined types as exceptions (not built-in types)](#Re-exception-types)
 * [E.15: Throw by value, catch exceptions from a hierarchy by reference](#Re-exception-ref)
-* [E.16: Destructors, deallocation, and `swap` must never fail](#Re-never-fail)
+* [E.16: Destructors, deallocation, `swap`, and exception type copy/move construction must never fail](#Re-never-fail)
 * [E.17: Don't try to catch every exception in every function](#Re-not-always)
 * [E.18: Minimize the use of explicit `try`/`catch`](#Re-catch)
 * [E.19: Use a `final_action` object to express cleanup if no suitable resource handle is available](#Re-finally)
@@ -16096,11 +16096,11 @@ To rethrow a caught exception use `throw;` not `throw e;`. Using `throw e;` woul
 * Flag catching by value of a type that has a virtual function.
 * Flag throwing raw pointers.
 
-### <a name="Re-never-fail"></a>E.16: Destructors, deallocation, and `swap` must never fail
+### <a name="Re-never-fail"></a>E.16: Destructors, deallocation, `swap`, and exception type copy/move construction must never fail
 
 ##### Reason
 
-We don't know how to write reliable programs if a destructor, a swap, or a memory deallocation fails; that is, if it exits by an exception or simply doesn't perform its required action.
+We don't know how to write reliable programs if a destructor, a swap, a memory deallocation, or attempting to copy/move-construct an exception object fails; that is, if it exits by an exception or simply doesn't perform its required action.
 
 ##### Example, don't
 
@@ -16129,14 +16129,17 @@ The standard library assumes that destructors, deallocation functions (e.g., `op
 
 ##### Note
 
-Deallocation functions, including `operator delete`, must be `noexcept`. `swap` functions must be `noexcept`.
-Most destructors are implicitly `noexcept` by default.
-Also, [make move operations `noexcept`](#Rc-move-noexcept).
+- Deallocation functions, including `operator delete`, must be `noexcept`.
+- `swap` functions must be `noexcept`.
+- Most destructors are implicitly `noexcept` by default.
+- Also, [make move operations `noexcept`](#Rc-move-noexcept).
+- If writing a type intended to be used as an exception type, ensure its copy constructor is not `noexcept`. In general we cannot mechanically enforce this, because we do not know whether a type is intended to be used as an exception type.
+- Try not to `throw` a type whose copy constructor is not `noexcept`. In general we cannot mechanically enforce this, because even `throw std::string(...)` could throw but does not in practice.
 
 ##### Enforcement
 
-Catch destructors, deallocation operations, and `swap`s that `throw`.
-Catch such operations that are not `noexcept`.
+- Catch destructors, deallocation operations, and `swap`s that `throw`.
+- Catch such operations that are not `noexcept`.
 
 **See also**: [discussion](#Sd-never-fail)
 
