@@ -2927,30 +2927,10 @@ For advanced uses (only), where you really need to optimize for rvalues passed t
 
     void sink(unique_ptr<widget>);  // input only, and moves ownership of the widget
 
-Avoid "esoteric techniques" such as:
-
-* Passing arguments as `T&&` "for efficiency".
-  Most rumors about performance advantages from passing by `&&` are false or brittle (but see [F.18](#Rf-consume) and [F.19](#Rf-forward)).
-* Returning `const T&` from assignments and similar operations (see [F.47](#Rf-assignment-op).)
-
-##### Example
-
-Assuming that `Matrix` has move operations (possibly by keeping its elements in a `std::vector`):
-
-    Matrix operator+(const Matrix& a, const Matrix& b)
-    {
-        Matrix res;
-        // ... fill res with the sum ...
-        return res;
-    }
-
-    Matrix x = m1 + m2;  // move constructor
-
-    y = m3 + m3;         // move assignment
+Avoid "esoteric techniques" such as passing arguments as `T&&` "for efficiency".
+Most rumors about performance advantages from passing by `&&` are false or brittle (but see [F.18](#Rf-consume) and [F.19](#Rf-forward)).
 
 ##### Notes
-
-The return value optimization doesn't handle the assignment case, but the move assignment does.
 
 A reference can be assumed to refer to a valid object (language rule).
 There is no (legitimate) "null reference."
@@ -3103,6 +3083,26 @@ The argument against is that it prevents (very frequent) use of move semantics.
 * For non-concrete types, such as types in an inheritance hierarchy, return the object by `unique_ptr` or `shared_ptr`.
 * If a type is expensive to move (e.g., `array<BigPOD>`), consider allocating it on the free store and return a handle (e.g., `unique_ptr`), or passing it in a reference to non-`const` target object to fill (to be used as an out-parameter).
 * To reuse an object that carries capacity (e.g., `std::string`, `std::vector`) across multiple calls to the function in an inner loop: [treat it as an in/out parameter and pass by reference](#Rf-out-multi).
+
+##### Example
+
+Assuming that `Matrix` has move operations (possibly by keeping its elements in a `std::vector`):
+
+    Matrix operator+(const Matrix& a, const Matrix& b)
+    {
+        Matrix res;
+        // ... fill res with the sum ...
+        return res;
+    }
+
+    Matrix x = m1 + m2;  // move constructor
+
+    y = m3 + m3;         // move assignment
+
+
+##### Note
+
+The return value optimization doesn't handle the assignment case, but the move assignment does.
 
 ##### Example
 
