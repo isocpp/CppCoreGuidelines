@@ -3090,8 +3090,9 @@ Assuming that `Matrix` has move operations (possibly by keeping its elements in 
 
     Matrix operator+(const Matrix& a, const Matrix& b)
     {
-        Matrix res;
-        // ... fill res with the sum ...
+        Matrix res = a;
+        // Call the corresponding operator+= (assuming it is provided as well):
+        res += b;
         return res;
     }
 
