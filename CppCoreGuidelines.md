@@ -2898,8 +2898,9 @@ For passing sequences of characters see [String](#SS-string).
 
 Both let the caller know that a function will not modify the argument, and both allow initialization by rvalues.
 
-What is "cheap to copy" depends on the machine architecture, but two or three words (doubles, pointers, references) are usually best passed by value.
-When copying is cheap, nothing beats the simplicity and safety of copying, and for small objects (up to two or three words) it is also faster than passing by reference because it does not require an extra indirection to access from the function.
+What is "cheap to copy" depends on the machine architecture, but an argument of a fundamental type, an enumeration type, or a raw pointer type is usually best passed by value.
+Furthermore, pass by value is also recommended for an argument of a trivially copyable class type, at least as long as this object is small enough (having a compile-time size of up to `2 * sizeof(void*)`, typically).
+When copying is cheap, nothing beats the simplicity and safety of copying, and for small trivially copyable objects it is also faster than passing by reference because it does not require an extra indirection to access from the function.
 
 ##### Example
 
@@ -22772,7 +22773,6 @@ In particular, an object of a regular type can be copied and the result of a cop
 * *value type*: a term some people use to mean a regular or semiregular type.
 * *variable*: a named object of a given type; contains a value unless uninitialized.
 * *virtual function*: a member function that can be overridden in a derived class.
-* *word*: a basic unit of memory in a computer, often the unit used to hold an integer.
 
 # <a name="S-unclassified"></a>To-do: Unclassified proto-rules
 
