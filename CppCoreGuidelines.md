@@ -1,6 +1,6 @@
 # <a name="main"></a>C++ Core Guidelines
 
-January 3, 2022
+June 13, 2022
 
 
 Editors:
@@ -2927,30 +2927,10 @@ For advanced uses (only), where you really need to optimize for rvalues passed t
 
     void sink(unique_ptr<widget>);  // input only, and moves ownership of the widget
 
-Avoid "esoteric techniques" such as:
-
-* Passing arguments as `T&&` "for efficiency".
-  Most rumors about performance advantages from passing by `&&` are false or brittle (but see [F.18](#Rf-consume) and [F.19](#Rf-forward)).
-* Returning `const T&` from assignments and similar operations (see [F.47](#Rf-assignment-op).)
-
-##### Example
-
-Assuming that `Matrix` has move operations (possibly by keeping its elements in a `std::vector`):
-
-    Matrix operator+(const Matrix& a, const Matrix& b)
-    {
-        Matrix res;
-        // ... fill res with the sum ...
-        return res;
-    }
-
-    Matrix x = m1 + m2;  // move constructor
-
-    y = m3 + m3;         // move assignment
+Avoid "esoteric techniques" such as passing arguments as `T&&` "for efficiency".
+Most rumors about performance advantages from passing by `&&` are false or brittle (but see [F.18](#Rf-consume) and [F.19](#Rf-forward)).
 
 ##### Notes
-
-The return value optimization doesn't handle the assignment case, but the move assignment does.
 
 A reference can be assumed to refer to a valid object (language rule).
 There is no (legitimate) "null reference."
@@ -3103,6 +3083,26 @@ The argument against is that it prevents (very frequent) use of move semantics.
 * For non-concrete types, such as types in an inheritance hierarchy, return the object by `unique_ptr` or `shared_ptr`.
 * If a type is expensive to move (e.g., `array<BigPOD>`), consider allocating it on the free store and return a handle (e.g., `unique_ptr`), or passing it in a reference to non-`const` target object to fill (to be used as an out-parameter).
 * To reuse an object that carries capacity (e.g., `std::string`, `std::vector`) across multiple calls to the function in an inner loop: [treat it as an in/out parameter and pass by reference](#Rf-out-multi).
+
+##### Example
+
+Assuming that `Matrix` has move operations (possibly by keeping its elements in a `std::vector`):
+
+    Matrix operator+(const Matrix& a, const Matrix& b)
+    {
+        Matrix res;
+        // ... fill res with the sum ...
+        return res;
+    }
+
+    Matrix x = m1 + m2;  // move constructor
+
+    y = m3 + m3;         // move assignment
+
+
+##### Note
+
+The return value optimization doesn't handle the assignment case, but the move assignment does.
 
 ##### Example
 
@@ -4642,7 +4642,7 @@ Destructor rules:
 
 * [C.30: Define a destructor if a class needs an explicit action at object destruction](#Rc-dtor)
 * [C.31: All resources acquired by a class must be released by the class's destructor](#Rc-dtor-release)
-* [C.32: If a class has a raw pointer (`T*`), consider whether it might be owning](#Rc-dtor-ptr)
+* [C.32: If a class has a raw pointer (`T*`) or reference (`T&`), consider whether it might be owning](#Rc-dtor-ptr)
 * [C.33: If a class has an owning pointer member, define a destructor](#Rc-dtor-ptr2)
 * [C.35: A base class destructor should be either public and virtual, or protected and non-virtual](#Rc-dtor-virtual)
 * [C.36: A destructor must not fail](#Rc-dtor-fail)
@@ -4985,7 +4985,7 @@ Here `p` refers to `pp` but does not own it.
 * (Hard) Determine if pointer or reference member variables are owners when there is no explicit statement of ownership
   (e.g., look into the constructors).
 
-### <a name="Rc-dtor-ptr"></a>C.32: If a class has a raw pointer (`T*`), consider whether it might be owning
+### <a name="Rc-dtor-ptr"></a>C.32: If a class has a raw pointer (`T*`) or reference (`T&`), consider whether it might be owning
 
 ##### Reason
 
@@ -5000,16 +5000,16 @@ There is a lot of code that is non-specific about ownership.
     }
 
 The only way to determine ownership may be to dig through the code to look for
-allocations.  If a pointer is owning, document it as owning.
+allocations.  If a pointer or reference is owning, document it as owning.
 
 ##### Note
 
 Ownership should be clear in new code (and refactored legacy code) according to [R.20](#Rr-owner) for owned
-resources and [R.3](#Rr-ptr) for non-owned resources.
+pointers and [R.3](#Rr-ptr) for non-owned pointers.  References should never own [R.4](#Rr-ref).
 
 ##### Enforcement
 
-Look at the initialization of raw member pointers and see if an allocation is used.
+Look at the initialization of raw member pointers and member references and see if an allocation is used.
 
 ### <a name="Rc-dtor-ptr2"></a>C.33: If a class has an owning pointer member, define a destructor
 
@@ -15636,7 +15636,7 @@ Error-handling rule summary:
 * [E.13: Never throw while being the direct owner of an object](#Re-never-throw)
 * [E.14: Use purpose-designed user-defined types as exceptions (not built-in types)](#Re-exception-types)
 * [E.15: Throw by value, catch exceptions from a hierarchy by reference](#Re-exception-ref)
-* [E.16: Destructors, deallocation, and `swap` must never fail](#Re-never-fail)
+* [E.16: Destructors, deallocation, `swap`, and exception type copy/move construction must never fail](#Re-never-fail)
 * [E.17: Don't try to catch every exception in every function](#Re-not-always)
 * [E.18: Minimize the use of explicit `try`/`catch`](#Re-catch)
 * [E.19: Use a `final_action` object to express cleanup if no suitable resource handle is available](#Re-finally)
@@ -16103,11 +16103,11 @@ To rethrow a caught exception use `throw;` not `throw e;`. Using `throw e;` woul
 * Flag catching by value of a type that has a virtual function.
 * Flag throwing raw pointers.
 
-### <a name="Re-never-fail"></a>E.16: Destructors, deallocation, and `swap` must never fail
+### <a name="Re-never-fail"></a>E.16: Destructors, deallocation, `swap`, and exception type copy/move construction must never fail
 
 ##### Reason
 
-We don't know how to write reliable programs if a destructor, a swap, or a memory deallocation fails; that is, if it exits by an exception or simply doesn't perform its required action.
+We don't know how to write reliable programs if a destructor, a swap, a memory deallocation, or attempting to copy/move-construct an exception object fails; that is, if it exits by an exception or simply doesn't perform its required action.
 
 ##### Example, don't
 
@@ -16136,14 +16136,17 @@ The standard library assumes that destructors, deallocation functions (e.g., `op
 
 ##### Note
 
-Deallocation functions, including `operator delete`, must be `noexcept`. `swap` functions must be `noexcept`.
-Most destructors are implicitly `noexcept` by default.
-Also, [make move operations `noexcept`](#Rc-move-noexcept).
+* Deallocation functions, including `operator delete`, must be `noexcept`.
+* `swap` functions must be `noexcept`.
+* Most destructors are implicitly `noexcept` by default.
+* Also, [make move operations `noexcept`](#Rc-move-noexcept).
+* If writing a type intended to be used as an exception type, ensure its copy constructor is not `noexcept`. In general we cannot mechanically enforce this, because we do not know whether a type is intended to be used as an exception type.
+* Try not to `throw` a type whose copy constructor is not `noexcept`. In general we cannot mechanically enforce this, because even `throw std::string(...)` could throw but does not in practice.
 
 ##### Enforcement
 
-Catch destructors, deallocation operations, and `swap`s that `throw`.
-Catch such operations that are not `noexcept`.
+* Catch destructors, deallocation operations, and `swap`s that `throw`.
+* Catch such operations that are not `noexcept`.
 
 **See also**: [discussion](#Sd-never-fail)
 
@@ -20312,6 +20315,14 @@ This slowdown can be significant compared to `printf`-style output.
 
 For `cin`/`cout` (and equivalent) interaction, there is no reason to flush; that's done automatically.
 For writing to a file, there is rarely a need to `flush`.
+
+##### Note
+
+For string streams (specifically `ostringstream`), the insertion of an `endl` is entirely equivalent
+to the insertion of a `'\n'` character, but also in this case, `endl` might be significantly slower.
+
+`endl` does *not* take care of producing a platform specific end-of-line sequence (like "\r\n" on
+Windows). So for a string stream, `s << endl` just inserts a *single* character, `'\n'`.
 
 ##### Note
 
