@@ -8440,7 +8440,7 @@ Many parts of the C++ semantics assume its default meaning.
 
 If you "mess with" operator `&` be sure that its definition has matching meanings for `->`, `[]`, `*`, and `.` on the result type.
 Note that operator `.` currently cannot be overloaded so a perfect system is impossible.
-We hope to remedy that: <http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2015/n4477.pdf>.
+We hope to remedy that: [Operator Dot (R2)](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2015/n4477.pdf).
 Note that `std::addressof()` always yields a built-in pointer.
 
 ##### Enforcement
