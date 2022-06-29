@@ -18,7 +18,7 @@ Many of the guidelines make use of the header-only Guidelines Support Library. O
 
 ## Background and scope
 
-The aim of the guidelines is to help people to use modern C++ effectively. By "modern C++" we mean C++11, C++14, and C++17. In other
+The aim of the guidelines is to help people to use modern C++ effectively. By "modern C++" we mean C++11, C++14, C++17, and C++20. In other
 words, what would you like your code to look like in 5 years' time, given that you can start now? In 10 years' time?
 
 The guidelines are focused on relatively higher-level issues, such as interfaces, resource management, memory management, and concurrency. Such
