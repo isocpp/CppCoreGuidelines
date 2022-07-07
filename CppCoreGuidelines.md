@@ -4477,7 +4477,7 @@ For example, a derived class might be allowed to skip a run-time check because i
 
 ##### Note
 
-Prefer the order `public` members before `protected` members before `private` members [see](#Rl-order).
+Prefer the order `public` members before `protected` members before `private` members; see [NL.16](#Rl-order).
 
 ##### Enforcement
 
