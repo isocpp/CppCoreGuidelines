@@ -2432,7 +2432,6 @@ Naming that lambda breaks up the expression into its logical parts and provides 
     auto lessT = [](T x, T y) { return x.rank() < y.rank() && x.value() < y.value(); };
 
     sort(a, b, lessT);
-    find_if(a, b, lessT);
 
 The shortest code is not always the best for performance or maintainability.
 
