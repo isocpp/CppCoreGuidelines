@@ -4993,12 +4993,19 @@ There is a lot of code that is non-specific about ownership.
 
 ##### Example
 
-    ???
+    class legacy_class
+    {
+        foo* m_owning;
+        bar* m_observer;
+    }
+
+The only way to determine ownership may be to dig through the code to look for
+allocations.  If a pointer or reference is owning, document it as owning.
 
 ##### Note
 
-If the `T*` or `T&` is owning, mark it `owning`. If the `T*` is not owning, consider marking it `ptr`.
-This will aid documentation and analysis.
+Ownership should be clear in new code (and refactored legacy code) according to [R.20](#Rr-owner) for owned
+pointers and [R.3](#Rr-ptr) for non-owned pointers.  References should never own [R.4](#Rr-ref).
 
 ##### Enforcement
 
