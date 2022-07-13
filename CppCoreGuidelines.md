@@ -16216,14 +16216,14 @@ Better:
 
 ##### Reason
 
-`finally` is less verbose and harder to get wrong than `try`/`catch`.
+`finally` from the [GSL](#S-gsl) is less verbose and harder to get wrong than `try`/`catch`.
 
 ##### Example
 
     void f(int n)
     {
         void* p = malloc(n);
-        auto _ = finally([p] { free(p); });
+        auto _ = gsl::finally([p] { free(p); });
         // ...
     }
 
