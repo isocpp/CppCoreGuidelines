@@ -1,6 +1,6 @@
 # <a name="main"></a>C++ Core Guidelines
 
-June 13, 2022
+July 13, 2022
 
 
 Editors:
@@ -4994,17 +4994,16 @@ There is a lot of code that is non-specific about ownership.
 
     class legacy_class
     {
-        foo* m_owning;
-        bar* m_observer;
+        foo* m_owning;   // Bad: change to unique_ptr<T> or owner<T*>
+        bar* m_observer; // OK: keep
     }
 
-The only way to determine ownership may be to dig through the code to look for
-allocations.  If a pointer or reference is owning, document it as owning.
+The only way to determine ownership may be code analysis.
 
 ##### Note
 
-Ownership should be clear in new code (and refactored legacy code) according to [R.20](#Rr-owner) for owned
-pointers and [R.3](#Rr-ptr) for non-owned pointers.  References should never own [R.4](#Rr-ref).
+Ownership should be clear in new code (and refactored legacy code) according to [R.20](#Rr-owner) for owning
+pointers and [R.3](#Rr-ptr) for non-owning pointers.  References should never own [R.4](#Rr-ref).
 
 ##### Enforcement
 
