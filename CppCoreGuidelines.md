@@ -6251,7 +6251,7 @@ Otherwise, the manually written move-assignment operater must be made safe for s
 
 ##### Enforcement
 
-* (Moderate) In the case of self-assignment, a move assignment operator should not leave the object holding pointer members that have been `delete`d.
+* (Moderate) In the case of self-assignment, a move assignment operator should not leave the object holding pointer members that have been deleted.
 * (Not enforceable) Look at the use of standard-library container types (incl. `string`) and consider them safe for ordinary (not life-critical) uses.
 
 ### <a name="Rc-move-noexcept"></a>C.66: Make move operations `noexcept`
