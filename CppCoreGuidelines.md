@@ -6216,7 +6216,7 @@ Unless there is an exceptionally strong reason not to, make `x = std::move(y); y
 
 People don't usually directly write a self move assignment, but it can occur.  `std::swap` is implemented using
 move operations so if you accidentally do `swap(a, b)` where `a` and `b` refer to the same object, failing to 
-handle self-move could be a serious and subtle error.  At a minimum, a self move should put the object into a
+handle self-move could be a serious and subtle error.  At a minimum, a self-move should put the object into a
 valid but unspecified state which is the same guarantee provided by the standard library containers.  It is 
 not requred to leave the object unchanged.  
 
@@ -6227,7 +6227,7 @@ assignment operator will be safe too.
 
     X& operator=(X&& a) = default;
 
-Otherwise, the manually written move assignment operate must be made safe for self-assignement.
+Otherwise, the manually written move-assignment operater must be made safe for self-assignement.
 
     class X {
     public:
@@ -6236,7 +6236,8 @@ Otherwise, the manually written move assignment operate must be made safe for se
         // ...
         ~X() { delete[] owning_ptr; }
     private:
-        T* owning_ptr;  // bad, but just for example.  See R.20 
+        T* owning_ptr;  // bad (See R.20) but used in the example because
+                        // it requires a manual move assignment 
     };
 
     X& X::operator=(X&& a) noexcept
@@ -6250,7 +6251,7 @@ Otherwise, the manually written move assignment operate must be made safe for se
 
 ##### Enforcement
 
-* (Moderate) In the case of self-assignment, a move assignment operator should not leave the object holding pointer members that have been `delete`d or set to `nullptr`.
+* (Moderate) In the case of self-assignment, a move assignment operator should not leave the object holding pointer members that have been `delete`d.
 * (Not enforceable) Look at the use of standard-library container types (incl. `string`) and consider them safe for ordinary (not life-critical) uses.
 
 ### <a name="Rc-move-noexcept"></a>C.66: Make move operations `noexcept`
