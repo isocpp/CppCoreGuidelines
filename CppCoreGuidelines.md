@@ -6214,13 +6214,18 @@ Unless there is an exceptionally strong reason not to, make `x = std::move(y); y
 
 ##### Reason
 
-If `x = std::move(x)` changes the value of `x`, people will be surprised and bad errors can occur. However, people don't usually directly write a self-assignment that turn into a move, but it can occur. However, `std::swap` is implemented using move operations so if you accidentally do `swap(a, b)` where `a` and `b` refer to the same object, failing to handle self-move could be a serious and subtle error.
+People don't usually directly write a self move assignment, but it can occur.  `std::swap` is implemented using
+move operations so if you accidentally do `swap(a, b)` where `a` and `b` refer to the same object, failing to 
+handle self-move could be a serious and subtle error.  At a minimum, a self move should put the object into a
+valid but unspecified state which is the same guarantee provided by the standard library containers.  It is 
+not requred to leave the object unchanged.  
 
 ##### Example
 
-If all of the members of a type are safe for move assignment, the default generated move assignment operator will be safe too.
+If all of the members of a type are safe for move assignment, the default generated move 
+assignment operator will be safe too.
 
-    Foo& operator=(Foo&& a) = default;
+    X& operator=(X&& a) = default;
 
 Otherwise, the manually written move assignment operate must be made safe for self-assignement.
 
@@ -6231,23 +6236,17 @@ Otherwise, the manually written move assignment operate must be made safe for se
         // ...
         ~X() { delete[] owning_ptr; }
     private:
-        int* owning_ptr;  // bad, but just for example.  See R.20 
+        T* owning_ptr;  // bad, but just for example.  See R.20 
     };
 
     X& X::operator=(X&& a) noexcept
     {
         auto* temp = a.owning_ptr;
         a.owning_ptr = nullptr;
-        delete owning_ptr;
+        delete owning_ptr;  // null in the case of a self move
         owning_ptr = temp;
         return *this;
     }
-
-The argument from the discussion of [self-assignment](#Rc-copy-self) against a `if (this == &a) return *this;` test is even more relevant for self-move.
-
-##### Note
-
-The default generated move assignment operator will correctly handle self-assignment if all members correctly handle self-assignment.
 
 ##### Enforcement
 
