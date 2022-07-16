@@ -1,6 +1,6 @@
 # <a name="main"></a>C++ Core Guidelines
 
-January 3, 2022
+July 13, 2022
 
 
 Editors:
@@ -52,7 +52,7 @@ Supporting sections:
 * [RF: References](#S-references)
 * [Pro: Profiles](#S-profile)
 * [GSL: Guidelines support library](#S-gsl)
-* [NL: Naming and layout rules](#S-naming)
+* [NL: Naming and layout suggestions](#S-naming)
 * [FAQ: Answers to frequently asked questions](#S-faq)
 * [Appendix A: Libraries](#S-libraries)
 * [Appendix B: Modernizing code](#S-modernizing)
@@ -445,7 +445,7 @@ Supporting sections:
 * [RF: References](#S-references)
 * [Pro: Profiles](#S-profile)
 * [GSL: Guidelines support library](#S-gsl)
-* [NL: Naming and layout rules](#S-naming)
+* [NL: Naming and layout suggestions](#S-naming)
 * [FAQ: Answers to frequently asked questions](#S-faq)
 * [Appendix A: Libraries](#S-libraries)
 * [Appendix B: Modernizing code](#S-modernizing)
@@ -2432,7 +2432,6 @@ Naming that lambda breaks up the expression into its logical parts and provides 
     auto lessT = [](T x, T y) { return x.rank() < y.rank() && x.value() < y.value(); };
 
     sort(a, b, lessT);
-    find_if(a, b, lessT);
 
 The shortest code is not always the best for performance or maintainability.
 
@@ -2927,30 +2926,10 @@ For advanced uses (only), where you really need to optimize for rvalues passed t
 
     void sink(unique_ptr<widget>);  // input only, and moves ownership of the widget
 
-Avoid "esoteric techniques" such as:
-
-* Passing arguments as `T&&` "for efficiency".
-  Most rumors about performance advantages from passing by `&&` are false or brittle (but see [F.18](#Rf-consume) and [F.19](#Rf-forward)).
-* Returning `const T&` from assignments and similar operations (see [F.47](#Rf-assignment-op).)
-
-##### Example
-
-Assuming that `Matrix` has move operations (possibly by keeping its elements in a `std::vector`):
-
-    Matrix operator+(const Matrix& a, const Matrix& b)
-    {
-        Matrix res;
-        // ... fill res with the sum ...
-        return res;
-    }
-
-    Matrix x = m1 + m2;  // move constructor
-
-    y = m3 + m3;         // move assignment
+Avoid "esoteric techniques" such as passing arguments as `T&&` "for efficiency".
+Most rumors about performance advantages from passing by `&&` are false or brittle (but see [F.18](#Rf-consume) and [F.19](#Rf-forward)).
 
 ##### Notes
-
-The return value optimization doesn't handle the assignment case, but the move assignment does.
 
 A reference can be assumed to refer to a valid object (language rule).
 There is no (legitimate) "null reference."
@@ -3106,6 +3085,26 @@ The argument against is that it prevents (very frequent) use of move semantics.
 
 ##### Example
 
+Assuming that `Matrix` has move operations (possibly by keeping its elements in a `std::vector`):
+
+    Matrix operator+(const Matrix& a, const Matrix& b)
+    {
+        Matrix res;
+        // ... fill res with the sum ...
+        return res;
+    }
+
+    Matrix x = m1 + m2;  // move constructor
+
+    y = m3 + m3;         // move assignment
+
+
+##### Note
+
+The return value optimization doesn't handle the assignment case, but the move assignment does.
+
+##### Example
+
     struct Package {      // exceptional case: expensive-to-move object
         char header[16];
         char load[2024 - 16];
@@ -3229,6 +3228,39 @@ Another example, use a specific type along the lines of `variant<T, error_code>`
 
 * Output parameters should be replaced by return values.
   An output parameter is one that the function writes to, invokes a non-`const` member function, or passes on as a non-`const`.
+
+### <a name="Rf-ptr-ref"></a>F.60: Prefer `T*` over `T&` when "no argument" is a valid option
+
+##### Reason
+
+A pointer (`T*`) can be a `nullptr` and a reference (`T&`) cannot, there is no valid "null reference".
+Sometimes having `nullptr` as an alternative to indicated "no object" is useful, but if it is not, a reference is notationally simpler and might yield better code.
+
+##### Example
+
+    string zstring_to_string(zstring p) // zstring is a char*; that is a C-style string
+    {
+        if (!p) return string{};    // p might be nullptr; remember to check
+        return string{p};
+    }
+
+    void print(const vector<int>& r)
+    {
+        // r refers to a vector<int>; no check needed
+    }
+
+##### Note
+
+It is possible, but not valid C++ to construct a reference that is essentially a `nullptr` (e.g., `T* p = nullptr; T& r = *p;`).
+That error is very uncommon.
+
+##### Note
+
+If you prefer the pointer notation (`->` and/or `*` vs. `.`), `not_null<T*>` provides the same guarantee as `T&`.
+
+##### Enforcement
+
+* Flag ???
 
 ### <a name="Rf-ptr"></a>F.22: Use `T*` or `owner<T*>` to designate a single object
 
@@ -3467,39 +3499,6 @@ Have a single object own the shared object (e.g. a scoped object) and destroy th
 ##### Enforcement
 
 (Not enforceable) This is a too complex pattern to reliably detect.
-
-### <a name="Rf-ptr-ref"></a>F.60: Prefer `T*` over `T&` when "no argument" is a valid option
-
-##### Reason
-
-A pointer (`T*`) can be a `nullptr` and a reference (`T&`) cannot, there is no valid "null reference".
-Sometimes having `nullptr` as an alternative to indicated "no object" is useful, but if it is not, a reference is notationally simpler and might yield better code.
-
-##### Example
-
-    string zstring_to_string(zstring p) // zstring is a char*; that is a C-style string
-    {
-        if (!p) return string{};    // p might be nullptr; remember to check
-        return string{p};
-    }
-
-    void print(const vector<int>& r)
-    {
-        // r refers to a vector<int>; no check needed
-    }
-
-##### Note
-
-It is possible, but not valid C++ to construct a reference that is essentially a `nullptr` (e.g., `T* p = nullptr; T& r = *p;`).
-That error is very uncommon.
-
-##### Note
-
-If you prefer the pointer notation (`->` and/or `*` vs. `.`), `not_null<T*>` provides the same guarantee as `T&`.
-
-##### Enforcement
-
-* Flag ???
 
 ### <a name="Rf-return-ptr"></a>F.42: Return a `T*` to indicate a position (only)
 
@@ -4477,7 +4476,7 @@ For example, a derived class might be allowed to skip a run-time check because i
 
 ##### Note
 
-Prefer the order `public` members before `protected` members before `private` members [see](#Rl-order).
+Prefer the order `public` members before `protected` members before `private` members; see [NL.16](#Rl-order).
 
 ##### Enforcement
 
@@ -4993,12 +4992,18 @@ There is a lot of code that is non-specific about ownership.
 
 ##### Example
 
-    ???
+    class legacy_class
+    {
+        foo* m_owning;   // Bad: change to unique_ptr<T> or owner<T*>
+        bar* m_observer; // OK: keep
+    }
+
+The only way to determine ownership may be code analysis.
 
 ##### Note
 
-If the `T*` or `T&` is owning, mark it `owning`. If the `T*` is not owning, consider marking it `ptr`.
-This will aid documentation and analysis.
+Ownership should be clear in new code (and refactored legacy code) according to [R.20](#Rr-owner) for owning
+pointers and [R.3](#Rr-ptr) for non-owning pointers.  References should never own [R.4](#Rr-ref).
 
 ##### Enforcement
 
@@ -8434,7 +8439,7 @@ Many parts of the C++ semantics assume its default meaning.
 
 If you "mess with" operator `&` be sure that its definition has matching meanings for `->`, `[]`, `*`, and `.` on the result type.
 Note that operator `.` currently cannot be overloaded so a perfect system is impossible.
-We hope to remedy that: <http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2015/n4477.pdf>.
+We hope to remedy that: [Operator Dot (R2)](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2015/n4477.pdf).
 Note that `std::addressof()` always yields a built-in pointer.
 
 ##### Enforcement
@@ -15623,7 +15628,7 @@ Error-handling rule summary:
 * [E.13: Never throw while being the direct owner of an object](#Re-never-throw)
 * [E.14: Use purpose-designed user-defined types as exceptions (not built-in types)](#Re-exception-types)
 * [E.15: Throw by value, catch exceptions from a hierarchy by reference](#Re-exception-ref)
-* [E.16: Destructors, deallocation, and `swap` must never fail](#Re-never-fail)
+* [E.16: Destructors, deallocation, `swap`, and exception type copy/move construction must never fail](#Re-never-fail)
 * [E.17: Don't try to catch every exception in every function](#Re-not-always)
 * [E.18: Minimize the use of explicit `try`/`catch`](#Re-catch)
 * [E.19: Use a `final_action` object to express cleanup if no suitable resource handle is available](#Re-finally)
@@ -16090,11 +16095,11 @@ To rethrow a caught exception use `throw;` not `throw e;`. Using `throw e;` woul
 * Flag catching by value of a type that has a virtual function.
 * Flag throwing raw pointers.
 
-### <a name="Re-never-fail"></a>E.16: Destructors, deallocation, and `swap` must never fail
+### <a name="Re-never-fail"></a>E.16: Destructors, deallocation, `swap`, and exception type copy/move construction must never fail
 
 ##### Reason
 
-We don't know how to write reliable programs if a destructor, a swap, or a memory deallocation fails; that is, if it exits by an exception or simply doesn't perform its required action.
+We don't know how to write reliable programs if a destructor, a swap, a memory deallocation, or attempting to copy/move-construct an exception object fails; that is, if it exits by an exception or simply doesn't perform its required action.
 
 ##### Example, don't
 
@@ -16123,14 +16128,17 @@ The standard library assumes that destructors, deallocation functions (e.g., `op
 
 ##### Note
 
-Deallocation functions, including `operator delete`, must be `noexcept`. `swap` functions must be `noexcept`.
-Most destructors are implicitly `noexcept` by default.
-Also, [make move operations `noexcept`](#Rc-move-noexcept).
+* Deallocation functions, including `operator delete`, must be `noexcept`.
+* `swap` functions must be `noexcept`.
+* Most destructors are implicitly `noexcept` by default.
+* Also, [make move operations `noexcept`](#Rc-move-noexcept).
+* If writing a type intended to be used as an exception type, ensure its copy constructor is not `noexcept`. In general we cannot mechanically enforce this, because we do not know whether a type is intended to be used as an exception type.
+* Try not to `throw` a type whose copy constructor is not `noexcept`. In general we cannot mechanically enforce this, because even `throw std::string(...)` could throw but does not in practice.
 
 ##### Enforcement
 
-Catch destructors, deallocation operations, and `swap`s that `throw`.
-Catch such operations that are not `noexcept`.
+* Catch destructors, deallocation operations, and `swap`s that `throw`.
+* Catch such operations that are not `noexcept`.
 
 **See also**: [discussion](#Sd-never-fail)
 
@@ -16207,14 +16215,14 @@ Better:
 
 ##### Reason
 
-`finally` is less verbose and harder to get wrong than `try`/`catch`.
+`finally` from the [GSL](#S-gsl) is less verbose and harder to get wrong than `try`/`catch`.
 
 ##### Example
 
     void f(int n)
     {
         void* p = malloc(n);
-        auto _ = finally([p] { free(p); });
+        auto _ = gsl::finally([p] { free(p); });
         // ...
     }
 
@@ -20302,6 +20310,14 @@ For writing to a file, there is rarely a need to `flush`.
 
 ##### Note
 
+For string streams (specifically `ostringstream`), the insertion of an `endl` is entirely equivalent
+to the insertion of a `'\n'` character, but also in this case, `endl` might be significantly slower.
+
+`endl` does *not* take care of producing a platform specific end-of-line sequence (like "\r\n" on
+Windows). So for a string stream, `s << endl` just inserts a *single* character, `'\n'`.
+
+##### Note
+
 Apart from the (occasionally important) issue of performance,
 the choice between `'\n'` and `endl` is almost completely aesthetic.
 
@@ -21232,7 +21248,7 @@ Many of them are very similar to what became part of the ISO C++ standard in C++
 * `Unique_pointer`  // A type that matches `Pointer`, is movable, and is not copyable
 * `Shared_pointer`   // A type that matches `Pointer`, and is copyable
 
-# <a name="S-naming"></a>NL: Naming and layout rules
+# <a name="S-naming"></a>NL: Naming and layout suggestions
 
 Consistent naming and layout are helpful.
 If for no other reason because it minimizes "my style is better than your style" arguments.
