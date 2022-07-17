@@ -6234,7 +6234,7 @@ Otherwise, the manually written move-assignment operater must be made safe for s
         X();
         X& operator=(X&& a) noexcept;
         // ...
-        ~X() { delete[] owning_ptr; }
+        ~X() { delete owning_ptr; }
     private:
         T* owning_ptr;  // bad (See R.20) but used in the example because
                         // it requires a manual move-assignment 
