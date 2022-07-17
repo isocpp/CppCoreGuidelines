@@ -6243,10 +6243,10 @@ Otherwise, the manually written move-assignment operator must be made safe for s
 
     X& X::operator=(X&& a) noexcept
     {
-        auto* temp = a.m_owning;
+        auto* tmp = a.m_owning;
         a.m_owning = nullptr;
         delete m_owning;  // null in the case of a self move
-        m_owning = temp;
+        m_owning = tmp;
         return *this;
     }
 
