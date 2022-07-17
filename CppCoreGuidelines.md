@@ -6178,7 +6178,8 @@ After `y = std::move(x)` the value of `y` should be the value `x` had and `x` sh
         int sz;
     };
 
-    X::X(X&& a) noexcept
+
+    X::X(X&& a)
         :p{a.p}, sz{a.sz}  // steal representation
     {
         a.p = nullptr;     // set to "empty"
