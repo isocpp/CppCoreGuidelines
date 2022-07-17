@@ -6227,7 +6227,7 @@ operator will be safe too.
 
     X& operator=(X&& a) = default;
 
-Otherwise, the manually written move-assignment operater must be made safe for self-assignement.
+Otherwise, the manually written move-assignment operator must be made safe for self-assignement.
 
     class X {
     public:
