@@ -6235,18 +6235,18 @@ Otherwise, the manually written move-assignment operator must be made safe for s
         X();
         X& operator=(X&& a) noexcept;
         // ...
-        ~X() { delete owning_ptr; }
+        ~X() { delete m_owning; }
     private:
-        T* owning_ptr;  // bad (See R.20) but used in the example because
-                        // it requires a manual move-assignment 
+        T* m_owning;  // bad (See R.20) but used in the example because
+                      // it requires a manual move-assignment 
     };
 
     X& X::operator=(X&& a) noexcept
     {
-        auto* temp = a.owning_ptr;
-        a.owning_ptr = nullptr;
-        delete owning_ptr;  // null in the case of a self move
-        owning_ptr = temp;
+        auto* temp = a.m_owning;
+        a.m_owning = nullptr;
+        delete m_owning;  // null in the case of a self move
+        m_owning = temp;
         return *this;
     }
 
