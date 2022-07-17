@@ -6219,7 +6219,7 @@ People don't usually directly write a self-move assignment, but it can occur.  `
 move operations so if you accidentally do `swap(a, b)` where `a` and `b` refer to the same object, failing to 
 handle self-move could be a serious and subtle error.  At a minimum, a self-move should put the object into a
 valid but unspecified state which is the same guarantee provided by the standard library containers.  It is 
-not requred to leave the object unchanged.  
+not required to leave the object unchanged.  
 
 ##### Example
 
@@ -6228,7 +6228,7 @@ operator will be safe too.
 
     X& operator=(X&& a) = default;
 
-Otherwise, the manually written move-assignment operator must be made safe for self-assignement.
+Otherwise, the manually written move-assignment operator must be made safe for self-assignment
 
     class X {
     public:
