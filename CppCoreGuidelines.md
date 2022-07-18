@@ -6238,7 +6238,7 @@ Otherwise, the manually written move-assignment operator must be made safe for s
         ~X() { delete m_owning; }
     private:
         T* m_owning;  // bad (See R.20) but used in the example because
-                      // it requires a manual move-assignment 
+                      // it requires a manual move-assignment
     };
 
     X& X::operator=(X&& a) noexcept
