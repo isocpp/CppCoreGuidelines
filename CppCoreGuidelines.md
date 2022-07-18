@@ -6169,6 +6169,7 @@ After `y = std::move(x)` the value of `y` should be the value `x` had and `x` sh
     public:
         X();
         X(X&& a) noexcept;  // move X
+        X& operator=(X&& a) noexcept; // move-assign X
         void modify();     // change the value of X
         // ...
         ~X() { delete[] p; }
@@ -6189,6 +6190,7 @@ After `y = std::move(x)` the value of `y` should be the value `x` had and `x` sh
         X x{};
         // ...
         X y = std::move(x);
+        x = X{};   // OK
     } // OK: x can be destroyed
 
 ##### Note
