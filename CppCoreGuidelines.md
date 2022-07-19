@@ -6165,11 +6165,11 @@ After `y = std::move(x)` the value of `y` should be the value `x` had and `x` sh
 
 ##### Example
 
-    template<typename T>
     class X {   // OK: value semantics
     public:
         X();
         X(X&& a) noexcept;  // move X
+        X& operator=(X&& a) noexcept; // move-assign X
         void modify();     // change the value of X
         // ...
         ~X() { delete[] p; }
@@ -6178,8 +6178,7 @@ After `y = std::move(x)` the value of `y` should be the value `x` had and `x` sh
         int sz;
     };
 
-
-    X::X(X&& a)
+    X::X(X&& a) noexcept
         :p{a.p}, sz{a.sz}  // steal representation
     {
         a.p = nullptr;     // set to "empty"
