@@ -1,4 +1,5 @@
-# <a name="main"></a>C++ Core Guidelines
+# <a name="main"></a>C++ Core Guidelines (for Viper)
+
 
 July 13, 2022
 
@@ -542,16 +543,16 @@ Any programmer using these guidelines should know the [guidelines support librar
 
 ##### Example
 
-    change_speed(double s);   // bad: what does s signify?
+    changeSpeed(double s);   // bad: what does s signify?
     // ...
-    change_speed(2.3);
+    changeSpeed(2.3);
 
 A better approach is to be explicit about the meaning of the double (new speed or delta on old speed?) and the unit used:
 
-    change_speed(Speed s);    // better: the meaning of s is specified
+    changeSpeed(Speed s);    // better: the meaning of s is specified
     // ...
-    change_speed(2.3);        // error: no unit
-    change_speed(23_m / 10s);  // meters per second
+    changeSpeed(2.3);        // error: no unit
+    changeSpeed(23_m / 10s);  // meters per second
 
 We could have accepted a plain (unit-less) `double` as a delta, but that would have been error-prone.
 If we wanted both absolute speed and deltas, we would have defined a `Delta` type.
@@ -604,7 +605,7 @@ Unless the intent of some code is stated (e.g., in names or comments), it is imp
 
 ##### Example
 
-    gsl::index i = 0;
+    Index i;
     while (i < v.size()) {
         // ... do something with v[i] ...
     }
@@ -645,8 +646,8 @@ Some language constructs express intent better than others.
 
 If two `int`s are meant to be the coordinates of a 2D point, say so:
 
-    draw_line(int, int, int, int);  // obscure
-    draw_line(Point, Point);        // clearer
+    drawLine(int, int, int, int);  // obscure
+    drawLine(Point, Point);        // clearer
 
 ##### Enforcement
 
@@ -900,21 +901,21 @@ If all we had was a typo so that we meant to use `n` as the bound, the code coul
 
 Don't repeatedly check the same value. Don't pass structured data as strings:
 
-    Date read_date(istream& is);    // read date from istream
+    Date readDate(istream& is);    // read date from istream
 
-    Date extract_date(const string& s);    // extract date from string
+    Date extractDate(const string& s);    // extract date from string
 
     void user1(const string& date)    // manipulate date
     {
-        auto d = extract_date(date);
+        auto d = extractDate(date);
         // ...
     }
 
     void user2()
     {
-        Date d = read_date(cin);
+        Date d = reaDate(cin);
         // ...
-        user1(d.to_string());
+        user1(d.toString());
         // ...
     }
 
@@ -1446,19 +1447,19 @@ For generic code these `T`s can be general or concept constrained template param
 
 Consider:
 
-    draw_rect(100, 200, 100, 500); // what do the numbers specify?
+    drawRect(100, 200, 100, 500); // what do the numbers specify?
 
-    draw_rect(p.x, p.y, 10, 20); // what units are 10 and 20 in?
+    drawRect(p.x, p.y, 10, 20); // what units are 10 and 20 in?
 
 It is clear that the caller is describing a rectangle, but it is unclear what parts they relate to. Also, an `int` can carry arbitrary forms of information, including values of many units, so we must guess about the meaning of the four `int`s. Most likely, the first two are an `x`,`y` coordinate pair, but what are the last two?
 
 Comments and parameter names can help, but we could be explicit:
 
-    void draw_rectangle(Point top_left, Point bottom_right);
-    void draw_rectangle(Point top_left, Size height_width);
+    void drawRectangle(Point topLeft, Point bottomRight);
+    void drawRectangle(Point topLeft, Size heightWidth);
 
-    draw_rectangle(p, Point{10, 20});  // two corners
-    draw_rectangle(p, Size{10, 20});   // one corner and a (height, width) pair
+    drawRectangle(p, Point{10, 20});  // two corners
+    drawRectangle(p, Size{10, 20});   // one corner and a (height, width) pair
 
 Obviously, we cannot catch all errors through the static type system
 (e.g., the fact that a first argument is supposed to be a top-left point is left to convention (naming and comments)).
@@ -1467,70 +1468,72 @@ Obviously, we cannot catch all errors through the static type system
 
 Consider:
 
-    set_settings(true, false, 42); // what do the numbers specify?
+    setSettings(true, false, 42); // what do the numbers specify?
 
 The parameter types and their values do not communicate what settings are being specified or what those values mean.
 
 This design is more explicit, safe and legible:
 
-    alarm_settings s{};
+    AlarmSettings s{};
     s.enabled = true;
-    s.displayMode = alarm_settings::mode::spinning_light;
-    s.frequency = alarm_settings::every_10_seconds;
-    set_settings(s);
+    s.displayMode = AlarmSettings::Mode::SpinningLight;
+    s.frequency = AlarmSettings::Every10Seconds;
+    setSettings(s);
 
 For the case of a set of boolean values consider using a flags `enum`; a pattern that expresses a set of boolean values.
 
-    enable_lamp_options(lamp_option::on | lamp_option::animate_state_transitions);
+    enableLampOptions(LampOption::On | LampOption::AnimateStateTransitions);
 
 ##### Example, bad
 
 In the following example, it is not clear from the interface what `time_to_blink` means: Seconds? Milliseconds?
 
-    void blink_led(int time_to_blink) // bad -- the unit is ambiguous
+    void blinkLED(int timeToBlink) // bad -- the unit is ambiguous
     {
         // ...
-        // do something with time_to_blink
+        // do something with timeToBlink
         // ...
     }
 
     void use()
     {
-        blink_led(2);
+        blinkLED(2);
     }
 
 ##### Example, good
 
+> #vprToDo: Should we use `std::chrono::duration` or `Viper::Core::Types::Time::Delta`?
+
 `std::chrono::duration` types helps making the unit of time duration explicit.
 
-    void blink_led(milliseconds time_to_blink) // good -- the unit is explicit
+    void blinkLED(milliseconds timeToBlink) // good -- the unit is explicit
     {
         // ...
-        // do something with time_to_blink
+        // do something with timeToBlink
         // ...
     }
 
     void use()
     {
-        blink_led(1500ms);
+        blinkLED(1500ms);
     }
 
 The function can also be written in such a way that it will accept any time duration unit.
 
-    template<class rep, class period>
-    void blink_led(duration<rep, period> time_to_blink) // good -- accepts any unit
+    template<class TRep, class TPeriod>
+    void blinkLED(duration<TRep, TPeriod> timeToBlink) // good -- accepts any unit
     {
         // assuming that millisecond is the smallest relevant unit
-        auto milliseconds_to_blink = duration_cast<milliseconds>(time_to_blink);
+        auto millisecondsToBlink = duration_cast<milliseconds>(timeToBlink);
         // ...
-        // do something with milliseconds_to_blink
+        // do something with millisecondsToBlink
         // ...
     }
 
     void use()
     {
-        blink_led(2s);
-        blink_led(1500ms);
+        blinkLED(2s);
+        blinkLED(1500ms);
     }
 
 ##### Enforcement
@@ -1580,7 +1583,7 @@ We don't need to mention it for each member function.
 
 **See also**: The rules for passing pointers. ???
 
-### <a name="Ri-expects"></a>I.6: Prefer `Expects()` for expressing preconditions
+### <a name="Ri-expects"></a>I.6: Prefer `vprExpects()` for expressing preconditions
 
 ##### Reason
 
@@ -1590,14 +1593,14 @@ To make it clear that the condition is a precondition and to enable tool use.
 
     int area(int height, int width)
     {
-        Expects(height > 0 && width > 0);            // good
+        vprExpects(height > 0 && width > 0);            // good
         if (height <= 0 || width <= 0) my_error();   // obscure
         // ...
     }
 
 ##### Note
 
-Preconditions can be stated in many ways, including comments, `if`-statements, and `assert()`.
+Preconditions can be stated in many ways, including comments, `if`-statements, and `vprAssert()`.
 This can make them hard to distinguish from ordinary code, hard to update, hard to manipulate by tools, and might have the wrong semantics (do you always want to abort in debug mode and check nothing in productions runs?).
 
 ##### Note
@@ -1608,7 +1611,7 @@ Once language support becomes available (e.g., see the [contract proposal](http:
 
 ##### Note
 
-`Expects()` can also be used to check a condition in the middle of an algorithm.
+`vprExpects()` can also be used to check a condition in the middle of an algorithm.
 
 ##### Note
 
@@ -1638,7 +1641,7 @@ Consider using:
     int area(int height, int width)
     {
         auto res = height * width;
-        Ensures(res > 0);
+        vprEnsures(res > 0);
         return res;
     }
 
@@ -1660,12 +1663,12 @@ There was no postcondition stating that the buffer should be cleared and the opt
         char buffer[MAX];
         // ...
         memset(buffer, 0, sizeof(buffer));
-        Ensures(buffer[0] == 0);
+        vprEnsures(buffer[0] == 0);
     }
 
 ##### Note
 
-Postconditions are often informally stated in a comment that states the purpose of a function; `Ensures()` can be used to make this more systematic, visible, and checkable.
+Postconditions are often informally stated in a comment that states the purpose of a function; `vprEnsures()` can be used to make this more systematic, visible, and checkable.
 
 ##### Note
 
@@ -1714,7 +1717,7 @@ Postconditions related only to internal state belongs in the definition/implemen
 directly in the general case. Domain specific checkers (like lock-holding
 checkers) exist for many toolchains.
 
-### <a name="Ri-ensures"></a>I.8: Prefer `Ensures()` for expressing postconditions
+### <a name="Ri-ensures"></a>I.8: Prefer `vprEnsures()` for expressing postconditions
 
 ##### Reason
 
@@ -1727,19 +1730,19 @@ To make it clear that the condition is a postcondition and to enable tool use.
         char buffer[MAX];
         // ...
         memset(buffer, 0, MAX);
-        Ensures(buffer[0] == 0);
+        vprEnsures(buffer[0] == 0);
     }
 
 ##### Note
 
-Postconditions can be stated in many ways, including comments, `if`-statements, and `assert()`.
+Postconditions can be stated in many ways, including comments, `if`-statements, and `vprAssert()`.
 This can make them hard to distinguish from ordinary code, hard to update, hard to manipulate by tools, and might have the wrong semantics.
 
 **Alternative**: Postconditions of the form "this resource must be released" are best expressed by [RAII](#Rr-raii).
 
 ##### Note
 
-Ideally, that `Ensures` should be part of the interface, but that's not easily done.
+Ideally, that `vprEnsures` should be part of the interface, but that's not easily done.
 For now, we place it in the definition (function body).
 Once language support becomes available (e.g., see the [contract proposal](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/p0380r1.pdf)) we will adopt the standard version of preconditions, postconditions, and assertions.
 
@@ -1757,9 +1760,9 @@ Make the interface precisely specified and compile-time checkable in the (not so
 
 Use the C++20 style of requirements specification. For example:
 
-    template<typename Iter, typename Val>
-      requires input_iterator<Iter> && equality_comparable_with<iter_value_t<Iter>, Val>
-    Iter find(Iter first, Iter last, Val v)
+    template<typename TIter, typename TVal>
+      requires input_iterator<TIter> && equality_comparable_with<iter_value_t<TIter>, TVal>
+    Iter find(TIter first, TIter last, TVal v)
     {
         // ...
     }
@@ -1771,6 +1774,8 @@ Use the C++20 style of requirements specification. For example:
 Warn if any non-variadic template parameter is not constrained by a concept (in its declaration or mentioned in a `requires` clause).
 
 ### <a name="Ri-except"></a>I.10: Use exceptions to signal a failure to perform a required task
+
+> #vprToDo: Remove this and replace with `Result` or `Expected`.
 
 ##### Reason
 
@@ -2222,6 +2227,8 @@ If you use a single compiler, you can use full C++ in interfaces. That might req
 Because private data members participate in class layout and private member functions participate in overload resolution, changes to those
 implementation details require recompilation of all users of a class that uses them. A non-polymorphic interface class holding a pointer to
 implementation (Pimpl) can isolate the users of a class from changes in its implementation at the cost of an indirection.
+
+> #vprToDo: Disallow `std::unique_ptr` for this as it allocates memory. Prefer `HasPrivateAPI` instead.
 
 ##### Example
 
