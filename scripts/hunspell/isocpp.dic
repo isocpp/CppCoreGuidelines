@@ -223,6 +223,7 @@ GSL
 GSL's
 gx
 handcoded
+HasPrivateAPI
 Henricson
 Henricson97
 Herlihy
@@ -332,6 +333,7 @@ Meyers96
 Meyers97
 microbenchmarks
 middleware
+millisecondsToBlink
 MISRA
 mixin
 mixins
@@ -589,6 +591,7 @@ templatize
 templatized
 thread1
 thread2
+timeToBlink
 Tjark
 tmp
 TMP
@@ -661,6 +664,10 @@ WG21
 WidgetUser
 WorkQueue
 'widen'
+vprAssert
+vprExpects
+vprEnsures
+vprToDo
 x1
 x2
 x22
