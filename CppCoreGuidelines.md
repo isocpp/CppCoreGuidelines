@@ -7326,7 +7326,7 @@ Problems:
 and all classes derived from `Shape` and all code using `Shape` will need to be reviewed, possibly changed, and probably recompiled.
 
 The implementation of `Shape::move()` is an example of implementation inheritance:
-we have defined `move()` once and for all for all derived classes.
+we have defined `move()` once and for all derived classes.
 The more code there is in such base class member function implementations and the more data is shared by placing it in the base,
 the more benefits we gain - and the less stable the hierarchy is.
 
