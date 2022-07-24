@@ -19263,7 +19263,7 @@ The errors will not be caught until link time for a program calling `bar` or `fo
     int foobar(int);
 
     // foo.cpp:
-    #include <foo.h>
+    #include "foo.h"
 
     void foo(int) { /* ... */ }
     int bar(double) { /* ... */ }
