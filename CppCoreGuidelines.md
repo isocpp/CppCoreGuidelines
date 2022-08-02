@@ -17434,7 +17434,7 @@ The rule supports the view that a concept should reflect a (mathematically) cohe
     bool operator<(const Convenient&, const Convenient&);
     // ... and the other comparison operators ...
 
-    Minimal operator+(const Convenient&, const Convenient&);
+    Convenient operator+(const Convenient&, const Convenient&);
     // ... and the other arithmetic operators ...
 
     void f(const Convenient& x, const Convenient& y)
