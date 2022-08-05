@@ -8525,13 +8525,13 @@ This is what a default `==` would do, if we had such defaults.
     S s;
 
     namespace N {
-        S::operator!(S a) { return true; }
-        S not_s = !s;
+        bool operator!(S a) { return true; }
+        bool not_s = !s;
     }
 
     namespace M {
-        S::operator!(S a) { return false; }
-        S not_s = !s;
+        bool operator!(S a) { return false; }
+        bool not_s = !s;
     }
 
 Here, the meaning of `!s` differs in `N` and `M`.
