@@ -6638,7 +6638,7 @@ It is really hard to write a foolproof and useful `==` for a hierarchy.
 
 ##### Example, bad
 
-    class B {
+    struct B {
         string name;
         int number;
         virtual bool operator==(const B& a) const
@@ -6650,7 +6650,7 @@ It is really hard to write a foolproof and useful `==` for a hierarchy.
 
 `B`'s comparison accepts conversions for its second operand, but not its first.
 
-    class D : B {
+    struct D : B {
         char character;
         virtual bool operator==(const D& a) const
         {
