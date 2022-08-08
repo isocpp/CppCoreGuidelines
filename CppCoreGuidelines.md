@@ -6653,6 +6653,7 @@ It is really hard to write a foolproof and useful `==` for a hierarchy.
     class B {
         string name;
         int number;
+    public:
         virtual bool operator==(const B& a) const
         {
              return name == a.name && number == a.number;
@@ -6662,11 +6663,12 @@ It is really hard to write a foolproof and useful `==` for a hierarchy.
 
 `B`'s comparison accepts conversions for its second operand, but not its first.
 
-    class D : B {
+    class D : public B {
         char character;
+    public:
         virtual bool operator==(const D& a) const
         {
-            return name == a.name && number == a.number && character == a.character;
+            return B::operator==(a) && character == a.character;
         }
         // ...
     };
@@ -6674,7 +6676,7 @@ It is really hard to write a foolproof and useful `==` for a hierarchy.
     B b = ...
     D d = ...
     b == d;    // compares name and number, ignores d's character
-    d == b;    // error: no == defined
+    d == b;    // compares name and number, ignores d's character
     D d2;
     d == d2;   // compares name, number, and character
     B& b2 = d2;
