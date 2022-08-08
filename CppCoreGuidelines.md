@@ -2954,6 +2954,18 @@ This makes it clear to callers that the object is assumed to be modified.
 
 ##### Note
 
+Some user-defined and standard library types, such as `span<T>` or the iterators
+are [cheap to copy](#Rf-in) and may be passed by value, while doing so has
+mutable (in-out) reference semantics:
+
+    void increment_all(span<int> a)
+    {
+      for (auto&& e : a)
+        ++e;
+    }
+
+##### Note
+
 A `T&` argument can pass information into a function as well as out of it.
 Thus `T&` could be an in-out-parameter. That can in itself be a problem and a source of errors:
 
