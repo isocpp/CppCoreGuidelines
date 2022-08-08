@@ -8513,23 +8513,21 @@ Avoiding inconsistent definition in different namespaces
 ##### Example
 
     struct S { };
-    bool operator==(S, S);   // OK: in the same namespace as S, and even next to S
+    S operator+(S, S);   // OK: in the same namespace as S, and even next to S
     S s;
 
-    bool x = (s == s);
-
-This is what a default `==` would do, if we had such defaults.
+    S r = s + s;
 
 ##### Example
 
     namespace N {
         struct S { };
-        bool operator==(S, S);   // OK: in the same namespace as S, and even next to S
+        S operator+(S, S);   // OK: in the same namespace as S, and even next to S
     }
 
     N::S s;
 
-    bool x = (s == s);  // finds N::operator==() by ADL
+    S r = s + s;  // finds N::operator+() by ADL
 
 ##### Example, bad
 
