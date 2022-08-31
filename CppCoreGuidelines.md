@@ -9550,6 +9550,28 @@ Instead, use a local variable:
 
 * (Moderate) Warn if an object is allocated and then deallocated on all paths within a function. Suggest it should be a local `auto` stack object instead.
 * (Simple) Warn if a local `Unique_pointer` or `Shared_pointer` is not moved, copied, reassigned or `reset` before its lifetime ends.
+Exception: Do not produce such a warning on a local `Unique_pointer` to an unbounded array. (See below.)
+
+##### Exception
+
+It is OK to create a local `const unique_ptr<T[]>` to a heap-allocated buffer, as this is a valid way to represent a scoped dynamic array.
+
+##### Example
+
+A valid use case for a local `const unique_ptr<T[]>` variable:
+
+    int get_median_value(const std::list<int>& integers)
+    {
+      const auto size = integers.size();
+
+      // OK: declaring a local unique_ptr<T[]>.
+      const auto local_buffer = std::make_unique_for_overwrite<int[]>(size);
+
+      std::copy_n(begin(integers), size, local_buffer.get());
+      std::nth_element(local_buffer.get(), local_buffer.get() + size/2, local_buffer.get() + size);
+
+      return local_buffer[size/2];
+    }
 
 ### <a name="Rr-global"></a>R.6: Avoid non-`const` global variables
 
