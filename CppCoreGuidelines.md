@@ -2589,7 +2589,7 @@ Small simple functions are easily inlined where the cost of a function call is s
 * Flag functions that do not "fit on a screen."
   How big is a screen? Try 60 lines by 140 characters; that's roughly the maximum that's comfortable for a book page.
 * Flag functions that are too complex. How complex is too complex?
-  You could use cyclomatic complexity. Try "more than 10 logical path through." Count a simple switch as one path.
+  You could use cyclomatic complexity. Try "more than 10 logical paths through." Count a simple switch as one path.
 
 ### <a name="Rf-constexpr"></a>F.4: If a function might have to be evaluated at compile time, declare it `constexpr`
 
@@ -4732,7 +4732,7 @@ This is known as "the rule of zero".
 ##### Enforcement
 
 (Not enforceable) While not enforceable, a good static analyzer can detect patterns that indicate a possible improvement to meet this rule.
-For example, a class with a (pointer, size) pair of member and a destructor that `delete`s the pointer could probably be converted to a `vector`.
+For example, a class with a (pointer, size) pair of members and a destructor that `delete`s the pointer could probably be converted to a `vector`.
 
 ### <a name="Rc-five"></a>C.21: If you define or `=delete` any copy, move, or destructor function, define or `=delete` them all
 
@@ -4821,7 +4821,7 @@ Relying on an implicitly generated copy operation in a class with a destructor i
 
 ##### Note
 
-Writing these functions can be error prone.
+Writing these functions can be error-prone.
 Note their argument types:
 
     class X {
@@ -7485,9 +7485,9 @@ Another (related) technique for separating interface and implementation is [Pimp
 
 ##### Note
 
-There is often a choice between offering common functionality as (implemented) base class functions and free-standing functions
+There is often a choice between offering common functionality as (implemented) base class functions and freestanding functions
 (in an implementation namespace).
-Base classes gives a shorter notation and easier access to shared data (in the base)
+Base classes give a shorter notation and easier access to shared data (in the base)
 at the cost of the functionality being available only to users of the hierarchy.
 
 ##### Enforcement
@@ -8869,7 +8869,7 @@ C++17 introduced a distinct type `std::byte` to facilitate operations on raw obj
 # <a name="S-enum"></a>Enum: Enumerations
 
 Enumerations are used to define sets of integer values and for defining types for such sets of values.
-There are two kind of enumerations, "plain" `enum`s and `class enum`s.
+There are two kinds of enumerations, "plain" `enum`s and `class enum`s.
 
 Enumeration rule summary:
 
@@ -10896,7 +10896,7 @@ For containers, there is a tradition for using `{...}` for a list of elements an
     vector<int> v2{10};    // vector of 1 element with the value 10
 
     vector<int> v3(1, 2);  // vector of 1 element with the value 2
-    vector<int> v4{1, 2};  // vector of 2 element with the values 1 and 2
+    vector<int> v4{1, 2};  // vector of 2 elements with the values 1 and 2
 
 ##### Note
 
@@ -12693,7 +12693,7 @@ Don't use expensive copies of the loop variable of a range-`for` loop:
 
     for (string s : vs) // ...
 
-This will copy each elements of `vs` into `s`. Better:
+This will copy each element of `vs` into `s`. Better:
 
     for (string& s : vs) // ...
 
@@ -13737,7 +13737,7 @@ With C++20, we can do better still
 The key is to pass sufficient information for a good implementation to be chosen.
 In this, the `sort` interfaces shown here still have a weakness:
 They implicitly rely on the element type having less-than (`<`) defined.
-To complete the interface, we need a second version that accepts a comparison criteria:
+To complete the interface, we need a second version that accepts a comparison criterion:
 
     // compare elements of c using p
     template<random_access_range R, class C> requires sortable<R, C>
@@ -14378,7 +14378,7 @@ but it can only identify races seen in a given execution.
 
 ##### Enforcement
 
-It is up to an application builder to choose which support tools are valuable for a particular applications.
+It is up to an application builder to choose which support tools are valuable for a particular application.
 
 ## <a name="SScp-con"></a>CP.con: Concurrency
 
@@ -15626,7 +15626,7 @@ The rules are designed to help avoid several kinds of errors:
 * Type violations (e.g., misuse of `union`s and casts)
 * Resource leaks (including memory leaks)
 * Bounds errors
-* Lifetime errors (e.g., accessing an object after is has been `delete`d)
+* Lifetime errors (e.g., accessing an object after it has been `delete`d)
 * Complexity errors (logical errors made likely by overly complex expression of ideas)
 * Interface errors (e.g., an unexpected value is passed through an interface)
 
@@ -15684,7 +15684,7 @@ To make error handling systematic, robust, and non-repetitive.
         // ...
     }
 
-Here, `vector` and `string`s constructors might not be able to allocate sufficient memory for their elements, `vector`s constructor might not be able copy the `Thing`s in its initializer list, and `File_handle` might not be able to open the required file.
+Here, `vector` and `string`s constructors might not be able to allocate sufficient memory for their elements, `vector`s constructor might not be able to copy the `Thing`s in its initializer list, and `File_handle` might not be able to open the required file.
 In each case, they throw an exception for `use()`'s caller to handle.
 If `use()` could handle the failure to construct `bar` it can take control using `try`/`catch`.
 In either case, `Foo`'s constructor correctly destroys constructed members before passing control to whatever tried to create a `Foo`.
@@ -15799,7 +15799,7 @@ Not all member functions can be called.
 
 The class invariant - here stated as a comment - is established by the constructors.
 `new` throws if it cannot allocate the required memory.
-The operators, notably the subscript operator, relies on the invariant.
+The operators, notably the subscript operator, rely on the invariant.
 
 **See also**: [If a constructor cannot construct a valid object, throw an exception](#Rc-throw)
 
@@ -16634,7 +16634,7 @@ Flag all "hiding handlers".
 
 You can't have a race condition on a constant.
 It is easier to reason about a program when many of the objects cannot change their values.
-Interfaces that promises "no change" of objects passed as arguments greatly increase readability.
+Interfaces that promise "no change" of objects passed as arguments greatly increase readability.
 
 Constant rule summary:
 
@@ -20703,7 +20703,7 @@ and errors (when we didn't deal correctly with semi-constructed objects consiste
     if (!picture.Init()) {
         puts("Error, invalid picture");
     }
-    // now have a invalid picture object instance.
+    // now have an invalid picture object instance.
 
 ##### Example, good
 
@@ -20936,7 +20936,7 @@ A textbook for beginners and relative novices.
 
 ## <a name="SS-core"></a>RF.core: Core Guidelines materials
 
-This section contains materials that has been useful for presenting the core guidelines and the ideas behind them:
+This section contains materials that have been useful for presenting the core guidelines and the ideas behind them:
 
 * [Our documents directory](https://github.com/isocpp/CppCoreGuidelines/tree/master/docs)
 * Stroustrup, Sutter, and Dos Reis: [A brief introduction to C++'s model for type- and resource-safety](http://www.stroustrup.com/resource-model.pdf). A paper with lots of examples.
@@ -21206,8 +21206,8 @@ Use `not_null<zstring>` for C-style strings that cannot be `nullptr`. ??? Do we 
 
 * `unique_ptr<T>`     // unique ownership: `std::unique_ptr<T>`
 * `shared_ptr<T>`     // shared ownership: `std::shared_ptr<T>` (a counted pointer)
-* `stack_array<T>`    // A stack-allocated array. The number of elements are determined at construction and fixed thereafter. The elements are mutable unless `T` is a `const` type.
-* `dyn_array<T>`      // ??? needed ??? A heap-allocated array. The number of elements are determined at construction and fixed thereafter.
+* `stack_array<T>`    // A stack-allocated array. The number of elements is determined at construction and fixed thereafter. The elements are mutable unless `T` is a `const` type.
+* `dyn_array<T>`      // ??? needed ??? A heap-allocated array. The number of elements is determined at construction and fixed thereafter.
   The elements are mutable unless `T` is a `const` type. Basically a `span` that allocates and owns its elements.
 
 ## <a name="SS-assertions"></a>GSL.assert: Assertions
@@ -22678,7 +22678,7 @@ More information on many topics about C++ can be found on the [Standard C++ Foun
 * *constructor*: an operation that initializes ("constructs") an object.
   Typically a constructor establishes an invariant and often acquires resources needed for an object to be used (which are then typically released by a destructor).
 * *container*: an object that holds elements (other objects).
-* *copy*: an operation that makes two object have values that compare equal. See also move.
+* *copy*: an operation that makes two objects have values that compare equal. See also move.
 * *correctness*: a program or a piece of a program is correct if it meets its specification.
   Unfortunately, a specification can be incomplete or inconsistent, or can fail to meet users' reasonable expectations.
   Thus, to produce acceptable code, we sometimes have to do more than just follow the formal specification.
@@ -22721,7 +22721,7 @@ More information on many topics about C++ can be found on the [Standard C++ Foun
 * *iteration*: the act of repeatedly executing a piece of code; see recursion.
 * *iterator*: an object that identifies an element of a sequence.
 * *ISO*: International Organization for Standardization. The C++ language is an ISO standard, ISO/IEC 14882. More information at [iso.org](http://iso.org).
-* *library*: a collection of types, functions, classes, etc. implementing a set of facilities (abstractions) meant to be potentially used as part of more that one program.
+* *library*: a collection of types, functions, classes, etc. implementing a set of facilities (abstractions) meant to be potentially used as part of more than one program.
 * *lifetime*: the time from the initialization of an object until it becomes unusable (goes out of scope, is deleted, or the program terminates).
 * *linker*: a program that combines object code files and libraries into an executable program.
 * *literal*: a notation that directly specifies a value, such as 12 specifying the integer value "twelve."
@@ -22761,7 +22761,7 @@ In particular, an object of a regular type can be copied and the result of a cop
 * *rounding*: conversion of a value to the mathematically nearest value of a less precise type.
 * *RTTI*: Run-Time Type Information. ???
 * *scope*: the region of program text (source code) in which a name can be referred to.
-* *semiregular*: a concrete type that is copyable (including movable) and default-constructible (see `std::semiregular` concept). The result of a copy is an independent object with the same value as the original. A semiregular type behaves roughly like an built-in type like `int`, but possibly without a `==` operator. See also *regular type*.
+* *semiregular*: a concrete type that is copyable (including movable) and default-constructible (see `std::semiregular` concept). The result of a copy is an independent object with the same value as the original. A semiregular type behaves roughly like a built-in type like `int`, but possibly without a `==` operator. See also *regular type*.
 * *sequence*: elements that can be visited in a linear order.
 * *software*: a collection of pieces of code and associated data; often used interchangeably with program.
 * *source code*: code as produced by a programmer and (in principle) readable by other programmers.
