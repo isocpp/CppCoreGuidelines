@@ -20860,7 +20860,7 @@ Reference sections:
   ???.
 * [Possibility.com: C++ Coding Standard](http://www.possibility.com/Cpp/CppCodingStandard.html).
   ???.
-* [SEI CERT: Secure C++ Coding Standard](https://www.securecoding.cert.org/confluence/pages/viewpage.action?pageId=637).
+* [SEI CERT: Secure C++ Coding Standard](https://wiki.sei.cmu.edu/confluence/x/Wnw-BQ).
   A very nicely done set of rules (with examples and rationales) done for security-sensitive code.
   Many of their rules apply generally.
 * [High Integrity C++ Coding Standard](http://www.codingstandard.com/).
@@ -20904,7 +20904,7 @@ A textbook for beginners and relative novices.
 * [Bjarne Stroustrup's home pages](http://www.stroustrup.com)
 * [WG21](http://www.open-std.org/jtc1/sc22/wg21/)
 * [Boost](http://www.boost.org)<a name="Boost"></a>
-* [Adobe open source](http://www.adobe.com/open-source.html)
+* [Adobe open source](https://opensource.adobe.com/)
 * [Poco libraries](http://pocoproject.org/)
 * Sutter's Mill?
 * ???
