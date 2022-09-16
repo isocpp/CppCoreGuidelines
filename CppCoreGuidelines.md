@@ -5591,9 +5591,9 @@ For example, `Vector0<int> v[100]` costs 100 allocations.
         Vector1(int n) :elem{new T[n]}, space{elem + n}, last{elem} {}
         // ...
     private:
-        own<T*> elem {nullptr};
-        T* space {nullptr};
-        T* last {nullptr};
+        own<T*> elem {};
+        T* space {};
+        T* last {};
     };
 
 Using `{nullptr, nullptr, nullptr}` makes `Vector1{}` cheap, but a special case and implies run-time checks.
