@@ -4288,7 +4288,7 @@ This rule becomes even better if C++ gets ["uniform function call"](http://www.o
 The language requires `virtual` functions to be members, and not all `virtual` functions directly access data.
 In particular, members of an abstract class rarely do.
 
-Note [multi-methods](https://parasol.tamu.edu/~yuriys/papers/OMM10.pdf).
+Note [multi-methods](https://web.archive.org/web/20200605021759/https://parasol.tamu.edu/~yuriys/papers/OMM10.pdf).
 
 ##### Exception
 
