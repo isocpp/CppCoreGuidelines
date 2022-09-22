@@ -5469,9 +5469,9 @@ However, most realistic `Date` classes have a "first date" (e.g. January 1, 1970
         Date() = default; // [See also](#Rc-default)
         // ...
     private:
-        int dd = 1;
-        int mm = 1;
-        int yyyy = 1970;
+        int dd {1};
+        int mm {1};
+        int yyyy {1970};
         // ...
     };
 
@@ -5591,9 +5591,9 @@ For example, `Vector0<int> v[100]` costs 100 allocations.
         Vector1(int n) :elem{new T[n]}, space{elem + n}, last{elem} {}
         // ...
     private:
-        own<T*> elem = nullptr;
-        T* space = nullptr;
-        T* last = nullptr;
+        own<T*> elem {};
+        T* space {};
+        T* last {};
     };
 
 Using `{nullptr, nullptr, nullptr}` makes `Vector1{}` cheap, but a special case and implies run-time checks.
@@ -5622,8 +5622,8 @@ Using in-class member initializers lets the compiler generate the function for y
 ##### Example
 
     class X2 {
-        string s = "default";
-        int i = 1;
+        string s {"default"};
+        int i {1};
     public:
         // use compiler-generated default constructor
         // ...
