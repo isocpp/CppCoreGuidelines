@@ -20438,7 +20438,7 @@ Non-rule summary:
 * [NR.1: Don't insist that all declarations should be at the top of a function](#Rnr-top)
 * [NR.2: Don't insist to have only a single `return`-statement in a function](#Rnr-single-return)
 * [NR.3: Don't avoid exceptions](#Rnr-no-exceptions)
-* [NR.4: Don't insist on placing each class declaration in its own source file](#Rnr-lots-of-files)
+* [NR.4: Don't insist on placing each class definition in its own source file](#Rnr-lots-of-files)
 * [NR.5: Don't use two-phase initialization](#Rnr-two-phase-init)
 * [NR.6: Don't place all cleanup actions at the end of a function and `goto exit`](#Rnr-goto-exit)
 * [NR.7: Don't make all data members `protected`](#Rnr-protected-data)
@@ -20626,7 +20626,7 @@ Remember
 * [RAII](#Re-raii)
 * Contracts/assertions: Use GSL's `Expects` and `Ensures` (until we get language support for contracts)
 
-### <a name="Rnr-lots-of-files"></a>NR.4: Don't insist on placing each class declaration in its own source file
+### <a name="Rnr-lots-of-files"></a>NR.4: Don't insist on placing each class definition in its own source file
 
 ##### Reason
 
