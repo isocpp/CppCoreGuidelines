@@ -9518,7 +9518,7 @@ If you don't, an exception or a return might lead to a leak.
 
 ##### Example, bad
 
-    void f(const string& name)
+    void func(const string& name)
     {
         FILE* f = fopen(name, "r");            // open the file
         vector<char> buf(1024);
@@ -9530,7 +9530,7 @@ The allocation of `buf` might fail and leak the file handle.
 
 ##### Example
 
-    void f(const string& name)
+    void func(const string& name)
     {
         ifstream f{name};   // open the file
         vector<char> buf(1024);
