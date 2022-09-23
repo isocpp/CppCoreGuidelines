@@ -19098,13 +19098,13 @@ Use header files to represent interfaces and to emphasize logical structure.
 Source file rule summary:
 
 * [SF.1: Use a `.cpp` suffix for code files and `.h` for interface files if your project doesn't already follow another convention](#Rs-file-suffix)
-* [SF.2: A `.h` file must not contain object definitions or non-inline function definitions](#Rs-inline)
-* [SF.3: Use `.h` files for all declarations used in multiple source files](#Rs-declaration-header)
-* [SF.4: Include `.h` files before other declarations in a file](#Rs-include-order)
-* [SF.5: A `.cpp` file must include the `.h` file(s) that defines its interface](#Rs-consistency)
+* [SF.2: A header file must not contain object definitions or non-inline function definitions](#Rs-inline)
+* [SF.3: Use header files for all declarations used in multiple source files](#Rs-declaration-header)
+* [SF.4: Include header files before other declarations in a file](#Rs-include-order)
+* [SF.5: A `.cpp` file must include the header file(s) that defines its interface](#Rs-consistency)
 * [SF.6: Use `using namespace` directives for transition, for foundation libraries (such as `std`), or within a local scope (only)](#Rs-using)
 * [SF.7: Don't write `using namespace` at global scope in a header file](#Rs-using-directive)
-* [SF.8: Use `#include` guards for all `.h` files](#Rs-guards)
+* [SF.8: Use `#include` guards for all header files](#Rs-guards)
 * [SF.9: Avoid cyclic dependencies among source files](#Rs-cycles)
 * [SF.10: Avoid dependencies on implicitly `#include`d names](#Rs-implicit)
 * [SF.11: Header files should be self-contained](#Rs-contained)
@@ -19116,52 +19116,9 @@ Source file rule summary:
 
 ### <a name="Rs-file-suffix"></a>SF.1: Use a `.cpp` suffix for code files and `.h` for interface files if your project doesn't already follow another convention
 
-##### Reason
+See [NL.27](#Rl-file-suffix)
 
-It's a longstanding convention.
-But consistency is more important, so if your project uses something else, follow that.
-
-##### Note
-
-This convention reflects a common use pattern:
-Headers are more often shared with C to compile as both C++ and C, which typically uses `.h`,
-and it's easier to name all headers `.h` instead of having different extensions for just those headers that are intended to be shared with C.
-On the other hand, implementation files are rarely shared with C and so should typically be distinguished from `.c` files,
-so it's normally best to name all C++ implementation files something else (such as `.cpp`).
-
-The specific names `.h` and `.cpp` are not required (just recommended as a default) and other names are in widespread use.
-Examples are `.hh`, `.C`, and `.cxx`. Use such names equivalently.
-In this document, we refer to `.h` and `.cpp` as a shorthand for header and implementation files,
-even though the actual extension might be different.
-
-Your IDE (if you use one) might have strong opinions about suffixes.
-
-##### Example
-
-    // foo.h:
-    extern int a;   // a declaration
-    extern void foo();
-
-    // foo.cpp:
-    int a;   // a definition
-    void foo() { ++a; }
-
-`foo.h` provides the interface to `foo.cpp`. Global variables are best avoided.
-
-##### Example, bad
-
-    // foo.h:
-    int a;   // a definition
-    void foo() { ++a; }
-
-`#include <foo.h>` twice in a program and you get a linker error for two one-definition-rule violations.
-
-##### Enforcement
-
-* Flag non-conventional file names.
-* Check that `.h` and `.cpp` (and equivalents) follow the rules below.
-
-### <a name="Rs-inline"></a>SF.2: A `.h` file must not contain object definitions or non-inline function definitions
+### <a name="Rs-inline"></a>SF.2: A header file must not contain object definitions or non-inline function definitions
 
 ##### Reason
 
@@ -19185,9 +19142,9 @@ Including entities subject to the one-definition rule leads to linkage errors.
 
 Linking `file1.cpp` and `file2.cpp` will give two linker errors.
 
-**Alternative formulation**: A `.h` file must contain only:
+**Alternative formulation**: A header file must contain only:
 
-* `#include`s of other `.h` files (possibly with include guards)
+* `#include`s of other header files (possibly with include guards)
 * templates
 * class definitions
 * function declarations
@@ -19202,7 +19159,7 @@ Linking `file1.cpp` and `file2.cpp` will give two linker errors.
 
 Check the positive list above.
 
-### <a name="Rs-declaration-header"></a>SF.3: Use `.h` files for all declarations used in multiple source files
+### <a name="Rs-declaration-header"></a>SF.3: Use header files for all declarations used in multiple source files
 
 ##### Reason
 
@@ -19224,7 +19181,7 @@ The user of `bar` cannot know if the interface used is complete and correct. At 
 
 * Flag declarations of entities in other source files not placed in a `.h`.
 
-### <a name="Rs-include-order"></a>SF.4: Include `.h` files before other declarations in a file
+### <a name="Rs-include-order"></a>SF.4: Include header files before other declarations in a file
 
 ##### Reason
 
@@ -19270,7 +19227,7 @@ However
 
 Easy.
 
-### <a name="Rs-consistency"></a>SF.5: A `.cpp` file must include the `.h` file(s) that defines its interface
+### <a name="Rs-consistency"></a>SF.5: A `.cpp` file must include the header file(s) that defines its interface
 
 ##### Reason
 
@@ -19398,7 +19355,7 @@ to name their own UDLs `operator""_x` - they will not collide with the standard 
 
 Flag `using namespace` at global scope in a header file.
 
-### <a name="Rs-guards"></a>SF.8: Use `#include` guards for all `.h` files
+### <a name="Rs-guards"></a>SF.8: Use `#include` guards for all header files
 
 ##### Reason
 
@@ -21318,6 +21275,7 @@ Naming and layout rules:
 * [NL.21: Declare one name (only) per declaration](#Rl-dcl)
 * [NL.25: Don't use `void` as an argument type](#Rl-void)
 * [NL.26: Use conventional `const` notation](#Rl-const)
+* [NL.27: Use a `.cpp` suffix for code files and `.h` for interface files](#Rl-file-suffix)
 
 Most of these rules are aesthetic and programmers hold strong opinions.
 IDEs also tend to have defaults and a range of alternatives.
@@ -21929,6 +21887,53 @@ This rule was added after many requests for guidance.
 ##### Enforcement
 
 Flag `const` used as a suffix for a type.
+
+### <a name="Rl-file-suffix"></a>NL.27: Use a `.cpp` suffix for code files and `.h` for interface files
+
+##### Reason
+
+It's a longstanding convention.
+But consistency is more important, so if your project uses something else, follow that.
+
+##### Note
+
+This convention reflects a common use pattern:
+Headers are more often shared with C to compile as both C++ and C, which typically uses `.h`,
+and it's easier to name all headers `.h` instead of having different extensions for just those headers that are intended to be shared with C.
+On the other hand, implementation files are rarely shared with C and so should typically be distinguished from `.c` files,
+so it's normally best to name all C++ implementation files something else (such as `.cpp`).
+
+The specific names `.h` and `.cpp` are not required (just recommended as a default) and other names are in widespread use.
+Examples are `.hh`, `.C`, and `.cxx`. Use such names equivalently.
+In this document, we refer to `.h` and `.cpp` as a shorthand for header and implementation files,
+even though the actual extension might be different.
+
+Your IDE (if you use one) might have strong opinions about suffixes.
+
+##### Example
+
+    // foo.h:
+    extern int a;   // a declaration
+    extern void foo();
+
+    // foo.cpp:
+    int a;   // a definition
+    void foo() { ++a; }
+
+`foo.h` provides the interface to `foo.cpp`. Global variables are best avoided.
+
+##### Example, bad
+
+    // foo.h:
+    int a;   // a definition
+    void foo() { ++a; }
+
+`#include <foo.h>` twice in a program and you get a linker error for two one-definition-rule violations.
+
+##### Enforcement
+
+* Flag non-conventional file names.
+* Check that `.h` and `.cpp` (and equivalents) follow the rules below.
 
 # <a name="S-faq"></a>FAQ: Answers to frequently asked questions
 
