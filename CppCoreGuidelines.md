@@ -2346,6 +2346,8 @@ Function definition rules:
 * [F.7: For general use, take `T*` or `T&` arguments rather than smart pointers](#Rf-smart)
 * [F.8: Prefer pure functions](#Rf-pure)
 * [F.9: Unused parameters should be unnamed](#Rf-unused)
+* [F.10: If an operation can be reused, give it a name](#Rf-name)
+* [F.11: Use an unnamed lambda if you need a simple function object in one place only](#Rf-lambda)
 
 Parameter passing expression rules:
 
@@ -2865,6 +2867,91 @@ For example:
 ##### Enforcement
 
 Flag named unused parameters.
+
+### <a name="Rf-name"></a>F.10: If an operation can be reused, give it a name
+
+##### Reason
+
+Documentation, readability, opportunity for reuse.
+
+##### Example
+
+    struct Rec {
+        string name;
+        string addr;
+        int id;         // unique identifier
+    };
+
+    bool same(const Rec& a, const Rec& b)
+    {
+        return a.id == b.id;
+    }
+
+    vector<Rec*> find_id(const string& name);    // find all records for "name"
+
+    auto x = find_if(vr.begin(), vr.end(),
+        [&](Rec& r) {
+            if (r.name.size() != n.size()) return false; // name to compare to is in n
+            for (int i = 0; i < r.name.size(); ++i)
+                if (tolower(r.name[i]) != tolower(n[i])) return false;
+            return true;
+        }
+    );
+
+There is a useful function lurking here (case insensitive string comparison), as there often is when lambda arguments get large.
+
+    bool compare_insensitive(const string& a, const string& b)
+    {
+        if (a.size() != b.size()) return false;
+        for (int i = 0; i < a.size(); ++i) if (tolower(a[i]) != tolower(b[i])) return false;
+        return true;
+    }
+
+    auto x = find_if(vr.begin(), vr.end(),
+        [&](Rec& r) { compare_insensitive(r.name, n); }
+    );
+
+Or maybe (if you prefer to avoid the implicit name binding to n):
+
+    auto cmp_to_n = [&n](const string& a) { return compare_insensitive(a, n); };
+
+    auto x = find_if(vr.begin(), vr.end(),
+        [](const Rec& r) { return cmp_to_n(r.name); }
+    );
+
+##### Note
+
+whether functions, lambdas, or operators.
+
+##### Exception
+
+* Lambdas logically used only locally, such as an argument to `for_each` and similar control flow algorithms.
+* Lambdas as [initializers](#???)
+
+##### Enforcement
+
+* (hard) flag similar lambdas
+* ???
+
+### <a name="Rf-lambda"></a>F.11: Use an unnamed lambda if you need a simple function object in one place only
+
+##### Reason
+
+That makes the code concise and gives better locality than alternatives.
+
+##### Example
+
+    auto earlyUsersEnd = std::remove_if(users.begin(), users.end(),
+                                        [](const User &a) { return a.id > 100; });
+
+
+##### Exception
+
+Naming a lambda can be useful for clarity even if it is used only once.
+
+##### Enforcement
+
+* Look for identical and near identical lambdas (to be replaced with named functions or named lambdas).
 
 ## <a name="SS-call"></a>F.call: Parameter passing
 
@@ -6973,6 +7060,8 @@ Function objects should be cheap to copy (and therefore [passed by value](#Rf-in
 
 Summary:
 
+* [F.10: If an operation can be reused, give it a name](#Rf-name)
+* [F.11: Use an unnamed lambda if you need a simple function object in one place only](#Rf-lambda)
 * [F.50: Use a lambda when a function won't do (to capture local variables, or to write a local function)](#Rf-capture-vs-overload)
 * [F.52: Prefer capturing by reference in lambdas that will be used locally, including passed to algorithms](#Rf-reference-capture)
 * [F.53: Avoid capturing by reference in lambdas that will be used non-locally, including returned, stored on the heap, or passed to another thread](#Rf-value-capture)
@@ -16939,7 +17028,7 @@ Metaprogramming rule summary:
 
 Other template rules summary:
 
-* [T.140: Name all operations with potential for reuse](#Rt-name)
+* [T.140: If an operation can be reused, give it a name](#Rt-name)
 * [T.141: Use an unnamed lambda if you need a simple function object in one place only](#Rt-lambda)
 * [T.142: Use template variables to simplify notation](#Rt-var)
 * [T.143: Don't write unintentionally non-generic code](#Rt-non-generic)
@@ -18795,90 +18884,13 @@ Write your own "advanced TMP support" only if you really have to.
 
 ## <a name="SS-temp-other"></a>Other template rules
 
-### <a name="Rt-name"></a>T.140: Name all operations with potential for reuse
+### <a name="Rt-name"></a>T.140: If an operation can be reused, give it a name](#Rt-name
 
-##### Reason
-
-Documentation, readability, opportunity for reuse.
-
-##### Example
-
-    struct Rec {
-        string name;
-        string addr;
-        int id;         // unique identifier
-    };
-
-    bool same(const Rec& a, const Rec& b)
-    {
-        return a.id == b.id;
-    }
-
-    vector<Rec*> find_id(const string& name);    // find all records for "name"
-
-    auto x = find_if(vr.begin(), vr.end(),
-        [&](Rec& r) {
-            if (r.name.size() != n.size()) return false; // name to compare to is in n
-            for (int i = 0; i < r.name.size(); ++i)
-                if (tolower(r.name[i]) != tolower(n[i])) return false;
-            return true;
-        }
-    );
-
-There is a useful function lurking here (case insensitive string comparison), as there often is when lambda arguments get large.
-
-    bool compare_insensitive(const string& a, const string& b)
-    {
-        if (a.size() != b.size()) return false;
-        for (int i = 0; i < a.size(); ++i) if (tolower(a[i]) != tolower(b[i])) return false;
-        return true;
-    }
-
-    auto x = find_if(vr.begin(), vr.end(),
-        [&](Rec& r) { compare_insensitive(r.name, n); }
-    );
-
-Or maybe (if you prefer to avoid the implicit name binding to n):
-
-    auto cmp_to_n = [&n](const string& a) { return compare_insensitive(a, n); };
-
-    auto x = find_if(vr.begin(), vr.end(),
-        [](const Rec& r) { return cmp_to_n(r.name); }
-    );
-
-##### Note
-
-whether functions, lambdas, or operators.
-
-##### Exception
-
-* Lambdas logically used only locally, such as an argument to `for_each` and similar control flow algorithms.
-* Lambdas as [initializers](#???)
-
-##### Enforcement
-
-* (hard) flag similar lambdas
-* ???
+See [F.10](#Rf-name)
 
 ### <a name="Rt-lambda"></a>T.141: Use an unnamed lambda if you need a simple function object in one place only
 
-##### Reason
-
-That makes the code concise and gives better locality than alternatives.
-
-##### Example
-
-    auto earlyUsersEnd = std::remove_if(users.begin(), users.end(),
-                                        [](const User &a) { return a.id > 100; });
-
-
-##### Exception
-
-Naming a lambda can be useful for clarity even if it is used only once.
-
-##### Enforcement
-
-* Look for identical and near identical lambdas (to be replaced with named functions or named lambdas).
+See [F.11](#Rf-lambda)
 
 ### <a name="Rt-var"></a>T.142?: Use template variables to simplify notation
 
