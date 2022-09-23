@@ -3155,7 +3155,7 @@ Prefer using a named struct where there are semantics to the returned value. Oth
     tuple<int, string> f(const string& input)
     {
         // ...
-        return make_tuple(status, something());
+        return {status, something()};
     }
 
 C++98's standard library already used this style, because a `pair` is like a two-element `tuple`.
@@ -3203,7 +3203,7 @@ To compare, if we passed out all values as return values, we would something lik
     {
         string s;
         is >> s;
-        return {is, s};
+        return {is, move(s)};
     }
 
     for (auto p = get_string(cin); p.first; ) {
@@ -3235,6 +3235,29 @@ For example:
 The overly-generic `pair` and `tuple` should be used only when the value returned represents independent entities rather than an abstraction.
 
 Another example, use a specific type along the lines of `variant<T, error_code>`, rather than using the generic `tuple`.
+
+##### Note
+
+When the tuple to be returned is initialized from local variables that are expensive to copy,
+explicit `move` may be helpful to avoid copying:
+
+    pair<LargeObject, LargeObject> f(const string& input)
+    {
+        LargeObject large1 = g(input);
+        LargeObject large2 = h(input);
+        // ...
+        return { move(large1), move(large2) }; // no copies
+    }
+
+Alternatively, 
+
+    pair<LargeObject, LargeObject> f(const string& input)
+    {
+        // ...
+        return { g(input), h(input) }; // no copies, no moves
+    }
+
+Note this is different from the `return move(...)` anti-pattern from [ES.56](#Res-move)
 
 ##### Enforcement
 
