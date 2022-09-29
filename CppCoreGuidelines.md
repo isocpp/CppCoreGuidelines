@@ -13636,7 +13636,7 @@ To avoid the pitfalls with `auto` and `int`.
 
 ##### Note
 
-The built-in array uses signed subscripts.
+The built-in array allows signed subscripts.
 The standard-library containers use unsigned subscripts.
 Thus, no perfect and fully compatible solution is possible (unless and until the standard-library containers change to use signed subscripts someday in the future).
 Given the known problems with unsigned and signed/unsigned mixtures, better stick to (signed) integers of a sufficient size, which is guaranteed by `gsl::index`.
