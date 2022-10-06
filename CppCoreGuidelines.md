@@ -4081,6 +4081,12 @@ Pointers and references to locals shouldn't outlive their scope. Lambdas that ca
     // always be available for the call.
     thread_pool.queue_work([=] { process(local); });
 
+##### Note
+
+If a non-local pointer must be captured, consider using `unique_ptr`; this handles both lifetime and synchronization.
+
+If the `this` pointer must be captured, consider using `[*this]` capture, which creates a copy of the entire object.
+
 ##### Enforcement
 
 * (Simple) Warn when capture-list contains a reference to a locally declared variable
