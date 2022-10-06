@@ -6366,7 +6366,7 @@ There is no known general way of avoiding an `if (this == &a) return *this;` tes
 
 The ISO standard guarantees only a "valid but unspecified" state for the standard-library containers. Apparently this has not been a problem in about 10 years of experimental and production use. Please contact the editors if you find a counter example. The rule here is more caution and insists on complete safety.
 
-##### Example
+##### Example, bad
 
 Here is a way to move a pointer without a test (imagine it as code in the implementation a move assignment):
 
@@ -6374,7 +6374,7 @@ Here is a way to move a pointer without a test (imagine it as code in the implem
     T* temp = other.ptr;
     other.ptr = nullptr;
     delete ptr;
-    ptr = temp;
+    ptr = temp; // in case of self-move, this->ptr is now invalid
 
 ##### Enforcement
 
