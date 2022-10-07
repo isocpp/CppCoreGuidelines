@@ -3253,12 +3253,12 @@ For example:
 
     istream& operator>>(istream& is, string& s);    // much like std::operator>>()
 
-    for (string s; cin >> s; ) {
+    for (string s; is >> s; ) {
         // do something with line
     }
 
-Here, both `s` and `cin` are used as in-out parameters.
-We pass `cin` by (non-`const`) reference to be able to manipulate its state.
+Here, both `s` and `is` are used as in-out parameters.
+We pass `is` by (non-`const`) reference to be able to manipulate its state.
 We pass `s` to avoid repeated allocations.
 By reusing `s` (passed by reference), we allocate new memory only when we need to expand `s`'s capacity.
 This technique is sometimes called the "caller-allocated out" pattern and is particularly useful for types,
