@@ -3251,14 +3251,14 @@ In such cases, passing the object by reference [`T&`](#Rf-inout) is usually the 
 Explicitly passing an in-out parameter back out again as a return value is often not necessary.
 For example:
 
-    istream& operator>>(istream& is, string& s);    // much like std::operator>>()
+    istream& operator>>(istream& in, string& s);    // much like std::operator>>()
 
-    for (string s; is >> s; ) {
+    for (string s; in >> s; ) {
         // do something with line
     }
 
-Here, both `s` and `is` are used as in-out parameters.
-We pass `is` by (non-`const`) reference to be able to manipulate its state.
+Here, both `s` and `in` are used as in-out parameters.
+We pass `in` by (non-`const`) reference to be able to manipulate its state.
 We pass `s` to avoid repeated allocations.
 By reusing `s` (passed by reference), we allocate new memory only when we need to expand `s`'s capacity.
 This technique is sometimes called the "caller-allocated out" pattern and is particularly useful for types,
@@ -3266,11 +3266,11 @@ such as `string` and `vector`, that needs to do free store allocations.
 
 To compare, if we passed out all values as return values, we would something like this:
 
-    pair<istream&, string> get_string(istream& is)  // not recommended
+    pair<istream&, string> get_string(istream& in)  // not recommended
     {
         string s;
-        is >> s;
-        return {is, move(s)};
+        in >> s;
+        return {in, move(s)};
     }
 
     for (auto p = get_string(cin); p.first; ) {
