@@ -6387,8 +6387,8 @@ Here is a way to move a pointer without a test (imagine it as code in the implem
     // move from other.ptr to this->ptr
     T* temp = other.ptr;
     other.ptr = nullptr;
-    delete ptr;
-    ptr = temp;
+    delete ptr; // in self-move, this->ptr is also null; delete is a no-op
+    ptr = temp; // in self-move, the original ptr is restored
 
 ##### Enforcement
 
