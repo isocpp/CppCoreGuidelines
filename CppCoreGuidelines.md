@@ -9563,7 +9563,7 @@ Instead, use a local variable:
 ##### Enforcement
 
 * (Moderate) Warn if an object is allocated and then deallocated on all paths within a function. Suggest it should be a local stack object instead.
-* (Simple) Warn if a local `Unique_pointer` or `Shared_pointer` is not moved, copied, reassigned or `reset` before its lifetime ends.
+* (Moderate) Warn if a local `Unique_pointer` or `Shared_pointer` that is initialized by `new`, `make_unique`, `make_unique_for_overwrite`, `make_shared`, or `make_shared_for_overwrite` is not moved, copied, reassigned or `reset` before its lifetime ends.
 Exception: Do not produce such a warning on a local `Unique_pointer` to an unbounded array. (See below.)
 
 ##### Exception
