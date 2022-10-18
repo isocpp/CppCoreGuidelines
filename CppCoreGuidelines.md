@@ -21082,7 +21082,7 @@ Prefer [construction](#Res-construct) or [named casts](#Res-casts-named) or `T{e
 [always initialize](#Res-always),
 possibly using [default constructors](#Rc-default0) or
 [default member initializers](#Rc-in-class-initializer).
-* <a name="Pro-type-unon"></a>Type.7: Avoid naked union:
+* <a name="Pro-type-union"></a>Type.7: Avoid naked union:
 [Use `variant` instead](#Ru-naked).
 * <a name="Pro-type-varargs"></a>Type.8: Avoid varargs:
 [Don't use `va_arg` arguments](#F-varargs).
