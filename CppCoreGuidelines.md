@@ -11140,11 +11140,12 @@ increases readability, and it has zero or near zero run-time cost.
         // ... no assignment to p2 ...
         vector<int> v(7);
         v.at(7) = 0;                    // exception thrown
+        delete p2;                      // too late to prevent leaks
         // ...
     }
 
 If `leak == true` the object pointed to by `p2` is leaked and the object pointed to by `p1` is not.
-The same is the case when `at()` throws.
+The same is the case when `at()` throws. In both cases, the `delete p2` statement is not reached.
 
 ##### Enforcement
 
