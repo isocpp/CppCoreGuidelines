@@ -2764,7 +2764,7 @@ Passing a shared smart pointer (e.g., `std::shared_ptr`) implies a run-time cost
     void g(unique_ptr<int>);
 
     // can only accept ints for which you are willing to share ownership
-    void g(shared_ptr<int>);
+    void g(const shared_ptr<int>&);
 
     // doesn't change ownership, but requires a particular ownership of the caller
     void h(const unique_ptr<int>&);
@@ -9297,9 +9297,8 @@ Here, we ignore such cases.
   * [R.31: If you have non-`std` smart pointers, follow the basic pattern from `std`](#Rr-smart)
   * [R.32: Take a `unique_ptr<widget>` parameter to express that a function assumes ownership of a `widget`](#Rr-uniqueptrparam)
   * [R.33: Take a `unique_ptr<widget>&` parameter to express that a function reseats the `widget`](#Rr-reseat)
-  * [R.34: Take a `shared_ptr<widget>` parameter to express shared ownership](#Rr-sharedptrparam-owner)
+  * [R.34: Take a `shared_ptr<widget>&&` or `const shared_ptr<widget>&` parameter to express shared ownership](#Rr-sharedptrparam-owner)
   * [R.35: Take a `shared_ptr<widget>&` parameter to express that a function might reseat the shared pointer](#Rr-sharedptrparam)
-  * [R.36: Take a `const shared_ptr<widget>&` parameter to express that it might retain a reference count to the object ???](#Rr-sharedptrparam-const)
   * [R.37: Do not pass a pointer or reference obtained from an aliased smart pointer](#Rr-smartptrget)
 
 ### <a name="Rr-raii"></a>R.1: Manage resources automatically using resource handles and RAII (Resource Acquisition Is Initialization)
@@ -9994,7 +9993,7 @@ Using `unique_ptr` in this way both documents and enforces the function call's r
 * (Simple) Warn if a function takes a `Unique_pointer<T>` parameter by lvalue reference and does not either assign to it or call `reset()` on it on at least one code path. Suggest taking a `T*` or `T&` instead.
 * (Simple) ((Foundation)) Warn if a function takes a `Unique_pointer<T>` parameter by reference to `const`. Suggest taking a `const T*` or `const T&` instead.
 
-### <a name="Rr-sharedptrparam-owner"></a>R.34: Take a `shared_ptr<widget>` parameter to express shared ownership
+### <a name="Rr-sharedptrparam-owner"></a>R.34: Take a `shared_ptr<widget>&&` or `const shared_ptr<widget>&` parameter to express shared ownership
 
 ##### Reason
 
@@ -10005,9 +10004,24 @@ This makes the function's ownership sharing explicit.
     class WidgetUser
     {
     public:
-        // WidgetUser will share ownership of the widget
-        explicit WidgetUser(std::shared_ptr<widget> w) noexcept:
+        // WidgetUser will share ownership of the widget, this is a "sink" function
+        // following F.18
+        explicit WidgetUser(std::shared_ptr<widget>&& w) noexcept:
             m_widget{std::move(w)} {}
+        // ...
+    private:
+        std::shared_ptr<widget> m_widget;
+    };
+
+##### Example, good
+
+    class WidgetUser
+    {
+    public:
+        // WidgetUser will share ownership of the widget, this is an "in" parameter
+        // following F.16
+        explicit WidgetUser(const std::shared_ptr<widget>& w) noexcept:
+            m_widget{w} {}
         // ...
     private:
         std::shared_ptr<widget> m_widget;
@@ -10016,8 +10030,7 @@ This makes the function's ownership sharing explicit.
 ##### Enforcement
 
 * (Simple) Warn if a function takes a `Shared_pointer<T>` parameter by lvalue reference and does not either assign to it or call `reset()` on it on at least one code path. Suggest taking a `T*` or `T&` instead.
-* (Simple) ((Foundation)) Warn if a function takes a `Shared_pointer<T>` by value or by reference to `const` and does not copy or move it to another `Shared_pointer` on at least one code path. Suggest taking a `T*` or `T&` instead.
-* (Simple) ((Foundation)) Warn if a function takes a `Shared_pointer<T>` by rvalue reference. Suggesting taking it by value instead.
+* (Simple) ((Foundation)) Warn if a function takes a `Shared_pointer<T>` by rvalue reference or by reference to `const` and does not copy or move it to another `Shared_pointer` on at least one code path. Suggest taking a `T*` or `T&` instead.
 
 ### <a name="Rr-sharedptrparam"></a>R.35: Take a `shared_ptr<widget>&` parameter to express that a function might reseat the shared pointer
 
@@ -10040,28 +10053,7 @@ This makes the function's reseating explicit.
 ##### Enforcement
 
 * (Simple) Warn if a function takes a `Shared_pointer<T>` parameter by lvalue reference and does not either assign to it or call `reset()` on it on at least one code path. Suggest taking a `T*` or `T&` instead.
-* (Simple) ((Foundation)) Warn if a function takes a `Shared_pointer<T>` by value or by reference to `const` and does not copy or move it to another `Shared_pointer` on at least one code path. Suggest taking a `T*` or `T&` instead.
-* (Simple) ((Foundation)) Warn if a function takes a `Shared_pointer<T>` by rvalue reference. Suggesting taking it by value instead.
-
-### <a name="Rr-sharedptrparam-const"></a>R.36: Take a `const shared_ptr<widget>&` parameter to express that it might retain a reference count to the object ???
-
-##### Reason
-
-This makes the function's ??? explicit.
-
-##### Example, good
-
-    void share(shared_ptr<widget>);            // share -- "will" retain refcount
-
-    void reseat(shared_ptr<widget>&);          // "might" reseat ptr
-
-    void may_share(const shared_ptr<widget>&); // "might" retain refcount
-
-##### Enforcement
-
-* (Simple) Warn if a function takes a `Shared_pointer<T>` parameter by lvalue reference and does not either assign to it or call `reset()` on it on at least one code path. Suggest taking a `T*` or `T&` instead.
-* (Simple) ((Foundation)) Warn if a function takes a `Shared_pointer<T>` by value or by reference to `const` and does not copy or move it to another `Shared_pointer` on at least one code path. Suggest taking a `T*` or `T&` instead.
-* (Simple) ((Foundation)) Warn if a function takes a `Shared_pointer<T>` by rvalue reference. Suggesting taking it by value instead.
+* (Simple) ((Foundation)) Warn if a function takes a `Shared_pointer<T>` by rvalue reference or by reference to `const` and does not copy or move it to another `Shared_pointer` on at least one code path. Suggest taking a `T*` or `T&` instead.
 
 ### <a name="Rr-smartptrget"></a>R.37: Do not pass a pointer or reference obtained from an aliased smart pointer
 
