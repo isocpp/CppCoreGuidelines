@@ -20384,7 +20384,7 @@ It provides clocks for registering `time_points`.
 
 C Standard Library rule summary:
 
-* [S.C.1: Don't use setjmp/longjmp](#Rclib-jmp)
+* [SL.C.1: Don't use setjmp/longjmp](#Rclib-jmp)
 * [???](#???)
 * [???](#???)
 
