@@ -9794,7 +9794,8 @@ This will leak the object used to initialize `p1` (only).
 
 ##### Enforcement
 
-(Simple) Warn if the return value of `new` or a function returning an owning pointer is assigned to a raw pointer.
+* (Simple) Warn if the return value of `new` is assigned to a raw pointer.
+* (Simple) Warn if the result of a function returning a raw owning pointer is assigned to a raw pointer.
 
 ### <a name="Rr-unique"></a>R.21: Prefer `unique_ptr` over `shared_ptr` unless you need to share ownership
 
