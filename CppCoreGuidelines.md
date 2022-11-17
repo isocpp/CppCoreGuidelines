@@ -20359,7 +20359,7 @@ For writing to a file, there is rarely a need to `flush`.
 For string streams (specifically `ostringstream`), the insertion of an `endl` is entirely equivalent
 to the insertion of a `'\n'` character, but also in this case, `endl` might be significantly slower.
 
-`endl` does *not* take care of producing a platform specific end-of-line sequence (like "\r\n" on
+`endl` does *not* take care of producing a platform specific end-of-line sequence (like `"\r\n"` on
 Windows). So for a string stream, `s << endl` just inserts a *single* character, `'\n'`.
 
 ##### Note
