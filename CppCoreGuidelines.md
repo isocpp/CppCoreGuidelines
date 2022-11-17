@@ -864,7 +864,7 @@ Avoid errors leading to (possibly unrecognized) wrong results.
         // ...
     }
 
-Here we made a small error in `use1` that will lead to corrupted data or a crash.
+Here, we made a small error in `use1` that will lead to corrupted data or a crash.
 The (pointer, count)-style interface leaves `increment1()` with no realistic way of defending itself against out-of-range errors.
 If we could check subscripts for out of range access, then the error would not be discovered until `p[10]` was accessed.
 We could check earlier and improve the code:
@@ -13436,7 +13436,7 @@ This is even more true for mixed signed and unsigned arithmetic.
         cout << subtract(us, s + 2) << '\n';  // 4294967294
     }
 
-Here we have been very explicit about what's happening,
+Here, we have been very explicit about what's happening,
 but if you had seen `us - (s + 2)` or `s += 2; ...; us - s`, would you reliably have suspected that the result would print as `4294967294`?
 
 ##### Exception
@@ -13971,7 +13971,7 @@ Once your first initial implementation is complete, review it; once you deploy i
 ##### Note
 
 A need for efficiency does not imply a need for [low-level code](#Rper-low).
-High-level code does not imply slow or bloated.
+High-level code isn't necessarily slow or bloated.
 
 ##### Note
 
@@ -13996,7 +13996,7 @@ One question that can be useful is
 ##### Note
 
 This rule does not contradict the [Don't optimize prematurely](#Rper-Knuth) rule.
-It complements it encouraging developers enable later - appropriate and non-premature - optimization, if and where needed.
+It complements it, encouraging developers to enable later - appropriate and non-premature - optimization, if and where needed.
 
 ##### Enforcement
 
@@ -14072,17 +14072,17 @@ Consider a popular technique for providing a handle for storing small objects in
     }
 
 Assume that `Scoped` and `On_heap` provide compatible user interfaces.
-Here we compute the optimal type to use at compile time.
+Here, we compute the optimal type to use at compile time.
 There are similar techniques for selecting the optimal function to call.
 
 ##### Note
 
-The ideal is *not* to try execute everything at compile time.
-Obviously, most computations depend on inputs so they can't be moved to compile time,
+The ideal is *not* to try to execute everything at compile time.
+Obviously, most computations depend on inputs, so they can't be moved to compile time,
 but beyond that logical constraint is the fact that complex compile-time computation can seriously increase compile times
 and complicate debugging.
 It is even possible to slow down code by compile-time computation.
-This is admittedly rare, but by factoring out a general computation into separate optimal sub-calculations it is possible to render the instruction cache less effective.
+This is admittedly rare, but by factoring out a general computation into separate optimal sub-calculations, it is possible to render the instruction cache less effective.
 
 ##### Enforcement
 
@@ -14130,7 +14130,7 @@ Performance is typically dominated by memory access times.
 
 ##### Reason
 
-Performance is very sensitive to cache performance and cache algorithms favor simple (usually linear) access to adjacent data.
+Performance is very sensitive to cache performance, and cache algorithms favor simple (usually linear) access to adjacent data.
 
 ##### Example
 
@@ -14456,7 +14456,7 @@ It simply has nothing to do with concurrency.
         if (int n = free_slots--) return &pool[n];
     }
 
-Here we have a problem:
+Here, we have a problem:
 This is perfectly good code in a single-threaded program, but have two threads execute this and
 there is a race condition on `free_slots` so that two threads might get the same value and `free_slots`.
 That's (obviously) a bad data race, so people trained in other languages might try to fix it like this:
