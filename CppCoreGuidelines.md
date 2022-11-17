@@ -13888,7 +13888,7 @@ In this, the `sort` interfaces shown here still have a weakness:
 They implicitly rely on the element type having less-than (`<`) defined.
 To complete the interface, we need a second version that accepts a comparison criterion:
 
-    // compare elements of c using p
+    // compare elements of c using r
     template<random_access_range R, class C> requires sortable<R, C>
     void sort(R&& r, C c);
 
