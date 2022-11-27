@@ -10269,7 +10269,7 @@ The more traditional and lower-level near-equivalent is longer, messier, harder 
             is.read(s, maxstring);
             res[elemcount++] = s;
         }
-        nread = &elemcount;
+        *nread = elemcount;
         return res;
     }
 
