@@ -9214,7 +9214,7 @@ The default is the easiest to read and write.
 
 ##### Note
 
-Specifying the underlying type is necessary in forward declarations of enumerations:
+Specifying the underlying type is necessary to forward-declare an enum or enum class:
 
     enum Flags : char;
 
@@ -9224,6 +9224,9 @@ Specifying the underlying type is necessary in forward declarations of enumerati
 
     enum Flags : char { /* ... */ };
 
+or to ensure that values of type that can have a specified bit-precision:
+
+    enum Bitboard : uint64_t { /* ... */ };
 
 ##### Enforcement
 
