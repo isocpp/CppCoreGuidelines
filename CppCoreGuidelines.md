@@ -16797,7 +16797,7 @@ Constant rule summary:
 
 ##### Reason
 
-Immutable objects are easier to reason about, so make objects non-`const` only when there is a need to change their value.
+Immutable objects are easier to reason about, so make objects `const` by default. Only declare objects non-`const` when there is a need to change their value.
 Prevents accidental or hard-to-notice change of value.
 
 ##### Example
@@ -16818,7 +16818,7 @@ Note that a function parameter is a local variable so changes to it are local.
 
 ##### Enforcement
 
-* Flag non-`const` variables that are not modified (except for parameters to avoid many false positives)
+* Flag non-`const` variables that are not modified as `const` (except for parameters to avoid many false positives)
 
 ### <a name="Rconst-fct"></a>Con.2: By default, make member functions `const`
 
