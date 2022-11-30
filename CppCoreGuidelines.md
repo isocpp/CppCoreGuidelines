@@ -9224,7 +9224,7 @@ Specifying the underlying type is necessary to forward-declare an enum or enum c
 
     enum Flags : char { /* ... */ };
 
-or to ensure that values of type that can have a specified bit-precision:
+or to ensure that values of that type have a specified bit-precision:
 
     enum Bitboard : uint64_t { /* ... */ };
 
