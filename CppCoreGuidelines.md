@@ -9788,19 +9788,17 @@ Consider:
 
     void f()
     {
-        X x;
-        X* p1 { new X };              // see also ???
-        unique_ptr<X> p2 { new X };   // unique ownership; see also ???
-        shared_ptr<X> p3 { new X };   // shared ownership; see also ???
-        auto p4 = make_unique<X>();   // unique_ownership, preferable to the explicit use "new"
-        auto p5 = make_shared<X>();   // shared ownership, preferable to the explicit use "new"
+        X* p1 { new X };              // bad, p1 will leak
+        auto p2 = make_unique<X>();   // good, unique ownership
+        auto p3 = make_shared<X>();   // good, shared ownership
     }
 
 This will leak the object used to initialize `p1` (only).
 
 ##### Enforcement
 
-(Simple) Warn if the return value of `new` or a function call with return value of pointer type is assigned to a raw pointer.
+* (Simple) Warn if the return value of `new` is assigned to a raw pointer.
+* (Simple) Warn if the result of a function returning a raw owning pointer is assigned to a raw pointer.
 
 ### <a name="Rr-unique"></a>R.21: Prefer `unique_ptr` over `shared_ptr` unless you need to share ownership
 
