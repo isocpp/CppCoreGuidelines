@@ -13888,7 +13888,7 @@ In this, the `sort` interfaces shown here still have a weakness:
 They implicitly rely on the element type having less-than (`<`) defined.
 To complete the interface, we need a second version that accepts a comparison criterion:
 
-    // compare elements of c using p
+    // compare elements of c using r
     template<random_access_range R, class C> requires sortable<R, C>
     void sort(R&& r, C c);
 
@@ -13971,7 +13971,7 @@ Once your first initial implementation is complete, review it; once you deploy i
 ##### Note
 
 A need for efficiency does not imply a need for [low-level code](#Rper-low).
-High-level code does not imply slow or bloated.
+High-level code isn't necessarily slow or bloated.
 
 ##### Note
 
@@ -13996,7 +13996,7 @@ One question that can be useful is
 ##### Note
 
 This rule does not contradict the [Don't optimize prematurely](#Rper-Knuth) rule.
-It complements it encouraging developers enable later - appropriate and non-premature - optimization, if and where needed.
+It complements it, encouraging developers to enable later - appropriate and non-premature - optimization, if and where needed.
 
 ##### Enforcement
 
@@ -14077,12 +14077,12 @@ There are similar techniques for selecting the optimal function to call.
 
 ##### Note
 
-The ideal is *not* to try execute everything at compile time.
-Obviously, most computations depend on inputs so they can't be moved to compile time,
+The ideal is *not* to try to execute everything at compile time.
+Obviously, most computations depend on inputs, so they can't be moved to compile time,
 but beyond that logical constraint is the fact that complex compile-time computation can seriously increase compile times
 and complicate debugging.
 It is even possible to slow down code by compile-time computation.
-This is admittedly rare, but by factoring out a general computation into separate optimal sub-calculations it is possible to render the instruction cache less effective.
+This is admittedly rare, but by factoring out a general computation into separate optimal sub-calculations, it is possible to render the instruction cache less effective.
 
 ##### Enforcement
 
@@ -14130,7 +14130,7 @@ Performance is typically dominated by memory access times.
 
 ##### Reason
 
-Performance is very sensitive to cache performance and cache algorithms favor simple (usually linear) access to adjacent data.
+Performance is very sensitive to cache performance, and cache algorithms favor simple (usually linear) access to adjacent data.
 
 ##### Example
 
