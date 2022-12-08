@@ -3316,7 +3316,7 @@ explicit `move` may be helpful to avoid copying:
         return { move(large1), move(large2) }; // no copies
     }
 
-Alternatively, 
+Alternatively,
 
     pair<LargeObject, LargeObject> f(const string& input)
     {
@@ -6891,7 +6891,7 @@ This is also type-unsafe and overwrites the vtable.
 
 ##### Enforcement
 
-* Flag passing a non-trivially-copyable type to `memset` or `memcpy`. 
+* Flag passing a non-trivially-copyable type to `memset` or `memcpy`.
 
 ## <a name="SS-containers"></a>C.con: Containers and other resource handles
 
@@ -7466,7 +7466,7 @@ Problems:
 and all classes derived from `Shape` and all code using `Shape` will need to be reviewed, possibly changed, and probably recompiled.
 
 The implementation of `Shape::move()` is an example of implementation inheritance:
-we have defined `move()` once and for all for all derived classes.
+we have defined `move()` once and for all, for all derived classes.
 The more code there is in such base class member function implementations and the more data is shared by placing it in the base,
 the more benefits we gain - and the less stable the hierarchy is.
 
@@ -9566,7 +9566,7 @@ Instead, use a local variable:
 ##### Enforcement
 
 * (Moderate) Warn if an object is allocated and then deallocated on all paths within a function. Suggest it should be a local stack object instead.
-* (Simple) Warn if a local `Unique_pointer` or `Shared_pointer` is not moved, copied, reassigned or `reset` before its lifetime ends.
+* (Simple) Warn if a local `Unique_pointer` or `Shared_pointer` that is not moved, copied, reassigned or `reset` before its lifetime ends is not declared `const`.
 Exception: Do not produce such a warning on a local `Unique_pointer` to an unbounded array. (See below.)
 
 ##### Exception
@@ -13014,7 +13014,7 @@ Often, a loop that requires a `break` is a good candidate for a function (algori
         }
         /* then do something with value */
     }
-    
+
     //BETTER: create a function and return inside loop
     T search(const std::vector<T> &vec)
     {
@@ -13023,7 +13023,7 @@ Often, a loop that requires a `break` is a good candidate for a function (algori
         }
         return T(); //default value
     }
-    
+
     void use2()
     {
         std::vector<T> vec = {/* initialized with some values */};
@@ -13039,7 +13039,7 @@ Often, a loop that uses `continue` can equivalently and as clearly be expressed 
         if (item > 10) continue;
         /* do something with item */
     }
-    
+
     for (int item : vec) {  // GOOD
         if (item%2 != 0 && item != 5 && item <= 10) {
             /* do something with item */
@@ -15216,7 +15216,7 @@ Coroutine rule summary:
 
 ##### Reason
 
-Usage patterns that are correct with normal lambdas are hazardous with coroutine lambdas. The obvious pattern of capturing variables will result in accessing freed memory after the first suspension point, even for refcounted smart pointers and copyable types.  
+Usage patterns that are correct with normal lambdas are hazardous with coroutine lambdas. The obvious pattern of capturing variables will result in accessing freed memory after the first suspension point, even for refcounted smart pointers and copyable types.
 
 A lambda results in a closure object with storage, often on the stack, that will go out of scope at some point.  When the closure object goes out of scope the captures will also go out of scope.  Normal lambdas will have finished executing by this time so it is not a problem.  Coroutine lambdas may resume from suspension after the closure object has destructed and at that point all captures will be use-after-free memory access.
 
@@ -16206,7 +16206,7 @@ no useful information can be added at the point of detection:
     throw std::runtime_error("someting bad"); // good
 
     // ...
-    
+
     throw std::invalid_argument("i is not even"); // good
 
 `enum` classes are also allowed:
@@ -21168,6 +21168,8 @@ Eventually, use [the one voted into C++17](http://www.open-std.org/jtc1/sc22/wg2
 
 Some of the GSL types listed below might not be supported in the library you use due to technical reasons such as limitations in the current versions of C++.
 Therefore, please consult your GSL documentation to find out more.
+
+For each GSL type below we state an invariant for that type. That invariant holds as long as user code only changes the state of a GSL object using the type’s provided member/free functions (i.e., user code does not bypass the type’s interface to change the object’s value/bits by violating any other Guidelines rule).
 
 Summary of GSL components:
 
