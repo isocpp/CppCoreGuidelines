@@ -21169,7 +21169,7 @@ Eventually, use [the one voted into C++17](http://www.open-std.org/jtc1/sc22/wg2
 Some of the GSL types listed below might not be supported in the library you use due to technical reasons such as limitations in the current versions of C++.
 Therefore, please consult your GSL documentation to find out more.
 
-For each GSL type below we state an invariant for that type. That invariant holds as long as user code only changes the state of a GSL object using the type’s provided member/free functions (i.e., user code does not bypass the type’s interface to change the object’s value/bits by violating any other Guidelines rule).
+For each GSL type below we state an invariant for that type. That invariant holds as long as user code only changes the state of a GSL object using the type's provided member/free functions (i.e., user code does not bypass the type's interface to change the object's value/bits by violating any other Guidelines rule).
 
 Summary of GSL components:
 
