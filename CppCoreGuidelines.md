@@ -21220,7 +21220,9 @@ If something is not supposed to be `nullptr`, say so:
 * `span<T>`       // `[p:p+n)`, constructor from `{p, q}` and `{p, n}`; `T` is the pointer type
 * `span_p<T>`     // `{p, predicate}` `[p:q)` where `q` is the first element for which `predicate(*p)` is true
 
-A `span<T>` refers to zero or more mutable `T`s unless `T` is a `const` type.
+A `span<T>` refers to zero or more mutable `T`s unless `T` is a `const` type. All accesses to elements of the span, notably via `operator[]`, are guaranteed to be bounds-checked by default.
+
+> Note: GSL's `span` (initially called `array_view`) was proposed for inclusion in the C++ standard library, and was adopted (with changes to its name and interface) except only that `std::span` does not provide for guaranteed bounds checking. Therefore GSL changed `span`'s name and interface to track `std::span` and should be exactly the same as `std::span`, and the only difference should be that GSL `span` is fully bounds-safe by default. If bounds-safety might affect its interface, then those change proposals should be brought back via the ISO C++ committee to keep `gsl::span` interface-compatible with `std::span`. If a future evolution of `std::span` adds bounds checking, `gsl::span` can be removed.
 
 "Pointer arithmetic" is best done within `span`s.
 A `char*` that points to more than one `char` but is not a C-style string (e.g., a pointer into an input buffer) should be represented by a `span`.
