@@ -3026,7 +3026,7 @@ If you need the notion of an optional value, use a pointer, `std::optional`, or 
 
 * (Simple) ((Foundation)) Warn when a parameter being passed by value has a size greater than `2 * sizeof(void*)`.
   Suggest using a reference to `const` instead.
-* (Simple) ((Foundation)) Warn when a parameter passed by reference to `const` has a size less than `2 * sizeof(void*)`. Suggest passing by value instead.
+* (Simple) ((Foundation)) Warn when a parameter passed by reference to `const` has a size less or equal than `2 * sizeof(void*)`. Suggest passing by value instead.
 * (Simple) ((Foundation)) Warn when a parameter passed by reference to `const` is `move`d.
 
 ### <a name="Rf-inout"></a>F.17: For "in-out" parameters, pass by reference to non-`const`
