@@ -10241,7 +10241,7 @@ Large parts of the standard library rely on dynamic allocation (free store). The
 
 ##### Enforcement
 
-Not easy. ??? Look for messy loops, nested loops, long functions, absence of function calls, lack of use of non-built-in types. Cyclomatic complexity?
+Not easy. ??? Look for messy loops, nested loops, long functions, absence of function calls, lack of use of built-in types. Cyclomatic complexity?
 
 ### <a name="Res-abstr"></a>ES.2: Prefer suitable abstractions to direct use of language features
 
@@ -10278,7 +10278,7 @@ Once the checking for overflow and error handling has been added that code gets 
 
 ##### Enforcement
 
-Not easy. ??? Look for messy loops, nested loops, long functions, absence of function calls, lack of use of non-built-in types. Cyclomatic complexity?
+Not easy. ??? Look for messy loops, nested loops, long functions, absence of function calls, lack of use of built-in types. Cyclomatic complexity?
 
 ### <a name="Res-DRY"></a>ES.3: Don't repeat yourself, avoid redundant code
 
