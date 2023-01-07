@@ -4132,7 +4132,7 @@ This is under active discussion in standardization, and might be addressed in a 
 
 ##### Enforcement
 
-* Flag any lambda capture-list that specifies a default capture and also captures `this` (whether explicitly or via default capture)
+* Flag any lambda capture-list that specifies a capture-default and also captures `this` (whether explicitly or via default capture)
 
 ### <a name="F-varargs"></a>F.55: Don't use `va_arg` arguments
 
