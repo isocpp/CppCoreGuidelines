@@ -3123,17 +3123,29 @@ In that case, and only that case, make the parameter `TP&&` where `TP` is a temp
 
 ##### Example
 
+Usually you forward the entire parameter (or parameter pack, using `...`) exactly once on every static control flow path:
+
     template<class F, class... Args>
     inline auto invoke(F f, Args&&... args)
     {
         return f(forward<Args>(args)...);
     }
 
-    ??? calls ???
+##### Example
+
+Sometimes you may forward a composite parameter piecewise, each subobject once on every static control flow path:
+
+    template<class PairLike>
+    inline auto test(PairLike&&... pairlike)
+    {
+        // ...
+        f1( some, args, and, forward<PairLike>(pairlike).first );           // forward .first
+        f2( and, forward<PairLike>(pairlike).second, in, another, call );   // forward .second
+    }
 
 ##### Enforcement
 
-* Flag a function that takes a `TP&&` parameter (where `TP` is a template type parameter name) and does anything with it other than `std::forward`ing it exactly once on every static path.
+* Flag a function that takes a `TP&&` parameter (where `TP` is a template type parameter name) and does anything with it other than `std::forward`ing it exactly once on every static path, or `std::forward`ing it more than once but qualified with a different data member exactly once on every static path.
 
 ### <a name="Rf-out"></a>F.20: For "out" output values, prefer return values to output parameters
 
@@ -4132,7 +4144,7 @@ This is under active discussion in standardization, and might be addressed in a 
 
 ##### Enforcement
 
-* Flag any lambda capture-list that specifies a capture-default and also captures `this` (whether explicitly or via default capture)
+* Flag any lambda capture-list that specifies a capture-default (e.g., `=` or `&`) and also captures `this` (whether explicitly such as `[&, this]` or via default capture such as `[=]` and a use of `this` in the body)
 
 ### <a name="F-varargs"></a>F.55: Don't use `va_arg` arguments
 
