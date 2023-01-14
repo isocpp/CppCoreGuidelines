@@ -1070,7 +1070,7 @@ There are several more performance bugs and gratuitous complication.
     }
 
 This is actually an example from production code.
-We can see that in our condition we have `i < strlen(s)`. This expression will be evaluated on every iteration of the loop, which means that `strlen` must walk through string every loop to discover its length. While the string contents are changing, it's assumed that `toLower` will not affect the length of the string, so it's better to cache the length outside the loop and not incur that cost each iteration.
+We can see that in our condition we have `i < strlen(s)`. This expression will be evaluated on every iteration of the loop, which means that `strlen` must walk through string every loop to discover its length. While the string contents are changing, it's assumed that `tolower` will not affect the length of the string, so it's better to cache the length outside the loop and not incur that cost each iteration.
 
 ##### Note
 
@@ -2376,7 +2376,7 @@ Parameter passing semantic rules:
 * [F.45: Don't return a `T&&`](#Rf-return-ref-ref)
 * [F.46: `int` is the return type for `main()`](#Rf-main)
 * [F.47: Return `T&` from assignment operators](#Rf-assignment-op)
-* [F.48: Don't `return std::move(local)`](#Rf-return-move-local)
+* [F.48: Don't return `std::move(local)`](#Rf-return-move-local)
 * [F.49: Don't return `const T`](#Rf-return-const)
 
 Other function rules:
