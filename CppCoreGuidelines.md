@@ -3139,8 +3139,8 @@ Sometimes you may forward a composite parameter piecewise, each subobject once o
     inline auto test(PairLike&&... pairlike)
     {
         // ...
-        f1( some, args, and, forward<PairLike>(pairlike).first );           // forward .first
-        f2( and, forward<PairLike>(pairlike).second, in, another, call );   // forward .second
+        f1(some, args, and, forward<PairLike>(pairlike).first);           // forward .first
+        f2(and, forward<PairLike>(pairlike).second, in, another, call);   // forward .second
     }
 
 ##### Enforcement
