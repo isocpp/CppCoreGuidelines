@@ -595,7 +595,7 @@ tmp
 TMP
 tock
 TODO
-toLower
+tolower
 toolchains
 TotallyOrdered
 TP
