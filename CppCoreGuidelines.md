@@ -4651,7 +4651,7 @@ Concrete type rule summary:
 
 * [C.10: Prefer concrete types over class hierarchies](#Rc-concrete)
 * [C.11: Make concrete types regular](#Rc-regular)
-* [C.12: Don't make data members `const` or references](#Rc-constref)
+* [C.12: Don't make data members `const` or references in a copyable or movable type](#Rc-constref)
 
 
 ### <a name="Rc-concrete"></a>C.10: Prefer concrete types over class hierarchies
