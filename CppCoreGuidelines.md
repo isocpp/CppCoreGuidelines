@@ -2978,6 +2978,11 @@ Use the advanced techniques only after demonstrating need, and document that nee
 
 For passing sequences of characters see [String](#SS-string).
 
+##### Exception
+
+To express shared ownership using `shared_ptr` types, rather than following guidelines F.16-21,
+instead follow [R.34](#Rr-sharedptrparam-owner), [R.35](#Rr-sharedptrparam), and [R.36](#Rr-sharedptrparam-const).
+
 ### <a name="Rf-in"></a>F.16: For "in" parameters, pass cheaply-copied types by value and others by reference to `const`
 
 ##### Reason
@@ -3028,6 +3033,11 @@ If you need the notion of an optional value, use a pointer, `std::optional`, or 
   Suggest using a reference to `const` instead.
 * (Simple) ((Foundation)) Warn when a parameter passed by reference to `const` has a size less or equal than `2 * sizeof(void*)`. Suggest passing by value instead.
 * (Simple) ((Foundation)) Warn when a parameter passed by reference to `const` is `move`d.
+
+##### Exception
+
+To express shared ownership using `shared_ptr` types, instead follow [R.34](#Rr-sharedptrparam-owner) or [R.36](#Rr-sharedptrparam-const),
+depending on whether or not the function unconditionally takes a reference to the argument.
 
 ### <a name="Rf-inout"></a>F.17: For "in-out" parameters, pass by reference to non-`const`
 
@@ -3106,6 +3116,10 @@ For example:
     {
         // use p ... possibly std::move(p) onward somewhere else
     }   // p gets destroyed
+
+##### Exception
+
+If the "will-move-from" parameter is a `shared_ptr` instead follow [R.34](#Rr-sharedptrparam-owner) and pass the `shared_ptr` by value.
 
 ##### Enforcement
 
