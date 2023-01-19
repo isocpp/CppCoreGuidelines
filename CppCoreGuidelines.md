@@ -4748,11 +4748,11 @@ so they can't be regular; instead, they tend to be move-only.
 ???
 
 
-### <a name="Rc-constref"></a>C.12: Don't make data members `const` or references
+### <a name="Rc-constref"></a>C.12: Don't make data members `const` or references in a copyable or movable type
 
 ##### Reason
 
-They are not useful, and make types difficult to use by making them either uncopyable or partially uncopyable for subtle reasons.
+`const` and reference data members are not useful in a copyable or movable type, and make such types difficult to use by making them at least partly uncopyable/unmovable for subtle reasons.
 
 ##### Example; bad
 
@@ -4770,7 +4770,7 @@ If you need a member to point to something, use a pointer (raw or smart, and `gs
 
 ##### Enforcement
 
-Flag a data member that is `const`, `&`, or `&&`.
+Flag a data member that is `const`, `&`, or `&&` in a type that has any copy or move operation.
 
 
 
