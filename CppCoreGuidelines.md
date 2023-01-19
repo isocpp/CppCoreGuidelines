@@ -2981,7 +2981,7 @@ For passing sequences of characters see [String](#SS-string).
 ##### Exception
 
 To express shared ownership using `shared_ptr` types, rather than following guidelines F.16-21,
-instead follow [R.34](#Rr-sharedptrparam-owner), [R.35](#Rr-sharedptrparam), and [R.36](#Rr-sharedptrparam-const).
+follow [R.34](#Rr-sharedptrparam-owner), [R.35](#Rr-sharedptrparam), and [R.36](#Rr-sharedptrparam-const).
 
 ### <a name="Rf-in"></a>F.16: For "in" parameters, pass cheaply-copied types by value and others by reference to `const`
 
@@ -3036,7 +3036,7 @@ If you need the notion of an optional value, use a pointer, `std::optional`, or 
 
 ##### Exception
 
-To express shared ownership using `shared_ptr` types, instead follow [R.34](#Rr-sharedptrparam-owner) or [R.36](#Rr-sharedptrparam-const),
+To express shared ownership using `shared_ptr` types, follow [R.34](#Rr-sharedptrparam-owner) or [R.36](#Rr-sharedptrparam-const),
 depending on whether or not the function unconditionally takes a reference to the argument.
 
 ### <a name="Rf-inout"></a>F.17: For "in-out" parameters, pass by reference to non-`const`
@@ -3119,7 +3119,7 @@ For example:
 
 ##### Exception
 
-If the "will-move-from" parameter is a `shared_ptr` instead follow [R.34](#Rr-sharedptrparam-owner) and pass the `shared_ptr` by value.
+If the "will-move-from" parameter is a `shared_ptr` follow [R.34](#Rr-sharedptrparam-owner) and pass the `shared_ptr` by value.
 
 ##### Enforcement
 
