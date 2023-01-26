@@ -2908,7 +2908,7 @@ There is a useful function lurking here (case insensitive string comparison), as
     }
 
     auto x = find_if(vr.begin(), vr.end(),
-        [&](Rec& r) { compare_insensitive(r.name, n); }
+        [&](Rec& r) { return compare_insensitive(r.name, n); }
     );
 
 Or maybe (if you prefer to avoid the implicit name binding to n):
