@@ -15184,15 +15184,26 @@ Flag "naked" `lock()` and `unlock()`.
 
 ##### Reason
 
-An unnamed local objects is a temporary that immediately goes out of scope.
+An unnamed local object is a temporary that immediately goes out of scope.
 
 ##### Example
 
-    unique_lock<mutex>(m1);
-    lock_guard<mutex> {m2};
-    lock(m1, m2);
+    // global mutexes
+    mutex m1;
+    mutex m2;
 
-This looks innocent enough, but it isn't.
+    void f()
+    {
+        unique_lock<mutex>(m1); // (A)
+        lock_guard<mutex> {m2}; // (B)
+        // do work in critical section ...
+    }
+
+This looks innocent enough, but it isn't. At (A), `m1` is a default-constructed
+local `unique_lock`, which shadows the global `::m1` (and does not lock it).
+At (B) an unnamed temporary `lock_guard` is constructed and locks `::m2`,
+but immediately goes out of scope and unlocks `::m2` again.
+For the rest of the function `f()` neither mutex is locked.
 
 ##### Enforcement
 
