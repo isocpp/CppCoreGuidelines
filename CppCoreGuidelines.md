@@ -19757,7 +19757,17 @@ Additions to `std` might clash with future versions of the standard.
 
 ##### Example
 
-    ???
+    namespace std { // BAD: violates standard
+        class My_vector {
+        //     . . .
+        };
+    }
+
+    namespace Foo { // GOOD: user namespace is allowed 
+        class My_vector {
+        //     . . .
+        };
+    }
 
 ##### Enforcement
 
