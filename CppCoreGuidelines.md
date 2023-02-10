@@ -1273,7 +1273,7 @@ The use of a non-local control is potentially confusing, but controls only imple
 
 Reporting through non-local variables (e.g., `errno`) is easily ignored. For example:
 
-    // don't: no test of printf's return value
+    // don't: no test of fprintf's return value
     fprintf(connection, "logging: %d %d %d\n", x, y, s);
 
 What if the connection goes down so that no logging output is produced? See I.???.
@@ -13230,11 +13230,11 @@ What looks to a human like a variable without a name is to the compiler a statem
 
     void f()
     {
-        lock<mutex>{mx};   // Bad
+        lock_guard<mutex>{mx};   // Bad
         // ...
     }
 
-This declares an unnamed `lock` object that immediately goes out of scope at the point of the semicolon.
+This declares an unnamed `lock_guard` object that immediately goes out of scope at the point of the semicolon.
 This is not an uncommon mistake.
 In particular, this particular example can lead to hard-to find race conditions.
 
@@ -20804,7 +20804,7 @@ and errors (when we didn't deal correctly with semi-constructed objects consiste
     };
 
     Picture picture1(100, 100);
-    // picture is ready-to-use here...
+    // picture1 is ready-to-use here...
 
     // not a valid size for y,
     // default contract violation behavior will call std::terminate then
