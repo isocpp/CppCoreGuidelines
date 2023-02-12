@@ -12424,7 +12424,7 @@ The language already knows that a returned value is a temporary object that can 
 
 * Flag use of `std::move(x)` where `x` is an rvalue or the language will already treat it as an rvalue, including `return std::move(local_variable);` and `std::move(f())` on a function that returns by value.
 * Flag functions taking an `S&&` parameter if there is no `const S&` overload to take care of lvalues.
-* Flag a `std::move`s argument passed to a parameter, except when the parameter type is an `X&&` rvalue reference or the type is move-only and the parameter is passed by value.
+* Flag a `std::move`d argument passed to a parameter, except when the parameter type is an `X&&` rvalue reference or the type is move-only and the parameter is passed by value.
 * Flag when `std::move` is applied to a forwarding reference (`T&&` where `T` is a template parameter type). Use `std::forward` instead.
 * Flag when `std::move` is applied to other than an rvalue reference to non-const. (More general case of the previous rule to cover the non-forwarding cases.)
 * Flag when `std::forward` is applied to an rvalue reference (`X&&` where `X` is a non-template parameter type). Use `std::move` instead.
