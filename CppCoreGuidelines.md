@@ -42,7 +42,7 @@ You can [read an explanation of the scope and structure of this Guide](#S-abstra
 * [T: Templates and generic programming](#S-templates)
 * [CPL: C-style programming](#S-cpl)
 * [SF: Source files](#S-source)
-* [SL: The Standard Library](#S-stdlib)
+* [SL: The Standard Library](#sl-the-standard-library)
 
 Supporting sections:
 
@@ -50,7 +50,7 @@ Supporting sections:
 * [NR: Non-Rules and myths](#S-not)
 * [RF: References](#S-references)
 * [Pro: Profiles](#S-profile)
-* [GSL: Guidelines support library](#S-gsl)
+* [GSL: Guidelines support library](#gsl-guidelines-support-library)
 * [NL: Naming and layout suggestions](#S-naming)
 * [FAQ: Answers to frequently asked questions](#S-faq)
 * [Appendix A: Libraries](#S-libraries)
@@ -254,7 +254,7 @@ Take the time to understand the implications of a guideline rule on your program
 
 These guidelines are designed according to the "subset of superset" principle ([Stroustrup05](#Stroustrup05)).
 They do not simply define a subset of C++ to be used (for reliability, safety, performance, or whatever).
-Instead, they strongly recommend the use of a few simple "extensions" ([library components](#S-gsl))
+Instead, they strongly recommend the use of a few simple "extensions" ([library components](#gsl-guidelines-support-library))
 that make the use of the most error-prone features of C++ redundant, so that they can be banned (in our set of rules).
 
 The rules emphasize static type safety and resource safety.
@@ -435,7 +435,7 @@ Recommended information sources can be found in [the references](#S-references).
 * [T: Templates and generic programming](#S-templates)
 * [CPL: C-style programming](#S-cpl)
 * [SF: Source files](#S-source)
-* [SL: The Standard Library](#S-stdlib)
+* [SL: The Standard Library](#sl-the-standard-library)
 
 Supporting sections:
 
@@ -443,7 +443,7 @@ Supporting sections:
 * [NR: Non-Rules and myths](#S-not)
 * [RF: References](#S-references)
 * [Pro: Profiles](#S-profile)
-* [GSL: Guidelines support library](#S-gsl)
+* [GSL: Guidelines support library](#gsl-guidelines-support-library)
 * [NL: Naming and layout suggestions](#S-naming)
 * [FAQ: Answers to frequently asked questions](#S-faq)
 * [Appendix A: Libraries](#S-libraries)
@@ -537,7 +537,7 @@ A well-designed library expresses intent (what is to be done, rather than just h
 
 A C++ programmer should know the basics of the standard library, and use it where appropriate.
 Any programmer should know the basics of the foundation libraries of the project being worked on, and use them appropriately.
-Any programmer using these guidelines should know the [guidelines support library](#S-gsl), and use it appropriately.
+Any programmer using these guidelines should know the [guidelines support library](#gsl-guidelines-support-library), and use it appropriately.
 
 ##### Example
 
@@ -628,8 +628,8 @@ The last variant makes it clear that we are not interested in the order in which
 
 A programmer should be familiar with
 
-* [The guidelines support library](#S-gsl)
-* [The ISO C++ Standard Library](#S-stdlib)
+* [The guidelines support library](#gsl-guidelines-support-library)
+* [The ISO C++ Standard Library](#sl-the-standard-library)
 * Whatever foundation libraries are used for the current project(s)
 
 ##### Note
@@ -1006,7 +1006,7 @@ Combine this with enforcement of [the type and bounds profiles](#SS-force) and y
 
 * Look at pointers: Classify them into non-owners (the default) and owners.
   Where feasible, replace owners with standard-library resource handles (as in the example above).
-  Alternatively, mark an owner as such using `owner` from [the GSL](#S-gsl).
+  Alternatively, mark an owner as such using `owner` from [the GSL](#gsl-guidelines-support-library).
 * Look for naked `new` and `delete`
 * Look for known resource allocating functions returning raw pointers (such as `fopen`, `malloc`, and `strdup`)
 
@@ -1200,8 +1200,8 @@ You need a reason not to use the standard library (or whatever foundational libr
 
 By default use
 
-* The [ISO C++ Standard Library](#S-stdlib)
-* The [Guidelines Support Library](#S-gsl)
+* The [ISO C++ Standard Library](#sl-the-standard-library)
+* The [Guidelines Support Library](#gsl-guidelines-support-library)
 
 ##### Note
 
@@ -1560,7 +1560,7 @@ Some preconditions can be expressed as assertions. For example:
 
 Ideally, that `Expects(x >= 0)` should be part of the interface of `sqrt()` but that's not easily done. For now, we place it in the definition (function body).
 
-**References**: `Expects()` is described in [GSL](#S-gsl).
+**References**: `Expects()` is described in [GSL](#gsl-guidelines-support-library).
 
 ##### Note
 
@@ -1868,7 +1868,7 @@ However, that is less elegant and often less efficient than returning the object
 so use smart pointers only if reference semantics are needed.
 
 **Alternative**: Sometimes older code can't be modified because of ABI compatibility requirements or lack of resources.
-In that case, mark owning pointers using `owner` from the [guidelines support library](#S-gsl):
+In that case, mark owning pointers using `owner` from the [guidelines support library](#gsl-guidelines-support-library):
 
     owner<X*> compute(args)    // It is now clear that ownership is transferred
     {
@@ -1918,7 +1918,7 @@ By stating the intent in source, implementers and tools can provide better diagn
 
 ##### Note
 
-`not_null` is defined in the [guidelines support library](#S-gsl).
+`not_null` is defined in the [guidelines support library](#gsl-guidelines-support-library).
 
 ##### Note
 
@@ -1984,7 +1984,7 @@ This `draw2()` passes the same amount of information to `draw()`, but makes the 
 ##### Exception
 
 Use `zstring` and `czstring` to represent C-style, zero-terminated strings.
-But when doing so, use `std::string_view` or `span<char>` from the [GSL](#S-gsl) to prevent range errors.
+But when doing so, use `std::string_view` or `span<char>` from the [GSL](#gsl-guidelines-support-library) to prevent range errors.
 
 ##### Enforcement
 
@@ -3438,7 +3438,7 @@ better
 
 **Also**: Assume that a `T*` obtained from a smart pointer to `T` (e.g., `unique_ptr<T>`) points to a single element.
 
-**See also**: [Support library](#S-gsl)
+**See also**: [Support library](#gsl-guidelines-support-library)
 
 **See also**: [Do not pass an array as a single pointer](#Ri-array)
 
@@ -3530,7 +3530,7 @@ A `span<T>` object does not own its elements and is so small that it can be pass
 
 Passing a `span` object as an argument is exactly as efficient as passing a pair of pointer arguments or passing a pointer and an integer count.
 
-**See also**: [Support library](#S-gsl)
+**See also**: [Support library](#gsl-guidelines-support-library)
 
 ##### Enforcement
 
@@ -3563,7 +3563,7 @@ When I call `length(s)` should I check if `s` is `nullptr` first? Should the imp
 
 `zstring` does not represent ownership.
 
-**See also**: [Support library](#S-gsl)
+**See also**: [Support library](#gsl-guidelines-support-library)
 
 ### <a name="Rf-unique_ptr"></a>F.26: Use a `unique_ptr<T>` to transfer ownership where a pointer is needed
 
@@ -13948,7 +13948,7 @@ The ideal is zero-overhead generalization.
 * Libraries:
 Use libraries with good interfaces.
 If no library is available build one yourself and imitate the interface style from a good library.
-The [standard library](#S-stdlib) is a good first place to look for inspiration.
+The [standard library](#sl-the-standard-library) is a good first place to look for inspiration.
 * Isolation:
 Isolate your code from messy and/or old-style code by providing an interface of your choosing to it.
 This is sometimes called "providing a wrapper" for the useful/necessary but messy code.
@@ -16419,7 +16419,7 @@ Better:
 
 ##### Reason
 
-`finally` from the [GSL](#S-gsl) is less verbose and harder to get wrong than `try`/`catch`.
+`finally` from the [GSL](#gsl-guidelines-support-library) is less verbose and harder to get wrong than `try`/`catch`.
 
 ##### Example
 
@@ -17412,7 +17412,7 @@ Flag template type arguments without concepts
 
 ##### Reason
 
- "Standard" concepts (as provided by the [GSL](#S-gsl) and the ISO standard itself)
+ "Standard" concepts (as provided by the [GSL](#gsl-guidelines-support-library) and the ISO standard itself)
 save us the work of thinking up our own concepts, are better thought out than we can manage to do in a hurry, and improve interoperability.
 
 ##### Note
