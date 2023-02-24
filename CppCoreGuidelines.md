@@ -2850,7 +2850,7 @@ Suppression of unused parameter warnings.
 
 ##### Note
 
-Allowing parameters to be unnamed was introduced in the early 1980 to address this problem.
+Allowing parameters to be unnamed was introduced in the early 1980s to address this problem.
 
 If parameters are conditionally unused, declare them with the `[[maybe_unused]]` attribute.
 For example:
