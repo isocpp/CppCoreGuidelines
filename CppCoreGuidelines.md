@@ -4945,15 +4945,15 @@ defined as defaulted.
 To prevent slicing as per [C.67](#Rc-copy-virtual),
 make the copy and move operations protected or `=delete`d, and add a `clone`:
 
-    class ClonableBase {
+    class CloneableBase {
     public:
-        virtual unique_ptr<ClonableBase> clone() const;
-        virtual ~ClonableBase() = default;
+        virtual unique_ptr<CloneableBase> clone() const;
+        virtual ~CloneableBase() = default;
         CloneableBase() = default;
-        ClonableBase(const ClonableBase&) = delete;
-        ClonableBase& operator=(const ClonableBase&) = delete;
-        ClonableBase(ClonableBase&&) = delete;
-        ClonableBase& operator=(ClonableBase&&) = delete;
+        CloneableBase(const CloneableBase&) = delete;
+        CloneableBase& operator=(const CloneableBase&) = delete;
+        CloneableBase(CloneableBase&&) = delete;
+        CloneableBase& operator=(CloneableBase&&) = delete;
         // ... other constructors and functions ...
     };
 
