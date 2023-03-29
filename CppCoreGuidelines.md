@@ -19408,7 +19408,7 @@ and M functions each containing a `using namespace X`with N lines of code in tot
 
 ##### Enforcement
 
-Flag multiple `using namespace` directives for different namespaces in a single source file.
+Flag multiple `using namespace` directives for different namespaces in the same scope.
 
 ### <a name="Rs-using-directive"></a>SF.7: Don't write `using namespace` at global scope in a header file
 
