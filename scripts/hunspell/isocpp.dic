@@ -347,6 +347,7 @@ Murray93
 mutex
 mutexes
 mx
+My_vector
 MyCustomError
 MyException
 myMap
