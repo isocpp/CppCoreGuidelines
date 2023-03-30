@@ -4938,6 +4938,7 @@ defined as defaulted.
 
     class AbstractBase {
     public:
+        virtual void foo() = 0;  // at least one abstract method to make the class abstract
         virtual ~AbstractBase() = default;
         // ...
     };
