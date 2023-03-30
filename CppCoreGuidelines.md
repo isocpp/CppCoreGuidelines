@@ -19406,10 +19406,6 @@ and M functions each containing a `using namespace X`with N lines of code in tot
 
 [Don't write `using namespace` at global scope in a header file](#Rs-using-directive).
 
-##### Enforcement
-
-Flag multiple `using namespace` directives for different namespaces in a single source file.
-
 ### <a name="Rs-using-directive"></a>SF.7: Don't write `using namespace` at global scope in a header file
 
 ##### Reason
