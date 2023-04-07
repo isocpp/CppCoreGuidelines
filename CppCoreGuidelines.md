@@ -9150,7 +9150,7 @@ Convenience of use and avoidance of errors.
 
 ##### Example
 
-    enum Day { mon, tue, wed, thu, fri, sat, sun };
+    enum class Day { mon, tue, wed, thu, fri, sat, sun };
 
     Day& operator++(Day& d)
     {
