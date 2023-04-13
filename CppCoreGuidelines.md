@@ -644,7 +644,9 @@ Some language constructs express intent better than others.
 
 If two `int`s are meant to be the coordinates of a 2D point, say so:
 
-    draw_line(int, int, int, int);  // obscure
+    draw_line(int, int, int, int);  // obscure: (x1,y1,x2,y2)? (x,y,h,w)? ...?
+                                    // need to look up documentation to know
+
     draw_line(Point, Point);        // clearer
 
 ##### Enforcement
