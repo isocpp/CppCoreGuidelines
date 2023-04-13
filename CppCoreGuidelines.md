@@ -9070,9 +9070,13 @@ Instead use an `enum`:
 
 We used an `enum class` to avoid name clashes.
 
+##### Note
+
+Also consider `constexpr` and `const inline` variables.
+
 ##### Enforcement
 
-Flag macros that define integer values.
+Flag macros that define integer values. Use `enum` or `const inline` or another non-macro alternative instead.
 
 
 ### <a name="Renum-set"></a>Enum.2: Use enumerations to represent sets of related named constants
