@@ -1,6 +1,6 @@
 # <a name="main"></a>C++ Core Guidelines
 
-October 6, 2022
+April 13, 2023
 
 Editors:
 
@@ -19761,15 +19761,19 @@ Additions to `std` might clash with future versions of the standard.
 ##### Example
 
     namespace std { // BAD: violates standard
-        class My_vector {
+
+    class My_vector {
         //     . . .
-        };
+    };
+
     }
 
     namespace Foo { // GOOD: user namespace is allowed
-        class My_vector {
+
+    class My_vector {
         //     . . .
-        };
+    };
+
     }
 
 ##### Enforcement
