@@ -12731,7 +12731,7 @@ There are many approaches to dealing with this potential problem:
 
 There are two potential problems with testing for `nullptr`:
 
-* it is not always obvious what to do what to do if we find `nullptr`
+* it is not always obvious what to do if we find `nullptr`
 * the test can be redundant and/or relatively expensive
 * it is not obvious if the test is to protect against a violation or part of the required logic.
 
