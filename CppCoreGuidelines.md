@@ -17519,7 +17519,7 @@ and should be used only as building blocks for meaningful concepts, rather than 
 
     template<typename T>
     // bad; insufficient
-    concept Addable = requires(T a, T b) { a+b; };
+    concept Addable = requires(T a, T b) { a + b; };
 
     template<Addable N>
     auto algo(const N& a, const N& b) // use two numbers
@@ -17547,7 +17547,7 @@ The ability to specify meaningful semantics is a defining characteristic of a tr
 
     template<typename T>
     // The operators +, -, *, and / for a number are assumed to follow the usual mathematical rules
-    concept Number = requires(T a, T b) { a+b; a-b; a*b; a/b; };
+    concept Number = requires(T a, T b) { a + b; a - b; a * b; a / b; };
 
     template<Number N>
     auto algo(const N& a, const N& b)
@@ -17588,7 +17588,7 @@ This is a specific variant of the general rule that [a concept must make semanti
 
 ##### Example, bad
 
-    template<typename T> concept Subtractable = requires(T a, T b) { a-b; };
+    template<typename T> concept Subtractable = requires(T a, T b) { a - b; };
 
 This makes no semantic sense.
 You need at least `+` to make `-` meaningful and useful.
@@ -17678,10 +17678,10 @@ Specifying semantics is a powerful design tool.
         // The operators +, -, *, and / for a number are assumed to follow the usual mathematical rules
         // axiom(T a, T b) { a + b == b + a; a - a == 0; a * (b + c) == a * b + a * c; /*...*/ }
         concept Number = requires(T a, T b) {
-            {a + b} -> convertible_to<T>;
-            {a - b} -> convertible_to<T>;
-            {a * b} -> convertible_to<T>;
-            {a / b} -> convertible_to<T>;
+            { a + b } -> convertible_to<T>;
+            { a - b } -> convertible_to<T>;
+            { a * b } -> convertible_to<T>;
+            { a / b } -> convertible_to<T>;
         };
 
 ##### Note
