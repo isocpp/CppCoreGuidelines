@@ -4820,7 +4820,7 @@ Constructor rules:
 * [C.44: Prefer default constructors to be simple and non-throwing](#Rc-default00)
 * [C.45: Don't define a default constructor that only initializes data members; use member initializers instead](#Rc-default)
 * [C.46: By default, declare single-argument constructors `explicit`](#Rc-explicit)
-* [C.47: Define and initialize member variables in the order of member declaration](#Rc-order)
+* [C.47: Define and initialize data members in the order of member declaration](#Rc-order)
 * [C.48: Prefer in-class initializers to member initializers in constructors for constant initializers](#Rc-in-class-initializer)
 * [C.49: Prefer initialization to assignment in constructors](#Rc-initialize)
 * [C.50: Use a factory function if you need "virtual behavior" during initialization](#Rc-factory)
@@ -5018,10 +5018,10 @@ These operations disagree about copy semantics. This will lead to confusion and 
 
 ##### Enforcement
 
-* (Complex) A copy/move constructor and the corresponding copy/move assignment operator should write to the same member variables at the same level of dereference.
-* (Complex) Any member variables written in a copy/move constructor should also be initialized by all other constructors.
-* (Complex) If a copy/move constructor performs a deep copy of a member variable, then the destructor should modify the member variable.
-* (Complex) If a destructor is modifying a member variable, that member variable should be written in any copy/move constructors or assignment operators.
+* (Complex) A copy/move constructor and the corresponding copy/move assignment operator should write to the same data members at the same level of dereference.
+* (Complex) Any data members written in a copy/move constructor should also be initialized by all other constructors.
+* (Complex) If a copy/move constructor performs a deep copy of a data member, then the destructor should modify the data member.
+* (Complex) If a destructor is modifying a data member, that data member should be written in any copy/move constructors or assignment operators.
 
 ## <a name="SS-dtor"></a>C.dtor: Destructors
 
@@ -5144,9 +5144,9 @@ Here `p` refers to `pp` but does not own it.
 
 ##### Enforcement
 
-* (Simple) If a class has pointer or reference member variables that are owners
+* (Simple) If a class has pointer or reference members that are owners
   (e.g., deemed owners by using `gsl::owner`), then they should be referenced in its destructor.
-* (Hard) Determine if pointer or reference member variables are owners when there is no explicit statement of ownership
+* (Hard) Determine if pointer or reference members are owners when there is no explicit statement of ownership
   (e.g., look into the constructors).
 
 ### <a name="Rc-dtor-ptr"></a>C.32: If a class has a raw pointer (`T*`) or reference (`T&`), consider whether it might be owning
@@ -5491,7 +5491,7 @@ If a valid object cannot conveniently be constructed by a constructor, [use a fa
 
 ##### Enforcement
 
-* (Simple) Every constructor should initialize every member variable (either explicitly, via a delegating ctor call or via default construction).
+* (Simple) Every constructor should initialize every data member (either explicitly, via a delegating ctor call or via default construction).
 * (Unknown) If a constructor has an `Ensures` contract, try to see if it holds as a postcondition.
 
 ##### Note
@@ -5784,7 +5784,7 @@ Using in-class member initializers lets the compiler generate the function for y
 
 ##### Enforcement
 
-(Simple) A default constructor should do more than just initialize member variables with constants.
+(Simple) A default constructor should do more than just initialize data members with constants.
 
 ### <a name="Rc-explicit"></a>C.46: By default, declare single-argument constructors explicit
 
@@ -5824,7 +5824,7 @@ Copy and move constructors should not be made `explicit` because they do not per
 
 (Simple) Single-argument constructors should be declared `explicit`. Good single argument non-`explicit` constructors are rare in most code bases. Warn for all that are not on a "positive list".
 
-### <a name="Rc-order"></a>C.47: Define and initialize member variables in the order of member declaration
+### <a name="Rc-order"></a>C.47: Define and initialize data members in the order of member declaration
 
 ##### Reason
 
@@ -5894,7 +5894,7 @@ How would a maintainer know whether `j` was deliberately uninitialized (probably
 
 ##### Enforcement
 
-* (Simple) Every constructor should initialize every member variable (either explicitly, via a delegating ctor call or via default construction).
+* (Simple) Every constructor should initialize every data member (either explicitly, via a delegating ctor call or via default construction).
 * (Simple) Default arguments to constructors suggest an in-class initializer might be more appropriate.
 
 ### <a name="Rc-initialize"></a>C.49: Prefer initialization to assignment in constructors
@@ -7712,7 +7712,7 @@ Consider making such a class a `struct` -- that is, a behaviorless bunch of vari
         int y {0};
     };
 
-Note that we can put default initializers on member variables: [C.49: Prefer initialization to assignment in constructors](#Rc-initialize).
+Note that we can put default initializers on data members: [C.49: Prefer initialization to assignment in constructors](#Rc-initialize).
 
 ##### Note
 
@@ -10911,7 +10911,7 @@ Many such errors are introduced during maintenance years after the initial imple
 
 ##### Example
 
-This rule covers member variables.
+This rule covers data members.
 
     class X {
     public:
@@ -14547,7 +14547,7 @@ but we can mention:
 and some older versions of [GCC](https://gcc.gnu.org/wiki/ThreadSafetyAnnotation)
 have some support for static annotation of thread safety properties.
 Consistent use of this technique turns many classes of thread-safety errors into compile-time errors.
-The annotations are generally local (marking a particular member variable as guarded by a particular mutex),
+The annotations are generally local (marking a particular data member as guarded by a particular mutex),
 and are usually easy to learn. However, as with many static tools, it can often present false negatives;
 cases that should have been caught but were allowed.
 
@@ -15777,7 +15777,7 @@ Sometimes C++ code allocates the `volatile` memory and shares it with "elsewhere
 ##### Example, bad
 
 `volatile` local variables are nearly always wrong -- how can they be shared with other languages or hardware if they're ephemeral?
-The same applies almost as strongly to member variables, for the same reason.
+The same applies almost as strongly to data members, for the same reason.
 
     void f()
     {
@@ -15786,7 +15786,7 @@ The same applies almost as strongly to member variables, for the same reason.
     }
 
     class My_type {
-        volatile int i = 0; // suspicious, volatile member variable
+        volatile int i = 0; // suspicious, volatile data member
         // etc.
     };
 
@@ -15796,7 +15796,7 @@ In C++, unlike in some other languages, `volatile` has [nothing to do with synch
 
 ##### Enforcement
 
-* Flag `volatile T` local and member variables; almost certainly you intended to use `atomic<T>` instead.
+* Flag `volatile T` local and data members; almost certainly you intended to use `atomic<T>` instead.
 * ???
 
 ### <a name="Rconc-signal"></a>CP.201: ??? Signals
@@ -16943,7 +16943,7 @@ it offers to its users.
 
 ##### Enforcement
 
-* Flag a member function that is not marked `const`, but that does not perform a non-`const` operation on any member variable.
+* Flag a member function that is not marked `const`, but that does not perform a non-`const` operation on any data member.
 
 ### <a name="Rconst-ref"></a>Con.3: By default, pass pointers and references to `const`s
 
@@ -21134,7 +21134,7 @@ Type safety profile summary:
 Prefer [construction](#Res-construct) or [named casts](#Res-casts-named) or `T{expression}`.
 * <a name="Pro-type-init"></a>Type.5: Don't use a variable before it has been initialized:
 [always initialize](#Res-always).
-* <a name="Pro-type-memberinit"></a>Type.6: Always initialize a member variable:
+* <a name="Pro-type-memberinit"></a>Type.6: Always initialize a data member:
 [always initialize](#Res-always),
 possibly using [default constructors](#Rc-default0) or
 [default member initializers](#Rc-in-class-initializer).
@@ -22196,9 +22196,9 @@ Modernization can be much faster, simpler, and safer when supported with analysi
 This section contains follow-up material on rules and sets of rules.
 In particular, here we present further rationale, longer examples, and discussions of alternatives.
 
-### <a name="Sd-order"></a>Discussion: Define and initialize member variables in the order of member declaration
+### <a name="Sd-order"></a>Discussion: Define and initialize data members in the order of member declaration
 
-Member variables are always initialized in the order they are declared in the class definition, so write them in that order in the constructor initialization list. Writing them in a different order just makes the code confusing because it won't run in the order you see, and that can make it hard to see order-dependent bugs.
+Data members are always initialized in the order they are declared in the class definition, so write them in that order in the constructor initialization list. Writing them in a different order just makes the code confusing because it won't run in the order you see, and that can make it hard to see order-dependent bugs.
 
     class Employee {
         string email, first, last;
@@ -22216,7 +22216,7 @@ Member variables are always initialized in the order they are declared in the cl
 
 In this example, `email` will be constructed before `first` and `last` because it is declared first. That means its constructor will attempt to use `first` and `last` too soon -- not just before they are set to the desired values, but before they are constructed at all.
 
-If the class definition and the constructor body are in separate files, the long-distance influence that the order of member variable declarations has over the constructor's correctness will be even harder to spot.
+If the class definition and the constructor body are in separate files, the long-distance influence that the order of data member declarations has over the constructor's correctness will be even harder to spot.
 
 **References**:
 
@@ -22940,7 +22940,7 @@ Alternatively, we will decide that no change is needed and delete the entry.
 * Should there be inline namespaces (à la `std::literals::*_literals`)?
 * Avoid implicit conversions
 * Const member functions should be thread safe ... aka, but I don't really change the variable, just assign it a value the first time it's called ... argh
-* Always initialize variables, use initialization lists for member variables.
+* Always initialize variables, use initialization lists for data members.
 * Anyone writing a public interface which takes or returns `void*` should have their toes set on fire. That one has been a personal favorite of mine for a number of years. :)
 * Use `const`-ness wherever possible: member functions, variables and (yippee) `const_iterators`
 * Use `auto`
