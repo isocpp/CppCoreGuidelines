@@ -3152,7 +3152,7 @@ Usually you forward the entire parameter (or parameter pack, using `...`) exactl
 Sometimes you may forward a composite parameter piecewise, each subobject once on every static control flow path:
 
     template<class PairLike>
-    inline auto test(PairLike&&... pairlike)
+    inline auto test(PairLike&& pairlike)
     {
         // ...
         f1(some, args, and, forward<PairLike>(pairlike).first);           // forward .first
