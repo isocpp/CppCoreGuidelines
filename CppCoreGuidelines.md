@@ -3142,9 +3142,9 @@ In that case, and only that case, make the parameter `TP&&` where `TP` is a temp
 Usually you forward the entire parameter (or parameter pack, using `...`) exactly once on every static control flow path:
 
     template<class F, class... Args>
-    inline auto invoke(F f, Args&&... args)
+    inline decltype(auto) invoke(F&& f, Args&&... args)
     {
-        return f(forward<Args>(args)...);
+        return forward<F>(f)(forward<Args>(args)...);
     }
 
 ##### Example
