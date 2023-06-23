@@ -3923,12 +3923,12 @@ value) of any assignment operator.
 ##### Reason
 
 Returning a local variable implicitly moves it anyway.
-An explicit `std::move` is also a pessimization, because it prevents Named Return Value Optimization (NRVO),
+An explicit `std::move` is always a pessimization, because it prevents Return Value Optimization (RVO),
 which can eliminate the move completely. 
 
 ##### Example, bad
 
-    S f()
+    S bad()
     {
       S result;
       return std::move(result);
@@ -3936,9 +3936,13 @@ which can eliminate the move completely.
 
 ##### Example, good
 
-    S f()
+    // RVO: guaranteed move elision when a temporary is returned
+    S rvo() { return S{}; }
+
+    S nrvo()
     {
       S result;
+      // Named RVO: move elision at best, move construction at worst
       return result;
     }
 
