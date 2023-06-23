@@ -10240,7 +10240,7 @@ Arithmetic rules:
 * [ES.101: Use unsigned types for bit manipulation](#Res-unsigned)
 * [ES.102: Use signed types for arithmetic](#Res-signed)
 * [ES.103: Don't overflow](#Res-overflow)
-* [ES.104: Don't underflow](#Res-underflow)
+* [ES.104: Don't overflow below a minimum](#Res-overflow-minimum)
 * [ES.105: Don't divide by integer zero](#Res-zero)
 * [ES.106: Don't try to avoid negative values by using `unsigned`](#Res-nonnegative)
 * [ES.107: Don't use `unsigned` for subscripts, prefer `gsl::index`](#Res-subscripts)
@@ -13542,7 +13542,7 @@ Use unsigned types if you really want modulo arithmetic.
 
 ???
 
-### <a name="Res-underflow"></a>ES.104: Don't underflow
+### <a name="Res-overflow-minimum"></a>ES.104: Don't overflow below a minimum
 
 ##### Reason
 
