@@ -2235,9 +2235,9 @@ interface (widget.h)
         void draw(); // public API that will be forwarded to the implementation
         widget(int); // defined in the implementation file
         ~widget();   // defined in the implementation file, where impl is a complete type
-        widget(widget&&); // defined in the implementation file
+        widget(widget&&) noexcept; // defined in the implementation file
         widget(const widget&) = delete;
-        widget& operator=(widget&&); // defined in the implementation file
+        widget& operator=(widget&&) noexcept; // defined in the implementation file
         widget& operator=(const widget&) = delete;
     };
 
@@ -4980,11 +4980,11 @@ Note their argument types:
     class X {
     public:
         // ...
-        virtual ~X() = default;            // destructor (virtual if X is meant to be a base class)
-        X(const X&) = default;             // copy constructor
-        X& operator=(const X&) = default;  // copy assignment
-        X(X&&) = default;                  // move constructor
-        X& operator=(X&&) = default;       // move assignment
+        virtual ~X() = default;               // destructor (virtual if X is meant to be a base class)
+        X(const X&) = default;                // copy constructor
+        X& operator=(const X&) = default;     // copy assignment
+        X(X&&) noexcept = default;            // move constructor
+        X& operator=(X&&) noexcept = default; // move assignment
     };
 
 A minor mistake (such as a misspelling, leaving out a `const`, using `&` instead of `&&`, or leaving out a special function) can lead to errors or warnings.
