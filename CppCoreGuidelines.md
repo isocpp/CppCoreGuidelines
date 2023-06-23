@@ -3922,7 +3922,9 @@ value) of any assignment operator.
 
 ##### Reason
 
-With guaranteed copy elision, it is now almost always a pessimization to expressly use `std::move` in a return statement.
+Returning a local variable implicitly moves it anyway.
+An explicit `std::move` is also a pessimization, because it prevents Named Return Value Optimization (NRVO),
+which can eliminate the move completely. 
 
 ##### Example, bad
 
