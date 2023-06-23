@@ -6436,8 +6436,13 @@ A non-throwing move will be used more efficiently by standard-library and langua
     template<typename T>
     class Vector {
     public:
-        Vector(Vector&& a) noexcept :elem{a.elem}, sz{a.sz} { a.sz = 0; a.elem = nullptr; }
-        Vector& operator=(Vector&& a) noexcept { elem = a.elem; sz = a.sz; a.sz = 0; a.elem = nullptr; }
+        Vector(Vector&& a) noexcept :elem{a.elem}, sz{a.sz} { a.elem = nullptr; a.sz = 0; }
+        Vector& operator=(Vector&& a) noexcept {
+            delete elem;
+            elem = a.elem; a.elem = nullptr;
+            sz   = a.sz;   a.sz   = 0;
+            return *this;
+        }
         // ...
     private:
         T* elem;
