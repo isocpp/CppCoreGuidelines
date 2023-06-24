@@ -5010,7 +5010,7 @@ Users will be surprised if copy/move construction and copy/move assignment do lo
         shared_ptr<Impl> p;
     public:
         Silly(const Silly& a) : p(make_shared<Impl>()) { *p = *a.p; }   // deep copy
-        Silly& operator=(const Silly& a) { p = a.p; }   // shallow copy
+        Silly& operator=(const Silly& a) { p = a.p; return *this; }   // shallow copy
         // ...
     };
 
