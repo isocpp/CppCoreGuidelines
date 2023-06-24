@@ -13430,8 +13430,8 @@ Unsigned types support bit manipulation without surprises from sign bits.
 
 ##### Note
 
-Unsigned types can also be useful for modulo arithmetic.
-However, if you want modulo arithmetic add
+Unsigned types can also be useful for modular arithmetic.
+However, if you want modular arithmetic add
 comments as necessary noting the reliance on wraparound behavior, as such code
 can be surprising for many programmers.
 
@@ -13445,7 +13445,7 @@ can be surprising for many programmers.
 ##### Reason
 
 Because most arithmetic is assumed to be signed;
-`x - y` yields a negative number when `y > x` except in the rare cases where you really want modulo arithmetic.
+`x - y` yields a negative number when `y > x` except in the rare cases where you really want modular arithmetic.
 
 ##### Example
 
@@ -13475,7 +13475,7 @@ but if you had seen `us - (s + 2)` or `s += 2; ...; us - s`, would you reliably 
 
 ##### Exception
 
-Use unsigned types if you really want modulo arithmetic - add
+Use unsigned types if you really want modular arithmetic - add
 comments as necessary noting the reliance on overflow behavior, as such code
 is going to be surprising for many programmers.
 
@@ -13534,7 +13534,7 @@ Incrementing a value beyond a maximum value can lead to memory corruption and un
 
 ##### Exception
 
-Use unsigned types if you really want modulo arithmetic.
+Use unsigned types if you really want modular arithmetic.
 
 **Alternative**: For critical applications that can afford some overhead, use a range-checked integer and/or floating-point type.
 
@@ -13559,7 +13559,7 @@ Decrementing a value beyond a minimum value can lead to memory corruption and un
 
 ##### Exception
 
-Use unsigned types if you really want modulo arithmetic.
+Use unsigned types if you really want modular arithmetic.
 
 ##### Enforcement
 
@@ -13609,7 +13609,7 @@ This also applies to `%`.
 
 ##### Reason
 
-Choosing `unsigned` implies many changes to the usual behavior of integers, including modulo arithmetic,
+Choosing `unsigned` implies many changes to the usual behavior of integers, including modular arithmetic,
 can suppress warnings related to overflow,
 and opens the door for errors related to signed/unsigned mixes.
 Using `unsigned` doesn't actually eliminate the possibility of negative values.
@@ -13631,7 +13631,7 @@ Consider:
     auto a = area(height, 2);   // if the input is -2 a becomes 4294967292
 
 Remember that `-1` when assigned to an `unsigned int` becomes the largest `unsigned int`.
-Also, since unsigned arithmetic is modulo arithmetic the multiplication didn't overflow, it wrapped around.
+Also, since unsigned arithmetic is modular arithmetic the multiplication didn't overflow, it wrapped around.
 
 ##### Example
 
