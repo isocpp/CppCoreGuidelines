@@ -18966,7 +18966,7 @@ Write your own "advanced TMP support" only if you really have to.
 
 ## <a name="SS-temp-other"></a>Other template rules
 
-### <a name="Rt-name"></a>T.140: If an operation can be reused, give it a name](#Rt-name
+### <a name="Rt-name"></a>T.140: If an operation can be reused, give it a name
 
 See [F.10](#Rf-name)
 
