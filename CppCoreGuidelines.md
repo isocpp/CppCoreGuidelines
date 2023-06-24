@@ -6387,7 +6387,7 @@ If `x = x` changes the value of `x`, people will be surprised and bad errors can
         string s;
         int i;
     public:
-        Foo& operator=(Foo&& a);
+        Foo& operator=(Foo&& a) noexcept;
         // ...
     };
 
