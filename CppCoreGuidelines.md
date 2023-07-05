@@ -2235,9 +2235,9 @@ interface (widget.h)
         void draw(); // public API that will be forwarded to the implementation
         widget(int); // defined in the implementation file
         ~widget();   // defined in the implementation file, where impl is a complete type
-        widget(widget&&); // defined in the implementation file
+        widget(widget&&) noexcept; // defined in the implementation file
         widget(const widget&) = delete;
-        widget& operator=(widget&&); // defined in the implementation file
+        widget& operator=(widget&&) noexcept; // defined in the implementation file
         widget& operator=(const widget&) = delete;
     };
 
@@ -2252,9 +2252,9 @@ implementation (widget.cpp)
     };
     void widget::draw() { pimpl->draw(*this); }
     widget::widget(int n) : pimpl{std::make_unique<impl>(n)} {}
-    widget::widget(widget&&) = default;
+    widget::widget(widget&&) noexcept = default;
     widget::~widget() = default;
-    widget& widget::operator=(widget&&) = default;
+    widget& widget::operator=(widget&&) noexcept = default;
 
 ##### Notes
 
@@ -4980,11 +4980,11 @@ Note their argument types:
     class X {
     public:
         // ...
-        virtual ~X() = default;            // destructor (virtual if X is meant to be a base class)
-        X(const X&) = default;             // copy constructor
-        X& operator=(const X&) = default;  // copy assignment
-        X(X&&) = default;                  // move constructor
-        X& operator=(X&&) = default;       // move assignment
+        virtual ~X() = default;               // destructor (virtual if X is meant to be a base class)
+        X(const X&) = default;                // copy constructor
+        X& operator=(const X&) = default;     // copy assignment
+        X(X&&) noexcept = default;            // move constructor
+        X& operator=(X&&) noexcept = default; // move assignment
     };
 
 A minor mistake (such as a misspelling, leaving out a `const`, using `&` instead of `&&`, or leaving out a special function) can lead to errors or warnings.
@@ -6456,8 +6456,8 @@ These operations do not throw.
     template<typename T>
     class Vector2 {
     public:
-        Vector2(Vector2&& a) { *this = a; }             // just use the copy
-        Vector2& operator=(Vector2&& a) { *this = a; }  // just use the copy
+        Vector2(Vector2&& a) noexcept { *this = a; }             // just use the copy
+        Vector2& operator=(Vector2&& a) noexcept { *this = a; }  // just use the copy
         // ...
     private:
         T* elem;
@@ -6560,8 +6560,8 @@ The compiler is more likely to get the default semantics right and you cannot im
 
         Tracer(const Tracer&) = default;
         Tracer& operator=(const Tracer&) = default;
-        Tracer(Tracer&&) = default;
-        Tracer& operator=(Tracer&&) = default;
+        Tracer(Tracer&&) noexcept = default;
+        Tracer& operator=(Tracer&&) noexcept = default;
     };
 
 Because we defined the destructor, we must define the copy and move operations. The `= default` is the best and simplest way of doing that.
@@ -6576,8 +6576,8 @@ Because we defined the destructor, we must define the copy and move operations. 
 
         Tracer2(const Tracer2& a) : message{a.message} {}
         Tracer2& operator=(const Tracer2& a) { message = a.message; return *this; }
-        Tracer2(Tracer2&& a) :message{a.message} {}
-        Tracer2& operator=(Tracer2&& a) { message = a.message; return *this; }
+        Tracer2(Tracer2&& a) noexcept :message{a.message} {}
+        Tracer2& operator=(Tracer2&& a) noexcept { message = a.message; return *this; }
     };
 
 Writing out the bodies of the copy and move operations is verbose, tedious, and error-prone. A compiler does it better.
@@ -6971,9 +6971,9 @@ In particular, `std::vector` and `std::map` provide useful relatively simple mod
         Sorted_vector() = default;
         Sorted_vector(initializer_list<T>);    // initializer-list constructor: sort and store
         Sorted_vector(const Sorted_vector&) = default;
-        Sorted_vector(Sorted_vector&&) = default;
-        Sorted_vector& operator=(const Sorted_vector&) = default;   // copy assignment
-        Sorted_vector& operator=(Sorted_vector&&) = default;        // move assignment
+        Sorted_vector(Sorted_vector&&) noexcept = default;
+        Sorted_vector& operator=(const Sorted_vector&) = default;     // copy assignment
+        Sorted_vector& operator=(Sorted_vector&&) noexcept = default; // move assignment
         ~Sorted_vector() = default;
 
         Sorted_vector(const std::vector<T>& v);   // store and sort
@@ -7673,8 +7673,8 @@ Copying a polymorphic class is discouraged due to the slicing problem, see [C.67
     protected:
          B(const B&) = default;
          B& operator=(const B&) = default;
-         B(B&&) = default;
-         B& operator=(B&&) = default;
+         B(B&&) noexcept = default;
+         B& operator=(B&&) noexcept = default;
         // ...
     };
 
