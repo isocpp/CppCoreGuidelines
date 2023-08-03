@@ -16856,7 +16856,7 @@ Prevents accidental or hard-to-notice change of value.
 
     for (int i : c) cout << i << '\n';          // BAD: just reading
 
-##### Exception
+##### Exceptions
 
 A local variable that is returned by value and is cheaper to move than copy should not be declared `const`
 because it can force an unnecessary copy.
