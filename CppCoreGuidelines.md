@@ -8207,8 +8207,8 @@ Consider:
         cout << pb2->id(); // "D"
 
 
-        if (pb1->id() == "D") {         // looks innocent
-            D* pd = static_cast<D*>(pb1);
+        if (pb2->id() == "D") {         // looks innocent
+            D* pd = static_cast<D*>(pb2);
             // ...
         }
         // ...
