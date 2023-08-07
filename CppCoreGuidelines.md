@@ -8871,7 +8871,7 @@ The C++17 `variant` type (found in `<variant>`) does that for you:
     v = 123;        // v holds an int
     int x = get<int>(v);
     v = 123.456;    // v holds a double
-    w = get<double>(v);
+    double w = get<double>(v);
 
 ##### Enforcement
 
