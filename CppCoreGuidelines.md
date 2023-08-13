@@ -3188,7 +3188,7 @@ A `struct` of many (individually cheap-to-move) elements might be in aggregate e
 ##### Exceptions
 
 * For non-concrete types, such as types in an inheritance hierarchy, return the object by `unique_ptr` or `shared_ptr`.
-* If a type is expensive to move (e.g., `array<BigPOD>`), consider allocating it on the free store and return a handle (e.g., `unique_ptr`), or passing it in a reference to non-`const` target object to fill (to be used as an out-parameter).
+* If a type is expensive to move (e.g., `array<BigTrivial>`), consider allocating it on the free store and return a handle (e.g., `unique_ptr`), or passing it in a reference to non-`const` target object to fill (to be used as an out-parameter).
 * To reuse an object that carries capacity (e.g., `std::string`, `std::vector`) across multiple calls to the function in an inner loop: [treat it as an in/out parameter and pass by reference](#Rf-out-multi).
 
 ##### Example
@@ -10858,7 +10858,7 @@ The *always initialize* rule is a style rule aimed to improve maintainability as
 
 Here is an example that is often considered to demonstrate the need for a more relaxed rule for initialization
 
-    widget i;    // "widget" a type that's expensive to initialize, possibly a large POD
+    widget i;    // "widget" a type that's expensive to initialize, possibly a large trivial type
     widget j;
 
     if (cond) {  // bad: i and j are initialized "late"
@@ -18437,21 +18437,22 @@ Specialization offers a powerful mechanism for providing alternative implementat
 
 This is a simplified version of `std::copy` (ignoring the possibility of non-contiguous sequences)
 
-    struct pod_tag {};
-    struct non_pod_tag {};
+    struct trivially_copyable_tag {};
+    struct non_trivially_copyable_tag {};
 
-    template<class T> struct copy_trait { using tag = non_pod_tag; };   // T is not "plain old data"
-
-    template<> struct copy_trait<int> { using tag = pod_tag; };         // int is "plain old data"
+    // T is not trivially copyable
+    template<class T> struct copy_trait { using tag = non_trivially_copyable_tag; };
+    // int is trivially copyable
+    template<> struct copy_trait<int> { using tag = trivially_copyable_tag; };
 
     template<class Iter>
-    Out copy_helper(Iter first, Iter last, Iter out, pod_tag)
+    Out copy_helper(Iter first, Iter last, Iter out, trivially_copyable_tag)
     {
         // use memmove
     }
 
     template<class Iter>
-    Out copy_helper(Iter first, Iter last, Iter out, non_pod_tag)
+    Out copy_helper(Iter first, Iter last, Iter out, non_trivially_copyable_tag)
     {
         // use loop calling copy constructors
     }
@@ -18459,7 +18460,8 @@ This is a simplified version of `std::copy` (ignoring the possibility of non-con
     template<class Iter>
     Out copy(Iter first, Iter last, Iter out)
     {
-        return copy_helper(first, last, out, typename copy_trait<Value_type<Iter>>::tag{})
+        using tag_type = typename copy_trait<std::iter_value_t<Iter>>;
+        return copy_helper(first, last, out, tag_type{})
     }
 
     void use(vector<int>& vi, vector<int>& vi2, vector<string>& vs, vector<string>& vs2)
@@ -18472,10 +18474,10 @@ This is a general and powerful technique for compile-time algorithm selection.
 
 ##### Note
 
-When `concept`s become widely available such alternatives can be distinguished directly:
+With C++20 constraints, such alternatives can be distinguished directly:
 
     template<class Iter>
-        requires Pod<Value_type<Iter>>
+        requires std::is_trivially_copyable_v<std::iter_value_t<Iter>>
     Out copy_helper(In, first, In last, Out out)
     {
         // use memmove
