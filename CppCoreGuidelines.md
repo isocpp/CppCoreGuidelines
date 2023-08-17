@@ -2500,7 +2500,7 @@ If there was a need, we could further templatize `read()` and `print()` on the d
         // check for errors
     };
 
-    auto print(auto& output, const auto& value)
+    void print(auto& output, const auto& value)
     {
         output << value << "\n";
     }
