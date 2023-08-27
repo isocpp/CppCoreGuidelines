@@ -11491,7 +11491,7 @@ Requires messy cast-and-macro-laden code to get working right.
         error(7, "this", "is", "an", "error");  // crash
         const char* is = "is";
         string an = "an";
-        error(7, "this", "is", an, "error"); // crash
+        error(7, "this", is, an, "error"); // crash
     }
 
 **Alternative**: Overloading. Templates. Variadic templates.
