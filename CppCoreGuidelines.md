@@ -18352,7 +18352,7 @@ Typically, the solution is to make what would have been a nested class non-local
 
 Some people found the idea that the `Link` no longer was hidden inside the list scary, so we named the technique
 [SCARY](http://www.open-std.org/jtc1/sc22/WG21/docs/papers/2009/n2911.pdf). From that academic paper:
-"The acronym SCARY describes assignments and initializations that are Seemingly erroneous (appearing Constrained by conflicting generic parameters), but Actually work with the Right implementation (unconstrained bY the conflict due to minimized dependencies)."
+"The acronym SCARY describes assignments and initializations that are Seemingly erroneous (appearing Constrained by conflicting generic parameters), but Actually work with the Right implementation (unconstrained by the conflict due to minimized dependencies)."
 
 ##### Note
 
