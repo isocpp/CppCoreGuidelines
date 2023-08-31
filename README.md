@@ -1,5 +1,5 @@
 [![C++ Core Guidelines](cpp_core_guidelines_logo_text.png)](http://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines)
-
+<b>This Addition is by Me Mussaddiq Mahmood<b>
 >"Within C++ is a smaller, simpler, safer language struggling to get out."
 >-- <cite>Bjarne Stroustrup</cite>
 
