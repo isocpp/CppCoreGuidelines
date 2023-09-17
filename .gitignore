@@ -1,12 +1,22 @@
+# Ignore build artifacts
 scripts/build
-scripts/nodesjs/build
+scripts/nodejs/build
+
+# Ignore Node.js modules
 node_modules
+
+# Ignore Jekyll build directory (if applicable)
 _site
+
+# Ignore Python bytecode files and cache
 scripts/python/__pycache__
-scripts/python/*.pyc
+*.pyc
 
-# VS Code
-.vs/
+# VS Code specific files
+.vscode/
 
-# MacOS-specific
+# MacOS-specific files
 .DS_Store
+
+# Node.js debugging log (optional)
+npm-debug.log
