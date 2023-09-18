@@ -1928,7 +1928,7 @@ The assumption that the pointer to `char` pointed to a C-style string (a zero-te
 
     // we can assume that p cannot be nullptr
     // we can assume that p points to a zero-terminated array of characters
-    int length(not_null<zstring> p);
+    int length(not_null<czstring> p);
 
 Note: `length()` is, of course, `std::strlen()` in disguise.
 
