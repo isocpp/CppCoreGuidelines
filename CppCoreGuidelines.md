@@ -12474,7 +12474,7 @@ Flag naked `new`s and naked `delete`s.
 
 ##### Reason
 
-That's what the language requires and mistakes can lead to resource release errors and/or memory corruption.
+That's what the language requires, and mismatches can lead to resource release errors and/or memory corruption.
 
 ##### Example, bad
 
@@ -12491,8 +12491,8 @@ This example not only violates the [no naked `new` rule](#Res-new) as in the pre
 
 ##### Enforcement
 
-* If the `new` and the `delete` are in the same scope, mistakes can be flagged.
-* If the `new` and the `delete` are in a constructor/destructor pair, mistakes can be flagged.
+* Flag mismatched `new` and `delete` if they are in the same scope.
+* Flag mismatched `new` and `delete` if they are in a constructor/destructor pair.
 
 ### <a name="Res-arr2"></a>ES.62: Don't compare pointers into different arrays
 
