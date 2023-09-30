@@ -11365,8 +11365,6 @@ Also, `#` and `##` encourages the definition and use of macros:
 
 There are workarounds for low-level string manipulation using macros. For example:
 
-    string s = "asdf" "lkjh";   // ordinary string literal concatenation
-
     enum E { a, b };
 
     template<int x>
@@ -11378,9 +11376,10 @@ There are workarounds for low-level string manipulation using macros. For exampl
         }
     }
 
-    void f(int x, int y)
+    void f()
     {
-        string sx = stringify<x>();
+        string s1 = stringify<1>(); //ok
+        string s2 = stringify<2>(); //does not compile
         // ...
     }
 
