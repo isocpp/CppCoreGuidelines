@@ -511,7 +511,7 @@ This loop is a restricted form of `std::find`:
         cin >> val;
         // ...
         int index = -1;                    // bad, plus should use gsl::index
-        for (int i = 0; i < v.size(); ++i) {
+        for (int i = 0; i < v.size(); i++) {
             if (v[i] == val) {
                 index = i;
                 break;
