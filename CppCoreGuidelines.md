@@ -19208,6 +19208,7 @@ Source file rule summary:
 * [SF.10: Avoid dependencies on implicitly `#include`d names](#Rs-implicit)
 * [SF.11: Header files should be self-contained](#Rs-contained)
 * [SF.12: Prefer the quoted form of `#include` for files relative to the including file and the angle bracket form everywhere else](#Rs-incform)
+* [SF.13: Use portable header identifiers in `#include` statements](#Rs-include-casing)
 
 * [SF.20: Use `namespace`s to express logical structure](#Rs-namespace)
 * [SF.21: Don't use an unnamed (anonymous) namespace in a header](#Rs-unnamed)
@@ -19630,6 +19631,32 @@ Library creators should put their headers in a folder and have clients include t
 ##### Enforcement
 
 A test should identify whether headers referenced via `""` could be referenced with `<>`.
+
+### <a name="Rs-include-identifier"></a>SF.13: Use portable header identifiers in `#include` statements
+
+##### Reason
+
+The [standard](http://eel.is/c++draft/cpp.include) does not specifiy how compilers locate headers from a unique identifier in a '#include' directive, nor does it specify what constitutes uniqueness for an identifier. For example, whether the implementation considers the identifiers to be case-sensitive, or whether the identifiers are file system paths to a header file, and if so, how a hierarchical file system path is delimited.
+
+To maximize the portability of `#include` directives across compilers, guidance is to:
+- use case-sensitivity for the header identifier, matching how the header is defined by the standard, specification, implementation, header file, etc.
+- when the header identifier is a hierarchical file system path, use forward-slash '/' to delimit path components  as this is the most widely-accepted, portable path-delimiting character.
+
+##### Example
+
+    // good examples
+    #include <vector>
+    #include <string>
+    #include "utils/utils.h"
+    
+    // bad examples
+    // #include <VECTOR>             // the standard library defines a header identified as <vector>, not <VECTOR>
+    // #include <String>             // the standard library defines a header identified as <string>, not <String>
+    // #include "utils\utils.h"      // may not work if '\u' is interpreted as an escape sequence, or on a system where '\' is not a valid path separator
+
+##### Enforcement
+
+It is only possible to enforce on implementations where header identifiers are case-sensitive and which only support '/' as a file path delimiter.
 
 ### <a name="Rs-namespace"></a>SF.20: Use `namespace`s to express logical structure
 
