@@ -19208,7 +19208,7 @@ Source file rule summary:
 * [SF.10: Avoid dependencies on implicitly `#include`d names](#Rs-implicit)
 * [SF.11: Header files should be self-contained](#Rs-contained)
 * [SF.12: Prefer the quoted form of `#include` for files relative to the including file and the angle bracket form everywhere else](#Rs-incform)
-* [SF.13: Use portable header identifiers in `#include` statements](#Rs-include-casing)
+* [SF.13: Use portable header identifiers in `#include` statements](#Rs-portable-headerid)
 
 * [SF.20: Use `namespace`s to express logical structure](#Rs-namespace)
 * [SF.21: Don't use an unnamed (anonymous) namespace in a header](#Rs-unnamed)
@@ -19632,7 +19632,7 @@ Library creators should put their headers in a folder and have clients include t
 
 A test should identify whether headers referenced via `""` could be referenced with `<>`.
 
-### <a name="Rs-include-identifier"></a>SF.13: Use portable header identifiers in `#include` statements
+### <a name="Rs-portable-headerid"></a>SF.13: Use portable header identifiers in `#include` statements
 
 ##### Reason
 
