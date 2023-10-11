@@ -19636,12 +19636,12 @@ A test should identify whether headers referenced via `""` could be referenced w
 
 ##### Reason
 
-The [standard](http://eel.is/c++draft/cpp.include) does not specify how compilers locate headers from a unique identifier in a `#include` directive, nor does it specify what constitutes uniqueness for an identifier. For example, whether the implementation considers the identifiers to be case-sensitive, or whether the identifiers are file system paths to a header file, and if so, how a hierarchical file system path is delimited.
+The [standard](http://eel.is/c++draft/cpp.include) does not specify how compilers uniquely locate headers from an identifier in an `#include` directive, nor does it specify what constitutes uniqueness. For example, whether the implementation considers the identifiers to be case-sensitive, or whether the identifiers are file system paths to a header file, and if so, how a hierarchical file system path is delimited.
 
 To maximize the portability of `#include` directives across compilers, guidance is to:
 
-* use case-sensitivity for the header identifier, matching how the header is defined by the standard, specification, implementation, header file, etc.
-* when the header identifier is a hierarchical file system path, use forward-slash `/` to delimit path components  as this is the most widely-accepted, portable path-delimiting character.
+* use case-sensitivity for the header identifier, matching how the header is defined by the standard, specification, implementation, or file that provides the header.
+* when the header identifier is a hierarchical file path, use forward-slash `/` to delimit path components as this is the most widely-accepted path-delimiting character.
 
 ##### Example
 
