@@ -19619,7 +19619,7 @@ Nevertheless, the guidance is to use the quoted form for including files that ex
     #include <string>                // From the standard library, requires the <> form
     #include <some_library/common.h> // A file that is not locally relative, included from another library; use the <> form
     #include "foo.h"                 // A file locally relative to foo.cpp in the same project, use the "" form
-    #include "foo_utils/utils.h"     // A file locally relative to foo.cpp in the same project, use the "" form
+    #include "util/util.h"           // A file locally relative to foo.cpp in the same project, use the "" form
     #include <component_b/bar.h>     // A file in the same project located via a search path, use the <> form
 
 ##### Note
@@ -19648,13 +19648,13 @@ To maximize the portability of `#include` directives across compilers, guidance 
     // good examples
     #include <vector>
     #include <string>
-    #include "foo_utils/utils.h"
+    #include "util/util.h"
     
     // bad examples
-    #include <VECTOR>             // the standard library defines a header identified as <vector>, not <VECTOR>
-    #include <String>             // the standard library defines a header identified as <string>, not <String>
-    #include "Foo_Utils/Utils.H"  // the header file exists on the file system as "foo_utils/utils.h"
-    #include "foo_utils\utils.h"  // may not work if `\u` is interpreted as an escape sequence, or on a system where '\' is not a valid path separator
+    #include <VECTOR>        // the standard library defines a header identified as <vector>, not <VECTOR>
+    #include <String>        // the standard library defines a header identified as <string>, not <String>
+    #include "Util/Util.H"   // the header file exists on the file system as "util/util.h"
+    #include "util\util.h"   // may not work if the implementation interprets `\u` as an escape sequence, or where '\' is not a valid path separator
 
 ##### Enforcement
 
