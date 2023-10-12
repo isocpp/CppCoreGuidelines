@@ -21676,7 +21676,7 @@ To avoid confusing macros with names that obey scope and type rules.
 
 ##### Note
 
-This rule applies to non-macro symbolic constants:
+In particular, this avoids confusing macros with non-macro symbolic constants (see also [Enum.5: Don't use `ALL_CAPS` for enumerators](#Renum-caps))
 
     enum bad { BAD, WORSE, HORRIBLE }; // BAD
 
