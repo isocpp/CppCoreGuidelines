@@ -11095,7 +11095,8 @@ For containers, there is a tradition for using `{...}` for a list of elements an
 
     int x {7.9};   // error: narrowing
     int y = 7.9;   // OK: y becomes 7. Hope for a compiler warning
-    int z = gsl::narrow_cast<int>(7.9);  // OK: you asked for it
+    int z {gsl::narrow_cast<int>(7.9)};    // OK: you asked for it
+    auto zz = gsl::narrow_cast<int>(7.9);  // OK: you asked for it
 
 ##### Note
 
