@@ -3301,7 +3301,7 @@ To compare, if we passed out all values as return values, we would something lik
         return {in, move(s)};
     }
 
-    for (auto p = get_string(cin); p.first; ) {
+    for (auto p = get_string(cin); p.first; p.second = get_string(p.first).second) {
         // do something with p.second
     }
 
