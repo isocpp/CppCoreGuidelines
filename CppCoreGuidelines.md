@@ -19651,10 +19651,10 @@ To maximize the portability of `#include` directives across compilers, guidance 
     #include "util/util.h"
     
     // bad examples
-    #include <VECTOR>        // the standard library defines a header identified as <vector>, not <VECTOR>
-    #include <String>        // the standard library defines a header identified as <string>, not <String>
-    #include "Util/Util.H"   // the header file exists on the file system as "util/util.h"
-    #include "util\util.h"   // may not work if the implementation interprets `\u` as an escape sequence, or where '\' is not a valid path separator
+    #include <VECTOR>        // bad: the standard library defines a header identified as <vector>, not <VECTOR>
+    #include <String>        // bad: the standard library defines a header identified as <string>, not <String>
+    #include "Util/Util.H"   // bad: the header file exists on the file system as "util/util.h"
+    #include "util\util.h"   // bad: may not work if the implementation interprets `\u` as an escape sequence, or where '\' is not a valid path separator
 
 ##### Enforcement
 
