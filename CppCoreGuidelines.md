@@ -21594,7 +21594,7 @@ ISO Standard, use lower case only and digits, separate words with underscores:
 * `vector`
 * `my_map`
 
-Avoid identifiers containing double underscores `__` and names that start with an underscore followed by a capital letter (e.g., `_Throws`).
+Avoid identifier names that contain double underscores `__` or that start with an underscore followed by a capital letter (e.g., `_Throws`).
 Such identifiers are reserved for the C++ implementation.
 
 ##### Example
