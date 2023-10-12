@@ -11378,8 +11378,8 @@ There are workarounds for low-level string manipulation using macros. For exampl
 
     void f()
     {
-        string s1 = stringify<1>(); //ok
-        string s2 = stringify<2>(); //does not compile
+        string s1 = stringify<a>();
+        string s2 = stringify<b>();
         // ...
     }
 
