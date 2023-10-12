@@ -2310,8 +2310,8 @@ So, we write a class
     public:
         enum Opt { from_line = 1 };
         Istream() { }
-        Istream(zstring p) : owned{true}, inp{new ifstream{p}} {}            // read from file
-        Istream(zstring p, Opt) : owned{true}, inp{new istringstream{p}} {}  // read from command line
+        Istream(czstring p) : owned{true}, inp{new ifstream{p}} {}            // read from file
+        Istream(czstring p, Opt) : owned{true}, inp{new istringstream{p}} {}  // read from command line
         ~Istream() { if (owned) delete inp; }
         operator istream&() { return *inp; }
     private:
