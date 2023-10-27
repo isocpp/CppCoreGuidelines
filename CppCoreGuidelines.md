@@ -21275,7 +21275,7 @@ For each GSL type below we state an invariant for that type. That invariant hold
 Summary of GSL components:
 
 * [GSL.view: Views](#SS-views)
-* [GSL.owner](#SS-ownership)
+* [GSL.owner: Ownership pointers](#SS-ownership)
 * [GSL.assert: Assertions](#SS-assertions)
 * [GSL.util: Utilities](#SS-utilities)
 * [GSL.concept: Concepts](#SS-gsl-concepts)
