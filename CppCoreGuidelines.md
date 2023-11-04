@@ -21621,7 +21621,7 @@ The use of `p` for pointer and `x` for a floating-point variable is conventional
 
 ### <a name="Rl-name"></a>NL.8: Use a consistent naming style
 
-**Rationale**: Consistence in naming and naming style increases readability.
+**Rationale**: Consistency in naming and naming style increases readability.
 
 ##### Note
 
@@ -22032,7 +22032,7 @@ Consistency in large code bases.
 
 ##### Note
 
-We are well aware that you could claim the "bad" examples more logical than the ones marked "OK",
+We are well aware that you could claim the "bad" examples are more logical than the ones marked "OK",
 but they also confuse more people, especially novices relying on teaching material using the far more common, conventional OK style.
 
 As ever, remember that the aim of these naming and layout rules is consistency and that aesthetics vary immensely.
