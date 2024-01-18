@@ -3605,15 +3605,19 @@ Using `std::shared_ptr` is the standard way to represent shared ownership. That 
 
 ##### Example
 
-    shared_ptr<const Image> im { read_image(somewhere) };
+    {
+        shared_ptr<const Image> im { read_image(somewhere) };
 
-    std::thread t0 {shade, args0, top_left, im};
-    std::thread t1 {shade, args1, top_right, im};
-    std::thread t2 {shade, args2, bottom_left, im};
-    std::thread t3 {shade, args3, bottom_right, im};
+        std::thread t0 {shade, args0, top_left, im};
+        std::thread t1 {shade, args1, top_right, im};
+        std::thread t2 {shade, args2, bottom_left, im};
+        std::thread t3 {shade, args3, bottom_right, im};
 
-    // detach threads
-    // last thread to finish deletes the image
+        // detaching threads requires extra care (e.g., to join
+        // before main ends), but even if we do detach t0..3 here ...
+    }
+    // ... shared_ptr ensures that eventually the last thread to
+    //     finish safely deletes the image
 
 ##### Note
 
@@ -19662,7 +19666,7 @@ To maximize the portability of `#include` directives across compilers, guidance 
     #include <vector>
     #include <string>
     #include "util/util.h"
-    
+
     // bad examples
     #include <VECTOR>        // bad: the standard library defines a header identified as <vector>, not <VECTOR>
     #include <String>        // bad: the standard library defines a header identified as <string>, not <String>
