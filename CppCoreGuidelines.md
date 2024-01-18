@@ -1,6 +1,6 @@
 # <a name="main"></a>C++ Core Guidelines
 
-April 13, 2023
+October 12, 2023
 
 Editors:
 
@@ -136,7 +136,7 @@ You can sample rules for specific language features:
 [always](#Res-always) --
 [prefer `{}`](#Res-list) --
 [lambdas](#Res-lambda-init) --
-[in-class initializers](#Rc-in-class-initializer) --
+[default member initializers](#Rc-in-class-initializer) --
 [class members](#Rc-initialize) --
 [factory functions](#Rc-factory)
 * lambda expression:
@@ -1928,7 +1928,7 @@ The assumption that the pointer to `char` pointed to a C-style string (a zero-te
 
     // we can assume that p cannot be nullptr
     // we can assume that p points to a zero-terminated array of characters
-    int length(not_null<zstring> p);
+    int length(not_null<czstring> p);
 
 Note: `length()` is, of course, `std::strlen()` in disguise.
 
@@ -2235,9 +2235,9 @@ interface (widget.h)
         void draw(); // public API that will be forwarded to the implementation
         widget(int); // defined in the implementation file
         ~widget();   // defined in the implementation file, where impl is a complete type
-        widget(widget&&); // defined in the implementation file
+        widget(widget&&) noexcept; // defined in the implementation file
         widget(const widget&) = delete;
-        widget& operator=(widget&&); // defined in the implementation file
+        widget& operator=(widget&&) noexcept; // defined in the implementation file
         widget& operator=(const widget&) = delete;
     };
 
@@ -2252,9 +2252,9 @@ implementation (widget.cpp)
     };
     void widget::draw() { pimpl->draw(*this); }
     widget::widget(int n) : pimpl{std::make_unique<impl>(n)} {}
-    widget::widget(widget&&) = default;
+    widget::widget(widget&&) noexcept = default;
     widget::~widget() = default;
-    widget& widget::operator=(widget&&) = default;
+    widget& widget::operator=(widget&&) noexcept = default;
 
 ##### Notes
 
@@ -2310,8 +2310,8 @@ So, we write a class
     public:
         enum Opt { from_line = 1 };
         Istream() { }
-        Istream(zstring p) : owned{true}, inp{new ifstream{p}} {}            // read from file
-        Istream(zstring p, Opt) : owned{true}, inp{new istringstream{p}} {}  // read from command line
+        Istream(czstring p) : owned{true}, inp{new ifstream{p}} {}            // read from file
+        Istream(czstring p, Opt) : owned{true}, inp{new istringstream{p}} {}  // read from command line
         ~Istream() { if (owned) delete inp; }
         operator istream&() { return *inp; }
     private:
@@ -2500,7 +2500,7 @@ If there was a need, we could further templatize `read()` and `print()` on the d
         // check for errors
     };
 
-    auto print(auto& output, const auto& value)
+    void print(auto& output, const auto& value)
     {
         output << value << "\n";
     }
@@ -3142,9 +3142,9 @@ In that case, and only that case, make the parameter `TP&&` where `TP` is a temp
 Usually you forward the entire parameter (or parameter pack, using `...`) exactly once on every static control flow path:
 
     template<class F, class... Args>
-    inline auto invoke(F f, Args&&... args)
+    inline decltype(auto) invoke(F&& f, Args&&... args)
     {
-        return f(forward<Args>(args)...);
+        return forward<F>(f)(forward<Args>(args)...);
     }
 
 ##### Example
@@ -3152,7 +3152,7 @@ Usually you forward the entire parameter (or parameter pack, using `...`) exactl
 Sometimes you may forward a composite parameter piecewise, each subobject once on every static control flow path:
 
     template<class PairLike>
-    inline auto test(PairLike&&... pairlike)
+    inline auto test(PairLike&& pairlike)
     {
         // ...
         f1(some, args, and, forward<PairLike>(pairlike).first);           // forward .first
@@ -3188,7 +3188,7 @@ A `struct` of many (individually cheap-to-move) elements might be in aggregate e
 ##### Exceptions
 
 * For non-concrete types, such as types in an inheritance hierarchy, return the object by `unique_ptr` or `shared_ptr`.
-* If a type is expensive to move (e.g., `array<BigPOD>`), consider allocating it on the free store and return a handle (e.g., `unique_ptr`), or passing it in a reference to non-`const` target object to fill (to be used as an out-parameter).
+* If a type is expensive to move (e.g., `array<BigTrivial>`), consider allocating it on the free store and return a handle (e.g., `unique_ptr`), or passing it in a reference to non-`const` target object to fill (to be used as an out-parameter).
 * To reuse an object that carries capacity (e.g., `std::string`, `std::vector`) across multiple calls to the function in an inner loop: [treat it as an in/out parameter and pass by reference](#Rf-out-multi).
 
 ##### Example
@@ -3301,7 +3301,7 @@ To compare, if we passed out all values as return values, we would something lik
         return {in, move(s)};
     }
 
-    for (auto p = get_string(cin); p.first; ) {
+    for (auto p = get_string(cin); p.first; p.second = get_string(p.first).second) {
         // do something with p.second
     }
 
@@ -4821,7 +4821,7 @@ Constructor rules:
 * [C.45: Don't define a default constructor that only initializes data members; use member initializers instead](#Rc-default)
 * [C.46: By default, declare single-argument constructors `explicit`](#Rc-explicit)
 * [C.47: Define and initialize data members in the order of member declaration](#Rc-order)
-* [C.48: Prefer in-class initializers to member initializers in constructors for constant initializers](#Rc-in-class-initializer)
+* [C.48: Prefer default member initializers to member initializers in constructors for constant initializers](#Rc-in-class-initializer)
 * [C.49: Prefer initialization to assignment in constructors](#Rc-initialize)
 * [C.50: Use a factory function if you need "virtual behavior" during initialization](#Rc-factory)
 * [C.51: Use delegating constructors to represent common actions for all constructors of a class](#Rc-delegating)
@@ -4980,11 +4980,11 @@ Note their argument types:
     class X {
     public:
         // ...
-        virtual ~X() = default;            // destructor (virtual if X is meant to be a base class)
-        X(const X&) = default;             // copy constructor
-        X& operator=(const X&) = default;  // copy assignment
-        X(X&&) = default;                  // move constructor
-        X& operator=(X&&) = default;       // move assignment
+        virtual ~X() = default;               // destructor (virtual if X is meant to be a base class)
+        X(const X&) = default;                // copy constructor
+        X& operator=(const X&) = default;     // copy assignment
+        X(X&&) noexcept = default;            // move constructor
+        X& operator=(X&&) noexcept = default; // move assignment
     };
 
 A minor mistake (such as a misspelling, leaving out a `const`, using `&` instead of `&&`, or leaving out a special function) can lead to errors or warnings.
@@ -5010,7 +5010,7 @@ Users will be surprised if copy/move construction and copy/move assignment do lo
         shared_ptr<Impl> p;
     public:
         Silly(const Silly& a) : p(make_shared<Impl>()) { *p = *a.p; }   // deep copy
-        Silly& operator=(const Silly& a) { p = a.p; }   // shallow copy
+        Silly& operator=(const Silly& a) { p = a.p; return *this; }   // shallow copy
         // ...
     };
 
@@ -5448,7 +5448,7 @@ The C++11 initializer list rule eliminates the need for many constructors. For e
     Rec2 r2 {"Bar"};
 
 The `Rec2` constructor is redundant.
-Also, the default for `int` would be better done as a [member initializer](#Rc-in-class-initializer).
+Also, the default for `int` would be better done as a [default member initializer](#Rc-in-class-initializer).
 
 **See also**: [construct valid object](#Rc-complete) and [constructor throws](#Rc-throw).
 
@@ -5756,11 +5756,11 @@ Setting a `Vector1` to empty after detecting an error is trivial.
 
 * Flag throwing default constructors
 
-### <a name="Rc-default"></a>C.45: Don't define a default constructor that only initializes data members; use in-class member initializers instead
+### <a name="Rc-default"></a>C.45: Don't define a default constructor that only initializes data members; use default member initializers instead
 
 ##### Reason
 
-Using in-class member initializers lets the compiler generate the function for you. The compiler-generated function can be more efficient.
+Using default member initializers lets the compiler generate the function for you. The compiler-generated function can be more efficient.
 
 ##### Example, bad
 
@@ -5848,7 +5848,7 @@ To minimize confusion and errors. That is the order in which the initialization 
 
 **See also**: [Discussion](#Sd-order)
 
-### <a name="Rc-in-class-initializer"></a>C.48: Prefer in-class initializers to member initializers in constructors for constant initializers
+### <a name="Rc-in-class-initializer"></a>C.48: Prefer default member initializers to member initializers in constructors for constant initializers
 
 ##### Reason
 
@@ -5895,7 +5895,7 @@ How would a maintainer know whether `j` was deliberately uninitialized (probably
 ##### Enforcement
 
 * (Simple) Every constructor should initialize every data member (either explicitly, via a delegating ctor call or via default construction).
-* (Simple) Default arguments to constructors suggest an in-class initializer might be more appropriate.
+* (Simple) Default arguments to constructors suggest a default member initializer might be more appropriate.
 
 ### <a name="Rc-initialize"></a>C.49: Prefer initialization to assignment in constructors
 
@@ -6052,7 +6052,7 @@ The common action gets tedious to write and might accidentally not be common.
         // ...
     };
 
-**See also**: If the "repeated action" is a simple initialization, consider [an in-class member initializer](#Rc-in-class-initializer).
+**See also**: If the "repeated action" is a simple initialization, consider [a default member initializer](#Rc-in-class-initializer).
 
 ##### Enforcement
 
@@ -6387,7 +6387,7 @@ If `x = x` changes the value of `x`, people will be surprised and bad errors can
         string s;
         int i;
     public:
-        Foo& operator=(Foo&& a);
+        Foo& operator=(Foo&& a) noexcept;
         // ...
     };
 
@@ -6436,8 +6436,15 @@ A non-throwing move will be used more efficiently by standard-library and langua
     template<typename T>
     class Vector {
     public:
-        Vector(Vector&& a) noexcept :elem{a.elem}, sz{a.sz} { a.sz = 0; a.elem = nullptr; }
-        Vector& operator=(Vector&& a) noexcept { elem = a.elem; sz = a.sz; a.sz = 0; a.elem = nullptr; }
+        Vector(Vector&& a) noexcept :elem{a.elem}, sz{a.sz} { a.elem = nullptr; a.sz = 0; }
+        Vector& operator=(Vector&& a) noexcept {
+            if (&a != this) {
+                delete elem;
+                elem = a.elem; a.elem = nullptr;
+                sz   = a.sz;   a.sz   = 0;
+            }
+            return *this;
+        }
         // ...
     private:
         T* elem;
@@ -6451,8 +6458,8 @@ These operations do not throw.
     template<typename T>
     class Vector2 {
     public:
-        Vector2(Vector2&& a) { *this = a; }             // just use the copy
-        Vector2& operator=(Vector2&& a) { *this = a; }  // just use the copy
+        Vector2(Vector2&& a) noexcept { *this = a; }             // just use the copy
+        Vector2& operator=(Vector2&& a) noexcept { *this = a; }  // just use the copy
         // ...
     private:
         T* elem;
@@ -6555,8 +6562,8 @@ The compiler is more likely to get the default semantics right and you cannot im
 
         Tracer(const Tracer&) = default;
         Tracer& operator=(const Tracer&) = default;
-        Tracer(Tracer&&) = default;
-        Tracer& operator=(Tracer&&) = default;
+        Tracer(Tracer&&) noexcept = default;
+        Tracer& operator=(Tracer&&) noexcept = default;
     };
 
 Because we defined the destructor, we must define the copy and move operations. The `= default` is the best and simplest way of doing that.
@@ -6571,8 +6578,8 @@ Because we defined the destructor, we must define the copy and move operations. 
 
         Tracer2(const Tracer2& a) : message{a.message} {}
         Tracer2& operator=(const Tracer2& a) { message = a.message; return *this; }
-        Tracer2(Tracer2&& a) :message{a.message} {}
-        Tracer2& operator=(Tracer2&& a) { message = a.message; return *this; }
+        Tracer2(Tracer2&& a) noexcept :message{a.message} {}
+        Tracer2& operator=(Tracer2&& a) noexcept { message = a.message; return *this; }
     };
 
 Writing out the bodies of the copy and move operations is verbose, tedious, and error-prone. A compiler does it better.
@@ -6966,9 +6973,9 @@ In particular, `std::vector` and `std::map` provide useful relatively simple mod
         Sorted_vector() = default;
         Sorted_vector(initializer_list<T>);    // initializer-list constructor: sort and store
         Sorted_vector(const Sorted_vector&) = default;
-        Sorted_vector(Sorted_vector&&) = default;
-        Sorted_vector& operator=(const Sorted_vector&) = default;   // copy assignment
-        Sorted_vector& operator=(Sorted_vector&&) = default;        // move assignment
+        Sorted_vector(Sorted_vector&&) noexcept = default;
+        Sorted_vector& operator=(const Sorted_vector&) = default;     // copy assignment
+        Sorted_vector& operator=(Sorted_vector&&) noexcept = default; // move assignment
         ~Sorted_vector() = default;
 
         Sorted_vector(const std::vector<T>& v);   // store and sort
@@ -7537,7 +7544,7 @@ For example, `center` has to be implemented by every class derived from `Shape`.
 
 ##### Example, dual hierarchy
 
-How can we gain the benefit of stable hierarchies from implementation hierarchies and the benefit of implementation reuse from implementation inheritance?
+How can we gain the benefit of stable hierarchies from interface hierarchies and the benefit of implementation reuse from implementation inheritance?
 One popular technique is dual hierarchies.
 There are many ways of implementing the idea of dual hierarchies; here, we use a multiple-inheritance variant.
 
@@ -7668,8 +7675,8 @@ Copying a polymorphic class is discouraged due to the slicing problem, see [C.67
     protected:
          B(const B&) = default;
          B& operator=(const B&) = default;
-         B(B&&) = default;
-         B& operator=(B&&) = default;
+         B(B&&) noexcept = default;
+         B& operator=(B&&) noexcept = default;
         // ...
     };
 
@@ -8202,8 +8209,8 @@ Consider:
         cout << pb2->id(); // "D"
 
 
-        if (pb1->id() == "D") {         // looks innocent
-            D* pd = static_cast<D*>(pb1);
+        if (pb2->id() == "D") {         // looks innocent
+            D* pd = static_cast<D*>(pb2);
             // ...
         }
         // ...
@@ -8866,7 +8873,7 @@ The C++17 `variant` type (found in `<variant>`) does that for you:
     v = 123;        // v holds an int
     int x = get<int>(v);
     v = 123.456;    // v holds a double
-    w = get<double>(v);
+    double w = get<double>(v);
 
 ##### Enforcement
 
@@ -10853,7 +10860,7 @@ The *always initialize* rule is a style rule aimed to improve maintainability as
 
 Here is an example that is often considered to demonstrate the need for a more relaxed rule for initialization
 
-    widget i;    // "widget" a type that's expensive to initialize, possibly a large POD
+    widget i;    // "widget" a type that's expensive to initialize, possibly a large trivial type
     widget j;
 
     if (cond) {  // bad: i and j are initialized "late"
@@ -11088,7 +11095,8 @@ For containers, there is a tradition for using `{...}` for a list of elements an
 
     int x {7.9};   // error: narrowing
     int y = 7.9;   // OK: y becomes 7. Hope for a compiler warning
-    int z = gsl::narrow_cast<int>(7.9);  // OK: you asked for it
+    int z {gsl::narrow_cast<int>(7.9)};    // OK: you asked for it
+    auto zz = gsl::narrow_cast<int>(7.9);  // OK: you asked for it
 
 ##### Note
 
@@ -11360,8 +11368,6 @@ Also, `#` and `##` encourages the definition and use of macros:
 
 There are workarounds for low-level string manipulation using macros. For example:
 
-    string s = "asdf" "lkjh";   // ordinary string literal concatenation
-
     enum E { a, b };
 
     template<int x>
@@ -11373,9 +11379,10 @@ There are workarounds for low-level string manipulation using macros. For exampl
         }
     }
 
-    void f(int x, int y)
+    void f()
     {
-        string sx = stringify<x>();
+        string s1 = stringify<a>();
+        string s2 = stringify<b>();
         // ...
     }
 
@@ -11486,7 +11493,7 @@ Requires messy cast-and-macro-laden code to get working right.
         error(7, "this", "is", "an", "error");  // crash
         const char* is = "is";
         string an = "an";
-        error(7, "this", "is", an, "error"); // crash
+        error(7, "this", is, an, "error"); // crash
     }
 
 **Alternative**: Overloading. Templates. Variadic templates.
@@ -12469,7 +12476,7 @@ Flag naked `new`s and naked `delete`s.
 
 ##### Reason
 
-That's what the language requires and mistakes can lead to resource release errors and/or memory corruption.
+That's what the language requires, and mismatches can lead to resource release errors and/or memory corruption.
 
 ##### Example, bad
 
@@ -12486,8 +12493,8 @@ This example not only violates the [no naked `new` rule](#Res-new) as in the pre
 
 ##### Enforcement
 
-* If the `new` and the `delete` are in the same scope, mistakes can be flagged.
-* If the `new` and the `delete` are in a constructor/destructor pair, mistakes can be flagged.
+* Flag mismatched `new` and `delete` if they are in the same scope.
+* Flag mismatched `new` and `delete` if they are in a constructor/destructor pair.
 
 ### <a name="Res-arr2"></a>ES.62: Don't compare pointers into different arrays
 
@@ -13328,9 +13335,9 @@ whereas `if (p != nullptr)` would be a long-winded workaround.
 
 This rule is especially useful when a declaration is used as a condition
 
-    if (auto pc = dynamic_cast<Circle>(ps)) { ... } // execute if ps points to a kind of Circle, good
+    if (auto pc = dynamic_cast<Circle*>(ps)) { ... } // execute if ps points to a kind of Circle, good
 
-    if (auto pc = dynamic_cast<Circle>(ps); pc != nullptr) { ... } // not recommended
+    if (auto pc = dynamic_cast<Circle*>(ps); pc != nullptr) { ... } // not recommended
 
 ##### Example
 
@@ -13430,8 +13437,8 @@ Unsigned types support bit manipulation without surprises from sign bits.
 
 ##### Note
 
-Unsigned types can also be useful for modulo arithmetic.
-However, if you want modulo arithmetic add
+Unsigned types can also be useful for modular arithmetic.
+However, if you want modular arithmetic add
 comments as necessary noting the reliance on wraparound behavior, as such code
 can be surprising for many programmers.
 
@@ -13445,7 +13452,7 @@ can be surprising for many programmers.
 ##### Reason
 
 Because most arithmetic is assumed to be signed;
-`x - y` yields a negative number when `y > x` except in the rare cases where you really want modulo arithmetic.
+`x - y` yields a negative number when `y > x` except in the rare cases where you really want modular arithmetic.
 
 ##### Example
 
@@ -13475,7 +13482,7 @@ but if you had seen `us - (s + 2)` or `s += 2; ...; us - s`, would you reliably 
 
 ##### Exception
 
-Use unsigned types if you really want modulo arithmetic - add
+Use unsigned types if you really want modular arithmetic - add
 comments as necessary noting the reliance on overflow behavior, as such code
 is going to be surprising for many programmers.
 
@@ -13534,7 +13541,7 @@ Incrementing a value beyond a maximum value can lead to memory corruption and un
 
 ##### Exception
 
-Use unsigned types if you really want modulo arithmetic.
+Use unsigned types if you really want modular arithmetic.
 
 **Alternative**: For critical applications that can afford some overhead, use a range-checked integer and/or floating-point type.
 
@@ -13559,7 +13566,7 @@ Decrementing a value beyond a minimum value can lead to memory corruption and un
 
 ##### Exception
 
-Use unsigned types if you really want modulo arithmetic.
+Use unsigned types if you really want modular arithmetic.
 
 ##### Enforcement
 
@@ -13609,7 +13616,7 @@ This also applies to `%`.
 
 ##### Reason
 
-Choosing `unsigned` implies many changes to the usual behavior of integers, including modulo arithmetic,
+Choosing `unsigned` implies many changes to the usual behavior of integers, including modular arithmetic,
 can suppress warnings related to overflow,
 and opens the door for errors related to signed/unsigned mixes.
 Using `unsigned` doesn't actually eliminate the possibility of negative values.
@@ -13631,7 +13638,7 @@ Consider:
     auto a = area(height, 2);   // if the input is -2 a becomes 4294967292
 
 Remember that `-1` when assigned to an `unsigned int` becomes the largest `unsigned int`.
-Also, since unsigned arithmetic is modulo arithmetic the multiplication didn't overflow, it wrapped around.
+Also, since unsigned arithmetic is modular arithmetic the multiplication didn't overflow, it wrapped around.
 
 ##### Example
 
@@ -16851,19 +16858,28 @@ Prevents accidental or hard-to-notice change of value.
 
     for (int i : c) cout << i << '\n';          // BAD: just reading
 
-##### Exception
+##### Exceptions
+
+A local variable that is returned by value and is cheaper to move than copy should not be declared `const`
+because it can force an unnecessary copy.
+
+    std::vector<int> f(int i)
+    {
+        std::vector<int> v{ i, i, i };  // const not needed
+        return v;
+    }
 
 Function parameters passed by value are rarely mutated, but also rarely declared `const`.
 To avoid confusion and lots of false positives, don't enforce this rule for function parameters.
 
-    void f(const char* const p); // pedantic
     void g(const int i) { ... }  // pedantic
 
 Note that a function parameter is a local variable so changes to it are local.
 
 ##### Enforcement
 
-* Flag non-`const` variables that are not modified (except for parameters to avoid many false positives)
+* Flag non-`const` variables that are not modified (except for parameters to avoid many false positives
+and returned local variables)
 
 ### <a name="Rconst-fct"></a>Con.2: By default, make member functions `const`
 
@@ -17519,7 +17535,7 @@ and should be used only as building blocks for meaningful concepts, rather than 
 
     template<typename T>
     // bad; insufficient
-    concept Addable = requires(T a, T b) { a+b; };
+    concept Addable = requires(T a, T b) { a + b; };
 
     template<Addable N>
     auto algo(const N& a, const N& b) // use two numbers
@@ -17547,7 +17563,7 @@ The ability to specify meaningful semantics is a defining characteristic of a tr
 
     template<typename T>
     // The operators +, -, *, and / for a number are assumed to follow the usual mathematical rules
-    concept Number = requires(T a, T b) { a+b; a-b; a*b; a/b; };
+    concept Number = requires(T a, T b) { a + b; a - b; a * b; a / b; };
 
     template<Number N>
     auto algo(const N& a, const N& b)
@@ -17588,7 +17604,7 @@ This is a specific variant of the general rule that [a concept must make semanti
 
 ##### Example, bad
 
-    template<typename T> concept Subtractable = requires(T a, T b) { a-b; };
+    template<typename T> concept Subtractable = requires(T a, T b) { a - b; };
 
 This makes no semantic sense.
 You need at least `+` to make `-` meaningful and useful.
@@ -17678,10 +17694,10 @@ Specifying semantics is a powerful design tool.
         // The operators +, -, *, and / for a number are assumed to follow the usual mathematical rules
         // axiom(T a, T b) { a + b == b + a; a - a == 0; a * (b + c) == a * b + a * c; /*...*/ }
         concept Number = requires(T a, T b) {
-            {a + b} -> convertible_to<T>;
-            {a - b} -> convertible_to<T>;
-            {a * b} -> convertible_to<T>;
-            {a / b} -> convertible_to<T>;
+            { a + b } -> convertible_to<T>;
+            { a - b } -> convertible_to<T>;
+            { a * b } -> convertible_to<T>;
+            { a / b } -> convertible_to<T>;
         };
 
 ##### Note
@@ -18432,21 +18448,22 @@ Specialization offers a powerful mechanism for providing alternative implementat
 
 This is a simplified version of `std::copy` (ignoring the possibility of non-contiguous sequences)
 
-    struct pod_tag {};
-    struct non_pod_tag {};
+    struct trivially_copyable_tag {};
+    struct non_trivially_copyable_tag {};
 
-    template<class T> struct copy_trait { using tag = non_pod_tag; };   // T is not "plain old data"
-
-    template<> struct copy_trait<int> { using tag = pod_tag; };         // int is "plain old data"
+    // T is not trivially copyable
+    template<class T> struct copy_trait { using tag = non_trivially_copyable_tag; };
+    // int is trivially copyable
+    template<> struct copy_trait<int> { using tag = trivially_copyable_tag; };
 
     template<class Iter>
-    Out copy_helper(Iter first, Iter last, Iter out, pod_tag)
+    Out copy_helper(Iter first, Iter last, Iter out, trivially_copyable_tag)
     {
         // use memmove
     }
 
     template<class Iter>
-    Out copy_helper(Iter first, Iter last, Iter out, non_pod_tag)
+    Out copy_helper(Iter first, Iter last, Iter out, non_trivially_copyable_tag)
     {
         // use loop calling copy constructors
     }
@@ -18454,7 +18471,8 @@ This is a simplified version of `std::copy` (ignoring the possibility of non-con
     template<class Iter>
     Out copy(Iter first, Iter last, Iter out)
     {
-        return copy_helper(first, last, out, typename copy_trait<Value_type<Iter>>::tag{})
+        using tag_type = typename copy_trait<std::iter_value_t<Iter>>;
+        return copy_helper(first, last, out, tag_type{})
     }
 
     void use(vector<int>& vi, vector<int>& vi2, vector<string>& vs, vector<string>& vs2)
@@ -18467,10 +18485,10 @@ This is a general and powerful technique for compile-time algorithm selection.
 
 ##### Note
 
-When `concept`s become widely available such alternatives can be distinguished directly:
+With C++20 constraints, such alternatives can be distinguished directly:
 
     template<class Iter>
-        requires Pod<Value_type<Iter>>
+        requires std::is_trivially_copyable_v<std::iter_value_t<Iter>>
     Out copy_helper(In, first, In last, Out out)
     {
         // use memmove
@@ -18966,7 +18984,7 @@ Write your own "advanced TMP support" only if you really have to.
 
 ## <a name="SS-temp-other"></a>Other template rules
 
-### <a name="Rt-name"></a>T.140: If an operation can be reused, give it a name](#Rt-name
+### <a name="Rt-name"></a>T.140: If an operation can be reused, give it a name
 
 See [F.10](#Rf-name)
 
@@ -19203,6 +19221,7 @@ Source file rule summary:
 * [SF.10: Avoid dependencies on implicitly `#include`d names](#Rs-implicit)
 * [SF.11: Header files should be self-contained](#Rs-contained)
 * [SF.12: Prefer the quoted form of `#include` for files relative to the including file and the angle bracket form everywhere else](#Rs-incform)
+* [SF.13: Use portable header identifiers in `#include` statements](#Rs-portable-header-id)
 
 * [SF.20: Use `namespace`s to express logical structure](#Rs-namespace)
 * [SF.21: Don't use an unnamed (anonymous) namespace in a header](#Rs-unnamed)
@@ -19613,7 +19632,7 @@ Nevertheless, the guidance is to use the quoted form for including files that ex
     #include <string>                // From the standard library, requires the <> form
     #include <some_library/common.h> // A file that is not locally relative, included from another library; use the <> form
     #include "foo.h"                 // A file locally relative to foo.cpp in the same project, use the "" form
-    #include "foo_utils/utils.h"     // A file locally relative to foo.cpp in the same project, use the "" form
+    #include "util/util.h"           // A file locally relative to foo.cpp in the same project, use the "" form
     #include <component_b/bar.h>     // A file in the same project located via a search path, use the <> form
 
 ##### Note
@@ -19625,6 +19644,34 @@ Library creators should put their headers in a folder and have clients include t
 ##### Enforcement
 
 A test should identify whether headers referenced via `""` could be referenced with `<>`.
+
+### <a name="Rs-portable-header-id"></a>SF.13: Use portable header identifiers in `#include` statements
+
+##### Reason
+
+The [standard](http://eel.is/c++draft/cpp.include) does not specify how compilers uniquely locate headers from an identifier in an `#include` directive, nor does it specify what constitutes uniqueness. For example, whether the implementation considers the identifiers to be case-sensitive, or whether the identifiers are file system paths to a header file, and if so, how a hierarchical file system path is delimited.
+
+To maximize the portability of `#include` directives across compilers, guidance is to:
+
+* use case-sensitivity for the header identifier, matching how the header is defined by the standard, specification, implementation, or file that provides the header.
+* when the header identifier is a hierarchical file path, use forward-slash `/` to delimit path components as this is the most widely-accepted path-delimiting character.
+
+##### Example
+
+    // good examples
+    #include <vector>
+    #include <string>
+    #include "util/util.h"
+    
+    // bad examples
+    #include <VECTOR>        // bad: the standard library defines a header identified as <vector>, not <VECTOR>
+    #include <String>        // bad: the standard library defines a header identified as <string>, not <String>
+    #include "Util/Util.H"   // bad: the header file exists on the file system as "util/util.h"
+    #include "util\util.h"   // bad: may not work if the implementation interprets `\u` as an escape sequence, or where '\' is not a valid path separator
+
+##### Enforcement
+
+It is only possible to enforce on implementations where header identifiers are case-sensitive and which only support `/` as a file path delimiter.
 
 ### <a name="Rs-namespace"></a>SF.20: Use `namespace`s to express logical structure
 
@@ -21228,7 +21275,7 @@ For each GSL type below we state an invariant for that type. That invariant hold
 Summary of GSL components:
 
 * [GSL.view: Views](#SS-views)
-* [GSL.owner](#SS-ownership)
+* [GSL.owner: Ownership pointers](#SS-ownership)
 * [GSL.assert: Assertions](#SS-assertions)
 * [GSL.util: Utilities](#SS-utilities)
 * [GSL.concept: Concepts](#SS-gsl-concepts)
@@ -21574,7 +21621,7 @@ The use of `p` for pointer and `x` for a floating-point variable is conventional
 
 ### <a name="Rl-name"></a>NL.8: Use a consistent naming style
 
-**Rationale**: Consistence in naming and naming style increases readability.
+**Rationale**: Consistency in naming and naming style increases readability.
 
 ##### Note
 
@@ -21589,7 +21636,8 @@ ISO Standard, use lower case only and digits, separate words with underscores:
 * `vector`
 * `my_map`
 
-Avoid double underscores `__`.
+Avoid identifier names that contain double underscores `__` or that start with an underscore followed by a capital letter (e.g., `_Throws`).
+Such identifiers are reserved for the C++ implementation.
 
 ##### Example
 
@@ -21638,7 +21686,7 @@ To avoid confusing macros with names that obey scope and type rules.
 
 ##### Note
 
-This rule applies to non-macro symbolic constants:
+In particular, this avoids confusing macros with non-macro symbolic constants (see also [Enum.5: Don't use `ALL_CAPS` for enumerators](#Renum-caps))
 
     enum bad { BAD, WORSE, HORRIBLE }; // BAD
 
@@ -21984,7 +22032,7 @@ Consistency in large code bases.
 
 ##### Note
 
-We are well aware that you could claim the "bad" examples more logical than the ones marked "OK",
+We are well aware that you could claim the "bad" examples are more logical than the ones marked "OK",
 but they also confuse more people, especially novices relying on teaching material using the far more common, conventional OK style.
 
 As ever, remember that the aim of these naming and layout rules is consistency and that aesthetics vary immensely.

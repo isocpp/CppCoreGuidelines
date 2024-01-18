@@ -10,7 +10,7 @@ import shutil
 import io
 import argparse
 
-import re, cgi
+import re
 TAG_REGEX = re.compile(r'(<!--.*?-->|<[^>]*>)')
 NAMED_A_TAG_REGEX = re.compile(r'.*name ?= ?"([^"]*)"')
 
