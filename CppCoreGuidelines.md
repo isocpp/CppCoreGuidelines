@@ -136,7 +136,7 @@ You can sample rules for specific language features:
 [always](#Res-always) --
 [prefer `{}`](#Res-list) --
 [lambdas](#Res-lambda-init) --
-[in-class initializers](#Rc-in-class-initializer) --
+[default member initializers](#Rc-in-class-initializer) --
 [class members](#Rc-initialize) --
 [factory functions](#Rc-factory)
 * lambda expression:
@@ -4821,7 +4821,7 @@ Constructor rules:
 * [C.45: Don't define a default constructor that only initializes data members; use member initializers instead](#Rc-default)
 * [C.46: By default, declare single-argument constructors `explicit`](#Rc-explicit)
 * [C.47: Define and initialize member variables in the order of member declaration](#Rc-order)
-* [C.48: Prefer in-class initializers to member initializers in constructors for constant initializers](#Rc-in-class-initializer)
+* [C.48: Prefer default member initializers to member initializers in constructors for constant initializers](#Rc-in-class-initializer)
 * [C.49: Prefer initialization to assignment in constructors](#Rc-initialize)
 * [C.50: Use a factory function if you need "virtual behavior" during initialization](#Rc-factory)
 * [C.51: Use delegating constructors to represent common actions for all constructors of a class](#Rc-delegating)
@@ -5448,7 +5448,7 @@ The C++11 initializer list rule eliminates the need for many constructors. For e
     Rec2 r2 {"Bar"};
 
 The `Rec2` constructor is redundant.
-Also, the default for `int` would be better done as a [member initializer](#Rc-in-class-initializer).
+Also, the default for `int` would be better done as a [default member initializer](#Rc-in-class-initializer).
 
 **See also**: [construct valid object](#Rc-complete) and [constructor throws](#Rc-throw).
 
@@ -5756,11 +5756,11 @@ Setting a `Vector1` to empty after detecting an error is trivial.
 
 * Flag throwing default constructors
 
-### <a name="Rc-default"></a>C.45: Don't define a default constructor that only initializes data members; use in-class member initializers instead
+### <a name="Rc-default"></a>C.45: Don't define a default constructor that only initializes data members; use default member initializers instead
 
 ##### Reason
 
-Using in-class member initializers lets the compiler generate the function for you. The compiler-generated function can be more efficient.
+Using default member initializers lets the compiler generate the function for you. The compiler-generated function can be more efficient.
 
 ##### Example, bad
 
@@ -5848,7 +5848,7 @@ To minimize confusion and errors. That is the order in which the initialization 
 
 **See also**: [Discussion](#Sd-order)
 
-### <a name="Rc-in-class-initializer"></a>C.48: Prefer in-class initializers to member initializers in constructors for constant initializers
+### <a name="Rc-in-class-initializer"></a>C.48: Prefer default member initializers to member initializers in constructors for constant initializers
 
 ##### Reason
 
@@ -5895,7 +5895,7 @@ How would a maintainer know whether `j` was deliberately uninitialized (probably
 ##### Enforcement
 
 * (Simple) Every constructor should initialize every member variable (either explicitly, via a delegating ctor call or via default construction).
-* (Simple) Default arguments to constructors suggest an in-class initializer might be more appropriate.
+* (Simple) Default arguments to constructors suggest a default member initializer might be more appropriate.
 
 ### <a name="Rc-initialize"></a>C.49: Prefer initialization to assignment in constructors
 
@@ -6052,7 +6052,7 @@ The common action gets tedious to write and might accidentally not be common.
         // ...
     };
 
-**See also**: If the "repeated action" is a simple initialization, consider [an in-class member initializer](#Rc-in-class-initializer).
+**See also**: If the "repeated action" is a simple initialization, consider [a default member initializer](#Rc-in-class-initializer).
 
 ##### Enforcement
 
