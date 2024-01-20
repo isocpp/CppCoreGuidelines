@@ -9533,7 +9533,7 @@ Returning a (raw) pointer imposes a lifetime management uncertainty on the calle
         delete p;
     }
 
-In addition to suffering from the problem from [leak](#???), this adds a spurious allocation and deallocation operation, and is needlessly verbose. If Gadget is cheap to move out of a function (i.e., is small or has an efficient move operation), just return it "by value" (see ["out" return values](#Rf-out)):
+In addition to suffering from the problem from [leak](#Rp-leak), this adds a spurious allocation and deallocation operation, and is needlessly verbose. If Gadget is cheap to move out of a function (i.e., is small or has an efficient move operation), just return it "by value" (see ["out" return values](#Rf-out)):
 
     Gadget make_gadget(int n)
     {
