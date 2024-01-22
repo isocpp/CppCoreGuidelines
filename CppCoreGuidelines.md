@@ -3250,7 +3250,7 @@ Otherwise, a `tuple` is useful in variadic templates.
 
     // GOOD: self-documenting
     struct f_result { int status; string data; };
-    
+
     f_result f(const string& input)
     {
         // ...
@@ -3618,8 +3618,8 @@ Using `std::shared_ptr` is the standard way to represent shared ownership. That 
         std::thread t2 {shade, args2, bottom_left, im};
         std::thread t3 {shade, args3, bottom_right, im};
 
-        // detaching threads requires extra care (e.g., to join
-        // before main ends), but even if we do detach t0..3 here ...
+        // detaching threads requires extra care (e.g., to join before
+        // main ends), but even if we do detach the four threads here ...
     }
     // ... shared_ptr ensures that eventually the last thread to
     //     finish safely deletes the image
