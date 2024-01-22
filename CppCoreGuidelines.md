@@ -3316,6 +3316,26 @@ However, we prefer to be explicit, rather than subtle.
 
 ##### Note
 
+In most cases, it is useful to return a specific, user-defined type.
+For example:
+
+    struct Distance {
+        int value;
+        int unit = 1;   // 1 means meters
+    };
+
+    Distance d1 = measure(obj1);        // access d1.value and d1.unit
+    auto d2 = measure(obj2);            // access d2.value and d2.unit
+    auto [value, unit] = measure(obj3); // access value and unit; somewhat redundant
+                                        // to people who know measure()
+    auto [x, y] = measure(obj4);        // don't; it's likely to be confusing
+
+The overly generic `pair` and `tuple` should be used only when the value returned represents independent entities rather than an abstraction.
+
+Another option is to use `optional<T>` or `expected<T, error_code>`, rather than `pair` or `tuple`.
+
+##### Note
+
 When the object to be returned is initialized from local variables that are expensive to copy,
 explicit `move` may be helpful to avoid copying:
 
@@ -3336,25 +3356,6 @@ Alternatively,
     }
 
 Note this is different from the `return move(...)` anti-pattern from [ES.56](#Res-move)
-
-##### Note
-
-For `struct`s where one member represents the success of an operation, adding an explicit conversion to `bool` is helpful:
-
-    struct parse_result {
-        bool success;
-        int value;
-        explicit operator bool() const { return success; }
-    };
-
-    parse_result parse_int(string_view s) { /* ... */ }
-
-    void f()
-    {
-        if (parse_result result = parse_int("123")) { use(result.value); }
-    }
-
-In most cases, C++17 `optional` and C++23 `expected` can replace this pattern.
 
 ##### Enforcement
 
