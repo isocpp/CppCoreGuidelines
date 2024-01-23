@@ -10892,7 +10892,7 @@ Assuming that there is a logical connection between `i` and `j`, that connection
 If the `make_related_widgets` function is otherwise redundant,
 we can eliminate it by using a lambda [ES.28](#Res-lambda-init):
 
-    auto [i, j] = [x] { return (x) ? pair{f1(), f2()} : pair{f3(), f4()} }();    // C++17
+    auto [i, j] = std::invoke([x] { return (x) ? pair{f1(), f2()} : pair{f3(), f4()} });    // C++17
 
 Using a value representing "uninitialized" is a symptom of a problem and not a solution:
 
@@ -11317,13 +11317,13 @@ It nicely encapsulates local initialization, including cleaning up scratch varia
 
 ##### Example, good
 
-    const widget x = [&] {
+    const widget x = std::invoke([&] {
         widget val;                                // assume that widget has a default constructor
         for (auto i = 2; i <= N; ++i) {            // this could be some
             val += some_obj.do_something_with(i);  // arbitrarily long code
         }                                          // needed to initialize x
         return val;
-    }();
+    });
 
 If at all possible, reduce the conditions to a simple set of alternatives (e.g., an `enum`) and don't mix up selection and initialization.
 
