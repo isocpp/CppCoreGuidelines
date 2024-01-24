@@ -3304,7 +3304,7 @@ To compare, if we passed out all values as return values, we would something lik
         return { in, move(s) };
     }
 
-    for (auto [in, s] = get_string(cin); in; s = get_string(stream).s) {
+    for (auto [in, s] = get_string(cin); in; s = get_string(in).s) {
         // do something with string
     }
 
