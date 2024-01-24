@@ -3257,7 +3257,7 @@ Otherwise, a `tuple` is useful in variadic templates.
         return {status, something()};
     }
 
-C++98's standard library somewhat used this style by returning `pair` in some functions.
+C++98's standard library used this style in places, by returning `pair` in some functions.
 For example, given a `set<string> my_set`, consider:
 
     // C++98
