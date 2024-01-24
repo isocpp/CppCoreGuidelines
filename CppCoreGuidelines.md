@@ -3333,6 +3333,7 @@ For example:
 The overly generic `pair` and `tuple` should be used only when the value returned represents independent entities rather than an abstraction.
 
 Another option is to use `optional<T>` or `expected<T, error_code>`, rather than `pair` or `tuple`.
+When used appropriately these types convey more information about what the members mean than `pair<T, bool>` or `pair<T, error_code>` do.
 
 ##### Note
 
