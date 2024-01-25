@@ -2358,7 +2358,7 @@ Parameter passing expression rules:
 * [F.18: For "will-move-from" parameters, pass by `X&&` and `std::move` the parameter](#Rf-consume)
 * [F.19: For "forward" parameters, pass by `TP&&` and only `std::forward` the parameter](#Rf-forward)
 * [F.20: For "out" output values, prefer return values to output parameters](#Rf-out)
-* [F.21: To return multiple "out" values, prefer returning a struct or tuple](#Rf-out-multi)
+* [F.21: To return multiple "out" values, prefer returning a struct](#Rf-out-multi)
 * [F.60: Prefer `T*` over `T&` when "no argument" is a valid option](#Rf-ptr-ref)
 
 Parameter passing semantic rules:
@@ -3228,13 +3228,15 @@ The return value optimization doesn't handle the assignment case, but the move a
 
 * Flag reference to non-`const` parameters that are not read before being written to and are a type that could be cheaply returned; they should be "out" return values.
 
-### <a name="Rf-out-multi"></a>F.21: To return multiple "out" values, prefer returning a struct or tuple
+### <a name="Rf-out-multi"></a>F.21: To return multiple "out" values, prefer returning a struct
 
 ##### Reason
 
 A return value is self-documenting as an "output-only" value.
-Note that C++ does have multiple return values, by convention of using a `tuple` (including `pair`), possibly with the extra convenience of `tie` or structured bindings (C++17) at the call site.
-Prefer using a named struct where there are semantics to the returned value. Otherwise, a nameless `tuple` is useful in generic code.
+Note that C++ does have multiple return values, by convention of using tuple-like types (`struct`, `array`, `tuple`, etc.),
+possibly with the extra convenience of structured bindings (C++17) at the call site.
+Prefer using a named `struct` if possible.
+Otherwise, a `tuple` is useful in variadic templates.
 
 ##### Example
 
@@ -3247,30 +3249,29 @@ Prefer using a named struct where there are semantics to the returned value. Oth
     }
 
     // GOOD: self-documenting
-    tuple<int, string> f(const string& input)
+    struct f_result { int status; string data; };
+
+    f_result f(const string& input)
     {
         // ...
         return {status, something()};
     }
 
-C++98's standard library already used this style, because a `pair` is like a two-element `tuple`.
+C++98's standard library used this style in places, by returning `pair` in some functions.
 For example, given a `set<string> my_set`, consider:
 
     // C++98
-    result = my_set.insert("Hello");
-    if (result.second) do_something_with(result.first);    // workaround
+    pair<set::iterator, bool> result = my_set.insert("Hello");
+    if (result.second)
+        do_something_with(result.first);    // workaround
 
-With C++11 we can write this, putting the results directly in existing local variables:
+With C++17 we are able to use "structured bindings" to give each member a name:
 
-    Sometype iter;                                // default initialize if we haven't already
-    Someothertype success;                        // used these variables for some other purpose
+    if (auto [ iter, success ] = my_set.insert("Hello"); success)
+        do_something_with(iter);
 
-    tie(iter, success) = my_set.insert("Hello");   // normal return value
-    if (success) do_something_with(iter);
-
-With C++17 we are able to use "structured bindings" to declare and initialize the multiple variables:
-
-    if (auto [ iter, success ] = my_set.insert("Hello"); success) do_something_with(iter);
+A `struct` with meaningful names is more common in modern C++.
+See for example `ranges::min_max_result`, `from_chars_result`, and others.
 
 ##### Exception
 
@@ -3292,17 +3293,19 @@ By reusing `s` (passed by reference), we allocate new memory only when we need t
 This technique is sometimes called the "caller-allocated out" pattern and is particularly useful for types,
 such as `string` and `vector`, that needs to do free store allocations.
 
-To compare, if we passed out all values as return values, we would something like this:
+To compare, if we passed out all values as return values, we would write something like this:
 
-    pair<istream&, string> get_string(istream& in)  // not recommended
+    struct get_string_result { istream& in; string s; };
+
+    get_string_result get_string(istream& in)  // not recommended
     {
         string s;
         in >> s;
-        return {in, move(s)};
+        return { in, move(s) };
     }
 
-    for (auto p = get_string(cin); p.first; p.second = get_string(p.first).second) {
-        // do something with p.second
+    for (auto [in, s] = get_string(cin); in; s = get_string(in).s) {
+        // do something with string
     }
 
 We consider that significantly less elegant with significantly less performance.
@@ -3313,7 +3316,7 @@ However, we prefer to be explicit, rather than subtle.
 
 ##### Note
 
-In many cases, it can be useful to return a specific, user-defined type.
+In most cases, it is useful to return a specific, user-defined type.
 For example:
 
     struct Distance {
@@ -3327,13 +3330,14 @@ For example:
                                         // to people who know measure()
     auto [x, y] = measure(obj4);        // don't; it's likely to be confusing
 
-The overly-generic `pair` and `tuple` should be used only when the value returned represents independent entities rather than an abstraction.
+The overly generic `pair` and `tuple` should be used only when the value returned represents independent entities rather than an abstraction.
 
-Another example, use a specific type along the lines of `variant<T, error_code>`, rather than using the generic `tuple`.
+Another option is to use `optional<T>` or `expected<T, error_code>`, rather than `pair` or `tuple`.
+When used appropriately these types convey more information about what the members mean than `pair<T, bool>` or `pair<T, error_code>` do.
 
 ##### Note
 
-When the tuple to be returned is initialized from local variables that are expensive to copy,
+When the object to be returned is initialized from local variables that are expensive to copy,
 explicit `move` may be helpful to avoid copying:
 
     pair<LargeObject, LargeObject> f(const string& input)
@@ -3358,6 +3362,8 @@ Note this is different from the `return move(...)` anti-pattern from [ES.56](#Re
 
 * Output parameters should be replaced by return values.
   An output parameter is one that the function writes to, invokes a non-`const` member function, or passes on as a non-`const`.
+* `pair` or `tuple` return types should be replaced by `struct`, if possible.
+  In variadic templates, `tuple` is often unavoidable.
 
 ### <a name="Rf-ptr-ref"></a>F.60: Prefer `T*` over `T&` when "no argument" is a valid option
 
