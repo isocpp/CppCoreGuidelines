@@ -136,7 +136,7 @@ You can sample rules for specific language features:
 [always](#Res-always) --
 [prefer `{}`](#Res-list) --
 [lambdas](#Res-lambda-init) --
-[in-class initializers](#Rc-in-class-initializer) --
+[default member initializers](#Rc-in-class-initializer) --
 [class members](#Rc-initialize) --
 [factory functions](#Rc-factory)
 * lambda expression:
@@ -482,7 +482,7 @@ Philosophical rules are generally not mechanically checkable.
 However, individual rules reflecting these philosophical themes are.
 Without a philosophical basis, the more concrete/specific/checkable rules lack rationale.
 
-### <a name="Rp-direct"></a>P.1: Express ideas directly in code
+### <a name="p1"></a><a name="Rp-direct"></a>P.1: Express ideas directly in code
 
 ##### Reason
 
@@ -563,7 +563,7 @@ Very hard in general.
 * flag uses of casts (casts neuter the type system)
 * detect code that mimics the standard library (hard)
 
-### <a name="Rp-Cplusplus"></a>P.2: Write in ISO Standard C++
+### <a name="p2"></a><a name="Rp-Cplusplus"></a>P.2: Write in ISO Standard C++
 
 ##### Reason
 
@@ -595,7 +595,7 @@ In such cases, control their (dis)use with an extension of these Coding Guidelin
 
 Use an up-to-date C++ compiler (currently C++20 or C++17) with a set of options that do not accept extensions.
 
-### <a name="Rp-what"></a>P.3: Express intent
+### <a name="p3"></a><a name="Rp-what"></a>P.3: Express intent
 
 ##### Reason
 
@@ -661,7 +661,7 @@ Look for common patterns for which there are better alternatives
 
 There is a huge scope for cleverness and semi-automated program transformation.
 
-### <a name="Rp-typesafe"></a>P.4: Ideally, a program should be statically type safe
+### <a name="p4"></a><a name="Rp-typesafe"></a>P.4: Ideally, a program should be statically type safe
 
 ##### Reason
 
@@ -691,7 +691,7 @@ For example:
 * range errors -- use `span`
 * narrowing conversions -- minimize their use and use `narrow` or `narrow_cast` (from the GSL) where they are necessary
 
-### <a name="Rp-compile-time"></a>P.5: Prefer compile-time checking to run-time checking
+### <a name="p5"></a><a name="Rp-compile-time"></a>P.5: Prefer compile-time checking to run-time checking
 
 ##### Reason
 
@@ -735,7 +735,7 @@ better
 * Look for pointer arguments.
 * Look for run-time checks for range violations.
 
-### <a name="Rp-run-time"></a>P.6: What cannot be checked at compile time should be checkable at run time
+### <a name="p6"></a><a name="Rp-run-time"></a>P.6: What cannot be checked at compile time should be checkable at run time
 
 ##### Reason
 
@@ -842,7 +842,7 @@ How do we transfer both ownership and all information needed for validating use?
 * Flag (pointer, count)-style interfaces (this will flag a lot of examples that can't be fixed for compatibility reasons)
 * ???
 
-### <a name="Rp-early"></a>P.7: Catch run-time errors early
+### <a name="p7"></a><a name="Rp-early"></a>P.7: Catch run-time errors early
 
 ##### Reason
 
@@ -959,7 +959,7 @@ The physical law for a jet (`e * e < x * x + y * y + z * z`) is not an invariant
 * Look for structured data (objects of classes with invariants) being converted into strings
 * ???
 
-### <a name="Rp-leak"></a>P.8: Don't leak any resources
+### <a name="p8"></a><a name="Rp-leak"></a>P.8: Don't leak any resources
 
 ##### Reason
 
@@ -1012,7 +1012,7 @@ Combine this with enforcement of [the type and bounds profiles](#SS-force) and y
 * Look for naked `new` and `delete`
 * Look for known resource allocating functions returning raw pointers (such as `fopen`, `malloc`, and `strdup`)
 
-### <a name="Rp-waste"></a>P.9: Don't waste time or space
+### <a name="p9"></a><a name="Rp-waste"></a>P.9: Don't waste time or space
 
 ##### Reason
 
@@ -1088,7 +1088,7 @@ Many more specific rules aim at the overall goals of simplicity and elimination 
 * Flag an unused return value from a user-defined non-defaulted postfix `operator++` or `operator--` function. Prefer using the prefix form instead. (Note: "User-defined non-defaulted" is intended to reduce noise. Review this enforcement if it's still too noisy in practice.)
 
 
-### <a name="Rp-mutable"></a>P.10: Prefer immutable data to mutable data
+### <a name="p10"></a><a name="Rp-mutable"></a>P.10: Prefer immutable data to mutable data
 
 ##### Reason
 
@@ -1099,7 +1099,7 @@ You can't have a data race on a constant.
 
 See [Con: Constants and immutability](#S-const)
 
-### <a name="Rp-library"></a>P.11: Encapsulate messy constructs, rather than spreading through the code
+### <a name="p11"></a><a name="Rp-library"></a>P.11: Encapsulate messy constructs, rather than spreading through the code
 
 ##### Reason
 
@@ -1149,7 +1149,7 @@ This is a variant of the [subset of superset principle](#R0) that underlies thes
 * Look for "messy code" such as complex pointer manipulation and casting outside the implementation of abstractions.
 
 
-### <a name="Rp-tools"></a>P.12: Use supporting tools as appropriate
+### <a name="p12"></a><a name="Rp-tools"></a>P.12: Use supporting tools as appropriate
 
 ##### Reason
 
@@ -1178,7 +1178,7 @@ Be careful not to become dependent on over-elaborate or over-specialized tool ch
 Those can make your otherwise portable code non-portable.
 
 
-### <a name="Rp-lib"></a>P.13: Use support libraries as appropriate
+### <a name="p13"></a><a name="Rp-lib"></a>P.13: Use support libraries as appropriate
 
 ##### Reason
 
@@ -2358,7 +2358,7 @@ Parameter passing expression rules:
 * [F.18: For "will-move-from" parameters, pass by `X&&` and `std::move` the parameter](#Rf-consume)
 * [F.19: For "forward" parameters, pass by `TP&&` and only `std::forward` the parameter](#Rf-forward)
 * [F.20: For "out" output values, prefer return values to output parameters](#Rf-out)
-* [F.21: To return multiple "out" values, prefer returning a struct or tuple](#Rf-out-multi)
+* [F.21: To return multiple "out" values, prefer returning a struct](#Rf-out-multi)
 * [F.60: Prefer `T*` over `T&` when "no argument" is a valid option](#Rf-ptr-ref)
 
 Parameter passing semantic rules:
@@ -3142,9 +3142,9 @@ In that case, and only that case, make the parameter `TP&&` where `TP` is a temp
 Usually you forward the entire parameter (or parameter pack, using `...`) exactly once on every static control flow path:
 
     template<class F, class... Args>
-    inline auto invoke(F f, Args&&... args)
+    inline decltype(auto) invoke(F&& f, Args&&... args)
     {
-        return f(forward<Args>(args)...);
+        return forward<F>(f)(forward<Args>(args)...);
     }
 
 ##### Example
@@ -3228,13 +3228,15 @@ The return value optimization doesn't handle the assignment case, but the move a
 
 * Flag reference to non-`const` parameters that are not read before being written to and are a type that could be cheaply returned; they should be "out" return values.
 
-### <a name="Rf-out-multi"></a>F.21: To return multiple "out" values, prefer returning a struct or tuple
+### <a name="Rf-out-multi"></a>F.21: To return multiple "out" values, prefer returning a struct
 
 ##### Reason
 
 A return value is self-documenting as an "output-only" value.
-Note that C++ does have multiple return values, by convention of using a `tuple` (including `pair`), possibly with the extra convenience of `tie` or structured bindings (C++17) at the call site.
-Prefer using a named struct where there are semantics to the returned value. Otherwise, a nameless `tuple` is useful in generic code.
+Note that C++ does have multiple return values, by convention of using tuple-like types (`struct`, `array`, `tuple`, etc.),
+possibly with the extra convenience of structured bindings (C++17) at the call site.
+Prefer using a named `struct` if possible.
+Otherwise, a `tuple` is useful in variadic templates.
 
 ##### Example
 
@@ -3247,30 +3249,29 @@ Prefer using a named struct where there are semantics to the returned value. Oth
     }
 
     // GOOD: self-documenting
-    tuple<int, string> f(const string& input)
+    struct f_result { int status; string data; };
+
+    f_result f(const string& input)
     {
         // ...
         return {status, something()};
     }
 
-C++98's standard library already used this style, because a `pair` is like a two-element `tuple`.
+C++98's standard library used this style in places, by returning `pair` in some functions.
 For example, given a `set<string> my_set`, consider:
 
     // C++98
-    result = my_set.insert("Hello");
-    if (result.second) do_something_with(result.first);    // workaround
+    pair<set::iterator, bool> result = my_set.insert("Hello");
+    if (result.second)
+        do_something_with(result.first);    // workaround
 
-With C++11 we can write this, putting the results directly in existing local variables:
+With C++17 we are able to use "structured bindings" to give each member a name:
 
-    Sometype iter;                                // default initialize if we haven't already
-    Someothertype success;                        // used these variables for some other purpose
+    if (auto [ iter, success ] = my_set.insert("Hello"); success)
+        do_something_with(iter);
 
-    tie(iter, success) = my_set.insert("Hello");   // normal return value
-    if (success) do_something_with(iter);
-
-With C++17 we are able to use "structured bindings" to declare and initialize the multiple variables:
-
-    if (auto [ iter, success ] = my_set.insert("Hello"); success) do_something_with(iter);
+A `struct` with meaningful names is more common in modern C++.
+See for example `ranges::min_max_result`, `from_chars_result`, and others.
 
 ##### Exception
 
@@ -3292,17 +3293,19 @@ By reusing `s` (passed by reference), we allocate new memory only when we need t
 This technique is sometimes called the "caller-allocated out" pattern and is particularly useful for types,
 such as `string` and `vector`, that needs to do free store allocations.
 
-To compare, if we passed out all values as return values, we would something like this:
+To compare, if we passed out all values as return values, we would write something like this:
 
-    pair<istream&, string> get_string(istream& in)  // not recommended
+    struct get_string_result { istream& in; string s; };
+
+    get_string_result get_string(istream& in)  // not recommended
     {
         string s;
         in >> s;
-        return {in, move(s)};
+        return { in, move(s) };
     }
 
-    for (auto p = get_string(cin); p.first; p.second = get_string(p.first).second) {
-        // do something with p.second
+    for (auto [in, s] = get_string(cin); in; s = get_string(in).s) {
+        // do something with string
     }
 
 We consider that significantly less elegant with significantly less performance.
@@ -3313,7 +3316,7 @@ However, we prefer to be explicit, rather than subtle.
 
 ##### Note
 
-In many cases, it can be useful to return a specific, user-defined type.
+In most cases, it is useful to return a specific, user-defined type.
 For example:
 
     struct Distance {
@@ -3327,13 +3330,14 @@ For example:
                                         // to people who know measure()
     auto [x, y] = measure(obj4);        // don't; it's likely to be confusing
 
-The overly-generic `pair` and `tuple` should be used only when the value returned represents independent entities rather than an abstraction.
+The overly generic `pair` and `tuple` should be used only when the value returned represents independent entities rather than an abstraction.
 
-Another example, use a specific type along the lines of `variant<T, error_code>`, rather than using the generic `tuple`.
+Another option is to use `optional<T>` or `expected<T, error_code>`, rather than `pair` or `tuple`.
+When used appropriately these types convey more information about what the members mean than `pair<T, bool>` or `pair<T, error_code>` do.
 
 ##### Note
 
-When the tuple to be returned is initialized from local variables that are expensive to copy,
+When the object to be returned is initialized from local variables that are expensive to copy,
 explicit `move` may be helpful to avoid copying:
 
     pair<LargeObject, LargeObject> f(const string& input)
@@ -3358,6 +3362,8 @@ Note this is different from the `return move(...)` anti-pattern from [ES.56](#Re
 
 * Output parameters should be replaced by return values.
   An output parameter is one that the function writes to, invokes a non-`const` member function, or passes on as a non-`const`.
+* `pair` or `tuple` return types should be replaced by `struct`, if possible.
+  In variadic templates, `tuple` is often unavoidable.
 
 ### <a name="Rf-ptr-ref"></a>F.60: Prefer `T*` over `T&` when "no argument" is a valid option
 
@@ -3605,15 +3611,19 @@ Using `std::shared_ptr` is the standard way to represent shared ownership. That 
 
 ##### Example
 
-    shared_ptr<const Image> im { read_image(somewhere) };
+    {
+        shared_ptr<const Image> im { read_image(somewhere) };
 
-    std::thread t0 {shade, args0, top_left, im};
-    std::thread t1 {shade, args1, top_right, im};
-    std::thread t2 {shade, args2, bottom_left, im};
-    std::thread t3 {shade, args3, bottom_right, im};
+        std::thread t0 {shade, args0, top_left, im};
+        std::thread t1 {shade, args1, top_right, im};
+        std::thread t2 {shade, args2, bottom_left, im};
+        std::thread t3 {shade, args3, bottom_right, im};
 
-    // detach threads
-    // last thread to finish deletes the image
+        // detaching threads requires extra care (e.g., to join before
+        // main ends), but even if we do detach the four threads here ...
+    }
+    // ... shared_ptr ensures that eventually the last thread to
+    //     finish safely deletes the image
 
 ##### Note
 
@@ -4820,8 +4830,8 @@ Constructor rules:
 * [C.44: Prefer default constructors to be simple and non-throwing](#Rc-default00)
 * [C.45: Don't define a default constructor that only initializes data members; use member initializers instead](#Rc-default)
 * [C.46: By default, declare single-argument constructors `explicit`](#Rc-explicit)
-* [C.47: Define and initialize member variables in the order of member declaration](#Rc-order)
-* [C.48: Prefer in-class initializers to member initializers in constructors for constant initializers](#Rc-in-class-initializer)
+* [C.47: Define and initialize data members in the order of member declaration](#Rc-order)
+* [C.48: Prefer default member initializers to member initializers in constructors for constant initializers](#Rc-in-class-initializer)
 * [C.49: Prefer initialization to assignment in constructors](#Rc-initialize)
 * [C.50: Use a factory function if you need "virtual behavior" during initialization](#Rc-factory)
 * [C.51: Use delegating constructors to represent common actions for all constructors of a class](#Rc-delegating)
@@ -5018,10 +5028,10 @@ These operations disagree about copy semantics. This will lead to confusion and 
 
 ##### Enforcement
 
-* (Complex) A copy/move constructor and the corresponding copy/move assignment operator should write to the same member variables at the same level of dereference.
-* (Complex) Any member variables written in a copy/move constructor should also be initialized by all other constructors.
-* (Complex) If a copy/move constructor performs a deep copy of a member variable, then the destructor should modify the member variable.
-* (Complex) If a destructor is modifying a member variable, that member variable should be written in any copy/move constructors or assignment operators.
+* (Complex) A copy/move constructor and the corresponding copy/move assignment operator should write to the same data members at the same level of dereference.
+* (Complex) Any data members written in a copy/move constructor should also be initialized by all other constructors.
+* (Complex) If a copy/move constructor performs a deep copy of a data member, then the destructor should modify the data member.
+* (Complex) If a destructor is modifying a data member, that data member should be written in any copy/move constructors or assignment operators.
 
 ## <a name="SS-dtor"></a>C.dtor: Destructors
 
@@ -5144,9 +5154,9 @@ Here `p` refers to `pp` but does not own it.
 
 ##### Enforcement
 
-* (Simple) If a class has pointer or reference member variables that are owners
+* (Simple) If a class has pointer or reference members that are owners
   (e.g., deemed owners by using `gsl::owner`), then they should be referenced in its destructor.
-* (Hard) Determine if pointer or reference member variables are owners when there is no explicit statement of ownership
+* (Hard) Determine if pointer or reference members are owners when there is no explicit statement of ownership
   (e.g., look into the constructors).
 
 ### <a name="Rc-dtor-ptr"></a>C.32: If a class has a raw pointer (`T*`) or reference (`T&`), consider whether it might be owning
@@ -5448,7 +5458,7 @@ The C++11 initializer list rule eliminates the need for many constructors. For e
     Rec2 r2 {"Bar"};
 
 The `Rec2` constructor is redundant.
-Also, the default for `int` would be better done as a [member initializer](#Rc-in-class-initializer).
+Also, the default for `int` would be better done as a [default member initializer](#Rc-in-class-initializer).
 
 **See also**: [construct valid object](#Rc-complete) and [constructor throws](#Rc-throw).
 
@@ -5491,7 +5501,7 @@ If a valid object cannot conveniently be constructed by a constructor, [use a fa
 
 ##### Enforcement
 
-* (Simple) Every constructor should initialize every member variable (either explicitly, via a delegating ctor call or via default construction).
+* (Simple) Every constructor should initialize every data member (either explicitly, via a delegating ctor call or via default construction).
 * (Unknown) If a constructor has an `Ensures` contract, try to see if it holds as a postcondition.
 
 ##### Note
@@ -5639,7 +5649,7 @@ A class with members that all have default constructors implicitly gets a defaul
         vector<int> v;
     };
 
-    X x; // means X{{ "{{" }}}, {}}; that is the empty string and the empty vector
+    X x; // means X{{}, {}}; that is the empty string and the empty vector
 
 Beware that built-in types are not properly default constructed:
 
@@ -5756,11 +5766,11 @@ Setting a `Vector1` to empty after detecting an error is trivial.
 
 * Flag throwing default constructors
 
-### <a name="Rc-default"></a>C.45: Don't define a default constructor that only initializes data members; use in-class member initializers instead
+### <a name="Rc-default"></a>C.45: Don't define a default constructor that only initializes data members; use default member initializers instead
 
 ##### Reason
 
-Using in-class member initializers lets the compiler generate the function for you. The compiler-generated function can be more efficient.
+Using default member initializers lets the compiler generate the function for you. The compiler-generated function can be more efficient.
 
 ##### Example, bad
 
@@ -5784,7 +5794,7 @@ Using in-class member initializers lets the compiler generate the function for y
 
 ##### Enforcement
 
-(Simple) A default constructor should do more than just initialize member variables with constants.
+(Simple) A default constructor should do more than just initialize data members with constants.
 
 ### <a name="Rc-explicit"></a>C.46: By default, declare single-argument constructors explicit
 
@@ -5824,7 +5834,7 @@ Copy and move constructors should not be made `explicit` because they do not per
 
 (Simple) Single-argument constructors should be declared `explicit`. Good single argument non-`explicit` constructors are rare in most code bases. Warn for all that are not on a "positive list".
 
-### <a name="Rc-order"></a>C.47: Define and initialize member variables in the order of member declaration
+### <a name="Rc-order"></a>C.47: Define and initialize data members in the order of member declaration
 
 ##### Reason
 
@@ -5848,7 +5858,7 @@ To minimize confusion and errors. That is the order in which the initialization 
 
 **See also**: [Discussion](#Sd-order)
 
-### <a name="Rc-in-class-initializer"></a>C.48: Prefer in-class initializers to member initializers in constructors for constant initializers
+### <a name="Rc-in-class-initializer"></a>C.48: Prefer default member initializers to member initializers in constructors for constant initializers
 
 ##### Reason
 
@@ -5894,8 +5904,8 @@ How would a maintainer know whether `j` was deliberately uninitialized (probably
 
 ##### Enforcement
 
-* (Simple) Every constructor should initialize every member variable (either explicitly, via a delegating ctor call or via default construction).
-* (Simple) Default arguments to constructors suggest an in-class initializer might be more appropriate.
+* (Simple) Every constructor should initialize every data member (either explicitly, via a delegating ctor call or via default construction).
+* (Simple) Default arguments to constructors suggest a default member initializer might be more appropriate.
 
 ### <a name="Rc-initialize"></a>C.49: Prefer initialization to assignment in constructors
 
@@ -6052,7 +6062,7 @@ The common action gets tedious to write and might accidentally not be common.
         // ...
     };
 
-**See also**: If the "repeated action" is a simple initialization, consider [an in-class member initializer](#Rc-in-class-initializer).
+**See also**: If the "repeated action" is a simple initialization, consider [a default member initializer](#Rc-in-class-initializer).
 
 ##### Enforcement
 
@@ -7719,7 +7729,7 @@ Consider making such a class a `struct` -- that is, a behaviorless bunch of vari
         int y {0};
     };
 
-Note that we can put default initializers on member variables: [C.49: Prefer initialization to assignment in constructors](#Rc-initialize).
+Note that we can put default initializers on data members: [C.49: Prefer initialization to assignment in constructors](#Rc-initialize).
 
 ##### Note
 
@@ -8349,7 +8359,7 @@ Subscripting the resulting base pointer will lead to invalid object access and p
 
     void use(B*);
 
-    D a[] = {{ "{{" }}1, 2}, {3, 4}, {5, 6}};
+    D a[] = {{1, 2}, {3, 4}, {5, 6}};
     B* p = a;     // bad: a decays to &a[0] which is converted to a B*
     p[1].x = 7;   // overwrite a[0].y
 
@@ -10918,7 +10928,7 @@ Many such errors are introduced during maintenance years after the initial imple
 
 ##### Example
 
-This rule covers member variables.
+This rule covers data members.
 
     class X {
     public:
@@ -12533,7 +12543,7 @@ In the rare cases where the slicing was deliberate the code can be surprising.
     class Shape { /* ... */ };
     class Circle : public Shape { /* ... */ Point c; int r; };
 
-    Circle c {{ "{{" }}0, 0}, 42};
+    Circle c {{0, 0}, 42};
     Shape s {c};    // copy construct only the Shape part of Circle
     s = c;          // or copy assign only the Shape part of Circle
 
@@ -12541,7 +12551,7 @@ In the rare cases where the slicing was deliberate the code can be surprising.
     {
         dest = src;
     }
-    Circle c2 {{ "{{" }}1, 1}, 43};
+    Circle c2 {{1, 1}, 43};
     assign(c, c2);   // oops, not the whole state is transferred
     assert(c == c2); // if we supply copying, we should also provide comparison,
                      // but this will likely return false
@@ -13335,9 +13345,9 @@ whereas `if (p != nullptr)` would be a long-winded workaround.
 
 This rule is especially useful when a declaration is used as a condition
 
-    if (auto pc = dynamic_cast<Circle>(ps)) { ... } // execute if ps points to a kind of Circle, good
+    if (auto pc = dynamic_cast<Circle*>(ps)) { ... } // execute if ps points to a kind of Circle, good
 
-    if (auto pc = dynamic_cast<Circle>(ps); pc != nullptr) { ... } // not recommended
+    if (auto pc = dynamic_cast<Circle*>(ps); pc != nullptr) { ... } // not recommended
 
 ##### Example
 
@@ -14554,7 +14564,7 @@ but we can mention:
 and some older versions of [GCC](https://gcc.gnu.org/wiki/ThreadSafetyAnnotation)
 have some support for static annotation of thread safety properties.
 Consistent use of this technique turns many classes of thread-safety errors into compile-time errors.
-The annotations are generally local (marking a particular member variable as guarded by a particular mutex),
+The annotations are generally local (marking a particular data member as guarded by a particular mutex),
 and are usually easy to learn. However, as with many static tools, it can often present false negatives;
 cases that should have been caught but were allowed.
 
@@ -15784,7 +15794,7 @@ Sometimes C++ code allocates the `volatile` memory and shares it with "elsewhere
 ##### Example, bad
 
 `volatile` local variables are nearly always wrong -- how can they be shared with other languages or hardware if they're ephemeral?
-The same applies almost as strongly to member variables, for the same reason.
+The same applies almost as strongly to data members, for the same reason.
 
     void f()
     {
@@ -15793,7 +15803,7 @@ The same applies almost as strongly to member variables, for the same reason.
     }
 
     class My_type {
-        volatile int i = 0; // suspicious, volatile member variable
+        volatile int i = 0; // suspicious, volatile data member
         // etc.
     };
 
@@ -15803,7 +15813,7 @@ In C++, unlike in some other languages, `volatile` has [nothing to do with synch
 
 ##### Enforcement
 
-* Flag `volatile T` local and member variables; almost certainly you intended to use `atomic<T>` instead.
+* Flag `volatile T` local and data members; almost certainly you intended to use `atomic<T>` instead.
 * ???
 
 ### <a name="Rconc-signal"></a>CP.201: ??? Signals
@@ -15881,7 +15891,7 @@ To make error handling systematic, robust, and non-repetitive.
 
     void use()
     {
-        Foo bar {{ "{{" }}Thing{1}, Thing{2}, Thing{monkey}}, {"my_file", "r"}, "Here we go!"};
+        Foo bar {{Thing{1}, Thing{2}, Thing{monkey}}, {"my_file", "r"}, "Here we go!"};
         // ...
     }
 
@@ -16959,7 +16969,7 @@ it offers to its users.
 
 ##### Enforcement
 
-* Flag a member function that is not marked `const`, but that does not perform a non-`const` operation on any member variable.
+* Flag a member function that is not marked `const`, but that does not perform a non-`const` operation on any data member.
 
 ### <a name="Rconst-ref"></a>Con.3: By default, pass pointers and references to `const`s
 
@@ -19662,7 +19672,7 @@ To maximize the portability of `#include` directives across compilers, guidance 
     #include <vector>
     #include <string>
     #include "util/util.h"
-    
+
     // bad examples
     #include <VECTOR>        // bad: the standard library defines a header identified as <vector>, not <VECTOR>
     #include <String>        // bad: the standard library defines a header identified as <string>, not <String>
@@ -21181,7 +21191,7 @@ Type safety profile summary:
 Prefer [construction](#Res-construct) or [named casts](#Res-casts-named) or `T{expression}`.
 * <a name="Pro-type-init"></a>Type.5: Don't use a variable before it has been initialized:
 [always initialize](#Res-always).
-* <a name="Pro-type-memberinit"></a>Type.6: Always initialize a member variable:
+* <a name="Pro-type-memberinit"></a>Type.6: Always initialize a data member:
 [always initialize](#Res-always),
 possibly using [default constructors](#Rc-default0) or
 [default member initializers](#Rc-in-class-initializer).
@@ -21275,7 +21285,7 @@ For each GSL type below we state an invariant for that type. That invariant hold
 Summary of GSL components:
 
 * [GSL.view: Views](#SS-views)
-* [GSL.owner](#SS-ownership)
+* [GSL.owner: Ownership pointers](#SS-ownership)
 * [GSL.assert: Assertions](#SS-assertions)
 * [GSL.util: Utilities](#SS-utilities)
 * [GSL.concept: Concepts](#SS-gsl-concepts)
@@ -21621,7 +21631,7 @@ The use of `p` for pointer and `x` for a floating-point variable is conventional
 
 ### <a name="Rl-name"></a>NL.8: Use a consistent naming style
 
-**Rationale**: Consistence in naming and naming style increases readability.
+**Rationale**: Consistency in naming and naming style increases readability.
 
 ##### Note
 
@@ -22032,7 +22042,7 @@ Consistency in large code bases.
 
 ##### Note
 
-We are well aware that you could claim the "bad" examples more logical than the ones marked "OK",
+We are well aware that you could claim the "bad" examples are more logical than the ones marked "OK",
 but they also confuse more people, especially novices relying on teaching material using the far more common, conventional OK style.
 
 As ever, remember that the aim of these naming and layout rules is consistency and that aesthetics vary immensely.
@@ -22244,9 +22254,9 @@ Modernization can be much faster, simpler, and safer when supported with analysi
 This section contains follow-up material on rules and sets of rules.
 In particular, here we present further rationale, longer examples, and discussions of alternatives.
 
-### <a name="Sd-order"></a>Discussion: Define and initialize member variables in the order of member declaration
+### <a name="Sd-order"></a>Discussion: Define and initialize data members in the order of member declaration
 
-Member variables are always initialized in the order they are declared in the class definition, so write them in that order in the constructor initialization list. Writing them in a different order just makes the code confusing because it won't run in the order you see, and that can make it hard to see order-dependent bugs.
+Data members are always initialized in the order they are declared in the class definition, so write them in that order in the constructor initialization list. Writing them in a different order just makes the code confusing because it won't run in the order you see, and that can make it hard to see order-dependent bugs.
 
     class Employee {
         string email, first, last;
@@ -22264,7 +22274,7 @@ Member variables are always initialized in the order they are declared in the cl
 
 In this example, `email` will be constructed before `first` and `last` because it is declared first. That means its constructor will attempt to use `first` and `last` too soon -- not just before they are set to the desired values, but before they are constructed at all.
 
-If the class definition and the constructor body are in separate files, the long-distance influence that the order of member variable declarations has over the constructor's correctness will be even harder to spot.
+If the class definition and the constructor body are in separate files, the long-distance influence that the order of data member declarations has over the constructor's correctness will be even harder to spot.
 
 **References**:
 
@@ -22988,7 +22998,7 @@ Alternatively, we will decide that no change is needed and delete the entry.
 * Should there be inline namespaces (à la `std::literals::*_literals`)?
 * Avoid implicit conversions
 * Const member functions should be thread safe ... aka, but I don't really change the variable, just assign it a value the first time it's called ... argh
-* Always initialize variables, use initialization lists for member variables.
+* Always initialize variables, use initialization lists for data members.
 * Anyone writing a public interface which takes or returns `void*` should have their toes set on fire. That one has been a personal favorite of mine for a number of years. :)
 * Use `const`-ness wherever possible: member functions, variables and (yippee) `const_iterators`
 * Use `auto`
