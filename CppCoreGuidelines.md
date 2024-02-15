@@ -365,17 +365,17 @@ We do not limit our comment in the **Enforcement** sections to things we know ho
 
 Tools that implement these rules shall respect the following syntax to explicitly suppress a rule:
 
-    [[gsl::suppress(tag)]]
+    [[gsl::suppress("tag")]]
 
 and optionally with a message (following usual C++11 standard attribute syntax):
 
-    [[gsl::suppress(tag, justification: "message")]]
+    [[gsl::suppress("tag", justification: "message")]]
 
 where
 
-* `tag` is the anchor name of the item where the Enforcement rule appears (e.g., for [C.134](#Rh-public) it is "Rh-public"), the
+* `"tag"` is a string literal with the anchor name of the item where the Enforcement rule appears (e.g., for [C.134](#Rh-public) it is "Rh-public"), the
 name of a profile group-of-rules ("type", "bounds", or "lifetime"),
-or a specific rule in a profile ([type.4](#Pro-type-cstylecast), or [bounds.2](#Pro-bounds-arrayindex))
+or a specific rule in a profile ([type.4](#Pro-type-cstylecast), or [bounds.2](#Pro-bounds-arrayindex)). Any text that is not one of those should be rejected.
 
 * `"message"` is a string literal
 
@@ -2306,7 +2306,7 @@ Such examples are discussed in [[Str15]](http://www.stroustrup.com/resource-mode
 
 So, we write a class
 
-    class Istream { [[gsl::suppress(lifetime)]]
+    class Istream { [[gsl::suppress("lifetime")]]
     public:
         enum Opt { from_line = 1 };
         Istream() { }
@@ -4216,7 +4216,7 @@ Declaring a `...` parameter is sometimes useful for techniques that don't involv
 ##### Enforcement
 
 * Issue a diagnostic for using `va_list`, `va_start`, or `va_arg`.
-* Issue a diagnostic for passing an argument to a vararg parameter of a function that does not offer an overload for a more specific type in the position of the vararg. To fix: Use a different function, or `[[suppress(types)]]`.
+* Issue a diagnostic for passing an argument to a vararg parameter of a function that does not offer an overload for a more specific type in the position of the vararg. To fix: Use a different function, or `[[suppress("type")]]`.
 
 
 ### <a name="F-nesting"></a>F.56: Avoid unnecessary condition nesting
@@ -21155,7 +21155,7 @@ Enabling a profile is implementation defined; typically, it is set in the analys
 
 To suppress enforcement of a profile check, place a `suppress` annotation on a language contract. For example:
 
-    [[suppress(bounds)]] char* raw_find(char* p, int n, char x)    // find x in p[0]..p[n - 1]
+    [[suppress("bounds")]] char* raw_find(char* p, int n, char x)    // find x in p[0]..p[n - 1]
     {
         // ...
     }
