@@ -1,6 +1,6 @@
 # <a name="main"></a>C++ Core Guidelines
 
-October 12, 2023
+February 15, 2024
 
 Editors:
 
@@ -482,7 +482,7 @@ Philosophical rules are generally not mechanically checkable.
 However, individual rules reflecting these philosophical themes are.
 Without a philosophical basis, the more concrete/specific/checkable rules lack rationale.
 
-### <a name="p1"></a><a name="Rp-direct"></a>P.1: Express ideas directly in code
+### <a name="Rp-direct"></a>P.1: Express ideas directly in code
 
 ##### Reason
 
@@ -563,7 +563,7 @@ Very hard in general.
 * flag uses of casts (casts neuter the type system)
 * detect code that mimics the standard library (hard)
 
-### <a name="p2"></a><a name="Rp-Cplusplus"></a>P.2: Write in ISO Standard C++
+### <a name="Rp-Cplusplus"></a>P.2: Write in ISO Standard C++
 
 ##### Reason
 
@@ -595,7 +595,7 @@ In such cases, control their (dis)use with an extension of these Coding Guidelin
 
 Use an up-to-date C++ compiler (currently C++20 or C++17) with a set of options that do not accept extensions.
 
-### <a name="p3"></a><a name="Rp-what"></a>P.3: Express intent
+### <a name="Rp-what"></a>P.3: Express intent
 
 ##### Reason
 
@@ -661,7 +661,7 @@ Look for common patterns for which there are better alternatives
 
 There is a huge scope for cleverness and semi-automated program transformation.
 
-### <a name="p4"></a><a name="Rp-typesafe"></a>P.4: Ideally, a program should be statically type safe
+### <a name="Rp-typesafe"></a>P.4: Ideally, a program should be statically type safe
 
 ##### Reason
 
@@ -691,7 +691,7 @@ For example:
 * range errors -- use `span`
 * narrowing conversions -- minimize their use and use `narrow` or `narrow_cast` (from the GSL) where they are necessary
 
-### <a name="p5"></a><a name="Rp-compile-time"></a>P.5: Prefer compile-time checking to run-time checking
+### <a name="Rp-compile-time"></a>P.5: Prefer compile-time checking to run-time checking
 
 ##### Reason
 
@@ -735,7 +735,7 @@ better
 * Look for pointer arguments.
 * Look for run-time checks for range violations.
 
-### <a name="p6"></a><a name="Rp-run-time"></a>P.6: What cannot be checked at compile time should be checkable at run time
+### <a name="Rp-run-time"></a>P.6: What cannot be checked at compile time should be checkable at run time
 
 ##### Reason
 
@@ -842,7 +842,7 @@ How do we transfer both ownership and all information needed for validating use?
 * Flag (pointer, count)-style interfaces (this will flag a lot of examples that can't be fixed for compatibility reasons)
 * ???
 
-### <a name="p7"></a><a name="Rp-early"></a>P.7: Catch run-time errors early
+### <a name="Rp-early"></a>P.7: Catch run-time errors early
 
 ##### Reason
 
@@ -959,7 +959,7 @@ The physical law for a jet (`e * e < x * x + y * y + z * z`) is not an invariant
 * Look for structured data (objects of classes with invariants) being converted into strings
 * ???
 
-### <a name="p8"></a><a name="Rp-leak"></a>P.8: Don't leak any resources
+### <a name="Rp-leak"></a>P.8: Don't leak any resources
 
 ##### Reason
 
@@ -1012,7 +1012,7 @@ Combine this with enforcement of [the type and bounds profiles](#SS-force) and y
 * Look for naked `new` and `delete`
 * Look for known resource allocating functions returning raw pointers (such as `fopen`, `malloc`, and `strdup`)
 
-### <a name="p9"></a><a name="Rp-waste"></a>P.9: Don't waste time or space
+### <a name="Rp-waste"></a>P.9: Don't waste time or space
 
 ##### Reason
 
@@ -1088,7 +1088,7 @@ Many more specific rules aim at the overall goals of simplicity and elimination 
 * Flag an unused return value from a user-defined non-defaulted postfix `operator++` or `operator--` function. Prefer using the prefix form instead. (Note: "User-defined non-defaulted" is intended to reduce noise. Review this enforcement if it's still too noisy in practice.)
 
 
-### <a name="p10"></a><a name="Rp-mutable"></a>P.10: Prefer immutable data to mutable data
+### <a name="Rp-mutable"></a>P.10: Prefer immutable data to mutable data
 
 ##### Reason
 
@@ -1099,7 +1099,7 @@ You can't have a data race on a constant.
 
 See [Con: Constants and immutability](#S-const)
 
-### <a name="p11"></a><a name="Rp-library"></a>P.11: Encapsulate messy constructs, rather than spreading through the code
+### <a name="Rp-library"></a>P.11: Encapsulate messy constructs, rather than spreading through the code
 
 ##### Reason
 
@@ -1149,7 +1149,7 @@ This is a variant of the [subset of superset principle](#R0) that underlies thes
 * Look for "messy code" such as complex pointer manipulation and casting outside the implementation of abstractions.
 
 
-### <a name="p12"></a><a name="Rp-tools"></a>P.12: Use supporting tools as appropriate
+### <a name="Rp-tools"></a>P.12: Use supporting tools as appropriate
 
 ##### Reason
 
@@ -1178,7 +1178,7 @@ Be careful not to become dependent on over-elaborate or over-specialized tool ch
 Those can make your otherwise portable code non-portable.
 
 
-### <a name="p13"></a><a name="Rp-lib"></a>P.13: Use support libraries as appropriate
+### <a name="Rp-lib"></a>P.13: Use support libraries as appropriate
 
 ##### Reason
 
