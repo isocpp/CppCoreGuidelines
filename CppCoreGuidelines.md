@@ -2977,6 +2977,8 @@ Advanced parameter passing:
 ![Advanced parameter passing table](./param-passing-advanced.png "Advanced parameter passing")
 
 Use the advanced techniques only after demonstrating need, and document that need in a comment.
+Note that the guidelines do not provide a complete decision procedure on how to write a function.
+In many situations, there will be multiple ways to write a function that is in accordance with the guidelines.
 
 For passing sequences of characters see [String](#SS-string).
 
@@ -3006,9 +3008,9 @@ When copying is cheap, nothing beats the simplicity and safety of copying, and f
 
 For advanced uses (only), where you really need to optimize for rvalues passed to "input-only" parameters:
 
-* If the function is going to unconditionally move from the argument, take it by `&&`. See [F.18](#Rf-consume).
+* If the function is going to unconditionally move from the argument, take it by `&&`. See [F.18](#Rf-consume). You may also provide a `const &` overload that copies the argument rather than moves it, although this is not required.
 * If the function is going to keep a copy of the argument, in addition to passing by `const&` (for lvalues),
-  add an overload that passes the parameter by `&&` (for rvalues) and in the body `std::move`s it to its destination. Essentially this overloads a "will-move-from"; see [F.18](#Rf-consume).
+  add an overload that passes the parameter by `&&` (for rvalues) and in the body `std::move`s it to its destination. Essentially this overloads a "will-move-from"; see [F.18](#Rf-consume). It also could be appropriate to remove the `const&` overload and only keep the `&&` overload.
 * In special cases, such as multiple "input + copy" parameters, consider using perfect forwarding. See [F.19](#Rf-forward).
 
 ##### Example
