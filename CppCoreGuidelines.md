@@ -13281,6 +13281,10 @@ Helps make style consistent and conventional.
 By definition, a condition in an `if`-statement, `while`-statement, or a `for`-statement selects between `true` and `false`.
 A numeric value is compared to `0` and a pointer value to `nullptr`.
 
+    // Assuming that "my_condition" is a `bool` variable
+    if (my_condition) { ... }          // good
+    if (my_condition == true) { ... }  // redundant ==true, not recommended
+
     // These all mean "if p is not nullptr"
     if (p) { ... }            // good
     if (p != 0) { ... }       // redundant !=0, bad: don't use 0 for pointers
