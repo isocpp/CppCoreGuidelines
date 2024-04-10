@@ -3936,10 +3936,7 @@ which can eliminate the move completely.
 
 ##### Example, good
 
-    // RVO: guaranteed move elision when a temporary is returned
-    S rvo() { return S{}; }
-
-    S nrvo()
+    S good()
     {
       S result;
       // Named RVO: move elision at best, move construction at worst
