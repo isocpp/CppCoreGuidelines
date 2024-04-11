@@ -13765,10 +13765,12 @@ Alternatives for users
 
 ??? should this section be in the main guide???
 
-This section contains rules for people who need high performance or low-latency.
+This section contains rules for people who have performance requirements.  These can be latency, throughput, binary size, power, and others.
 That is, these are rules that relate to how to use as little time and as few resources as possible to achieve a task in a predictably short time.
 The rules in this section are more restrictive and intrusive than what is needed for many (most) applications.
 Do not naïvely try to follow them in general code: achieving the goals of low latency requires extra work.
+
+
 
 Performance rule summary:
 
@@ -13791,168 +13793,174 @@ Performance rule summary:
 * [Per.19: Access memory predictably](#Rper-access)
 * [Per.30: Avoid context switches on the critical path](#Rper-context)
 
-### <a name="Rper-reason"></a>Per.1: Don't optimize without reason
+### <a name="Rper-reason"></a>Per.1: Understand your requirements and design accordingly.
 
 ##### Reason
 
-If there is no need for optimization, the main result of the effort will be more errors and higher maintenance costs.
+C++ is not the most common choice for situations with no performance demands at
+all, but performance demands are not equal to each other.  Before you can make
+any sensible choices you should understand what success looks like in your own
+domain.  Your requirements likely include some of binary size, latency,
+predictability, power, egress, and perhaps other more unique metrics.  What your
+needs are can and should color the choices you make.  You will likely not be able
+to "optimize" your way to success if your major choices are actually totally unsuitable
+for your goals.  The best practice is to make a sketch of what you indend to do,
+however complex or simple, and then ask yourself "is this likely to meet my needs?"
+If it is, proceed. If it isn't, dig a little more, understand which things will matter
+and invest and or experiment accordingly. When you have a plan that holds water
+start implementing it and check it as you go.  This kind of simple analysis is never
+premature.  If your requirements are easily achievable you will be able to dispense
+with this process in a few seconds.
 
-##### Note
 
-Some people optimize out of habit or because it's fun.
-
-???
-
-### <a name="Rper-Knuth"></a>Per.2: Don't optimize prematurely
-
-##### Reason
-
-Elaborately optimized code is usually larger and harder to change than unoptimized code.
-
-???
-
-### <a name="Rper-critical"></a>Per.3: Don't optimize something that's not performance critical
-
-##### Reason
-
-Optimizing a non-performance-critical part of a program has no effect on system performance.
-
-##### Note
-
-If your program spends most of its time waiting for the web or for a human, optimization of in-memory computation is probably useless.
-
-Put another way: If your program spends 4% of its processing time doing
-computation A and 40% of its time doing computation B, a 50% improvement on A is
-only as impactful as a 5% improvement on B. (If you don't even know how much
-time is spent on A or B, see <a href="#Rper-reason">Per.1</a> and <a
-href="#Rper-Knuth">Per.2</a>.)
-
-### <a name="Rper-simple"></a>Per.4: Don't assume that complicated code is necessarily faster than simple code
+### <a name="Rper-Knuth"></a>Per.2: Optimize by measuring and simplifying according to your needs.
 
 ##### Reason
 
-Simple code can be very fast. Optimizers sometimes do marvels with simple code
+Many people believe that optimized code is uglier.  This is flatly false, the
+most common and most successful optimizations involve simplification, not
+elaboration. Making your design more complex is almost never the right answer.
+Elaborate code is usually larger, slower, and more power hungry than simple code.
 
-##### Example, good
+When you choose to rewrite a piece of code to increase its performance, do so
+because one of your important metrics is telling you to do so.  Check these
+metrics often, even preliminary versions, to make sure you're on track.  You can
+do this quickly and act before something very bad has happened.  "It looks good
+so far" is a great place to be. You do not want to get to your finish line only
+to discover that something is horribly wrong and you have to diagnose it as a
+whole.
 
-    // clear expression of intent, fast execution
+You do not have to boil out every last percentage immediately, you can often go
+wrong trying to do this too soon.  But you also do not want to be off by orders
+of magnitude, using an entirely inappropriate technique, a dependency you can't
+possibly afford, or completely disregarding a key metric either.  Regularly 
+verifying that you are on track is never premature.
 
-    vector<uint8_t> v(100000);
+Don Knuth popularized this quote by Tony Hoare, in full "We should forget about
+small efficiencies, say about 97% of the time: premature optimization is the
+root of all evil."
 
-    for (auto& c : v)
-        c = ~c;
+[Small efficiencies can wait 97% of the time](https://ubiquity.acm.org/article.cfm?id=1513451#:~:text=Trying%20to%20do%20the%20optimization,best%20practice%20among%20software%20engineers.).
+Reasonable choices that give you a good chance of success cannot wait.  If you
+believe Sir Hoare -- which is wise -- 3% of the time small choices will burn you. That's
+about 1 or 2 per screenful of code.
 
-##### Example, bad
 
-    // intended to be faster, but is often slower
 
-    vector<uint8_t> v(100000);
-
-    for (size_t i = 0; i < v.size(); i += sizeof(uint64_t)) {
-        uint64_t& quad_word = *reinterpret_cast<uint64_t*>(&v[i]);
-        quad_word = ~quad_word;
-    }
-
-##### Note
-
-???
-
-???
-
-### <a name="Rper-low"></a>Per.5: Don't assume that low-level code is necessarily faster than high-level code
-
-##### Reason
-
-Low-level code sometimes inhibits optimizations. Optimizers sometimes do marvels with high-level code.
-
-##### Note
-
-???
-
-???
-
-### <a name="Rper-measure"></a>Per.6: Don't make claims about performance without measurements
+### <a name="Rper-critical"></a>Per.3: Consider the causes of performance problems, not the effects.
 
 ##### Reason
 
-The field of performance is littered with myth and bogus folklore.
+Time is secondary metric.  Large time values are an effect of either bad
+orchestration, large resource consumption (read too much, use an O(N^2)
+algorithm instead of an O(N) alorigthm), or inefficient use of a resource (i.e.
+asking it to do something it's bad at, such as seeking all over, or dealing with
+non-local memory access).  Typically secondary metrics like time are not
+probative -- "the code is slow, boo hoo" -- primary metrics like "how many
+instructions ran", "what fraction of branches were predicted", "how many bytes
+were read" can be very probative.  Consumption metrics are very helpful to
+understanding what is going wrong and how you might fix it.
+
+Likewise, if poor orchestration is the problem (work spread across too many
+threads, too few threads, too much work issued at once, etc.) mapping out your
+orchestration will be very helpful.  The total time is likely not actionable
+directly.  Insights rarely come from secondary metrics.  Typically they tell you
+where to look further at best, you then need primary metrics to make
+improvements.
+
+Keep in mind that you should understand how your system performs according to
+your goals, not just its latency.  A system might be plenty fast enough and
+still use more memory than you can afford. Or more power than you can afford.
+Or be too big to reasonably download.  If you are paying for CPU cycles you
+are likely to be very excited about reducing cycles by 50% even if your customers
+already think the system is fast enough.  Cycles are cost.
+
+Whatever your system may be, referring back to your needs and your customer
+needs will tell you where you should be investing and which investments are
+worthwhile. At some point, the potential benefits are not worth the opportunity
+cost of doing them.  An extra 10% reduction of download size maybe isn't worth
+the engineering time because you've reached a size that is small enough that
+your customers no longer notice the difference.  But if your needs also include
+egress costs for those downloads then maybe that same 10% is worth it.  The very
+same potential improvement might be a great a idea or a silly one depending on
+your needs.
+
+### <a name="Rper-simple"></a>Per.4: Simpler is generally better
+
+Assuming you have done the basics of making sure that your overall design is approximately right,
+such as you are using O(N) if it is available rather than O(N^2) or something like that then you'll
+find that *simplifying* code and data is the best way to make things faster.  This means:
+
+* don't create complex inheritance graphs
+* don't use complicate dispatch logic if simple logic will do
+* don't make data structures with lots of pointers
+* don't use shared pointers if unique pointers will do
+* don't use patterns that reduce your average code and data density
+
+In short, consider the problem you need to solve and solve it as directly as you reasonably can.
+Don't completely focus on just your immediate needs, some future-proofing is usually necessary, but
+don't ruin the code by over-generalizing it either.  Remember that in order to be *re*-usable code
+has to first be *usable*.
+
+This is a bit contentious but in practice, object oriented programming generally
+results in the worst performance. Consider work-oriented programming instead.
+What has to happen, how do we do this clearly, simply, directly, with only as
+much abstraction as would be helpful.
+
+Arrays/vectors are probably the most under-utilized and most important data structure.  Use
+simple proven data structures a lot.
+
+
+### <a name="Rper-measure"></a>Per.5: Don't make claims about performance without measurements
+
+##### Reason
+
+The field of performance is littered with myth and bogus folklore.  My favorite aphorism,
+"If you're very good at software performance engineering you're only wrong about 95% of the time."
+
 Modern hardware and optimizers defy naive assumptions; even experts are regularly surprised.
 
-##### Note
+Measure. Experiment. Verify.  Accept or disgard in a passionless way.  Repeat as needed.  When needed.
 
-Getting good performance measurements can be hard and require specialized tools.
+Remember you will not have any idea what you should measure if you don't at least understand your needs.
+Don't focus on CPU usage per transaction if what matters to you is download size.
 
-##### Note
-
-A few simple microbenchmarks using Unix `time` or the standard-library `<chrono>` can help dispel the most obvious myths.
-If you can't measure your complete system accurately, at least try to measure a few of your key operations and algorithms.
-A profiler can help tell you which parts of your system are performance critical.
-Often, you will be surprised.
-
-???
-
-### <a name="Rper-efficiency"></a>Per.7: Design to enable optimization
+### <a name="Rper-efficiency"></a>Per.6: Design to enable optimization
 
 ##### Reason
 
-Because we often need to optimize the initial design.
-Because a design that ignores the possibility of later improvement is hard to change.
+We prefer to start with a design that has, shall we say, the right "shape" from the outset.  But this leaves
+many factors to resolve later.  Those small efficiencies Hoare mentioned, 97% of which we can ignore.  The
+3% might kill us.  We don't want to have to redo everything to plug in those few bits that could wait.
 
-##### Example
+These should not change the overall shape of your design.  We really want to start with something that
+is substantially likely to work from the outset.  But you can defer a lot of choices of you make your
+system sufficiently modular.  If you're not sure what all of your requirements might be, some things
+(usually not binary size) might be constructed in such a fashion that they are easily replaced.  This
+doesn't require that you adopt anything expensive, you may even shun a cost like interface dispatch
+because of the nature of your contract (e.g. shading polygons).  But with some thought you can almost
+always create some clean contract that allows you to change parts of your design without cost and
+without unnecessary complexity.  Your needs will drive these choices.
 
-From the C (and C++) standard:
-
-    void qsort (void* base, size_t num, size_t size, int (*compar)(const void*, const void*));
-
-When did you even want to sort memory?
-Really, we sort sequences of elements, typically stored in containers.
-A call to `qsort` throws away much useful information (e.g., the element type), forces the user to repeat information
-already known (e.g., the element size), and forces the user to write extra code (e.g., a function to compare `double`s).
-This implies added work for the programmer, is error-prone, and deprives the compiler of information needed for optimization.
-
-    double data[100];
-    // ... fill a ...
-
-    // 100 chunks of memory of sizeof(double) starting at
-    // address data using the order defined by compare_doubles
-    qsort(data, 100, sizeof(double), compare_doubles);
-
-From the point of view of interface design, `qsort` throws away useful information.
-
-We can do better (in C++98)
-
-    template<typename Iter>
-        void sort(Iter b, Iter e);  // sort [b:e)
-
-    sort(data, data + 100);
-
-Here, we use the compiler's knowledge about the size of the array, the type of elements, and how to compare `double`s.
-
-With C++20, we can do better still
-
-    // sortable specifies that c must be a
-    // random-access sequence of elements comparable with <
-    void sort(sortable auto& c);
-
-    sort(c);
-
-The key is to pass sufficient information for a good implementation to be chosen.
-In this, the `sort` interfaces shown here still have a weakness:
-They implicitly rely on the element type having less-than (`<`) defined.
-To complete the interface, we need a second version that accepts a comparison criterion:
-
-    // compare elements of c using r
-    template<random_access_range R, class C> requires sortable<R, C>
-    void sort(R&& r, C c);
-
-The standard-library specification of `sort` offers those two versions, and more.
+Such designs are not just better for performance tuning, they are just *better*.
 
 ##### Note
 
-Premature optimization is said to be [the root of all evil](#Rper-Knuth), but that's not a reason to despise performance.
-It is never premature to consider what makes a design amenable to improvement, and improved performance is a commonly desired improvement.
-Aim to build a set of habits that by default results in efficient, maintainable, and optimizable code.
-In particular, when you write a function that is not a one-off implementation detail, consider
+This is another area where the popular admonition to avoid
+[premature optimization](#Rper-Knuth), is misplaced.
+
+It is never premature to consider what makes a design fit for its basic purpose,
+and amenable to improvement. Further, changes that improve performance are
+commonly desired and so an affordance that will let you move in that direction
+is likely to be helpful.
+
+If you consider that the best performing code is almost always the simplest, and  
+you aim to build a set of habits that by default result in simple, efficient,
+maintainable, and optimizable code, you are likely to be succesful in many
+contexts.
+
+In particular, when you write a function that is not a one-off implementation
+detail, consider:
 
 * Information passing:
 Prefer clean [interfaces](#S-interfaces) carrying sufficient information for later improvement of implementation.
@@ -14038,6 +14046,9 @@ a string comparison,
 a system call,
 a disk access,
 and a message through a network.
+
+Understand the basic costs associated with the most common data types.
+integers, pointers, std::string, std::shared_ptr, std::unique_pointer.  It's hard to make a good design
 
 ##### Note
 
@@ -14149,27 +14160,39 @@ This is admittedly rare, but by factoring out a general computation into separat
 
 ### <a name="Rper-indirect"></a>Per.13: Eliminate redundant indirections
 
-???
+Redundant indirections, indeed any indirections, are less efficient on modern memory systems
+than any kind of direct access. As far as performance goes fewer pointers is almost invariably
+better for total size and for locality.  Pointers are not small.
 
 ### <a name="Rper-alloc"></a>Per.14: Minimize the number of allocations and deallocations
 
-???
+Large numbers of allocations are often a leading indicator of very granular systems that
+will suffer from poor locality. You will likely see these costs manifest in processor
+cache efficacy, and TLB efficacy. Adding to this the marginal housekeeping costs associated
+with memory allocation you may find that the churn has a signficant cost in raw CPU
+cycles to allocate and free the memory as well.
 
 ### <a name="Rper-alloc0"></a>Per.15: Do not allocate on a critical branch
 
-???
+Allocation has non-trivial cost.  Many important data structures (e.g. btree) have
+a low number of allocations on average.
 
 ### <a name="Rper-compact"></a>Per.16: Use compact data structures
 
 ##### Reason
 
-Performance is typically dominated by memory access times.
+Performance is often dominated by the number of memory access rather than number of instructions.
+A single cache miss can easily cost you the equivalent of 150 normal instructions.  Even if
+there is a marginal increase in computation cost, a dense data structure can readily pay for
+itself.
 
-???
 
 ### <a name="Rper-struct"></a>Per.17: Declare the most used member of a time-critical struct first
 
-???
+??? The real advice here is to think about locality, putting the most used member first doesn't
+help a whit in general.  Splitting things into hot and cold can help. If you have a structure
+that is 3 cache lines and you put all the hot data on any one of them that is likely to help.
+It doesn't matter which one.
 
 ### <a name="Rper-space"></a>Per.18: Space is time
 
@@ -14177,7 +14200,7 @@ Performance is typically dominated by memory access times.
 
 Performance is typically dominated by memory access times.
 
-???
+??? seems kind of redunant with the above
 
 ### <a name="Rper-access"></a>Per.19: Access memory predictably
 
