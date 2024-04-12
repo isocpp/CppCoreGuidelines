@@ -13856,8 +13856,8 @@ orchestration, large resource consumption (read too much, use an O(N^2)
 algorithm instead of an O(N) alorigthm), or inefficient use of a resource (i.e.
 asking it to do something it's bad at, such as seeking all over, or dealing with
 non-local memory access).  Typically secondary metrics like time are not
-helpful a diagnosis -- they only tell you the code is taking too long. In contrast,
-primary metrics like "how many instructions ran", "what fraction of branches
+directly helpful in making a diagnosis -- they only tell you the code is taking too long to run.
+In contrast, primary metrics like "how many instructions ran", "what fraction of branches
 were predicted", or "how many bytes were read" and other "consumption" metrics
 are often very helpful to when it comes to diagnosing your performance problems
 and determining how you might fix them.
