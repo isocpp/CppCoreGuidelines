@@ -14048,7 +14048,7 @@ a disk access,
 and a message through a network.
 
 Understand the basic costs associated with the most common data types.
-integers, pointers, std::string, std::shared_ptr, std::unique_pointer.  It's hard to make a good design
+integers, pointers, `std::string`, `std::shared_ptr`, `std::unique_ptr`.  It's hard to make a good design
 
 ##### Note
 
