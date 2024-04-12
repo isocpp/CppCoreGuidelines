@@ -14200,7 +14200,7 @@ It doesn't matter which one.
 
 Performance is typically dominated by memory access times.
 
-??? seems kind of redunant with the above
+??? seems kind of redundant with the above
 
 ### <a name="Rper-access"></a>Per.19: Access memory predictably
 
