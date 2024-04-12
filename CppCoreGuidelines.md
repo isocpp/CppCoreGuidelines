@@ -13801,7 +13801,7 @@ C++ is not the most common choice for situations with no performance demands at
 all, but not all performance demands are the same.  Before you can make
 any sensible choices you should understand what success looks like in your own
 domain.  Your requirements likely include some of binary size, latency,
-predictability, power, egress, and perhaps other more unique metrics.  What your
+predictability, power, egress, and perhaps other more exotic metrics.  What your
 needs are can and should color the choices you make.  You will likely not be able
 to "optimize" your way to success if your major choices are actually totally unsuitable
 for your goals.  The best practice is to make a sketch of what you indend to do,
@@ -13856,10 +13856,11 @@ orchestration, large resource consumption (read too much, use an O(N^2)
 algorithm instead of an O(N) alorigthm), or inefficient use of a resource (i.e.
 asking it to do something it's bad at, such as seeking all over, or dealing with
 non-local memory access).  Typically secondary metrics like time are not
-probative -- "the code is slow, boo hoo" -- primary metrics like "how many
-instructions ran", "what fraction of branches were predicted", "how many bytes
-were read" can be very probative.  Consumption metrics are very helpful to
-understanding what is going wrong and how you might fix it.
+helpful a diagnosis -- they only tell you the code is taking too long -- 
+primary metrics like "how many instructions ran", "what fraction of branches
+were predicted", "how many bytes were read" can be very probative.
+Consumption metrics are very helpful to understanding what is going wrong
+and how you might fix the problem.
 
 Likewise, if poor orchestration is the problem (work spread across too many
 threads, too few threads, too much work issued at once, etc.) mapping out your
@@ -13892,14 +13893,14 @@ such as you are using O(N) if it is available rather than O(N^2) or something li
 find that *simplifying* code and data is the best way to make things faster.  This means:
 
 * don't create complex inheritance graphs
-* don't use complicate dispatch logic if simple logic will do
+* don't use complicated dispatch logic if simple logic will do
 * don't make data structures with lots of pointers
 * don't use shared pointers if unique pointers will do
 * don't use patterns that reduce your average code and data density
 
 In short, consider the problem you need to solve and solve it as directly as you reasonably can.
 Don't completely focus on just your immediate needs, some future-proofing is usually necessary, but
-don't ruin the code by over-generalizing it either.  Remember that in order to be *re*-usable code
+don't ruin the code by over-generalizing it either. Remember that in order to be *re*-usable code
 has to first be *usable*.
 
 This is a bit contentious but in practice, object oriented programming generally
@@ -13915,8 +13916,9 @@ simple proven data structures a lot.
 
 ##### Reason
 
-The field of performance is littered with myth and bogus folklore.  My favorite aphorism,
-"If you're very good at software performance engineering you're only wrong about 95% of the time."
+The field of performance is littered with myth and bogus folklore.  Reality is often humbling,
+even to experts who have been known to quote: "If you're very good at software performance engineering,
+you're only wrong about 95% of the time."
 
 Modern hardware and optimizers defy naive assumptions; even experts are regularly surprised.
 
