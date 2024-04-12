@@ -13807,7 +13807,7 @@ to "optimize" your way to success if your major choices are actually totally uns
 for your goals.  The best practice is to make a sketch of what you indend to do,
 however complex or simple, and then ask yourself "is this likely to meet my needs?"
 If it is, proceed. If it isn't, dig a little more, understand which things will matter
-and invest and or experiment accordingly. When you have a plan that holds water
+and invest and/or experiment accordingly. When you have a plan that holds water
 start implementing it and check it as you go.  This kind of simple analysis is never
 premature.  If your requirements are easily achievable you will be able to dispense
 with this process in a few seconds.
