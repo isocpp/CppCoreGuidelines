@@ -13934,7 +13934,7 @@ many factors to resolve later.  Those small efficiencies Hoare mentioned, 97% of
 3% might kill us.  We don't want to have to redo everything to plug in those few bits that could wait.
 
 These should not change the overall shape of your design.  We really want to start with something that
-is substantially likely to work from the outset.  But you can defer a lot of choices of you make your
+is substantially likely to work from the outset.  But you can defer a lot of choices if you make your
 system sufficiently modular.  If you're not sure what all of your requirements might be, some things
 (usually not binary size) might be constructed in such a fashion that they are easily replaced.  This
 doesn't require that you adopt anything expensive, you may even shun a cost like interface dispatch
