@@ -13798,7 +13798,7 @@ Performance rule summary:
 ##### Reason
 
 C++ is not the most common choice for situations with no performance demands at
-all, but performance demands are not equal to each other.  Before you can make
+all, but not all performance demands are the same.  Before you can make
 any sensible choices you should understand what success looks like in your own
 domain.  Your requirements likely include some of binary size, latency,
 predictability, power, egress, and perhaps other more unique metrics.  What your
