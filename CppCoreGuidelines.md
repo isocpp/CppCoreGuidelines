@@ -13922,7 +13922,7 @@ you're only wrong about 95% of the time."
 
 Modern hardware and optimizers defy naive assumptions; even experts are regularly surprised.
 
-Measure. Experiment. Verify.  Accept or disgard in a passionless way.  Repeat as needed.  When needed.
+Measure. Experiment. Verify.  Accept or discard in a passionless way.  Repeat as needed.  When needed.
 
 Remember you will not have any idea what you should measure if you don't at least understand your needs.
 Don't focus on CPU usage per transaction if what matters to you is download size.
