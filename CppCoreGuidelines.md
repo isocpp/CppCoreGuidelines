@@ -13927,7 +13927,54 @@ Measure. Experiment. Verify.  Accept or discard in a passionless way.  Repeat as
 Remember you will not have any idea what you should measure if you don't at least understand your needs.
 Don't focus on CPU usage per transaction if what matters to you is download size.
 
-### <a name="Rper-efficiency"></a>Per.6: Design to enable optimization
+### <a name="Rper-nonlocal"></a>Per.6: Consider Choices Holistically
+
+##### Reason
+
+The most challenging performance problems cannot be addressed by hot-spot tuning after the fact.
+They come as a consequence of the choices made in the design as a whole. In a performance analysis,
+the cost may be smeared evenly over hundreds or thousands of functions and give the appearance that
+your processor is running in molasses rather than fine motor oil.
+
+You will find that some choices that are perfectly fine when used sparingly are very problematic if
+they are used universally. For instance, there's nothing especially wrong with `std::function`, but
+if its use permeates your code, you might discover that the costs associated with functor maintenance
+are adding up. All those little copy operations, optimized as they are, are adding tax all over your
+code.
+
+A similar thing might happen if you simply used `std::shared_ptr` everywhere just for uniformity.
+Every pointer would be a little bigger, every function would have a few more interlocked operations,
+and a few more implicit destructors. What does that do to your code overall? Some flat tax on the
+efficacy of the CPU, maybe. It might be hard to see without a lot of looking at disassembly and
+micro-architectural counters. Will it matter? It depends. The answer is always "it depends."
+
+Should you therefore avoid these things and roll your own? Probably not -- `shared_ptr` does its
+job about as well as it can be done. The better advice is to use the abstractions you need and
+avoid expensive abstractions if cheaper ones will do the job. For instance, a class with five
+`shared_ptr` members raises an immediate question: "Do these five members really all have separate
+independent lifetimes?" Probably one shared pointer for the whole class with five unique pointer
+members would have done the job. Simpler is almost always better. Things that *can* easily be generalized
+later should probably *be* generalized later if at all. Premature generalization is also a root of evil.
+
+Overgeneralization can happen in many areas; representation is a key one. C++ can represent very rich,
+dense data types. Use that to your advantage! If you choose to represent your key data structures in
+some non-local form that is full of pointers, you will discover that you are paying a tax for all those
+pointers. A good rule of thumb for understanding the quality of a data structure goes something like this:
+Make a diagram of your key structures -- every time you use an arrow, give yourself a demerit.
+Every arrow counts, even the tiny, short harmless-looking ones that seem like they couldn't hurt a fly.
+64-bit pointers are big and are often the crux of the worst processor efficiency problems.
+
+Patterns that appear everywhere have to be especially good at their job. Remember to consider your
+performance needs when making a big decision like what the primary representation of your data will be.
+Density is crucial factor in any design. Object-oriented patterns tend to be the worst for performance
+because there are pointers all over the place and those pointers lead to poor density and worse locality.
+
+Frequently, key decisions, like your core representations, cannot be revisited economically after the fact.
+These choices have wide-ranging effects on the code and are unlikely to be addressable by hot-spot analysis.
+A bad choice might impose signficant tax on every data operation everywhere in your program.  Most
+programs cannot afford a flat tax on any key system.
+
+### <a name="Rper-efficiency"></a>Per.7: Design to enable optimization
 
 ##### Reason
 
