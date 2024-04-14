@@ -3935,7 +3935,7 @@ value) of any assignment operator.
 
 Returning a local variable implicitly moves it anyway.
 An explicit `std::move` is always a pessimization, because it prevents Return Value Optimization (RVO),
-which can eliminate the move completely. 
+which can eliminate the move completely.
 
 ##### Example, bad
 
@@ -5095,10 +5095,6 @@ There are two general categories of classes that need a user-defined destructor:
     };
 
 The default destructor does it better, more efficiently, and can't get it wrong.
-
-##### Note
-
-If the default destructor is needed, but its generation has been suppressed (e.g., by defining a move constructor), use `=default`.
 
 ##### Enforcement
 
@@ -12679,6 +12675,10 @@ Flag the C-style `(T)e` and functional-style `T(e)` casts.
 
 Dereferencing an invalid pointer, such as `nullptr`, is undefined behavior, typically leading to immediate crashes,
 wrong results, or memory corruption.
+
+##### Note
+
+By pointer here we mean any indirection to an object, including equivalently an iterator or view.
 
 ##### Note
 
