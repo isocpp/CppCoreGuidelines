@@ -20995,7 +20995,7 @@ Reference sections:
   Libraries used have to have been approved for mission critical applications.
   Any similarities to this set of guidelines are unsurprising because Bjarne Stroustrup was an author of JSF++.
   Recommended, but note its very specific focus.
-* [MISRA C++ 2008: Guidelines for the use of the C++ language in critical systems](https://misra.org.uk/product/misra-c2008/).
+* [MISRA C++:2023 Guidelines for the use C++17 in critical systems](https://misra.org.uk/product/misra-cpp2023/).
 * [Using C++ in Mozilla Code](https://firefox-source-docs.mozilla.org/code-quality/coding-style/using_cxx_in_firefox_code.html).
   As the name indicates, this aims for portability across many (old) compilers.
   As such, it is restrictive.
