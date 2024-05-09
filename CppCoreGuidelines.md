@@ -10,7 +10,7 @@ Editors:
 This is a living document under continuous improvement.
 Had it been an open-source (code) project, this would have been release 0.8.
 Copying, use, modification, and creation of derivative works from this project is licensed under an MIT-style license.
-Contributing to this project requires agreeing to a Contributor License. See the accompanying [LICENSE](LICENSE) file for details.
+Contributing to this project requires agreeing to a Contributor License. See the accompanying [LICENSE](https://github.com/isocpp/CppCoreGuidelines/blob/master/LICENSE) file for details.
 We make this project available to "friendly users" to use, copy, modify, and derive from, hoping for constructive input.
 
 Comments and suggestions for improvements are most welcome.
@@ -1165,9 +1165,9 @@ Run a static analyzer to verify that your code follows the guidelines you want i
 
 See
 
-* [Static analysis tools](???)
+* [Static analysis tools](https://en.wikipedia.org/wiki/List_of_tools_for_static_code_analysis)
 * [Concurrency tools](#Rconc-tools)
-* [Testing tools](???)
+* [Testing tools](https://github.com/isocpp/CppCoreGuidelines/tree/master)
 
 There are many other kinds of tools, such as source code repositories, build tools, etc.,
 but those are beyond the scope of these guidelines.
@@ -3664,7 +3664,7 @@ Importantly, that does not imply a transfer of ownership of the pointed-to objec
 ##### Note
 
 Positions can also be transferred by iterators, indices, and references.
-A reference is often a superior alternative to a pointer [if there is no need to use `nullptr`](#Rf-ptr-ref) or [if the object referred to should not change](???).
+A reference is often a superior alternative to a pointer [if there is no need to use `nullptr`](#Rf-ptr-ref) or [if the object referred to should not change](#S-const).
 
 ##### Note
 
@@ -22644,7 +22644,7 @@ Prevent leaks. Leaks can lead to performance degradation, mysterious error, syst
         // ...
     };
 
-This class is a resource handle. It manages the lifetime of the `T`s. To do so, `Vector` must define or delete [the set of special operations](???) (constructors, a destructor, etc.).
+This class is a resource handle. It manages the lifetime of the `T`s. To do so, `Vector` must define or delete [the set of special operations](#Rc-five) (constructors, a destructor, etc.).
 
 ##### Example
 
