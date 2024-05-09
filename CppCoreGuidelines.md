@@ -9884,6 +9884,7 @@ This is more efficient:
 
 `make_shared` gives a more concise statement of the construction.
 It also gives an opportunity to eliminate a separate allocation for the reference counts, by placing the `shared_ptr`'s use counts next to its object.
+It also ensures exception safety in complex expressions (in pre-C++17 code).
 
 ##### Example
 
@@ -9903,7 +9904,7 @@ The `make_shared()` version mentions `X` only once, so it is usually shorter (as
 ##### Reason
 
 `make_unique` gives a more concise statement of the construction.
-It also ensures exception safety in complex expressions.
+It also ensures exception safety in complex expressions (in pre-C++17 code).
 
 ##### Example
 
