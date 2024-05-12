@@ -1,6 +1,6 @@
 # <a name="main"></a>C++ Core Guidelines
 
-February 15, 2024
+May 11, 2024
 
 Editors:
 
@@ -10,7 +10,7 @@ Editors:
 This is a living document under continuous improvement.
 Had it been an open-source (code) project, this would have been release 0.8.
 Copying, use, modification, and creation of derivative works from this project is licensed under an MIT-style license.
-Contributing to this project requires agreeing to a Contributor License. See the accompanying [LICENSE](LICENSE) file for details.
+Contributing to this project requires agreeing to a Contributor License. See the accompanying [LICENSE](https://github.com/isocpp/CppCoreGuidelines/blob/master/LICENSE) file for details.
 We make this project available to "friendly users" to use, copy, modify, and derive from, hoping for constructive input.
 
 Comments and suggestions for improvements are most welcome.
@@ -365,17 +365,17 @@ We do not limit our comment in the **Enforcement** sections to things we know ho
 
 Tools that implement these rules shall respect the following syntax to explicitly suppress a rule:
 
-    [[gsl::suppress(tag)]]
+    [[gsl::suppress("tag")]]
 
 and optionally with a message (following usual C++11 standard attribute syntax):
 
-    [[gsl::suppress(tag, justification: "message")]]
+    [[gsl::suppress("tag", justification: "message")]]
 
 where
 
-* `tag` is the anchor name of the item where the Enforcement rule appears (e.g., for [C.134](#Rh-public) it is "Rh-public"), the
+* `"tag"` is a string literal with the anchor name of the item where the Enforcement rule appears (e.g., for [C.134](#Rh-public) it is "Rh-public"), the
 name of a profile group-of-rules ("type", "bounds", or "lifetime"),
-or a specific rule in a profile ([type.4](#Pro-type-cstylecast), or [bounds.2](#Pro-bounds-arrayindex))
+or a specific rule in a profile ([type.4](#Pro-type-cstylecast), or [bounds.2](#Pro-bounds-arrayindex)). Any text that is not one of those should be rejected.
 
 * `"message"` is a string literal
 
@@ -1165,9 +1165,9 @@ Run a static analyzer to verify that your code follows the guidelines you want i
 
 See
 
-* [Static analysis tools](???)
+* [Static analysis tools](https://en.wikipedia.org/wiki/List_of_tools_for_static_code_analysis)
 * [Concurrency tools](#Rconc-tools)
-* [Testing tools](???)
+* [Testing tools](https://github.com/isocpp/CppCoreGuidelines/tree/master)
 
 There are many other kinds of tools, such as source code repositories, build tools, etc.,
 but those are beyond the scope of these guidelines.
@@ -2306,7 +2306,7 @@ Such examples are discussed in [[Str15]](http://www.stroustrup.com/resource-mode
 
 So, we write a class
 
-    class Istream { [[gsl::suppress(lifetime)]]
+    class Istream { [[gsl::suppress("lifetime")]]
     public:
         enum Opt { from_line = 1 };
         Istream() { }
@@ -3007,7 +3007,8 @@ When copying is cheap, nothing beats the simplicity and safety of copying, and f
 For advanced uses (only), where you really need to optimize for rvalues passed to "input-only" parameters:
 
 * If the function is going to unconditionally move from the argument, take it by `&&`. See [F.18](#Rf-consume).
-* If the function is going to keep a copy of the argument, in addition to passing by `const&` (for lvalues),
+* If the function is going to keep a locally modifiable copy of the argument only for its own local use, taking it by value is fine
+* If the function is going to keep a copy of the argument to pass to another destination (to another function, or store in a non-local location), in addition to passing by `const&` (for lvalues),
   add an overload that passes the parameter by `&&` (for rvalues) and in the body `std::move`s it to its destination. Essentially this overloads a "will-move-from"; see [F.18](#Rf-consume).
 * In special cases, such as multiple "input + copy" parameters, consider using perfect forwarding. See [F.19](#Rf-forward).
 
@@ -3663,7 +3664,7 @@ Importantly, that does not imply a transfer of ownership of the pointed-to objec
 ##### Note
 
 Positions can also be transferred by iterators, indices, and references.
-A reference is often a superior alternative to a pointer [if there is no need to use `nullptr`](#Rf-ptr-ref) or [if the object referred to should not change](???).
+A reference is often a superior alternative to a pointer [if there is no need to use `nullptr`](#Rf-ptr-ref) or [if the object referred to should not change](#S-const).
 
 ##### Note
 
@@ -3932,11 +3933,13 @@ value) of any assignment operator.
 
 ##### Reason
 
-With guaranteed copy elision, it is now almost always a pessimization to expressly use `std::move` in a return statement.
+Returning a local variable implicitly moves it anyway.
+An explicit `std::move` is always a pessimization, because it prevents Return Value Optimization (RVO),
+which can eliminate the move completely.
 
 ##### Example, bad
 
-    S f()
+    S bad()
     {
       S result;
       return std::move(result);
@@ -3944,9 +3947,10 @@ With guaranteed copy elision, it is now almost always a pessimization to express
 
 ##### Example, good
 
-    S f()
+    S good()
     {
       S result;
+      // Named RVO: move elision at best, move construction at worst
       return result;
     }
 
@@ -4148,8 +4152,6 @@ It's confusing. Writing `[=]` in a member function appears to capture by value, 
             // ...
 
             auto lambda = [=] { use(i, x); };   // BAD: "looks like" copy/value capture
-            // [&] has identical semantics and copies the this pointer under the current rules
-            // [=,this] and [&,this] are not much better, and confusing
 
             x = 42;
             lambda(); // calls use(0, 42);
@@ -4216,7 +4218,7 @@ Declaring a `...` parameter is sometimes useful for techniques that don't involv
 ##### Enforcement
 
 * Issue a diagnostic for using `va_list`, `va_start`, or `va_arg`.
-* Issue a diagnostic for passing an argument to a vararg parameter of a function that does not offer an overload for a more specific type in the position of the vararg. To fix: Use a different function, or `[[suppress(types)]]`.
+* Issue a diagnostic for passing an argument to a vararg parameter of a function that does not offer an overload for a more specific type in the position of the vararg. To fix: Use a different function, or `[[suppress("type")]]`.
 
 
 ### <a name="F-nesting"></a>F.56: Avoid unnecessary condition nesting
@@ -5093,10 +5095,6 @@ There are two general categories of classes that need a user-defined destructor:
     };
 
 The default destructor does it better, more efficiently, and can't get it wrong.
-
-##### Note
-
-If the default destructor is needed, but its generation has been suppressed (e.g., by defining a move constructor), use `=default`.
 
 ##### Enforcement
 
@@ -9539,7 +9537,7 @@ Returning a (raw) pointer imposes a lifetime management uncertainty on the calle
         delete p;
     }
 
-In addition to suffering from the problem from [leak](#???), this adds a spurious allocation and deallocation operation, and is needlessly verbose. If Gadget is cheap to move out of a function (i.e., is small or has an efficient move operation), just return it "by value" (see ["out" return values](#Rf-out)):
+In addition to suffering from the problem of [leak](#Rp-leak), this adds a spurious allocation and deallocation operation, and is needlessly verbose. If Gadget is cheap to move out of a function (i.e., is small or has an efficient move operation), just return it "by value" (see ["out" return values](#Rf-out)):
 
     Gadget make_gadget(int n)
     {
@@ -9886,6 +9884,7 @@ This is more efficient:
 
 `make_shared` gives a more concise statement of the construction.
 It also gives an opportunity to eliminate a separate allocation for the reference counts, by placing the `shared_ptr`'s use counts next to its object.
+It also ensures exception safety in complex expressions (in pre-C++17 code).
 
 ##### Example
 
@@ -9905,7 +9904,7 @@ The `make_shared()` version mentions `X` only once, so it is usually shorter (as
 ##### Reason
 
 `make_unique` gives a more concise statement of the construction.
-It also ensures exception safety in complex expressions.
+It also ensures exception safety in complex expressions (in pre-C++17 code).
 
 ##### Example
 
@@ -12677,6 +12676,10 @@ Flag the C-style `(T)e` and functional-style `T(e)` casts.
 
 Dereferencing an invalid pointer, such as `nullptr`, is undefined behavior, typically leading to immediate crashes,
 wrong results, or memory corruption.
+
+##### Note
+
+By pointer here we mean any indirection to an object, including equivalently an iterator or view.
 
 ##### Note
 
@@ -20993,7 +20996,7 @@ Reference sections:
   Libraries used have to have been approved for mission critical applications.
   Any similarities to this set of guidelines are unsurprising because Bjarne Stroustrup was an author of JSF++.
   Recommended, but note its very specific focus.
-* [MISRA C++ 2008: Guidelines for the use of the C++ language in critical systems](https://www.misra.org.uk/Buyonline/tabid/58/Default.aspx).
+* [MISRA C++:2023 Guidelines for the use C++17 in critical systems](https://misra.org.uk/product/misra-cpp2023/).
 * [Using C++ in Mozilla Code](https://firefox-source-docs.mozilla.org/code-quality/coding-style/using_cxx_in_firefox_code.html).
   As the name indicates, this aims for portability across many (old) compilers.
   As such, it is restrictive.
@@ -21155,7 +21158,7 @@ Enabling a profile is implementation defined; typically, it is set in the analys
 
 To suppress enforcement of a profile check, place a `suppress` annotation on a language contract. For example:
 
-    [[suppress(bounds)]] char* raw_find(char* p, int n, char x)    // find x in p[0]..p[n - 1]
+    [[suppress("bounds")]] char* raw_find(char* p, int n, char x)    // find x in p[0]..p[n - 1]
     {
         // ...
     }
@@ -22642,7 +22645,7 @@ Prevent leaks. Leaks can lead to performance degradation, mysterious error, syst
         // ...
     };
 
-This class is a resource handle. It manages the lifetime of the `T`s. To do so, `Vector` must define or delete [the set of special operations](???) (constructors, a destructor, etc.).
+This class is a resource handle. It manages the lifetime of the `T`s. To do so, `Vector` must define or delete [the set of special operations](#Rc-five) (constructors, a destructor, etc.).
 
 ##### Example
 
