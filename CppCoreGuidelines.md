@@ -16363,7 +16363,7 @@ The standard library assumes that destructors, deallocation functions (e.g., `op
 * `swap` functions must be `noexcept`.
 * Most destructors are implicitly `noexcept` by default.
 * Also, [make move operations `noexcept`](#Rc-move-noexcept).
-* If writing a type intended to be used as an exception type, ensure its copy constructor is not `noexcept`. In general we cannot mechanically enforce this, because we do not know whether a type is intended to be used as an exception type.
+* If writing a type intended to be used as an exception type, ensure its copy constructor is `noexcept`. In general we cannot mechanically enforce this, because we do not know whether a type is intended to be used as an exception type.
 * Try not to `throw` a type whose copy constructor is not `noexcept`. In general we cannot mechanically enforce this, because even `throw std::string(...)` could throw but does not in practice.
 
 ##### Enforcement
