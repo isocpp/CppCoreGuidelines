@@ -11165,6 +11165,16 @@ Use plain `{}`-initialization unless you specifically want to disable explicit c
         // ...
     }
 
+##### Exception
+
+For container-like types whose element type can be initialized from an instance of that very container
+type iteself, e.g. `std::any` or a template parameter `T` of a template type having a constructor accepting `T`,
+use `()` to avoid erroneously constructing a nested container:
+
+    vector<any> v{1,2,3};
+    vector<any> u{v}; // most likely unintended: u has 1 element of type any, which contains v
+    vector<any> w(v); // w is a copy of v
+
 **See also**: [Discussion](#???)
 
 ##### Enforcement
