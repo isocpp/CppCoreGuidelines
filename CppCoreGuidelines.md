@@ -4878,7 +4878,7 @@ It's the simplest and gives the cleanest semantics.
 
     struct Named_map {
     public:
-        Named_map(const string& n) : name(n) {}
+        explicit Named_map(const string& n) : name(n) {}
         // no copy/move constructors
         // no copy/move assignment operators
         // no destructor
