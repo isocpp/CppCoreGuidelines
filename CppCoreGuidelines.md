@@ -4878,14 +4878,16 @@ It's the simplest and gives the cleanest semantics.
 
     struct Named_map {
     public:
-        Named_map() : name("empty") {}
-        // ... no default operations declared ...
+        Named_map(const string& n) : name(n) {}
+        // no copy/move constructors
+        // no copy/move assignment operators
+        // no destructor
     private:
         string name;
         map<int, int> rep;
     };
 
-    Named_map nm;        // default construct
+    Named_map nm("map"); // construct
     Named_map nm2 {nm};  // copy construct
 
 Since `std::map` and `string` have all the special functions, no further work is needed.
