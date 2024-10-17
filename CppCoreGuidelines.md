@@ -20583,7 +20583,7 @@ The positive arguments for alternatives to these non-rules are listed in the rul
 Non-rule summary:
 
 * [NR.1: Don't insist that all declarations should be at the top of a function](#Rnr-top)
-* [NR.2: Don't insist to have only a single `return`-statement in a function](#Rnr-single-return)
+* [NR.2: Don't insist on having only a single `return`-statement in a function](#Rnr-single-return)
 * [NR.3: Don't avoid exceptions](#Rnr-no-exceptions)
 * [NR.4: Don't insist on placing each class definition in its own source file](#Rnr-lots-of-files)
 * [NR.5: Don't use two-phase initialization](#Rnr-two-phase-init)
@@ -20629,7 +20629,7 @@ Unfortunately, compilers cannot catch all such errors and unfortunately, the bug
 * [Always initialize an object](#Res-always)
 * [ES.21: Don't introduce a variable (or constant) before you need to use it](#Res-introduce)
 
-### <a name="Rnr-single-return"></a>NR.2: Don't insist to have only a single `return`-statement in a function
+### <a name="Rnr-single-return"></a>NR.2: Don't insist on having only a single `return`-statement in a function
 
 ##### Reason
 
