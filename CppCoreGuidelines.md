@@ -6597,7 +6597,7 @@ Writing out the bodies of the copy and move operations is verbose, tedious, and 
 
 ##### Enforcement
 
-(Moderate) The body of a special operation should not have the same accessibility and semantics as the compiler-generated version, because that would be redundant
+(Moderate) The body of a user-defined operation should not have the same semantics as the compiler-generated version, because that would be redundant.
 
 ### <a name="Rc-delete"></a>C.81: Use `=delete` when you want to disable default behavior (without wanting an alternative)
 
@@ -22648,7 +22648,7 @@ Prevent leaks. Leaks can lead to performance degradation, mysterious error, syst
         // ...
     };
 
-This class is a resource handle. It manages the lifetime of the `T`s. To do so, `Vector` must define or delete [the set of special operations](#Rc-five) (constructors, a destructor, etc.).
+This class is a resource handle. It manages the lifetime of the `T`s. To do so, `Vector` must define or delete [the copy, move, and destruction operations](#Rc-five).
 
 ##### Example
 
@@ -22795,7 +22795,7 @@ To provide complete control of the lifetime of the resource. To provide a cohere
 
 ##### Note
 
-If all members are resource handles, rely on the default special operations where possible.
+If all members are resource handles, rely on the compiler-generated operations where possible.
 
     template<typename T> struct Named {
         string name;
