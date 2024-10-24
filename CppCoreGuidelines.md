@@ -9622,24 +9622,7 @@ Exception: Do not produce such a warning on a local `Unique_pointer` to an unbou
 
 ##### Exception
 
-It is OK to create a local `const unique_ptr<T[]>` to a heap-allocated buffer, as this is a valid way to represent a scoped dynamic array.
-
-##### Example
-
-A valid use case for a local `const unique_ptr<T[]>` variable:
-
-    int get_median_value(const std::list<int>& integers)
-    {
-      const auto size = integers.size();
-
-      // OK: declaring a local unique_ptr<T[]>.
-      const auto local_buffer = std::make_unique_for_overwrite<int[]>(size);
-
-      std::copy_n(begin(integers), size, local_buffer.get());
-      std::nth_element(local_buffer.get(), local_buffer.get() + size/2, local_buffer.get() + size);
-
-      return local_buffer[size/2];
-    }
+If your stack space is limited, it is OK to create a local `const unique_ptr<BigObject>` to store the object on the heap instead of the stack.
 
 ### <a name="Rr-global"></a>R.6: Avoid non-`const` global variables
 
