@@ -1,6 +1,6 @@
 # <a name="main"></a>C++ Core Guidelines
 
-May 11, 2024
+Oct 3, 2024
 
 Editors:
 
@@ -4878,13 +4878,16 @@ It's the simplest and gives the cleanest semantics.
 
     struct Named_map {
     public:
-        // ... no default operations declared ...
+        explicit Named_map(const string& n) : name(n) {}
+        // no copy/move constructors
+        // no copy/move assignment operators
+        // no destructor
     private:
         string name;
         map<int, int> rep;
     };
 
-    Named_map nm;        // default construct
+    Named_map nm("map"); // construct
     Named_map nm2 {nm};  // copy construct
 
 Since `std::map` and `string` have all the special functions, no further work is needed.
@@ -6594,7 +6597,7 @@ Writing out the bodies of the copy and move operations is verbose, tedious, and 
 
 ##### Enforcement
 
-(Moderate) The body of a special operation should not have the same accessibility and semantics as the compiler-generated version, because that would be redundant
+(Moderate) The body of a user-defined operation should not have the same semantics as the compiler-generated version, because that would be redundant.
 
 ### <a name="Rc-delete"></a>C.81: Use `=delete` when you want to disable default behavior (without wanting an alternative)
 
@@ -9619,24 +9622,7 @@ Exception: Do not produce such a warning on a local `Unique_pointer` to an unbou
 
 ##### Exception
 
-It is OK to create a local `const unique_ptr<T[]>` to a heap-allocated buffer, as this is a valid way to represent a scoped dynamic array.
-
-##### Example
-
-A valid use case for a local `const unique_ptr<T[]>` variable:
-
-    int get_median_value(const std::list<int>& integers)
-    {
-      const auto size = integers.size();
-
-      // OK: declaring a local unique_ptr<T[]>.
-      const auto local_buffer = std::make_unique_for_overwrite<int[]>(size);
-
-      std::copy_n(begin(integers), size, local_buffer.get());
-      std::nth_element(local_buffer.get(), local_buffer.get() + size/2, local_buffer.get() + size);
-
-      return local_buffer[size/2];
-    }
+If your stack space is limited, it is OK to create a local `const unique_ptr<BigObject>` to store the object on the heap instead of the stack.
 
 ### <a name="Rr-global"></a>R.6: Avoid non-`const` global variables
 
@@ -9876,7 +9862,7 @@ This is more efficient:
 
 ##### Enforcement
 
-(Simple) Warn if a function uses a `Shared_pointer` with an object allocated within the function, but never returns the `Shared_pointer` or passes it to a function requiring a `Shared_pointer&`. Suggest using `unique_ptr` instead.
+(Simple) Warn if a function uses a `Shared_pointer` with an object allocated within the function, but never returns the `Shared_pointer` or passes it to a function requiring a `Shared_pointer`. Suggest using `unique_ptr` instead.
 
 ### <a name="Rr-make_shared"></a>R.22: Use `make_shared()` to make `shared_ptr`s
 
@@ -20580,7 +20566,7 @@ The positive arguments for alternatives to these non-rules are listed in the rul
 Non-rule summary:
 
 * [NR.1: Don't insist that all declarations should be at the top of a function](#Rnr-top)
-* [NR.2: Don't insist to have only a single `return`-statement in a function](#Rnr-single-return)
+* [NR.2: Don't insist on having only a single `return`-statement in a function](#Rnr-single-return)
 * [NR.3: Don't avoid exceptions](#Rnr-no-exceptions)
 * [NR.4: Don't insist on placing each class definition in its own source file](#Rnr-lots-of-files)
 * [NR.5: Don't use two-phase initialization](#Rnr-two-phase-init)
@@ -20626,7 +20612,7 @@ Unfortunately, compilers cannot catch all such errors and unfortunately, the bug
 * [Always initialize an object](#Res-always)
 * [ES.21: Don't introduce a variable (or constant) before you need to use it](#Res-introduce)
 
-### <a name="Rnr-single-return"></a>NR.2: Don't insist to have only a single `return`-statement in a function
+### <a name="Rnr-single-return"></a>NR.2: Don't insist on having only a single `return`-statement in a function
 
 ##### Reason
 
@@ -22645,7 +22631,7 @@ Prevent leaks. Leaks can lead to performance degradation, mysterious error, syst
         // ...
     };
 
-This class is a resource handle. It manages the lifetime of the `T`s. To do so, `Vector` must define or delete [the set of special operations](#Rc-five) (constructors, a destructor, etc.).
+This class is a resource handle. It manages the lifetime of the `T`s. To do so, `Vector` must define or delete [the copy, move, and destruction operations](#Rc-five).
 
 ##### Example
 
@@ -22792,7 +22778,7 @@ To provide complete control of the lifetime of the resource. To provide a cohere
 
 ##### Note
 
-If all members are resource handles, rely on the default special operations where possible.
+If all members are resource handles, rely on the compiler-generated operations where possible.
 
     template<typename T> struct Named {
         string name;
