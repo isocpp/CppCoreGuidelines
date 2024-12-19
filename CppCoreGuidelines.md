@@ -8031,11 +8031,6 @@ This rule is about using `final` on classes with virtual functions meant to be i
 
 ##### Note
 
-Capping an individual virtual function with `final` is error-prone as `final` can easily be overlooked when defining/overriding a set of functions.
-Fortunately, the compiler catches such mistakes: You cannot re-declare/re-open a `final` member in a derived class.
-
-##### Note
-
 Claims of performance improvements from `final` should be substantiated.
 Too often, such claims are based on conjecture or experience with other languages.
 
