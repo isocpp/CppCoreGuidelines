@@ -21341,7 +21341,7 @@ Use `not_null<zstring>` for C-style strings that cannot be `nullptr`. ??? Do we 
 * `unique_ptr<T>`     // unique ownership: `std::unique_ptr<T>`
 * `shared_ptr<T>`     // shared ownership: `std::shared_ptr<T>` (a counted pointer)
 * `stack_array<T>`    // A stack-allocated array. The number of elements is determined at construction and fixed thereafter. The elements are mutable unless `T` is a `const` type.
-* `dyn_array<T>`      // A container, nongrowing dynamically allocated array. The number of elements is determined at construction and fixed thereafter.
+* `dyn_array<T>`      // A container, non-growing dynamically allocated array. The number of elements is determined at construction and fixed thereafter.
   The elements are mutable unless `T` is a `const` type. Basically a `span` that allocates and owns its elements.
 
 ## <a name="SS-assertions"></a>GSL.assert: Assertions
