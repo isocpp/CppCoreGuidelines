@@ -22178,7 +22178,7 @@ No. `stack_array` is guaranteed to be allocated on the stack. Although a `std::a
 ### <a name="Faq-gsl-dyn-array"></a>FAQ.58: Is `dyn_array` the same as `vector` or the proposed `dynarray`?
 
 No. `dyn_array` is a container, like `vector`, but it is not resizable; its size is fixed at runtime when it is constructed.
-It is a safe way to refer to a dyamically "heap"-allocated fixed-size array. Unlike `vector`, it is intended to replace array-`new[]`. Unlike the `dynarray` that has been proposed in the committee, this does not anticipate compiler/language magic to somehow allocate it on the stack when it is a member of an object that is allocated on the stack; it simply refers to a "dynamic" or heap-based array.
+It is a safe way to refer to a dynamically "heap"-allocated fixed-size array. Unlike `vector`, it is intended to replace array-`new[]`. Unlike the `dynarray` that has been proposed in the committee, this does not anticipate compiler/language magic to somehow allocate it on the stack when it is a member of an object that is allocated on the stack; it simply refers to a "dynamic" or heap-based array.
 
 ### <a name="Faq-gsl-expects"></a>FAQ.59: Is `Expects` the same as `assert`?
 
