@@ -7428,14 +7428,14 @@ We want to eliminate two particular classes of errors:
 * **implicit virtual**: the programmer intended the function to be implicitly virtual and it is (but readers of the code can't tell); or the programmer intended the function to be implicitly virtual but it isn't (e.g., because of a subtle parameter list mismatch); or the programmer did not intend the function to be virtual but it is (because it happens to have the same signature as a virtual in the base class)
 * **implicit override**: the programmer intended the function to be implicitly an overrider and it is (but readers of the code can't tell); or the programmer intended the function to be implicitly an overrider but it isn't (e.g., because of a subtle parameter list mismatch); or the programmer did not intend the function to be an overrider but it is (because it happens to have the same signature as a virtual in the base class -- note this problem arises whether or not the function is explicitly declared virtual, because the programmer might have intended to create either a new virtual function or a new non-virtual function)
 
-Note: On a class defined as `final`, it doesn't matter whether you put `override` or `final` on an individual virtual function.
+Note: On a class defined as `final`, individual virtual functions cannot be overridden whether or not you put `final` on them. However, using `override`, or `final` without `virtual`, on a member function of a class marked `final` ensures that it overrides a base class virtual function.
 
 Note: Use `final` on functions sparingly. It does not necessarily lead to optimization, and it precludes further overriding.
 
 ##### Enforcement
 
-* Compare virtual function names in base and derived classes and flag uses of the same name that does not override.
-* Flag overrides with neither `override` nor `final`.
+* Compare virtual function names in base and derived classes and flag uses of the same name that do not have the same signatures and thus do not override.
+* Flag function overrides in derived classes containing neither `override` nor `final`.
 * Flag function declarations that use more than one of `virtual`, `override`, and `final`.
 
 ### <a name="Rh-kind"></a>C.129: When designing a class hierarchy, distinguish between implementation inheritance and interface inheritance
