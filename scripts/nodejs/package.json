@@ -1,7 +1,7 @@
 {
     "name": "CppCoreGuidelinesCheck",
     "version": "0.0.0",
-    "description": "CppCoreGuidelines Check",
+    "description": "CppCoreFunctionalities",
     "private": true,
     "dependencies": {
         "remark": "^4.2.2",

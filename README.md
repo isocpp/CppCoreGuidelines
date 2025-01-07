@@ -1,7 +1,7 @@
 [![C++ Core Guidelines](cpp_core_guidelines_logo_text.png)](http://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines)
 
->"Within C++ is a smaller, simpler, safer language struggling to get out."
->-- <cite>Bjarne Stroustrup</cite>
+> "Within C++ is a smaller, simpler, safer language struggling to get out."
+> -- <cite>Bjarne Stroustrup</cite>
 
 The [C++ Core Guidelines](CppCoreGuidelines.md) are a collaborative effort led by Bjarne Stroustrup, much like the C++ language itself. They are the result of many
 person-years of discussion and design across a number of organizations. Their design encourages general applicability and broad adoption but
@@ -12,7 +12,7 @@ they can be freely copied and modified to meet your organization's needs.
 The guidelines themselves are found at [CppCoreGuidelines](CppCoreGuidelines.md). The document is in [GH-flavored MarkDown](https://github.github.com/gfm/). It is intentionally kept simple, mostly in ASCII, to allow automatic post-processing such as language translation and reformatting. The editors maintain one
 [version formatted for browsing](http://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines). Note that it is manually integrated and can be slightly older than the version in the master branch.
 
-The Guidelines are a constantly evolving document without a strict "release" cadence. Bjarne Stroustrup periodically reviews the document and increments the version number in the introduction. [Checkins that increment the version number](https://github.com/isocpp/CppCoreGuidelines/releases) are tagged in git. 
+The Guidelines are a constantly evolving document without a strict "release" cadence. Bjarne Stroustrup periodically reviews the document and increments the version number in the introduction. [Checkins that increment the version number](https://github.com/isocpp/CppCoreGuidelines/releases) are tagged in git.
 
 Many of the guidelines make use of the header-only Guidelines Support Library. One implementation is available at [GSL: Guidelines Support Library](https://github.com/Microsoft/GSL).
 
