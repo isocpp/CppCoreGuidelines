@@ -18,8 +18,7 @@
             "no-duplicate-headings": false,
             "emphasis-marker": "*",
             "no-tabs": true,
-            "blockquote-indentation": false,
-            "strong-marker": "*"
+            
         }
     },
     "settings": {
