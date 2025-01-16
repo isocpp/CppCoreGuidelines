@@ -2679,9 +2679,9 @@ Member functions defined in-class are `inline` by default.
 
 Function templates (including member functions of class templates `A<T>::function()` and member function templates `A::function<T>()`) are normally defined in headers and therefore inline.
 
-##### Enforcement
+##### Note
 
-Flag `inline` functions that are more than three statements and could have been declared out of line (such as class member functions).
+Consider making functions out of line if they are more than three statements and can be declared out of line (such as class member functions).
 
 ### <a name="Rf-noexcept"></a>F.6: If your function must not throw, declare it `noexcept`
 
