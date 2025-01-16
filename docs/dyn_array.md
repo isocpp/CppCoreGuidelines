@@ -8,16 +8,23 @@
 | ---- | ------ | ----------- |
 | Jan 16, 2025 | Carson Radtke (Microsoft) | Initial draft. |
 
-A specification to guide the implementation of `gsl::dyn_array`. This is a dynamic array
-that is intended to be a replacement for slinging around raw pointers and sizes.
-Notably, it _owns_ all of its elements. It can be thought of like a...
+`gsl::dyn_array` is a dynamic array that is intended to be a replacement for slinging
+around raw pointers and sizes. Notably, it _owns_ all of its elements. It should replace
+the following idioms:
+
+* Replace `new T[n]` with `gsl::dyn_array<T>(n)`.
+* Replace both `foo(T*, size_t)` and `foo(unique_ptr<T[]>&, size_t)` with
+`foo(gsl::dyn_array<T>&)`.
+
+It can be thought of like a...
 
 * `std::array` except the size is specified at runtime.
 * `std::vector` except it can neither shrink nor grow.
 
 ### Container Named Requirements
 In order to allow element access using iterators and to align with various container
-idioms, `gsl::dyn_array` should satisfy the following named requirements:
+idioms for `std::` algorithms, `gsl::dyn_array` should satisfy the following named
+requirements:
 
 * Container ([link](https://en.cppreference.com/w/cpp/named_req/Container))
 * ReversibleContainer ([link](https://en.cppreference.com/w/cpp/named_req/ReversibleContainer))
@@ -29,9 +36,14 @@ idioms, `gsl::dyn_array` should satisfy the following named requirements:
 In addition to the constructors required by the named requirements (default, copy, and
 move), `gsl::dyn_array` will support the following constructors:
 
+* Construct a `dyn_array` with `n` default constructed elements:
+```c++
+constexpr explicit dyn_array(size_t n, const Allocator & alloc = Allocator());
+```
+
 * Construct a `dyn_array` with `n` elements, each copy constructed from `arg`:
 ```c++
-constexpr explicit dyn_array(size_t n, const T& arg, const Allocator & alloc = Allocator());
+constexpr dyn_array(size_t n, const T& arg, const Allocator & alloc = Allocator());
 ``` 
 
 * Construct a `dyn_array` with elements from the range `[first, last)`:
