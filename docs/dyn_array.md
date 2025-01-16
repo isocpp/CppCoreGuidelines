@@ -29,13 +29,10 @@ idioms, `gsl::dyn_array` should satisfy the following named requirements:
 In addition to the constructors required by the named requirements (default, copy, and
 move), `gsl::dyn_array` will support the following constructors:
 
-* Construct a `dyn_array` with `n` elements, each constructed with `Args...`:
+* Construct a `dyn_array` with `n` elements, each copy constructed from `arg`:
 ```c++
-template <typename... Args>
-constexpr explicit dyn_array(size_t n, Args&&...);
-template <typename... Args>
-constexpr dyn_array(size_t n, const Allocator &, Args&&...);
-```
+constexpr explicit dyn_array(size_t n, const T& arg, const Allocator & alloc = Allocator());
+``` 
 
 * Construct a `dyn_array` with elements from the range `[first, last)`:
 ```c++
