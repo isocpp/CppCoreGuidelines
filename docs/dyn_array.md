@@ -40,19 +40,18 @@ constexpr dyn_array(size_t n, const Allocator &, Args&&...);
 * Construct a `dyn_array` with elements from the range `[first, last)`:
 ```c++
 template <typename InputIt>
-constexpr dyn_array(InputIt first, InputIt last)
-template <typename InputIt>
 constexpr dyn_array(InputIt first, InputIt last, const Allocator & alloc = Allocator());
 ```
 
 * Construct a `dyn_array` with elements from the initializer list:
 ```c++
-constexpr dyn_array(std::initializer_list<T>);
+constexpr dyn_array(std::initializer_list<T>, const Allocator & alloc = Allocator());
 ```
 
 * Construct a `dyn_array` with elements from the range `R`:
 ```c++
-template <container-compatible-range<T> R> constexpr dyn_array(R&&);
+template <container-compatible-range<T> R>
+constexpr dyn_array(R&&, const Allocator & alloc = Allocator());
 ```
 
 ### Operations
