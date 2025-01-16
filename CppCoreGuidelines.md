@@ -1123,7 +1123,7 @@ Messy, low-level code breeds more such code.
     }
 
 This is low-level, verbose, and error-prone.
-For example, we "forgot" to test for memory exhaustion.
+For example, we "forgot" to test for memory exhaustion and assign new value to `sz`.
 Instead, we could use `vector`:
 
     vector<int> v;
