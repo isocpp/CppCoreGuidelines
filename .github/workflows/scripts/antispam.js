@@ -84,7 +84,59 @@ class Check {
     }
 }
 
-module.exports = async ({ github, context, core }) => {
+class Testing {
+
+    static enabled = true;
+
+    static parseGitHubUrl({ url }) {
+        const match = url.match(/github\.com\/([^\/]+)\/([^\/]+)\/(issues|pull)\/(\d+)/);
+        if (!match || match.length !== 4)
+            return null;
+
+        return {
+          owner: match[1],
+          repo: match[2],
+          type: match[3], // "issues" or "pull"
+          number: parseInt(match[4], 10),
+        };
+    }
+
+    static async getContext({ url, github }) {
+
+        const details = parseGitHubUrl(url);
+        if (!details) {
+          throw new Error(`Invalid GitHub issue/PR URL: [${url}]`);
+        }
+
+        const { owner, repo, type, number } = details;
+        let response;
+
+        try {
+          response = (type === "issues")
+            ? await github.rest.issues.get({ owner, repo, issue_number: number })
+            : await github.rest.pulls.get({ owner, repo, pull_number: number })
+            ;
+        }
+        catch (error) {
+          throw new Error(`Failed to fetch ${type.slice(0, -1)} #${number}: ${error.message}`);
+        }
+
+        return response.data;
+    }
+
+    static cases = [
+        'https://github.com/isocpp/CppCoreGuidelines/pull/2257',
+        'https://github.com/isocpp/CppCoreGuidelines/pull/2241',
+        'https://github.com/isocpp/CppCoreGuidelines/pull/2254',
+        'https://github.com/isocpp/CppCoreGuidelines/pull/2252',
+        'https://github.com/isocpp/CppCoreGuidelines/issues/2249',
+        'https://github.com/isocpp/CppCoreGuidelines/issues/2238',
+        'https://github.com/isocpp/CppCoreGuidelines/issues/2225',
+        'https://github.com/isocpp/CppCoreGuidelines/issues/2255',
+    ]
+}
+
+async function run({ github, context, core }) {
 
     // const {SHA} = process.env; // for octokit.rest.repos.getCommit
     const username = context.actor;
@@ -108,7 +160,6 @@ module.exports = async ({ github, context, core }) => {
         const create_at = new Date(user.created_at);
         return create_at >= time_point;
     })();
-
     const isTitleOrBodyTooShort = (() => {
 
         if (context.eventName === 'workflow_dispatch') // issues or pull_request
@@ -125,7 +176,7 @@ module.exports = async ({ github, context, core }) => {
 
     const checks = [
         new Check({
-            predicate: () => false, // ! WasAuthorRecentlyCreated,
+            predicate: () => ! WasAuthorRecentlyCreated,
             reason: "Author account was recently created"
         }),
         new Check({
@@ -182,4 +233,13 @@ module.exports = async ({ github, context, core }) => {
             console.log("user_information_as_comment", user_information_as_comment);
         });
     });
+};
+
+module.exports = async ({ github, context, core }) => {
+
+    if (! Testing.enabled)
+        return await run({ github, context, core });
+
+    const testing_contexts = await Array.from(cases, (url) => getContext({ url: url, github }))
+    testing_contexts.forEach((context) => console.log(`debug: ${context.actor}`))
 };
