@@ -88,7 +88,7 @@ class Testing {
 
     static enabled = true;
 
-    static parseGitHubUrl({ url }) {
+    static #parseGitHubUrl({ url }) {
         const match = url.match(/github\.com\/([^\/]+)\/([^\/]+)\/(issues|pull)\/(\d+)/);
         if (!match || match.length !== 4)
             return null;
@@ -103,7 +103,7 @@ class Testing {
 
     static async getContext({ url, github }) {
 
-        const details = parseGitHubUrl(url);
+        const details = Testing.#parseGitHubUrl(url);
         if (!details) {
           throw new Error(`Invalid GitHub issue/PR URL: [${url}]`);
         }
