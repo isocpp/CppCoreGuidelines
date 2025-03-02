@@ -103,7 +103,7 @@ class Testing {
 
     static async getContext({ url, github }) {
 
-        const details = Testing.#parseGitHubUrl(url);
+        const details = Testing.#parseGitHubUrl({ url: url });
         if (!details) {
           throw new Error(`Invalid GitHub issue/PR URL: [${url}]`);
         }
@@ -242,7 +242,7 @@ module.exports = async ({ github, context, core }) => {
 
     const testing_contexts = await Array.from(
         Testing.cases,
-        (url) => Testing.getContext({ url: url, github })
+        async (url) => await Testing.getContext({ url: url, github })
     );
     testing_contexts.forEach((context) => console.log(`debug: ${context.actor}`))
 };
