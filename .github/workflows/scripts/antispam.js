@@ -94,10 +94,10 @@ class Testing {
             return null;
 
         return {
-          owner: match[1],
-          repo: match[2],
-          type: match[3], // "issues" or "pull"
-          number: parseInt(match[4], 10),
+            owner: match[1],
+            repo: match[2],
+            type: match[3], // "issues" or "pull"
+            number: parseInt(match[4], 10),
         };
     }
 
@@ -105,20 +105,21 @@ class Testing {
 
         const parsed_url = Testing.#parseGitHubUrl({ url: url });
         if (!parsed_url) {
-          throw new Error(`Invalid GitHub issue/PR URL: [${url}]`);
+            throw new Error(`Invalid GitHub issue/PR URL: [${url}]`);
         }
 
         const { owner, repo, type, number } = parsed_url;
         let response;
 
         try {
-          response = (type === "issues")
-            ? await github.rest.issues.get({ owner, repo, issue_number: number })
-            : await github.rest.pulls.get({ owner, repo, pull_number: number })
+            response = (type === "issues")
+                ? await github.rest.issues.get({ owner, repo, issue_number: number })
+                : await github.rest.pulls.get({ owner, repo, pull_number: number })
             ;
+            console.log(`>>> ${response}`)
         }
         catch (error) {
-          throw new Error(`Failed to fetch ${type.slice(0, -1)} #${number}: ${error.message}`);
+            throw new Error(`Failed to fetch ${type.slice(0, -1)} #${number}: ${error.message}`);
         }
 
         return response.data;
