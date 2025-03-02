@@ -11,12 +11,12 @@ async function make_information_report({ user }) {
 > 
 > | information | value |
 > | ----------- | ----- |
-> | email       | ${user.email}    |
-> | login       | ${user.login}    |
-> | name        | ${user.name}     |
-> | location    | ${user.location} |
-> | blog        | ${user.blog}     |
-> | location    | ${user.location} |
+> | email       | ${user.email    || '' } |
+> | login       | ${user.login    || '' } |
+> | name        | ${user.name     || '' } |
+> | location    | ${user.location || '' } |
+> | blog        | ${user.blog     || '' } |
+> | location    | ${user.location || '' } |
 `
 }
 
