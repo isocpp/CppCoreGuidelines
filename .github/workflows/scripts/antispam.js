@@ -84,59 +84,6 @@ class Check {
     }
 }
 
-class Testing {
-
-    static enabled = true;
-
-    static #parseGitHubUrl({ url }) {
-        const match = url.match(/github\.com\/([^\/]+)\/([^\/]+)\/(issues|pull)\/(\d+)/);
-        if (!match || match.length !== 5)
-            return null;
-
-        return {
-            owner: match[1],
-            repo: match[2],
-            type: match[3], // "issues" or "pull"
-            number: parseInt(match[4], 10),
-        };
-    }
-
-    static async getContext({ url, github }) {
-
-        const parsed_url = Testing.#parseGitHubUrl({ url: url });
-        if (!parsed_url) {
-            throw new Error(`Invalid GitHub issue/PR URL: [${url}]`);
-        }
-
-        const { owner, repo, type, number } = parsed_url;
-        let response;
-
-        try {
-            response = (type === "issues")
-                ? await github.rest.issues.get({ owner, repo, issue_number: number })
-                : await github.rest.pulls.get({ owner, repo, pull_number: number })
-            ;
-        }
-        catch (error) {
-            throw new Error(`Failed to fetch ${type.slice(0, -1)} #${number}: ${error.message}`);
-        }
-
-        console.log('response.data', response.data)
-        return response.data;
-    }
-
-    static cases = [
-        'https://github.com/isocpp/CppCoreGuidelines/pull/2257',
-        'https://github.com/isocpp/CppCoreGuidelines/pull/2241',
-        'https://github.com/isocpp/CppCoreGuidelines/pull/2254',
-        'https://github.com/isocpp/CppCoreGuidelines/pull/2252',
-        'https://github.com/isocpp/CppCoreGuidelines/issues/2249',
-        'https://github.com/isocpp/CppCoreGuidelines/issues/2238',
-        'https://github.com/isocpp/CppCoreGuidelines/issues/2225',
-        'https://github.com/isocpp/CppCoreGuidelines/issues/2255',
-    ]
-}
-
 async function run({ github, context, core }) {
 
     // const {SHA} = process.env; // for octokit.rest.repos.getCommit
@@ -200,7 +147,7 @@ async function run({ github, context, core }) {
 
     // IDEA: mandatory checks -> if any fails, then reject
     //       for other checks
-    //          then use a weights/factors instead of booleans,
+    //          use a weights/factors instead of booleans
     //          compute a confidence score to check against a threshold => if below, then reject
     
     async function failedChecks(checks) {
@@ -236,24 +183,91 @@ async function run({ github, context, core }) {
     });
 };
 
+class Testing {
+
+    static enabled = true;
+
+    static #parseGitHubUrl({ url }) {
+        const match = url.match(/github\.com\/([^\/]+)\/([^\/]+)\/(issues|pull)\/(\d+)/);
+        if (!match || match.length !== 5)
+            return null;
+
+        return {
+            owner: match[1],
+            repo: match[2],
+            type: match[3], // "issues" or "pull"
+            number: parseInt(match[4], 10),
+        };
+    }
+
+    static async getContext({ url, github }) {
+
+        const parsed_url = Testing.#parseGitHubUrl({ url: url });
+        if (!parsed_url) {
+            throw new Error(`Invalid GitHub issue/PR URL: [${url}]`);
+        }
+
+        const { owner, repo, type, number } = parsed_url;
+        let response;
+
+        try {
+            response = (type === "issues")
+                ? await github.rest.issues.get({ owner, repo, issue_number: number })
+                : await github.rest.pulls.get({ owner, repo, pull_number: number })
+            ;
+        }
+        catch (error) {
+            throw new Error(`Failed to fetch ${type.slice(0, -1)} #${number}: ${error.message}`);
+        }
+
+        // console.log('response.data', response.data)
+        return response.data;
+    }
+
+    static cases = [
+        'https://github.com/isocpp/CppCoreGuidelines/pull/2257'
+        // 'https://github.com/isocpp/CppCoreGuidelines/pull/2241',
+        // 'https://github.com/isocpp/CppCoreGuidelines/pull/2254',
+        // 'https://github.com/isocpp/CppCoreGuidelines/pull/2252',
+        // 'https://github.com/isocpp/CppCoreGuidelines/issues/2249',
+        // 'https://github.com/isocpp/CppCoreGuidelines/issues/2238',
+        // 'https://github.com/isocpp/CppCoreGuidelines/issues/2225',
+        // 'https://github.com/isocpp/CppCoreGuidelines/issues/2255',
+    ]
+    // WIP: split suspicious, legit cases to test against false-positives
+}
+
+
 module.exports = async ({ github, context, core }) => {
 
     if (! Testing.enabled)
         return await run({ github, context, core });
 
+    console.log('>>> DEBUG: context', context)
+
     // IDEA: run N-by-N to limit memory bloat
     await Promise.all(
         Testing.cases.map((url) => Testing.getContext({ url, github }))
-    ).then((testing_contexts) => {
+    ).then(async (testing_contexts) => {
         console.log(
             "Actors:",
-            testing_contexts.map((context) => {
-                return {
-                    login: context.user.login,
-                    id: context.user.id
-                }
-            })
+            testing_contexts[0]
+            // testing_contexts.map((context) => {
+            //     return {
+            //         login: context.user.login,
+            //         id: context.user.id
+            //     }
+            // })
         )
+
+        // WIP: homogeneous context ? or run call ?
+        // await run({ github, context, core })
+        // WIP: is_suspicious
     })
     ;
 };
+
+/*
+A bit more experiments: made some changes so such a CI can run on an arbitrary issue/PR URL,
+so it's easier to test against a list of. See https://github.com/GuillaumeDua/CppCoreGuidelines/actions/runs/13616115173/job/38059374996#step:3:1547
+*/
