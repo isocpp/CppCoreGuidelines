@@ -231,7 +231,8 @@ class Testing {
             actor: response.data.user.login,
             sender: response.data.user, 
             eventName: type,
-            payload: type === 'issues' ? { issue: payload_content } : { pull_request: payload_content }
+            payload: type === 'issues' ? { issue: payload_content } : { pull_request: payload_content },
+            repo: response.data.repo
         }
     }
 
