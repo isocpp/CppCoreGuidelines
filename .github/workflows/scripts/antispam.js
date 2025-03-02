@@ -88,6 +88,11 @@ async function run({ github, context }) {
 
     const username = context.actor;
     const { data: user } = await github.rest.users.getByUsername({ username: username });
+    const payload = context.payload;
+    const title = payload.issue?.title || payload.pull_request?.title || "";
+    const body = payload.issue?.body || payload.pull_request?.body || "";
+
+    console.log('Checking', { user: username, title: title })
 
     const isAuthorOnlyContributionOnGH = await (async () => {
         // WARNING: Depending on the time of day, event latency can be anywhere from 30s to 6h. (source: https://octokit.github.io/rest.js/v21/)
@@ -111,10 +116,6 @@ async function run({ github, context }) {
 
         if (context.eventName === 'workflow_dispatch') // issues or pull_request
             return false;
-
-        const payload = context.payload;
-        const title = payload.issue?.title || payload.pull_request?.title || "";
-        const body = payload.issue?.body || payload.pull_request?.body || "";
 
         const threshold = 20;
         return title.length < threshold
@@ -199,7 +200,7 @@ class Testing {
         };
     }
 
-    static async getContext({ url, github }) {
+    static async #getContext({ url, github }) {
 
         const parsed_url = Testing.#parseGitHubUrl({ url: url });
         if (!parsed_url) {
@@ -235,7 +236,7 @@ class Testing {
         }
     }
 
-    static cases = {
+    static #cases = {
 
         legits: [
             'https://github.com/isocpp/CppCoreGuidelines/pull/2258',
@@ -252,12 +253,8 @@ class Testing {
             'https://github.com/isocpp/CppCoreGuidelines/issues/2255',
         ]
     }
-}
 
-module.exports = async ({ github, context }) => {
-
-    if (context.eventName === 'workflow_dispatch'){
-
+    static async run({ github, context }){
         console.log('Testing enabled')
 
         Testing.enabled = true;
@@ -267,18 +264,24 @@ module.exports = async ({ github, context }) => {
             close_if_suspicious: false,
             suspicious_criteria_tolerated: 0
         }
-
+    
         // IDEA: run N-by-N to limit memory bloat
         await Promise.all(
-            Testing.cases.spams.map((url) => Testing.getContext({ url, github }))
+            Testing.#cases.spams.map((url) => Testing.#getContext({ url, github }))
         ).then(async (testing_contexts) => {
-            await run({ github, context })
+            testing_contexts.forEach(
+                async (value) => await run({ github, value })
+            )
         });
-
-        return;
     }
+}
 
-    return await run({ github, context });
+module.exports = async ({ github, context }) => {
+
+    if (context.eventName !== 'workflow_dispatch')
+        return await run({ github, context });
+
+    return await Testing.run({ github, context });
 };
 
 /*
