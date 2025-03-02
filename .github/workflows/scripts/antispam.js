@@ -121,6 +121,7 @@ class Testing {
             throw new Error(`Failed to fetch ${type.slice(0, -1)} #${number}: ${error.message}`);
         }
 
+        console.log(">>> WTF", response.data.actor)
         return response.data;
     }
 
