@@ -1,7 +1,7 @@
-const configuration = {
-    label_if_suspicious: false,
-    comment_if_suspicious: false,
-    close_if_suspicious: false,
+let configuration = {
+    label_if_suspicious: true,
+    comment_if_suspicious: true,
+    close_if_suspicious: true,
     suspicious_criteria_tolerated: 0
 };
 
@@ -84,9 +84,8 @@ class Check {
     }
 }
 
-async function run({ github, context, core }) {
+async function run({ github, context }) {
 
-    // const {SHA} = process.env; // for octokit.rest.repos.getCommit
     const username = context.actor;
     const { data: user } = await github.rest.users.getByUsername({ username: username });
 
@@ -174,7 +173,7 @@ async function run({ github, context, core }) {
             return;
         }
 
-        when_suspicious({ github, context, failed_checks});
+        when_suspicious({ github, context, failed_checks });
 
         make_information_report({ user: user }).then(user_information_as_comment => {
             // do stuffs with user_information_as_comment
@@ -221,53 +220,69 @@ class Testing {
         }
 
         // console.log('response.data', response.data)
-        return response.data;
+        // return response.data;
+
+        // make context adapter => could perform it upstream with graphql
+        const payload_content = {
+            title: response.data.title,
+            body: response.data.body,
+        };
+        return {
+            actor: response.data.user.login,
+            sender: response.data.user, 
+            eventName: type,
+            payload: type === 'issues' ? { issue: payload_content } : { pull_request: payload_content }
+        }
     }
 
-    static cases = [
-        'https://github.com/isocpp/CppCoreGuidelines/pull/2257'
-        // 'https://github.com/isocpp/CppCoreGuidelines/pull/2241',
-        // 'https://github.com/isocpp/CppCoreGuidelines/pull/2254',
-        // 'https://github.com/isocpp/CppCoreGuidelines/pull/2252',
-        // 'https://github.com/isocpp/CppCoreGuidelines/issues/2249',
-        // 'https://github.com/isocpp/CppCoreGuidelines/issues/2238',
-        // 'https://github.com/isocpp/CppCoreGuidelines/issues/2225',
-        // 'https://github.com/isocpp/CppCoreGuidelines/issues/2255',
-    ]
-    // WIP: split suspicious, legit cases to test against false-positives
+    static cases = {
+
+        legits: [
+            'https://github.com/isocpp/CppCoreGuidelines/pull/2258',
+            'https://github.com/isocpp/CppCoreGuidelines/pull/2259'
+        ],
+        spams: [
+            'https://github.com/isocpp/CppCoreGuidelines/pull/2257',
+            'https://github.com/isocpp/CppCoreGuidelines/pull/2241',
+            'https://github.com/isocpp/CppCoreGuidelines/pull/2254',
+            'https://github.com/isocpp/CppCoreGuidelines/pull/2252',
+            'https://github.com/isocpp/CppCoreGuidelines/issues/2249',
+            'https://github.com/isocpp/CppCoreGuidelines/issues/2238',
+            'https://github.com/isocpp/CppCoreGuidelines/issues/2225',
+            'https://github.com/isocpp/CppCoreGuidelines/issues/2255',
+        ]
+    }
 }
 
+module.exports = async ({ github, context }) => {
 
-module.exports = async ({ github, context, core }) => {
+    if (context.eventName === 'workflow_dispatch'){
 
-    if (! Testing.enabled)
-        return await run({ github, context, core });
+        console.log('Testing enabled')
 
-    console.log('>>> DEBUG: context', context)
+        Testing.enabled = true;
+        configuration = {
+            label_if_suspicious: false,
+            comment_if_suspicious: false,
+            close_if_suspicious: false,
+            suspicious_criteria_tolerated: 0
+        }
 
-    // IDEA: run N-by-N to limit memory bloat
-    await Promise.all(
-        Testing.cases.map((url) => Testing.getContext({ url, github }))
-    ).then(async (testing_contexts) => {
-        console.log(
-            "Actors:",
-            testing_contexts[0]
-            // testing_contexts.map((context) => {
-            //     return {
-            //         login: context.user.login,
-            //         id: context.user.id
-            //     }
-            // })
-        )
+        // IDEA: run N-by-N to limit memory bloat
+        await Promise.all(
+            Testing.cases.spams.map((url) => Testing.getContext({ url, github }))
+        ).then(async (testing_contexts) => {
+            await run({ github, context, core })
+        });
 
-        // WIP: homogeneous context ? or run call ?
-        // await run({ github, context, core })
-        // WIP: is_suspicious
-    })
-    ;
+        return;
+    }
+
+    return await run({ github, context, core });
 };
 
 /*
+WIP:
 A bit more experiments: made some changes so such a CI can run on an arbitrary issue/PR URL,
 so it's easier to test against a list of. See https://github.com/GuillaumeDua/CppCoreGuidelines/actions/runs/13616115173/job/38059374996#step:3:1547
 */
