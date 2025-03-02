@@ -240,10 +240,11 @@ module.exports = async ({ github, context, core }) => {
     if (! Testing.enabled)
         return await run({ github, context, core });
 
-    const testing_contexts = await Promise.all(
+    // IDEA: run N-by-N to limit memory bloat
+    await Promise.all(
         Testing.cases.map(async (url) => await Testing.getContext({ url, github }))
-    );
-
-    console.log("Testing contextes:")
-    await testing_contexts.forEach((context) => console.log(`>>> debug: ${context.actor}`))
+    ).then((testing_contexts) => {
+        console.log("Actors:", testing_contexts.map((context) => context.actor))
+    })
+    ;
 };
