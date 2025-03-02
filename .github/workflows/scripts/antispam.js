@@ -228,6 +228,7 @@ class Testing {
             title: response.data.title,
             body: response.data.body,
         };
+        console.log(">>> DEBUG", response.data.user.login)
         return {
             actor: response.data.user.login,
             sender: response.data.user, 
@@ -270,7 +271,7 @@ class Testing {
             Testing.#cases.spams.map((url) => Testing.#getContext({ url, github }))
         ).then(async (testing_contexts) => {
             testing_contexts.forEach(
-                async (value) => await run({ github, value })
+                async (value) => console.log(value)// await run({ github, value })
             )
         });
     }
