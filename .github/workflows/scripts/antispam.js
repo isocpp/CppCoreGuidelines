@@ -220,7 +220,6 @@ class Testing {
             throw new Error(`Failed to fetch ${type.slice(0, -1)} #${number}: ${error.message}`);
         }
 
-        // console.log('response.data', response.data)
         // return response.data;
 
         // make context adapter => could perform it upstream with graphql
@@ -228,7 +227,6 @@ class Testing {
             title: response.data.title,
             body: response.data.body,
         };
-        console.log(">>> DEBUG", response.data.user.login)
         return {
             actor: response.data.user.login,
             sender: response.data.user, 
@@ -255,7 +253,7 @@ class Testing {
         ]
     }
 
-    static async run({ github, context }){
+    static async run({ github }){
         console.log('Testing enabled')
 
         Testing.enabled = true;
@@ -271,7 +269,7 @@ class Testing {
             Testing.#cases.spams.map((url) => Testing.#getContext({ url, github }))
         ).then(async (testing_contexts) => {
             testing_contexts.forEach(
-                async (value) => console.log(value)// await run({ github, value })
+                async (value) => await run({ github, context: value })
             )
         });
     }
@@ -282,7 +280,7 @@ module.exports = async ({ github, context }) => {
     if (context.eventName !== 'workflow_dispatch')
         return await run({ github, context });
 
-    return await Testing.run({ github, context });
+    return await Testing.run({ github });
 };
 
 /*
