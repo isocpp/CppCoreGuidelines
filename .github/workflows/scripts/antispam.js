@@ -90,7 +90,7 @@ class Testing {
 
     static #parseGitHubUrl({ url }) {
         const match = url.match(/github\.com\/([^\/]+)\/([^\/]+)\/(issues|pull)\/(\d+)/);
-        if (!match || match.length !== 4)
+        if (!match || match.length !== 5)
             return null;
 
         return {
@@ -103,12 +103,12 @@ class Testing {
 
     static async getContext({ url, github }) {
 
-        const details = Testing.#parseGitHubUrl({ url: url });
-        if (!details) {
+        const parsed_url = Testing.#parseGitHubUrl({ url: url });
+        if (!parsed_url) {
           throw new Error(`Invalid GitHub issue/PR URL: [${url}]`);
         }
 
-        const { owner, repo, type, number } = details;
+        const { owner, repo, type, number } = parsed_url;
         let response;
 
         try {
