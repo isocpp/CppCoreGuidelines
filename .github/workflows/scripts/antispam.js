@@ -272,13 +272,13 @@ module.exports = async ({ github, context }) => {
         await Promise.all(
             Testing.cases.spams.map((url) => Testing.getContext({ url, github }))
         ).then(async (testing_contexts) => {
-            await run({ github, context, core })
+            await run({ github, context })
         });
 
         return;
     }
 
-    return await run({ github, context, core });
+    return await run({ github, context });
 };
 
 /*

@@ -18,4 +18,4 @@ jobs:
         with:
           script: |
             const script = require('.github/workflows/scripts/antispam.js')
-            await script({github, context, core})
+            await script({ github, context })
