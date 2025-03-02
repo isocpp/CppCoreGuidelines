@@ -116,7 +116,6 @@ class Testing {
                 ? await github.rest.issues.get({ owner, repo, issue_number: number })
                 : await github.rest.pulls.get({ owner, repo, pull_number: number })
             ;
-            console.log('>>>', response)
         }
         catch (error) {
             throw new Error(`Failed to fetch ${type.slice(0, -1)} #${number}: ${error.message}`);
@@ -245,5 +244,7 @@ module.exports = async ({ github, context, core }) => {
         Testing.cases,
         async (url) => await Testing.getContext({ url: url, github })
     );
-    await testing_contexts.forEach((context) => console.log(`debug: ${context.actor}`))
+    
+    console.log("Testing contextes:")
+    await testing_contexts.forEach((context) => console.log(`>>> debug: ${context.actor}`))
 };
