@@ -88,11 +88,17 @@ async function run({ github, context }) {
 
     const username = context.actor;
     const { data: user } = await github.rest.users.getByUsername({ username: username });
-    const payload = context.payload;
-    const title = payload.issue?.title || payload.pull_request?.title || "";
-    const body = payload.issue?.body || payload.pull_request?.body || "";
 
-    console.log('Checking', { user: username, title: title })
+    const payload = context.payload;
+
+    const issue_or_pr = (() => { 
+        if (payload.issue)          return payload.issue;
+        if (payload.pull_request)   return payload.pull_request;
+        throw new Error("Only supports issues and PRs")
+    })();
+
+
+    console.log('Checking', { user: username, title: issue_or_pr.title })
 
     const isAuthorOnlyContributionOnGH = await (async () => {
         // WARNING: Depending on the time of day, event latency can be anywhere from 30s to 6h. (source: https://octokit.github.io/rest.js/v21/)
@@ -105,7 +111,7 @@ async function run({ github, context }) {
     const WasAuthorRecentlyCreated = (() => {
 
         const time_point = (() => {
-            let value = new Date();
+            let value = Date.parse(issue_or_pr.created_at); //new Date();
             value.setHours(value.getHours() - 2);
             return value;
         })();
@@ -118,8 +124,8 @@ async function run({ github, context }) {
             return false;
 
         const threshold = 20;
-        return title.length < threshold
-            || body.length  < threshold;
+        return issue_or_pr.length < threshold
+            || issue_or_pr.length  < threshold;
     })();
 
     const checks = [
@@ -226,6 +232,7 @@ class Testing {
         const payload_content = {
             title: response.data.title,
             body: response.data.body,
+            created_at: new Date() // now
         };
         return {
             actor: response.data.user.login,
