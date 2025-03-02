@@ -245,7 +245,15 @@ module.exports = async ({ github, context, core }) => {
     await Promise.all(
         Testing.cases.map((url) => Testing.getContext({ url, github }))
     ).then((testing_contexts) => {
-        console.log("Actors:", testing_contexts.map((context) => context.actor))
+        console.log(
+            "Actors:",
+            testing_contexts.map((context) => {
+                return {
+                    login: context.user.login,
+                    id: context.user.id
+                }
+            })
+        )
     })
     ;
 };
