@@ -242,7 +242,7 @@ module.exports = async ({ github, context, core }) => {
 
     // IDEA: run N-by-N to limit memory bloat
     await Promise.all(
-        Testing.cases.map(async (url) => await Testing.getContext({ url, github }))
+        Testing.cases.map((url) => Testing.getContext({ url, github }))
     ).then((testing_contexts) => {
         console.log("Actors:", testing_contexts.map((context) => context.actor))
     })
