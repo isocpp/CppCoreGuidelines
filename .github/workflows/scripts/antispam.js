@@ -240,6 +240,9 @@ module.exports = async ({ github, context, core }) => {
     if (! Testing.enabled)
         return await run({ github, context, core });
 
-    const testing_contexts = await Array.from(cases, (url) => getContext({ url: url, github }))
+    const testing_contexts = await Array.from(
+        Testing.cases,
+        (url) => getContext({ url: url, github })
+    );
     testing_contexts.forEach((context) => console.log(`debug: ${context.actor}`))
 };
