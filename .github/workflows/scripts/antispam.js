@@ -245,5 +245,5 @@ module.exports = async ({ github, context, core }) => {
         Testing.cases,
         async (url) => await Testing.getContext({ url: url, github })
     );
-    testing_contexts.forEach((context) => console.log(`debug: ${context.actor}`))
+    await testing_contexts.forEach((context) => console.log(`debug: ${context.actor}`))
 };
