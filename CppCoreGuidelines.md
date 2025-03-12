@@ -20947,7 +20947,7 @@ Reference sections:
 
 ## <a name="SS-rules"></a>RF.rules: Coding rules
 
-* [AUTOSAR Guidelines for the use of the C++14 language in critical and safety-related systems v17.10](https://web.archive.org/web/20220629085753/https://www.autosar.org/fileadmin/user_upload/standards/adaptive/17-03/AUTOSAR_RS_CPP14Guidelines.pdf)
+* [AUTOSAR Guidelines for the use of the C++14 language in critical and safety-related systems v22.11](https://www.autosar.org/fileadmin/standards/R22-11/AP/AUTOSAR_RS_CPP14Guidelines.pdf) (obsolete, replaced by [MISRA C++:2023](https://misra.org.uk/product/misra-cpp2023/))
 * [Boost Library Requirements and Guidelines](http://www.boost.org/development/requirements.html).
   ???.
 * [Bloomberg: BDE C++ Coding](https://github.com/bloomberg/bde/wiki/CodingStandards.pdf).
