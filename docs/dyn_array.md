@@ -2,12 +2,6 @@
 
 # `gsl::dyn_array<T, Allocator>`
 
-### Revision History
-
-| Date | Author | Description |
-| ---- | ------ | ----------- |
-| Jan 16, 2025 | Carson Radtke (Microsoft) | Initial draft. |
-
 `gsl::dyn_array` is a dynamic array that is intended to be a replacement for slinging
 around raw pointers and sizes. Notably, it _owns_ all of its elements. It should replace
 the following idioms:
@@ -49,6 +43,7 @@ constexpr dyn_array(size_t n, const T& arg, const Allocator & alloc = Allocator(
 * Construct a `dyn_array` with elements from the range `[first, last)`:
 ```c++
 template <typename InputIt>
+    requires (std::input_iterator<InputIt>)
 constexpr dyn_array(InputIt first, InputIt last, const Allocator & alloc = Allocator());
 ```
 
@@ -59,7 +54,8 @@ constexpr dyn_array(std::initializer_list<T>, const Allocator & alloc = Allocato
 
 * Construct a `dyn_array` with elements from the range `R`:
 ```c++
-template <container-compatible-range<T> R>
+template <typename R>
+    requires (std::input_range<R>)
 constexpr dyn_array(R&&, const Allocator & alloc = Allocator());
 ```
 
