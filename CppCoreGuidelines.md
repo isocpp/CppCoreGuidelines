@@ -12008,7 +12008,7 @@ I got
 
     3.29048e-321 666 666
 
-Surprised? I'm just glad I didn't crash the program.
+Surprised? It is actually undefined behavior, and so could also have crashed the program.
 
 ##### Note
 
@@ -20767,6 +20767,10 @@ Individual classes are rarely a good logical unit of maintenance and distributio
 Splitting initialization into two leads to weaker invariants,
 more complicated code (having to deal with semi-constructed objects),
 and errors (when we didn't deal correctly with semi-constructed objects consistently).
+
+##### Note
+
+Sometimes also called two-stage construction.
 
 ##### Example, bad
 
