@@ -2740,9 +2740,13 @@ low-level functions.
 Destructors, `swap` functions, move operations, and default constructors should never throw.
 See also [C.44](#Rc-default00).
 
+##### Note
+
+Care must be taken on base virtual functions and functions part of a public interface because declaring a function `noexcept` is establishing a guarantee that all current and future implementations must abide by.  For virtual function, all overriders must also be `noexcept` and removing `noexcept` from a function could break calling functions. 
+
 ##### Enforcement
 
-* Flag functions that are not `noexcept`, yet cannot throw.
+* (hard) Flag low-level functions that are not `noexcept`, yet cannot throw.
 * Flag throwing `swap`, `move`, destructors, and default constructors.
 
 ### <a name="Rf-smart"></a>F.7: For general use, take `T*` or `T&` arguments rather than smart pointers
