@@ -19631,16 +19631,18 @@ Library creators should put their headers in a folder and have clients include t
 
 ##### Project Example
 
-Consider a project with modules where src/module2/foo.cpp is using src/module1/utilities.hpp:
+Consider a project with two components where src/component2/foo.cpp is using src/component1/utilities.hpp:
 
-    projectRoot/src/module1/utilities.hpp
-    projectRoot/src/module2/foo.cpp         // #include "../module1/utilities.hpp" OR #include "utilities.hpp" with -I../module1
+    projectRoot/src/component1/utilities.hpp
+    projectRoot/src/component2/foo.cpp         // #include "../component1/utilities.hpp" OR #include "utilities.hpp" with -I../component1
 
-foo.cpp can `#include "../module1/utilities.hpp"` or it can `#include "utilities.hpp"` and provide the compiler with the relative path to module1 (e.g. `g++ -o foo.o -I../module1 foo.cpp`).  Using either quoted form, makes it clear that utilities.hpp is part of the project and will remain with the project when it is cloned. Likewise, headers included using angle brackets such as `#include <string>` cannot be modified in the project.  If an angle-bracket header is modified, it can impact many projects including those of other users on the system.
+foo.cpp can `#include "../component1/utilities.hpp"` or it can `#include "utilities.hpp"` and provide the compiler with the relative path to component1 (e.g. `g++ -o foo.o -I../component1 foo.cpp`).  Using either quoted form, makes it clear that utilities.hpp is part of the project and will remain with the project when it is cloned. Likewise, headers included using angle brackets such as `#include <string>` cannot be modified in the project.  If an angle-bracket header is modified, it can impact many projects including those of other users on the system.
 
 ##### Enforcement
 
-A test should identify whether headers referenced via `""` could be referenced with `<>`.  Compilers can report the absolute path of file being referenced in a `#include` directive and using this information, the test can verify that all includes of headers within the project root are included using quotes.
+A test should identify whether headers referenced via `""` could be referenced with `<>`.
+
+Compilers can report the absolute path of file being referenced in a `#include` directive and using this information, the test can verify that all includes of headers within the project root are included using quotes.
 
 ### <a name="Rs-portable-header-id"></a>SF.13: Use portable header identifiers in `#include` statements
 
