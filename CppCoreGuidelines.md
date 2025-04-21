@@ -7244,43 +7244,57 @@ not using this (over)general interface in favor of a particular interface found 
 ##### Reason
 
 A class is more stable (less brittle) if it does not contain data.
-Interfaces should normally be composed entirely of public pure virtual functions and a default/empty virtual destructor.
+An interface should be composed entirely of pure virtual functions and a virtual destructor; see [C.35](#Rc-dtor-virtual).
+An interface should have a defaulted default constructor.
 
 ##### Example
 
-    class My_interface {
+    class ClassicalConnection {  // good
     public:
-        // ...only pure virtual functions here ...
-        virtual ~My_interface() {}   // or =default
+        virtual std::string read() = 0;
+        virtual void write(std::string_view) = 0;
+        virtual ~ClassicalConnection() = default;
     };
 
-##### Example, bad
-
-    class Goof {
+    class NVIConnection {  // also good
     public:
-        // ...only pure virtual functions here ...
-        // no virtual destructor
+        std::string read() { return do_read(); }
+        void write(std::string_view sv) { do_write(sv); }
+        virtual ~NVIConnection() = default;
+    protected:
+        static constexpr int default_buffer_size = 1024;
+        static std::string_view trim(std::string_view);
+    private:
+        virtual std::string do_read() = 0;
+        virtual void do_write(std::string_view) = 0;
     };
 
-    class Derived : public Goof {
-        string s;
-        // ...
+    class BadConnection {  // bad
+    public:
+        explicit BadConnection(int i) : connection_state(i) {}
+        virtual std::string read() { throw std::runtime_error("unimplemented"); }
+        virtual void write(std::string_view sv) { std::cout << sv << "\n"; }
+    protected:
+        int connection_state = 0;
     };
 
-    void use()
-    {
-        unique_ptr<Goof> p {new Derived{"here we go"}};
-        f(p.get()); // use Derived through the Goof interface
-        g(p.get()); // use Derived through the Goof interface
-    } // leak
+Any class that derives from `BadConnection` contains a non-static data member `connection_state`,
+even if it has no need for that member. `ClassicalConnection` and `NVIConnection` do not impose
+any costs on their derived classes. In particular, this means that a `MockConnection` created
+with a framework such as GMock will have minimal size.
 
-The `Derived` is `delete`d through its `Goof` interface, so its `string` is leaked.
-Give `Goof` a virtual destructor and all is well.
+Any class deriving from `BadConnection` will have to define a constructor in order to explicitly
+construct its `BadConnection` subobject (which is not default-constructible). In particular, this
+means that a `MockConnection` created with a framework such as GMock must define its own constructor,
+rather than following the Rule of Zero.
 
+Finally, a class deriving from `BadConnection` might forget to override one of the virtual member functions,
+leading to unexpected runtime behavior. `ClassicalConnection` and `NVIConnection` make every virtual
+function also pure, so that a derived class cannot accidentally fail to override one of them.
 
 ##### Enforcement
 
-* Warn on any class that contains data members and also has an overridable (non-`final`) virtual function that wasn't inherited from a base class.
+* Warn on any non-`final` class that contains data members and also has an overridable (non-`final`) virtual function that wasn't inherited from a base class.
 
 ### <a name="Rh-separation"></a>C.122: Use abstract classes as interfaces when complete separation of interface and implementation is needed
 
