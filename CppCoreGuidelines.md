@@ -7773,6 +7773,8 @@ This kind of "vector" isn't meant to be used as a base class at all.
 
 ### <a name="Rh-protected"></a>C.133: Avoid `protected` data
 
+**Alternative formulation**: Make member data `public` or (preferably) `private`.
+
 ##### Reason
 
 `protected` data is a source of complexity and errors.
@@ -20560,7 +20562,7 @@ Non-rule summary:
 * [NR.4: Don't insist on placing each class definition in its own source file](#Rnr-lots-of-files)
 * [NR.5: Don't use two-phase initialization](#Rnr-two-phase-init)
 * [NR.6: Don't place all cleanup actions at the end of a function and `goto exit`](#Rnr-goto-exit)
-* [NR.7: Don't make all data members `protected`](#Rnr-protected-data)
+* [NR.7: Don't make data members `protected`](#Rnr-protected-data)
 * ???
 
 ### <a name="Rnr-top"></a>NR.1: Don't insist that all declarations should be at the top of a function
@@ -20900,7 +20902,7 @@ and spot the bug.
 * Use exceptions and [RAII](#Re-raii)
 * for non-RAII resources, use [`finally`](#Re-finally).
 
-### <a name="Rnr-protected-data"></a>NR.7: Don't make all data members `protected`
+### <a name="Rnr-protected-data"></a>NR.7: Don't make data members `protected`
 
 ##### Reason
 
@@ -20914,7 +20916,7 @@ and spot the bug.
 
 ##### Alternative
 
-* [Make member data `public` or (preferably) `private`](#Rh-protected)
+* [Avoid `protected` data](#Rh-protected)
 
 
 # <a name="S-references"></a>RF: References
