@@ -7432,13 +7432,13 @@ We want to eliminate two particular classes of errors:
 * **implicit virtual**: the programmer intended the function to be implicitly virtual and it is (but readers of the code can't tell); or the programmer intended the function to be implicitly virtual but it isn't (e.g., because of a subtle parameter list mismatch); or the programmer did not intend the function to be virtual but it is (because it happens to have the same signature as a virtual in the base class)
 * **implicit override**: the programmer intended the function to be implicitly an overrider and it is (but readers of the code can't tell); or the programmer intended the function to be implicitly an overrider but it isn't (e.g., because of a subtle parameter list mismatch); or the programmer did not intend the function to be an overrider but it is (because it happens to have the same signature as a virtual in the base class -- note this problem arises whether or not the function is explicitly declared virtual, because the programmer might have intended to create either a new virtual function or a new non-virtual function)
 
-Note: On a class defined as `final`, it doesn't matter whether you put `override` or `final` on an individual virtual function.
+Note: On a class defined as `final`, each individual virtual function should use either `override` or `final`; there is no semantic difference in this case.
 
 Note: Use `final` on functions sparingly. It does not necessarily lead to optimization, and it precludes further overriding.
 
 ##### Enforcement
 
-* Compare virtual function names in base and derived classes and flag uses of the same name that does not override.
+* Compare virtual function names in base and derived classes and flag uses of the same name that do not override.
 * Flag overrides with neither `override` nor `final`.
 * Flag function declarations that use more than one of `virtual`, `override`, and `final`.
 
