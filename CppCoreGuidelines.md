@@ -9020,7 +9020,7 @@ If you wanted to see the bytes of an `int`, use a (named) cast:
     void if_you_must_pun(int& x)
     {
         auto p = reinterpret_cast<std::byte*>(&x);
-        cout << p[0] << '\n';     // OK; better
+        cout << to_integer<unsigned>(p[0]) << '\n'; // OK; better
         // ...
     }
 
