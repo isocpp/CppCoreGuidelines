@@ -15,20 +15,22 @@ It can be thought of like a...
 * `std::array` except the size is specified at runtime.
 * `std::vector` except it can neither shrink nor grow.
 
-### Container Named Requirements
-In order to allow element access using iterators and to align with various container
-idioms for `std::` algorithms, `gsl::dyn_array` should satisfy the following named
-requirements:
-
-* Container ([link](https://en.cppreference.com/w/cpp/named_req/Container))
-* ReversibleContainer ([link](https://en.cppreference.com/w/cpp/named_req/ReversibleContainer))
-* ContiguousContainer ([link](https://en.cppreference.com/w/cpp/named_req/ContiguousContainer))
-* SequenceContainer ([link](https://en.cppreference.com/w/cpp/named_req/SequenceContainer))
-* AllocatorAwareContainer ([link](https://en.cppreference.com/w/cpp/named_req/AllocatorAwareContainer))
+By design, `gsl::dyn_array` is not a `Container` as defined by the C++ Named
+Requirements because we want to avoid the invalidation of iterators or references to
+`gsl::dyn_array` objects.
 
 ### Construction
-In addition to the constructors required by the named requirements (default, copy, and
-move), `gsl::dyn_array` will support the following constructors:
+`gsl::dyn_array`s can be constructed in the following ways:
+
+* Default construct a `dyn_array` with no elements:
+```c++
+constexpr dyn_array();
+```
+
+* Move construct a `dyn_array` from `other`:
+```c++
+constexpr dyn_array(dyn_array&& other) noexcept;
+```
 
 * Construct a `dyn_array` with `n` default constructed elements:
 ```c++
@@ -43,20 +45,24 @@ constexpr dyn_array(size_t n, const T& arg, const Allocator & alloc = Allocator(
 * Construct a `dyn_array` with elements from the range `[first, last)`:
 ```c++
 template <typename InputIt>
-    requires (std::input_iterator<InputIt>)
+#ifdef __cpp_lib_concepts
+    requires(std::input_iterator<InputIt>)
+#endif /* __cpp_lib_concepts */
 constexpr dyn_array(InputIt first, InputIt last, const Allocator & alloc = Allocator());
+```
+
+* Construct a `dyn_array` from a range:
+```c++
+#ifdef __cpp_lib_containers_range
+template <typename R>
+    requires(std::ranges::range<R>)
+constexpr dyn_array(std::from_range_t, R&& r, const Allocator & alloc = Allocator());
+#endif /* __cpp_lib_containers_range */
 ```
 
 * Construct a `dyn_array` with elements from the initializer list:
 ```c++
 constexpr dyn_array(std::initializer_list<T>, const Allocator & alloc = Allocator());
-```
-
-* Construct a `dyn_array` with elements from the range `R`:
-```c++
-template <typename R>
-    requires (std::input_range<R>)
-constexpr dyn_array(R&&, const Allocator & alloc = Allocator());
 ```
 
 ### Operations
@@ -66,7 +72,7 @@ support the following operations:
 * Access the specified element **_with bounds checking_**:
 ```c++
 constexpr T& operator[](size_t);
-constexpr const T& operator[](size_t) const
+constexpr const T& operator[](size_t) const;
 ```
 
 * Access the underlying array:
@@ -80,10 +86,17 @@ constexpr const T* data() const noexcept;
 constexpr size_t size() const noexcept;
 ```
 
-#### Note: Why no push_back (and friends)?
+### FAQ
+
+#### Why no push_back (and friends)?
 `gsl::dyn_array` is intended to be a fixed-size array and all objects should be
-constructed at creation. Moreover, the memory overhead of storing another member
-variable to track where to push the next item is not desired.
+constructed at creation.
+
+#### Why does `gsl::dyn_array` not conform to the `Container` Named Requirements?
+`gsl::dyn_array` is intended to be a safer replacement for raw pointers and sizes. We
+don't want users to accidentally use it in a way that would be unsafe. For example,
+`gsl::dyn_array` does not have copy or move assignment operators. This is because it
+would be possible to invalidate existing iterators and references.
 
 ### Bounds Checking Semantics
 If an out-of-bounds access (read or write) is attempted, `gsl::dyn_array` should follow
