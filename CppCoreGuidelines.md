@@ -1,6 +1,6 @@
 # <a name="main"></a>C++ Core Guidelines
 
-May 8, 2025
+Jul 8, 2025
 
 Editors:
 
@@ -18753,7 +18753,7 @@ It could be a base class:
     class List : List_base {
     public:
         void put_front(const T& e) { add_front(new Link<T>{e}); }   // implicit cast to Link_base
-        T& front() { static_cast<Link<T>*>(first).val; }   // explicit cast back to Link<T>
+        T& front() { return static_cast<Link<T>*>(first)->val; }   // explicit cast back to Link<T>
         // ...
     };
 
