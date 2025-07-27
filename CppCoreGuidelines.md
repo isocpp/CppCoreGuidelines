@@ -1429,7 +1429,7 @@ Also, precisely typed code is often optimized better.
 
 Consider:
 
-    void pass(void* data);    // weak and underqualified type void* is suspicious
+    void pass(void* data);    // weak and under-qualified type void* is suspicious
 
 Callers are unsure what types are allowed and if the data may
 be mutated as `const` is not specified. Note all pointer types
@@ -21038,7 +21038,7 @@ A textbook for beginners and relative novices.
 
 * Bjarne Stroustrup: [C++11 Style](http://channel9.msdn.com/Events/GoingNative/GoingNative-2012/Keynote-Bjarne-Stroustrup-Cpp11-Style). 2012.
 * Bjarne Stroustrup: [The Essence of C++: With Examples in C++84, C++98, C++11, and C++14](http://channel9.msdn.com/Events/GoingNative/2013/Opening-Keynote-Bjarne-Stroustrup). 2013
-* All the talks from [CppCon ’14](https://isocpp.org/blog/2014/11/cppcon-videos-c9)
+* All the talks from [CppCon &#8217;14](https://isocpp.org/blog/2014/11/cppcon-videos-c9)
 * Bjarne Stroustrup: [The essence of C++](https://www.youtube.com/watch?v=86xWVb4XIyE) at the University of Edinburgh. 2014.
 * Bjarne Stroustrup: [The Evolution of C++ Past, Present and Future](https://www.youtube.com/watch?v=_wzc7a3McOs). CppCon 2016 keynote.
 * Bjarne Stroustrup: [Make Simple Tasks Simple!](https://www.youtube.com/watch?v=nesCaocNjtQ). CppCon 2014 keynote.
