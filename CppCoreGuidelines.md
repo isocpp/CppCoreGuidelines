@@ -767,7 +767,7 @@ We can of course pass the number of elements along with the pointer:
 
     void g2(int n)
     {
-        f2(new int[n], m);  // bad: a wrong number of elements can be passed to f()
+        f2(new int[n], n);  // bad: a wrong number of elements can be passed to f()
     }
 
 Passing the number of elements as an argument is better (and far more common) than just passing the pointer and relying on some (unstated) convention for knowing or discovering the number of elements. However (as shown), a simple typo can introduce a serious error. The connection between the two arguments of `f2()` is conventional, rather than explicit.
@@ -785,7 +785,7 @@ The standard library resource management pointers fail to pass the size when the
 
     void g3(int n)
     {
-        f3(make_unique<int[]>(n), m);    // bad: pass ownership and size separately
+        f3(make_unique<int[]>(n), n);    // bad: pass ownership and size separately
     }
 
 ##### Example
