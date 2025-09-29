@@ -767,7 +767,7 @@ We can of course pass the number of elements along with the pointer:
 
     void g2(int n)
     {
-        // bad: a wrong number of elements can be passed to f2()
+        // bad: the wrong number of elements can be passed to f2()
         f2(new int[n], n);
     }
 
