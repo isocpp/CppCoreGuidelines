@@ -15249,11 +15249,11 @@ This section focuses on uses of coroutines.
 
 Coroutine rule summary:
 
-* [CP.51: Do not use capturing lambdas that are coroutines](#Rcoro-capture)
+* [CP.51: Do not use capturing lambdas that are coroutines except when using explicit object parameters](#Rcoro-capture)
 * [CP.52: Do not hold locks or other synchronization primitives across suspension points](#Rcoro-locks)
 * [CP.53: Parameters to coroutines should not be passed by reference](#Rcoro-reference-parameters)
 
-### <a name="Rcoro-capture"></a>CP.51: Do not use capturing lambdas that are coroutines
+### <a name="Rcoro-capture"></a>CP.51: Do not use capturing lambdas that are coroutines except when using explicit object parameters
 
 ##### Reason
 
@@ -15261,10 +15261,13 @@ Usage patterns that are correct with normal lambdas are hazardous with coroutine
 
 A lambda results in a closure object with storage, often on the stack, that will go out of scope at some point.  When the closure object goes out of scope the captures will also go out of scope.  Normal lambdas will have finished executing by this time so it is not a problem.  Coroutine lambdas may resume from suspension after the closure object has destructed and at that point all captures will be use-after-free memory access.
 
+As of C++23, it is possible to use explicit object parameters to pass `this auto` to lambdas. This allows the lambda to be called with the `this` parameter passed by value, meaning that the lambda closure object is copied into the coroutine state, rather than going out of scope. To avoid needless copies, or when working with move-only types, it is possible to pass `this auto&&` to the lambda.
+
 ##### Example, Bad
 
     int value = get_value();
     std::shared_ptr<Foo> sharedFoo = get_foo();
+    std::future<void> deferredWork{};
     {
       const auto lambda = [value, sharedFoo]() -> std::future<void>
       {
@@ -15272,13 +15275,20 @@ A lambda results in a closure object with storage, often on the stack, that will
         // "sharedFoo" and "value" have already been destroyed
         // the "shared" pointer didn't accomplish anything
       };
-      lambda();
+      deferredWork = lambda();
     } // the lambda closure object has now gone out of scope
+
+    // ...
+
+    // Our work is being awaited here, but this is dangerous as the lambda's closure object
+    // has gone out of scope, and will result in UB
+    co_await deferredWork;
 
 ##### Example, Better
 
     int value = get_value();
     std::shared_ptr<Foo> sharedFoo = get_foo();
+    std::future<void> deferredWork{};
     {
       // take as by-value parameter instead of as a capture
       const auto lambda = [](auto sharedFoo, auto value) -> std::future<void>
@@ -15286,8 +15296,14 @@ A lambda results in a closure object with storage, often on the stack, that will
         co_await something();
         // sharedFoo and value are still valid at this point
       };
-      lambda(sharedFoo, value);
+      deferredWork = lambda(sharedFoo, value);
     } // the lambda closure object has now gone out of scope
+
+    // ...
+
+    // Our work is being awaited here. This is fine as we passed the variables in the parameter list
+    // rather than the lambda's closure object
+    co_await deferredWork;
 
 ##### Example, Best
 
@@ -15306,9 +15322,33 @@ Use a function for coroutines.
       do_something(value, sharedFoo);
     }
 
+##### Example, C++23 Explicit Object Parameters
+
+    int value = get_value();
+    std::shared_ptr<Foo> sharedFoo = get_foo();
+    std::future<void> deferredWork{};
+    {
+        // take 'this' as a by-value parameter
+        const auto lambda = [sharedFoo, value](this auto self) -> std::future<void>
+        {
+            co_await something();
+            // sharedFoo and value are still valid at this point
+        }
+
+        deferredWork = lambda();
+    } // the lambda closure object is still alive, by 'this auto' being used
+
+    // ...
+
+    // Our work is being awaited at some later point. This is fine as the explicit object parameter
+    // ensures our lambda's closure group object remained in scope
+    co_await deferredWork;
+
 ##### Enforcement
 
-Flag a lambda that is a coroutine and has a non-empty capture list.
+Pre C++23: Flag a lambda that is a coroutine and has a non-empty capture list.
+Post C++23: Flag a lambda that is a coroutine, has a non-empty capture list and does not use an explicit object parameter.
+
 
 
 ### <a name="Rcoro-locks"></a>CP.52: Do not hold locks or other synchronization primitives across suspension points
