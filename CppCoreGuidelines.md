@@ -18461,7 +18461,7 @@ This is a simplified version of `std::copy` (ignoring the possibility of non-con
     template<class Iter>
     Out copy(Iter first, Iter last, Iter out)
     {
-        using tag_type = typename copy_trait<std::iter_value_t<Iter>>;
+        using tag_type = typename copy_trait<std::iter_value_t<Iter>>::tag;
         return copy_helper(first, last, out, tag_type{})
     }
 
