@@ -529,7 +529,7 @@ A much clearer expression of intent would be:
         string val;
         cin >> val;
         // ...
-        auto p = find(begin(v), end(v), val);  // better
+        auto p {find(begin(v), end(v), val)};  // better
         // ...
     }
 
@@ -819,7 +819,7 @@ How do we transfer both ownership and all information needed for validating use?
 
     unique_ptr<int[]> f6(int n)    // bad: loses n
     {
-        auto p = make_unique<int[]>(n);
+        auto p {make_unique<int[]>(n)};
         // ... initialize *p ...
         return p;
     }
@@ -907,7 +907,7 @@ Don't repeatedly check the same value. Don't pass structured data as strings:
 
     void user1(const string& date)    // manipulate date
     {
-        auto d = extract_date(date);
+        auto d {extract_date(date)};
         // ...
     }
 
@@ -1039,7 +1039,7 @@ Time and space that you spend well to achieve a goal (e.g., speed of development
     {
         if (!p) throw Nullptr_error{};
         int n = strlen(p);
-        auto buf = new char[n];
+        auto buf {new char[n]};
         if (!buf) throw Allocation_error{};
         for (int i = 0; i < n; ++i) buf[i] = p[i];
         // ... manipulate buffer ...
@@ -1397,7 +1397,7 @@ For example:
 
     X& myX()
     {
-        static auto p = new X {3};
+        static auto p {new X {3}};
         return *p;  // potential leak
     }
 
@@ -1522,7 +1522,7 @@ The function can also be written in such a way that it will accept any time dura
     void blink_led(duration<rep, period> time_to_blink) // good -- accepts any unit
     {
         // assuming that millisecond is the smallest relevant unit
-        auto milliseconds_to_blink = duration_cast<milliseconds>(time_to_blink);
+        auto milliseconds_to_blink {duration_cast<milliseconds>(time_to_blink)};
         // ...
         // do something with milliseconds_to_blink
         // ...
@@ -1638,7 +1638,7 @@ Consider using:
 
     int area(int height, int width)
     {
-        auto res = height * width;
+        auto res {height * width};
         Ensures(res > 0);
         return res;
     }
@@ -2433,7 +2433,7 @@ If you write a non-trivial lambda that potentially can be used in more than one 
 
 Naming that lambda breaks up the expression into its logical parts and provides a strong hint to the meaning of the lambda.
 
-    auto lessT = [](T x, T y) { return x.rank() < y.rank() && x.value() < y.value(); };
+    auto lessT {[](T x, T y) { return x.rank() < y.rank() && x.value() < y.value(); }};
 
     sort(a, b, lessT);
 
@@ -2488,7 +2488,7 @@ These can now be combined where needed:
 
     void read_and_print()
     {
-        auto x = read(cin);
+        auto x {read(cin)};
         print(cout, x);
     }
 
@@ -2919,7 +2919,7 @@ There is a useful function lurking here (case insensitive string comparison), as
 
 Or maybe (if you prefer to avoid the implicit name binding to n):
 
-    auto cmp_to_n = [&n](const string& a) { return compare_insensitive(a, n); };
+    auto cmp_to_n {[&n](const string& a) { return compare_insensitive(a, n); }};
 
     auto x = find_if(vr.begin(), vr.end(),
         [](const Rec& r) { return cmp_to_n(r.name); }
@@ -3330,7 +3330,7 @@ For example:
     };
 
     Distance d1 = measure(obj1);        // access d1.value and d1.unit
-    auto d2 = measure(obj2);            // access d2.value and d2.unit
+    auto d2 {measure(obj2)};            // access d2.value and d2.unit
     auto [value, unit] = measure(obj3); // access value and unit; somewhat redundant
                                         // to people who know measure()
     auto [x, y] = measure(obj4);        // don't; it's likely to be confusing
@@ -3509,7 +3509,7 @@ Informal/non-explicit ranges are a source of errors.
 
     vector<X> vec;
     // ...
-    auto p = find({vec.begin(), vec.end()}, X{});  // find X{} in vec
+    auto p {find({vec.begin(), vec.end()}, X{})};  // find X{} in vec
 
 ##### Note
 
@@ -3590,7 +3590,7 @@ Using `unique_ptr` is the cheapest way to pass a pointer safely.
 
     unique_ptr<Shape> get_shape(istream& is)  // assemble shape from input stream
     {
-        auto kind = read_header(is); // read header and identify the next shape on input
+        auto kind {read_header(is)}; // read header and identify the next shape on input
         switch (kind) {
         case kCircle:
             return make_unique<Circle>(is);
@@ -3657,8 +3657,8 @@ Returning a `T*` to transfer ownership is a misuse.
     Node* find(Node* t, const string& s)  // find s in a binary tree of Nodes
     {
         if (!t || t->name == s) return t;
-        if ((auto p = find(t->left, s))) return p;
-        if ((auto p = find(t->right, s))) return p;
+        if ((auto p {find(t->left, s))) return p};
+        if ((auto p {find(t->right, s))) return p};
         return nullptr;
     }
 
@@ -4025,7 +4025,7 @@ Generic lambdas offer a concise way to write function templates and so can be us
 
 ##### Enforcement
 
-* Warn on use of a named non-generic lambda (e.g., `auto x = [](int i) { /*...*/; };`) that captures nothing and appears at global scope. Write an ordinary function instead.
+* Warn on use of a named non-generic lambda (e.g., `auto x {[](int i) { /*...*/; }};`) that captures nothing and appears at global scope. Write an ordinary function instead.
 
 ### <a name="Rf-default-args"></a>F.51: Where there is a choice, prefer default arguments over overloading
 
@@ -4155,7 +4155,7 @@ It's confusing. Writing `[=]` in a member function appears to capture by value, 
             int i = 0;
             // ...
 
-            auto lambda = [=] { use(i, x); };   // BAD: "looks like" copy/value capture
+            auto lambda {[=] { use(i, x); }};   // BAD: "looks like" copy/value capture
 
             x = 42;
             lambda(); // calls use(0, 42);
@@ -4164,7 +4164,7 @@ It's confusing. Writing `[=]` in a member function appears to capture by value, 
 
             // ...
 
-            auto lambda2 = [i, this] { use(i, x); }; // ok, most explicit and least confusing
+            auto lambda2 {[i, this] { use(i, x); }}; // ok, most explicit and least confusing
 
             // ...
         }
@@ -4699,8 +4699,8 @@ You need a reason (use cases) for using a hierarchy.
         Point1 p11 {1, 2};   // make an object on the stack
         Point1 p12 {p11};    // a copy
 
-        auto p21 = make_unique<Point2>(1, 2);   // make an object on the free store
-        auto p22 = p21->clone();                // make a copy
+        auto p21 {make_unique<Point2>(1, 2)};   // make an object on the free store
+        auto p22 {p21->clone()};                // make a copy
         // ...
     }
 
@@ -5074,7 +5074,7 @@ Only define a non-default destructor if a class needs to execute code that is no
 
     void test()
     {
-        auto act = finally([] { cout << "Exit test\n"; });  // establish exit action
+        auto act {finally([] { cout << "Exit test\n"; })};  // establish exit action
         // ...
         if (something) return;   // act done here
         // ...
@@ -5212,7 +5212,7 @@ Consider a `T*` a possible owner and therefore suspect.
     void use(Smart_ptr<int> p1)
     {
         // error: p2.p leaked (if not nullptr and not owned by some other code)
-        auto p2 = p1;
+        auto p2 {p1};
     }
 
 Note that if you define a destructor, you must define or delete [all default operations](#Rc-five):
@@ -5228,7 +5228,7 @@ Note that if you define a destructor, you must define or delete [all default ope
 
     void use(Smart_ptr2<int> p1)
     {
-        auto p2 = p1;   // error: double deletion
+        auto p2 {p1};   // error: double deletion
     }
 
 The default copy operation will just copy the `p1.p` into `p2.p` leading to a double destruction of `p1.p`. Be explicit about ownership:
@@ -5245,7 +5245,7 @@ The default copy operation will just copy the `p1.p` into `p2.p` leading to a do
 
     void use(Smart_ptr3<int> p1)
     {
-        auto p2 = p1;   // OK: no double deletion
+        auto p2 {p1};   // OK: no double deletion
     }
 
 ##### Note
@@ -5311,7 +5311,7 @@ A destructor must be non-private or it will prevent using the type:
     void use()
     {
         X a;                        // error: cannot destroy
-        auto p = make_unique<X>();  // error: cannot destroy
+        auto p {make_unique<X>()};  // error: cannot destroy
     }
 
 ##### Exception
@@ -5992,7 +5992,7 @@ The return type of the factory should normally be `unique_ptr` by default; if so
         template<class T>
         static shared_ptr<T> create()    // interface for creating shared objects
         {
-            auto p = make_shared<T>(typename T::Token{});
+            auto p {make_shared<T>(typename T::Token{})};
             p->post_initialize();
             return p;
         }
@@ -6126,7 +6126,7 @@ It is simple and efficient. If you want to optimize for rvalues, provide an over
         Foo& operator=(const Foo& x)
         {
             // GOOD: no need to check for self-assignment (other than performance)
-            auto tmp = x;
+            auto tmp {x};
             swap(tmp); // see C.83
             return *this;
         }
@@ -6511,7 +6511,7 @@ If the class has no data, `=delete` the copy/move functions. Otherwise, make the
 
     void f(B& b)
     {
-        auto b2 = b; // oops, slices the object; b2.m() will return 'B'
+        auto b2 {b}; // oops, slices the object; b2.m() will return 'B'
     }
 
     D d;
@@ -6536,7 +6536,7 @@ If the class has no data, `=delete` the copy/move functions. Otherwise, make the
 
     void f(B& b)
     {
-        auto b2 = b; // ok, compiler will detect inadvertent copying, and protest
+        auto b2 {b}; // ok, compiler will detect inadvertent copying, and protest
     }
 
     D d;
@@ -6750,7 +6750,7 @@ Providing a non-member `swap` function in the same namespace as your type for ca
 
     void swap(My_vector& x, My_vector& y)
     {
-        auto tmp = x;   // copy elements
+        auto tmp {x};   // copy elements
         x = y;
         y = tmp;
     }
@@ -8329,8 +8329,8 @@ Avoid resource leaks.
 
     void use(int i)
     {
-        auto p = new int {7};           // bad: initialize local pointers with new
-        auto q = make_unique<int>(9);   // ok: guarantee the release of the memory-allocated for 9
+        auto p {new int {7}};           // bad: initialize local pointers with new
+        auto q {make_unique<int>(9)};   // ok: guarantee the release of the memory-allocated for 9
         if (0 < i) return;              // maybe return and leak
         delete p;                       // too late
     }
@@ -8751,12 +8751,12 @@ You cannot overload by defining two different lambdas with the same name.
 
     void f(int);
     void f(double);
-    auto f = [](char);   // error: cannot overload variable and function
+    auto f {[](char)};   // error: cannot overload variable and function
 
-    auto g = [](int) { /* ... */ };
-    auto g = [](double) { /* ... */ };   // error: cannot overload variables
+    auto g {[](int) { /* ... */ }};
+    auto g {[](double) { /* ... */ }};   // error: cannot overload variables
 
-    auto h = [](auto) { /* ... */ };   // OK
+    auto h {[](auto) { /* ... */ }};   // OK
 
 ##### Enforcement
 
@@ -9019,7 +9019,7 @@ If you wanted to see the bytes of an `int`, use a (named) cast:
 
     void if_you_must_pun(int& x)
     {
-        auto p = reinterpret_cast<std::byte*>(&x);
+        auto p {reinterpret_cast<std::byte*>(&x)};
         cout << to_integer<unsigned>(p[0]) << '\n'; // OK; better
         // ...
     }
@@ -9371,7 +9371,7 @@ Consider:
 
     void send(X* x, string_view destination)
     {
-        auto port = open_port(destination);
+        auto port {open_port(destination)};
         my_mutex.lock();
         // ...
         send(port, x);
@@ -9473,7 +9473,7 @@ We want owning pointers identified so that we can reliably and efficiently delet
     void f()
     {
         int* p1 = new int{7};           // bad: raw owning pointer
-        auto p2 = make_unique<int>(7);  // OK: the int is owned by a unique pointer
+        auto p2 {make_unique<int>(7)};  // OK: the int is owned by a unique pointer
         // ...
     }
 
@@ -9529,14 +9529,14 @@ Returning a (raw) pointer imposes a lifetime management uncertainty on the calle
 
     Gadget* make_gadget(int n)
     {
-        auto p = new Gadget{n};
+        auto p {new Gadget{n}};
         // ...
         return p;
     }
 
     void caller(int n)
     {
-        auto p = make_gadget(n);   // remember to delete p
+        auto p {make_gadget(n)};   // remember to delete p
         // ...
         delete p;
     }
@@ -9602,7 +9602,7 @@ The following example is inefficient (because it has unnecessary allocation and 
 
     void f(int n)
     {
-        auto p = new Gadget{n};
+        auto p {new Gadget{n}};
         // ...
         delete p;
     }
@@ -9652,10 +9652,10 @@ See [I.2](#Ri-global)
         // that string isn't a string, but a string-sized bag of bits
         Record* p1 = static_cast<Record*>(malloc(sizeof(Record)));
 
-        auto p2 = new Record;
+        auto p2 {new Record};
 
         // unless an exception is thrown, *p2 is default initialized
-        auto p3 = new(nothrow) Record;
+        auto p3 {new(nothrow) Record};
         // p3 might be nullptr; if not, *p3 is default initialized
 
         // ...
@@ -9708,7 +9708,7 @@ If you don't, an exception or a return might lead to a leak.
     {
         FILE* f = fopen(name, "r");            // open the file
         vector<char> buf(1024);
-        auto _ = finally([f] { fclose(f); });  // remember to close the file
+        auto _ {finally([f] { fclose(f); })};  // remember to close the file
         // ...
     }
 
@@ -9824,8 +9824,8 @@ Consider:
     void f()
     {
         X* p1 { new X };              // bad, p1 will leak
-        auto p2 = make_unique<X>();   // good, unique ownership
-        auto p3 = make_shared<X>();   // good, shared ownership
+        auto p2 {make_unique<X>()};   // good, unique ownership
+        auto p3 {make_shared<X>()};   // good, shared ownership
     }
 
 This will leak the object used to initialize `p1` (only).
@@ -9878,7 +9878,7 @@ It also ensures exception safety in complex expressions (in pre-C++17 code).
 Consider:
 
     shared_ptr<X> p1 { new X{2} }; // bad
-    auto p = make_shared<X>(2);    // good
+    auto p {make_shared<X>(2)};    // good
 
 The `make_shared()` version mentions `X` only once, so it is usually shorter (as well as faster) than the version with the explicit `new`.
 
@@ -9897,7 +9897,7 @@ It also ensures exception safety in complex expressions (in pre-C++17 code).
 
     unique_ptr<Foo> p {new Foo{7}};    // OK: but repetitive
 
-    auto q = make_unique<Foo>(7);      // Better: no repetition of Foo
+    auto q {make_unique<Foo>(7)};      // Better: no repetition of Foo
 
 ##### Enforcement
 
@@ -10138,7 +10138,7 @@ The fix is simple -- take a local copy of the pointer to "keep a ref count" for 
     void my_code()
     {
         // cheap: 1 increment covers this entire function and all the call trees below us
-        auto pin = g_p;
+        auto pin {g_p};
 
         // GOOD: passing pointer or reference obtained from a local unaliased smart pointer
         f(*pin);
@@ -10248,11 +10248,11 @@ It is available as part of all C++ implementations.
 
 ##### Example
 
-    auto sum = accumulate(begin(a), end(a), 0.0);   // good
+    auto sum {accumulate(begin(a), end(a), 0.0)};   // good
 
 a range version of `accumulate` would be even better:
 
-    auto sum = accumulate(v, 0.0); // better
+    auto sum {accumulate(v, 0.0)}; // better
 
 but don't hand-code a well-known algorithm:
 
@@ -10289,10 +10289,10 @@ The more traditional and lower-level near-equivalent is longer, messier, harder 
 
     char** read2(istream& is, int maxelem, int maxstring, int* nread)   // bad: verbose and incomplete
     {
-        auto res = new char*[maxelem];
+        auto res {new char*[maxelem]};
         int elemcount = 0;
         while (is && elemcount < maxelem) {
-            auto s = new char[maxstring];
+            auto s {new char[maxstring]};
             is.read(s, maxstring);
             res[elemcount++] = s;
         }
@@ -10460,7 +10460,7 @@ Note: C++17 and C++20 also add `if`, `switch`, and range-`for` initializer state
 
     map<int, string> mymap;
 
-    if (auto result = mymap.insert(value); result.second) {
+    if (auto result {mymap.insert(value)}; result.second) {
         // insert succeeded, and result is valid for this block
         use(result.first);  // ok
         // ...
@@ -10669,13 +10669,13 @@ Flag variable and constant declarations with multiple declarators (e.g., `int* p
 
 Consider:
 
-    auto p = v.begin();      // vector<DataRecord>::iterator
-    auto z1 = v[3];          // makes copy of DataRecord
+    auto p {v.begin()};      // vector<DataRecord>::iterator
+    auto z1 {v[3]};          // makes copy of DataRecord
     auto& z2 = v[3];         // avoids copy
     const auto& z3 = v[3];   // const and avoids copy
-    auto h = t.future();
-    auto q = make_unique<int[]>(s);
-    auto f = [](int x) { return x + 10; };
+    auto h {t.future()};
+    auto q {make_unique<int[]>(s)};
+    auto f {[](int x) { return x + 10; }};
 
 In each case, we save writing a longish, hard-to-remember type that the compiler already knows but a programmer could get wrong.
 
@@ -10690,7 +10690,7 @@ Avoid `auto` for initializer lists and in cases where you know exactly which typ
 
 ##### Example
 
-    auto lst = { 1, 2, 3 };   // lst is an initializer list
+    auto lst {{ 1, 2, 3 }};   // lst is an initializer list
     auto x{1};   // x is an int (in C++17; initializer_list in C++11)
 
 ##### Note
@@ -10698,7 +10698,7 @@ Avoid `auto` for initializer lists and in cases where you know exactly which typ
 As of C++20, we can (and should) use concepts to be more specific about the type we are deducing:
 
     // ...
-    forward_iterator auto p = algo(x, y, z);
+    forward_iterator auto p {algo(x, y, z)};
 
 ##### Example (C++17)
 
@@ -10969,7 +10969,7 @@ Sometimes, a lambda can be used as an initializer to avoid an uninitialized vari
 
     error_code ec;
     Value v = [&] {
-        auto p = get_value();   // get_value() returns a pair<error_code, Value>
+        auto p {get_value()};   // get_value() returns a pair<error_code, Value>
         ec = p.first;
         return p.second;
     }();
@@ -10977,7 +10977,7 @@ Sometimes, a lambda can be used as an initializer to avoid an uninitialized vari
 or maybe:
 
     Value v = [] {
-        auto p = get_value();   // get_value() returns a pair<error_code, Value>
+        auto p {get_value()};   // get_value() returns a pair<error_code, Value>
         if (p.first) throw Bad_value{p.first};
         return p.second;
     }();
@@ -11082,13 +11082,13 @@ For containers, there is a tradition for using `{...}` for a list of elements an
     int x {7.9};   // error: narrowing
     int y = 7.9;   // OK: y becomes 7. Hope for a compiler warning
     int z {gsl::narrow_cast<int>(7.9)};    // OK: you asked for it
-    auto zz = gsl::narrow_cast<int>(7.9);  // OK: you asked for it
+    auto zz {gsl::narrow_cast<int>(7.9)};  // OK: you asked for it
 
 ##### Note
 
 `{}` initialization can be used for nearly all initialization; other forms of initialization can't:
 
-    auto p = new vector<int> {1, 2, 3, 4, 5};   // initialized vector
+    auto p {new vector<int> {1, 2, 3, 4, 5}};   // initialized vector
     D::D(int a, int b) :m{a, b} {   // member initializer (e.g., m might be a pair)
         // ...
     };
@@ -11107,14 +11107,14 @@ Initialization of a variable declared using `auto` with a single value, e.g., `{
 The C++17 rules are somewhat less surprising:
 
     auto x1 {7};        // x1 is an int with the value 7
-    auto x2 = {7};      // x2 is an initializer_list<int> with an element 7
+    auto x2 {{7}};      // x2 is an initializer_list<int> with an element 7
 
     auto x11 {7, 8};    // error: two initializers
-    auto x22 = {7, 8};  // x22 is an initializer_list<int> with elements 7 and 8
+    auto x22 {{7, 8}};  // x22 is an initializer_list<int> with elements 7 and 8
 
 Use `={...}` if you really want an `initializer_list<T>`
 
-    auto fib10 = {1, 1, 2, 3, 5, 8, 13, 21, 34, 55};   // fib10 is a list
+    auto fib10 {{1, 1, 2, 3, 5, 8, 13, 21, 34, 55}};   // fib10 is a list
 
 ##### Note
 
@@ -11161,7 +11161,7 @@ increases readability, and it has zero or near zero run-time cost.
 
     void use(bool leak)
     {
-        auto p1 = make_unique<int>(7);   // OK
+        auto p1 {make_unique<int>(7)};   // OK
         int* p2 = new int{7};            // bad: might leak
         // ... no assignment to p2 ...
         if (leak) return;
@@ -11292,7 +11292,7 @@ It nicely encapsulates local initialization, including cleaning up scratch varia
 ##### Example, bad
 
     widget x;   // should be const, but:
-    for (auto i = 2; i <= N; ++i) {          // this could be some
+    for (auto i {2}; i <= N; ++i) {          // this could be some
         x += some_obj.do_something_with(i);  // arbitrarily long code
     }                                        // needed to initialize x
     // from here, x should be const, but we can't say so in code in this style
@@ -11301,7 +11301,7 @@ It nicely encapsulates local initialization, including cleaning up scratch varia
 
     const widget x = [&] {
         widget val;                                // assume that widget has a default constructor
-        for (auto i = 2; i <= N; ++i) {            // this could be some
+        for (auto i {2}; i <= N; ++i) {            // this could be some
             val += some_obj.do_something_with(i);  // arbitrarily long code
         }                                          // needed to initialize x
         return val;
@@ -11573,13 +11573,13 @@ A programmer should know and use the basic rules for expressions.
 
     x = k * y + z;             // OK
 
-    auto t1 = k * y;           // bad: unnecessarily verbose
+    auto t1 {k * y};           // bad: unnecessarily verbose
     x = t1 + z;
 
     if (0 <= x && x < max)   // OK
 
-    auto t1 = 0 <= x;        // bad: unnecessarily verbose
-    auto t2 = x < max;
+    auto t1 {0 <= x};        // bad: unnecessarily verbose
+    auto t2 {x < max};
     if (t1 && t2)            // ...
 
 ##### Enforcement
@@ -11993,8 +11993,8 @@ Casts are a well-known source of errors and make some optimizations unreliable.
 ##### Example, bad
 
     double d = 2;
-    auto p = (long*)&d;
-    auto q = (long long*)&d;
+    auto p {(long*)&d};
+    auto q {(long long*)&d};
     cout << d << ' ' << *p << ' ' << *q << '\n';
 
 What would you think this fragment prints? The result is at best implementation defined. I got
@@ -12103,7 +12103,7 @@ for example.)
 
 `reinterpret_cast` can be essential, but the essential uses (e.g., turning a machine address into pointer) are not type safe:
 
-    auto p = reinterpret_cast<Device_register>(0x800);  // inherently dangerous
+    auto p {reinterpret_cast<Device_register>(0x800)};  // inherently dangerous
 
 
 ##### Enforcement
@@ -12218,7 +12218,7 @@ Consider keeping previously computed results around for a costly operation:
     public:
         int get_val(int x)
         {
-            auto p = cache.find(x);
+            auto p {cache.find(x)};
             if (p.first) return p.second;
             int val = compute(x);
             cache.set(x, val); // insert value for x
@@ -12236,7 +12236,7 @@ To do this we still need to mutate `cache`, so people sometimes resort to a `con
     public:
         int get_val(int x) const
         {
-            auto p = cache.find(x);
+            auto p {cache.find(x)};
             if (p.first) return p.second;
             int val = compute(x);
             const_cast<Cache&>(cache).set(x, val);   // ugly
@@ -12254,7 +12254,7 @@ State that `cache` is mutable even for a `const` object:
     public:
         int get_val(int x) const
         {
-            auto p = cache.find(x);
+            auto p {cache.find(x)};
             if (p.first) return p.second;
             int val = compute(x);
             cache.set(x, val);
@@ -12271,7 +12271,7 @@ An alternative solution would be to store a pointer to the `cache`:
     public:
         int get_val(int x) const
         {
-            auto p = cache->find(x);
+            auto p {cache->find(x)};
             if (p.first) return p.second;
             int val = compute(x);
             cache->set(x, val);
@@ -12303,7 +12303,7 @@ Constructs that cannot overflow do not overflow (and usually run faster):
     for (auto& x : v)      // print all elements of v
         cout << x << '\n';
 
-    auto p = find(v, x);   // find x in v
+    auto p {find(v, x)};   // find x in v
 
 ##### Enforcement
 
@@ -12366,7 +12366,7 @@ And after you do that, assume the object has been moved from (see [C.64](#Rc-mov
 
     void f()
     {
-        auto w = make_unique<widget>();
+        auto w {make_unique<widget>()};
         // ...
         sink(std::move(w));               // ok, give to sink()
         // ...
@@ -12445,7 +12445,7 @@ This is also known as the rule of "No naked `new`!"
 
     void f(int n)
     {
-        auto p = new X[n];   // n default constructed Xs
+        auto p {new X[n]};   // n default constructed Xs
         // ...
         delete[] p;
     }
@@ -12468,7 +12468,7 @@ That's what the language requires, and mismatches can lead to resource release e
 
     void f(int n)
     {
-        auto p = new X[n];   // n default constructed Xs
+        auto p {new X[n]};   // n default constructed Xs
         // ...
         delete p;   // error: just delete the object p, rather than delete the array p[]
     }
@@ -12599,7 +12599,7 @@ When unambiguous, the `T` can be left out of `T{e}`.
 
     complex<double> f(complex<double>);
 
-    auto z = f({2*pi, 1});
+    auto z {f({2*pi, 1})};
 
 ##### Note
 
@@ -12767,7 +12767,7 @@ Remember that there are other ways of getting an invalid pointer.
 
     void g()        // old code: uses naked new
     {
-        auto q = new int{7};
+        auto q {new int{7}};
         f(q);
         int x = *q; // BAD: dereferences invalid pointer
     }
@@ -12846,7 +12846,7 @@ Readability. Error prevention. Efficiency.
     for (gsl::index i = 0; i < v.size(); ++i)   // bad
         cout << v[i] << '\n';
 
-    for (auto p = v.begin(); p != v.end(); ++p)   // bad
+    for (auto p {v.begin(); p != v.end()}; ++p)   // bad
         cout << *p << '\n';
 
     for (auto& x : v)    // OK
@@ -13327,7 +13327,7 @@ This rule is especially useful when a declaration is used as a condition
 
     if (auto pc = dynamic_cast<Circle*>(ps)) { ... } // execute if ps points to a kind of Circle, good
 
-    if (auto pc = dynamic_cast<Circle*>(ps); pc != nullptr) { ... } // not recommended
+    if (auto pc {dynamic_cast<Circle*>(ps)}; pc != nullptr) { ... } // not recommended
 
 ##### Example
 
@@ -13527,7 +13527,7 @@ Incrementing a value beyond a maximum value can lead to memory corruption and un
 
     int area(int h, int w) { return h * w; }
 
-    auto a = area(10'000'000, 100'000'000);   // bad, numeric overflow
+    auto a {area(10'000'000, 100'000'000)};   // bad, numeric overflow
 
 ##### Exception
 
@@ -13625,7 +13625,7 @@ Consider:
     // ...
     int height;
     cin >> height;
-    auto a = area(height, 2);   // if the input is -2 a becomes 4294967292
+    auto a {area(height, 2)};   // if the input is -2 a becomes 4294967292
 
 Remember that `-1` when assigned to an `unsigned int` becomes the largest `unsigned int`.
 Also, since unsigned arithmetic is modular arithmetic the multiplication didn't overflow, it wrapped around.
@@ -13684,11 +13684,11 @@ To avoid the pitfalls with `auto` and `int`.
         cout << vec[i] << '\n';
     for (unsigned i = 0; i < vec.size(); i += 2)               // risk wraparound
         cout << vec[i] << '\n';
-    for (auto i = 0; i < vec.size(); i += 2)                   // might not be big enough
+    for (auto i {0}; i < vec.size(); i += 2)                   // might not be big enough
         cout << vec[i] << '\n';
     for (vector<int>::size_type i = 0; i < vec.size(); i += 2) // verbose
         cout << vec[i] << '\n';
-    for (auto i = vec.size()-1; i >= 0; i -= 2)                // bug
+    for (auto i {vec.size()-1; i >= 0}; i -= 2)                // bug
         cout << vec[i] << '\n';
     for (int i = vec.size()-1; i >= 0; i -= 2)                 // might not be big enough
         cout << vec[i] << '\n';
@@ -13984,8 +13984,8 @@ However, `lower_bound` still doesn't return enough information for all uses, so 
 
 `equal_range` returns a `pair` of iterators specifying the first and one beyond last match.
 
-    auto r = equal_range(begin(c), end(c), 7);
-    for (auto p = r.first; p != r.second; ++p)
+    auto r {equal_range(begin(c), end(c), 7)};
+    for (auto p {r.first; p != r.second}; ++p)
         cout << *p << '\n';
 
 Obviously, these three interfaces are implemented by the same basic code.
@@ -14350,9 +14350,9 @@ Local static variables are a common source of data races.
         int sz = read_vec(fs, buf, max);            // read from fs into buf
         gsl::span<double> s {buf};
         // ...
-        auto h1 = async([&] { sort(std::execution::par, s); });     // spawn a task to sort
+        auto h1 {async([&] { sort(std::execution::par, s); })};     // spawn a task to sort
         // ...
-        auto h2 = async([&] { return find_all(buf, sz, pattern); });   // spawn a task to find matches
+        auto h2 {async([&] { return find_all(buf, sz, pattern); })};   // spawn a task to find matches
         // ...
     }
 
@@ -14417,13 +14417,13 @@ The less sharing you do, the less chance you have to wait on a lock (so performa
 
     void process_readings(const vector<Reading>& surface_readings)
     {
-        auto h1 = async([&] { if (!validate(surface_readings)) throw Invalid_data{}; });
-        auto h2 = async([&] { return temperature_gradients(surface_readings); });
-        auto h3 = async([&] { return altitude_map(surface_readings); });
+        auto h1 {async([&] { if (!validate(surface_readings)) throw Invalid_data{}; })};
+        auto h2 {async([&] { return temperature_gradients(surface_readings); })};
+        auto h3 {async([&] { return altitude_map(surface_readings); })};
         // ...
         h1.get();
-        auto v2 = h2.get();
-        auto v3 = h3.get();
+        auto v2 {h2.get()};
+        auto v3 {h3.get()};
         // ...
     }
 
@@ -14455,7 +14455,7 @@ Application concepts are easier to reason about.
     {
         std::thread publisher([=] { std::cout << msg; });      // bad: less expressive
                                                                //      and more error-prone
-        auto pubtask = std::async([=] { std::cout << msg; });  // OK
+        auto pubtask {std::async([=] { std::cout << msg; })};  // OK
         // ...
         publisher.join();
     }
@@ -14750,7 +14750,7 @@ If a `thread` joins, we can safely pass pointers to objects in the scope of the 
         joining_thread t0(f, &x);           // OK
         joining_thread t1(f, p);            // OK
         joining_thread t2(f, &glob);        // OK
-        auto q = make_unique<int>(99);
+        auto q {make_unique<int>(99)};
         joining_thread t3(f, q.get());      // OK
         // ...
     }
@@ -14789,7 +14789,7 @@ If a `thread` is detached, we can safely pass pointers to static and free store 
         std::thread t0(f, &x);           // bad
         std::thread t1(f, p);            // bad
         std::thread t2(f, &glob);        // OK
-        auto q = make_unique<int>(99);
+        auto q {make_unique<int>(99)};
         std::thread t3(f, q.get());      // bad
         // ...
         t0.detach();
@@ -14952,7 +14952,7 @@ Defining "small amount" precisely is impossible.
 
     void fct(string& s)
     {
-        auto res = async(modify1, s);
+        auto res {async(modify1, s)};
         async(modify2, s);
     }
 
@@ -16033,7 +16033,7 @@ This is verbose. In larger code with multiple possible `throw`s explicit release
 
     void f3(int i)   // OK: resource management done by a handle (but see below)
     {
-        auto p = make_unique<int[]>(12);
+        auto p {make_unique<int[]>(12)};
         // ...
         if (i < 17) throw Bad{"in f()", i};
         // ...
@@ -16043,7 +16043,7 @@ Note that this works even when the `throw` is implicit because it happened in a 
 
     void f4(int i)   // OK: resource management done by a handle (but see below)
     {
-        auto p = make_unique<int[]>(12);
+        auto p {make_unique<int[]>(12)};
         // ...
         helper(i);   // might throw
         // ...
@@ -16175,7 +16175,7 @@ That would be a leak.
 
     void leak(int x)   // don't: might leak
     {
-        auto p = new int{7};
+        auto p {new int{7}};
         if (x < 0) throw Get_me_out_of_here{};  // might leak *p
         // ...
         delete p;   // we might never get here
@@ -16185,7 +16185,7 @@ One way of avoiding such problems is to use resource handles consistently:
 
     void no_leak(int x)
     {
-        auto p = make_unique<int>(7);
+        auto p {make_unique<int>(7)};
         if (x < 0) throw Get_me_out_of_here{};  // will delete *p if necessary
         // ...
         // no need for delete p
@@ -16430,7 +16430,7 @@ Better:
     void f(int n)
     {
         void* p = malloc(n);
-        auto _ = gsl::finally([p] { free(p); });
+        auto _ {gsl::finally([p] { free(p); })};
         // ...
     }
 
@@ -16605,7 +16605,7 @@ For example:
 
     void user()
     {
-        auto r = make_gadget(17);
+        auto r {make_gadget(17)};
         if (!r.second) {
                 // error handling
         }
@@ -16624,7 +16624,7 @@ For example:
 
     void user()
     {
-        auto r = make_gadget(17);
+        auto r {make_gadget(17)};
         if (!r.err) {
                 // error handling
         }
@@ -16761,7 +16761,7 @@ Exception specifications make error handling brittle, impose a run-time cost, an
         throw(X, Y)
     {
         // ...
-        auto x = f(arg);
+        auto x {f(arg)};
         // ...
     }
 
@@ -17536,11 +17536,11 @@ and should be used only as building blocks for meaningful concepts, rather than 
 
     int x = 7;
     int y = 9;
-    auto z = algo(x, y);   // z = 16
+    auto z {algo(x, y)};   // z = 16
 
     string xx = "7";
     string yy = "9";
-    auto zz = algo(xx, yy);   // zz = "79"
+    auto zz {algo(xx, yy)};   // zz = "79"
 
 Maybe the concatenation was expected. More likely, it was an accident. Defining minus equivalently would give dramatically different sets of accepted types.
 This `Addable` violates the mathematical rule that addition is supposed to be commutative: `a+b == b+a`.
@@ -17564,11 +17564,11 @@ The ability to specify meaningful semantics is a defining characteristic of a tr
 
     int x = 7;
     int y = 9;
-    auto z = algo(x, y);   // z = 16
+    auto z {algo(x, y)};   // z = 16
 
     string xx = "7";
     string yy = "9";
-    auto zz = algo(xx, yy);   // error: string is not a Number
+    auto zz {algo(xx, yy)};   // error: string is not a Number
 
 ##### Note
 
@@ -17916,14 +17916,14 @@ In general, passing function objects gives better performance than passing point
     sort(v, std::greater{});                             // function object
 
     bool greater_than_7(double x) { return x > 7; }
-    auto x = find_if(v, greater_than_7);                 // pointer to function: inflexible
-    auto y = find_if(v, [](double x) { return x > 7; }); // function object: carries the needed data
-    auto z = find_if(v, Greater_than<double>(7));        // function object: carries the needed data
+    auto x {find_if(v, greater_than_7)};                 // pointer to function: inflexible
+    auto y {find_if(v, [](double x) { return x > 7; })}; // function object: carries the needed data
+    auto z {find_if(v, Greater_than<double>(7))};        // function object: carries the needed data
 
 You can, of course, generalize those functions using `auto` or concepts. For example:
 
-    auto y1 = find_if(v, [](totally_ordered auto x) { return x > 7; }); // require an ordered type
-    auto z1 = find_if(v, [](auto x) { return x > 7; });                 // hope that the type has a >
+    auto y1 {find_if(v, [](totally_ordered auto x) { return x > 7; })}; // require an ordered type
+    auto z1 {find_if(v, [](auto x) { return x > 7; })};                 // hope that the type has a >
 
 ##### Note
 
@@ -18080,7 +18080,7 @@ Writing the template argument types explicitly can be tedious and unnecessarily 
 ##### Example
 
     tuple<int, string, double> t1 = {1, "Hamlet", 3.14};   // explicit type
-    auto t2 = make_tuple(1, "Ophelia"s, 3.14);         // better; deduced type
+    auto t2 {make_tuple(1, "Ophelia"s, 3.14)};         // better; deduced type
 
 Note the use of the `s` suffix to ensure that the string is a `std::string`, rather than a C-style string.
 
@@ -18271,7 +18271,7 @@ Eases tool creation.
     Iter algo(Iter first, Iter last)
     {
         for (; first != last; ++first) {
-            auto x = sqrt(*first); // potentially surprising dependency: which sqrt()?
+            auto x {sqrt(*first)}; // potentially surprising dependency: which sqrt()?
             helper(first, x);      // potentially surprising dependency:
                                    // helper is chosen based on first and x
             TT var = 7;            // potentially surprising dependency: which TT?
@@ -18522,7 +18522,7 @@ With C++20 constraints, such alternatives can be distinguished directly:
     {
         T v1(T(u));    // mistake: oops, v1 is a function, not a variable
         T v2{u};       // clear:   obviously a variable
-        auto x = T(u); // unclear: construction or cast?
+        auto x {T(u)}; // unclear: construction or cast?
     }
 
     f(1, "asdf"); // bad: cast from const char* to int
@@ -18937,7 +18937,7 @@ Often a `constexpr` function implies less compile-time overhead than alternative
         return res;
     }
 
-    constexpr auto f7 = pow(pi, 7);
+    constexpr auto f7 {pow(pi, 7)};
 
 ##### Enforcement
 
@@ -19006,11 +19006,11 @@ Generality. Reusability. Don't gratuitously commit to details; use the most gene
 
 Use `!=` instead of `<` to compare iterators; `!=` works for more objects because it doesn't rely on ordering.
 
-    for (auto i = first; i < last; ++i) {   // less generic
+    for (auto i {first}; i < last; ++i) {   // less generic
         // ...
     }
 
-    for (auto i = first; i != last; ++i) {   // good; more generic
+    for (auto i {first}; i != last; ++i) {   // good; more generic
         // ...
     }
 
@@ -20146,9 +20146,9 @@ those sequences are allocated and stored.
 
     void user(zstring p, const string& s, string_view ss)
     {
-        auto v1 = read_until(p);
-        auto v2 = read_until(s);
-        auto v3 = read_until(ss);
+        auto v1 {read_until(p)};
+        auto v2 {read_until(s)};
+        auto v3 {read_until(ss)};
         // ...
     }
 
@@ -20294,9 +20294,9 @@ Direct expression of an idea minimizes mistakes.
 
 ##### Example
 
-    auto pp1 = make_pair("Tokyo", 9.00);         // {C-style string,double} intended?
+    auto pp1 {make_pair("Tokyo", 9.00)};         // {C-style string,double} intended?
     pair<string, double> pp2 = {"Tokyo", 9.00};  // a bit verbose
-    auto pp3 = make_pair("Tokyo"s, 9.00);        // {std::string,double}    // C++14
+    auto pp3 {make_pair("Tokyo"s, 9.00)};        // {std::string,double}    // C++14
     pair pp4 = {"Tokyo"s, 9.00};                 // {std::string,double}    // C++17
 
 
@@ -21449,7 +21449,7 @@ Comments are not updated as consistently as code.
 
 ##### Example, bad
 
-    auto x = m * v1 + vv;   // multiply m with v1 and add the result to vv
+    auto x {m * v1 + vv};   // multiply m with v1 and add the result to vv
 
 ##### Enforcement
 
@@ -21555,12 +21555,12 @@ Requiring techniques like Hungarian notation to encode a type has been used in u
 
 Some styles use very general (not type-specific) prefixes to denote the general use of a variable.
 
-    auto p = new User();
-    auto p = make_unique<User>();
+    auto p {new User()};
+    auto p {make_unique<User>()};
     // note: "p" is not being used to say "raw pointer to type User,"
     //       just generally to say "this is an indirection"
 
-    auto cntHits = calc_total_of_hits(/*...*/);
+    auto cntHits {calc_total_of_hits(/*...*/)};
     // note: "cnt" is not being used to encode a type,
     //       just generally to say "this is a count of something"
 
@@ -21727,17 +21727,17 @@ Readability.
 
 Use digit separators to avoid long strings of digits
 
-    auto c = 299'792'458; // m/s2
-    auto q2 = 0b0000'1111'0000'0000;
-    auto ss_number = 123'456'7890;
+    auto c {299'792'458}; // m/s2
+    auto q2 {0b0000'1111'0000'0000};
+    auto ss_number {123'456'7890};
 
 ##### Example
 
 Use literal suffixes where clarification is needed
 
-    auto hello = "Hello!"s; // a std::string
-    auto world = "world";   // a C-style string
-    auto interval = 100ms;  // using <chrono>
+    auto hello {"Hello!"s}; // a std::string
+    auto world {"world"};   // a C-style string
+    auto interval {100ms};  // using <chrono>
 
 ##### Note
 
@@ -22305,7 +22305,7 @@ Here is an example of the last option:
         template<class T>
         static shared_ptr<T> create()    // interface for creating shared objects
         {
-            auto p = make_shared<T>(typename T::Token{});
+            auto p {make_shared<T>(typename T::Token{})};
             p->post_initialize();
             return p;
         }
@@ -22498,7 +22498,7 @@ Besides destructors and deallocation functions, common error-safety techniques r
 
     T& T::operator=(const T& other)
     {
-        auto temp = other;
+        auto temp {other};
         swap(temp);
         return *this;
     }
@@ -22752,7 +22752,7 @@ To simplify code and eliminate a need for explicit memory management. To bring a
         return ...;
     }
 
-    auto v = get_large_vector(); //  return by value is ok, most modern compilers will do copy elision
+    auto v {get_large_vector()}; //  return by value is ok, most modern compilers will do copy elision
 
 ##### Exception
 
