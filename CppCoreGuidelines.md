@@ -477,6 +477,7 @@ Philosophy rules summary:
 * [P.11: Encapsulate messy constructs, rather than spreading through the code](#Rp-library)
 * [P.12: Use supporting tools as appropriate](#Rp-tools)
 * [P.13: Use support libraries as appropriate](#Rp-lib)
+* [P.14: Do not invoke undefined behavior](#Rp-ub)
 
 Philosophical rules are generally not mechanically checkable.
 However, individual rules reflecting these philosophical themes are.
@@ -1210,6 +1211,42 @@ By default use
 If no well-designed, well-documented, and well-supported library exists for an important domain,
 maybe you should design and implement it, and then use it.
 
+### <a name="Rp-ub"></a>P.14: Do not invoke undefined behavior
+
+##### Reason
+
+Invoking [undefined behavior](https://en.cppreference.com/w/cpp/language/ub) allows the
+compiler to do literally anything.  In fact, when undefined behavior is invoked, the compiler
+can break a completely different part of the code, even one that didn't invoke undefined behavior
+itself! This is a major problem for us for three reasons: correctness, portability, and future-proofing.
+
+Since invoking undefined behavior breaks our side of the compiler/code contract, there
+is no way to fully ensure correctness in code that invokes undefined behavior.  Unit tests
+are not a full solution here since undefined behavior could happen differently in a unit-test
+context compared to a real-world context.  Additionally, undefined behavior is often
+non-deterministic at runtime, which could give us flaky tests or consistent false negatives.
+Even worse, undefined behavior can be compiled inconsistently, even on the same compiler
+and platform, making root cause identification of failing tests impossible.
+
+We want our code to be portable, and historically we've added new platforms consistently
+over time.  Undefined behavior can be a portability problem since the undefined behavior
+will likely occur in a different way with a new platform or compiler.  Unit tests again
+aren't a full answer here, since there's no guarantee that the unit tests will behave
+the same way as production code when undefined behavior is at play.
+
+We want to keep relatively up-to-date with our tooling.  Having undefined behavior
+in our codebase can become a barrier to quickly upgrading our compilers or enabling new
+optimization passes, since when undefined behavior is at play, these changes have a strong
+likelihood of breaking our code in subtle ways.
+
+##### Enforcement
+
+We should run as much code as possible through llvm's "asan" and "ubsan" sanitizer modes, in
+CI.  Together, these check for many instances of undefined behavior.
+
+Static analyzer tools can also detect some undefined behavior, and we should consider using them
+in our CI.  Visual Studio's Analyze, Xcode's analyze, and clang-tidy all include some support
+for this.
 
 # <a name="S-interfaces"></a>I: Interfaces
 
