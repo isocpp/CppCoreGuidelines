@@ -4,8 +4,8 @@ Jul 8, 2025
 
 Editors:
 
-* [Bjarne Stroustrup](http://www.stroustrup.com)
-* [Herb Sutter](http://herbsutter.com/)
+* [Bjarne Stroustrup](https://www.stroustrup.com)
+* [Herb Sutter](https://herbsutter.com/)
 
 This is a living document under continuous improvement.
 Had it been an open-source (code) project, this would have been release 0.8.
@@ -1605,7 +1605,7 @@ This can make them hard to distinguish from ordinary code, hard to update, hard 
 
 Preconditions should be part of the interface rather than part of the implementation,
 but we don't yet have the language facilities to do that.
-Once language support becomes available (e.g., see the [contract proposal](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/p0380r1.pdf)) we will adopt the standard version of preconditions, postconditions, and assertions.
+Once language support becomes available (e.g., see the [contract proposal](https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/p0380r1.pdf)) we will adopt the standard version of preconditions, postconditions, and assertions.
 
 ##### Note
 
@@ -1742,7 +1742,7 @@ This can make them hard to distinguish from ordinary code, hard to update, hard 
 
 Ideally, that `Ensures` should be part of the interface, but that's not easily done.
 For now, we place it in the definition (function body).
-Once language support becomes available (e.g., see the [contract proposal](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/p0380r1.pdf)) we will adopt the standard version of preconditions, postconditions, and assertions.
+Once language support becomes available (e.g., see the [contract proposal](https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/p0380r1.pdf)) we will adopt the standard version of preconditions, postconditions, and assertions.
 
 ##### Enforcement
 
@@ -2258,7 +2258,7 @@ implementation (widget.cpp)
 
 ##### Notes
 
-See [GOTW #100](https://herbsutter.com/gotw/_100/) and [cppreference](http://en.cppreference.com/w/cpp/language/pimpl) for the trade-offs and additional implementation details associated with this idiom.
+See [GOTW #100](https://herbsutter.com/gotw/_100/) and [cppreference](https://en.cppreference.com/w/cpp/language/pimpl) for the trade-offs and additional implementation details associated with this idiom.
 
 ##### Enforcement
 
@@ -2302,7 +2302,7 @@ problem where a property that we would like to consider static (here, ownership)
 at run time.
 The common, most frequent, and safest examples can be handled statically, so we don't want to add cost and complexity to those.
 But we must also cope with the uncommon, less-safe, and necessarily more expensive cases.
-Such examples are discussed in [[Str15]](http://www.stroustrup.com/resource-model.pdf).
+Such examples are discussed in [[Str15]](https://www.stroustrup.com/resource-model.pdf).
 
 So, we write a class
 
@@ -4449,7 +4449,7 @@ The "helper functions" have no need for direct access to the representation of a
 
 ##### Note
 
-This rule becomes even better if C++ gets ["uniform function call"](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/p0251r0.pdf).
+This rule becomes even better if C++ gets ["uniform function call"](https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/p0251r0.pdf).
 
 ##### Exception
 
@@ -8243,7 +8243,7 @@ So, first make sure that your `dynamic_cast` really is as slow as you think it i
 and that your use of `dynamic_cast` is really performance critical.
 
 We are of the opinion that current implementations of `dynamic_cast` are unnecessarily slow.
-For example, under suitable conditions, it is possible to perform a `dynamic_cast` in [fast constant time](http://www.stroustrup.com/fast_dynamic_casting.pdf).
+For example, under suitable conditions, it is possible to perform a `dynamic_cast` in [fast constant time](https://www.stroustrup.com/fast_dynamic_casting.pdf).
 However, compatibility makes changes difficult even if all agree that an effort to optimize is worthwhile.
 
 In very rare cases, if you have measured that the `dynamic_cast` overhead is material, you have other means to statically guarantee that a downcast will succeed (e.g., you are using CRTP carefully), and there is no virtual inheritance involved, consider tactically resorting `static_cast` with a prominent comment and disclaimer summarizing this paragraph and that human attention is needed under maintenance because the type system can't verify correctness. Even so, in our experience such "I know what I'm doing" situations are still a known bug source.
@@ -8632,7 +8632,7 @@ Many parts of the C++ semantics assume its default meaning.
 
 If you "mess with" operator `&` be sure that its definition has matching meanings for `->`, `[]`, `*`, and `.` on the result type.
 Note that operator `.` currently cannot be overloaded so a perfect system is impossible.
-We hope to remedy that: [Operator Dot (R2)](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2015/n4477.pdf).
+We hope to remedy that: [Operator Dot (R2)](https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2015/n4477.pdf).
 Note that `std::addressof()` always yields a built-in pointer.
 
 ##### Enforcement
@@ -14540,7 +14540,7 @@ There are many tools "out there", both commercial and open-source tools, both re
 Unfortunately people's needs and constraints differ so dramatically that we cannot make specific recommendations,
 but we can mention:
 
-* Static enforcement tools: both [clang](http://clang.llvm.org/docs/ThreadSafetyAnalysis.html)
+* Static enforcement tools: both [clang](https://clang.llvm.org/docs/ThreadSafetyAnalysis.html)
 and some older versions of [GCC](https://gcc.gnu.org/wiki/ThreadSafetyAnnotation)
 have some support for static annotation of thread safety properties.
 Consistent use of this technique turns many classes of thread-safety errors into compile-time errors.
@@ -14548,7 +14548,7 @@ The annotations are generally local (marking a particular data member as guarded
 and are usually easy to learn. However, as with many static tools, it can often present false negatives;
 cases that should have been caught but were allowed.
 
-* dynamic enforcement tools: Clang's [Thread Sanitizer](http://clang.llvm.org/docs/ThreadSanitizer.html) (aka TSAN)
+* dynamic enforcement tools: Clang's [Thread Sanitizer](https://clang.llvm.org/docs/ThreadSanitizer.html) (aka TSAN)
 is a powerful example of dynamic tools: it changes the build and execution of your program to add bookkeeping on memory access,
 absolutely identifying data races in a given execution of your binary.
 The cost for this is both memory (5-10x in most cases) and CPU slowdown (2-20x).
@@ -15222,7 +15222,7 @@ Flag all unnamed `lock_guard`s and `unique_lock`s.
 It should be obvious to a reader that the data is to be guarded and how. This decreases the chance of the wrong mutex being locked, or the mutex not being locked.
 
 Using a `synchronized_value<T>` ensures that the data has a mutex, and the right mutex is locked when the data is accessed.
-See the [WG21 proposal](http://wg21.link/p0290) to add `synchronized_value` to a future TS or revision of the C++ standard.
+See the [WG21 proposal](https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2023/p0290r4.html) to add `synchronized_value` to a future TS or revision of the C++ standard.
 
 ##### Example
 
@@ -17459,7 +17459,7 @@ Designing a useful concept is challenging.
 Hard.
 
 * Look for unconstrained arguments, templates that use "unusual"/non-standard concepts, templates that use "homebrew" concepts without axioms.
-* Develop a concept-discovery tool (e.g., see [an early experiment](http://www.stroustrup.com/sle2010_webversion.pdf)).
+* Develop a concept-discovery tool (e.g., see [an early experiment](https://www.stroustrup.com/sle2010_webversion.pdf)).
 
 ### <a name="Rt-auto"></a>T.12: Prefer concept names over `auto` for local variables
 
@@ -18098,7 +18098,7 @@ Sometimes there isn't a good way of getting the template arguments deduced and s
 ##### Note
 
 Note that C++17 will make this rule redundant by allowing the template arguments to be deduced directly from constructor arguments:
-[Template parameter deduction for constructors (Rev. 3)](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/p0091r1.html).
+[Template parameter deduction for constructors (Rev. 3)](https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/p0091r1.html).
 For example:
 
     tuple t1 = {1, "Hamlet"s, 3.14}; // deduced: tuple<int, string, double>
@@ -18352,7 +18352,7 @@ Typically, the solution is to make what would have been a nested class non-local
     List2<int, My_allocator> lst2;
 
 Some people found the idea that the `Link` no longer was hidden inside the list scary, so we named the technique
-[SCARY](http://www.open-std.org/jtc1/sc22/WG21/docs/papers/2009/n2911.pdf). From that academic paper:
+[SCARY](https://www.open-std.org/jtc1/sc22/WG21/docs/papers/2009/n2911.pdf). From that academic paper:
 "The acronym SCARY describes assignments and initializations that are Seemingly erroneous (appearing Constrained by conflicting generic parameters), but Actually work with the Right implementation (unconstrained bY the conflict due to minimized dependencies)."
 
 ##### Note
@@ -19323,8 +19323,8 @@ However
 
 **See also**:
 
-* [Working Draft, Extensions to C++ for Modules](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/n4592.pdf)
-* [Modules, Componentization, and Transition](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/p0141r0.pdf)
+* [Working Draft, Extensions to C++ for Modules](https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/n4592.pdf)
+* [Modules, Componentization, and Transition](https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/p0141r0.pdf)
 
 ##### Enforcement
 
@@ -19447,7 +19447,7 @@ Doing so takes away an `#include`r's ability to effectively disambiguate and to 
 ##### Note
 
 An exception is `using namespace std::literals;`. This is necessary to use string literals
-in header files and given [the rules](http://eel.is/c++draft/over.literal) - users are required
+in header files and given [the rules](https://eel.is/c++draft/over.literal) - users are required
 to name their own UDLs `operator""_x` - they will not collide with the standard library.
 
 ##### Enforcement
@@ -19610,7 +19610,7 @@ A test should verify that the header file itself compiles or that a cpp file whi
 
 ##### Reason
 
-The [standard](http://eel.is/c++draft/cpp.include) provides flexibility for compilers to implement
+The [standard](https://eel.is/c++draft/cpp.include) provides flexibility for compilers to implement
 the two forms of `#include` selected using the angle (`<>`) or quoted (`""`) syntax. Vendors take
 advantage of this and use different search algorithms and methods for specifying the include path.
 
@@ -19639,7 +19639,7 @@ A test should identify whether headers referenced via `""` could be referenced w
 
 ##### Reason
 
-The [standard](http://eel.is/c++draft/cpp.include) does not specify how compilers uniquely locate headers from an identifier in an `#include` directive, nor does it specify what constitutes uniqueness. For example, whether the implementation considers the identifiers to be case-sensitive, or whether the identifiers are file system paths to a header file, and if so, how a hierarchical file system path is delimited.
+The [standard](https://eel.is/c++draft/cpp.include) does not specify how compilers uniquely locate headers from an identifier in an `#include` directive, nor does it specify what constitutes uniqueness. For example, whether the implementation considers the identifiers to be case-sensitive, or whether the identifiers are file system paths to a header file, and if so, how a hierarchical file system path is delimited.
 
 To maximize the portability of `#include` directives across compilers, guidance is to:
 
@@ -20958,7 +20958,7 @@ Reference sections:
 ## <a name="SS-rules"></a>RF.rules: Coding rules
 
 * [AUTOSAR Guidelines for the use of the C++14 language in critical and safety-related systems v22.11](https://www.autosar.org/fileadmin/standards/R22-11/AP/AUTOSAR_RS_CPP14Guidelines.pdf) (obsolete, replaced by [MISRA C++:2023](https://misra.org.uk/product/misra-cpp2023/))
-* [Boost Library Requirements and Guidelines](http://www.boost.org/development/requirements.html).
+* [Boost Library Requirements and Guidelines](https://www.boost.org/development/requirements.html).
   ???.
 * [Bloomberg: BDE C++ Coding](https://github.com/bloomberg/bde/wiki/CodingStandards.pdf).
   Has a strong emphasis on code organization and layout.
@@ -20967,7 +20967,7 @@ Reference sections:
   C++03 and (reasonably) a bit backwards looking.
 * [Google C++ Style Guide](https://google.github.io/styleguide/cppguide.html).
   Geared toward C++17 and (also) older code bases. Google experts are now actively collaborating here on helping to improve these Guidelines, and hopefully to merge efforts so these can be a modern common set they could also recommend.
-* [JSF++: JOINT STRIKE FIGHTER AIR VEHICLE C++ CODING STANDARDS](http://www.stroustrup.com/JSF-AV-rules.pdf).
+* [JSF++: JOINT STRIKE FIGHTER AIR VEHICLE C++ CODING STANDARDS](https://www.stroustrup.com/JSF-AV-rules.pdf).
   Document Number 2RDU00001 Rev C. December 2005.
   For flight control software.
   For hard-real-time.
@@ -20981,15 +20981,15 @@ Reference sections:
 * [Using C++ in Mozilla Code](https://firefox-source-docs.mozilla.org/code-quality/coding-style/using_cxx_in_firefox_code.html).
   As the name indicates, this aims for portability across many (old) compilers.
   As such, it is restrictive.
-* [Geosoft.no: C++ Programming Style Guidelines](http://geosoft.no/development/cppstyle.html).
+* [Geosoft.no: C++ Programming Style Guidelines](https://geosoft.no/development/cppstyle.html).
   ???.
-* [Possibility.com: C++ Coding Standard](http://www.possibility.com/Cpp/CppCodingStandard.html).
+* [Possibility.com: C++ Coding Standard](https://www.possibility.com/Cpp/CppCodingStandard.html).
   ???.
 * [SEI CERT: Secure C++ Coding Standard](https://wiki.sei.cmu.edu/confluence/x/Wnw-BQ).
   A very nicely done set of rules (with examples and rationales) done for security-sensitive code.
   Many of their rules apply generally.
-* [High Integrity C++ Coding Standard](http://www.codingstandard.com/).
-* [llvm](http://llvm.org/docs/CodingStandards.html).
+* [High Integrity C++ Coding Standard](https://www.codingstandard.com/).
+* [llvm](https://llvm.org/docs/CodingStandards.html).
   Somewhat brief, based on C++14, and (not unreasonably) adjusted to its domain.
 * ???
 
@@ -21001,36 +21001,36 @@ Reference sections:
 * [Meyers05](#Meyers05) Scott Meyers: *Effective C++, Third Edition*. Addison-Wesley 2005.
 * [Meyers15](#Meyers15) Scott Meyers: *Effective Modern C++*. O'Reilly 2015.
 * [SuttAlex05](#SuttAlex05) Sutter and Alexandrescu: *C++ Coding Standards*. Addison-Wesley 2005. More a set of meta-rules than a set of rules. Pre-C++11.
-* [Stroustrup05](#Stroustrup05) Bjarne Stroustrup: [A rationale for semantically enhanced library languages](http://www.stroustrup.com/SELLrationale.pdf).
+* [Stroustrup05](#Stroustrup05) Bjarne Stroustrup: [A rationale for semantically enhanced library languages](https://www.stroustrup.com/SELLrationale.pdf).
   LCSD05. October 2005.
-* [Stroustrup14](#Stroustrup05) Stroustrup: [A Tour of C++](http://www.stroustrup.com/Tour.html).
+* [Stroustrup14](#Stroustrup05) Stroustrup: [A Tour of C++](https://www.stroustrup.com/Tour.html).
   Addison-Wesley 2014.
   Each chapter ends with an advice section consisting of a set of recommendations.
-* [Stroustrup13](#Stroustrup13) Stroustrup: [The C++ Programming Language (4th Edition)](http://www.stroustrup.com/4th.html).
+* [Stroustrup13](#Stroustrup13) Stroustrup: [The C++ Programming Language (4th Edition)](https://www.stroustrup.com/4th.html).
   Addison-Wesley 2013.
   Each chapter ends with an advice section consisting of a set of recommendations.
-* Stroustrup: [Style Guide](http://www.stroustrup.com/Programming/PPP-style.pdf)
-  for [Programming: Principles and Practice using C++](http://www.stroustrup.com/programming.html).
+* Stroustrup: [Style Guide](https://www.stroustrup.com/Programming/PPP-style.pdf)
+  for [Programming: Principles and Practice using C++](https://www.stroustrup.com/programming.html).
   Mostly low-level naming and layout rules.
   Primarily a teaching tool.
 
 ## <a name="SS-Cplusplus"></a>RF.C++: C++ Programming (C++11/C++14)
 
-* [TC++PL4](http://www.stroustrup.com/4th.html):
+* [TC++PL4](https://www.stroustrup.com/4th.html):
 A thorough description of the C++ language and standard libraries for experienced programmers.
-* [Tour++](http://www.stroustrup.com/Tour.html):
+* [Tour++](https://www.stroustrup.com/Tour.html):
 An overview of the C++ language and standard libraries for experienced programmers.
-* [Programming: Principles and Practice using C++](http://www.stroustrup.com/programming.html):
+* [Programming: Principles and Practice using C++](https://www.stroustrup.com/programming.html):
 A textbook for beginners and relative novices.
 
 ## <a name="SS-web"></a>RF.web: Websites
 
 * [isocpp.org](https://isocpp.org)
-* [Bjarne Stroustrup's home pages](http://www.stroustrup.com)
-* [WG21](http://www.open-std.org/jtc1/sc22/wg21/)
-* [Boost](http://www.boost.org)<a name="Boost"></a>
+* [Bjarne Stroustrup's home pages](https://www.stroustrup.com)
+* [WG21](https://www.open-std.org/jtc1/sc22/wg21/)
+* [Boost](https://www.boost.org)<a name="Boost"></a>
 * [Adobe open source](https://opensource.adobe.com/)
-* [Poco libraries](http://pocoproject.org/)
+* [Poco libraries](https://pocoproject.org/)
 * Sutter's Mill?
 * ???
 
@@ -21053,10 +21053,10 @@ A textbook for beginners and relative novices.
 
 * ISO C++ Standard C++11.
 * ISO C++ Standard C++14.
-* [ISO C++ Standard C++17](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/n4606.pdf). Committee Draft.
-* [Palo Alto "Concepts" TR](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2012/n3351.pdf).
-* [ISO C++ Concepts TS](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2015/n4553.pdf).
-* [WG21 Ranges report](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/n4569.pdf). Draft.
+* [ISO C++ Standard C++17](https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/n4606.pdf). Committee Draft.
+* [Palo Alto "Concepts" TR](https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2012/n3351.pdf).
+* [ISO C++ Concepts TS](https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2015/n4553.pdf).
+* [WG21 Ranges report](https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/n4569.pdf). Draft.
 
 
 ## <a name="SS-core"></a>RF.core: Core Guidelines materials
@@ -21064,7 +21064,7 @@ A textbook for beginners and relative novices.
 This section contains materials that have been useful for presenting the core guidelines and the ideas behind them:
 
 * [Our documents directory](https://github.com/isocpp/CppCoreGuidelines/tree/master/docs)
-* Stroustrup, Sutter, and Dos Reis: [A brief introduction to C++'s model for type- and resource-safety](http://www.stroustrup.com/resource-model.pdf). A paper with lots of examples.
+* Stroustrup, Sutter, and Dos Reis: [A brief introduction to C++'s model for type- and resource-safety](https://www.stroustrup.com/resource-model.pdf). A paper with lots of examples.
 * Sergey Zubkov: [a Core Guidelines talk](https://www.youtube.com/watch?v=DyLwdl_6vmU)
 and here are the [slides](http://2017.cppconf.ru/talks/sergey-zubkov). In Russian. 2017.
 * Neil MacIntosh: [The Guideline Support Library: One Year Later](https://www.youtube.com/watch?v=_GhNnCuaEjo). CppCon 2016.
@@ -21259,7 +21259,7 @@ Where desirable, they can be "instrumented" with additional functionality (e.g.,
 
 These Guidelines use types from the standard (e.g., C++17) in addition to ones from the GSL.
 For example, we assume a `variant` type, but this is not currently in GSL.
-Eventually, use [the one voted into C++17](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/p0088r3.html).
+Eventually, use [the one voted into C++17](https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/p0088r3.html).
 
 Some of the GSL types listed below might not be supported in the library you use due to technical reasons such as limitations in the current versions of C++.
 Therefore, please consult your GSL documentation to find out more.
@@ -21348,7 +21348,7 @@ Use `not_null<zstring>` for C-style strings that cannot be `nullptr`. ??? Do we 
 
 These assertions are currently macros (yuck!) and must appear in function definitions (only)
 pending standard committee decisions on contracts and assertion syntax.
-See [the contract proposal](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/p0380r1.pdf); using the attribute syntax,
+See [the contract proposal](https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/p0380r1.pdf); using the attribute syntax,
 for example, `Expects(p)` will become `[[expects: p]]`.
 
 ## <a name="SS-utilities"></a>GSL.util: Utilities
@@ -21436,8 +21436,8 @@ However, we have had many requests for a set of naming and layout conventions to
 
 More specific and detailed rules are easier to enforce.
 
-These rules bear a strong resemblance to the recommendations in the [PPP Style Guide](http://www.stroustrup.com/Programming/PPP-style.pdf)
-written in support of Stroustrup's [Programming: Principles and Practice using C++](http://www.stroustrup.com/programming.html).
+These rules bear a strong resemblance to the recommendations in the [PPP Style Guide](https://www.stroustrup.com/Programming/PPP-style.pdf)
+written in support of Stroustrup's [Programming: Principles and Practice using C++](https://www.stroustrup.com/programming.html).
 
 ### <a name="Rl-comments"></a>NL.1: Don't say in comments what can be clearly stated in code
 
@@ -21635,7 +21635,7 @@ Such identifiers are reserved for the C++ implementation.
 
 ##### Example
 
-[Stroustrup](http://www.stroustrup.com/Programming/PPP-style.pdf):
+[Stroustrup](https://www.stroustrup.com/Programming/PPP-style.pdf):
 ISO Standard, but with upper case used for your own types and concepts:
 
 * `int`
@@ -21706,7 +21706,7 @@ This rule was added after many requests for guidance.
 
 ##### Example
 
-[Stroustrup](http://www.stroustrup.com/Programming/PPP-style.pdf):
+[Stroustrup](https://www.stroustrup.com/Programming/PPP-style.pdf):
 ISO Standard, but with upper case used for your own types and concepts:
 
 * `int`
@@ -22127,7 +22127,7 @@ No. These guidelines are about how to best use modern Standard C++, and they lim
 
 ### <a name="Faq-markdown"></a>FAQ.10: What version of Markdown do these guidelines use?
 
-These coding standards are written using [CommonMark](http://commonmark.org), and `<a>` HTML anchors.
+These coding standards are written using [CommonMark](https://commonmark.org), and `<a>` HTML anchors.
 
 We are considering the following extensions from [GitHub Flavored Markdown (GFM)](https://help.github.com/articles/github-flavored-markdown/):
 
@@ -22812,7 +22812,7 @@ When is a class a container? ???
 This section contains a list of tools that directly support adoption of the C++ Core Guidelines. This list is not intended to be an exhaustive list of tools
 that are helpful in writing good C++ code. If a tool is designed specifically to support and links to the C++ Core Guidelines it is a candidate for inclusion.
 
-### <a name="St-clangtidy"></a>Tools: [Clang-tidy](http://clang.llvm.org/extra/clang-tidy/checks/list.html)
+### <a name="St-clangtidy"></a>Tools: [Clang-tidy](https://clang.llvm.org/extra/clang-tidy/checks/list.html)
 
 Clang-tidy has a set of rules that specifically enforce the C++ Core Guidelines. These rules are named in the pattern `cppcoreguidelines-*`.
 
@@ -22823,7 +22823,7 @@ The Microsoft compiler's C++ code analysis contains a set of rules specifically 
 # <a name="S-glossary"></a>Glossary
 
 A relatively informal definition of terms used in the guidelines
-(based off the glossary in [Programming: Principles and Practice using C++](http://www.stroustrup.com/programming.html))
+(based off the glossary in [Programming: Principles and Practice using C++](https://www.stroustrup.com/programming.html))
 
 More information on many topics about C++ can be found on the [Standard C++ Foundation](https://isocpp.org)'s site.
 
@@ -22899,7 +22899,7 @@ More information on many topics about C++ can be found on the [Standard C++ Foun
 * *invariant*: something that must be always true at a given point (or points) of a program; typically used to describe the state (set of values) of an object or the state of a loop before entry into the repeated statement.
 * *iteration*: the act of repeatedly executing a piece of code; see recursion.
 * *iterator*: an object that identifies an element of a sequence.
-* *ISO*: International Organization for Standardization. The C++ language is an ISO standard, ISO/IEC 14882. More information at [iso.org](http://iso.org).
+* *ISO*: International Organization for Standardization. The C++ language is an ISO standard, ISO/IEC 14882. More information at [iso.org](https://iso.org).
 * *library*: a collection of types, functions, classes, etc. implementing a set of facilities (abstractions) meant to be potentially used as part of more than one program.
 * *lifetime*: the time from the initialization of an object until it becomes unusable (goes out of scope, is deleted, or the program terminates).
 * *linker*: a program that combines object code files and libraries into an executable program.
@@ -23029,7 +23029,7 @@ Alternatively, we will decide that no change is needed and delete the entry.
 # Bibliography
 
 * <a name="Abrahams01"></a>
-  \[Abrahams01]:  D. Abrahams. [Exception-Safety in Generic Components](http://www.boost.org/community/exception_safety.html).
+  \[Abrahams01]:  D. Abrahams. [Exception-Safety in Generic Components](https://www.boost.org/community/exception_safety.html).
 * <a name="Alexandrescu01"></a>
   \[Alexandrescu01]:  A. Alexandrescu. Modern C++ Design (Addison-Wesley, 2001).
 * <a name="Cplusplus03"></a>
@@ -23063,11 +23063,11 @@ Alternatively, we will decide that no change is needed and delete the entry.
 * <a name="Stroustrup00"></a>
   \[Stroustrup00]:    B. Stroustrup. The C++ Programming Language (Special 3rdEdition) (Addison-Wesley, 2000).
 * <a name="Stroustrup05"></a>
-  \[Stroustrup05]:    B. Stroustrup. [A rationale for semantically enhanced library languages](http://www.stroustrup.com/SELLrationale.pdf).
+  \[Stroustrup05]:    B. Stroustrup. [A rationale for semantically enhanced library languages](https://www.stroustrup.com/SELLrationale.pdf).
 * <a name="Stroustrup13"></a>
-  \[Stroustrup13]:    B. Stroustrup. [The C++ Programming Language (4th Edition)](http://www.stroustrup.com/4th.html). Addison-Wesley 2013.
+  \[Stroustrup13]:    B. Stroustrup. [The C++ Programming Language (4th Edition)](https://www.stroustrup.com/4th.html). Addison-Wesley 2013.
 * <a name="Stroustrup14"></a>
-  \[Stroustrup14]:    B. Stroustrup. [A Tour of C++](http://www.stroustrup.com/Tour.html).
+  \[Stroustrup14]:    B. Stroustrup. [A Tour of C++](https://www.stroustrup.com/Tour.html).
   Addison-Wesley 2014.
 * <a name="Stroustrup15"></a>
   \[Stroustrup15]:    B. Stroustrup, Herb Sutter, and G. Dos Reis: [A brief introduction to C++'s model for type- and resource-safety](https://github.com/isocpp/CppCoreGuidelines/blob/master/docs/Introduction%20to%20type%20and%20resource%20safety.pdf).
