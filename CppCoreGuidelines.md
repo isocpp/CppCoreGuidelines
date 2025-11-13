@@ -21066,7 +21066,7 @@ This section contains materials that have been useful for presenting the core gu
 * [Our documents directory](https://github.com/isocpp/CppCoreGuidelines/tree/master/docs)
 * Stroustrup, Sutter, and Dos Reis: [A brief introduction to C++'s model for type- and resource-safety](https://www.stroustrup.com/resource-model.pdf). A paper with lots of examples.
 * Sergey Zubkov: [a Core Guidelines talk](https://www.youtube.com/watch?v=DyLwdl_6vmU)
-and here are the [slides](http://2017.cppconf.ru/talks/sergey-zubkov). In Russian. 2017.
+and here are the [slides](https://www.slideshare.net/slideshow/c-core-guidelines-72335317/72335317). In Russian. 2017.
 * Neil MacIntosh: [The Guideline Support Library: One Year Later](https://www.youtube.com/watch?v=_GhNnCuaEjo). CppCon 2016.
 * Bjarne Stroustrup: [Writing Good C++14](https://www.youtube.com/watch?v=1OEu9C51K2A). CppCon 2015 keynote.
 * Herb Sutter: [Writing Good C++14... By Default](https://www.youtube.com/watch?v=hEx5DNLWGgA). CppCon 2015 keynote.
