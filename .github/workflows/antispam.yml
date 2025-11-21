@@ -1,0 +1,21 @@
+name: Anti-Spam Issue & PR Checker
+
+on:
+  workflow_dispatch: # manual testing only
+  issues:
+    types: [opened, reopened]
+  pull_request:
+    types: [opened, reopened]
+
+jobs:
+  check-spam:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/github-script@v7
+        env:
+          SHA: '${{env.parentSHA}}'
+        with:
+          script: |
+            const script = require('.github/workflows/scripts/antispam.js')
+            await script({ github, context })
