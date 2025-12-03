@@ -5799,7 +5799,7 @@ Using default member initializers lets the compiler generate the function for yo
 
 ##### Enforcement
 
-(Simple) A default constructor should do more than just initialize data members with constants.
+(Simple) Flag if a default constructor's explicit member initializer is a constant, and recommend that the constant should be written as a data member initializer instead.
 
 ### <a name="rc-explicit"></a>C.46: By default, declare single-argument constructors explicit
 
