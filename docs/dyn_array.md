@@ -93,7 +93,7 @@ constexpr size_t size() const noexcept;
 
 #### Why no push_back (and friends)?
 `gsl::dyn_array` is intended to be a fixed-size array and all objects should be
-constructed at creation.  It supports no itetator/pointer-invalidating operation.
+constructed at creation.  It supports no iterator/pointer-invalidating operation.
 
 #### Why does `gsl::dyn_array` not conform to the `Container` Named Requirements?
 `gsl::dyn_array` is intended to be a safer replacement for raw pointers and sizes. We
