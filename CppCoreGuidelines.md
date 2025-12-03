@@ -9034,7 +9034,7 @@ We don't consider "sometimes, it works as expected" a conclusive argument.
 
 Modern C++ introduced `std::byte` (C++17) and `std::bit_cast` (C++20) to facilitate operations on raw object representations.
 Use `reinterpret_cast` along with `std::byte` instead of `unsigned char` or `char` for these operations.
-For `std::bit_cast`, if there is no value of the return type (the `To` type) that can represent the value produced, the behavior is undefined.
+
 
 ##### Enforcement
 
