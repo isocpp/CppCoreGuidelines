@@ -9032,7 +9032,9 @@ but at least we can see that something tricky is going on.)
 Unfortunately, `union`s are commonly used for type punning.
 We don't consider "sometimes, it works as expected" a conclusive argument.
 
-C++17 introduced a distinct type `std::byte` to facilitate operations on raw object representation.  Use that type instead of `unsigned char` or `char` for these operations.
+Modern C++ introduced `std::byte` (C++17) and `std::bit_cast` (C++20) to facilitate operations on raw object representations.
+Use `reinterpret_cast` along with `std::byte` instead of `unsigned char` or `char` for these operations.
+
 
 ##### Enforcement
 
