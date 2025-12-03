@@ -17,7 +17,10 @@ It can be thought of like a...
 
 By design, `gsl::dyn_array` is not a `Container` as defined by the C++ Named
 Requirements because we want to avoid the invalidation of iterators or references to
-`gsl::dyn_array` objects.
+`gsl::dyn_array` objects.  Furthermore, by design, there is no support for operations
+(other than destruction) that can invalidate iterators or pointers into the sequence
+owned by a `gsl::dyna_array` object. An `gsl::dyn_array` object cannot be moved,
+nor can it be copied.
 
 ### Construction
 `gsl::dyn_array`s can be constructed in the following ways:
@@ -27,9 +30,9 @@ Requirements because we want to avoid the invalidation of iterators or reference
 constexpr dyn_array();
 ```
 
-* Move construct a `dyn_array` from `other`:
+* Move construct a `dyn_array` from `other`: not possible
 ```c++
-constexpr dyn_array(dyn_array&& other) noexcept;
+dyn_array(dyn_array&& other) = delete;
 ```
 
 * Construct a `dyn_array` with `n` default constructed elements:
@@ -80,7 +83,7 @@ constexpr const T& operator[](size_t) const;
 constexpr T* data() noexcept;
 constexpr const T* data() const noexcept;
 ```
-
+ 
 * Return the number of elements in the `dyn_array`:
 ```c++
 constexpr size_t size() const noexcept;
@@ -90,12 +93,12 @@ constexpr size_t size() const noexcept;
 
 #### Why no push_back (and friends)?
 `gsl::dyn_array` is intended to be a fixed-size array and all objects should be
-constructed at creation.
+constructed at creation.  It supports no itetator/pointer-invalidating operation.
 
 #### Why does `gsl::dyn_array` not conform to the `Container` Named Requirements?
 `gsl::dyn_array` is intended to be a safer replacement for raw pointers and sizes. We
 don't want users to accidentally use it in a way that would be unsafe. For example,
-`gsl::dyn_array` does not have copy or move assignment operators. This is because it
+`gsl::dyn_array` does not have copy or move operations. This is because it
 would be possible to invalidate existing iterators and references.
 
 ### Bounds Checking Semantics
