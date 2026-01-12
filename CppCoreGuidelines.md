@@ -50,7 +50,7 @@ Supporting sections:
 * [NR: Non-Rules and myths](#s-not)
 * [RF: References](#s-references)
 * [Pro: Profiles](#s-profile)
-* [GSL: Guidelines support library](#gsl-guidelines-support-library)
+* [GSL: Guidelines support library](#s-gsl)
 * [NL: Naming and layout suggestions](#s-naming)
 * [FAQ: Answers to frequently asked questions](#s-faq)
 * [Appendix A: Libraries](#s-libraries)
@@ -21249,7 +21249,7 @@ Once completely enforced through a combination of style rules, static analysis, 
 * avoids undefined behavior by enforcing a key C++ language rule
 
 
-# <a name="S-gsl"></a>GSL: Guidelines support library
+# <a name="s-gsl"></a>GSL: Guidelines support library
 
 The GSL is a small library of facilities designed to support this set of guidelines.
 Without these facilities, the guidelines would have to be far more restrictive on language details.
