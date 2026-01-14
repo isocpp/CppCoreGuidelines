@@ -1888,7 +1888,7 @@ That is, its value must be `delete`d or transferred to another owner, as is done
 ##### Note
 
 Every object passed as a raw pointer (or iterator) is assumed to be owned by the
-caller, so that its lifetime is handled by the caller. Viewed another way:
+callee, so that its lifetime is handled by the callee. Viewed another way:
 ownership transferring APIs are relatively rare compared to pointer-passing APIs,
 so the default is "no ownership transfer."
 
