@@ -968,7 +968,7 @@ This is particularly important for long-running programs, but is an essential pi
 
 ##### Example, bad
 
-    void f(char* name)
+    void f(const char* name)
     {
         FILE* input = fopen(name, "r");
         // ...
@@ -979,7 +979,7 @@ This is particularly important for long-running programs, but is an essential pi
 
 Prefer [RAII](#rr-raii):
 
-    void f(char* name)
+    void f(const char* name)
     {
         ifstream input {name};
         // ...
