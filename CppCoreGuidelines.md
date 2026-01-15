@@ -50,7 +50,7 @@ Supporting sections:
 * [NR: Non-Rules and myths](#s-not)
 * [RF: References](#s-references)
 * [Pro: Profiles](#s-profile)
-* [GSL: Guidelines support library](#gsl-guidelines-support-library)
+* [GSL: Guidelines support library](#s-gsl)
 * [NL: Naming and layout suggestions](#s-naming)
 * [FAQ: Answers to frequently asked questions](#s-faq)
 * [Appendix A: Libraries](#s-libraries)
@@ -767,7 +767,8 @@ We can of course pass the number of elements along with the pointer:
 
     void g2(int n)
     {
-        f2(new int[n], m);  // bad: a wrong number of elements can be passed to f()
+        // bad: the wrong number of elements can be passed to f2()
+        f2(new int[n], n);
     }
 
 Passing the number of elements as an argument is better (and far more common) than just passing the pointer and relying on some (unstated) convention for knowing or discovering the number of elements. However (as shown), a simple typo can introduce a serious error. The connection between the two arguments of `f2()` is conventional, rather than explicit.
@@ -21248,7 +21249,7 @@ Once completely enforced through a combination of style rules, static analysis, 
 * avoids undefined behavior by enforcing a key C++ language rule
 
 
-# <a name="S-gsl"></a>GSL: Guidelines support library
+# <a name="s-gsl"></a>GSL: Guidelines support library
 
 The GSL is a small library of facilities designed to support this set of guidelines.
 Without these facilities, the guidelines would have to be far more restrictive on language details.
