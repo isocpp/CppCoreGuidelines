@@ -4671,6 +4671,7 @@ Concrete type rule summary:
 * [C.10: Prefer concrete types over class hierarchies](#rc-concrete)
 * [C.11: Make concrete types regular](#rc-regular)
 * [C.12: Don't make data members `const` or references in a copyable or movable type](#rc-constref)
+* [C.13: If one data member uses another, declare it before the other](#rc-lifetime)
 
 
 ### <a name="rc-concrete"></a>C.10: Prefer concrete types over class hierarchies
@@ -4791,6 +4792,102 @@ If you need a member to point to something, use a pointer (raw or smart, and `gs
 
 Flag a data member that is `const`, `&`, or `&&` in a type that has any copy or move operation.
 
+
+### <a name="rc-lifetime"></a>C.13: If one data member uses another, declare it before the other
+
+##### Reason
+
+Data members are initialized in the order they are declared, and destroyed in the reverse order.
+
+##### Discussion
+
+If data member `B` uses another data member `A`, then `A` must be declared before `B` so that `A` outlives `B`, meaning that `A`'s lifetime starts before and ends after `B`'s lifetime. Otherwise, during construction and destruction `B` will attempt to use `A` outside its lifetime.
+
+##### Example; bad
+
+    // Bad: b uses a, but a is declared after b.
+    //      Construction order is b then a; destruction order is a then b.
+    //      So b touches a outside a's lifetime.
+
+    class X {
+        struct B {
+            string* p;
+            explicit B(string& a) : p(&a) {}
+            ~B() { cout << *p; }                       // uses a (via p)
+        };
+
+        B      b;                                      // constructed first
+        string a = "some heap allocated string value"; // constructed after b; destroyed before b
+
+    public:
+        X() : b(a) {}   // uses a before it is constructed -> use-before-alloc UB
+        ~X() = default; // accesses a after it is destroyed -> use-after-free UB
+    };
+
+##### Example; good
+
+    // Corrected: Just declare a before b
+
+    class X {
+        struct B {
+            string* p;
+            explicit B(string& a) : p(&a) {}
+            ~B() { cout << *p; }                       // uses a (via p)
+        };
+
+        string a = "some heap allocated string value"; // constructed before b; destroyed after b
+        B      b;                                      // constructed second
+
+    public:
+        X() : b(a) {}   // ok
+        ~X() = default; // ok
+    };
+
+##### Example; bad
+
+This can also come up with concurrency. Ensure that an async operation that access a value is joined before the value it accesses is destroyed.
+
+    class X {
+    public:
+        X()
+            : a(std::make_unique<int>(12)) 
+        {
+            b = std::make_unique<std::jthread>(
+                [this]{
+                std::this_thread::sleep_for(std::chrono::seconds(1));
+                std::cout << "Value: " << *a << std::endl;
+              });
+        }
+
+        std::unique_ptr<std::jthread> b;
+        std::unique_ptr<int>          a;
+    };
+
+##### Example; good
+
+This can also come up with concurrency. Ensure that an async operation that access a value is joined before the value it accesses is destroyed.
+
+    // Corrected: Just declare a before b
+
+    class X {
+    public:
+        X()
+            : a(std::make_unique<int>(12)) 
+        {
+            b = std::make_unique<std::jthread>(
+                [this]{
+                std::this_thread::sleep_for(std::chrono::seconds(1));
+                std::cout << "Value: " << *a << std::endl;
+              });
+        }
+
+        std::unique_ptr<int>          a;
+        std::unique_ptr<std::jthread> b;
+    };
+
+##### Enforcement
+
+* Flag a member initializer that refers to an object before it is constructed.
 
 
 ## <a name="s-ctor"></a>C.ctor: Constructors, assignments, and destructors
