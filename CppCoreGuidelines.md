@@ -17074,7 +17074,7 @@ Template interface rule summary:
 * [T.42: Use template aliases to simplify notation and hide implementation details](#rt-alias)
 * [T.43: Prefer `using` over `typedef` for defining aliases](#rt-using)
 * [T.44: Use function templates to deduce class template argument types (where feasible)](#rt-deduce)
-* [T.46: Require template arguments to be at least semiregular](#rt-regular)
+* [T.46: Prefer template arguments to be movable and default-constructible](#rt-regular)
 * [T.47: Avoid highly visible unconstrained templates with common names](#rt-visible)
 * [T.48: If your compiler does not support concepts, fake them with `enable_if`](#rt-concept-def)
 * [T.49: Where possible, avoid type-erasure](#rt-erasure)
@@ -18110,7 +18110,7 @@ For example:
 
 Flag uses where an explicitly specialized type exactly matches the types of the arguments used.
 
-### <a name="rt-regular"></a>T.46: Require template arguments to be at least semiregular
+### <a name="rt-regular"></a>T.46: Prefer template arguments to be movable and default-constructible
 
 ##### Reason
 
@@ -18120,6 +18120,7 @@ Most uses support that anyway.
 
 ##### Example
 
+    // X is not default constructible
     class X {
     public:
         explicit X(int);
@@ -18135,13 +18136,13 @@ Most uses support that anyway.
     X y = x;              // fine
     std::vector<X> v(10); // error: no default constructor
 
-##### Note
+##### Exceptions
 
-Semiregular requires default constructible.
+A trait type is not necessarily movable and default-constructible. Templates that use trait types usually use them with `Trait::something` scope resolution syntax, rather than using objects of the trait type.
 
 ##### Enforcement
 
-* Flag types used as template arguments that are not at least semiregular.
+* Flag types used as template arguments that do not satisfy both `std::movable` and `std::default_constructible` and that are using in the template without `::` scope resolution syntax.
 
 ### <a name="rt-visible"></a>T.47: Avoid highly visible unconstrained templates with common names
 
