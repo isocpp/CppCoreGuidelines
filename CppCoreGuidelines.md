@@ -17622,7 +17622,7 @@ It is a general design rule that even applies to non-templates:
     Minimal operator+(const Minimal&, const Minimal&);
     // no other operators
 
-    void f(const Minimal& x, const Minimal& y)
+    void f(Minimal x, Minimal y)
     {
         if (!(x == y)) { /* ... */ }    // OK
         if (x != y) { /* ... */ }       // surprise! error
