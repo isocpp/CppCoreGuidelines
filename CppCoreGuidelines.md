@@ -20446,7 +20446,7 @@ This slowdown can be significant compared to `printf`-style output.
 
 ##### Note
 
-For `cin`/`cout` (and equivalent) interaction, there is no reason to flush; that's done automatically.
+For `cin`/`cout` (and equivalent) interaction, there is usually no reason to flush; that's typically done automatically.
 For writing to a file, there is rarely a need to `flush`.
 
 ##### Note
@@ -20460,6 +20460,7 @@ Windows). So for a string stream, `s << endl` just inserts a *single* character,
 ##### Note
 
 Apart from the (occasionally important) issue of performance,
+and the rare cases where it is important to flush manually,
 the choice between `'\n'` and `endl` is almost completely aesthetic.
 
 ## <a name="ss-regex"></a>SL.regex: Regex
