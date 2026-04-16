@@ -4812,7 +4812,7 @@ If data member `B` uses another data member `A`, then `A` must be declared befor
     class X {
         struct B {
             string* p;
-            explicit B(string& a) : p(&a) {}
+            explicit B(string& a) : p{&a} {}
             ~B() { cout << *p; }                       // uses a (via p)
         };
 
@@ -4820,7 +4820,7 @@ If data member `B` uses another data member `A`, then `A` must be declared befor
         string a = "some heap allocated string value"; // constructed after b; destroyed before b
 
     public:
-        X() : b(a) {}   // uses a before it is constructed -> use-before-alloc UB
+        X() : b{a} {}   // uses a before it is constructed -> use-before-alloc UB
         ~X() = default; // accesses a after it is destroyed -> use-after-free UB
     };
 
@@ -4831,7 +4831,7 @@ If data member `B` uses another data member `A`, then `A` must be declared befor
     class X {
         struct B {
             string* p;
-            explicit B(string& a) : p(&a) {}
+            explicit B(string& a) : p{&a} {}
             ~B() { cout << *p; }                       // uses a (via p)
         };
 
@@ -4839,18 +4839,18 @@ If data member `B` uses another data member `A`, then `A` must be declared befor
         B      b;                                      // constructed second
 
     public:
-        X() : b(a) {}   // ok
+        X() : b{a} {}   // ok
         ~X() = default; // ok
     };
 
 ##### Example; bad
 
-This can also come up with concurrency. Ensure that an async operation that access a value is joined before the value it accesses is destroyed.
+This can also come up with concurrency. Ensure that an async operation that accesses a value is joined before the value it accesses is destroyed.
 
     class X {
     public:
         X()
-            : a(std::make_unique<int>(12)) 
+            : a{std::make_unique<int>(12)} 
         {
             b = std::make_unique<std::jthread>(
                 [this]{
@@ -4865,7 +4865,7 @@ This can also come up with concurrency. Ensure that an async operation that acce
 
 ##### Example; good
 
-This can also come up with concurrency. Ensure that an async operation that access a value is joined before the value it accesses is destroyed.
+This can also come up with concurrency. Ensure that an async operation that accesses a value is joined before the value it accesses is destroyed.
 
     // Corrected: Just declare a before b
 
