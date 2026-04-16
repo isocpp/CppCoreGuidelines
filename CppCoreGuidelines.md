@@ -4671,7 +4671,7 @@ Concrete type rule summary:
 * [C.10: Prefer concrete types over class hierarchies](#rc-concrete)
 * [C.11: Make concrete types regular](#rc-regular)
 * [C.12: Don't make data members `const` or references in a copyable or movable type](#rc-constref)
-* [C.13: If one data member uses another, declare it before the other](#rc-lifetime)
+* [C.13: If data member `B` uses another data member `A`, declare `A` before `B`](#rc-lifetime)
 
 
 ### <a name="rc-concrete"></a>C.10: Prefer concrete types over class hierarchies
@@ -4793,7 +4793,7 @@ If you need a member to point to something, use a pointer (raw or smart, and `gs
 Flag a data member that is `const`, `&`, or `&&` in a type that has any copy or move operation.
 
 
-### <a name="rc-lifetime"></a>C.13: If one data member uses another, declare it before the other
+### <a name="rc-lifetime"></a>C.13: If data member `B` uses another data member `A`, declare `A` before `B`
 
 ##### Reason
 
@@ -4807,7 +4807,7 @@ If data member `B` uses another data member `A`, then `A` must be declared befor
 
     // Bad: b uses a, but a is declared after b.
     //      Construction order is b then a; destruction order is a then b.
-    //      So b touches a outside a's lifetime.
+    //      So b touches a outside the lifetime of a.
 
     class X {
         struct B {
