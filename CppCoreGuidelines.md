@@ -12174,7 +12174,7 @@ The named casts are:
     class B { /* ... */ };
     class D { /* ... */ };
 
-    template<typename D> D* upcast(B* pb)
+    D* downcast(B* pb)
     {
         D* pd0 = pb;                        // error: no implicit conversion from B* to D*
         D* pd1 = (D*)pb;                    // legal, but what is done?
