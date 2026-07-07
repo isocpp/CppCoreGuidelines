@@ -181,7 +181,7 @@ def is_inside_code(line, indent_depth):
 def stripped(line):
     # Remove well-formed html tags, fixing mistakes by legitimate users
     sline = TAG_REGEX.sub('', line)
-    sline = re.sub('[()\[\]#*]', ' ', line)
+    sline = re.sub(r'[()[\]#*]', ' ', line)
     return sline
 
 def dedent(line, indent_depth):
