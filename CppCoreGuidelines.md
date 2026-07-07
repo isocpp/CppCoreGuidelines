@@ -5987,7 +5987,7 @@ How would a maintainer know whether `j` was deliberately uninitialized (probably
     class X2 {
         int i {666};
         string s {"qqq"};
-        int j {0};
+        int j {numeric_limits<int>::min()};
     public:
         X2() = default;        // all members are initialized to their defaults
         X2(int ii) :i{ii} {}   // s and j initialized to their defaults
@@ -6001,7 +6001,7 @@ How would a maintainer know whether `j` was deliberately uninitialized (probably
         string s;
         int j;
     public:
-        X3(int ii = 666, const string& ss = "qqq", int jj = 0)
+        X3(int ii = 666, const string& ss = "qqq", int jj = numeric_limits<int>::min())
             :i{ii}, s{ss}, j{jj} { }   // all members are initialized to their defaults
         // ...
     };
