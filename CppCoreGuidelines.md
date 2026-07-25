@@ -1239,6 +1239,7 @@ Interface rule summary:
 * [I.26: If you want a cross-compiler ABI, use a C-style subset](#ri-abi)
 * [I.27: For stable library ABI, consider the Pimpl idiom](#ri-pimpl)
 * [I.30: Encapsulate rule violations](#ri-encapsulate)
+* [I.31: Ensure that dynamically loaded symbols respect their type](#ri-dlsyms)
 
 **See also**:
 
@@ -2327,6 +2328,40 @@ Presumably, a bit of checking for potential errors would be added in real code.
 
 * Hard, it is hard to decide what rule-breaking code is essential
 * Flag rule suppression that enable rule-violations to cross interfaces
+
+### <a name="ri-dlsyms></a>:I.31: Ensure that dynamically loaded symbols respect their type
+
+##### Reason
+
+To ensure safety across boundaries.
+
+While there are lots of useful IPC techniques, many features are not feasible within a program without the use of dynamically loaded modules.
+It is not a trivial task to confirm that the type of a symbol from a foreign module coincides with the signature loaded within the program source code, so it is better to implement dynamic loading sparingly.
+Failure to do so results in either the program or the module being at compromise.
+
+##### Example
+
+We have a file that exposes a function that describes the quota of a device
+
+    extern "C" int query_quota() {
+        int q = 0;
+        // ...
+        return q;
+    }
+
+To declare that a dynamic symbol has the same signature as the function `gsl::foreign` is used
+
+    void *handle = dlopen("device.so", RTLD_LAZY);
+    // ...
+    std::function<int()> query_quota(gsl::foreign<int (*)()>(dlsym(handle, "query_quota")));
+    Quota quota(query_quota());
+    // and when the module is not in use
+    dlclose(handle);
+
+##### Enforcement
+
+* Only dynamically loaded symbols are admitted when declaring via `gsl::foreign`
+* APIs should declare typedefs for function signatures
 
 # <a name="s-functions"></a>F: Functions
 
