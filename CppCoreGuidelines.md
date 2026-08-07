@@ -4936,7 +4936,7 @@ Constructor rules:
 * [C.45: Don't define a default constructor that only initializes data members; use member initializers instead](#rc-default)
 * [C.46: By default, declare single-argument constructors `explicit`](#rc-explicit)
 * [C.47: Define and initialize data members in the order of member declaration](#rc-order)
-* [C.48: Prefer default member initializers to member initializers in constructors for constant initializers](#rc-in-class-initializer)
+* [C.48: Prefer default member initializers to member initializers in constructors](#rc-in-class-initializer)
 * [C.49: Prefer initialization to assignment in constructors](#rc-initialize)
 * [C.50: Use a factory function if you need "virtual behavior" during initialization](#rc-factory)
 * [C.51: Use delegating constructors to represent common actions for all constructors of a class](#rc-delegating)
@@ -5962,7 +5962,7 @@ To minimize confusion and errors. That is the order in which the initialization 
 
 **See also**: [Discussion](#sd-order)
 
-### <a name="rc-in-class-initializer"></a>C.48: Prefer default member initializers to member initializers in constructors for constant initializers
+### <a name="rc-in-class-initializer"></a>C.48: Prefer default member initializers to member initializers in constructors
 
 ##### Reason
 
