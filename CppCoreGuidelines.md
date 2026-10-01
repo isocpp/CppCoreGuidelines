@@ -5898,7 +5898,7 @@ Using default member initializers lets the compiler generate the function for yo
 
 ##### Enforcement
 
-(Simple) Flag if a default constructor's explicit member initializer is a constant, and recommend that the constant should be written as a data member initializer instead.
+(Simple) Flag if a default constructor only initializes members, and recommend that the initializers should be written as data member initializers instead and the compiler-generated default constructor used
 
 ### <a name="rc-explicit"></a>C.46: By default, declare single-argument constructors explicit
 
@@ -6010,6 +6010,8 @@ How would a maintainer know whether `j` was deliberately uninitialized (probably
 
 * (Simple) Every constructor should initialize every data member (either explicitly, via a delegating ctor call or via default construction).
 * (Simple) Default arguments to constructors suggest a default member initializer might be more appropriate.
+* (Simple) Flag if a default constructor's explicit member initializer is a constant, and recommend that the constant should be written as a data member initializer instead.
+
 
 ### <a name="rc-initialize"></a>C.49: Prefer initialization to assignment in constructors
 
