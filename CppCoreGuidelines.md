@@ -12617,7 +12617,7 @@ In the rare cases where the slicing was deliberate the code can be surprising.
 
 ##### Note
 
-It is not possible to copy part of an empty object, so this definition of slicing deliberately does not include empty objects (having no nonstatic data members), such as empty types used for tag dispatching.
+It is not possible to copy part of an empty object, so this definition of slicing deliberately does not include empty objects (having no non-static data members), such as empty types used for tag dispatching.
 
 ##### Example
 
@@ -12658,7 +12658,7 @@ For example:
 
 ##### Enforcement
 
-Warn against slicing if the base type has any nonstatic data members (possibly via transitive bases) .
+Warn against slicing if the base type has any non-static data members (possibly via transitive bases) .
 
 ### <a name="res-construct"></a>ES.64: Use the `T{e}`notation for construction
 
