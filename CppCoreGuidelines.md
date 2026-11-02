@@ -13578,7 +13578,7 @@ but if you had seen `us - (s + 2)` or `s += 2; ...; us - s`, would you reliably 
 ##### Exception
 
 Use unsigned types if you really want modular arithmetic - add
-comments as necessary noting the reliance on overflow behavior, as such code
+comments as necessary noting the reliance on wrapping behavior, as such code
 is going to be surprising for many programmers.
 
 ##### Example
