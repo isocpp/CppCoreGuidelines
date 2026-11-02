@@ -4933,7 +4933,7 @@ Constructor rules:
 * [C.42: If a constructor cannot construct a valid object, throw an exception](#rc-throw)
 * [C.43: Ensure that a copyable class has a default constructor](#rc-default0)
 * [C.44: Prefer default constructors to be simple and non-throwing](#rc-default00)
-* [C.45: Don't define a default constructor that only initializes data members; use member initializers instead](#rc-default)
+* [C.45: Don't define a default constructor that initializes data members; use member initializers instead](#rc-default)
 * [C.46: By default, declare single-argument constructors `explicit`](#rc-explicit)
 * [C.47: Define and initialize data members in the order of member declaration](#rc-order)
 * [C.48: Prefer default member initializers to member initializers in constructors for constant initializers](#rc-in-class-initializer)
@@ -5870,7 +5870,7 @@ Setting a `Vector1` to empty after detecting an error is trivial.
 
 * Flag throwing default constructors
 
-### <a name="rc-default"></a>C.45: Don't define a default constructor that only initializes data members; use default member initializers instead
+### <a name="rc-default"></a>C.45: Don't define a default constructor that initializes data members; use default member initializers instead
 
 ##### Reason
 
